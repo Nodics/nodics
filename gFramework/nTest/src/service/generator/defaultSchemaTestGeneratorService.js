@@ -278,6 +278,7 @@ module.exports = {
         let controller = 'Default' + options.schemaName.toUpperCaseEachWord() + 'Controller';
         let scenarios = this.createDestructiveCrudScenarios(alias, controller, options.schemaObject);
         let lifecycle = this.createDestructiveCrudLifecycle(alias, controller, options.schemaObject);
+        let accessPolicyScenarios = this.createCrudAccessPolicyScenarios(options.moduleName, options.schemaName, alias, controller, options.schemaObject);
         let expected = {
             moduleName: options.moduleName,
             urlPrefix: (options.moduleObject.metaData && options.moduleObject.metaData.prefix) || options.moduleName,
@@ -288,7 +289,8 @@ module.exports = {
             execution: 'explicit-only',
             testTenant: '<testTenant>',
             scenarios: scenarios,
-            lifecycle: lifecycle
+            lifecycle: lifecycle,
+            accessPolicyScenarios: accessPolicyScenarios
         };
 
         return UTILS.getCopywriteComment() +
@@ -307,8 +309,10 @@ module.exports = {
             'assert.strictEqual(expected.testTenant, \'<testTenant>\');\n' +
             'assert(Array.isArray(expected.scenarios), \'Generated CRUD scenario must include scenarios\');\n' +
             'assert(Array.isArray(expected.lifecycle), \'Generated CRUD scenario must include lifecycle\');\n' +
+            'assert(Array.isArray(expected.accessPolicyScenarios), \'Generated CRUD scenario must include access policy scenarios\');\n' +
             'assert(expected.scenarios.length >= 4, \'Generated CRUD scenario must include create, update, delete, and cleanup scenarios\');\n' +
             'assert(expected.lifecycle.length >= 7, \'Generated CRUD lifecycle must include cleanup, create, read, update, read, delete, and verify steps\');\n' +
+            'assert(expected.accessPolicyScenarios.length >= 4, \'Generated CRUD access policy scenarios must include read, create, update, and delete\');\n' +
             'assert(expected.scenarios.some((scenario) => scenario.operation === \'save\'), \'CRUD scenarios must include save\');\n' +
             'assert(expected.scenarios.some((scenario) => scenario.operation === \'update\'), \'CRUD scenarios must include update\');\n' +
             'assert(expected.scenarios.some((scenario) => scenario.operation === \'removeByCode\' || scenario.operation === \'remove\'), \'CRUD scenarios must include delete\');\n' +
@@ -331,6 +335,19 @@ module.exports = {
             '    assert(step.request, \'Generated CRUD lifecycle step must include request\');\n' +
             '    assert.strictEqual(typeof step.mutation, \'boolean\');\n' +
             '});\n\n' +
+            'expected.accessPolicyScenarios.forEach((scenario) => {\n' +
+            '    assert(scenario.name, \'Generated access policy scenario must include name\');\n' +
+            '    assert([\'read\', \'create\', \'update\', \'delete\'].includes(scenario.policyAction), `Unsupported generated access policy action ${scenario.policyAction}`);\n' +
+            '    assert(scenario.route && scenario.route.key, \'Generated access policy scenario must include route\');\n' +
+            '    assert(scenario.policy && scenario.policy.moduleName === expected.moduleName, \'Generated access policy scenario must include module policy context\');\n' +
+            '    assert(scenario.policy.schemaName === expected.schemaName, \'Generated access policy scenario must include schema policy context\');\n' +
+            '    assert(scenario.policy.propertyName, \'Generated access policy scenario must include property policy context\');\n' +
+            '    assert(scenario.expected, \'Generated access policy scenario must include expected outcome\');\n' +
+            '});\n' +
+            'assert(expected.accessPolicyScenarios.some((scenario) => scenario.policyAction === \'read\' && scenario.expected.responseFiltering === true), \'Generated access policy scenarios must cover read filtering\');\n' +
+            'assert(expected.accessPolicyScenarios.some((scenario) => scenario.policyAction === \'create\' && scenario.expected.blocked === true), \'Generated access policy scenarios must cover create blocking\');\n' +
+            'assert(expected.accessPolicyScenarios.some((scenario) => scenario.policyAction === \'update\' && scenario.expected.blocked === true), \'Generated access policy scenarios must cover update blocking\');\n' +
+            'assert(expected.accessPolicyScenarios.some((scenario) => scenario.policyAction === \'delete\' && scenario.policy.propertyName === \'*\' && scenario.expected.blocked === true), \'Generated access policy scenarios must cover schema-level delete blocking\');\n\n' +
             'module.exports = expected;\n\n' +
             'console.log(`Generated destructive CRUD scenarios validated: ${expected.moduleName}.${expected.schemaName} (${expected.scenarios.length} scenarios)`);\n';
     },
@@ -416,6 +433,75 @@ module.exports = {
             this.createCrudLifecycleStep('delete', deleteRoute, createModel, updateModel, false, false),
             this.createCrudLifecycleStep('verifyDeleted', getByCodeRoute, createModel, updateModel, false, true)
         ].filter(step => !!step);
+    },
+
+    createCrudAccessPolicyScenarios: function (moduleName, schemaName, alias, controller, schemaObject) {
+        let routes = this.createExpectedApiRoutes(alias, controller);
+        let createModel = this.createCrudModelFixture(alias, schemaObject, 'create');
+        let updateModel = this.createCrudModelFixture(alias, schemaObject, 'update');
+        let protectedProperty = this.getAccessPolicyFixtureProperty(schemaObject);
+        let readRoute = this.findRouteByRouterName(routes, 'getByCode') || this.findRoute(routes, 'get', 'get');
+        let createRoute = this.findRoute(routes, 'save', 'put');
+        let updateRoute = this.findRoute(routes, 'update', 'patch');
+        let deleteRoute = this.findRouteByRouterName(routes, 'removeByCode') ||
+            this.findRouteByRouterName(routes, 'remove') ||
+            this.findRoute(routes, 'removeByCode', 'delete') ||
+            this.findRoute(routes, 'remove', 'delete');
+        return [
+            this.createCrudAccessPolicyScenario(moduleName, schemaName, 'readFilteredProperty', 'read', readRoute, createModel, updateModel, protectedProperty, {
+                effect: 'MASK',
+                responseFiltering: true,
+                blocked: false
+            }),
+            this.createCrudAccessPolicyScenario(moduleName, schemaName, 'createBlockedProperty', 'create', createRoute, createModel, updateModel, protectedProperty, {
+                effect: 'DENY',
+                responseFiltering: false,
+                blocked: true
+            }),
+            this.createCrudAccessPolicyScenario(moduleName, schemaName, 'updateBlockedProperty', 'update', updateRoute, createModel, updateModel, protectedProperty, {
+                effect: 'READONLY',
+                responseFiltering: false,
+                blocked: true
+            }),
+            this.createCrudAccessPolicyScenario(moduleName, schemaName, 'deleteBlockedSchema', 'delete', deleteRoute, createModel, updateModel, '*', {
+                effect: 'DENY',
+                responseFiltering: false,
+                blocked: true
+            })
+        ].filter(scenario => !!scenario);
+    },
+
+    createCrudAccessPolicyScenario: function (moduleName, schemaName, name, policyAction, route, createModel, updateModel, propertyName, expected) {
+        if (!route) {
+            return null;
+        }
+        return {
+            name: name,
+            policyAction: policyAction,
+            route: route,
+            request: this.createAccessPolicyScenarioRequest(route, createModel, updateModel, propertyName),
+            policy: {
+                moduleName: moduleName,
+                schemaName: schemaName,
+                propertyName: propertyName,
+                actions: [policyAction],
+                userGroups: ['<restrictedUserGroup>'],
+                appliesToTenants: ['<testTenant>']
+            },
+            expected: expected
+        };
+    },
+
+    createAccessPolicyScenarioRequest: function (route, createModel, updateModel, propertyName) {
+        let request = this.createCrudLifecycleRequest(route, createModel, updateModel);
+        if (propertyName && propertyName !== '*' && route.operation === 'save') {
+            request.body[propertyName] = createModel[propertyName] !== undefined ? createModel[propertyName] : '<protectedValue>';
+        }
+        if (propertyName && propertyName !== '*' && route.operation === 'update') {
+            request.body.model = request.body.model || {};
+            request.body.model[propertyName] = updateModel[propertyName] !== undefined ? updateModel[propertyName] : '<protectedValue>';
+        }
+        return request;
     },
 
     createCrudLifecycleStep: function (name, route, createModel, updateModel, optional, expectMissing) {
@@ -613,6 +699,18 @@ module.exports = {
             model.description = 'Generated updated CRUD test fixture for ' + alias;
         }
         return model;
+    },
+
+    getAccessPolicyFixtureProperty: function (schemaObject) {
+        let definition = schemaObject.definition || {};
+        if (definition.description) {
+            return 'description';
+        }
+        if (definition.code) {
+            return 'code';
+        }
+        let properties = Object.keys(definition);
+        return properties.length > 0 ? properties[0] : '<policyControlledProperty>';
     },
 
     createPropertyFixtureValue: function (propertyName, propertyObject, phase) {
