@@ -1,7 +1,8 @@
 {
   "moduleName": "catalog",
   "path": "gFramework/nCatalog",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "router",
   "package": {
     "index": "1.15",
     "type": "router",

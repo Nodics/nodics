@@ -1,7 +1,8 @@
 {
   "moduleName": "export",
   "path": "gFramework/nData/nExport/export",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.17.10.0",
     "type": "core",

@@ -1,7 +1,8 @@
 {
   "moduleName": "gfcms",
   "path": "gframes/gframesModules/gfcms",
-  "kind": "application-module",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "2000.1.6",
     "type": "core",

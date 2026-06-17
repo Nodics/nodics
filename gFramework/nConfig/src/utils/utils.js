@@ -48,16 +48,17 @@ module.exports = {
                     console.error('Invalid initialization, could not load module: ' + moduleName);
                     process.exit(1);
                 }
+                let moduleActivationType = this.getModuleActivationType(moduleObject.metaData);
                 if (moduleName === (props.dynamoModuleName || 'dynamo') && !props.dynamoEnabled) {
                     let currentdate = new Date();
                     let datetime = currentdate.getFullYear() + '-' + (currentdate.getMonth() + 1) + '-' + currentdate.getDate() +
                         ' ' + currentdate.getHours() + ':' + currentdate.getMinutes() + ":" + currentdate.getSeconds();
                     console.log(datetime, ' info: [DefaultModuleInitializerService] Dynamo module is not activated');
-                } else if ('publish' === moduleObject.metaData.type && props.publishEnabled) {
+                } else if ('publish' === moduleActivationType && props.publishEnabled) {
                     modulesList.push(moduleName);
-                } else if ('web' === moduleObject.metaData.type && props.webEnabled) {
+                } else if ('web' === moduleActivationType && props.webEnabled) {
                     modulesList.push(moduleName);
-                } else if (['group', 'core', 'router'].includes(moduleObject.metaData.type)) {
+                } else if (this.isAlwaysLoadableModuleType(moduleActivationType)) {
                     modulesList.push(moduleName);
                 }
                 if (groupName) {
@@ -73,6 +74,35 @@ module.exports = {
                 }
             }
         }
+    },
+
+    getNodicsMetadata: function (metaData) {
+        return metaData && metaData.nodics ? metaData.nodics : {};
+    },
+
+    getModuleActivationType: function (metaData) {
+        let nodics = this.getNodicsMetadata(metaData);
+        return nodics.moduleType || (metaData && metaData.type);
+    },
+
+    getModuleKind: function (metaData) {
+        let nodics = this.getNodicsMetadata(metaData);
+        return nodics.kind || nodics.moduleType || (metaData && metaData.type);
+    },
+
+    isAlwaysLoadableModuleType: function (moduleType) {
+        return [
+            'application',
+            'application-module',
+            'capability',
+            'core',
+            'environment',
+            'group',
+            'node',
+            'router',
+            'server',
+            'template'
+        ].includes(moduleType);
     },
 
     loadRawModuleList: function (homePath) {
@@ -127,10 +157,11 @@ module.exports = {
         if (!metaData) {
             return false;
         }
+        let nodics = this.getNodicsMetadata(metaData);
         if (metaData.runtimeModule === false) {
             return false;
         }
-        if (metaData.nodics && (metaData.nodics.runtimeModule === false || metaData.nodics.loadableByNodicsModuleLoader === false)) {
+        if (nodics.runtimeModule === false || nodics.loadableByNodicsModuleLoader === false) {
             return false;
         }
         return true;
@@ -303,7 +334,8 @@ module.exports = {
         let moduleObject = NODICS.getModule(moduleName);
         if (moduleObject &&
             moduleObject.metaData &&
-            (moduleObject.metaData.type === 'router' || moduleObject.metaData.type === 'web') &&
+            (this.getModuleActivationType(moduleObject.metaData) === 'router' ||
+                this.getModuleActivationType(moduleObject.metaData) === 'web') &&
             (moduleName !== (CONFIG.get('dynamoModuleName') || 'dynamo') || CONFIG.get('dynamoEnabled'))) {
             return true;
         }
@@ -314,7 +346,7 @@ module.exports = {
         let moduleObject = NODICS.getModule(moduleName);
         if (moduleObject &&
             moduleObject.metaData &&
-            moduleObject.metaData.type === 'web') {
+            this.getModuleActivationType(moduleObject.metaData) === 'web') {
             return true;
         }
         return false;

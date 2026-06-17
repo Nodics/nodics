@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `event` |
 | Path | `gFramework/nEvent` |
-| Kind | `framework` |
+| Kind | `capability` |
+| Module Type | `core` |
 | Index | `1.7` |
-| Type | `core` |
+| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. It gives functionalities to publish and execute events |
 

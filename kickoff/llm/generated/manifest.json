@@ -2,6 +2,7 @@
   "moduleName": "kickoff",
   "path": "kickoff",
   "kind": "application",
+  "moduleType": "application",
   "package": {
     "index": "1000.99",
     "type": "group",

@@ -1,7 +1,8 @@
 {
   "moduleName": "nSearch",
   "path": "gFramework/nSearch",
-  "kind": "framework",
+  "kind": "group",
+  "moduleType": "group",
   "package": {
     "index": "1.14.99",
     "type": "group",

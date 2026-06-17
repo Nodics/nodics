@@ -1,7 +1,8 @@
 {
   "moduleName": "flowApi",
   "path": "gCore/workflow/flowApi",
-  "kind": "core",
+  "kind": "capability",
+  "moduleType": "router",
   "package": {
     "index": "5.30.15",
     "type": "router",

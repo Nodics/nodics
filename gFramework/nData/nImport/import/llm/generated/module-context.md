@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `import` |
 | Path | `gFramework/nData/nImport/import` |
-| Kind | `framework` |
+| Kind | `capability` |
+| Module Type | `core` |
 | Index | `1.17.5.0` |
-| Type | `core` |
+| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to import |
 

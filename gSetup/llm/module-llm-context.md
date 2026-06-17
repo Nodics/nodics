@@ -51,3 +51,24 @@ The generated schema context should be used by LLMs for current source-derived f
 If a project module overrides a framework module, the project module should add its own `llm` context. LLMs must read global `gSetup/llm`, then framework module context, then later project/environment/server/node module context to understand effective behavior.
 
 Do not change out-of-the-box Nodics code when the intended behavior can be implemented in a later module layer.
+
+## Module Metadata
+
+`package.json` remains the single module manifest. Do not add a parallel metadata file.
+
+Nodics-specific metadata belongs under `package.json.nodics`:
+
+```json
+{
+  "type": "router",
+  "nodics": {
+    "kind": "capability",
+    "moduleType": "router",
+    "runtimeModule": true,
+    "loadableByNodicsModuleLoader": true,
+    "owns": ["configuration", "schema", "router", "service", "test", "llm"]
+  }
+}
+```
+
+Keep top-level `type` for backward compatibility. New code should prefer `nodics.moduleType` for loader behavior and `nodics.kind` for semantic documentation.

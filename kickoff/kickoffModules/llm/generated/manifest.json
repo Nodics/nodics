@@ -1,7 +1,8 @@
 {
   "moduleName": "kickoffModules",
   "path": "kickoff/kickoffModules",
-  "kind": "application",
+  "kind": "group",
+  "moduleType": "group",
   "package": {
     "index": "1000.1.99",
     "type": "core",

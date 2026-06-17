@@ -1,7 +1,8 @@
 {
   "moduleName": "vService",
   "path": "gFramework/nService/vService",
-  "kind": "framework",
+  "kind": "publish",
+  "moduleType": "publish",
   "package": {
     "index": "1.5.0",
     "type": "publish",

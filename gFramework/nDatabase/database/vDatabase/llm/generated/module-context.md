@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `vDatabase` |
 | Path | `gFramework/nDatabase/database/vDatabase` |
-| Kind | `framework` |
+| Kind | `publish` |
+| Module Type | `publish` |
 | Index | `1.3.0.0` |
-| Type | `publish` |
+| Legacy Type | `publish` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to vDatabase |
 

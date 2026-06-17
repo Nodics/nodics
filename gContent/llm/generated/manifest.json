@@ -1,7 +1,8 @@
 {
   "moduleName": "gContent",
   "path": "gContent",
-  "kind": "capability",
+  "kind": "group",
+  "moduleType": "group",
   "package": {
     "index": "50.99",
     "type": "core",

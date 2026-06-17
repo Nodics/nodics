@@ -1,7 +1,8 @@
 {
   "moduleName": "otp",
   "path": "gFramework/nOtp",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "router",
   "package": {
     "index": "1.21",
     "type": "router",

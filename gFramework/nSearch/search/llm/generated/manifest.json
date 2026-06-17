@@ -1,7 +1,8 @@
 {
   "moduleName": "search",
   "path": "gFramework/nSearch/search",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "router",
   "package": {
     "index": "1.14.0",
     "type": "router",

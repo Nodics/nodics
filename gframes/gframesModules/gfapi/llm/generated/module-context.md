@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `gfapi` |
 | Path | `gframes/gframesModules/gfapi` |
-| Kind | `application-module` |
+| Kind | `capability` |
+| Module Type | `router` |
 | Index | `2000.1.20` |
-| Type | `router` |
+| Legacy Type | `router` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to gfapi |
 

@@ -1,7 +1,8 @@
 {
   "moduleName": "emsClient",
   "path": "gFramework/nEms/emsClient",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "router",
   "package": {
     "index": "1.18.0",
     "type": "router",

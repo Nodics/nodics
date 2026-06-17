@@ -1,7 +1,8 @@
 {
   "moduleName": "validator",
   "path": "gFramework/nValidator",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "router",
   "package": {
     "index": "1.12",
     "type": "router",

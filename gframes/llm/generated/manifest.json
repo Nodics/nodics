@@ -2,6 +2,7 @@
   "moduleName": "gframes",
   "path": "gframes",
   "kind": "application",
+  "moduleType": "application",
   "package": {
     "index": "2000.99",
     "type": "appGroup",

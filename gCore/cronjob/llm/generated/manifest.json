@@ -1,7 +1,8 @@
 {
   "moduleName": "cronjob",
   "path": "gCore/cronjob",
-  "kind": "core",
+  "kind": "capability",
+  "moduleType": "router",
   "package": {
     "index": "5.25",
     "type": "router",

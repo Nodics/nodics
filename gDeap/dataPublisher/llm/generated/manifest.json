@@ -2,6 +2,7 @@
   "moduleName": "dataPublisher",
   "path": "gDeap/dataPublisher",
   "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "400.20",
     "type": "core",

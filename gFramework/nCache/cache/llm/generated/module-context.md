@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `cache` |
 | Path | `gFramework/nCache/cache` |
-| Kind | `framework` |
+| Kind | `capability` |
+| Module Type | `core` |
 | Index | `1.8.0` |
-| Type | `core` |
+| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to cache |
 

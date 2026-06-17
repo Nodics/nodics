@@ -1,7 +1,8 @@
 {
   "moduleName": "workflow",
   "path": "gCore/workflow",
-  "kind": "core",
+  "kind": "capability",
+  "moduleType": "router",
   "package": {
     "index": "5.30.99",
     "type": "router",

@@ -1,7 +1,8 @@
 {
   "moduleName": "gframesModules",
   "path": "gframes/gframesModules",
-  "kind": "application",
+  "kind": "group",
+  "moduleType": "group",
   "package": {
     "index": "2000.1.99",
     "type": "core",

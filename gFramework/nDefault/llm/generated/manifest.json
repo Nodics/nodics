@@ -1,7 +1,8 @@
 {
   "moduleName": "default",
   "path": "gFramework/nDefault",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.0",
     "type": "core",

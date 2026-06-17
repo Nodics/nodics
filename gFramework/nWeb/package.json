@@ -16,5 +16,21 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics"
     },
-    "dependencies": {}
+    "dependencies": {},
+    "nodics": {
+        "kind": "web",
+        "moduleType": "web",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "configuration",
+            "schema",
+            "router",
+            "service",
+            "pipeline",
+            "utility",
+            "test",
+            "llm"
+        ]
+    }
 }

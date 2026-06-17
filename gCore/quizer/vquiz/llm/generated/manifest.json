@@ -1,7 +1,8 @@
 {
   "moduleName": "vquiz",
   "path": "gCore/quizer/vquiz",
-  "kind": "core",
+  "kind": "publish",
+  "moduleType": "publish",
   "package": {
     "index": "5.35.50",
     "type": "publish",

@@ -9,8 +9,9 @@
 | Module | `cres` |
 | Path | `gMrkty/cres` |
 | Kind | `capability` |
+| Module Type | `router` |
 | Index | `300.50` |
-| Type | `router` |
+| Legacy Type | `router` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to customer review system |
 

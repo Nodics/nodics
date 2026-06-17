@@ -2,6 +2,7 @@
   "moduleName": "order",
   "path": "gComm/order",
   "kind": "capability",
+  "moduleType": "router",
   "package": {
     "index": "40.6",
     "type": "router",

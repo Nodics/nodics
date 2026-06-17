@@ -2,6 +2,7 @@
   "moduleName": "cms",
   "path": "gContent/cms",
   "kind": "capability",
+  "moduleType": "router",
   "package": {
     "index": "50.20",
     "type": "router",

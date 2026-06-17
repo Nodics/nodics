@@ -1,7 +1,8 @@
 {
   "moduleName": "jsonImport",
   "path": "gFramework/nData/nImport/jsonImport",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.17.5.5",
     "type": "core",

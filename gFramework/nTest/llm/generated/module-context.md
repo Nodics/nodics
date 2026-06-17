@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `nTest` |
 | Path | `gFramework/nTest` |
-| Kind | `framework` |
+| Kind | `capability` |
+| Module Type | `core` |
 | Index | `1.19` |
-| Type | `core` |
+| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Generate test scripts for all generated layers for application |
 

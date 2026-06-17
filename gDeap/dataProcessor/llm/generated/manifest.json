@@ -2,6 +2,7 @@
   "moduleName": "dataProcessor",
   "path": "gDeap/dataProcessor",
   "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "400.1",
     "type": "core",

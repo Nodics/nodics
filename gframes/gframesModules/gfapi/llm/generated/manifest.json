@@ -1,7 +1,8 @@
 {
   "moduleName": "gfapi",
   "path": "gframes/gframesModules/gfapi",
-  "kind": "application-module",
+  "kind": "capability",
+  "moduleType": "router",
   "package": {
     "index": "2000.1.20",
     "type": "router",

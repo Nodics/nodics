@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `dynamo` |
 | Path | `gFramework/nDynamo` |
-| Kind | `framework` |
+| Kind | `capability` |
+| Module Type | `router` |
 | Index | `1.80` |
-| Type | `router` |
+| Legacy Type | `router` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to dynamo |
 

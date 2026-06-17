@@ -2,6 +2,7 @@
   "moduleName": "kickoffProdServer",
   "path": "kickoff/kickoffEnvs/kickoffProd/kickoffProdServer",
   "kind": "server",
+  "moduleType": "server",
   "package": {
     "index": "1000.10.25.1",
     "type": "core",

@@ -19,5 +19,17 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics.git"
     },
-    "dependencies": {}
+    "dependencies": {},
+    "nodics": {
+        "kind": "capability",
+        "moduleType": "core",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "configuration",
+            "facade",
+            "utility",
+            "llm"
+        ]
+    }
 }

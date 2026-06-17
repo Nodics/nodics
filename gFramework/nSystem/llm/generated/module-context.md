@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `system` |
 | Path | `gFramework/nSystem` |
-| Kind | `framework` |
+| Kind | `capability` |
+| Module Type | `router` |
 | Index | `1.20` |
-| Type | `router` |
+| Legacy Type | `router` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. It will hold all configuration and system point to start nodics |
 

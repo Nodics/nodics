@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `publish` |
 | Path | `gFramework/nPublish` |
-| Kind | `framework` |
+| Kind | `publish` |
+| Module Type | `publish` |
 | Index | `1.30` |
-| Type | `publish` |
+| Legacy Type | `publish` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to publish |
 

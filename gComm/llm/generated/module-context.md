@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `gComm` |
 | Path | `gComm` |
-| Kind | `capability` |
+| Kind | `group` |
+| Module Type | `group` |
 | Index | `40.99` |
-| Type | `group` |
+| Legacy Type | `group` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to gComm |
 

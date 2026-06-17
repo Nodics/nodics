@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `nEms` |
 | Path | `gFramework/nEms` |
-| Kind | `framework` |
+| Kind | `group` |
+| Module Type | `group` |
 | Index | `1.18.99` |
-| Type | `group` |
+| Legacy Type | `group` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. It will hold all configuration and nEms point to start nodics |
 

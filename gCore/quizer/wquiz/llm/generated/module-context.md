@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `wquiz` |
 | Path | `gCore/quizer/wquiz` |
-| Kind | `core` |
+| Kind | `capability` |
+| Module Type | `core` |
 | Index | `5.35.20` |
-| Type | `core` |
+| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to quizWorkflow |
 

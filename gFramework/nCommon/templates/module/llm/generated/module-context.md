@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `customApplication` |
 | Path | `gFramework/nCommon/templates/module` |
-| Kind | `module-template` |
+| Kind | `template` |
+| Module Type | `template` |
 | Index | `$index` |
-| Type | `core` |
+| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to customApplication |
 

@@ -18,5 +18,17 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics"
     },
-    "dependencies": {}
+    "dependencies": {},
+    "nodics": {
+        "kind": "environment",
+        "moduleType": "environment",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "composition",
+            "configuration",
+            "llm"
+        ],
+        "description": "Environment module that contributes environment-level configuration and topology."
+    }
 }

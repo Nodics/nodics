@@ -2,6 +2,7 @@
   "moduleName": "kickoffDevCronServer",
   "path": "kickoff/kickoffEnvs/kickoffDev/kickoffDevCronServer",
   "kind": "server",
+  "moduleType": "server",
   "package": {
     "index": "1000.10.10.2",
     "type": "core",

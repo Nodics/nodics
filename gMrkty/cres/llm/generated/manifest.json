@@ -2,6 +2,7 @@
   "moduleName": "cres",
   "path": "gMrkty/cres",
   "kind": "capability",
+  "moduleType": "router",
   "package": {
     "index": "300.50",
     "type": "router",

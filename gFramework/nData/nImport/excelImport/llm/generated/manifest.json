@@ -1,7 +1,8 @@
 {
   "moduleName": "excelImport",
   "path": "gFramework/nData/nImport/excelImport",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.17.5.15",
     "type": "core",

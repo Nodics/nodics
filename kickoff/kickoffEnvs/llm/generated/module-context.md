@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `kickoffEnvs` |
 | Path | `kickoff/kickoffEnvs` |
-| Kind | `application` |
+| Kind | `group` |
+| Module Type | `group` |
 | Index | `1000.10.99` |
-| Type | `core` |
+| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to kickoffEnvs |
 

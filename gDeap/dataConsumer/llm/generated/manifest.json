@@ -2,6 +2,7 @@
   "moduleName": "dataConsumer",
   "path": "gDeap/dataConsumer",
   "kind": "capability",
+  "moduleType": "router",
   "package": {
     "index": "400.10",
     "type": "router",

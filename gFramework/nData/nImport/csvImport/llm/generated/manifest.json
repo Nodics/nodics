@@ -1,7 +1,8 @@
 {
   "moduleName": "csvImport",
   "path": "gFramework/nData/nImport/csvImport",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.17.5.10",
     "type": "core",

@@ -2,6 +2,7 @@
   "moduleName": "cart",
   "path": "gComm/cart",
   "kind": "capability",
+  "moduleType": "router",
   "package": {
     "index": "40.5",
     "type": "router",

@@ -1,7 +1,8 @@
 {
   "moduleName": "nTest",
   "path": "gFramework/nTest",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.19",
     "type": "core",

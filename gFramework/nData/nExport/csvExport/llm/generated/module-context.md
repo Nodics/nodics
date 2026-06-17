@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `csvExport` |
 | Path | `gFramework/nData/nExport/csvExport` |
-| Kind | `framework` |
+| Kind | `capability` |
+| Module Type | `core` |
 | Index | `1.17.10.10` |
-| Type | `core` |
+| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to csvExport |
 

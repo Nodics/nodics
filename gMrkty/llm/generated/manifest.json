@@ -1,7 +1,8 @@
 {
   "moduleName": "gMrkty",
   "path": "gMrkty",
-  "kind": "capability",
+  "kind": "group",
+  "moduleType": "group",
   "package": {
     "index": "300.99",
     "type": "core",

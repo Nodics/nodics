@@ -2,6 +2,7 @@
   "moduleName": "kickoffLocalCmsServer",
   "path": "kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCmsServer",
   "kind": "server",
+  "moduleType": "server",
   "package": {
     "index": "1000.10.1.7",
     "type": "core",

@@ -1,7 +1,8 @@
 {
   "moduleName": "kyc",
   "path": "gOpt/kyc",
-  "kind": "capability",
+  "kind": "group",
+  "moduleType": "group",
   "package": {
     "index": "500.50.99",
     "type": "core",

@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `cronjob` |
 | Path | `gCore/cronjob` |
-| Kind | `core` |
+| Kind | `capability` |
+| Module Type | `router` |
 | Index | `5.25` |
-| Type | `router` |
+| Legacy Type | `router` |
 | Version | `0.0.1` |
 | Description | Module cronJob, handle schedulled execution process |
 

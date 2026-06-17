@@ -1,7 +1,8 @@
 {
   "moduleName": "nDatabase",
   "path": "gFramework/nDatabase",
-  "kind": "framework",
+  "kind": "group",
+  "moduleType": "group",
   "package": {
     "index": "1.3.99",
     "type": "group",

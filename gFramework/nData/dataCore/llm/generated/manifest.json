@@ -1,7 +1,8 @@
 {
   "moduleName": "dataCore",
   "path": "gFramework/nData/dataCore",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.17.0",
     "type": "core",

@@ -2,6 +2,7 @@
   "moduleName": "wcms",
   "path": "gContent/wcms",
   "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "50.25",
     "type": "core",

@@ -1,7 +1,8 @@
 {
   "moduleName": "nImport",
   "path": "gFramework/nData/nImport",
-  "kind": "framework",
+  "kind": "group",
+  "moduleType": "group",
   "package": {
     "index": "1.17.5.99",
     "type": "group",

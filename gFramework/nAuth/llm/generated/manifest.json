@@ -1,7 +1,8 @@
 {
   "moduleName": "auth",
   "path": "gFramework/nAuth",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.13",
     "type": "core",

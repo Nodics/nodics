@@ -2,6 +2,7 @@
   "moduleName": "kickoffProd",
   "path": "kickoff/kickoffEnvs/kickoffProd",
   "kind": "environment",
+  "moduleType": "environment",
   "package": {
     "index": "1000.10.25",
     "type": "core",

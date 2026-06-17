@@ -1,7 +1,8 @@
 {
   "moduleName": "jsExport",
   "path": "gFramework/nData/nExport/jsExport",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.17.10.1",
     "type": "core",

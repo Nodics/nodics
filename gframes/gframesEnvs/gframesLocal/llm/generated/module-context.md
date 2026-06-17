@@ -9,8 +9,9 @@
 | Module | `gframesLocal` |
 | Path | `gframes/gframesEnvs/gframesLocal` |
 | Kind | `environment` |
+| Module Type | `environment` |
 | Index | `2000.10.1.1` |
-| Type | `core` |
+| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to gframesLocal |
 

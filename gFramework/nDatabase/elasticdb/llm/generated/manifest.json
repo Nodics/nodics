@@ -1,7 +1,8 @@
 {
   "moduleName": "elasticdb",
   "path": "gFramework/nDatabase/elasticdb",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.3.30",
     "type": "core",

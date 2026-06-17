@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `vquiz` |
 | Path | `gCore/quizer/vquiz` |
-| Kind | `core` |
+| Kind | `publish` |
+| Module Type | `publish` |
 | Index | `5.35.50` |
-| Type | `publish` |
+| Legacy Type | `publish` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to vquiz |
 

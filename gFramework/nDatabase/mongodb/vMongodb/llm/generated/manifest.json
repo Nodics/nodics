@@ -1,7 +1,8 @@
 {
   "moduleName": "vMongodb",
   "path": "gFramework/nDatabase/mongodb/vMongodb",
-  "kind": "framework",
+  "kind": "publish",
+  "moduleType": "publish",
   "package": {
     "index": "1.3.10.0",
     "type": "publish",

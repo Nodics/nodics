@@ -9,8 +9,9 @@
 | Module | `kycApi` |
 | Path | `gOpt/kyc/kycApi` |
 | Kind | `capability` |
+| Module Type | `router` |
 | Index | `500.50.10` |
-| Type | `router` |
+| Legacy Type | `router` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to customer kycApi |
 

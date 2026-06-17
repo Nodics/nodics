@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `router` |
 | Path | `gFramework/nRouter` |
-| Kind | `framework` |
+| Kind | `capability` |
+| Module Type | `core` |
 | Index | `1.11` |
-| Type | `core` |
+| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Register routers for all defined items |
 

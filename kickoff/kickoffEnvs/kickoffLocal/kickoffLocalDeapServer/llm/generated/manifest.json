@@ -2,6 +2,7 @@
   "moduleName": "kickoffLocalDeapServer",
   "path": "kickoff/kickoffEnvs/kickoffLocal/kickoffLocalDeapServer",
   "kind": "server",
+  "moduleType": "server",
   "package": {
     "index": "1000.10.1.3",
     "type": "core",

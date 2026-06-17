@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `nWeb` |
 | Path | `gFramework/nWeb` |
-| Kind | `framework` |
+| Kind | `web` |
+| Module Type | `web` |
 | Index | `1.14` |
-| Type | `web` |
+| Legacy Type | `web` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to nWeb |
 

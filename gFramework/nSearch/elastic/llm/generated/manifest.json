@@ -1,7 +1,8 @@
 {
   "moduleName": "elastic",
   "path": "gFramework/nSearch/elastic",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.14.5",
     "type": "core",

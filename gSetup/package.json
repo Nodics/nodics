@@ -21,7 +21,13 @@
         "loadableByNodicsModuleLoader": false,
         "entrypoints": {
             "llm": "llm/README.md"
-        }
+        },
+        "kind": "setup",
+        "moduleType": "setup",
+        "owns": [
+            "llm"
+        ],
+        "description": "Global LLM and setup guidance package, not loaded by the Nodics runtime module loader."
     },
     "scripts": {},
     "dependencies": {}

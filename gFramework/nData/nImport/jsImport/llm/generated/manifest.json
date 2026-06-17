@@ -1,7 +1,8 @@
 {
   "moduleName": "jsImport",
   "path": "gFramework/nData/nImport/jsImport",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.17.5.1",
     "type": "core",

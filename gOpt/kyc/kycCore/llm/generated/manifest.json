@@ -2,6 +2,7 @@
   "moduleName": "kycCore",
   "path": "gOpt/kyc/kycCore",
   "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "500.50.5",
     "type": "core",

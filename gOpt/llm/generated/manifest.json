@@ -1,7 +1,8 @@
 {
   "moduleName": "gOpt",
   "path": "gOpt",
-  "kind": "capability",
+  "kind": "group",
+  "moduleType": "group",
   "package": {
     "index": "500.99",
     "type": "core",

@@ -1,7 +1,8 @@
 {
   "moduleName": "customApplication",
   "path": "gFramework/nCommon/templates/app",
-  "kind": "module-template",
+  "kind": "template",
+  "moduleType": "template",
   "package": {
     "index": "$index",
     "type": "core",

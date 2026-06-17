@@ -1,7 +1,8 @@
 {
   "moduleName": "excelExport",
   "path": "gFramework/nData/nExport/excelExport",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.17.10.15",
     "type": "core",

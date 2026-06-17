@@ -2,6 +2,7 @@
   "moduleName": "kycSchema",
   "path": "gOpt/kyc/kycSchema",
   "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "500.50.3",
     "type": "core",

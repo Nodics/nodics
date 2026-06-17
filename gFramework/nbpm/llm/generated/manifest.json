@@ -1,7 +1,8 @@
 {
   "moduleName": "bpm",
   "path": "gFramework/nbpm",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.40",
     "type": "core",

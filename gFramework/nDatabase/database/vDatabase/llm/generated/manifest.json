@@ -1,7 +1,8 @@
 {
   "moduleName": "vDatabase",
   "path": "gFramework/nDatabase/database/vDatabase",
-  "kind": "framework",
+  "kind": "publish",
+  "moduleType": "publish",
   "package": {
     "index": "1.3.0.0",
     "type": "publish",

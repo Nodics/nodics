@@ -1,7 +1,8 @@
 {
   "moduleName": "redisCache",
   "path": "gFramework/nCache/redisCache",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.8.2",
     "type": "core",

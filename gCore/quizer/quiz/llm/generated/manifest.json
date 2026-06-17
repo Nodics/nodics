@@ -1,7 +1,8 @@
 {
   "moduleName": "quiz",
   "path": "gCore/quizer/quiz",
-  "kind": "core",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "5.35.10",
     "type": "core",

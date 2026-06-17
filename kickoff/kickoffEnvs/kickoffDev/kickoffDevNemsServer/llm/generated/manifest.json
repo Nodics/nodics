@@ -2,6 +2,7 @@
   "moduleName": "kickoffDevNemsServer",
   "path": "kickoff/kickoffEnvs/kickoffDev/kickoffDevNemsServer",
   "kind": "server",
+  "moduleType": "server",
   "package": {
     "index": "1000.10.10.5",
     "type": "core",

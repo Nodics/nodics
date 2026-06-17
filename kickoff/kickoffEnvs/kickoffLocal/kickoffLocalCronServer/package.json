@@ -16,5 +16,23 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics"
     },
-    "dependencies": {}
+    "dependencies": {},
+    "nodics": {
+        "kind": "server",
+        "moduleType": "server",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "composition",
+            "configuration",
+            "schema",
+            "router",
+            "service",
+            "pipeline",
+            "utility",
+            "test",
+            "llm"
+        ],
+        "description": "Server module that contributes server-level configuration and startup topology."
+    }
 }

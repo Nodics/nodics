@@ -16,5 +16,23 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics"
     },
-    "dependencies": {}
+    "dependencies": {},
+    "nodics": {
+        "kind": "group",
+        "moduleType": "group",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "composition",
+            "configuration",
+            "schema",
+            "router",
+            "service",
+            "pipeline",
+            "utility",
+            "test",
+            "llm"
+        ],
+        "description": "Container module that composes child modules and may contribute shared configuration."
+    }
 }

@@ -1,7 +1,8 @@
 {
   "moduleName": "nWeb",
   "path": "gFramework/nWeb",
-  "kind": "framework",
+  "kind": "web",
+  "moduleType": "web",
   "package": {
     "index": "1.14",
     "type": "web",

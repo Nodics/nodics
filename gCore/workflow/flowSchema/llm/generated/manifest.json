@@ -1,7 +1,8 @@
 {
   "moduleName": "flowSchema",
   "path": "gCore/workflow/flowSchema",
-  "kind": "core",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "5.30.1",
     "type": "core",

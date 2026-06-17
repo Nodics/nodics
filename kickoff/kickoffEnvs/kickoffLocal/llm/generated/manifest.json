@@ -2,6 +2,7 @@
   "moduleName": "kickoffLocal",
   "path": "kickoff/kickoffEnvs/kickoffLocal",
   "kind": "environment",
+  "moduleType": "environment",
   "package": {
     "index": "1000.10.1",
     "type": "core",

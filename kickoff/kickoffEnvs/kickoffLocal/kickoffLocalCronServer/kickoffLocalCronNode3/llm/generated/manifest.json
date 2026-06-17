@@ -2,6 +2,7 @@
   "moduleName": "kickoffLocalCronNode3",
   "path": "kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode3",
   "kind": "node",
+  "moduleType": "node",
   "package": {
     "index": "1000.10.1.2.3",
     "type": "core",

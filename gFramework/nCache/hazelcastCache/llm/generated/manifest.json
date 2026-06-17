@@ -1,7 +1,8 @@
 {
   "moduleName": "hazelcastCache",
   "path": "gFramework/nCache/hazelcastCache",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.8.3",
     "type": "core",

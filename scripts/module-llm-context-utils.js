@@ -175,9 +175,13 @@ function listFeatureFolders(modulePath) {
 }
 
 function getModuleKind(module) {
+    if (module.packageJson && module.packageJson.nodics && module.packageJson.nodics.kind) {
+        return module.packageJson.nodics.kind;
+    }
+
     let relativePath = module.relativePath;
     if (relativePath === 'gSetup') {
-        return 'llm-setup';
+        return 'setup';
     }
     if (relativePath.includes('/kickoffEnvs/') || relativePath.includes('/gframesEnvs/')) {
         if (/Node\d+$/.test(module.name)) {
@@ -189,21 +193,28 @@ function getModuleKind(module) {
         return 'environment';
     }
     if (relativePath.includes('/kickoffModules/') || relativePath.includes('/gframesModules/')) {
-        return 'application-module';
+        return 'capability';
     }
     if (relativePath.startsWith('kickoff') || relativePath.startsWith('gframes')) {
         return 'application';
     }
     if (relativePath.includes('/templates/')) {
-        return 'module-template';
+        return 'template';
     }
     if (relativePath.startsWith('gFramework')) {
-        return 'framework';
+        return 'capability';
     }
     if (relativePath.startsWith('gCore')) {
-        return 'core';
+        return 'capability';
     }
     return 'capability';
+}
+
+function getModuleType(module) {
+    if (module.packageJson && module.packageJson.nodics && module.packageJson.nodics.moduleType) {
+        return module.packageJson.nodics.moduleType;
+    }
+    return module.type || 'core';
 }
 
 module.exports = {
@@ -214,6 +225,7 @@ module.exports = {
     collectFiles,
     getRelativeIfExists,
     getModuleKind,
+    getModuleType,
     listFeatureFolders,
     loadLocalSchemas,
     scanModules,

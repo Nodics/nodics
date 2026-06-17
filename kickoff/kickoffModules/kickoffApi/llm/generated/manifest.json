@@ -1,7 +1,8 @@
 {
   "moduleName": "kickoffApi",
   "path": "kickoff/kickoffModules/kickoffApi",
-  "kind": "application-module",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1000.1.15",
     "type": "core",

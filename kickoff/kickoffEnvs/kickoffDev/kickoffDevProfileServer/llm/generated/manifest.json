@@ -2,6 +2,7 @@
   "moduleName": "kickoffDevProfileServer",
   "path": "kickoff/kickoffEnvs/kickoffDev/kickoffDevProfileServer",
   "kind": "server",
+  "moduleType": "server",
   "package": {
     "index": "1000.10.10.6",
     "type": "core",

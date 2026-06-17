@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `cassandradb` |
 | Path | `gFramework/nDatabase/cassandradb` |
-| Kind | `framework` |
+| Kind | `capability` |
+| Module Type | `core` |
 | Index | `1.3.20` |
-| Type | `core` |
+| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to cassandradb |
 

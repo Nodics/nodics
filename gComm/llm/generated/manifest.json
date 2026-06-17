@@ -1,7 +1,8 @@
 {
   "moduleName": "gComm",
   "path": "gComm",
-  "kind": "capability",
+  "kind": "group",
+  "moduleType": "group",
   "package": {
     "index": "40.99",
     "type": "group",

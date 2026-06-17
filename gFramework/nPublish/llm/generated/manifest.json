@@ -1,7 +1,8 @@
 {
   "moduleName": "publish",
   "path": "gFramework/nPublish",
-  "kind": "framework",
+  "kind": "publish",
+  "moduleType": "publish",
   "package": {
     "index": "1.30",
     "type": "publish",

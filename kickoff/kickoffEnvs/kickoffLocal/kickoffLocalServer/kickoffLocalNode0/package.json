@@ -16,5 +16,23 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics"
     },
-    "dependencies": {}
+    "dependencies": {},
+    "nodics": {
+        "kind": "node",
+        "moduleType": "node",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "configuration",
+            "schema",
+            "router",
+            "service",
+            "pipeline",
+            "interceptor",
+            "utility",
+            "test",
+            "llm"
+        ],
+        "description": "Node module that contributes node-level configuration for distributed deployment."
+    }
 }

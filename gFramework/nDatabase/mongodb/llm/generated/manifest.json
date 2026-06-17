@@ -1,7 +1,8 @@
 {
   "moduleName": "mongodb",
   "path": "gFramework/nDatabase/mongodb",
-  "kind": "framework",
+  "kind": "group",
+  "moduleType": "group",
   "package": {
     "index": "1.3.10",
     "type": "core",

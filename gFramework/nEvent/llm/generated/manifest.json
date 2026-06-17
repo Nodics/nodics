@@ -1,7 +1,8 @@
 {
   "moduleName": "event",
   "path": "gFramework/nEvent",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.7",
     "type": "core",

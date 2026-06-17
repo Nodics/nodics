@@ -8,9 +8,10 @@
 | --- | --- |
 | Module | `nCommon` |
 | Path | `gFramework/nCommon` |
-| Kind | `framework` |
+| Kind | `capability` |
+| Module Type | `core` |
 | Index | `1.2` |
-| Type | `core` |
+| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Build common functionalities for Nodics |
 

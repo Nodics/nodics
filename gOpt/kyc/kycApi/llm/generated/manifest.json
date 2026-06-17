@@ -2,6 +2,7 @@
   "moduleName": "kycApi",
   "path": "gOpt/kyc/kycApi",
   "kind": "capability",
+  "moduleType": "router",
   "package": {
     "index": "500.50.10",
     "type": "router",

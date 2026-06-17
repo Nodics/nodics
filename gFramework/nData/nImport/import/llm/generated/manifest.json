@@ -1,7 +1,8 @@
 {
   "moduleName": "import",
   "path": "gFramework/nData/nImport/import",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "core",
   "package": {
     "index": "1.17.5.0",
     "type": "core",

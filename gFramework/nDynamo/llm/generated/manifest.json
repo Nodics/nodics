@@ -1,7 +1,8 @@
 {
   "moduleName": "dynamo",
   "path": "gFramework/nDynamo",
-  "kind": "framework",
+  "kind": "capability",
+  "moduleType": "router",
   "package": {
     "index": "1.80",
     "type": "router",

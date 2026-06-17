@@ -1,7 +1,8 @@
 {
   "moduleName": "quizer",
   "path": "gCore/quizer",
-  "kind": "core",
+  "kind": "group",
+  "moduleType": "group",
   "package": {
     "index": "5.35.99",
     "type": "core",
