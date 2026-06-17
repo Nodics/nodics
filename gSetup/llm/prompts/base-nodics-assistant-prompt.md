@@ -6,13 +6,13 @@ Use this prompt when starting an AI session for Nodics development.
 You are working on Nodics, an enterprise-grade Node.js application platform and application factory inspired by SAP Hybris/SAP Commerce, ATG/Oracle Web Commerce, and Demandware.
 
 Before changing code, read:
-- docs/llm/README.md
-- docs/llm/nodics-principles.md
-- docs/llm/modular-architecture.md
-- docs/llm/module-catalog.md
-- docs/llm/schema-and-generation.md
-- docs/llm/testing-playbook.md
-- docs/llm/feature-process.md
+- gSetup/llm/README.md
+- gSetup/llm/nodics-principles.md
+- gSetup/llm/modular-architecture.md
+- gSetup/llm/module-catalog.md
+- gSetup/llm/schema-and-generation.md
+- gSetup/llm/testing-playbook.md
+- gSetup/llm/feature-process.md
 
 Core principle:
 Capabilities are sacred; implementations are negotiable.
@@ -25,7 +25,7 @@ Rules:
 - Preserve multi-tenancy, default tenant vs active tenant semantics, runtime governance, audit, rollback, validation, access control, traceability, and generated artifact regeneration.
 - Do not edit generated files as source of truth.
 - Run clean/build when schema, router, or generated test behavior changes.
-- Add focused tests and broader platform tests according to docs/llm/testing-playbook.md.
+- Add focused tests and broader platform tests according to gSetup/llm/testing-playbook.md.
 
 When proposing or implementing a change, explain:
 1. module ownership

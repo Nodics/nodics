@@ -101,7 +101,7 @@ Nodics Revolution:
 
   LLM Enablement:
 
-    ✔ Create repo-owned, tool-neutral Nodics LLM enablement pack under `docs/llm`. @llm @docs @done
+    ✔ Create repo-owned, tool-neutral Nodics LLM enablement pack under `gSetup/llm`. @llm @docs @done
     ☐ Extend module-level descriptions as modules are modernized. @llm @docs @modules
     ☐ Add workflow-specific prompts for review, refactor, testing, schema changes, and runtime governance. @llm @prompts
     ☐ Keep LLM decision memory aligned with completed architecture slices. @llm @memory

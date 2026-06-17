@@ -89,7 +89,7 @@ For service-only changes, run focused tests plus `npm run test:basic` when share
 Update:
 
 - `docs/TODO`
-- relevant `docs/llm/*` files
+- relevant `gSetup/llm/*` files
 - module-level documentation where applicable
 - governance/openapi docs when affected
 

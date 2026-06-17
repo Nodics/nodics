@@ -9,7 +9,7 @@ Use this pack before making architectural recommendations, code changes, tests, 
 Start every AI-assisted Nodics session with:
 
 ```text
-Read docs/llm/README.md first, then follow the linked Nodics architecture, layering, schema, generation, testing, and feature-process rules before changing code.
+Read gSetup/llm/README.md first, then follow the linked Nodics architecture, layering, schema, generation, testing, and feature-process rules before changing code.
 ```
 
 Recommended reading order:
@@ -44,7 +44,7 @@ Every feature must preserve layered customization, multi-tenancy, runtime govern
 ## Important Boundaries
 
 - Do not hardcode project names such as `kickoff` in framework behavior.
-- Do not place generated files under `docs/llm`.
+- Do not place generated files under `gSetup/llm`.
 - Do not make AI guidance specific to one AI vendor.
 - Do not bypass Nodics loaders, schema generation, service/facade/controller/router layers, tenant context, or runtime governance.
 - Do not remove existing capabilities just because they are complex.
