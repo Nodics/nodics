@@ -2,7 +2,9 @@ Being an extremely interactive JS based enterprise API management framework, Nod
 
 ## gSetup
 
-`gSetup` is the Nodics setup and onboarding package. It is module-like by repository convention, but it is not part of Nodics runtime startup and must not be included in active server, node, or module startup lists.
+`gSetup` is the Nodics setup and onboarding package. It follows the standard Nodics module folder shape with `package.json`, `nodics.js`, and `readme.md`, but it is not part of Nodics runtime startup and must not be included in active server, node, or module startup lists.
+
+The `gSetup/package.json` file marks it as non-runtime with `runtimeModule: false`, so the module discovery process skips it while developers still see a familiar Nodics folder structure.
 
 Use `gSetup` for durable setup instructions, AI/LLM onboarding context, prompts, decision memory, and project working rules. It should not contain generated artifacts.
 

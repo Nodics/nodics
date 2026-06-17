@@ -1,0 +1,28 @@
+{
+    "name": "gSetup",
+    "index": "0.5",
+    "type": "setup",
+    "runtimeModule": false,
+    "description": "Nodics setup, onboarding, and instruction package. This folder is module-like for standard repository organization but is excluded from runtime startup.",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "Nodics",
+        "setup",
+        "llm",
+        "onboarding"
+    ],
+    "author": "Nodics Framework <nodics.framework@gmail.com>",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL-3.0-or-later",
+    "nodics": {
+        "runtimeModule": false,
+        "loadableByNodicsModuleLoader": false,
+        "entrypoints": {
+            "llm": "llm/README.md"
+        }
+    },
+    "scripts": {},
+    "dependencies": {}
+}

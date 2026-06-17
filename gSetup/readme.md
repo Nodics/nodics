@@ -4,14 +4,29 @@
 
 It intentionally looks like a first-class Nodics top-level area, but it is **not** part of Nodics runtime module loading.
 
-`gSetup` must not include a `package.json` unless the project intentionally decides to promote it into the active module hierarchy with a formal startup contract. Today it is a setup/instruction package, not a runtime module.
+`gSetup` includes the standard module-shaped files `package.json`, `nodics.js`, and `readme.md` so developers recognize it as a first-class Nodics repository area.
+
+It is excluded from runtime startup by `package.json` metadata:
+
+```json
+{
+    "runtimeModule": false,
+    "nodics": {
+        "runtimeModule": false,
+        "loadableByNodicsModuleLoader": false
+    }
+}
+```
+
+Today it is a setup/instruction package, not a runtime module.
 
 This folder is intended for project-wide enablement material that should survive beyond temporary refactoring notes. It is not a generated artifact folder and should not be removed by clean/build.
 
 Current contents:
 
 - `llm/`: tool-neutral context, prompts, decision memory, examples, and working rules for AI-assisted Nodics development.
-- `manifest.json`: machine-readable setup package metadata.
+- `package.json`: machine-readable setup package metadata with runtime loading disabled.
+- `nodics.js`: no-op lifecycle file retained only for module-shape consistency.
 
 ## LLM Bootstrap
 
@@ -32,3 +47,5 @@ Do not add runtime module behavior here unless `gSetup` is intentionally promote
 Do not include `gSetup` in server/module startup lists.
 
 Do not place generated build artifacts in `gSetup`.
+
+The config module has a test that protects this rule: `gFramework/nConfig/test/nonRuntimePackageDiscovery.test.js`.

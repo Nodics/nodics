@@ -98,15 +98,17 @@ module.exports = {
         let metaDataPath = path.join(folder, 'package.json');
         if (fs.existsSync(metaDataPath)) {
             let metaData = require(metaDataPath);
-            modulesList[metaData.name] = {
-                name: metaData.name,
-                path: folder,
-                index: metaData.index,
-                parent: parent,
-                metaData: metaData
-            };
-            moduleName = metaData.name;
-            parent = metaData.name;
+            if (this.isRuntimeModule(metaData)) {
+                modulesList[metaData.name] = {
+                    name: metaData.name,
+                    path: folder,
+                    index: metaData.index,
+                    parent: parent,
+                    metaData: metaData
+                };
+                moduleName = metaData.name;
+                parent = metaData.name;
+            }
         }
         let modules = [];
         for (let subFolder of this.subFolders(folder)) {
@@ -120,6 +122,20 @@ module.exports = {
         }
         return moduleName ? moduleName : null;
     },
+
+    isRuntimeModule: function (metaData) {
+        if (!metaData) {
+            return false;
+        }
+        if (metaData.runtimeModule === false) {
+            return false;
+        }
+        if (metaData.nodics && (metaData.nodics.runtimeModule === false || metaData.nodics.loadableByNodicsModuleLoader === false)) {
+            return false;
+        }
+        return true;
+    },
+
     resolveModuleHiererchy: function (moduleName, modulesList) {
         let moduleObject = modulesList[moduleName];
         let modules = [moduleName];

@@ -37,7 +37,7 @@
         "test:topology:consolidated:report": "node scripts/run-test-suite-with-report.js --suite=topology-consolidated -- npm run test:topology:consolidated",
         "test:topology:modular": "node kickoff/test/topology/kickoffLocalRuntimeTopology.test.js --mode=modular",
         "test:topology:modular:report": "node scripts/run-test-suite-with-report.js --suite=topology-modular -- npm run test:topology:modular",
-        "test:config": "node gFramework/nConfig/test/configurationValidation.test.js",
+        "test:config": "node gFramework/nConfig/test/configurationValidation.test.js && node gFramework/nConfig/test/nonRuntimePackageDiscovery.test.js",
         "test:error-traceability": "node gFramework/nCommon/test/errorTraceability.test.js",
         "test:execution-layer-traceability": "node gFramework/nCommon/test/executionLayerTraceability.test.js",
         "test:auth-headers": "node gFramework/nRouter/test/authHeaderNormalization.test.js",
