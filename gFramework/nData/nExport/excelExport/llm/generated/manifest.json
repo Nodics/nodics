@@ -1,0 +1,17 @@
+{
+  "moduleName": "excelExport",
+  "path": "gFramework/nData/nExport/excelExport",
+  "kind": "framework",
+  "package": {
+    "index": "1.17.10.15",
+    "type": "core",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to excelExport"
+  },
+  "sourceFiles": 5,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

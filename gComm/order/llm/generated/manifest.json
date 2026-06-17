@@ -1,0 +1,25 @@
+{
+  "moduleName": "order",
+  "path": "gComm/order",
+  "kind": "capability",
+  "package": {
+    "index": "40.6",
+    "type": "router",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to order"
+  },
+  "sourceFiles": 11,
+  "testFiles": 16,
+  "dataFiles": 8,
+  "schemaGroups": {
+    "order": [
+      "order",
+      "orderstatus",
+      "paymentstatus",
+      "reasons",
+      "shippingstatus"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

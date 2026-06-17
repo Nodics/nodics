@@ -1,0 +1,17 @@
+{
+  "moduleName": "flowCore",
+  "path": "gCore/workflow/flowCore",
+  "kind": "core",
+  "package": {
+    "index": "5.30.10",
+    "type": "core",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to flowCore"
+  },
+  "sourceFiles": 39,
+  "testFiles": 3,
+  "dataFiles": 32,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

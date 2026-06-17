@@ -35,6 +35,7 @@ Every feature must preserve layered customization, multi-tenancy, runtime govern
 
 - General Nodics framework intent.
 - Module-level responsibilities.
+- Module-owned LLM context conventions and generated module intelligence.
 - Modular and layered architecture concepts.
 - Schema-driven model, service, API, and test generation.
 - Clean/build/generated artifact rules.
@@ -46,6 +47,7 @@ Every feature must preserve layered customization, multi-tenancy, runtime govern
 
 - Do not hardcode project names such as `kickoff` in framework behavior.
 - Do not place generated files under `gSetup/llm`.
+- Keep source-derived module LLM files under each module's `llm/generated` folder.
 - Do not make AI guidance specific to one AI vendor.
 - Do not bypass Nodics loaders, schema generation, service/facade/controller/router layers, tenant context, or runtime governance.
 - Do not remove existing capabilities just because they are complex.

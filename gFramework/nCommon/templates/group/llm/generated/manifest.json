@@ -1,0 +1,17 @@
+{
+  "moduleName": "customApplication",
+  "path": "gFramework/nCommon/templates/group",
+  "kind": "module-template",
+  "package": {
+    "index": "$index",
+    "type": "group",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to customApplication"
+  },
+  "sourceFiles": 0,
+  "testFiles": 0,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

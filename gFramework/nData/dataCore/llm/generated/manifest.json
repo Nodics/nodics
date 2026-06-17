@@ -1,0 +1,17 @@
+{
+  "moduleName": "dataCore",
+  "path": "gFramework/nData/dataCore",
+  "kind": "framework",
+  "package": {
+    "index": "1.17.0",
+    "type": "core",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to dataCore"
+  },
+  "sourceFiles": 14,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

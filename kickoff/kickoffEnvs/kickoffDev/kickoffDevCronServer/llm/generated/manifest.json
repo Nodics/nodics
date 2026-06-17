@@ -1,0 +1,17 @@
+{
+  "moduleName": "kickoffDevCronServer",
+  "path": "kickoff/kickoffEnvs/kickoffDev/kickoffDevCronServer",
+  "kind": "server",
+  "package": {
+    "index": "1000.10.10.2",
+    "type": "core",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to kickoffDevCronServer"
+  },
+  "sourceFiles": 6,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

@@ -95,6 +95,14 @@ Update:
 - module-level documentation where applicable
 - governance/openapi docs when affected
 
+When module schemas, tests, source layout, or ownership metadata changes, run:
+
+```bash
+npm run llm:generate
+```
+
+Generated module LLM context belongs under each module's `llm/generated` folder. Do not manually edit generated module context.
+
 ## 8. Commit Coherent Slices
 
 Commit related changes as one coherent slice.

@@ -1,0 +1,27 @@
+{
+  "moduleName": "cms",
+  "path": "gContent/cms",
+  "kind": "capability",
+  "package": {
+    "index": "50.20",
+    "type": "router",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to cms"
+  },
+  "sourceFiles": 9,
+  "testFiles": 24,
+  "dataFiles": 24,
+  "schemaGroups": {
+    "cms": [
+      "cmsBase",
+      "cmsComponent",
+      "cmsComponentDetail",
+      "cmsPage",
+      "cmsSite",
+      "cmsTypeCode",
+      "cmsTypeCode2Renderer"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

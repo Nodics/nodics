@@ -1,0 +1,17 @@
+{
+  "moduleName": "kycCore",
+  "path": "gOpt/kyc/kycCore",
+  "kind": "capability",
+  "package": {
+    "index": "500.50.5",
+    "type": "core",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer kycCore"
+  },
+  "sourceFiles": 17,
+  "testFiles": 2,
+  "dataFiles": 6,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

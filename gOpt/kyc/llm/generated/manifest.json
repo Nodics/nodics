@@ -1,0 +1,17 @@
+{
+  "moduleName": "kyc",
+  "path": "gOpt/kyc",
+  "kind": "capability",
+  "package": {
+    "index": "500.50.99",
+    "type": "core",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to kyc"
+  },
+  "sourceFiles": 0,
+  "testFiles": 0,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

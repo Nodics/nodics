@@ -1,0 +1,17 @@
+{
+  "moduleName": "gfcms",
+  "path": "gframes/gframesModules/gfcms",
+  "kind": "application-module",
+  "package": {
+    "index": "2000.1.6",
+    "type": "core",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to gfcms"
+  },
+  "sourceFiles": 6,
+  "testFiles": 2,
+  "dataFiles": 16,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

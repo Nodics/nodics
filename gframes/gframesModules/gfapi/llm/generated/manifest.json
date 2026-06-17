@@ -1,0 +1,17 @@
+{
+  "moduleName": "gfapi",
+  "path": "gframes/gframesModules/gfapi",
+  "kind": "application-module",
+  "package": {
+    "index": "2000.1.20",
+    "type": "router",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to gfapi"
+  },
+  "sourceFiles": 6,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

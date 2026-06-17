@@ -1,0 +1,22 @@
+{
+  "moduleName": "nems",
+  "path": "gCore/nems",
+  "kind": "core",
+  "package": {
+    "index": "5.20",
+    "type": "router",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module works for Even management and Exchange"
+  },
+  "sourceFiles": 11,
+  "testFiles": 7,
+  "dataFiles": 2,
+  "schemaGroups": {
+    "nems": [
+      "event",
+      "eventLog"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

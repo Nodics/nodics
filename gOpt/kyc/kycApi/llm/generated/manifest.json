@@ -1,0 +1,17 @@
+{
+  "moduleName": "kycApi",
+  "path": "gOpt/kyc/kycApi",
+  "kind": "capability",
+  "package": {
+    "index": "500.50.10",
+    "type": "router",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer kycApi"
+  },
+  "sourceFiles": 9,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

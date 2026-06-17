@@ -1,0 +1,17 @@
+{
+  "moduleName": "kickoffLocalCmsServer",
+  "path": "kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCmsServer",
+  "kind": "server",
+  "package": {
+    "index": "1000.10.1.7",
+    "type": "core",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to kickoffLocalCmsServer"
+  },
+  "sourceFiles": 7,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

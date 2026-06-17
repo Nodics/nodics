@@ -1,0 +1,17 @@
+{
+  "moduleName": "gframesEnvs",
+  "path": "gframes/gframesEnvs",
+  "kind": "application",
+  "package": {
+    "index": "2000.10.1",
+    "type": "core",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to gframesEnvs"
+  },
+  "sourceFiles": 0,
+  "testFiles": 0,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

@@ -1,0 +1,17 @@
+{
+  "moduleName": "flowApi",
+  "path": "gCore/workflow/flowApi",
+  "kind": "core",
+  "package": {
+    "index": "5.30.15",
+    "type": "router",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to flowApi"
+  },
+  "sourceFiles": 8,
+  "testFiles": 3,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

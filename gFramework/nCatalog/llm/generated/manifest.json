@@ -1,0 +1,21 @@
+{
+  "moduleName": "catalog",
+  "path": "gFramework/nCatalog",
+  "kind": "framework",
+  "package": {
+    "index": "1.15",
+    "type": "router",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to catalog"
+  },
+  "sourceFiles": 7,
+  "testFiles": 6,
+  "dataFiles": 4,
+  "schemaGroups": {
+    "catalog": [
+      "catalog"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

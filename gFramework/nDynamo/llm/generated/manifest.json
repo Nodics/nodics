@@ -1,0 +1,27 @@
+{
+  "moduleName": "dynamo",
+  "path": "gFramework/nDynamo",
+  "kind": "framework",
+  "package": {
+    "index": "1.80",
+    "type": "router",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to dynamo"
+  },
+  "sourceFiles": 33,
+  "testFiles": 43,
+  "dataFiles": 0,
+  "schemaGroups": {
+    "dynamo": [
+      "classConfiguration",
+      "configurationActivationLog",
+      "configurationActivationRequest",
+      "pipeline",
+      "routerConfiguration",
+      "schemaAccessPolicy",
+      "schemaConfiguration"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

@@ -1,0 +1,17 @@
+{
+  "moduleName": "vMongodb",
+  "path": "gFramework/nDatabase/mongodb/vMongodb",
+  "kind": "framework",
+  "package": {
+    "index": "1.3.10.0",
+    "type": "publish",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to vMongodb"
+  },
+  "sourceFiles": 7,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

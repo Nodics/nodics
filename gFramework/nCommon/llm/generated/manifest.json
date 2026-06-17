@@ -1,0 +1,17 @@
+{
+  "moduleName": "nCommon",
+  "path": "gFramework/nCommon",
+  "kind": "framework",
+  "package": {
+    "index": "1.2",
+    "type": "core",
+    "version": "0.0.1",
+    "description": "Build common functionalities for Nodics"
+  },
+  "sourceFiles": 13,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

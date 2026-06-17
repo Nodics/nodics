@@ -1,0 +1,30 @@
+{
+  "moduleName": "flowSchema",
+  "path": "gCore/workflow/flowSchema",
+  "kind": "core",
+  "package": {
+    "index": "5.30.1",
+    "type": "core",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to flowSchema"
+  },
+  "sourceFiles": 7,
+  "testFiles": 3,
+  "dataFiles": 0,
+  "schemaGroups": {
+    "workflow": [
+      "actionResponse",
+      "workflow",
+      "workflowAction",
+      "workflowArchivedCarrier",
+      "workflowArchivedItem",
+      "workflowCarrier",
+      "workflowCarrierState",
+      "workflowChannel",
+      "workflowErrorCarrier",
+      "workflowItem"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

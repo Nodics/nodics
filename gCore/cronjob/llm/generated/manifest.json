@@ -1,0 +1,22 @@
+{
+  "moduleName": "cronjob",
+  "path": "gCore/cronjob",
+  "kind": "core",
+  "package": {
+    "index": "5.25",
+    "type": "router",
+    "version": "0.0.1",
+    "description": "Module cronJob, handle schedulled execution process"
+  },
+  "sourceFiles": 33,
+  "testFiles": 13,
+  "dataFiles": 4,
+  "schemaGroups": {
+    "cronjob": [
+      "cronJob",
+      "cronJobLog"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

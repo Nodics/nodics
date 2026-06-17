@@ -1,0 +1,17 @@
+{
+  "moduleName": "nSearch",
+  "path": "gFramework/nSearch",
+  "kind": "framework",
+  "package": {
+    "index": "1.14.99",
+    "type": "group",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to nSearch"
+  },
+  "sourceFiles": 0,
+  "testFiles": 0,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

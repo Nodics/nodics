@@ -1,0 +1,17 @@
+{
+  "moduleName": "nService",
+  "path": "gFramework/nService",
+  "kind": "framework",
+  "package": {
+    "index": "1.5",
+    "type": "core",
+    "version": "0.0.1",
+    "description": "Generate services for all defined items"
+  },
+  "sourceFiles": 77,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

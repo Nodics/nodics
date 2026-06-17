@@ -1,0 +1,17 @@
+{
+  "moduleName": "jsImport",
+  "path": "gFramework/nData/nImport/jsImport",
+  "kind": "framework",
+  "package": {
+    "index": "1.17.5.1",
+    "type": "core",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to jsImport"
+  },
+  "sourceFiles": 6,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

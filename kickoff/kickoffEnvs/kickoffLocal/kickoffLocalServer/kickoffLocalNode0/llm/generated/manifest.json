@@ -1,0 +1,17 @@
+{
+  "moduleName": "kickoffLocalNode0",
+  "path": "kickoff/kickoffEnvs/kickoffLocal/kickoffLocalServer/kickoffLocalNode0",
+  "kind": "node",
+  "package": {
+    "index": "1000.10.1.1.0",
+    "type": "core",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to kickoffLocalNode0"
+  },
+  "sourceFiles": 7,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

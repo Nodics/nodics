@@ -1,0 +1,17 @@
+{
+  "moduleName": "gCore",
+  "path": "gCore",
+  "kind": "core",
+  "package": {
+    "index": "5.99",
+    "type": "group",
+    "version": "0.0.1",
+    "description": "Module core, groups all core module in Nodics framework. Index value will be from 200 to 499"
+  },
+  "sourceFiles": 0,
+  "testFiles": 0,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

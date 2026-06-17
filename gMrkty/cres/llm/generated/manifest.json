@@ -1,0 +1,21 @@
+{
+  "moduleName": "cres",
+  "path": "gMrkty/cres",
+  "kind": "capability",
+  "package": {
+    "index": "300.50",
+    "type": "router",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer review system"
+  },
+  "sourceFiles": 7,
+  "testFiles": 6,
+  "dataFiles": 8,
+  "schemaGroups": {
+    "cres": [
+      "reviewTest"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

@@ -1,0 +1,30 @@
+{
+  "moduleName": "profile",
+  "path": "gCore/profile",
+  "kind": "core",
+  "package": {
+    "index": "5.15",
+    "type": "router",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. It will hold all profile realted information"
+  },
+  "sourceFiles": 42,
+  "testFiles": 39,
+  "dataFiles": 17,
+  "schemaGroups": {
+    "profile": [
+      "address",
+      "contact",
+      "customer",
+      "employee",
+      "enterprise",
+      "password",
+      "tenant",
+      "user",
+      "userGroup",
+      "userState"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}

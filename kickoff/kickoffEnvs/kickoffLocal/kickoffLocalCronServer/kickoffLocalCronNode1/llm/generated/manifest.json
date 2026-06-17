@@ -1,0 +1,17 @@
+{
+  "moduleName": "kickoffLocalCronNode1",
+  "path": "kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1",
+  "kind": "node",
+  "package": {
+    "index": "1000.10.1.2.1",
+    "type": "core",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to kickoffLocalCronNode1"
+  },
+  "sourceFiles": 6,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "scripts/generate-module-llm-context.js"
+}
