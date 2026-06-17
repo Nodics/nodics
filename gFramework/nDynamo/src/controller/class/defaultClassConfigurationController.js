@@ -80,6 +80,7 @@ module.exports = {
 
 
     executeClass: function (request, callback) {
+        request.body = request.httpRequest.body;
         if (callback) {
             FACADE.DefaultClassConfigurationFacade.executeClass(request).then(success => {
                 callback(null, success);

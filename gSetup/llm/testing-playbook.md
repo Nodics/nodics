@@ -122,6 +122,18 @@ Search tests should separate framework search contracts from external search-eng
 
 Keep basic Search tests under `gFramework/nSearch/search/test`. Project modules can add their own search/indexer tests when they contribute module-owned indexes or indexers.
 
+## Dynamo Tests
+
+Dynamo tests should protect runtime customization without making project behavior hardcoded:
+
+- route contracts own the dynamic class control-plane API surface.
+- controller tests map route params and HTTP bodies into facade requests.
+- service tests validate class snapshot, persisted update body creation, and dynamic operation execution against isolated in-memory runtime classes.
+- governance tests validate runtime router/schema activation, preview, rollback, audit, activation policy, activation requests, summaries, and cleanup.
+- full/integration tests may exercise live admin API activation for class, router, schema, pipeline, interceptor, and access-control overrides when the owning modules and tenants are active.
+
+Keep basic Dynamo tests under `gFramework/nDynamo/test`. Project modules should add their own runtime-customization tests in their later layer when they override or extend framework classes, routers, schemas, pipelines, interceptors, or policies.
+
 ## Required Verification By Change Type
 
 Schema/router/generation changes:
@@ -143,6 +155,7 @@ npm run test:basic
 Runtime governance changes:
 
 ```bash
+npm run test:dynamo
 npm run test:runtime-overrides
 npm run test:governance
 npm run test:basic

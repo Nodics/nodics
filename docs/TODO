@@ -62,6 +62,8 @@ Nodics Revolution:
       ✔ Add Search controller request mapping, service pipeline, and indexer validation/dispatch contract tests. @search @testing @done
       ☐ Add Search full/integration tests for real search-engine health, indexing, refresh, document get/exists/search/delete, and module-owned indexers. @search @testing @full
     ☐ Migrate Postman Dynamo coverage for dynamic class, router, schema, snapshot, and execute behavior. @postman @dynamo @testing
+      ✔ Add Dynamo dynamic class route, controller mapping, snapshot, update, and execute service contract tests. @dynamo @runtime-customization @testing @done
+      ☐ Add Dynamo full/integration tests for live class, router, schema, pipeline, interceptor, access-policy activation, rollback, audit, and tenant-aware admin APIs. @dynamo @runtime-customization @testing @full
     ☐ Migrate Postman Workflow coverage for carrier, action, auto/manual/mixed/multi flows, pause/resume/block/release. @postman @workflow @testing
       ✔ Add Workflow custom API route, service pipeline, and schema-generated CRUD ownership contract tests. @workflow @testing @done
       ☐ Revisit Workflow end to end as a dedicated orchestration engine review: synchronous workflows, asynchronous workflows, sub-workflow triggering, response aggregation, routing decisions, manual/auto/mixed/multi flows, event continuation, state transitions, error/retry/archive behavior, tenant/security boundaries, and consolidated/modular topology tests. @workflow @architecture @testing @parked
