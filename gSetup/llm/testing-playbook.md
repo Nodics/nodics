@@ -88,6 +88,16 @@ Recent import history tests prove:
 - routes expose import run history through secured APIs
 - generated tests include `import.importRun` after clean/build
 
+## Workflow Tests
+
+Workflow tests should preserve the three workflow submodule responsibilities:
+
+- `flowSchema` owns schema-driven workflow models, services, and generated CRUD/API tests.
+- `flowCore` owns workflow lifecycle behavior and service-to-pipeline contracts.
+- `flowApi` owns custom workflow API routes such as carrier initialization, carrier release/update, and action processing.
+
+Do not move schema CRUD coverage into custom `flowApi` tests. When migrating Postman workflow requests, first decide whether an endpoint is schema-generated CRUD, custom API behavior, or inactive historical behavior that needs a governed compatibility decision.
+
 ## Required Verification By Change Type
 
 Schema/router/generation changes:

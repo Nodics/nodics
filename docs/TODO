@@ -59,6 +59,8 @@ Nodics Revolution:
     ☐ Migrate Postman Search coverage for schema, indexer, document, health, refresh, and delete lifecycle. @postman @search @testing
     ☐ Migrate Postman Dynamo coverage for dynamic class, router, schema, snapshot, and execute behavior. @postman @dynamo @testing
     ☐ Migrate Postman Workflow coverage for carrier, action, auto/manual/mixed/multi flows, pause/resume/block/release. @postman @workflow @testing
+      ✔ Add Workflow custom API route, service pipeline, and schema-generated CRUD ownership contract tests. @workflow @testing @done
+      ☐ Decide compatibility path for historical carrier block/pause/resume and item pause/resume endpoints before exposing routes. @workflow @compatibility
     ☐ Migrate Postman Validator/Indexes coverage. @postman @validator @indexes @testing
     ☐ Migrate Postman Catalog and OTP coverage. @postman @catalog @otp @testing
     ☐ Keep project-specific Postman coverage, such as CMS/CRES/DaaS, owned by active project modules only. @postman @project-modules @testing
