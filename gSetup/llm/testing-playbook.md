@@ -98,6 +98,18 @@ Workflow tests should preserve the three workflow submodule responsibilities:
 
 Do not move schema CRUD coverage into custom `flowApi` tests. When migrating Postman workflow requests, first decide whether an endpoint is schema-generated CRUD, custom API behavior, or inactive historical behavior that needs a governed compatibility decision.
 
+## CronJob Tests
+
+CronJob tests should protect both the API lifecycle and the scheduler lifecycle without requiring a live scheduler for basic coverage:
+
+- route contracts own the create/update/run/start/stop/remove/pause/resume HTTP surface.
+- controller tests map route params, request bodies, and query options into facade requests.
+- service tests map create/update/run to tenant job lookup plus container execution.
+- lifecycle tests map start/stop/remove/pause/resume to the CronJob container.
+- full/integration tests may exercise live cron execution, node ownership, events, and distributed topology when the owning modules and external dependencies are active.
+
+Keep CronJob tests in `gCore/cronjob/test` unless a project module intentionally overrides the CronJob behavior in a later layer.
+
 ## Required Verification By Change Type
 
 Schema/router/generation changes:

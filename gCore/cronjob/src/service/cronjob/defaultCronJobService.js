@@ -50,11 +50,12 @@ module.exports = {
     //     });
     // },
 
-    getTenantsJobs: function (options, tenants = NODICS.getActiveTenants(), jobs = {}) {
+    getTenantsJobs: function (options, tenants = NODICS.getActiveTenants(), jobs = []) {
         return new Promise((resolve, reject) => {
             if (tenants && tenants.length > 0) {
+                let tenant = tenants.shift();
                 SERVICE.DefaultCronJobService.get({
-                    tenant: tenants.shift(),
+                    tenant: tenant,
                     options: options.options || {},
                     query: options.query || {}
                 }).then(result => {
@@ -64,7 +65,7 @@ module.exports = {
                             jobs.push(job);
                         });
                     }
-                    this.getTenantsJobs(query, tenants, jobs).then(success => {
+                    this.getTenantsJobs(options, tenants, jobs).then(success => {
                         resolve(success);
                     }).catch(error => {
                         reject(error);

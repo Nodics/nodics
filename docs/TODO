@@ -56,6 +56,8 @@ Nodics Revolution:
     ☐ Migrate Postman Cache coverage for item/API cache and flush behavior. @postman @cache @testing
     ☐ Migrate Postman EMS/Event coverage for publish, register, consume, close, and tenant failure paths. @postman @ems @event @testing
     ☐ Migrate Postman CronJob coverage for create, update, run, start, stop, pause, resume, and remove. @postman @cronjob @testing
+      ✔ Add CronJob controller request mapping and service lifecycle contract tests for create/update/run/start/stop/remove/pause/resume. @cronjob @testing @done
+      ☐ Add CronJob full/integration tests for live scheduler execution, node ownership, events, logs, and distributed topology. @cronjob @testing @full
     ☐ Migrate Postman Search coverage for schema, indexer, document, health, refresh, and delete lifecycle. @postman @search @testing
     ☐ Migrate Postman Dynamo coverage for dynamic class, router, schema, snapshot, and execute behavior. @postman @dynamo @testing
     ☐ Migrate Postman Workflow coverage for carrier, action, auto/manual/mixed/multi flows, pause/resume/block/release. @postman @workflow @testing

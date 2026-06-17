@@ -6,7 +6,7 @@
     "main": "nodics.js",
     "scripts": {
         "test": "npm run test:basic",
-        "test:basic": "npm run check:syntax && npm run test:config && npm run test:governance && npm run test:status-catalog && npm run test:traceability && npm run test:headers && npm run test:route-contracts && npm run test:generated && npm run test:system && npm run test:import && npm run test:profile && npm run test:ems && npm run test:workflow",
+        "test:basic": "npm run check:syntax && npm run test:config && npm run test:governance && npm run test:status-catalog && npm run test:traceability && npm run test:headers && npm run test:route-contracts && npm run test:generated && npm run test:system && npm run test:import && npm run test:profile && npm run test:cronjob && npm run test:ems && npm run test:workflow",
         "test:basic:report": "node scripts/run-test-suite-with-report.js --suite=basic -- npm run test:basic",
         "test:full": "npm run test:basic && npm run test:topology",
         "test:full:report": "node scripts/run-test-suite-with-report.js --suite=full -- npm run test:full",
@@ -29,6 +29,7 @@
         "test:import:report": "node scripts/run-test-suite-with-report.js --suite=import -- npm run test:import",
         "test:profile": "npm run test:profile-init-flag && npm run test:profile-init-required && npm run test:profile-user-group-permissions && node scripts/run-capability-behavior-tests.js --area=profile",
         "test:capability-behavior": "node scripts/run-capability-behavior-tests.js",
+        "test:cronjob": "npm run test:cronjob-routes && node gCore/cronjob/test/cronJobControllerRequestMapping.test.js && node gCore/cronjob/test/cronJobServiceLifecycleContract.test.js",
         "test:ems": "npm run test:ems-message-tenant && node scripts/run-capability-behavior-tests.js --area=ems",
         "test:workflow": "npm run test:workflow-routes && node gCore/workflow/flowCore/test/workflowServicePipelineContract.test.js && node gCore/workflow/flowSchema/test/workflowSchemaRouterContract.test.js",
         "test:ems-publish": "node gFramework/nEms/emsClient/test/activeEmsPublisher.test.js",

@@ -221,7 +221,7 @@ module.exports = {
         request.jobCodes = [];
         if (request.httpRequest.params.jobCode) {
             request.jobCodes.push(request.httpRequest.params.jobCode);
-        } else if (request.body instanceof Array) {
+        } else if (request.httpRequest.body instanceof Array) {
             request.jobCodes = request.httpRequest.body;
         }
         if (request.jobCodes.length > 0) {
