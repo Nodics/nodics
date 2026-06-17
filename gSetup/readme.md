@@ -27,6 +27,7 @@ Current contents:
 - `llm/`: tool-neutral context, prompts, decision memory, examples, and working rules for AI-assisted Nodics development.
 - `package.json`: machine-readable setup package metadata with runtime loading disabled.
 - `nodics.js`: no-op lifecycle file retained only for module-shape consistency.
+- `config/properties.js`, `config/prescripts.js`, `config/postscripts.js`: no-op config files retained only for module-shape consistency.
 
 ## LLM Bootstrap
 
