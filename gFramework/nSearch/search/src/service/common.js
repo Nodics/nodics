@@ -158,7 +158,7 @@ module.exports = {
             request.searchModel = this.getSearchModel(request);
             return SERVICE.DefaultIndexerService.prepareIndexer(request);
         } catch (error) {
-            Promise.reject(new CLASSES.SearchError(error));
+            return Promise.reject(new CLASSES.SearchError(error));
         }
     },
 };

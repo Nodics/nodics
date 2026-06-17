@@ -110,6 +110,18 @@ CronJob tests should protect both the API lifecycle and the scheduler lifecycle 
 
 Keep CronJob tests in `gCore/cronjob/test` unless a project module intentionally overrides the CronJob behavior in a later layer.
 
+## Search Tests
+
+Search tests should separate framework search contracts from external search-engine availability:
+
+- route contracts own schema-name and index-name search APIs.
+- controller tests map route params, request bodies, ids, index names, and indexer codes into facade requests.
+- service tests map search operations to the expected pipelines without requiring Elasticsearch.
+- indexer tests validate indexer lookup, target-index matching, and dispatch to `indexerInitializerPipeline`.
+- full/integration tests may exercise Elasticsearch/OpenSearch connectivity, real indexing, refresh, health, delete, and distributed topology when the search module and engine are active.
+
+Keep basic Search tests under `gFramework/nSearch/search/test`. Project modules can add their own search/indexer tests when they contribute module-owned indexes or indexers.
+
 ## Required Verification By Change Type
 
 Schema/router/generation changes:

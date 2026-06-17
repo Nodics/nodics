@@ -59,6 +59,8 @@ Nodics Revolution:
       ✔ Add CronJob controller request mapping and service lifecycle contract tests for create/update/run/start/stop/remove/pause/resume. @cronjob @testing @done
       ☐ Add CronJob full/integration tests for live scheduler execution, node ownership, events, logs, and distributed topology. @cronjob @testing @full
     ☐ Migrate Postman Search coverage for schema, indexer, document, health, refresh, and delete lifecycle. @postman @search @testing
+      ✔ Add Search controller request mapping, service pipeline, and indexer validation/dispatch contract tests. @search @testing @done
+      ☐ Add Search full/integration tests for real search-engine health, indexing, refresh, document get/exists/search/delete, and module-owned indexers. @search @testing @full
     ☐ Migrate Postman Dynamo coverage for dynamic class, router, schema, snapshot, and execute behavior. @postman @dynamo @testing
     ☐ Migrate Postman Workflow coverage for carrier, action, auto/manual/mixed/multi flows, pause/resume/block/release. @postman @workflow @testing
       ✔ Add Workflow custom API route, service pipeline, and schema-generated CRUD ownership contract tests. @workflow @testing @done
