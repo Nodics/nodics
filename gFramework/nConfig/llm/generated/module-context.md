@@ -9,9 +9,8 @@
 | Module | `config` |
 | Path | `gFramework/nConfig` |
 | Kind | `capability` |
-| Module Type | `core` |
+| Runtime | `none` |
 | Index | `1.1` |
-| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Build configuration related functionalities for Nodics |
 

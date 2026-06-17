@@ -9,9 +9,8 @@
 | Module | `elastic` |
 | Path | `gFramework/nSearch/elastic` |
 | Kind | `capability` |
-| Module Type | `core` |
+| Runtime | `none` |
 | Index | `1.14.5` |
-| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. It will hold all elastic search related configurations |
 

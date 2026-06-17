@@ -9,9 +9,8 @@
 | Module | `kickoffDevServer` |
 | Path | `kickoff/kickoffEnvs/kickoffDev/kickoffDevServer` |
 | Kind | `server` |
-| Module Type | `server` |
+| Runtime | `none` |
 | Index | `1000.10.10.1` |
-| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to kickoffDevServer |
 

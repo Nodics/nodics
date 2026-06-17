@@ -2,10 +2,13 @@
   "moduleName": "kickoff",
   "path": "kickoff",
   "kind": "application",
-  "moduleType": "application",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
   "package": {
     "index": "1000.99",
-    "type": "group",
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to kickoff"
   },

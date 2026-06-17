@@ -48,17 +48,16 @@ module.exports = {
                     console.error('Invalid initialization, could not load module: ' + moduleName);
                     process.exit(1);
                 }
-                let moduleActivationType = this.getModuleActivationType(moduleObject.metaData);
                 if (moduleName === (props.dynamoModuleName || 'dynamo') && !props.dynamoEnabled) {
                     let currentdate = new Date();
                     let datetime = currentdate.getFullYear() + '-' + (currentdate.getMonth() + 1) + '-' + currentdate.getDate() +
                         ' ' + currentdate.getHours() + ':' + currentdate.getMinutes() + ":" + currentdate.getSeconds();
                     console.log(datetime, ' info: [DefaultModuleInitializerService] Dynamo module is not activated');
-                } else if ('publish' === moduleActivationType && props.publishEnabled) {
+                } else if (this.isPublishModule(moduleObject.metaData) && props.publishEnabled) {
                     modulesList.push(moduleName);
-                } else if ('web' === moduleActivationType && props.webEnabled) {
+                } else if (this.isWebModule(moduleObject.metaData) && props.webEnabled) {
                     modulesList.push(moduleName);
-                } else if (this.isAlwaysLoadableModuleType(moduleActivationType)) {
+                } else if (this.isAlwaysLoadableModule(moduleObject.metaData)) {
                     modulesList.push(moduleName);
                 }
                 if (groupName) {
@@ -80,29 +79,44 @@ module.exports = {
         return metaData && metaData.nodics ? metaData.nodics : {};
     },
 
-    getModuleActivationType: function (metaData) {
-        let nodics = this.getNodicsMetadata(metaData);
-        return nodics.moduleType || (metaData && metaData.type);
-    },
-
     getModuleKind: function (metaData) {
         let nodics = this.getNodicsMetadata(metaData);
-        return nodics.kind || nodics.moduleType || (metaData && metaData.type);
+        return nodics.kind;
     },
 
-    isAlwaysLoadableModuleType: function (moduleType) {
+    getModuleRuntime: function (metaData) {
+        let nodics = this.getNodicsMetadata(metaData);
+        return nodics.runtime || {};
+    },
+
+    hasModuleOwnership: function (metaData, ownership) {
+        let nodics = this.getNodicsMetadata(metaData);
+        return Array.isArray(nodics.owns) && nodics.owns.includes(ownership);
+    },
+
+    isPublishModule: function (metaData) {
+        return this.getModuleRuntime(metaData).publish === true;
+    },
+
+    isWebModule: function (metaData) {
+        return this.getModuleRuntime(metaData).web === true;
+    },
+
+    isAlwaysLoadableModule: function (metaData) {
+        let runtime = this.getModuleRuntime(metaData);
+        if (runtime.publish === true || runtime.web === true) {
+            return false;
+        }
+        let moduleKind = this.getModuleKind(metaData);
         return [
             'application',
-            'application-module',
             'capability',
-            'core',
             'environment',
             'group',
             'node',
-            'router',
             'server',
             'template'
-        ].includes(moduleType);
+        ].includes(moduleKind);
     },
 
     loadRawModuleList: function (homePath) {
@@ -158,6 +172,9 @@ module.exports = {
             return false;
         }
         let nodics = this.getNodicsMetadata(metaData);
+        if (!nodics.kind) {
+            return false;
+        }
         if (metaData.runtimeModule === false) {
             return false;
         }
@@ -334,8 +351,8 @@ module.exports = {
         let moduleObject = NODICS.getModule(moduleName);
         if (moduleObject &&
             moduleObject.metaData &&
-            (this.getModuleActivationType(moduleObject.metaData) === 'router' ||
-                this.getModuleActivationType(moduleObject.metaData) === 'web') &&
+            (this.getModuleRuntime(moduleObject.metaData).router === true ||
+                this.isWebModule(moduleObject.metaData)) &&
             (moduleName !== (CONFIG.get('dynamoModuleName') || 'dynamo') || CONFIG.get('dynamoEnabled'))) {
             return true;
         }
@@ -346,7 +363,7 @@ module.exports = {
         let moduleObject = NODICS.getModule(moduleName);
         if (moduleObject &&
             moduleObject.metaData &&
-            this.getModuleActivationType(moduleObject.metaData) === 'web') {
+            this.isWebModule(moduleObject.metaData)) {
             return true;
         }
         return false;

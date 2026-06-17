@@ -1,7 +1,6 @@
 {
     "name": "gDeap",
     "index": "400.99",
-    "type": "group",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to gDeap",
     "homepage": "http://www.nodics.com/",
     "keywords": [
@@ -25,7 +24,6 @@
     ],
     "nodics": {
         "kind": "group",
-        "moduleType": "group",
         "runtimeModule": true,
         "loadableByNodicsModuleLoader": true,
         "owns": [
@@ -33,6 +31,11 @@
             "configuration",
             "llm"
         ],
-        "description": "Container module that composes child modules and may contribute shared configuration."
+        "description": "Container module that composes child modules and may contribute shared configuration.",
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        }
     }
 }

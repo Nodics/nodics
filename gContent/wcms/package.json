@@ -1,7 +1,6 @@
 {
     "name": "wcms",
     "index": "50.25",
-    "type": "core",
     "requiredModules": [
         "cms"
     ],
@@ -22,7 +21,6 @@
     "dependencies": {},
     "nodics": {
         "kind": "capability",
-        "moduleType": "core",
         "runtimeModule": true,
         "loadableByNodicsModuleLoader": true,
         "owns": [
@@ -36,6 +34,11 @@
             "utility",
             "test",
             "llm"
-        ]
+        ],
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        }
     }
 }

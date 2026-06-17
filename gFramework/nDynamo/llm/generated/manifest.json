@@ -2,10 +2,13 @@
   "moduleName": "dynamo",
   "path": "gFramework/nDynamo",
   "kind": "capability",
-  "moduleType": "router",
+  "runtime": {
+    "router": true,
+    "publish": false,
+    "web": false
+  },
   "package": {
     "index": "1.80",
-    "type": "router",
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to dynamo"
   },

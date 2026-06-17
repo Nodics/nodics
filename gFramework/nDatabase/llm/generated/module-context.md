@@ -9,9 +9,8 @@
 | Module | `nDatabase` |
 | Path | `gFramework/nDatabase` |
 | Kind | `group` |
-| Module Type | `group` |
+| Runtime | `none` |
 | Index | `1.3.99` |
-| Legacy Type | `group` |
 | Version | `0.0.1` |
 | Description | Manage database connections and configuration |
 

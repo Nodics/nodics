@@ -9,9 +9,8 @@
 | Module | `gFramework` |
 | Path | `gFramework` |
 | Kind | `group` |
-| Module Type | `group` |
+| Runtime | `none` |
 | Index | `1.99` |
-| Legacy Type | `group` |
 | Version | `0.0.1` |
 | Description | This module is a collection of gFramework related modules |
 

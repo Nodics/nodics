@@ -9,9 +9,8 @@
 | Module | `csvImport` |
 | Path | `gFramework/nData/nImport/csvImport` |
 | Kind | `capability` |
-| Module Type | `core` |
+| Runtime | `none` |
 | Index | `1.17.5.10` |
-| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to csvImport |
 

@@ -2,10 +2,13 @@
   "moduleName": "cronjob",
   "path": "gCore/cronjob",
   "kind": "capability",
-  "moduleType": "router",
+  "runtime": {
+    "router": true,
+    "publish": false,
+    "web": false
+  },
   "package": {
     "index": "5.25",
-    "type": "router",
     "version": "0.0.1",
     "description": "Module cronJob, handle schedulled execution process"
   },

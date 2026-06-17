@@ -1,7 +1,6 @@
 {
     "name": "workflow",
     "index": "5.30.99",
-    "type": "router",
     "requiredModules": [
         "flowSchema",
         "flowCore",
@@ -26,7 +25,6 @@
     "dependencies": {},
     "nodics": {
         "kind": "capability",
-        "moduleType": "router",
         "runtimeModule": true,
         "loadableByNodicsModuleLoader": true,
         "owns": [
@@ -34,6 +32,11 @@
             "configuration",
             "test",
             "llm"
-        ]
+        ],
+        "runtime": {
+            "router": true,
+            "publish": false,
+            "web": false
+        }
     }
 }

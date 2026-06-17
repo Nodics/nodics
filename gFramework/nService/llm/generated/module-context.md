@@ -9,9 +9,8 @@
 | Module | `nService` |
 | Path | `gFramework/nService` |
 | Kind | `group` |
-| Module Type | `group` |
+| Runtime | `none` |
 | Index | `1.5` |
-| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Generate services for all defined items |
 

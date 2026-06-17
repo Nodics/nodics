@@ -1,7 +1,6 @@
 {
     "name": "kycApi",
     "index": "500.50.10",
-    "type": "router",
     "prefix": "kyc",
     "requiredModules": [
         "kycCore"
@@ -23,7 +22,6 @@
     "dependencies": {},
     "nodics": {
         "kind": "capability",
-        "moduleType": "router",
         "runtimeModule": true,
         "loadableByNodicsModuleLoader": true,
         "owns": [
@@ -38,6 +36,11 @@
             "utility",
             "test",
             "llm"
-        ]
+        ],
+        "runtime": {
+            "router": true,
+            "publish": false,
+            "web": false
+        }
     }
 }

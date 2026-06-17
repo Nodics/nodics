@@ -9,9 +9,8 @@
 | Module | `nController` |
 | Path | `gFramework/nController` |
 | Kind | `capability` |
-| Module Type | `core` |
+| Runtime | `none` |
 | Index | `1.10` |
-| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Build OOTB controllers for Nodics |
 

@@ -2,10 +2,13 @@
   "moduleName": "workflow",
   "path": "gCore/workflow",
   "kind": "capability",
-  "moduleType": "router",
+  "runtime": {
+    "router": true,
+    "publish": false,
+    "web": false
+  },
   "package": {
     "index": "5.30.99",
-    "type": "router",
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to workflow"
   },

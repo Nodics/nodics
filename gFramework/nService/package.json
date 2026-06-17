@@ -1,7 +1,6 @@
 {
     "name": "nService",
     "index": "1.5",
-    "type": "core",
     "description": "Generate services for all defined items",
     "homepage": "http://www.nodics.com/",
     "keywords": [
@@ -22,7 +21,6 @@
     "dependencies": {},
     "nodics": {
         "kind": "group",
-        "moduleType": "group",
         "runtimeModule": true,
         "loadableByNodicsModuleLoader": true,
         "owns": [
@@ -34,6 +32,11 @@
             "test",
             "llm"
         ],
-        "description": "Container module that composes child modules and may contribute shared configuration."
+        "description": "Container module that composes child modules and may contribute shared configuration.",
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        }
     }
 }

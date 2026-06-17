@@ -9,9 +9,8 @@
 | Module | `nSearch` |
 | Path | `gFramework/nSearch` |
 | Kind | `group` |
-| Module Type | `group` |
+| Runtime | `none` |
 | Index | `1.14.99` |
-| Legacy Type | `group` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to nSearch |
 

@@ -9,9 +9,8 @@
 | Module | `order` |
 | Path | `gComm/order` |
 | Kind | `capability` |
-| Module Type | `router` |
+| Runtime | `router` |
 | Index | `40.6` |
-| Legacy Type | `router` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to order |
 

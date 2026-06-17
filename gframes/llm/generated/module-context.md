@@ -9,9 +9,8 @@
 | Module | `gframes` |
 | Path | `gframes` |
 | Kind | `application` |
-| Module Type | `application` |
+| Runtime | `none` |
 | Index | `2000.99` |
-| Legacy Type | `appGroup` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to gframes |
 

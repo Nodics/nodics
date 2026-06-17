@@ -9,9 +9,8 @@
 | Module | `otp` |
 | Path | `gFramework/nOtp` |
 | Kind | `capability` |
-| Module Type | `router` |
+| Runtime | `router` |
 | Index | `1.21` |
-| Legacy Type | `router` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to nOtp |
 

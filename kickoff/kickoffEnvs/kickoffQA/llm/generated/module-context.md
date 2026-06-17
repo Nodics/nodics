@@ -9,9 +9,8 @@
 | Module | `kickoffQA` |
 | Path | `kickoff/kickoffEnvs/kickoffQA` |
 | Kind | `environment` |
-| Module Type | `environment` |
+| Runtime | `none` |
 | Index | `1000.10.15` |
-| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to kickoffQA |
 

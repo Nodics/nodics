@@ -2,10 +2,13 @@
   "moduleName": "vService",
   "path": "gFramework/nService/vService",
   "kind": "publish",
-  "moduleType": "publish",
+  "runtime": {
+    "router": false,
+    "publish": true,
+    "web": false
+  },
   "package": {
     "index": "1.5.0",
-    "type": "publish",
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to vService"
   },

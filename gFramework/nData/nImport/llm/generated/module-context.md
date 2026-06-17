@@ -9,9 +9,8 @@
 | Module | `nImport` |
 | Path | `gFramework/nData/nImport` |
 | Kind | `group` |
-| Module Type | `group` |
+| Runtime | `none` |
 | Index | `1.17.5.99` |
-| Legacy Type | `group` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to nImport |
 

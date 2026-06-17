@@ -2,10 +2,13 @@
   "moduleName": "kycApi",
   "path": "gOpt/kyc/kycApi",
   "kind": "capability",
-  "moduleType": "router",
+  "runtime": {
+    "router": true,
+    "publish": false,
+    "web": false
+  },
   "package": {
     "index": "500.50.10",
-    "type": "router",
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer kycApi"
   },

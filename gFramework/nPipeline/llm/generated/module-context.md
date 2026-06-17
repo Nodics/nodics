@@ -9,9 +9,8 @@
 | Module | `pipeline` |
 | Path | `gFramework/nPipeline` |
 | Kind | `capability` |
-| Module Type | `core` |
+| Runtime | `none` |
 | Index | `1.6` |
-| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Generate Pipelines configurations |
 

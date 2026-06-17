@@ -9,9 +9,8 @@
 | Module | `kickoffPreProdServer` |
 | Path | `kickoff/kickoffEnvs/kickoffPreProd/kickoffPreProdServer` |
 | Kind | `server` |
-| Module Type | `server` |
+| Runtime | `none` |
 | Index | `1000.10.20.1` |
-| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to kickoffPreProdServer |
 

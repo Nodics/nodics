@@ -1,7 +1,6 @@
 {
     "name": "kickoffLocal",
     "index": "1000.10.1",
-    "type": "core",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to kickoffLocal",
     "homepage": "http://www.nodics.com/",
     "keywords": [
@@ -21,7 +20,6 @@
     "dependencies": {},
     "nodics": {
         "kind": "environment",
-        "moduleType": "environment",
         "runtimeModule": true,
         "loadableByNodicsModuleLoader": true,
         "owns": [
@@ -30,6 +28,11 @@
             "data",
             "llm"
         ],
-        "description": "Environment module that contributes environment-level configuration and topology."
+        "description": "Environment module that contributes environment-level configuration and topology.",
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        }
     }
 }

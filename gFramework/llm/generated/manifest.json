@@ -2,10 +2,13 @@
   "moduleName": "gFramework",
   "path": "gFramework",
   "kind": "group",
-  "moduleType": "group",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
   "package": {
     "index": "1.99",
-    "type": "group",
     "version": "0.0.1",
     "description": "This module is a collection of gFramework related modules"
   },

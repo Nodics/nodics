@@ -2,10 +2,13 @@
   "moduleName": "gfprofile",
   "path": "gframes/gframesModules/gfprofile",
   "kind": "capability",
-  "moduleType": "core",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
   "package": {
     "index": "2000.1.5",
-    "type": "core",
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to gfprofile"
   },

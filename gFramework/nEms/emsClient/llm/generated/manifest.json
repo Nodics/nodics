@@ -2,10 +2,13 @@
   "moduleName": "emsClient",
   "path": "gFramework/nEms/emsClient",
   "kind": "capability",
-  "moduleType": "router",
+  "runtime": {
+    "router": true,
+    "publish": false,
+    "web": false
+  },
   "package": {
     "index": "1.18.0",
-    "type": "router",
     "version": "0.0.1",
     "description": "Nodics applicaion module. It will hold all configuration and emsClient point to start nodics"
   },

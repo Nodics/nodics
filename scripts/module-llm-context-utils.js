@@ -53,7 +53,6 @@ function scanModules(directory = rootPath, modules = []) {
             modules.push({
                 name: packageJson.name || entry.name,
                 index: packageJson.index,
-                type: packageJson.type,
                 description: packageJson.description,
                 path: entryPath,
                 relativePath: toRelative(entryPath),
@@ -210,11 +209,17 @@ function getModuleKind(module) {
     return 'capability';
 }
 
-function getModuleType(module) {
-    if (module.packageJson && module.packageJson.nodics && module.packageJson.nodics.moduleType) {
-        return module.packageJson.nodics.moduleType;
+function getModuleRuntime(module) {
+    if (module.packageJson && module.packageJson.nodics && module.packageJson.nodics.runtime) {
+        return module.packageJson.nodics.runtime;
     }
-    return module.type || 'core';
+    return {};
+}
+
+function getModuleRuntimeSummary(module) {
+    let runtime = getModuleRuntime(module);
+    let enabled = Object.keys(runtime).sort().filter(key => runtime[key] === true);
+    return enabled.length ? enabled.join(', ') : 'none';
 }
 
 module.exports = {
@@ -225,7 +230,8 @@ module.exports = {
     collectFiles,
     getRelativeIfExists,
     getModuleKind,
-    getModuleType,
+    getModuleRuntime,
+    getModuleRuntimeSummary,
     listFeatureFolders,
     loadLocalSchemas,
     scanModules,

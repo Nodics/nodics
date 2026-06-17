@@ -9,9 +9,8 @@
 | Module | `kickoffLocalNode2` |
 | Path | `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalServer/kickoffLocalNode2` |
 | Kind | `node` |
-| Module Type | `node` |
+| Runtime | `none` |
 | Index | `1000.10.1.1.2` |
-| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to kickoffLocalNode2 |
 

@@ -2,10 +2,13 @@
   "moduleName": "customApplication",
   "path": "gFramework/nCommon/templates/group",
   "kind": "template",
-  "moduleType": "template",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
   "package": {
     "index": "$index",
-    "type": "group",
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to customApplication"
   },

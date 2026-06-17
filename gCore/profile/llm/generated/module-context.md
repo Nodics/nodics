@@ -9,9 +9,8 @@
 | Module | `profile` |
 | Path | `gCore/profile` |
 | Kind | `capability` |
-| Module Type | `router` |
+| Runtime | `router` |
 | Index | `5.15` |
-| Legacy Type | `router` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. It will hold all profile realted information |
 

@@ -1,7 +1,6 @@
 {
     "name": "kyc",
     "index": "500.50.99",
-    "type": "core",
     "requiredModules": [],
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to kyc",
     "homepage": "http://www.nodics.com/",
@@ -22,7 +21,6 @@
     "dependencies": {},
     "nodics": {
         "kind": "group",
-        "moduleType": "group",
         "runtimeModule": true,
         "loadableByNodicsModuleLoader": true,
         "owns": [
@@ -30,6 +28,11 @@
             "configuration",
             "llm"
         ],
-        "description": "Container module that composes child modules and may contribute shared configuration."
+        "description": "Container module that composes child modules and may contribute shared configuration.",
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        }
     }
 }

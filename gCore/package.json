@@ -1,7 +1,6 @@
 {
     "name": "gCore",
     "index": "5.99",
-    "type": "group",
     "requiredModules": [
         "profile",
         "nems",
@@ -28,7 +27,6 @@
     "dependencies": {},
     "nodics": {
         "kind": "group",
-        "moduleType": "group",
         "runtimeModule": true,
         "loadableByNodicsModuleLoader": true,
         "owns": [
@@ -36,6 +34,11 @@
             "configuration",
             "llm"
         ],
-        "description": "Container module that composes child modules and may contribute shared configuration."
+        "description": "Container module that composes child modules and may contribute shared configuration.",
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        }
     }
 }

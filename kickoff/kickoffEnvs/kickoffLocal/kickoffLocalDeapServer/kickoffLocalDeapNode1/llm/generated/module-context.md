@@ -9,9 +9,8 @@
 | Module | `kickoffLocalDeapNode1` |
 | Path | `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalDeapServer/kickoffLocalDeapNode1` |
 | Kind | `node` |
-| Module Type | `node` |
+| Runtime | `none` |
 | Index | `1000.10.1.3.1` |
-| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to kickoffLocalDeapNode1 |
 

@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const {
+    rootPath,
     listFeatureFolders,
     scanModules
 } = require('./module-llm-context-utils');
@@ -37,7 +38,14 @@ function hasChildren(module) {
 function inferKind(module) {
     let relativePath = module.relativePath;
     let type = module.packageJson.type;
+    let nodics = module.packageJson.nodics || {};
 
+    if (nodics.kind) {
+        return nodics.kind;
+    }
+    if (relativePath === '.') {
+        return 'application';
+    }
     if (relativePath === 'gSetup' || type === 'setup') {
         return 'setup';
     }
@@ -71,17 +79,13 @@ function inferKind(module) {
     return 'capability';
 }
 
-function inferModuleType(packageJson, kind) {
-    if (packageJson.type === 'publish' || packageJson.type === 'web' || packageJson.type === 'router') {
-        return packageJson.type;
-    }
-    if (['application', 'environment', 'server', 'node', 'template'].includes(kind)) {
-        return kind;
-    }
-    if (kind === 'group') {
-        return 'group';
-    }
-    return packageJson.type || 'core';
+function inferRuntime(packageJson, kind) {
+    let currentRuntime = packageJson.nodics && packageJson.nodics.runtime ? packageJson.nodics.runtime : {};
+    return Object.assign({}, currentRuntime, {
+        router: currentRuntime.router === true || packageJson.type === 'router' || packageJson.type === 'web',
+        publish: currentRuntime.publish === true || kind === 'publish' || packageJson.type === 'publish',
+        web: currentRuntime.web === true || kind === 'web' || packageJson.type === 'web'
+    });
 }
 
 function inferOwns(module, kind) {
@@ -104,14 +108,15 @@ function normalizeModule(module) {
     let packagePath = path.join(module.path, 'package.json');
     let packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
     let kind = inferKind(module);
-    let moduleType = inferModuleType(packageJson, kind);
     packageJson.nodics = Object.assign({}, packageJson.nodics || {}, {
         kind: kind,
-        moduleType: moduleType,
+        runtime: inferRuntime(packageJson, kind),
         runtimeModule: packageJson.runtimeModule === false ? false : !(kind === 'setup'),
         loadableByNodicsModuleLoader: packageJson.runtimeModule === false ? false : !(kind === 'setup'),
         owns: inferOwns(module, kind)
     });
+    delete packageJson.nodics.moduleType;
+    delete packageJson.type;
     if (kind === 'group') {
         packageJson.nodics.description = 'Container module that composes child modules and may contribute shared configuration.';
     } else if (kind === 'environment') {
@@ -127,7 +132,14 @@ function normalizeModule(module) {
 }
 
 function run() {
-    let modules = scanModules();
+    let rootPackage = JSON.parse(fs.readFileSync(path.join(rootPath, 'package.json'), 'utf8'));
+    let modules = [{
+        name: rootPackage.name,
+        index: rootPackage.index,
+        path: rootPath,
+        relativePath: '.',
+        packageJson: rootPackage
+    }].concat(scanModules());
     modules.forEach(normalizeModule);
     console.log('Normalized Nodics metadata for ' + modules.length + ' packages');
 }
@@ -139,6 +151,6 @@ if (require.main === module) {
 module.exports = {
     run,
     inferKind,
-    inferModuleType,
+    inferRuntime,
     inferOwns
 };

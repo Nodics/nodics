@@ -2,10 +2,13 @@
   "moduleName": "system",
   "path": "gFramework/nSystem",
   "kind": "capability",
-  "moduleType": "router",
+  "runtime": {
+    "router": true,
+    "publish": false,
+    "web": false
+  },
   "package": {
     "index": "1.20",
-    "type": "router",
     "version": "0.0.1",
     "description": "Nodics applicaion module. It will hold all configuration and system point to start nodics"
   },

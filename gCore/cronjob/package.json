@@ -1,7 +1,6 @@
 {
     "name": "cronjob",
     "index": "5.25",
-    "type": "router",
     "description": "Module cronJob, handle schedulled execution process",
     "homepage": "http://www.nodics.com/",
     "keywords": [
@@ -20,7 +19,6 @@
     "dependencies": {},
     "nodics": {
         "kind": "capability",
-        "moduleType": "router",
         "runtimeModule": true,
         "loadableByNodicsModuleLoader": true,
         "owns": [
@@ -37,6 +35,11 @@
             "utility",
             "test",
             "llm"
-        ]
+        ],
+        "runtime": {
+            "router": true,
+            "publish": false,
+            "web": false
+        }
     }
 }

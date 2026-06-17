@@ -2,10 +2,13 @@
   "moduleName": "csvExport",
   "path": "gFramework/nData/nExport/csvExport",
   "kind": "capability",
-  "moduleType": "core",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
   "package": {
     "index": "1.17.10.10",
-    "type": "core",
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to csvExport"
   },

@@ -171,5 +171,19 @@
         "winston": "^3.6.0",
         "winston-elasticsearch": "^0.16.1",
         "xml-js": "^1.6.11"
+    },
+    "nodics": {
+        "kind": "application",
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        },
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "composition",
+            "llm"
+        ]
     }
 }

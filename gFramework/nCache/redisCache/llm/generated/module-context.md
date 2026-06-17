@@ -9,9 +9,8 @@
 | Module | `redisCache` |
 | Path | `gFramework/nCache/redisCache` |
 | Kind | `capability` |
-| Module Type | `core` |
+| Runtime | `none` |
 | Index | `1.8.2` |
-| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to redisCache |
 

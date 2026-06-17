@@ -9,9 +9,8 @@
 | Module | `kickoffLocal` |
 | Path | `kickoff/kickoffEnvs/kickoffLocal` |
 | Kind | `environment` |
-| Module Type | `environment` |
+| Runtime | `none` |
 | Index | `1000.10.1` |
-| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to kickoffLocal |
 

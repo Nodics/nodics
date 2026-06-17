@@ -60,10 +60,13 @@ Nodics-specific metadata belongs under `package.json.nodics`:
 
 ```json
 {
-  "type": "router",
   "nodics": {
     "kind": "capability",
-    "moduleType": "router",
+    "runtime": {
+      "router": true,
+      "publish": false,
+      "web": false
+    },
     "runtimeModule": true,
     "loadableByNodicsModuleLoader": true,
     "owns": ["configuration", "schema", "router", "service", "test", "llm"]
@@ -71,4 +74,4 @@ Nodics-specific metadata belongs under `package.json.nodics`:
 }
 ```
 
-Keep top-level `type` for backward compatibility. New code should prefer `nodics.moduleType` for loader behavior and `nodics.kind` for semantic documentation.
+Do not use top-level `type` for Nodics metadata, and do not add `nodics.moduleType`. `nodics.kind` describes what the package is. `nodics.runtime` describes runtime activation behavior. `nodics.owns` describes owned artifacts and extension points.

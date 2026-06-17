@@ -1,7 +1,6 @@
 {
     "name": "profile",
     "index": "5.15",
-    "type": "router",
     "description": "Nodics applicaion module. It will hold all profile realted information",
     "homepage": "http://www.nodics.com/",
     "keywords": [
@@ -19,7 +18,6 @@
     "dependencies": {},
     "nodics": {
         "kind": "capability",
-        "moduleType": "router",
         "runtimeModule": true,
         "loadableByNodicsModuleLoader": true,
         "owns": [
@@ -37,6 +35,11 @@
             "utility",
             "test",
             "llm"
-        ]
+        ],
+        "runtime": {
+            "router": true,
+            "publish": false,
+            "web": false
+        }
     }
 }

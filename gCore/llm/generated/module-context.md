@@ -9,9 +9,8 @@
 | Module | `gCore` |
 | Path | `gCore` |
 | Kind | `group` |
-| Module Type | `group` |
+| Runtime | `none` |
 | Index | `5.99` |
-| Legacy Type | `group` |
 | Version | `0.0.1` |
 | Description | Module core, groups all core module in Nodics framework. Index value will be from 200 to 499 |
 

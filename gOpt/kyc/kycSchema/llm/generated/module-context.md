@@ -9,9 +9,8 @@
 | Module | `kycSchema` |
 | Path | `gOpt/kyc/kycSchema` |
 | Kind | `capability` |
-| Module Type | `core` |
+| Runtime | `none` |
 | Index | `500.50.3` |
-| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to customer kycSchema |
 

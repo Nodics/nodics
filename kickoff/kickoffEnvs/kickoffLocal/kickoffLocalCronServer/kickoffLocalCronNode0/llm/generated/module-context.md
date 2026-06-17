@@ -9,9 +9,8 @@
 | Module | `kickoffLocalCronNode0` |
 | Path | `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode0` |
 | Kind | `node` |
-| Module Type | `node` |
+| Runtime | `none` |
 | Index | `1000.10.1.2.0` |
-| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to kickoffLocalCronNode0 |
 

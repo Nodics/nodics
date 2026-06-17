@@ -18,15 +18,18 @@ function collectRawModules(folder, modulesList = {}, parent) {
     let metaDataPath = path.join(folder, 'package.json');
     if (fs.existsSync(metaDataPath)) {
         let metaData = require(metaDataPath);
-        modulesList[metaData.name] = {
-            name: metaData.name,
-            path: folder,
-            index: metaData.index,
-            parent: parent,
-            metaData: metaData
-        };
-        moduleName = metaData.name;
-        parent = metaData.name;
+        let nodics = metaData.nodics || {};
+        if (nodics.kind && metaData.runtimeModule !== false && nodics.runtimeModule !== false && nodics.loadableByNodicsModuleLoader !== false) {
+            modulesList[metaData.name] = {
+                name: metaData.name,
+                path: folder,
+                index: metaData.index,
+                parent: parent,
+                metaData: metaData
+            };
+            moduleName = metaData.name;
+            parent = metaData.name;
+        }
     }
     let modules = [];
     subFolders(folder).forEach(subFolder => {
@@ -70,11 +73,14 @@ function prepareActiveModuleList(props, rawModules, groupName, modulesList) {
     if (moduleName === 'dynamo' && !props.dynamoEnabled) {
         return;
     }
-    if ('publish' === moduleObject.metaData.type && props.publishEnabled) {
+    let runtime = (moduleObject.metaData.nodics && moduleObject.metaData.nodics.runtime) || {};
+    let kind = moduleObject.metaData.nodics && moduleObject.metaData.nodics.kind;
+    if (runtime.publish === true && props.publishEnabled) {
         modulesList.push(moduleName);
-    } else if ('web' === moduleObject.metaData.type && props.webEnabled) {
+    } else if (runtime.web === true && props.webEnabled) {
         modulesList.push(moduleName);
-    } else if (['group', 'core', 'router'].includes(moduleObject.metaData.type)) {
+    } else if (runtime.publish !== true && runtime.web !== true &&
+        ['application', 'capability', 'environment', 'group', 'node', 'server', 'template'].includes(kind)) {
         modulesList.push(moduleName);
     }
     if (metaGroupName) {

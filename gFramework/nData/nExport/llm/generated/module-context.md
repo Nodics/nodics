@@ -9,9 +9,8 @@
 | Module | `nExport` |
 | Path | `gFramework/nData/nExport` |
 | Kind | `group` |
-| Module Type | `group` |
+| Runtime | `none` |
 | Index | `1.17.10.99` |
-| Legacy Type | `group` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to nExport |
 

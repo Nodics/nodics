@@ -9,9 +9,8 @@
 | Module | `nems` |
 | Path | `gCore/nems` |
 | Kind | `capability` |
-| Module Type | `router` |
+| Runtime | `router` |
 | Index | `5.20` |
-| Legacy Type | `router` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module works for Even management and Exchange |
 

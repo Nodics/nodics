@@ -14,18 +14,32 @@ fs.mkdirSync(setupPackage, { recursive: true });
 fs.writeFileSync(path.join(runtimeModule, 'package.json'), JSON.stringify({
     name: 'runtimeModule',
     index: '1.0',
-    type: 'core',
+    nodics: {
+        kind: 'capability',
+        runtime: {
+            router: false,
+            publish: false,
+            web: false
+        },
+        owns: []
+    },
     main: 'nodics.js'
 }, null, 4));
 
 fs.writeFileSync(path.join(setupPackage, 'package.json'), JSON.stringify({
     name: 'gSetup',
     index: '0.5',
-    type: 'setup',
     runtimeModule: false,
     nodics: {
+        kind: 'setup',
+        runtime: {
+            router: false,
+            publish: false,
+            web: false
+        },
         runtimeModule: false,
-        loadableByNodicsModuleLoader: false
+        loadableByNodicsModuleLoader: false,
+        owns: ['llm']
     },
     main: 'nodics.js'
 }, null, 4));
@@ -35,7 +49,8 @@ utils.collectModulesList(root, modulesList);
 
 assert(modulesList.runtimeModule, 'runtime module should be discovered');
 assert.strictEqual(modulesList.gSetup, undefined, 'non-runtime setup package should not be discovered as a Nodics module');
-assert.strictEqual(utils.isRuntimeModule({ name: 'normal' }), true);
+assert.strictEqual(utils.isRuntimeModule({ name: 'missingMetadata' }), false);
+assert.strictEqual(utils.isRuntimeModule({ name: 'normal', nodics: { kind: 'capability' } }), true);
 assert.strictEqual(utils.isRuntimeModule({ name: 'disabled', runtimeModule: false }), false);
 assert.strictEqual(utils.isRuntimeModule({
     name: 'disabledNested',

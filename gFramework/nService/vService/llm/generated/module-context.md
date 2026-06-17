@@ -9,9 +9,8 @@
 | Module | `vService` |
 | Path | `gFramework/nService/vService` |
 | Kind | `publish` |
-| Module Type | `publish` |
+| Runtime | `publish` |
 | Index | `1.5.0` |
-| Legacy Type | `publish` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to vService |
 

@@ -2,10 +2,13 @@
   "moduleName": "nWeb",
   "path": "gFramework/nWeb",
   "kind": "web",
-  "moduleType": "web",
+  "runtime": {
+    "router": true,
+    "publish": false,
+    "web": true
+  },
   "package": {
     "index": "1.14",
-    "type": "web",
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to nWeb"
   },

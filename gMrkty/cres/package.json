@@ -1,7 +1,6 @@
 {
     "name": "cres",
     "index": "300.50",
-    "type": "router",
     "requiredModules": [
         "quizer"
     ],
@@ -22,7 +21,6 @@
     "dependencies": {},
     "nodics": {
         "kind": "capability",
-        "moduleType": "router",
         "runtimeModule": true,
         "loadableByNodicsModuleLoader": true,
         "owns": [
@@ -36,6 +34,11 @@
             "utility",
             "test",
             "llm"
-        ]
+        ],
+        "runtime": {
+            "router": true,
+            "publish": false,
+            "web": false
+        }
     }
 }

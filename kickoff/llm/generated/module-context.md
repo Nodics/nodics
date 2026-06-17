@@ -9,9 +9,8 @@
 | Module | `kickoff` |
 | Path | `kickoff` |
 | Kind | `application` |
-| Module Type | `application` |
+| Runtime | `none` |
 | Index | `1000.99` |
-| Legacy Type | `group` |
 | Version | `0.0.1` |
 | Description | Nodics applicaion module. This module hold all configuration and business logic related to kickoff |
 

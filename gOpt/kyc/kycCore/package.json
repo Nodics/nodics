@@ -1,7 +1,6 @@
 {
     "name": "kycCore",
     "index": "500.50.5",
-    "type": "core",
     "requiredModules": [],
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer kycCore",
     "homepage": "http://www.nodics.com/",
@@ -20,7 +19,6 @@
     "dependencies": {},
     "nodics": {
         "kind": "capability",
-        "moduleType": "core",
         "runtimeModule": true,
         "loadableByNodicsModuleLoader": true,
         "owns": [
@@ -34,6 +32,11 @@
             "utility",
             "test",
             "llm"
-        ]
+        ],
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        }
     }
 }

@@ -9,9 +9,8 @@
 | Module | `nFacade` |
 | Path | `gFramework/nFacade` |
 | Kind | `capability` |
-| Module Type | `core` |
+| Runtime | `none` |
 | Index | `1.9` |
-| Legacy Type | `core` |
 | Version | `0.0.1` |
 | Description | Generate facade layer for application |
 
