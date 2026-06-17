@@ -2,6 +2,14 @@
 
 This file records durable architecture decisions for future developer and AI sessions.
 
+## Enterprise Architecture And Quality Prompt
+
+The LLM enablement pack includes `gSetup/llm/prompts/enterprise-architecture-quality-prompt.md` for significant Nodics design, implementation, security, documentation, generated artifact, and testing work.
+
+This prompt consolidates broad enterprise architecture and quality-engineering guidance into Nodics-specific rules for module ownership, overrideability, generated artifacts, schema hierarchy, documentation, security, runtime governance, diagnostics, access control, and test strategy.
+
+Future AI sessions should use it with the base Nodics prompt whenever the work affects platform behavior, customer customization paths, runtime governance, or enterprise-quality expectations.
+
 ## Enterprise Platform Positioning
 
 Nodics is an enterprise application platform and application factory, not a lightweight Node.js API framework.

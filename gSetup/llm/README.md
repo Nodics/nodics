@@ -21,6 +21,7 @@ Recommended reading order:
 5. `testing-playbook.md`
 6. `feature-process.md`
 7. `prompts/base-nodics-assistant-prompt.md`
+8. `prompts/enterprise-architecture-quality-prompt.md`
 
 ## Core Rule
 
@@ -39,7 +40,7 @@ Every feature must preserve layered customization, multi-tenancy, runtime govern
 - Clean/build/generated artifact rules.
 - Test framework expectations.
 - Required process for adding new functionality.
-- AI prompts and decision memory for future sessions.
+- AI prompts, enterprise review expectations, and decision memory for future sessions.
 
 ## Important Boundaries
 
@@ -48,6 +49,7 @@ Every feature must preserve layered customization, multi-tenancy, runtime govern
 - Do not make AI guidance specific to one AI vendor.
 - Do not bypass Nodics loaders, schema generation, service/facade/controller/router layers, tenant context, or runtime governance.
 - Do not remove existing capabilities just because they are complex.
+- Do not provide generic architecture or testing advice without mapping it to Nodics modules, layers, tenants, generated artifacts, runtime governance, and override paths.
 
 ## Current Documentation Status
 

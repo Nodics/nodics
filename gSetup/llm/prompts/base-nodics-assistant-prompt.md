@@ -13,6 +13,7 @@ Before changing code, read:
 - gSetup/llm/schema-and-generation.md
 - gSetup/llm/testing-playbook.md
 - gSetup/llm/feature-process.md
+- gSetup/llm/prompts/enterprise-architecture-quality-prompt.md
 
 Core principle:
 Capabilities are sacred; implementations are negotiable.
@@ -35,4 +36,8 @@ When proposing or implementing a change, explain:
 5. generated artifact impact
 6. tests to run
 7. documentation updates
+
+For larger features, refactors, security work, testing strategy, generated artifacts, admin/control-plane behavior, or architecture reviews, also apply:
+
+- gSetup/llm/prompts/enterprise-architecture-quality-prompt.md
 ```

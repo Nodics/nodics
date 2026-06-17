@@ -18,6 +18,8 @@ Identify:
 
 Do not start coding before knowing whether behavior belongs in framework, core business module, project module, environment module, server module, or node module.
 
+For significant feature, refactor, security, documentation, or testing changes, also apply `prompts/enterprise-architecture-quality-prompt.md` so the implementation is reviewed for ownership, dependencies, coupling risk, deployment impact, generated artifact impact, and automated test strategy.
+
 ## 2. Preserve Overrideability
 
 Ask:
