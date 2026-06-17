@@ -99,6 +99,13 @@ Nodics Revolution:
     ☐ Make generated admin UI consume effective property access policy for hide/mask/read-only states. @admin @schema-access @ui
     ☐ Add preview/activate/audit/rollback lifecycle for schema/property access policy changes. @runtime @governance @schema-access
 
+  LLM Enablement:
+
+    ✔ Create repo-owned, tool-neutral Nodics LLM enablement pack under `docs/llm`. @llm @docs @done
+    ☐ Extend module-level descriptions as modules are modernized. @llm @docs @modules
+    ☐ Add workflow-specific prompts for review, refactor, testing, schema changes, and runtime governance. @llm @prompts
+    ☐ Keep LLM decision memory aligned with completed architecture slices. @llm @memory
+
   Configuration:
 
     ✔ Make configuration loading order explicit as a formal Nodics contract. @critical @config @done

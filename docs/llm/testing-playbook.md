@@ -1,0 +1,123 @@
+# Testing Playbook
+
+## Testing Philosophy
+
+Nodics tests must protect platform capabilities, layered customization, generated artifacts, tenant isolation, runtime governance, and modular deployment.
+
+Tests should not only validate one happy path. They should prove the framework remains customizable and safe when used by future project modules.
+
+## Basic And Full Suites
+
+`basic` should validate core platform health:
+
+- syntax
+- configuration loading
+- governance checks
+- status catalog
+- traceability
+- headers/auth normalization
+- route contracts
+- generated artifacts
+- system capability behavior
+- import capability behavior
+- profile capability behavior
+- EMS capability behavior
+
+`full` should include basic plus runtime topology checks:
+
+- consolidated server startup
+- modular/microservice startup
+- inter-module API communication
+- event communication when enabled
+- import/data scenarios
+- broader business workflows
+
+## Consolidated And Modular Testing
+
+Nodics supports both single-process and distributed module deployment.
+
+When behavior crosses module boundaries, test both:
+
+- consolidated mode: many modules in one application server.
+- modular mode: profile, NEMS, cronjob, and other modules run separately and communicate over APIs/events.
+
+Profile often needs to be available before modules that require tenant/enterprise/user context. Event-dependent modules require NEMS/EMS capability when included.
+
+## Environment-Specific Tests
+
+Some tests are module-generic. Some are environment/server/node-specific.
+
+The test framework should load tests according to the active module hierarchy, environment, server, and node. Do not assume every project uses `kickoff`.
+
+Project modules may override or replace framework tests when their behavior intentionally differs.
+
+## Dedicated Test Tenant
+
+Tests should use dedicated test tenant/database context where possible so test data does not pollute active environment data.
+
+Default tenant is useful during startup. Active tenant should be used for request/customer behavior.
+
+## Generated Tests
+
+Schema-driven CRUD/API tests should be generated from effective schema and route definitions.
+
+Generated tests must:
+
+- live under generated test folders
+- be removable by clean
+- be recreated by build
+- reflect final schema after layered overrides
+- avoid destructive live operations unless explicitly marked and guarded
+
+## Import Tests
+
+Import tests should cover:
+
+- initializer validation
+- core/sample data catalog behavior
+- format processors: JSON, CSV, Excel
+- diagnostics and failure traceability
+- import/export access policy enforcement
+- import run summaries
+- import run history persistence/query APIs
+
+Recent import history tests prove:
+
+- `DefaultImportRunHistoryService` persists through generated `DefaultImportRunService`
+- diagnostics delegates history persistence without blocking import
+- routes expose import run history through secured APIs
+- generated tests include `import.importRun` after clean/build
+
+## Required Verification By Change Type
+
+Schema/router/generation changes:
+
+```bash
+npm run clean
+npm run build
+npm run test:generated
+npm run test:basic
+```
+
+Import changes:
+
+```bash
+npm run test:import
+npm run test:basic
+```
+
+Runtime governance changes:
+
+```bash
+npm run test:runtime-overrides
+npm run test:governance
+npm run test:basic
+```
+
+Topology changes:
+
+```bash
+npm run test:topology:consolidated
+npm run test:topology:modular
+npm run test:full
+```
