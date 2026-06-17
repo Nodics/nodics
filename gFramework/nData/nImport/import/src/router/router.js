@@ -10,5 +10,45 @@
  */
 
 module.exports = {
-
+    import: {
+        importRunHistory: {
+            getImportRunHistory: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                key: '/run/history',
+                method: 'GET',
+                controller: 'DefaultImportRunHistoryController',
+                operation: 'getImportRunHistory',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/import/v0/run/history',
+                    query: {
+                        runId: 'Optional import run id',
+                        status: 'Optional import run status',
+                        dataType: 'Optional import data type',
+                        tenant: 'Optional tenant code',
+                        moduleName: 'Optional module name',
+                        limit: 'Optional page size',
+                        skip: 'Optional page offset'
+                    }
+                }
+            },
+            getImportRun: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                key: '/run/history/:runId',
+                method: 'GET',
+                controller: 'DefaultImportRunHistoryController',
+                operation: 'getImportRun',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/import/v0/run/history/:runId'
+                }
+            }
+        }
+    }
 };

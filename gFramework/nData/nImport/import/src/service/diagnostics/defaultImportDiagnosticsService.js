@@ -77,8 +77,32 @@ module.exports = {
         summary.totalRecordsHandled = (summary.recordsSucceeded || 0) + (summary.recordsFailed || 0) + (summary.recordsSkipped || 0);
         summary.totalFilesDiscovered = summary.dataFilesDiscovered || (importRun.dataFiles.discovered || []).length;
         summary.totalHeaders = (summary.enabledHeaders || 0) + (summary.disabledHeaders || 0);
+        this.recordRunHistory(request);
 
         return importRun;
+    },
+
+    recordRunHistory: function (request) {
+        if (typeof SERVICE === 'undefined' || !SERVICE.DefaultImportRunHistoryService || typeof SERVICE.DefaultImportRunHistoryService.recordRun !== 'function') {
+            return;
+        }
+        SERVICE.DefaultImportRunHistoryService.recordRun(request).then(success => {
+            if (request.importRun) {
+                request.importRun.history = {
+                    persisted: !success.skipped,
+                    skipped: !!success.skipped,
+                    reason: success.reason
+                };
+            }
+        }).catch(error => {
+            if (request.importRun) {
+                request.importRun.history = {
+                    persisted: false,
+                    skipped: true,
+                    error: this.normalizeError(error)
+                };
+            }
+        });
     },
 
     resolveStatus: function (importRun, requestedStatus) {

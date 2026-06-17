@@ -10,5 +10,107 @@
  */
 
 module.exports = {
-
+    import: {
+        importRun: {
+            super: 'base',
+            model: true,
+            service: {
+                enabled: true
+            },
+            event: {
+                enabled: false
+            },
+            router: {
+                enabled: true
+            },
+            tenants: ['default'],
+            definition: {
+                runId: {
+                    type: 'string',
+                    required: true,
+                    description: 'Unique import run identifier'
+                },
+                status: {
+                    type: 'string',
+                    required: true,
+                    description: 'Current import run status'
+                },
+                dataType: {
+                    type: 'string',
+                    required: false,
+                    description: 'Import data type such as init, core, sample, local, or remote'
+                },
+                tenant: {
+                    type: 'string',
+                    required: false,
+                    description: 'Tenant used for the import run'
+                },
+                modules: {
+                    type: 'array',
+                    required: false,
+                    description: 'Modules requested for the import run'
+                },
+                requestedBy: {
+                    type: 'string',
+                    required: false,
+                    description: 'User or process that started the import run'
+                },
+                correlationId: {
+                    type: 'string',
+                    required: false,
+                    description: 'Correlation id from the triggering request or event'
+                },
+                startedAt: {
+                    type: 'string',
+                    required: false,
+                    description: 'Import run start timestamp'
+                },
+                finishedAt: {
+                    type: 'string',
+                    required: false,
+                    description: 'Import run finish timestamp'
+                },
+                durationMs: {
+                    type: 'int',
+                    required: false,
+                    description: 'Import run duration in milliseconds'
+                },
+                summary: {
+                    type: 'object',
+                    required: false,
+                    description: 'Import counters and aggregate summary'
+                },
+                dataFiles: {
+                    type: 'object',
+                    required: false,
+                    description: 'Discovered, matched, and unmatched import data files'
+                },
+                headers: {
+                    type: 'array',
+                    required: false,
+                    description: 'Import headers discovered for this run'
+                },
+                failures: {
+                    type: 'array',
+                    required: false,
+                    description: 'Normalized import failures with context'
+                },
+                validationErrors: {
+                    type: 'array',
+                    required: false,
+                    description: 'Validation errors collected before import processing'
+                },
+                failureCount: {
+                    type: 'int',
+                    required: false,
+                    description: 'Number of recorded import failures'
+                },
+                validationErrorCount: {
+                    type: 'int',
+                    required: false,
+                    description: 'Number of recorded validation errors'
+                }
+            }
+        }
+    }
 };
