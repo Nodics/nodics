@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "cronjob",
   "path": "gCore/cronjob",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 33,
   "testFiles": 13,
   "dataFiles": 4,
+  "ownedFiles": 48,
+  "sourceFingerprint": "8efc2160243cda00e42f2ca1c1fd1f23f2811d92d0f584177740b61ffd01136f",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 12,
+    "undocumented": 34,
+    "inventory-only": 2
+  },
   "schemaGroups": {
     "cronjob": [
       "cronJob",

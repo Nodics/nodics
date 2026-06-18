@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "wquiz",
   "path": "gCore/quizer/wquiz",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "81664485af2a91bdcc6e29a617f748d60a5d917df8a29ed511408c32a24cc709",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 11,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

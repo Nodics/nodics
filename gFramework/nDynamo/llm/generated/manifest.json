@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "dynamo",
   "path": "gFramework/nDynamo",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 33,
   "testFiles": 43,
   "dataFiles": 0,
+  "ownedFiles": 58,
+  "sourceFingerprint": "8139c3b0b42dc159e05f762131daed24fbda91d9ea19b7a4c45eeb62eba1cc3c",
+  "documentation": {
+    "documented": 9,
+    "partially-documented": 17,
+    "undocumented": 29,
+    "inventory-only": 3
+  },
   "schemaGroups": {
     "dynamo": [
       "classConfiguration",

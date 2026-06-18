@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "elasticdb",
   "path": "gFramework/nDatabase/elasticdb",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 5,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 14,
+  "sourceFingerprint": "1d153db8c18bc3b437e973b7a3c88a2e4630e4499057c972f6265b1889072780",
+  "documentation": {
+    "documented": 3,
+    "partially-documented": 1,
+    "undocumented": 7,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

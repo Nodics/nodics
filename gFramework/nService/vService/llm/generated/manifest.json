@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "vService",
   "path": "gFramework/nService/vService",
   "kind": "publish",
@@ -15,6 +16,14 @@
   "sourceFiles": 10,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 19,
+  "sourceFingerprint": "cbe3db63ff42104767636c7a8502c9db6e004f1b75242a66c671123934f3258d",
+  "documentation": {
+    "documented": 8,
+    "partially-documented": 1,
+    "undocumented": 7,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

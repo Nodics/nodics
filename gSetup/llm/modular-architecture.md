@@ -24,6 +24,17 @@ Environment, server, and node are different concepts:
 
 When no server name is provided, the current default may use `kickoffLocalServer`, but framework logic should not hardcode this outside default startup configuration.
 
+The runtime hierarchy is metadata-driven:
+
+- the environment container such as `kickoffEnvs` is a `nodics.kind: "group"` package.
+- each concrete environment such as `kickoffLocal` is a `nodics.kind: "environment"` package.
+- each runnable server under an environment is a `nodics.kind: "server"` package.
+- each runnable node under a server is a `nodics.kind: "node"` package.
+
+Every selected environment group, environment, server, and node must provide `config/properties.js`. The startup initializer validates these files, validates parent/child relationships, and validates index order before loading runtime services.
+
+Do not introduce alternate metadata names for the same concept. Nodics module classification belongs in `package.json.nodics.kind`; runtime flags belong in `package.json.nodics.runtime`; ownership belongs in `package.json.nodics.owns`.
+
 ## Consolidated And Modular Runtime
 
 Nodics supports both:
@@ -32,6 +43,16 @@ Nodics supports both:
 - modular runtime: modules run as separate applications/processes and communicate through APIs/events.
 
 Testing should cover both styles when behavior depends on module communication.
+
+Topology smoke tests should be configured from the active project/environment, not hardcoded in framework code. The local reference topology uses `test.runtimeTopology` to declare the consolidated server, modular servers, and communication checks. A project such as an eCommerce implementation should define its own topology in its own environment module.
+
+Use these checks when changing startup, module activation, server/node properties, or inter-module communication:
+
+```bash
+npm run test:config
+npm run test:topology:consolidated
+npm run test:topology:modular
+```
 
 ## Layered Override Targets
 

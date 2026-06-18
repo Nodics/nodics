@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "token",
   "path": "gFramework/nToken",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 13,
   "testFiles": 3,
   "dataFiles": 0,
+  "ownedFiles": 22,
+  "sourceFingerprint": "15814102682ccad1fac9dc0f57ba61707d2caf78a20577c125a5ffbd907261d6",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 4,
+    "undocumented": 15,
+    "inventory-only": 3
+  },
   "schemaGroups": {
     "token": [
       "token"

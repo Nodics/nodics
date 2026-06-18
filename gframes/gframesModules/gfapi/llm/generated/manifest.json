@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "gfapi",
   "path": "gframes/gframesModules/gfapi",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 6,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 15,
+  "sourceFingerprint": "ed2e091a4f966a52e92c3be94452df5c92359d7d37629542a89a9edfd601e600",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 11,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

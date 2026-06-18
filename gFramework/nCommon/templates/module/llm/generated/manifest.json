@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "customApplication",
   "path": "gFramework/nCommon/templates/module",
   "kind": "template",
@@ -15,6 +16,14 @@
   "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "c58f7b19ce5c3169e0a8f45b051bb5fb37a9b9d34323bd05cb3ff8f2b48fc535",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 11,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

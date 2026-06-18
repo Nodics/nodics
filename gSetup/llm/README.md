@@ -1,6 +1,6 @@
 # Nodics LLM Enablement Pack
 
-This folder is the source-controlled context pack for AI-assisted Nodics development. It is intentionally tool-neutral: ChatGPT, Claude, Codex, local agents, or any other LLM should be able to read these files and work with Nodics safely.
+This folder is the source-controlled context pack for AI-assisted Nodics development. It is intentionally tool-neutral: hosted models, local models, coding agents, IDE assistants, and future automation tools should be able to read these files and work with Nodics safely.
 
 Use this pack before making architectural recommendations, code changes, tests, generated artifacts, or documentation.
 
@@ -49,10 +49,16 @@ Every feature must preserve layered customization, multi-tenancy, runtime govern
 - Do not place generated files under `gSetup/llm`.
 - Keep source-derived module LLM files under each module's `llm/generated` folder.
 - Do not make AI guidance specific to one AI vendor.
+- Do not require vendor-specific commands, hidden instruction files, response formats, or proprietary agent features for the standard Nodics workflow.
+- Keep instructions in portable Markdown and source-derived JSON. Vendor adapters may reference this pack, but must not become its source of truth.
 - Do not bypass Nodics loaders, schema generation, service/facade/controller/router layers, tenant context, or runtime governance.
 - Do not remove existing capabilities just because they are complex.
 - Do not provide generic architecture or testing advice without mapping it to Nodics modules, layers, tenants, generated artifacts, runtime governance, and override paths.
 
-## Current Documentation Status
+## Context Quality Contract
 
-This is the first version of the LLM enablement pack. It should grow as Nodics modernization continues. Every significant architectural decision should update `memory/decisions.md` or the appropriate topic file.
+Context existence is not the same as context quality. A useful module context must identify ownership, runtime responsibility, dependencies, extension points, generated artifacts, configuration, tests, and known documentation gaps.
+
+Generated context reports source-derived facts and must never invent undocumented business intent. Each module's `generated/module-context.md` contains a file inventory that marks source documentation as `documented`, `partially-documented`, or `undocumented`; non-JavaScript files are `inventory-only`. The source fingerprint in `manifest.json` lets validation detect stale context after any owned file changes.
+
+Documentation completion is incremental and governed. Do not mark a module complete merely because its `llm` folder exists. Add an enforced documentation gate only after its file and method contracts have been reviewed for accuracy.

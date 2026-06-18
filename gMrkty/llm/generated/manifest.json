@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "gMrkty",
   "path": "gMrkty",
   "kind": "group",
@@ -15,6 +16,14 @@
   "sourceFiles": 0,
   "testFiles": 0,
   "dataFiles": 0,
+  "ownedFiles": 7,
+  "sourceFingerprint": "a42f052c6a3cd85c07ef1083d18535f03574aeb54a66d3dc283171df9c3ad0f1",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 3,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

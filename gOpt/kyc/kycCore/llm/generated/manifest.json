@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "kycCore",
   "path": "gOpt/kyc/kycCore",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 17,
   "testFiles": 2,
   "dataFiles": 6,
+  "ownedFiles": 32,
+  "sourceFingerprint": "88b1147206a03261b77f0e7df60eb48b6897a33bc72aba31e4c39b07df8f1a69",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 11,
+    "undocumented": 18,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

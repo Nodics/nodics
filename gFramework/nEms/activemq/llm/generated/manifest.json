@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "activemq",
   "path": "gFramework/nEms/activemq",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 6,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 15,
+  "sourceFingerprint": "afd293f36c06d92bd6af637db71501d46d6b393d3ff2ee9233427ab89248b57b",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 10,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

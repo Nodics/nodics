@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "nTest",
   "path": "gFramework/nTest",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 9,
   "testFiles": 3,
   "dataFiles": 0,
+  "ownedFiles": 19,
+  "sourceFingerprint": "6b25ea02aaddc99d505e21bac7cc4987072fa80e705970ecf39d3aa2a5de87c2",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 4,
+    "undocumented": 12,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

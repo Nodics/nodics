@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "dataConsumer",
   "path": "gDeap/dataConsumer",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 10,
   "testFiles": 10,
   "dataFiles": 4,
+  "ownedFiles": 23,
+  "sourceFingerprint": "470edb7b9b14c0b45fddf23663763cfa8be184f38d2a3454ee085c0b32a0a052",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 4,
+    "undocumented": 16,
+    "inventory-only": 3
+  },
   "schemaGroups": {
     "dataConsumer": [
       "externalData",

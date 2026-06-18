@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "vMongodb",
   "path": "gFramework/nDatabase/mongodb/vMongodb",
   "kind": "publish",
@@ -15,6 +16,14 @@
   "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "0bed823afe4879fb4f42b71d389548851871eb81e76ae25cb97be677ef20f1aa",
+  "documentation": {
+    "documented": 4,
+    "partially-documented": 1,
+    "undocumented": 8,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

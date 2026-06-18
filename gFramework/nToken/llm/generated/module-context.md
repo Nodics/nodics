@@ -32,7 +32,39 @@
 | Source files | 13 |
 | Test files | 3 |
 | Data files | 0 |
+| All module-owned files | 22 |
 | Local schema definitions | 1 |
+
+## Ownership And Dependencies
+
+**Owned extension areas**
+
+- `configuration`
+- `schema`
+- `router`
+- `service`
+- `pipeline`
+- `interceptor`
+- `utility`
+- `test`
+- `llm`
+
+**Required modules**
+
+- No required modules are declared.
+
+**Contained modules**
+
+- This package does not declare contained modules.
+
+## Documentation Status
+
+| Status | Files |
+| --- | ---: |
+| Documented | 0 |
+| Partially documented | 4 |
+| Undocumented | 15 |
+| Inventory only | 3 |
 
 ## Important Files
 
@@ -45,9 +77,39 @@
 - `gFramework/nToken/src/schemas/schemas.js`
 - `gFramework/nToken/src/router/router.js`
 
+## File Inventory
+
+This inventory covers every module-owned file included in the context fingerprint. Documentation status is factual: generated inventory never invents business intent for undocumented code.
+
+| File | Area | Status | Methods | Purpose | Gaps |
+| --- | --- | --- | ---: | --- | --- |
+| `gFramework/nToken/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nToken/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nToken/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nToken/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nToken/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nToken/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nToken/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nToken/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nToken/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nToken/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nToken/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nToken/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nToken/src/service/DefaultTokenService.js` | `src` | `undocumented` | 0/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nToken/src/service/handler/defaultTokenHandlerService.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
+| `gFramework/nToken/src/service/interceptor/defaultTokenValidityCheckInterceptorService.js` | `src` | `undocumented` | 0/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
+| `gFramework/nToken/src/service/pipelines/defaultGenerateTokenPipelineService.js` | `src` | `partially-documented` | 2/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
+| `gFramework/nToken/src/service/pipelines/defaultValidateTokenPipelineService.js` | `src` | `partially-documented` | 2/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
+| `gFramework/nToken/src/utils/enums.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nToken/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nToken/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nToken/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nToken/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+
 ## Extension Contract
 
 - Treat this module as a replaceable layer in the Nodics hierarchy.
 - Later project/environment/server/node modules may override schemas, routers, services, facades, controllers, pipelines, interceptors, data, tests, and configuration.
 - Preserve source definitions as the contract. Generated artifacts must be recreated by build and cleaned by clean.
 - Add human-authored LLM notes only for intent, boundaries, examples, and decisions that cannot be derived from source.
+- Use the file inventory above to find documented, partially documented, and undocumented source contracts; an inventory entry is not proof that documentation is complete.

@@ -35,7 +35,42 @@
 | Source files | 42 |
 | Test files | 19 |
 | Data files | 0 |
+| All module-owned files | 55 |
 | Local schema definitions | 4 |
+
+## Ownership And Dependencies
+
+**Owned extension areas**
+
+- `configuration`
+- `schema`
+- `router`
+- `controller`
+- `facade`
+- `service`
+- `pipeline`
+- `event`
+- `search`
+- `utility`
+- `test`
+- `llm`
+
+**Required modules**
+
+- No required modules are declared.
+
+**Contained modules**
+
+- This package does not declare contained modules.
+
+## Documentation Status
+
+| Status | Files |
+| --- | ---: |
+| Documented | 0 |
+| Partially documented | 29 |
+| Undocumented | 23 |
+| Inventory only | 3 |
 
 ## Important Files
 
@@ -48,9 +83,72 @@
 - `gFramework/nSearch/search/src/schemas/schemas.js`
 - `gFramework/nSearch/search/src/router/router.js`
 
+## File Inventory
+
+This inventory covers every module-owned file included in the context fingerprint. Documentation status is factual: generated inventory never invents business intent for undocumented code.
+
+| File | Area | Status | Methods | Purpose | Gaps |
+| --- | --- | --- | ---: | --- | --- |
+| `gFramework/nSearch/search/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nSearch/search/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nSearch/search/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nSearch/search/src/controller/common.js` | `src` | `partially-documented` | 15/15 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/src/controller/defaultSearchController.js` | `src` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/src/facade/common.js` | `src` | `partially-documented` | 2/15 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 13 exported method(s) |
+| `gFramework/nSearch/search/src/facade/defaultSearchFacade.js` | `src` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/src/lib/searchEngine.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/src/lib/searchError.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/src/search/indexes.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/src/service/cache/defaultCacheService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gFramework/nSearch/search/src/service/common.js` | `src` | `partially-documented` | 2/16 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 14 exported method(s) |
+| `gFramework/nSearch/search/src/service/config/defaultSearchConfigurationService.js` | `src` | `partially-documented` | 3/23 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 20 exported method(s) |
+| `gFramework/nSearch/search/src/service/connection/defaultSearchEngineConnectionHandlerService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nSearch/search/src/service/handlers/defaultSearchPropertiesValueHandlerService.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
+| `gFramework/nSearch/search/src/service/indexer/defaultIndexerService.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gFramework/nSearch/search/src/service/model/defaultSearchModelHandlerService.js` | `src` | `partially-documented` | 2/11 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 9 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/doBulk/defaultDoBulkModelsInitializerService.js` | `src` | `partially-documented` | 2/11 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 9 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/doExist/defaultDoExistModelInitializerService.js` | `src` | `partially-documented` | 2/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/doHealthCheck/defaultDoCheckClusterHealthInitializerService.js` | `src` | `partially-documented` | 2/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/doMapping/defaultDoGetSchemaInitializerService.js` | `src` | `partially-documented` | 2/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/doMapping/defaultDoUpdateSchemaInitializerService.js` | `src` | `partially-documented` | 2/9 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/doRefresh/defaultDoRefreshInitializerService.js` | `src` | `partially-documented` | 2/10 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 8 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/doRemoveIndex/defaultDoRemoveIndexInitializerService.js` | `src` | `partially-documented` | 2/12 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 10 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/doSearch/defaultDoSearchModelsInitializerService.js` | `src` | `partially-documented` | 2/12 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 10 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/doget/defaultDoGetModelsInitializerService.js` | `src` | `partially-documented` | 2/12 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 10 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/doremove/defaultDoRemoveModelsByQueryInitializerService.js` | `src` | `partially-documented` | 2/13 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 11 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/doremove/defaultDoRemoveModelsInitializerService.js` | `src` | `partially-documented` | 2/13 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 11 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/dosave/defaultDoSaveModelInitializerService.js` | `src` | `partially-documented` | 2/18 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 16 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/dosave/defaultDoSaveModelsInitializerService.js` | `src` | `partially-documented` | 2/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/indexer/defaultIndexerDataHandlerService.js` | `src` | `partially-documented` | 3/9 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/indexer/defaultIndexerInitializerService.js` | `src` | `partially-documented` | 2/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/indexer/external/defaultExternalIndexerInitializerService.js` | `src` | `partially-documented` | 2/11 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 9 exported method(s) |
+| `gFramework/nSearch/search/src/service/procs/indexer/internal/defaultInternalIndexerInitializerService.js` | `src` | `partially-documented` | 2/12 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 10 exported method(s) |
+| `gFramework/nSearch/search/src/service/provider/defaultSearchValueProviderHandlerService.js` | `src` | `undocumented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
+| `gFramework/nSearch/search/src/service/schema/defaultSearchSchemaHandlerService.js` | `src` | `partially-documented` | 2/9 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nSearch/search/src/service/virtual/defaultSearchVirtualPropertiesHandlerService.js` | `src` | `undocumented` | 0/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nSearch/search/src/utils/enums.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nSearch/search/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nSearch/search/test/indexerServiceContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/test/searchControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/test/searchRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/test/searchServicePipelineContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+
 ## Extension Contract
 
 - Treat this module as a replaceable layer in the Nodics hierarchy.
 - Later project/environment/server/node modules may override schemas, routers, services, facades, controllers, pipelines, interceptors, data, tests, and configuration.
 - Preserve source definitions as the contract. Generated artifacts must be recreated by build and cleaned by clean.
 - Add human-authored LLM notes only for intent, boundaries, examples, and decisions that cannot be derived from source.
+- Use the file inventory above to find documented, partially documented, and undocumented source contracts; an inventory entry is not proof that documentation is complete.

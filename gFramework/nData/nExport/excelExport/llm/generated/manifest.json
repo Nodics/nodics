@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "excelExport",
   "path": "gFramework/nData/nExport/excelExport",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 5,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 14,
+  "sourceFingerprint": "2097410eaa032093dfecbe2570c3bb4a19daaa2896a7b4fcca041df44eb76f8d",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 10,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

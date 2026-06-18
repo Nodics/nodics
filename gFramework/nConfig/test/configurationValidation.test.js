@@ -63,13 +63,46 @@ assert(NODICS.isModuleActive('kickoffLocalNode0'), 'selected node module should 
 
 initializeConfiguration('kickoffLocalServer');
 assert(NODICS.isModuleActive('profile'), 'consolidated local server should include profile');
+assert.strictEqual(NODICS.getRawModule(NODICS.getEnvironmentName()).metaData.nodics.kind, 'group');
+assert.strictEqual(NODICS.getRawModule(NODICS.getServerRootName()).metaData.nodics.kind, 'environment');
+assert.strictEqual(NODICS.getRawModule(NODICS.getServerName()).metaData.nodics.kind, 'server');
+initService.validateSelectedRuntimeKinds();
+initService.validateSelectedRuntimeConfigurationFiles();
+initService.validateRequiredModuleDependencies();
 
 let serverProperties = CONFIG.getProperties();
 assert(serverProperties.server.default, 'server.default should be available after environment/server merge');
 assert(serverProperties.server.default.server.httpPort, 'server.default.server.httpPort should be defined');
+initService.validateRuntimeTopologyConfiguration(serverProperties);
 
 let loadOrder = initService.getConfigurationLoadOrder();
 assert(loadOrder.includes('active module /config/properties.js files in module index order'));
+
+assert.throws(() => {
+    initService.validateModuleKind('profile', 'server', 'test module kind validation');
+}, /must have nodics.kind server/);
+
+assert.throws(() => {
+    initService.validateRuntimeTopologyConfiguration({
+        test: {
+            runtimeTopology: {
+                consolidatedServer: 'missingServer',
+                modularServers: ['kickoffLocalProfileServer']
+            }
+        }
+    });
+}, /unknown module: missingServer/);
+
+assert.throws(() => {
+    initService.validateRuntimeTopologyConfiguration({
+        test: {
+            runtimeTopology: {
+                consolidatedServer: 'kickoffLocalServer',
+                modularServers: ['kickoffLocalProfileServer', 'kickoffLocalProfileServer']
+            }
+        }
+    });
+}, /duplicate server/);
 
 assert.throws(() => {
     initService.validateConfiguredModules({

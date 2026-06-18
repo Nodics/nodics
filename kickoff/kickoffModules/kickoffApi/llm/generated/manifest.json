@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "kickoffApi",
   "path": "kickoff/kickoffModules/kickoffApi",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 6,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 15,
+  "sourceFingerprint": "74e9f98dc873f2ecf6e508ae7a9129161a2da5da118a75323e55af1a24e2221d",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 10,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

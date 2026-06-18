@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "kickoffProd",
   "path": "kickoff/kickoffEnvs/kickoffProd",
   "kind": "environment",
@@ -15,6 +16,14 @@
   "sourceFiles": 0,
   "testFiles": 0,
   "dataFiles": 0,
+  "ownedFiles": 7,
+  "sourceFingerprint": "478d6591fc1c57a1505b0d5cb4cfc784a111e916cfc31b1dee2ba22a0bc76162",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 3,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

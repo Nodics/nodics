@@ -33,7 +33,40 @@
 | Source files | 15 |
 | Test files | 9 |
 | Data files | 0 |
+| All module-owned files | 27 |
 | Local schema definitions | 1 |
+
+## Ownership And Dependencies
+
+**Owned extension areas**
+
+- `configuration`
+- `schema`
+- `router`
+- `controller`
+- `facade`
+- `service`
+- `pipeline`
+- `utility`
+- `test`
+- `llm`
+
+**Required modules**
+
+- No required modules are declared.
+
+**Contained modules**
+
+- This package does not declare contained modules.
+
+## Documentation Status
+
+| Status | Files |
+| --- | ---: |
+| Documented | 0 |
+| Partially documented | 8 |
+| Undocumented | 16 |
+| Inventory only | 3 |
 
 ## Important Files
 
@@ -46,9 +79,44 @@
 - `gFramework/nEms/emsClient/src/schemas/schemas.js`
 - `gFramework/nEms/emsClient/src/router/router.js`
 
+## File Inventory
+
+This inventory covers every module-owned file included in the context fingerprint. Documentation status is factual: generated inventory never invents business intent for undocumented code.
+
+| File | Area | Status | Methods | Purpose | Gaps |
+| --- | --- | --- | ---: | --- | --- |
+| `gFramework/nEms/emsClient/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nEms/emsClient/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nEms/emsClient/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nEms/emsClient/src/controller/defaultEmsClientController.js` | `src` | `undocumented` | 0/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
+| `gFramework/nEms/emsClient/src/facade/defaultEmsClientFacade.js` | `src` | `undocumented` | 0/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
+| `gFramework/nEms/emsClient/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/src/service/config/defaultEmsClientConfigurationService.js` | `src` | `partially-documented` | 2/13 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 11 exported method(s) |
+| `gFramework/nEms/emsClient/src/service/ems/defaultEmsClientService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
+| `gFramework/nEms/emsClient/src/service/handlers/defaultJSONMessageHandlerService.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
+| `gFramework/nEms/emsClient/src/service/handlers/defaultXMLMessageHandlerService.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
+| `gFramework/nEms/emsClient/src/service/node/defaultEmsNodeDownHandlerService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nEms/emsClient/src/service/node/defaultEmsNodeUpHandlerService.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
+| `gFramework/nEms/emsClient/src/service/proc/defaultMessageProcessService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nEms/emsClient/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/test/activeEmsPublisher.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nEms/emsClient/test/emsClientRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nEms/emsClient/test/messageTenantResolution.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+
 ## Extension Contract
 
 - Treat this module as a replaceable layer in the Nodics hierarchy.
 - Later project/environment/server/node modules may override schemas, routers, services, facades, controllers, pipelines, interceptors, data, tests, and configuration.
 - Preserve source definitions as the contract. Generated artifacts must be recreated by build and cleaned by clean.
 - Add human-authored LLM notes only for intent, boundaries, examples, and decisions that cannot be derived from source.
+- Use the file inventory above to find documented, partially documented, and undocumented source contracts; an inventory entry is not proof that documentation is complete.

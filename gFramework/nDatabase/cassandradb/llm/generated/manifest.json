@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "cassandradb",
   "path": "gFramework/nDatabase/cassandradb",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 5,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 14,
+  "sourceFingerprint": "89b435b26b35cbdd097d8d0631998009134a9f508eb543e2b107157ab112f6d3",
+  "documentation": {
+    "documented": 3,
+    "partially-documented": 1,
+    "undocumented": 7,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "cms",
   "path": "gContent/cms",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 9,
   "testFiles": 24,
   "dataFiles": 24,
+  "ownedFiles": 42,
+  "sourceFingerprint": "e864a708d227e16cad89e438d79bd2b6e46ed234a58572c9d3e5d75a1f156822",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 4,
+    "undocumented": 35,
+    "inventory-only": 3
+  },
   "schemaGroups": {
     "cms": [
       "cmsBase",

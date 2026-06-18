@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "nFacade",
   "path": "gFramework/nFacade",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 64,
   "testFiles": 0,
   "dataFiles": 0,
+  "ownedFiles": 14,
+  "sourceFingerprint": "a4baf075674effe427826339d5b069fcabf13044f106eeeb94c5ca8ad4e99123",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 5,
+    "undocumented": 6,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

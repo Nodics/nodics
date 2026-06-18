@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "quiz",
   "path": "gCore/quizer/quiz",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "4fa100539f3ac326dcc9f6c7a02bb4bfdaf938d3f74c22f3d5df8e8541942310",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 11,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

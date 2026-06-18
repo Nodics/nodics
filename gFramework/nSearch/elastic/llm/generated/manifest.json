@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "elastic",
   "path": "gFramework/nSearch/elastic",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 8,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 17,
+  "sourceFingerprint": "9dcedac6ec4c325fb43e3dd49b9b80bd8433d7b8185d76ceb6dd2cf908b40e6a",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 3,
+    "undocumented": 11,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

@@ -30,7 +30,37 @@
 | Source files | 5 |
 | Test files | 2 |
 | Data files | 0 |
+| All module-owned files | 14 |
 | Local schema definitions | 0 |
+
+## Ownership And Dependencies
+
+**Owned extension areas**
+
+- `configuration`
+- `schema`
+- `router`
+- `pipeline`
+- `utility`
+- `test`
+- `llm`
+
+**Required modules**
+
+- No required modules are declared.
+
+**Contained modules**
+
+- This package does not declare contained modules.
+
+## Documentation Status
+
+| Status | Files |
+| --- | ---: |
+| Documented | 3 |
+| Partially documented | 1 |
+| Undocumented | 7 |
+| Inventory only | 3 |
 
 ## Important Files
 
@@ -43,9 +73,31 @@
 - `gFramework/nDatabase/cassandradb/src/schemas/schemas.js`
 - `gFramework/nDatabase/cassandradb/src/router/router.js`
 
+## File Inventory
+
+This inventory covers every module-owned file included in the context fingerprint. Documentation status is factual: generated inventory never invents business intent for undocumented code.
+
+| File | Area | Status | Methods | Purpose | Gaps |
+| --- | --- | --- | ---: | --- | --- |
+| `gFramework/nDatabase/cassandradb/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDatabase/cassandradb/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDatabase/cassandradb/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDatabase/cassandradb/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nDatabase/cassandradb/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDatabase/cassandradb/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nDatabase/cassandradb/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nDatabase/cassandradb/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Cassandra database adapter pipeline extension slot. The base adapter does not define custom pipelines, but layered modules can add Cassandra-specific database behavior here. |  |
+| `gFramework/nDatabase/cassandradb/src/router/appConfig.js` | `src` | `documented` | 0/0 | Cassandra database adapter router app configuration extension slot. |  |
+| `gFramework/nDatabase/cassandradb/src/router/router.js` | `src` | `documented` | 0/0 | Cassandra database adapter route definition extension slot. |  |
+| `gFramework/nDatabase/cassandradb/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDatabase/cassandradb/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDatabase/cassandradb/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nDatabase/cassandradb/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+
 ## Extension Contract
 
 - Treat this module as a replaceable layer in the Nodics hierarchy.
 - Later project/environment/server/node modules may override schemas, routers, services, facades, controllers, pipelines, interceptors, data, tests, and configuration.
 - Preserve source definitions as the contract. Generated artifacts must be recreated by build and cleaned by clean.
 - Add human-authored LLM notes only for intent, boundaries, examples, and decisions that cannot be derived from source.
+- Use the file inventory above to find documented, partially documented, and undocumented source contracts; an inventory entry is not proof that documentation is complete.

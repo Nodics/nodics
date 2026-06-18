@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "gframesModules",
   "path": "gframes/gframesModules",
   "kind": "group",
@@ -15,6 +16,14 @@
   "sourceFiles": 0,
   "testFiles": 0,
   "dataFiles": 0,
+  "ownedFiles": 7,
+  "sourceFingerprint": "24290d3359576f945a4a23d687660a8fdea49e66bacae32b8d5365be4394e081",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 3,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

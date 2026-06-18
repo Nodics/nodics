@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "kickoffLocalDeapNode1",
   "path": "kickoff/kickoffEnvs/kickoffLocal/kickoffLocalDeapServer/kickoffLocalDeapNode1",
   "kind": "node",
@@ -15,6 +16,14 @@
   "sourceFiles": 6,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 15,
+  "sourceFingerprint": "d8d75cfd6f735d7601942b5097dc2a7c3bc06ad511a3985f7074927ccf339cba",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 10,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

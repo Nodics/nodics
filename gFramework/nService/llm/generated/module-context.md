@@ -29,7 +29,37 @@
 | Source files | 77 |
 | Test files | 2 |
 | Data files | 0 |
+| All module-owned files | 29 |
 | Local schema definitions | 0 |
+
+## Ownership And Dependencies
+
+**Owned extension areas**
+
+- `composition`
+- `configuration`
+- `service`
+- `pipeline`
+- `utility`
+- `test`
+- `llm`
+
+**Required modules**
+
+- No required modules are declared.
+
+**Contained modules**
+
+- This package does not declare contained modules.
+
+## Documentation Status
+
+| Status | Files |
+| --- | ---: |
+| Documented | 18 |
+| Partially documented | 1 |
+| Undocumented | 7 |
+| Inventory only | 3 |
 
 ## Important Files
 
@@ -40,9 +70,46 @@
 - `gFramework/nService/config/prescripts.js`
 - `gFramework/nService/config/postscripts.js`
 
+## File Inventory
+
+This inventory covers every module-owned file included in the context fingerprint. Documentation status is factual: generated inventory never invents business intent for undocumented code.
+
+| File | Area | Status | Methods | Purpose | Gaps |
+| --- | --- | --- | ---: | --- | --- |
+| `gFramework/nService/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nService/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nService/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nService/src/lib/moduleConfiguration.js` | `src` | `documented` | 0/0 | Runtime topology descriptor for one module in a distributed Nodics deployment. It stores module-level request options, server endpoint, abstract server endpoint, node endpoints, and server-running state. |  |
+| `gFramework/nService/src/lib/modulesConfigurationContainer.js` | `src` | `documented` | 0/0 | Runtime container for module topology configuration loaded from layered `server` properties. It builds `ModuleConfiguration` objects used for internal module communication and distributed node routing. |  |
+| `gFramework/nService/src/lib/nodeConfiguration.js` | `src` | `documented` | 0/0 | Runtime endpoint descriptor for one server or node. Module topology objects use this class to expose HTTP/HTTPS host and port data for internal service calls. |  |
+| `gFramework/nService/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | nService pipeline extension slot. The base service module does not define additional pipelines, but this file preserves the layered location for service-level runtime orchestration. |  |
+| `gFramework/nService/src/service/apikey/defaultAPIKeyService.js` | `src` | `documented` | 2/2 | API key service extension slot for profile-backed and distributed API key lifecycle behavior. The active implementation is currently provided by generated/profile services; this file preserves the core override location for future API key synchronization handlers. |  |
+| `gFramework/nService/src/service/authentication/defaultAuthTokenInvalidationService.js` | `src` | `documented` | 5/5 | Cache listener callbacks for auth token expiration, deletion, and flush events. The default implementation logs token invalidation state and keeps the extension point for distributed token invalidation events. |  |
+| `gFramework/nService/src/service/authentication/defaultAuthenticationProviderService.js` | `src` | `documented` | 4/4 | Stores and retrieves authentication tokens in the Nodics cache layer. Tokens are scoped by module and the `auth` cache channel so generated and custom authentication providers share the same runtime contract. |  |
+| `gFramework/nService/src/service/authentication/defaultInternalAuthenticationProviderService.js` | `src` | `documented` | 3/3 | Fetches tenant-scoped internal auth tokens from the profile module when the profile module is deployed separately. This supports modular deployment where non-profile nodes still need internal service credentials. |  |
+| `gFramework/nService/src/service/authorization/defaultAuthorizationProviderService.js` | `src` | `documented` | 4/4 | Authorizes bearer tokens and API keys for Nodics requests. JWT token verification resolves request identity, while API key authorization delegates to the authentication provider extension point. |  |
+| `gFramework/nService/src/service/common.js` | `src` | `documented` | 11/11 | Template service used by generated schema services to delegate common CRUD operations into the Nodics database pipelines. During generation, placeholders are replaced with the owning module and model identifiers. |  |
+| `gFramework/nService/src/service/config/defaultConfigurationService.js` | `src` | `documented` | 2/2 | Runtime configuration service extension slot for nService. The base implementation has no behavior, but this file preserves a stable service name for project-specific configuration operations. |  |
+| `gFramework/nService/src/service/enterprise/defaultEnterpriseHandlerService.js` | `src` | `documented` | 6/6 | Loads active enterprises and tenants during startup, then builds tenant-scoped runtime state: active enterprise mapping, tenant properties, database connections, generated models, search engines, cron jobs, initial data, and internal auth tokens. |  |
+| `gFramework/nService/src/service/enterprise/defaultEnterpriseUpdateListenerService.js` | `src` | `documented` | 4/4 | Event listener for enterprise activation and deactivation. It turns enterprise update events into tenant bootstrap or tenant runtime cleanup on the current node. |  |
+| `gFramework/nService/src/service/log/defaultLogService.js` | `src` | `documented` | 3/3 | Runtime log-level management service. It updates logger levels for named Nodics entities so operators can adjust diagnostics without restarting the node. |  |
+| `gFramework/nService/src/service/module/defaultModuleService.js` | `src` | `documented` | 7/7 | Builds and executes internal module-to-module and external HTTP requests for Nodics. It normalizes authentication, API key, and enterprise headers to the modern standard while preserving legacy header compatibility. |  |
+| `gFramework/nService/src/service/profile/defaultEnterpriseProviderService.js` | `src` | `documented` | 4/4 | Resolves enterprise records for incoming requests. When profile is local it reads generated enterprise services directly; when profile is remote it calls the profile module API using the default internal auth token. |  |
+| `gFramework/nService/src/service/status/defaultStatusService.js` | `src` | `documented` | 5/5 | Loads and serves Nodics status/error definitions from active module hierarchy. It validates each status definition and provides runtime lookup for consistent error and success response messages. |  |
+| `gFramework/nService/src/service/tenant/defaultTenantHandlerService.js` | `src` | `documented` | 3/3 | Deactivates tenants from the runtime node by removing tenant registry entries, stopping tenant cron jobs, dropping tenant database handles, removing generated models, and cleaning search runtime state. |  |
+| `gFramework/nService/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/test/moduleRequestHeaderNormalization.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/test/statusDefinitionCatalog.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+
 ## Extension Contract
 
 - Treat this module as a replaceable layer in the Nodics hierarchy.
 - Later project/environment/server/node modules may override schemas, routers, services, facades, controllers, pipelines, interceptors, data, tests, and configuration.
 - Preserve source definitions as the contract. Generated artifacts must be recreated by build and cleaned by clean.
 - Add human-authored LLM notes only for intent, boundaries, examples, and decisions that cannot be derived from source.
+- Use the file inventory above to find documented, partially documented, and undocumented source contracts; an inventory entry is not proof that documentation is complete.

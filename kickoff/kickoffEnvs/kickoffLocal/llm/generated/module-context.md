@@ -26,7 +26,34 @@
 | Source files | 0 |
 | Test files | 0 |
 | Data files | 4 |
+| All module-owned files | 11 |
 | Local schema definitions | 0 |
+
+## Ownership And Dependencies
+
+**Owned extension areas**
+
+- `composition`
+- `configuration`
+- `data`
+- `llm`
+
+**Required modules**
+
+- No required modules are declared.
+
+**Contained modules**
+
+- This package does not declare contained modules.
+
+## Documentation Status
+
+| Status | Files |
+| --- | ---: |
+| Documented | 0 |
+| Partially documented | 1 |
+| Undocumented | 7 |
+| Inventory only | 3 |
 
 ## Important Files
 
@@ -37,9 +64,28 @@
 - `kickoff/kickoffEnvs/kickoffLocal/config/prescripts.js`
 - `kickoff/kickoffEnvs/kickoffLocal/config/postscripts.js`
 
+## File Inventory
+
+This inventory covers every module-owned file included in the context fingerprint. Documentation status is factual: generated inventory never invents business intent for undocumented code.
+
+| File | Area | Status | Methods | Purpose | Gaps |
+| --- | --- | --- | ---: | --- | --- |
+| `kickoff/kickoffEnvs/kickoffLocal/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `kickoff/kickoffEnvs/kickoffLocal/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `kickoff/kickoffEnvs/kickoffLocal/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `kickoff/kickoffEnvs/kickoffLocal/data/init/data/enterprise/kickoffLocalTestEnterpriseData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `kickoff/kickoffEnvs/kickoffLocal/data/init/data/enterprise/kickoffLocalTestTenantsData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `kickoff/kickoffEnvs/kickoffLocal/data/init/headers/enterprise/kickoffLocalTestEnterpriseHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `kickoff/kickoffEnvs/kickoffLocal/data/init/headers/enterprise/kickoffLocalTestTenantsHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `kickoff/kickoffEnvs/kickoffLocal/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `kickoff/kickoffEnvs/kickoffLocal/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `kickoff/kickoffEnvs/kickoffLocal/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `kickoff/kickoffEnvs/kickoffLocal/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+
 ## Extension Contract
 
 - Treat this module as a replaceable layer in the Nodics hierarchy.
 - Later project/environment/server/node modules may override schemas, routers, services, facades, controllers, pipelines, interceptors, data, tests, and configuration.
 - Preserve source definitions as the contract. Generated artifacts must be recreated by build and cleaned by clean.
 - Add human-authored LLM notes only for intent, boundaries, examples, and decisions that cannot be derived from source.
+- Use the file inventory above to find documented, partially documented, and undocumented source contracts; an inventory entry is not proof that documentation is complete.

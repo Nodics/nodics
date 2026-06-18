@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "order",
   "path": "gComm/order",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 11,
   "testFiles": 16,
   "dataFiles": 8,
+  "ownedFiles": 28,
+  "sourceFingerprint": "f214c6a65bd39ba27ef145d013af60f779ea70e32379bc5461dffe6637ba5be6",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 23,
+    "inventory-only": 3
+  },
   "schemaGroups": {
     "order": [
       "order",

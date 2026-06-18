@@ -36,7 +36,43 @@
 | Source files | 33 |
 | Test files | 13 |
 | Data files | 4 |
+| All module-owned files | 48 |
 | Local schema definitions | 2 |
+
+## Ownership And Dependencies
+
+**Owned extension areas**
+
+- `configuration`
+- `data`
+- `schema`
+- `router`
+- `controller`
+- `facade`
+- `service`
+- `pipeline`
+- `interceptor`
+- `event`
+- `utility`
+- `test`
+- `llm`
+
+**Required modules**
+
+- No required modules are declared.
+
+**Contained modules**
+
+- This package does not declare contained modules.
+
+## Documentation Status
+
+| Status | Files |
+| --- | ---: |
+| Documented | 0 |
+| Partially documented | 12 |
+| Undocumented | 34 |
+| Inventory only | 2 |
 
 ## Important Files
 
@@ -48,9 +84,65 @@
 - `gCore/cronjob/src/schemas/schemas.js`
 - `gCore/cronjob/src/router/router.js`
 
+## File Inventory
+
+This inventory covers every module-owned file included in the context fingerprint. Documentation status is factual: generated inventory never invents business intent for undocumented code.
+
+| File | Area | Status | Methods | Purpose | Gaps |
+| --- | --- | --- | ---: | --- | --- |
+| `gCore/cronjob/config/postscripts.js` | `config` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gCore/cronjob/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/data/core/data/indexer/defaultIndexerData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/data/core/data/jobs/defaultIndexerJobsData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/data/core/headers/indexer/defaultIndexerHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/data/core/headers/jobs/defaultIndexerJobsHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gCore/cronjob/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gCore/cronjob/src/controller/defaultCronJobController.js` | `src` | `undocumented` | 0/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 8 exported method(s) |
+| `gCore/cronjob/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/src/facade/defaultCronJobFacade.js` | `src` | `undocumented` | 0/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 8 exported method(s) |
+| `gCore/cronjob/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/src/lib/classes.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/src/lib/cronJob.js` | `src` | `undocumented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
+| `gCore/cronjob/src/lib/cronJobContainer.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/src/lib/cronJobError.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/src/router/appConfig.js` | `src` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gCore/cronjob/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/src/service/config/defaultCronJobConfigurationService.js` | `src` | `partially-documented` | 2/11 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 9 exported method(s) |
+| `gCore/cronjob/src/service/cronjob/defaultCronJobService.js` | `src` | `undocumented` | 0/12 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 12 exported method(s) |
+| `gCore/cronjob/src/service/event/defaultEventHandlerJobService.js` | `src` | `undocumented` | 0/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
+| `gCore/cronjob/src/service/handler/defaultJobHandlerService.js` | `src` | `undocumented` | 0/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 8 exported method(s) |
+| `gCore/cronjob/src/service/interceptor/defaultJobActivatorInterceptorService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gCore/cronjob/src/service/interceptor/defaultStartValueValidatorInterceptorService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gCore/cronjob/src/service/node/defaultCronJobNodeDownHandlerService.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
+| `gCore/cronjob/src/service/node/defaultCronJobNodeUpHandlerService.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
+| `gCore/cronjob/src/service/test/defaultTestCronJobService.js` | `src` | `undocumented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
+| `gCore/cronjob/src/service/trigger/defaultCronJobCompletedHandlerService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
+| `gCore/cronjob/src/service/trigger/defaultCronJobErrorHandlerService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
+| `gCore/cronjob/src/service/trigger/defaultCronJobPausedHandlerService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
+| `gCore/cronjob/src/service/trigger/defaultCronJobRemovedHandlerService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
+| `gCore/cronjob/src/service/trigger/defaultCronJobResumedHandlerService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
+| `gCore/cronjob/src/service/trigger/defaultCronJobStartHandlerService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
+| `gCore/cronjob/src/service/trigger/defaultCronJobStopHandlerService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
+| `gCore/cronjob/src/service/trigger/defaultCronJobTriggerHandlerService.js` | `src` | `partially-documented` | 2/14 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 12 exported method(s) |
+| `gCore/cronjob/src/service/virtual/defaultCronJobVirtualService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gCore/cronjob/src/utils/enums.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gCore/cronjob/test/cronJobControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/test/cronJobRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/test/cronJobServiceLifecycleContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/test/env/local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+
 ## Extension Contract
 
 - Treat this module as a replaceable layer in the Nodics hierarchy.
 - Later project/environment/server/node modules may override schemas, routers, services, facades, controllers, pipelines, interceptors, data, tests, and configuration.
 - Preserve source definitions as the contract. Generated artifacts must be recreated by build and cleaned by clean.
 - Add human-authored LLM notes only for intent, boundaries, examples, and decisions that cannot be derived from source.
+- Use the file inventory above to find documented, partially documented, and undocumented source contracts; an inventory entry is not proof that documentation is complete.

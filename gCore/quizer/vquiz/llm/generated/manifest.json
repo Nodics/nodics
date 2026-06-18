@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "vquiz",
   "path": "gCore/quizer/vquiz",
   "kind": "publish",
@@ -15,6 +16,14 @@
   "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "f1ce5af839d6950fc25e92bbd5ef8aa2233b31f827dee952ab19b539ce7d764d",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 11,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

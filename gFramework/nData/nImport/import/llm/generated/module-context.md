@@ -35,7 +35,42 @@
 | Source files | 28 |
 | Test files | 19 |
 | Data files | 0 |
+| All module-owned files | 50 |
 | Local schema definitions | 1 |
+
+## Ownership And Dependencies
+
+**Owned extension areas**
+
+- `configuration`
+- `schema`
+- `router`
+- `controller`
+- `facade`
+- `service`
+- `pipeline`
+- `interceptor`
+- `event`
+- `utility`
+- `test`
+- `llm`
+
+**Required modules**
+
+- No required modules are declared.
+
+**Contained modules**
+
+- This package does not declare contained modules.
+
+## Documentation Status
+
+| Status | Files |
+| --- | ---: |
+| Documented | 2 |
+| Partially documented | 17 |
+| Undocumented | 28 |
+| Inventory only | 3 |
 
 ## Important Files
 
@@ -48,9 +83,67 @@
 - `gFramework/nData/nImport/import/src/schemas/schemas.js`
 - `gFramework/nData/nImport/import/src/router/router.js`
 
+## File Inventory
+
+This inventory covers every module-owned file included in the context fingerprint. Documentation status is factual: generated inventory never invents business intent for undocumented code.
+
+| File | Area | Status | Methods | Purpose | Gaps |
+| --- | --- | --- | ---: | --- | --- |
+| `gFramework/nData/nImport/import/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nData/nImport/import/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nData/nImport/import/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nData/nImport/import/src/controller/history/defaultImportRunHistoryController.js` | `src` | `documented` | 5/5 | Controller for import run history control-plane APIs. |  |
+| `gFramework/nData/nImport/import/src/controller/import/DefaultImportController.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nData/nImport/import/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/src/facade/history/defaultImportRunHistoryFacade.js` | `src` | `documented` | 4/4 | Facade for import run history control-plane operations. |  |
+| `gFramework/nData/nImport/import/src/facade/import/defaultImportFacade.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nData/nImport/import/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/src/lib/dataImportError.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/src/service/defaultDataImportInitializerService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nData/nImport/import/src/service/diagnostics/defaultImportDiagnosticsService.js` | `src` | `undocumented` | 0/13 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 13 exported method(s) |
+| `gFramework/nData/nImport/import/src/service/external/defaultExternalModelsImportEventHandlerService.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gFramework/nData/nImport/import/src/service/header/defaultHeaderProcessService.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
+| `gFramework/nData/nImport/import/src/service/history/defaultImportRunHistoryService.js` | `src` | `partially-documented` | 16/18 | Persists and queries import run summaries through the generated importRun model service without making import execution dependent on history storage availability. | add JSDoc for 2 exported method(s) |
+| `gFramework/nData/nImport/import/src/service/import/defaultImportService.js` | `src` | `partially-documented` | 2/10 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 8 exported method(s) |
+| `gFramework/nData/nImport/import/src/service/import/defaultImportUtilityService.js` | `src` | `partially-documented` | 3/10 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nData/nImport/import/src/service/interceptor/import/defaultMandatePropertyImportInterceptorService.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gFramework/nData/nImport/import/src/service/interceptor/import/defaultSampleImportInterceptorService.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gFramework/nData/nImport/import/src/service/local/defaultLocalDataImportInitializerService.js` | `src` | `partially-documented` | 2/10 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 8 exported method(s) |
+| `gFramework/nData/nImport/import/src/service/process/file/defaultFileDataImportProcessService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nData/nImport/import/src/service/process/init/defaultDataImportProcessService.js` | `src` | `partially-documented` | 2/9 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nData/nImport/import/src/service/process/model/defaultModelImportProcessService.js` | `src` | `partially-documented` | 3/15 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 12 exported method(s) |
+| `gFramework/nData/nImport/import/src/service/remote/defaultRemoteDataImportInitializerService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nData/nImport/import/src/service/system/defaultSystemDataImportInitializerService.js` | `src` | `partially-documented` | 2/18 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 16 exported method(s) |
+| `gFramework/nData/nImport/import/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nData/nImport/import/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nData/nImport/import/test/finalizedImportDispatch.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/test/finalizedRecordCounter.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/test/importDuplicateHeaderDiagnostics.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/test/importExportAccessPolicy.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/test/importFailureTraceability.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/test/importRunHistoryControllerRoute.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/test/importRunHistoryService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/test/importRunSummaryContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/test/multiFormatDataProcessors.test.js` | `test` | `undocumented` | 0/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
+| `gFramework/nData/nImport/import/test/systemCoreSampleDataCatalog.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/test/systemDataImportInitializerValidation.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/test/systemImportControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/test/systemImportDiagnosticsValidationOnly.test.js` | `test` | `undocumented` | 0/12 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 12 exported method(s) |
+
 ## Extension Contract
 
 - Treat this module as a replaceable layer in the Nodics hierarchy.
 - Later project/environment/server/node modules may override schemas, routers, services, facades, controllers, pipelines, interceptors, data, tests, and configuration.
 - Preserve source definitions as the contract. Generated artifacts must be recreated by build and cleaned by clean.
 - Add human-authored LLM notes only for intent, boundaries, examples, and decisions that cannot be derived from source.
+- Use the file inventory above to find documented, partially documented, and undocumented source contracts; an inventory entry is not proof that documentation is complete.

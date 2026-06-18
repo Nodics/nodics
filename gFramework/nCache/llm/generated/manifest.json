@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "nCache",
   "path": "gFramework/nCache",
   "kind": "group",
@@ -15,6 +16,14 @@
   "sourceFiles": 0,
   "testFiles": 0,
   "dataFiles": 0,
+  "ownedFiles": 7,
+  "sourceFingerprint": "7de99b6ee3e7e5c392e2d993e943ecd58f1e04eea68c7538b4afe75826da8263",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 3,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

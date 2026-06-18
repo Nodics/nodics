@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "gframesLocal",
   "path": "gframes/gframesEnvs/gframesLocal",
   "kind": "environment",
@@ -15,6 +16,14 @@
   "sourceFiles": 0,
   "testFiles": 0,
   "dataFiles": 0,
+  "ownedFiles": 7,
+  "sourceFingerprint": "c4bd20e9a7899b0ab831866b4f46101f2acbea0f55b4324e69dfc342b3ced51d",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 3,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "database",
   "path": "gFramework/nDatabase/database",
   "kind": "group",
@@ -15,6 +16,14 @@
   "sourceFiles": 34,
   "testFiles": 5,
   "dataFiles": 0,
+  "ownedFiles": 46,
+  "sourceFingerprint": "e5887945aeda3244d90a8a910c70723977301cc6a9dd1ac7e08f3ae89381a96e",
+  "documentation": {
+    "documented": 30,
+    "partially-documented": 1,
+    "undocumented": 12,
+    "inventory-only": 3
+  },
   "schemaGroups": {
     "default": [
       "base",

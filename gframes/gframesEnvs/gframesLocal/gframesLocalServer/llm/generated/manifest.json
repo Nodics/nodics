@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "gframesLocalServer",
   "path": "gframes/gframesEnvs/gframesLocal/gframesLocalServer",
   "kind": "server",
@@ -15,6 +16,14 @@
   "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "15945b6723abc99fd6c55cdce19083ea8350f65283a1cba1dacb1ed0b81a61f5",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 11,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

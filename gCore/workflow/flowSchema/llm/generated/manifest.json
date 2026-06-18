@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "flowSchema",
   "path": "gCore/workflow/flowSchema",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 7,
   "testFiles": 3,
   "dataFiles": 0,
+  "ownedFiles": 17,
+  "sourceFingerprint": "2b5831912fbbbbe6ce9258b65c25541ab90e713a7a55c81196ddb843d3ccdb2e",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 12,
+    "inventory-only": 3
+  },
   "schemaGroups": {
     "workflow": [
       "actionResponse",

@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "nData",
   "path": "gFramework/nData",
   "kind": "group",
@@ -15,6 +16,14 @@
   "sourceFiles": 0,
   "testFiles": 0,
   "dataFiles": 0,
+  "ownedFiles": 7,
+  "sourceFingerprint": "25db14bad5fbd9723e8a5ba36f321f8d1dc8d2f1f34165860ca5e70ec4da85e2",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 3,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

@@ -24,6 +24,8 @@ llm/
 
 `generated/` is recreated from source definitions. Do not edit generated LLM files manually.
 
+The file inventory inside `module-context.md` covers every module-owned file included in the generated context fingerprint. It extracts documented purpose from source JSDoc and reports documentation coverage without inventing missing intent.
+
 ## Lifecycle
 
 Clean removes generated LLM context:
@@ -45,6 +47,23 @@ The standard `npm run clean` and `npm run build` scripts execute these commands 
 When a developer adds or updates a schema, the source schema remains the system of record. The next build updates the owning module's generated schema context.
 
 The generated schema context should be used by LLMs for current source-derived facts, while human-authored module notes should explain business meaning, extension rules, security expectations, and customization examples.
+
+## File Documentation Status
+
+Generated file context uses four explicit states:
+
+- `documented`: file-level documentation and all detected exported-method documentation are present for a module-owned JavaScript file.
+- `partially-documented`: some required file or exported-method documentation is absent.
+- `undocumented`: the file exists, but its required platform-level documentation has not been added.
+- `inventory-only`: a non-JavaScript file is tracked for module understanding; its native format remains the documentation source.
+
+These states describe documentation only; they never imply that a file, module, or runtime capability is absent. Human review must confirm that documentation explains platform purpose, ownership, inputs, outputs, side effects, errors, tenant behavior, and the layered override path where applicable.
+
+`manifest.json.sourceFingerprint` covers every inventoried module-owned file. `npm run llm:validate` fails when generated context is stale or omits a file.
+
+## Tool-Neutrality Contract
+
+The `llm` folder name describes the intended consumer category; it does not bind Nodics to a vendor or product. Canonical guidance must remain portable Markdown and JSON, avoid proprietary command requirements, and work for humans as well as automated assistants. Optional vendor adapters may point to `gSetup/llm/README.md`, but must not duplicate or replace canonical Nodics rules.
 
 ## Override Rule
 

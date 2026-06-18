@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "cres",
   "path": "gMrkty/cres",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 7,
   "testFiles": 6,
   "dataFiles": 8,
+  "ownedFiles": 24,
+  "sourceFingerprint": "0a96548de73db3807e6402b0ba0350351ecfde62984d1ebb6f362cf6bae354e3",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 19,
+    "inventory-only": 3
+  },
   "schemaGroups": {
     "cres": [
       "reviewTest"

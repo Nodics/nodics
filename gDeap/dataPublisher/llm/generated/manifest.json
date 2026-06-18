@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "dataPublisher",
   "path": "gDeap/dataPublisher",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 6,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 15,
+  "sourceFingerprint": "f06b8e2943e9f314407e5192daf02465ae8a60bd2d5b770e30d71d62e072c34b",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 10,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

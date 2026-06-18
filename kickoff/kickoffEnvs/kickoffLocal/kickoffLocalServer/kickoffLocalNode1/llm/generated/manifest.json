@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "kickoffLocalNode1",
   "path": "kickoff/kickoffEnvs/kickoffLocal/kickoffLocalServer/kickoffLocalNode1",
   "kind": "node",
@@ -15,6 +16,14 @@
   "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "66a540122533c08ff3aae44e54901e691cc1d7cc0e21a5191d74d62887ffb03b",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 11,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

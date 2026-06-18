@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "nodeCache",
   "path": "gFramework/nCache/nodeCache",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "8794cc8bbd5a75348aae1a13884bd277f2d6069b9e87648db7e5afa1a3f2a843",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 3,
+    "undocumented": 10,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

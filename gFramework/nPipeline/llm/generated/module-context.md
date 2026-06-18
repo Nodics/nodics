@@ -30,7 +30,37 @@
 | Source files | 9 |
 | Test files | 0 |
 | Data files | 0 |
+| All module-owned files | 16 |
 | Local schema definitions | 0 |
+
+## Ownership And Dependencies
+
+**Owned extension areas**
+
+- `configuration`
+- `service`
+- `pipeline`
+- `interceptor`
+- `event`
+- `utility`
+- `llm`
+
+**Required modules**
+
+- No required modules are declared.
+
+**Contained modules**
+
+- This package does not declare contained modules.
+
+## Documentation Status
+
+| Status | Files |
+| --- | ---: |
+| Documented | 6 |
+| Partially documented | 1 |
+| Undocumented | 6 |
+| Inventory only | 3 |
 
 ## Important Files
 
@@ -41,9 +71,33 @@
 - `gFramework/nPipeline/config/prescripts.js`
 - `gFramework/nPipeline/config/postscripts.js`
 
+## File Inventory
+
+This inventory covers every module-owned file included in the context fingerprint. Documentation status is factual: generated inventory never invents business intent for undocumented code.
+
+| File | Area | Status | Methods | Purpose | Gaps |
+| --- | --- | --- | ---: | --- | --- |
+| `gFramework/nPipeline/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nPipeline/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nPipeline/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nPipeline/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nPipeline/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nPipeline/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nPipeline/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nPipeline/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nPipeline/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Pipeline interceptor registry extension slot. The base pipeline module currently ships no active interceptors, but this file preserves the layered configuration location for pipeline persistence or governance hooks. |  |
+| `gFramework/nPipeline/src/lib/pipelineHead.js` | `src` | `documented` | 0/0 | Runtime pipeline executor for Nodics. A pipeline head builds node instances from the effective pipeline definition, tracks execution state, moves through success/error links, executes nested pipelines, and enriches errors with contextual metadata for database, search, event, and import flows. |  |
+| `gFramework/nPipeline/src/lib/pipelineNode.js` | `src` | `documented` | 0/0 | Runtime wrapper for one pipeline node definition. A node stores handler, type, success link, error link, and target routing metadata consumed by `PipelineHead`. |  |
+| `gFramework/nPipeline/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Base pipeline definitions shared by all Nodics runtime pipelines. `defaultPipeline` contributes standard success and error terminal nodes that are merged into concrete pipeline definitions at execution time. |  |
+| `gFramework/nPipeline/src/service/event/defaultPipelineChangeListenerService.js` | `src` | `documented` | 2/2 | Event listener service for runtime pipeline change and removal events. It adapts event callbacks into `DefaultPipelineService` registry updates so behavior overrides can be applied without restarting every caller. |  |
+| `gFramework/nPipeline/src/service/pipeline/defaultPipelineService.js` | `src` | `documented` | 9/9 | Runtime service for loading, updating, removing, and executing Nodics pipelines. It merges static pipeline definitions from active module hierarchy with persisted pipeline models when available, then executes pipelines through `PipelineHead`. |  |
+| `gFramework/nPipeline/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nPipeline/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+
 ## Extension Contract
 
 - Treat this module as a replaceable layer in the Nodics hierarchy.
 - Later project/environment/server/node modules may override schemas, routers, services, facades, controllers, pipelines, interceptors, data, tests, and configuration.
 - Preserve source definitions as the contract. Generated artifacts must be recreated by build and cleaned by clean.
 - Add human-authored LLM notes only for intent, boundaries, examples, and decisions that cannot be derived from source.
+- Use the file inventory above to find documented, partially documented, and undocumented source contracts; an inventory entry is not proof that documentation is complete.

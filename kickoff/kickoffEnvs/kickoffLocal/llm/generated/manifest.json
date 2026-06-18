@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "kickoffLocal",
   "path": "kickoff/kickoffEnvs/kickoffLocal",
   "kind": "environment",
@@ -15,6 +16,14 @@
   "sourceFiles": 0,
   "testFiles": 0,
   "dataFiles": 4,
+  "ownedFiles": 11,
+  "sourceFingerprint": "f90802dedcf03454c1185c2f9c537132c1a9e12239f6a906f7a87458a4230ba3",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 7,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

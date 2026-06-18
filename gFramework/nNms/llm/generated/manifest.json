@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "nms",
   "path": "gFramework/nNms",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 14,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 23,
+  "sourceFingerprint": "16422a32be83db83685bf2e345a2e07abd11554f41e5ca4ae018834f3ae84954",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 8,
+    "undocumented": 12,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "default",
   "path": "gFramework/nDefault",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 5,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 14,
+  "sourceFingerprint": "fb4667e8b7c798e9852bf37570cf33273769cb7f182738108f134072a4a92f1b",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 10,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

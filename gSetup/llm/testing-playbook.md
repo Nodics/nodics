@@ -164,7 +164,23 @@ npm run test:basic
 Topology changes:
 
 ```bash
+npm run test:config
 npm run test:topology:consolidated
 npm run test:topology:modular
 npm run test:full
 ```
+
+## Startup Contract Tests
+
+Startup validation should protect the same rules that production startup depends on:
+
+- module packages use one classification source: `package.json.nodics.kind`.
+- runtime flags are declared in `package.json.nodics.runtime`.
+- owned extension points are declared in `package.json.nodics.owns`.
+- selected environment group, environment, server, and node have the expected `group`, `environment`, `server`, and `node` kinds.
+- selected hierarchy packages provide `config/properties.js`.
+- active modules include every declared `requiredModules` dependency.
+- required modules load before the modules that depend on them.
+- project topology tests come from the active environment configuration, not framework hardcoding.
+
+Use `npm run test:config` as the basic startup contract gate before running long topology tests.

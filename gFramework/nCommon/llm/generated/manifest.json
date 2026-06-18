@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "nCommon",
   "path": "gFramework/nCommon",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 13,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 22,
+  "sourceFingerprint": "05c93dcf2346c3aab3d0e0cea97f53acbbcb06e349796d38c245f8ba70b47406",
+  "documentation": {
+    "documented": 9,
+    "partially-documented": 2,
+    "undocumented": 8,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

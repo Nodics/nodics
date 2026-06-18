@@ -59,7 +59,7 @@ const contractLayers = new Set([
 
 function walk(dir, files, includeTests, includeGenerated) {
     fs.readdirSync(dir, { withFileTypes: true }).forEach(entry => {
-        if (entry.name.startsWith('.') && entry.name !== '.codex') {
+        if (entry.name.startsWith('.')) {
             return;
         }
         const fullPath = path.join(dir, entry.name);
@@ -292,12 +292,12 @@ function printReport(report, reportLimit) {
         console.log('Layer filter               : ' + report.layerFilter.join(', '));
     }
     console.log('Files checked              : ' + report.filesChecked);
-    console.log('Files missing module docs  : ' + report.filesMissingModuleDocs.length);
+    console.log('Undocumented files         : ' + report.filesMissingModuleDocs.length);
     console.log('Exported methods checked   : ' + report.methodsChecked);
-    console.log('Methods missing docs       : ' + report.methodsMissingDocs.length);
+    console.log('Methods without JSDoc      : ' + report.methodsMissingDocs.length);
 
     if (report.filesMissingModuleDocs.length > 0) {
-        console.log('\nFiles missing module docs:');
+        console.log('\nUndocumented files:');
         report.filesMissingModuleDocs.slice(0, reportLimit).forEach(item => console.log('  - ' + item));
         if (report.filesMissingModuleDocs.length > reportLimit) {
             console.log('  ... ' + (report.filesMissingModuleDocs.length - reportLimit) + ' more');
@@ -305,7 +305,7 @@ function printReport(report, reportLimit) {
     }
 
     if (report.methodsMissingDocs.length > 0) {
-        console.log('\nMethods missing docs:');
+        console.log('\nExported methods without JSDoc:');
         report.methodsMissingDocs.slice(0, reportLimit).forEach(item => console.log('  - ' + item));
         if (report.methodsMissingDocs.length > reportLimit) {
             console.log('  ... ' + (report.methodsMissingDocs.length - reportLimit) + ' more');

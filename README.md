@@ -8,7 +8,7 @@ The `gSetup/package.json` file marks it as non-runtime with `runtimeModule: fals
 
 Use `gSetup` for durable setup instructions, AI/LLM onboarding context, prompts, decision memory, and project working rules. It should not contain generated artifacts.
 
-When starting a new Nodics project or asking an LLM such as ChatGPT, Claude, Codex, or a local coding agent to work on Nodics, bootstrap it with:
+When starting a new Nodics project or asking any hosted model, local model, coding agent, or IDE assistant to work on Nodics, bootstrap it with:
 
 ```text
 Read gSetup/llm/README.md first, then follow the linked Nodics principles, modular architecture, schema/generation rules, testing playbook, and feature process before changing code.

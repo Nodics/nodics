@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "gfcms",
   "path": "gframes/gframesModules/gfcms",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 6,
   "testFiles": 2,
   "dataFiles": 16,
+  "ownedFiles": 31,
+  "sourceFingerprint": "1ed8f558b9cfe226548adc0c90b833bae1cb8bf4cf522a0bd0ee75f33d249bdc",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 27,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

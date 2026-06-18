@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "gOpt",
   "path": "gOpt",
   "kind": "group",
@@ -15,6 +16,14 @@
   "sourceFiles": 0,
   "testFiles": 0,
   "dataFiles": 0,
+  "ownedFiles": 6,
+  "sourceFingerprint": "3ffb69dffbdcf6ca1b31dbb9647d1ac1aa0017a0eabae33a23991c69be222443",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 3,
+    "inventory-only": 2
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

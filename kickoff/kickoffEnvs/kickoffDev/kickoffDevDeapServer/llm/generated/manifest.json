@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "kickoffDevDeapServer",
   "path": "kickoff/kickoffEnvs/kickoffDev/kickoffDevDeapServer",
   "kind": "server",
@@ -15,6 +16,14 @@
   "sourceFiles": 6,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 15,
+  "sourceFingerprint": "b575e118650030379822e1f81ad5083d1a97188039029b3e1c968bb0530d2e50",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 10,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

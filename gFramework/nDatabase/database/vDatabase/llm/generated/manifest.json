@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "vDatabase",
   "path": "gFramework/nDatabase/database/vDatabase",
   "kind": "publish",
@@ -15,6 +16,14 @@
   "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "60827e99bf95774cec56c28b0c00cac30cdd0afa460bc210b1af71205be09363",
+  "documentation": {
+    "documented": 5,
+    "partially-documented": 1,
+    "undocumented": 7,
+    "inventory-only": 3
+  },
   "schemaGroups": {
     "default": [
       "base",

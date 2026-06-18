@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "mongodb",
   "path": "gFramework/nDatabase/mongodb",
   "kind": "group",
@@ -15,6 +16,14 @@
   "sourceFiles": 9,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 18,
+  "sourceFingerprint": "a73dfec52de7ba94c3388c42b6b53a85795c8f27146bca5ed94a1134f2cfb306",
+  "documentation": {
+    "documented": 6,
+    "partially-documented": 1,
+    "undocumented": 8,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

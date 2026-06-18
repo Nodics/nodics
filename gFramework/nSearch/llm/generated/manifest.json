@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "nSearch",
   "path": "gFramework/nSearch",
   "kind": "group",
@@ -15,6 +16,14 @@
   "sourceFiles": 0,
   "testFiles": 0,
   "dataFiles": 0,
+  "ownedFiles": 7,
+  "sourceFingerprint": "1f2956a337238c30da54867d3aff58fb34928fd9e935118f0f024e6a9298c9e3",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 3,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

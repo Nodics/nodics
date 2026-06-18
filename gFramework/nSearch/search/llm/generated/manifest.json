@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "search",
   "path": "gFramework/nSearch/search",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 42,
   "testFiles": 19,
   "dataFiles": 0,
+  "ownedFiles": 55,
+  "sourceFingerprint": "f72299d03279c8c56c4eedad03da5c825f6c68085418f478a09d5dff6c83370d",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 29,
+    "undocumented": 23,
+    "inventory-only": 3
+  },
   "schemaGroups": {
     "search": [
       "index",

@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "csvExport",
   "path": "gFramework/nData/nExport/csvExport",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 5,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 14,
+  "sourceFingerprint": "d90dc23c9c3c0ff1a1efdafa74cad83bc24d88fd14700262cce3cd663b4ce623",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 10,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

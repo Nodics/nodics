@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "cart",
   "path": "gComm/cart",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 16,
   "testFiles": 6,
   "dataFiles": 0,
+  "ownedFiles": 25,
+  "sourceFingerprint": "4d81f236a662ac57ba7b64df18e988af1eef9f3e8f963bfe06dfe11979623be0",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 4,
+    "undocumented": 18,
+    "inventory-only": 3
+  },
   "schemaGroups": {
     "cart": [
       "cart"

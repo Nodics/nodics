@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const Enum = require('../gFramework/nConfig/bin/enum');
 
 const rootPath = path.resolve(__dirname, '..');
@@ -94,6 +95,58 @@ function collectFiles(directory, matcher, files = []) {
     });
 
     return files.sort();
+}
+
+function collectModuleOwnedFiles(modulePath) {
+    const files = [];
+    const ignoredModuleDirectories = new Set([
+        ...ignoredDirectories,
+        'gen'
+    ]);
+
+    function walk(directory) {
+        if (!fs.existsSync(directory)) {
+            return;
+        }
+        fs.readdirSync(directory, { withFileTypes: true })
+            .sort((left, right) => left.name.localeCompare(right.name))
+            .forEach(entry => {
+                const entryPath = path.join(directory, entry.name);
+                if (entry.isDirectory()) {
+                    if (ignoredModuleDirectories.has(entry.name)) {
+                        return;
+                    }
+                    if (entryPath !== modulePath && isModuleDirectory(entryPath)) {
+                        return;
+                    }
+                    if (entry.name === 'llm') {
+                        const readmePath = path.join(entryPath, 'README.md');
+                        if (fs.existsSync(readmePath)) {
+                            files.push(toRelative(readmePath));
+                        }
+                        return;
+                    }
+                    walk(entryPath);
+                    return;
+                }
+                files.push(toRelative(entryPath));
+            });
+    }
+
+    walk(modulePath);
+    return files.sort();
+}
+
+function createFilesFingerprint(relativeFiles) {
+    const hash = crypto.createHash('sha256');
+    (relativeFiles || []).slice().sort().forEach(relativeFile => {
+        const absolutePath = path.join(rootPath, relativeFile);
+        hash.update(relativeFile);
+        hash.update('\0');
+        hash.update(fs.readFileSync(absolutePath));
+        hash.update('\0');
+    });
+    return hash.digest('hex');
 }
 
 function getRelativeIfExists(modulePath, relativePath) {
@@ -228,6 +281,8 @@ module.exports = {
     ensureDirectory,
     removeDirectory,
     collectFiles,
+    collectModuleOwnedFiles,
+    createFilesFingerprint,
     getRelativeIfExists,
     getModuleKind,
     getModuleRuntime,

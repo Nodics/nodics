@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "kycSchema",
   "path": "gOpt/kyc/kycSchema",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "2a7253052b7846655f75ad7984ddb6f5a18e75f397a77a3893b658ee41a70f26",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 12,
+    "inventory-only": 3
+  },
   "schemaGroups": {
     "kyc": [
       "kyc"

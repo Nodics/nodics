@@ -30,7 +30,37 @@
 | Source files | 13 |
 | Test files | 2 |
 | Data files | 0 |
+| All module-owned files | 22 |
 | Local schema definitions | 0 |
+
+## Ownership And Dependencies
+
+**Owned extension areas**
+
+- `configuration`
+- `service`
+- `pipeline`
+- `event`
+- `utility`
+- `test`
+- `llm`
+
+**Required modules**
+
+- No required modules are declared.
+
+**Contained modules**
+
+- This package does not declare contained modules.
+
+## Documentation Status
+
+| Status | Files |
+| --- | ---: |
+| Documented | 9 |
+| Partially documented | 2 |
+| Undocumented | 8 |
+| Inventory only | 3 |
 
 ## Important Files
 
@@ -41,9 +71,39 @@
 - `gFramework/nCommon/config/prescripts.js`
 - `gFramework/nCommon/config/postscripts.js`
 
+## File Inventory
+
+This inventory covers every module-owned file included in the context fingerprint. Documentation status is factual: generated inventory never invents business intent for undocumented code.
+
+| File | Area | Status | Methods | Purpose | Gaps |
+| --- | --- | --- | ---: | --- | --- |
+| `gFramework/nCommon/config/postscripts.js` | `config` | `undocumented` | 0/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
+| `gFramework/nCommon/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCommon/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCommon/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nCommon/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCommon/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nCommon/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nCommon/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCommon/src/lib/nodicsError.js` | `src` | `documented` | 0/0 | Standard Nodics error type used across pipelines, services, controllers, generated APIs, imports, processors, and interceptors. It preserves response code, status code, metadata, nested causes, validation errors, trace id, contexts, and safe JSON serialization. |  |
+| `gFramework/nCommon/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Pipeline definition for runtime interceptor updates. It validates update payloads, loads changed interceptor definitions, merges them into effective runtime state, and publishes cleanup events. |  |
+| `gFramework/nCommon/src/service/config/defaultInterceptorConfigurationService.js` | `src` | `documented` | 7/7 | Stores and prepares effective interceptor definitions by type, item, trigger, and index. It merges default and item-specific interceptors so dynamic behavior can be extended through layered module configuration. |  |
+| `gFramework/nCommon/src/service/file/defaultFileHandlerService.js` | `src` | `documented` | 5/5 | Shared file movement helper for import/export and batch file workflows. It marks files as processing and moves completed files into destination folders with timestamped names. |  |
+| `gFramework/nCommon/src/service/infra/defaultInfraService.js` | `src` | `documented` | 11/11 | Scaffolding service for generating Nodics applications, module groups, backend modules, and UI module templates. It copies nCommon templates and replaces placeholder names/indexes from CLI arguments. |  |
+| `gFramework/nCommon/src/service/interceptor/defaultInterceptorService.js` | `src` | `documented` | 3/3 | Loads, validates, merges, and executes Nodics interceptors. Interceptors are dynamic extension points for model, schema, and process behavior and are executed in configured trigger/index order. |  |
+| `gFramework/nCommon/src/service/pipeline/defaultInterceptorUpdatedPipelineService.js` | `src` | `documented` | 6/6 | Pipeline service for applying persisted interceptor changes at runtime. It validates update events, loads changed interceptor records, merges them into the effective interceptor registry, and publishes cleanup events for affected interceptor types. |  |
+| `gFramework/nCommon/src/service/processor/defaultProcessorHandlerService.js` | `src` | `documented` | 2/2 | Executes configured processor handlers sequentially for model and search processing flows. Processor failures are enriched with layer, handler, tenant, module, schema, or index context before being propagated. |  |
+| `gFramework/nCommon/src/service/promise/defaultNodicsPromiseService.js` | `src` | `documented` | 3/3 | Sequential promise collector for Nodics batch operations. It executes promises one by one, collecting successes and errors into a single response instead of failing fast. |  |
+| `gFramework/nCommon/src/utils/enums.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCommon/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCommon/src/utils/utils.js` | `src` | `partially-documented` | 3/16 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 13 exported method(s) |
+| `gFramework/nCommon/test/errorTraceability.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCommon/test/executionLayerTraceability.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+
 ## Extension Contract
 
 - Treat this module as a replaceable layer in the Nodics hierarchy.
 - Later project/environment/server/node modules may override schemas, routers, services, facades, controllers, pipelines, interceptors, data, tests, and configuration.
 - Preserve source definitions as the contract. Generated artifacts must be recreated by build and cleaned by clean.
 - Add human-authored LLM notes only for intent, boundaries, examples, and decisions that cannot be derived from source.
+- Use the file inventory above to find documented, partially documented, and undocumented source contracts; an inventory entry is not proof that documentation is complete.

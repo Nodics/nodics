@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "system",
   "path": "gFramework/nSystem",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 20,
   "testFiles": 19,
   "dataFiles": 0,
+  "ownedFiles": 33,
+  "sourceFingerprint": "05940469850108b3085f3d8acf476574360ae2a2f0bb06ece100bdc35d602b1d",
+  "documentation": {
+    "documented": 4,
+    "partially-documented": 6,
+    "undocumented": 20,
+    "inventory-only": 3
+  },
   "schemaGroups": {
     "system": [
       "configuration",

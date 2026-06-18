@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "wcms",
   "path": "gContent/wcms",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 16,
+  "ownedFiles": 32,
+  "sourceFingerprint": "0844e65013105a10039f7df980ba5fb802428d7952f04d2769ecdc71c73d4be2",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 27,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

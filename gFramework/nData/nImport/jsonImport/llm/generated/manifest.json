@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "jsonImport",
   "path": "gFramework/nData/nImport/jsonImport",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 6,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 15,
+  "sourceFingerprint": "242817013a973eb56740e60de77f1a26608b73861a2d5a68318395cff23d39c8",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 10,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

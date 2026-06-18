@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "jsonExport",
   "path": "gFramework/nData/nExport/jsonExport",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 5,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 14,
+  "sourceFingerprint": "e3ff0a8d8b4519eca3ec39a1b88b879c9b5cd7f95abd27a0e6a429487e193ed3",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 10,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

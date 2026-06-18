@@ -35,7 +35,42 @@
 | Source files | 33 |
 | Test files | 43 |
 | Data files | 0 |
+| All module-owned files | 58 |
 | Local schema definitions | 7 |
+
+## Ownership And Dependencies
+
+**Owned extension areas**
+
+- `configuration`
+- `schema`
+- `router`
+- `controller`
+- `facade`
+- `service`
+- `pipeline`
+- `interceptor`
+- `event`
+- `utility`
+- `test`
+- `llm`
+
+**Required modules**
+
+- No required modules are declared.
+
+**Contained modules**
+
+- This package does not declare contained modules.
+
+## Documentation Status
+
+| Status | Files |
+| --- | ---: |
+| Documented | 9 |
+| Partially documented | 17 |
+| Undocumented | 29 |
+| Inventory only | 3 |
 
 ## Important Files
 
@@ -48,9 +83,75 @@
 - `gFramework/nDynamo/src/schemas/schemas.js`
 - `gFramework/nDynamo/src/router/router.js`
 
+## File Inventory
+
+This inventory covers every module-owned file included in the context fingerprint. Documentation status is factual: generated inventory never invents business intent for undocumented code.
+
+| File | Area | Status | Methods | Purpose | Gaps |
+| --- | --- | --- | ---: | --- | --- |
+| `gFramework/nDynamo/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nDynamo/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nDynamo/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nDynamo/src/controller/class/defaultClassConfigurationController.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nDynamo/src/controller/router/defaultRouterConfigurationController.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
+| `gFramework/nDynamo/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/src/facade/class/defaultClassConfigurationFacade.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nDynamo/src/facade/router/defaultRouterConfigurationFacade.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
+| `gFramework/nDynamo/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/src/service/access/defaultSchemaAccessPolicyContractService.js` | `src` | `documented` | 14/14 | Defines and validates the runtime schema/property access policy contract used by the Nodics control plane. This service owns the common action/effect vocabulary only; read/write/import/export enforcement is added by later generated CRUD and data-processing layers. |  |
+| `gFramework/nDynamo/src/service/access/defaultSchemaAccessPolicyResolverService.js` | `src` | `documented` | 24/24 | Resolves effective runtime schema/property access policy decisions for a tenant, module, schema, property, action, and user-group context. This service computes decisions only; generated CRUD, import/export, and admin UI layers consume the decision in later enforcement slices. |  |
+| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationActivationPolicyService.js` | `src` | `documented` | 9/9 | Applies approval governance before runtime schema and router configurations are activated. |  |
+| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationActivationRequestService.js` | `src` | `documented` | 22/22 | Manages runtime configuration activation request lifecycle: request, approve, reject, and activate approved schema/router changes. |  |
+| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationAuditService.js` | `src` | `documented` | 11/11 | Records runtime configuration activation attempts for schema, router, class, and pipeline control-plane changes without making activation dependent on audit persistence availability. |  |
+| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationGovernanceCleanupService.js` | `src` | `documented` | 32/32 | Previews and applies retention cleanup for runtime configuration activation requests and activation audit logs through generated model services. |  |
+| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationGovernanceSummaryService.js` | `src` | `documented` | 23/23 | Builds a read-only runtime governance summary for the admin control plane from activation requests and activation audit logs. |  |
+| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationPreviewService.js` | `src` | `documented` | 22/22 | Computes non-destructive previews for runtime schema and router configuration activations before they are saved or activated. |  |
+| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationRollbackService.js` | `src` | `documented` | 12/12 | Restores runtime schema and router configurations from activation history without bypassing the normal generated service and activation pipelines. |  |
+| `gFramework/nDynamo/src/service/class/defaultClassConfigurationService.js` | `src` | `partially-documented` | 2/9 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nDynamo/src/service/event/defaultClassConfigurationChangeListenerService.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gFramework/nDynamo/src/service/event/defaultRouterConfigurationChangeListenerService.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gFramework/nDynamo/src/service/event/defaultSchemaConfigurationChangeListenerService.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gFramework/nDynamo/src/service/interceptors/defaultClassConfigurationSaveInterceptorService.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
+| `gFramework/nDynamo/src/service/interceptors/defaultRouterConfigurationSaveInterceptorService.js` | `src` | `partially-documented` | 3/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gFramework/nDynamo/src/service/interceptors/defaultSchemaConfigurationSaveInterceptorService.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
+| `gFramework/nDynamo/src/service/pipeline/defaultSchemaActivatedPipelineService.js` | `src` | `partially-documented` | 2/12 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 10 exported method(s) |
+| `gFramework/nDynamo/src/service/pipeline/defaultSchemaDeActivatedPipelineService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nDynamo/src/service/pipeline/defaultSchemaUpdatedPipelineService.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
+| `gFramework/nDynamo/src/service/router/defaultRouterConfigurationService.js` | `src` | `partially-documented` | 6/12 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
+| `gFramework/nDynamo/src/service/schema/defaultSchemaConfigurationService.js` | `src` | `partially-documented` | 5/11 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
+| `gFramework/nDynamo/src/utils/enums.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/classConfigurationControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/classConfigurationServiceContract.test.js` | `test` | `undocumented` | 0/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 8 exported method(s) |
+| `gFramework/nDynamo/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nDynamo/test/dynamoRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nDynamo/test/routerConfigurationGovernance.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/runtimeConfigurationActivationAudit.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/runtimeConfigurationActivationPolicyEnforcement.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/runtimeConfigurationActivationPolicyService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/runtimeConfigurationActivationRequestService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/runtimeConfigurationAuditService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/runtimeConfigurationGovernanceCleanupService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/runtimeConfigurationGovernanceSummaryService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/runtimeConfigurationPreviewService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/runtimeConfigurationRollbackService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/runtimeRouterConfigurationService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/schemaAccessPolicyContractService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/schemaAccessPolicyResolverService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+
 ## Extension Contract
 
 - Treat this module as a replaceable layer in the Nodics hierarchy.
 - Later project/environment/server/node modules may override schemas, routers, services, facades, controllers, pipelines, interceptors, data, tests, and configuration.
 - Preserve source definitions as the contract. Generated artifacts must be recreated by build and cleaned by clean.
 - Add human-authored LLM notes only for intent, boundaries, examples, and decisions that cannot be derived from source.
+- Use the file inventory above to find documented, partially documented, and undocumented source contracts; an inventory entry is not proof that documentation is complete.

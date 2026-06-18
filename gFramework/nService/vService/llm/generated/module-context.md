@@ -31,7 +31,38 @@
 | Source files | 10 |
 | Test files | 2 |
 | Data files | 0 |
+| All module-owned files | 19 |
 | Local schema definitions | 0 |
+
+## Ownership And Dependencies
+
+**Owned extension areas**
+
+- `configuration`
+- `schema`
+- `router`
+- `service`
+- `pipeline`
+- `utility`
+- `test`
+- `llm`
+
+**Required modules**
+
+- No required modules are declared.
+
+**Contained modules**
+
+- This package does not declare contained modules.
+
+## Documentation Status
+
+| Status | Files |
+| --- | ---: |
+| Documented | 8 |
+| Partially documented | 1 |
+| Undocumented | 7 |
+| Inventory only | 3 |
 
 ## Important Files
 
@@ -44,9 +75,36 @@
 - `gFramework/nService/vService/src/schemas/schemas.js`
 - `gFramework/nService/vService/src/router/router.js`
 
+## File Inventory
+
+This inventory covers every module-owned file included in the context fingerprint. Documentation status is factual: generated inventory never invents business intent for undocumented code.
+
+| File | Area | Status | Methods | Purpose | Gaps |
+| --- | --- | --- | ---: | --- | --- |
+| `gFramework/nService/vService/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/vService/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/vService/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/vService/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nService/vService/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/vService/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nService/vService/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nService/vService/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Versioned service pipeline extension slot. |  |
+| `gFramework/nService/vService/src/router/appConfig.js` | `src` | `documented` | 0/0 | Versioned service router app configuration extension slot. |  |
+| `gFramework/nService/vService/src/router/router.js` | `src` | `documented` | 0/0 | Versioned service route definition extension slot. |  |
+| `gFramework/nService/vService/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/vService/src/service/procs/get/defaultModelsGetInitializerService.js` | `src` | `documented` | 2/2 | Versioned service get pipeline extension slot. The base implementation currently inherits generic get behavior while preserving a layered override location for version-aware get processing. |  |
+| `gFramework/nService/vService/src/service/procs/remove/defaultModelsRemoveInitializerService.js` | `src` | `documented` | 2/2 | Versioned service remove pipeline extension slot. The base implementation currently inherits generic remove behavior while preserving a layered override location for version-aware removal processing. |  |
+| `gFramework/nService/vService/src/service/procs/save/defaultModelSaveInitializerService.js` | `src` | `documented` | 3/3 | Version-aware override for the single-model save pipeline step. It delegates to versioned persistence when the schema model is marked `versioned`, otherwise it preserves the default save behavior. |  |
+| `gFramework/nService/vService/src/service/procs/save/defaultModelsSaveInitializerService.js` | `src` | `documented` | 2/2 | Versioned service bulk-save pipeline extension slot. The base implementation currently inherits generic bulk-save behavior while preserving a layered override location for version-aware bulk save processing. |  |
+| `gFramework/nService/vService/src/service/procs/update/defaultModelsUpdateInitializerService.js` | `src` | `documented` | 3/3 | Version-aware override for the generated update pipeline execution step. It delegates to versioned update behavior when the schema model is marked `versioned`. |  |
+| `gFramework/nService/vService/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/vService/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nService/vService/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+
 ## Extension Contract
 
 - Treat this module as a replaceable layer in the Nodics hierarchy.
 - Later project/environment/server/node modules may override schemas, routers, services, facades, controllers, pipelines, interceptors, data, tests, and configuration.
 - Preserve source definitions as the contract. Generated artifacts must be recreated by build and cleaned by clean.
 - Add human-authored LLM notes only for intent, boundaries, examples, and decisions that cannot be derived from source.
+- Use the file inventory above to find documented, partially documented, and undocumented source contracts; an inventory entry is not proof that documentation is complete.

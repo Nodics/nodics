@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "flowCore",
   "path": "gCore/workflow/flowCore",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 39,
   "testFiles": 3,
   "dataFiles": 32,
+  "ownedFiles": 81,
+  "sourceFingerprint": "7981610c1c628818de30a93d874da023acff3193d9bb1c478c01b6e81e9a5205",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 33,
+    "undocumented": 45,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

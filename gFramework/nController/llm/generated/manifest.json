@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "nController",
   "path": "gFramework/nController",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 64,
   "testFiles": 1,
   "dataFiles": 0,
+  "ownedFiles": 15,
+  "sourceFingerprint": "cc94a8a12af1b43f7b846dc3ce958bc26e57ce75f6bda37bcc3d595c699c3a62",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 5,
+    "undocumented": 7,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

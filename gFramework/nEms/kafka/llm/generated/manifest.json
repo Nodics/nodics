@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "kafka",
   "path": "gFramework/nEms/kafka",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 6,
   "testFiles": 3,
   "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "21e80083be04a5eafa1b53430471bb0af459b37318ba0f22c31ddb5d8a1cd615",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 11,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

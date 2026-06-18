@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "pipeline",
   "path": "gFramework/nPipeline",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 9,
   "testFiles": 0,
   "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "85ee23e487bff4967bbc7117006b65c16835d6d07b8ee7ef90973b76fc43501a",
+  "documentation": {
+    "documented": 6,
+    "partially-documented": 1,
+    "undocumented": 6,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

@@ -298,6 +298,186 @@ module.exports = {
     },
 
     /**
+     * Returns the standardized Nodics module metadata block for a runtime module.
+     *
+     * @param {Object} moduleObject Raw module object from the Nodics registry.
+     * @returns {Object} Nodics metadata from package.json.
+     */
+    getModuleNodicsMetadata: function (moduleObject) {
+        return utils.getNodicsMetadata(moduleObject && moduleObject.metaData);
+    },
+
+    /**
+     * Validates the finalized module metadata contract.
+     *
+     * @param {Object} moduleObject Raw module object from the Nodics registry.
+     * @returns {void}
+     * @throws Invalid configuration error when legacy or incomplete metadata is found.
+     */
+    validateModuleMetadataContract: function (moduleObject) {
+        if (!moduleObject || !moduleObject.metaData) {
+            this.failConfiguration('runtime module metadata is missing');
+        }
+        let moduleName = moduleObject.name || moduleObject.metaData.name;
+        let nodics = this.getModuleNodicsMetadata(moduleObject);
+        if (moduleObject.metaData.type) {
+            this.failConfiguration(moduleName + ' must not use package.json.type for Nodics module classification; use package.json.nodics.kind');
+        }
+        if (nodics.moduleType) {
+            this.failConfiguration(moduleName + ' must not use package.json.nodics.moduleType; use package.json.nodics.kind');
+        }
+        if (!nodics.kind) {
+            this.failConfiguration(moduleName + ' must define package.json.nodics.kind');
+        }
+        if (!nodics.runtime || typeof nodics.runtime !== 'object') {
+            this.failConfiguration(moduleName + ' must define package.json.nodics.runtime');
+        }
+        ['router', 'publish', 'web'].forEach(flag => {
+            if (typeof nodics.runtime[flag] !== 'boolean') {
+                this.failConfiguration(moduleName + ' nodics.runtime.' + flag + ' must be a boolean');
+            }
+        });
+        if (!Array.isArray(nodics.owns)) {
+            this.failConfiguration(moduleName + ' must define package.json.nodics.owns as an array');
+        }
+    },
+
+    /**
+     * Validates metadata for all raw runtime modules.
+     *
+     * @returns {void}
+     * @throws Invalid configuration error for stale or incomplete metadata.
+     */
+    validateRuntimeModuleMetadata: function () {
+        _.each(NODICS.getRawModules(), moduleObject => {
+            this.validateModuleMetadataContract(moduleObject);
+        });
+    },
+
+    /**
+     * Validates that a runtime module has the expected Nodics kind.
+     *
+     * @param {string} moduleName Module name to validate.
+     * @param {string|string[]} expectedKind Allowed kind or kinds.
+     * @param {string} source Diagnostic source.
+     * @returns {void}
+     * @throws Invalid configuration error when the module has a different kind.
+     */
+    validateModuleKind: function (moduleName, expectedKind, source) {
+        this.validateModuleReference(moduleName, source);
+        let moduleObject = NODICS.getRawModule(moduleName);
+        let kind = this.getModuleNodicsMetadata(moduleObject).kind;
+        let allowedKinds = Array.isArray(expectedKind) ? expectedKind : [expectedKind];
+        if (!allowedKinds.includes(kind)) {
+            this.failConfiguration(source + ' module ' + moduleName + ' must have nodics.kind ' + allowedKinds.join(' or ') + ', found: ' + kind);
+        }
+    },
+
+    /**
+     * Validates selected environment group, environment, server, and optional node kinds.
+     *
+     * @returns {void}
+     * @throws Invalid configuration error when selected runtime modules do not match the topology contract.
+     */
+    validateSelectedRuntimeKinds: function () {
+        this.validateModuleKind(NODICS.getEnvironmentName(), 'group', 'selected environment group');
+        this.validateModuleKind(NODICS.getServerRootName(), 'environment', 'selected environment');
+        this.validateModuleKind(NODICS.getServerName(), 'server', 'selected server');
+        if (NODICS.getNodeName()) {
+            this.validateModuleKind(NODICS.getNodeName(), 'node', 'selected node');
+        }
+    },
+
+    /**
+     * Validates that selected runtime hierarchy modules provide their configuration files.
+     *
+     * @returns {void}
+     * @throws Invalid configuration error when a selected runtime config file is missing.
+     */
+    validateSelectedRuntimeConfigurationFiles: function () {
+        [
+            { label: 'environment group', path: NODICS.getEnvironmentPath() },
+            { label: 'environment', path: NODICS.getServerRootPath() },
+            { label: 'server', path: NODICS.getServerPath() },
+            NODICS.getNodePath() ? { label: 'node', path: NODICS.getNodePath() } : null
+        ].filter(Boolean).forEach(entry => {
+            let propertiesFile = entry.path + '/config/properties.js';
+            if (!fs.existsSync(propertiesFile)) {
+                this.failConfiguration('selected ' + entry.label + ' must provide config/properties.js: ' + propertiesFile);
+            }
+        });
+    },
+
+    /**
+     * Validates required module dependencies for active modules.
+     *
+     * @returns {void}
+     * @throws Invalid configuration error when dependencies are missing, inactive, or load after the dependent module.
+     */
+    validateRequiredModuleDependencies: function () {
+        NODICS.getActiveModules().forEach(moduleName => {
+            let moduleObject = NODICS.getRawModule(moduleName);
+            let moduleKind = this.getModuleNodicsMetadata(moduleObject).kind;
+            let requiredModules = moduleObject.metaData.requiredModules || [];
+            this.validateArrayProperty(requiredModules, moduleName + '.requiredModules');
+            requiredModules.forEach(requiredModuleName => {
+                this.validateModuleReference(requiredModuleName, moduleName + '.requiredModules');
+                if (moduleKind !== 'group' && !NODICS.isModuleActive(requiredModuleName)) {
+                    this.failConfiguration(moduleName + ' requires inactive module: ' + requiredModuleName);
+                }
+                this.validateModuleIndexOrder(NODICS.getRawModule(requiredModuleName), moduleObject, moduleName + ' requiredModules');
+            });
+        });
+    },
+
+    /**
+     * Validates server topology smoke-test configuration when a project defines it.
+     *
+     * @param {Object} serverProperties Merged server properties.
+     * @returns {void}
+     * @throws Invalid configuration error for missing servers, invalid kinds, duplicate entries, or bad communication checks.
+     */
+    validateRuntimeTopologyConfiguration: function (serverProperties) {
+        let runtimeTopology = _.get(serverProperties, 'test.runtimeTopology');
+        if (!runtimeTopology) {
+            return;
+        }
+        if (!runtimeTopology.consolidatedServer) {
+            this.failConfiguration('test.runtimeTopology.consolidatedServer must be defined');
+        }
+        this.validateModuleKind(runtimeTopology.consolidatedServer, 'server', 'test.runtimeTopology.consolidatedServer');
+        this.validateArrayProperty(runtimeTopology.modularServers, 'test.runtimeTopology.modularServers');
+        if (runtimeTopology.modularServers.length === 0) {
+            this.failConfiguration('test.runtimeTopology.modularServers must define at least one server');
+        }
+        let seenServers = {};
+        runtimeTopology.modularServers.forEach(serverName => {
+            if (seenServers[serverName]) {
+                this.failConfiguration('test.runtimeTopology.modularServers contains duplicate server: ' + serverName);
+            }
+            seenServers[serverName] = true;
+            this.validateModuleKind(serverName, 'server', 'test.runtimeTopology.modularServers');
+            let serverModule = NODICS.getRawModule(serverName);
+            this.validateModuleKind(serverModule.parent, 'environment', 'test.runtimeTopology.modularServers parent');
+            let propertiesFile = serverModule.path + '/config/properties.js';
+            if (!fs.existsSync(propertiesFile)) {
+                this.failConfiguration('test.runtimeTopology server must provide config/properties.js: ' + serverName);
+            }
+        });
+        let communicationChecks = runtimeTopology.communicationChecks || [];
+        this.validateArrayProperty(communicationChecks, 'test.runtimeTopology.communicationChecks');
+        communicationChecks.forEach((check, index) => {
+            if (!check.server || !seenServers[check.server]) {
+                this.failConfiguration('test.runtimeTopology.communicationChecks[' + index + '].server must reference a modular server');
+            }
+            this.validateModuleReference(check.moduleName, 'test.runtimeTopology.communicationChecks[' + index + '].moduleName');
+            if (!check.path || typeof check.path !== 'string') {
+                this.failConfiguration('test.runtimeTopology.communicationChecks[' + index + '].path must be defined');
+            }
+        });
+    },
+
+    /**
      * Validates configured module groups, modules, and resolved active module references.
      *
      * @param {Object} serverProperties Merged server properties.
@@ -507,11 +687,16 @@ module.exports = {
     validateResolvedConfiguration: function () {
         let serverProperties = CONFIG.getProperties() || this.loadServerProperties();
         this.validateRawModuleIndexes();
+        this.validateRuntimeModuleMetadata();
         this.validateConfiguredModules(serverProperties);
         this.validateSelectedRuntimeHierarchy();
+        this.validateSelectedRuntimeKinds();
+        this.validateSelectedRuntimeConfigurationFiles();
+        this.validateRequiredModuleDependencies();
         this.validateServerConfiguration(serverProperties);
         this.validateNodeConfiguration(serverProperties);
         this.validateModularProfileConfiguration(serverProperties);
+        this.validateRuntimeTopologyConfiguration(serverProperties);
     },
 
     /**
@@ -523,8 +708,12 @@ module.exports = {
     validateModuleActivationConfiguration: function () {
         let serverProperties = this.loadServerProperties();
         this.validateRawModuleIndexes();
+        this.validateRuntimeModuleMetadata();
         this.validateConfiguredModules(serverProperties);
         this.validateSelectedRuntimeHierarchy();
+        this.validateSelectedRuntimeKinds();
+        this.validateSelectedRuntimeConfigurationFiles();
+        this.validateRequiredModuleDependencies();
     },
 
     /**

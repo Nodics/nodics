@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "csvImport",
   "path": "gFramework/nData/nImport/csvImport",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 8,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 17,
+  "sourceFingerprint": "b481015b7fef00d90440896e41dc1f7b96349f7e1b67da205beef0e62b564149",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 3,
+    "undocumented": 11,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

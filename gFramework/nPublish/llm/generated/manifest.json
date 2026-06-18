@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "publish",
   "path": "gFramework/nPublish",
   "kind": "publish",
@@ -15,6 +16,14 @@
   "sourceFiles": 5,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 14,
+  "sourceFingerprint": "37b11669859c3d2de399428c60e9a0a25d930e62ba1e0cb4685d60027431f927",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 10,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

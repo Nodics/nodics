@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "hazelcastCache",
   "path": "gFramework/nCache/hazelcastCache",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "b2192ccdd884837038e359a9a02cb0508512ed87626a42d4eadacbdff42018fb",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 3,
+    "undocumented": 10,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

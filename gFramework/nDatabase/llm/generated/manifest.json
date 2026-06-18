@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "nDatabase",
   "path": "gFramework/nDatabase",
   "kind": "group",
@@ -15,6 +16,14 @@
   "sourceFiles": 0,
   "testFiles": 0,
   "dataFiles": 0,
+  "ownedFiles": 7,
+  "sourceFingerprint": "376233fdd97f54a71c02f3240c5e79b3d1642bf0b1e71cd7f316e8faf6cee60a",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 3,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

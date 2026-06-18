@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "gfcore",
   "path": "gframes/gframesModules/gfcore",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 6,
   "testFiles": 2,
   "dataFiles": 2,
+  "ownedFiles": 17,
+  "sourceFingerprint": "ff1d530ea2abc2ba421f8b4ffa12b00a8eb74239aec3e645d7d86bd562b67f5a",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 13,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "validator",
   "path": "gFramework/nValidator",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 14,
   "testFiles": 6,
   "dataFiles": 2,
+  "ownedFiles": 25,
+  "sourceFingerprint": "66d9f146c36720ee088de5f4290cb75eac01f4b576ffc00bbcb9f2c7ec5324d4",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 6,
+    "undocumented": 16,
+    "inventory-only": 3
+  },
   "schemaGroups": {
     "validator": [
       "validator"

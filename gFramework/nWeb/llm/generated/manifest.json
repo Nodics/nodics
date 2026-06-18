@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "nWeb",
   "path": "gFramework/nWeb",
   "kind": "web",
@@ -15,6 +16,14 @@
   "sourceFiles": 6,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 15,
+  "sourceFingerprint": "7df560d24478f647c81788ec0d9ea08612634db98ed4edbdb6f6a17fedcc95f3",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 10,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

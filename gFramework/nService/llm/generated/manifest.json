@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "nService",
   "path": "gFramework/nService",
   "kind": "group",
@@ -15,6 +16,14 @@
   "sourceFiles": 77,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 29,
+  "sourceFingerprint": "21462d78ea0d79aedbfa80c0cae59e9f77713252c513eae54ac613968a2eeb6b",
+  "documentation": {
+    "documented": 18,
+    "partially-documented": 1,
+    "undocumented": 7,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"

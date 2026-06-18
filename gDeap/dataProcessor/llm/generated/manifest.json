@@ -1,4 +1,5 @@
 {
+  "contextVersion": 3,
   "moduleName": "dataProcessor",
   "path": "gDeap/dataProcessor",
   "kind": "capability",
@@ -15,6 +16,14 @@
   "sourceFiles": 6,
   "testFiles": 2,
   "dataFiles": 0,
+  "ownedFiles": 15,
+  "sourceFingerprint": "5d98e5d8cbe6447654f7f5266ed00d394b5d7176ea8f81c07e423312249cda5f",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 2,
+    "undocumented": 10,
+    "inventory-only": 3
+  },
   "schemaGroups": {},
   "schemaLoadError": null,
   "generatedBy": "scripts/generate-module-llm-context.js"
