@@ -67,9 +67,7 @@ global.CLASSES = {
 const serverName = 'testLocalServer';
 const nodeName = 'testLocalNode';
 const serverPath = fs.mkdtempSync(path.join(os.tmpdir(), 'nodics-system-contract-server-'));
-const nodePath = fs.mkdtempSync(path.join(os.tmpdir(), 'nodics-system-contract-node-'));
 const serverContractDirectory = path.join(serverPath, 'generated', 'openapi');
-const nodeContractDirectory = path.join(nodePath, 'generated', 'openapi');
 const serverContract = {
     openapi: '3.0.3',
     info: {
@@ -88,12 +86,10 @@ const nodeContract = {
 };
 
 fs.mkdirSync(serverContractDirectory, { recursive: true });
-fs.mkdirSync(nodeContractDirectory, { recursive: true });
 fs.writeFileSync(path.join(serverContractDirectory, serverName + '.openapi.json'), JSON.stringify(serverContract), 'utf8');
-fs.writeFileSync(path.join(nodeContractDirectory, nodeName + '.openapi.json'), JSON.stringify(nodeContract), 'utf8');
+fs.writeFileSync(path.join(serverContractDirectory, nodeName + '.openapi.json'), JSON.stringify(nodeContract), 'utf8');
 
 let activeNodeName;
-let activeNodePath;
 
 global.NODICS = {
     getServerName: function () {
@@ -109,7 +105,7 @@ global.NODICS = {
         return activeNodeName;
     },
     getNodePath: function () {
-        return activeNodePath;
+        throw new Error('Node path must not own generated reports');
     }
 };
 
@@ -123,15 +119,13 @@ const service = require('../src/service/contract/defaultApiContractService');
     assert.strictEqual(serverResponse.metadata.artifactPath, path.relative(path.dirname(serverPath), path.join(serverContractDirectory, serverName + '.openapi.json')));
 
     activeNodeName = nodeName;
-    activeNodePath = nodePath;
     let nodeResponse = await service.getOpenApiContract({});
     assert.strictEqual(nodeResponse.code, 'SUC_SYS_00001');
     assert.strictEqual(nodeResponse.data.info.title, 'Node Contract');
     assert.strictEqual(nodeResponse.metadata.moduleName, nodeName);
-    assert.strictEqual(nodeResponse.metadata.artifactPath, path.relative(path.dirname(serverPath), path.join(nodeContractDirectory, nodeName + '.openapi.json')));
+    assert.strictEqual(nodeResponse.metadata.artifactPath, path.relative(path.dirname(serverPath), path.join(serverContractDirectory, nodeName + '.openapi.json')));
 
     activeNodeName = 'missingNode';
-    activeNodePath = fs.mkdtempSync(path.join(os.tmpdir(), 'nodics-system-contract-missing-'));
     let missingContractError;
     try {
         await service.getOpenApiContract({});
@@ -144,15 +138,9 @@ const service = require('../src/service/contract/defaultApiContractService');
     assert.strictEqual(missingContractError.contexts[0].moduleName, 'missingNode');
 
     fs.rmSync(serverPath, { recursive: true, force: true });
-    fs.rmSync(nodePath, { recursive: true, force: true });
-    fs.rmSync(activeNodePath, { recursive: true, force: true });
     console.log('System API contract service behavior validated');
 })().catch((error) => {
     fs.rmSync(serverPath, { recursive: true, force: true });
-    fs.rmSync(nodePath, { recursive: true, force: true });
-    if (activeNodePath) {
-        fs.rmSync(activeNodePath, { recursive: true, force: true });
-    }
     console.error(error);
     process.exit(1);
 });

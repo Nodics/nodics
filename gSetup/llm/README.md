@@ -19,9 +19,11 @@ Recommended reading order:
 3. `module-catalog.md`
 4. `schema-and-generation.md`
 5. `testing-playbook.md`
-6. `feature-process.md`
-7. `prompts/base-nodics-assistant-prompt.md`
-8. `prompts/enterprise-architecture-quality-prompt.md`
+6. `standards/module-standard.md`
+7. `standards/code-documentation-standard.md`
+8. `feature-process.md`
+9. `prompts/base-nodics-assistant-prompt.md`
+10. `prompts/enterprise-architecture-quality-prompt.md`
 
 ## Core Rule
 

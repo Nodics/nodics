@@ -38,3 +38,4 @@ yarn-error.log*
 **/config/modules.js
 **/generated/openapi/*.openapi.json
 **/generated/governance/*.governance-report.json
+**/generated/test-reports/*.json

@@ -1,0 +1,35 @@
+{
+    "name": "nTooling",
+    "index": "1.98",
+    "runtimeModule": false,
+    "description": "Non-runtime Nodics development, quality, generation, and command tooling.",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL-3.0-or-later",
+    "nodics": {
+        "kind": "tooling",
+        "runtimeModule": false,
+        "loadableByNodicsModuleLoader": false,
+        "entrypoints": {
+            "cli": "bin/nodics-tool.js",
+            "commands": "config/tooling.js",
+            "documentationGovernance": "config/documentation-governance.json"
+        },
+        "owns": [
+            "tooling",
+            "quality",
+            "configuration",
+            "test",
+            "llm"
+        ],
+        "description": "Framework-owned tooling package that runs outside application startup and can be extended by project tooling contributions.",
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        }
+    },
+    "scripts": {},
+    "dependencies": {}
+}

@@ -73,7 +73,7 @@ module.exports = function () {
     };
 
     this.initEnvironment = function (options) {
-        _serverName = options.defaultServer || 'kickoffLocalServer';
+        _serverName = options.defaultServer || null;
         _nodeName = null;
         process.argv.forEach(element => {
             if (element.startsWith('S=')) {
@@ -84,12 +84,19 @@ module.exports = function () {
                 _nodeName = element.replace('NODE=', '');
             }
         });
-        _serverPath = this.getRawModule(_serverName).path;
+        if (!_serverName) {
+            throw new Error('Default server is not configured. Set defaultOptions.defaultServer or pass S=<serverName>');
+        }
+        let serverModule = this.getRawModule(_serverName);
+        if (!serverModule || !serverModule.path) {
+            throw new Error('Invalid server name: ' + _serverName);
+        }
+        _serverPath = serverModule.path;
         //_envName = this.getRawModule(_serverName).parent;
         // _envPath = this.getRawModule(_envName).path;
         // -------------------------------------
 
-        _serverRootName = this.getRawModule(_serverName).parent
+        _serverRootName = serverModule.parent
         _serverRootPath = this.getRawModule(_serverRootName).path
 
         _envName = this.getRawModule(_serverRootName).parent

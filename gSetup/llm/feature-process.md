@@ -16,6 +16,10 @@ Identify:
 - affected generated artifacts
 - affected tests
 
+Before implementation, verify the owning package follows
+`standards/module-standard.md`, including mandatory configuration files,
+canonical `readme.md`, stable runtime naming, and generated context.
+
 Do not start coding before knowing whether behavior belongs in framework, core business module, project module, environment module, server module, or node module.
 
 For significant feature, refactor, security, documentation, or testing changes, also apply `prompts/enterprise-architecture-quality-prompt.md` so the implementation is reviewed for ownership, dependencies, coupling risk, deployment impact, generated artifact impact, and automated test strategy.

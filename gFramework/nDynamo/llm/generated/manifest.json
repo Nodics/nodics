@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to dynamo"
   },
-  "sourceFiles": 33,
+  "sourceFiles": 34,
   "testFiles": 43,
   "dataFiles": 0,
-  "ownedFiles": 58,
-  "sourceFingerprint": "8139c3b0b42dc159e05f762131daed24fbda91d9ea19b7a4c45eeb62eba1cc3c",
+  "ownedFiles": 60,
+  "sourceFingerprint": "6582e72535fafe85606ef41d33b71c98ac95609ee8d064eaa7fae74838c9f1dd",
   "documentation": {
-    "documented": 9,
+    "documented": 11,
     "partially-documented": 17,
     "undocumented": 29,
     "inventory-only": 3
@@ -36,5 +36,5 @@
     ]
   },
   "schemaLoadError": null,
-  "generatedBy": "scripts/generate-module-llm-context.js"
+  "generatedBy": "npm run llm:generate"
 }

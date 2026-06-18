@@ -1,3 +1,10 @@
+/**
+ * @module nCommon/test/executionLayerTraceability
+ * @description Verifies that processor, search processor, interceptor, and event failures retain handler, tenant, module, schema/index, and event execution context.
+ * @layer test
+ * @owner nCommon
+ * @override New execution layers should add traceability scenarios without weakening the shared context contract.
+ */
 const assert = require('assert');
 
 String.prototype.toUpperCaseFirstChar = function () {

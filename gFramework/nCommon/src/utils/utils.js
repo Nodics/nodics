@@ -18,7 +18,18 @@ const uuid = require('uuid');
 // const uuidv5 = require('uuid').v5();
 
 
+/**
+ * @module nCommon/utils/utils
+ * @description Shared utility contributions for identifiers, password hashing, recursive file discovery, trusted script evaluation, error normalization, and inherited user-group access resolution.
+ * @layer utility
+ * @owner nCommon
+ * @override Later modules may merge additional utilities or override named functions through the layered utility loader. Security-sensitive replacements must preserve password hashing, error traceability, and recursive group behavior.
+ */
 module.exports = {
+    /**
+     * Generates a random UUID v4 identifier.
+     * @returns {string} Unique identifier.
+     */
     generateUniqueCode: function () {
         return uuid.v4();
     },
@@ -58,6 +69,11 @@ module.exports = {
         });
     },
 
+    /**
+     * Hashes a password using a generated bcrypt salt.
+     * @param {string} password Plain-text password.
+     * @returns {Promise<string>} Password hash.
+     */
     encryptPassword: function (password) {
         return new Promise((resolve, reject) => {
             UTILS.generatePasswordHash(password).then(hash => {
@@ -68,6 +84,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Compares a plain value with a bcrypt hash.
+     * @param {string} value Plain value.
+     * @param {string} hash Existing bcrypt hash.
+     * @returns {Promise<boolean>} Whether the value matches.
+     */
     compareHash: function (value, hash) {
         return new Promise((resolve, reject) => {
             try {
@@ -80,6 +102,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Executes every function-valued property on an object.
+     * @param {Object<string,Function>} object Function collection.
+     * @param {*} [param] Optional argument supplied to each function.
+     * @returns {void}
+     * @sideEffects Invokes contributed functions synchronously.
+     */
     executeFunctions: function (object, param) {
         if (object) {
             Object.keys(object).forEach(function (key) {
@@ -95,6 +124,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Recursively discovers import header files and optionally moves them to processing.
+     * @param {string} filePath Directory to scan.
+     * @param {Object<string,string>} fileList Mutable header-name to path map.
+     * @param {number} [limit] Optional maximum number of files.
+     * @param {boolean} [moveProcessing] Move discovered files through the file handler.
+     * @returns {void}
+     */
     getHeaderFiles: function (filePath, fileList, limit, moveProcessing) {
         let _self = this;
         if (fs.existsSync(filePath)) {
@@ -123,6 +160,12 @@ module.exports = {
         }
     },
 
+    /**
+     * Recursively discovers non-header data files.
+     * @param {string} filePath Directory to scan.
+     * @param {Object<string,string>} fileList Mutable basename/extension to path map.
+     * @returns {void}
+     */
     getDataFiles: function (filePath, fileList) {
         let _self = this;
         if (fs.existsSync(filePath)) {
@@ -144,6 +187,12 @@ module.exports = {
         }
     },
 
+    /**
+     * Recursively indexes all named files beneath a directory.
+     * @param {string} filePath Directory to scan.
+     * @param {Object<string,string>} fileList Mutable normalized-name to path map.
+     * @returns {void}
+     */
     getAllFiles: function (filePath, fileList) {
         let _self = this;
         if (fs.existsSync(filePath)) {
@@ -165,6 +214,11 @@ module.exports = {
         }
     },
 
+    /**
+     * Loads page files from an active module's configured web root.
+     * @param {string} moduleName Runtime module name.
+     * @returns {Object<string,string>|undefined} Page-name to file-path map when the web root exists.
+     */
     getPages: function (moduleName) {
         let moduleObject = NODICS.getRawModule(moduleName);
         let webPath = moduleObject.path + '/' + CONFIG.get('webRootDirName');
@@ -176,6 +230,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Evaluates a trusted configured script with request and response in lexical scope.
+     * @param {Object} request Nodics request context.
+     * @param {Object} response Nodics response context.
+     * @param {string} script Trusted script expression.
+     * @returns {Promise<boolean>} Resolves for a truthy result and rejects otherwise.
+     * @throws Rejects syntax and runtime errors. Never pass untrusted user input as `script`.
+     */
     evaluateScript: function (request, response, script) {
         return new Promise((resolve, reject) => {
             try {
@@ -191,6 +253,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Normalizes an Error into the legacy Nodics response shape.
+     * @param {Error} error Source error.
+     * @param {string} [message] Additional context.
+     * @param {string} defaultCode Fallback status definition code.
+     * @returns {Object} Serializable error response including stack.
+     */
     extractFromError: function (error, message, defaultCode) {
         let errMsg = error.message || SERVICE.DefaultStatusService.get(defaultCode).message;
         if (message) errMsg = errMsg + ' : ' + message;
@@ -204,6 +273,12 @@ module.exports = {
         };
     },
 
+    /**
+     * Normalizes a message into the legacy Nodics response shape.
+     * @param {string|Object} error Message or error payload.
+     * @param {string} defaultCode Status definition code.
+     * @returns {Object} Serializable error response.
+     */
     extractFromMessage: function (error, defaultCode) {
         return {
             code: defaultCode,
@@ -212,6 +287,12 @@ module.exports = {
         };
     },
 
+    /**
+     * Flattens user-group codes across nested parent-group relationships.
+     * @param {Array<Object|string>} userGroups Group objects or codes.
+     * @param {string[]} [codes] Mutable result accumulator.
+     * @returns {string[]} Effective group codes.
+     */
     getUserGroupCodes: function (userGroups, codes = []) {
         let _self = this;
         if (userGroups && userGroups.length > 0) {
@@ -231,6 +312,12 @@ module.exports = {
         return codes;
     },
 
+    /**
+     * Flattens unique permissions across nested parent-group relationships.
+     * @param {Object[]} userGroups Group objects containing permissions and optional parents.
+     * @param {string[]} [permissions] Mutable result accumulator.
+     * @returns {string[]} Effective inherited permissions.
+     */
     getUserGroupPermissions: function (userGroups, permissions = []) {
         let _self = this;
         if (userGroups && userGroups.length > 0) {

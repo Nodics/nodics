@@ -28,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 9 |
-| Test files | 3 |
+| Source files | 16 |
+| Test files | 5 |
 | Data files | 0 |
-| All module-owned files | 19 |
+| All module-owned files | 29 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -44,6 +44,7 @@
 - `facade`
 - `service`
 - `utility`
+- `tooling`
 - `test`
 - `llm`
 
@@ -59,7 +60,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
+| Documented | 10 |
 | Partially documented | 4 |
 | Undocumented | 12 |
 | Inventory only | 3 |
@@ -83,6 +84,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTest/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nTest/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nTest/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nTest/config/tooling.js` | `config` | `documented` | 0/0 | Contributes project-aware test discovery, execution, live-safety, and reporting commands to the non-runtime Nodics tooling registry. |  |
 | `gFramework/nTest/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nTest/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nTest/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
@@ -95,10 +97,19 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTest/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nTest/src/service/generator/defaultSchemaTestGeneratorService.js` | `src` | `undocumented` | 0/45 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 45 exported method(s) |
 | `gFramework/nTest/src/service/testExecutionService.js` | `src` | `partially-documented` | 2/11 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 9 exported method(s) |
+| `gFramework/nTest/src/tooling/liveTestTenantGuard.js` | `src` | `documented` | 0/0 | Guards live and destructive test execution from missing tenant selection or accidental use of protected tenants. |  |
+| `gFramework/nTest/src/tooling/runCapabilityBehaviorTests.js` | `src` | `documented` | 0/0 | Discovers marker-based capability behavior tests across a target project and executes them with optional area filtering. |  |
+| `gFramework/nTest/src/tooling/runGeneratedAccessPolicyLiveTests.js` | `src` | `documented` | 0/0 | Executes generated live access-policy scenarios with explicit enablement, authentication, tenant protection, and dry-run contract safeguards. |  |
+| `gFramework/nTest/src/tooling/runGeneratedCrudLiveTests.js` | `src` | `documented` | 0/0 | Executes generated destructive CRUD scenarios only when explicitly enabled and protected by tenant, authentication, and cleanup contracts. |  |
+| `gFramework/nTest/src/tooling/runGeneratedTests.js` | `src` | `documented` | 0/0 | Discovers and executes generated schema, API, API-scenario, and opt-in destructive CRUD tests across a target Nodics project. |  |
+| `gFramework/nTest/src/tooling/runRouteContractTests.js` | `src` | `documented` | 0/0 | Discovers and executes module-owned route contract tests throughout a target Nodics project. |  |
+| `gFramework/nTest/src/tooling/runTestSuiteWithReport.js` | `src` | `documented` | 0/0 | Runs an arbitrary project test command, streams its output, extracts Nodics test metrics, and writes a structured report under the selected server module. |  |
 | `gFramework/nTest/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nTest/test/liveTestTenantGuard.test.js` | `test` | `documented` | 0/0 | Verifies default and configured protected-tenant resolution plus explicit live-test override behavior. |  |
 | `gFramework/nTest/test/schemaTestGeneratorCrudFixtureInheritance.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nTest/test/schemaTestGeneratorEffectiveSchema.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nTest/test/testExecutionControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nTest/test/testSuiteReporter.test.js` | `test` | `documented` | 0/0 | Verifies Nodics test-output metric parsing and structured report construction. |  |
 
 ## Extension Contract
 

@@ -14,9 +14,7 @@ const path = require('path');
 
 /**
  * @module system/service/DefaultApiContractService
- * @description Resolves generated API contract artifacts for the active server
- * or node module. Generated contracts are intentionally read from the owning
- * module context, not from global documentation folders.
+ * @description Resolves generated API contract artifacts from the active server module while preserving node-specific contract identity.
  * @layer service
  * @owner system
  * @override Project modules may override this service to change contract
@@ -55,7 +53,7 @@ module.exports = {
     },
 
     /**
-     * Returns the generated OpenAPI contract for the active server or node.
+     * Returns the generated OpenAPI contract for the active server or node target.
      *
      * @param {Object} request Nodics request context.
      * @returns {Promise<Object>} Promise resolving to the Nodics response envelope.
@@ -93,16 +91,16 @@ module.exports = {
     },
 
     /**
-     * Resolves the active OpenAPI contract location from the node or server module.
+     * Resolves the active OpenAPI contract location from the server-owned generated directory.
      *
      * @returns {Object} Contract resolution context.
      * @throws {CLASSES.NodicsError} When active runtime context is missing or unsafe.
      */
     resolveOpenApiContractContext: function () {
         let moduleName = this.getActiveModuleName();
-        let modulePath = this.getActiveModulePath();
+        let modulePath = this.getServerModulePath();
         if (!moduleName || !modulePath) {
-            throw new CLASSES.NodicsError('ERR_SYS_00001', 'Active server or node context is required to resolve OpenAPI contract');
+            throw new CLASSES.NodicsError('ERR_SYS_00001', 'Active server context is required to resolve OpenAPI contract');
         }
 
         let resolvedModulePath = path.resolve(modulePath);
@@ -130,13 +128,12 @@ module.exports = {
     },
 
     /**
-     * Returns the active node path when present, otherwise the active server path.
+     * Returns the server path that owns generated runtime reports.
      *
      * @returns {string|undefined} Active contract owner module path.
      */
-    getActiveModulePath: function () {
-        return (NODICS.getNodePath && NODICS.getNodePath()) ||
-            (NODICS.getServerPath && NODICS.getServerPath());
+    getServerModulePath: function () {
+        return NODICS.getServerPath && NODICS.getServerPath();
     },
 
     /**

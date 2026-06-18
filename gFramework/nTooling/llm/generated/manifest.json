@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "nTooling",
+  "path": "gFramework/nTooling",
+  "kind": "tooling",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "1.98",
+    "version": "0.0.1",
+    "description": "Non-runtime Nodics development, quality, generation, and command tooling."
+  },
+  "sourceFiles": 11,
+  "testFiles": 5,
+  "dataFiles": 0,
+  "ownedFiles": 26,
+  "sourceFingerprint": "f22d2b24aee0af072cf0772452b14cb2dbe4351566a07584997ab4134fa5fedb",
+  "documentation": {
+    "documented": 22,
+    "partially-documented": 0,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

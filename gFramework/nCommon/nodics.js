@@ -9,12 +9,15 @@
 
  */
 
+/**
+ * @module nCommon/nodics
+ * @description nCommon lifecycle contribution that loads effective interceptor definitions after service initialization, making layered dynamic behavior available to downstream modules.
+ * @layer module
+ * @owner nCommon
+ * @override Later modules may extend lifecycle behavior through their own module hooks or override the interceptor services while preserving ordered definition loading and error propagation.
+ */
 module.exports = {
-    /**
-    * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
-    * defined it that with Promise way
-    * @param {*} options 
-    */
+    /** @param {Object} options Lifecycle options. @returns {Promise<boolean>} Resolved initialization hook. */
     init: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
@@ -22,9 +25,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize module loading process. If there is any functionalities, required to be executed after module loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Loads and prepares interceptor definitions contributed by active modules.
+     * @param {Object} options Lifecycle options.
+     * @returns {Promise<boolean>} Resolves after interceptor definitions are loaded.
+     * @sideEffects Replaces the effective interceptor registry used at runtime.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {

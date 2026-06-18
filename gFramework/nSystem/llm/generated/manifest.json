@@ -17,7 +17,7 @@
   "testFiles": 19,
   "dataFiles": 0,
   "ownedFiles": 33,
-  "sourceFingerprint": "05940469850108b3085f3d8acf476574360ae2a2f0bb06ece100bdc35d602b1d",
+  "sourceFingerprint": "1aa45456df120eed8896771c6333c3d605fe839c0f0373e00b301a99e3dedb90",
   "documentation": {
     "documented": 4,
     "partially-documented": 6,
@@ -32,5 +32,5 @@
     ]
   },
   "schemaLoadError": null,
-  "generatedBy": "scripts/generate-module-llm-context.js"
+  "generatedBy": "npm run llm:generate"
 }

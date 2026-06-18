@@ -26,5 +26,5 @@
   },
   "schemaGroups": {},
   "schemaLoadError": null,
-  "generatedBy": "scripts/generate-module-llm-context.js"
+  "generatedBy": "npm run llm:generate"
 }

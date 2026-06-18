@@ -57,9 +57,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 9 |
-| Partially documented | 2 |
-| Undocumented | 8 |
+| Documented | 19 |
+| Partially documented | 0 |
+| Undocumented | 0 |
 | Inventory only | 3 |
 
 ## Important Files
@@ -77,14 +77,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
-| `gFramework/nCommon/config/postscripts.js` | `config` | `undocumented` | 0/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gFramework/nCommon/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCommon/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCommon/config/postscripts.js` | `config` | `documented` | 3/3 | Default nCommon post-start script hooks retained for layered startup compatibility. They return diagnostic labels and do not mutate runtime state. |  |
+| `gFramework/nCommon/config/prescripts.js` | `config` | `documented` | 0/0 | Reserved nCommon pre-start script contribution. It is intentionally empty so later modules can add shared pre-initialization behavior through the standard layered script loader. |  |
+| `gFramework/nCommon/config/properties.js` | `config` | `documented` | 0/0 | Baseline shared properties for error serialization, external data staging, and default error-code resolution. |  |
 | `gFramework/nCommon/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nCommon/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCommon/nodics.js` | `module` | `documented` | 2/2 | nCommon lifecycle contribution that loads effective interceptor definitions after service initialization, making layered dynamic behavior available to downstream modules. |  |
 | `gFramework/nCommon/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nCommon/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nCommon/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCommon/src/event/listeners.js` | `src` | `documented` | 0/0 | Event-listener definitions that refresh effective interceptor configuration after interceptor records are created or updated. |  |
 | `gFramework/nCommon/src/lib/nodicsError.js` | `src` | `documented` | 0/0 | Standard Nodics error type used across pipelines, services, controllers, generated APIs, imports, processors, and interceptors. It preserves response code, status code, metadata, nested causes, validation errors, trace id, contexts, and safe JSON serialization. |  |
 | `gFramework/nCommon/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Pipeline definition for runtime interceptor updates. It validates update payloads, loads changed interceptor definitions, merges them into effective runtime state, and publishes cleanup events. |  |
 | `gFramework/nCommon/src/service/config/defaultInterceptorConfigurationService.js` | `src` | `documented` | 7/7 | Stores and prepares effective interceptor definitions by type, item, trigger, and index. It merges default and item-specific interceptors so dynamic behavior can be extended through layered module configuration. |  |
@@ -94,11 +94,11 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCommon/src/service/pipeline/defaultInterceptorUpdatedPipelineService.js` | `src` | `documented` | 6/6 | Pipeline service for applying persisted interceptor changes at runtime. It validates update events, loads changed interceptor records, merges them into the effective interceptor registry, and publishes cleanup events for affected interceptor types. |  |
 | `gFramework/nCommon/src/service/processor/defaultProcessorHandlerService.js` | `src` | `documented` | 2/2 | Executes configured processor handlers sequentially for model and search processing flows. Processor failures are enriched with layer, handler, tenant, module, schema, or index context before being propagated. |  |
 | `gFramework/nCommon/src/service/promise/defaultNodicsPromiseService.js` | `src` | `documented` | 3/3 | Sequential promise collector for Nodics batch operations. It executes promises one by one, collecting successes and errors into a single response instead of failing fast. |  |
-| `gFramework/nCommon/src/utils/enums.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCommon/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCommon/src/utils/utils.js` | `src` | `partially-documented` | 3/16 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 13 exported method(s) |
-| `gFramework/nCommon/test/errorTraceability.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCommon/test/executionLayerTraceability.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCommon/src/utils/enums.js` | `src` | `documented` | 0/0 | Shared enum definitions for event targeting and configurable interceptor domains. nConfig converts these definitions into runtime Enum instances during startup. |  |
+| `gFramework/nCommon/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Baseline platform success and error status definitions used when a capability-specific status is unavailable. |  |
+| `gFramework/nCommon/src/utils/utils.js` | `src` | `documented` | 16/16 | Shared utility contributions for identifiers, password hashing, recursive file discovery, trusted script evaluation, error normalization, and inherited user-group access resolution. |  |
+| `gFramework/nCommon/test/errorTraceability.test.js` | `test` | `documented` | 0/0 | Verifies structured Nodics error wrapping, nested causes, validation errors, safe serialization, and propagation of pipeline/import execution context. |  |
+| `gFramework/nCommon/test/executionLayerTraceability.test.js` | `test` | `documented` | 0/0 | Verifies that processor, search processor, interceptor, and event failures retain handler, tenant, module, schema/index, and event execution context. |  |
 
 ## Extension Contract
 

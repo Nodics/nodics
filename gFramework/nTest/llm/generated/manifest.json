@@ -13,18 +13,18 @@
     "version": "0.0.1",
     "description": "Generate test scripts for all generated layers for application"
   },
-  "sourceFiles": 9,
-  "testFiles": 3,
+  "sourceFiles": 16,
+  "testFiles": 5,
   "dataFiles": 0,
-  "ownedFiles": 19,
-  "sourceFingerprint": "6b25ea02aaddc99d505e21bac7cc4987072fa80e705970ecf39d3aa2a5de87c2",
+  "ownedFiles": 29,
+  "sourceFingerprint": "16ae8d0e315f3a99ca6ec72e3e374a42aa58b60401e5e1ac4aa68f5a568da1da",
   "documentation": {
-    "documented": 0,
+    "documented": 10,
     "partially-documented": 4,
     "undocumented": 12,
     "inventory-only": 3
   },
   "schemaGroups": {},
   "schemaLoadError": null,
-  "generatedBy": "scripts/generate-module-llm-context.js"
+  "generatedBy": "npm run llm:generate"
 }

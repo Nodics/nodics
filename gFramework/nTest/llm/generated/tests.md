@@ -4,9 +4,11 @@
 
 ## Hand-Authored Tests
 
+- `gFramework/nTest/test/liveTestTenantGuard.test.js`
 - `gFramework/nTest/test/schemaTestGeneratorCrudFixtureInheritance.test.js`
 - `gFramework/nTest/test/schemaTestGeneratorEffectiveSchema.test.js`
 - `gFramework/nTest/test/testExecutionControllerRequestMapping.test.js`
+- `gFramework/nTest/test/testSuiteReporter.test.js`
 
 ## Generated Tests
 

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nCommon/event/listeners
+ * @description Event-listener definitions that refresh effective interceptor configuration after interceptor records are created or updated.
+ * @layer event
+ * @owner nCommon
+ * @override Later modules may add listeners or override handlers through layered event definitions while preserving tenant-aware runtime refresh behavior.
+ */
 module.exports = {
     common: {
         interceptorAddedListener: {

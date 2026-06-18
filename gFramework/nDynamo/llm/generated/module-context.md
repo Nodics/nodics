@@ -32,10 +32,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 33 |
+| Source files | 34 |
 | Test files | 43 |
 | Data files | 0 |
-| All module-owned files | 58 |
+| All module-owned files | 60 |
 | Local schema definitions | 7 |
 
 ## Ownership And Dependencies
@@ -52,6 +52,7 @@
 - `interceptor`
 - `event`
 - `utility`
+- `tooling`
 - `test`
 - `llm`
 
@@ -67,7 +68,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 9 |
+| Documented | 11 |
 | Partially documented | 17 |
 | Undocumented | 29 |
 | Inventory only | 3 |
@@ -92,6 +93,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/config/tooling.js` | `config` | `documented` | 0/0 | Contributes runtime configuration governance reporting to the non-runtime Nodics tooling registry. |  |
 | `gFramework/nDynamo/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDynamo/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
@@ -127,6 +129,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/src/service/pipeline/defaultSchemaUpdatedPipelineService.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
 | `gFramework/nDynamo/src/service/router/defaultRouterConfigurationService.js` | `src` | `partially-documented` | 6/12 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
 | `gFramework/nDynamo/src/service/schema/defaultSchemaConfigurationService.js` | `src` | `partially-documented` | 5/11 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
+| `gFramework/nDynamo/src/tooling/generateGovernanceReport.js` | `src` | `documented` | 0/0 | Generates a server-owned report of effective schema, router, artifact, generated-file, warning, and override traceability state. |  |
 | `gFramework/nDynamo/src/utils/enums.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/test/classConfigurationControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

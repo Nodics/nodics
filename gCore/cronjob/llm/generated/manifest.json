@@ -16,13 +16,13 @@
   "sourceFiles": 33,
   "testFiles": 13,
   "dataFiles": 4,
-  "ownedFiles": 48,
-  "sourceFingerprint": "8efc2160243cda00e42f2ca1c1fd1f23f2811d92d0f584177740b61ffd01136f",
+  "ownedFiles": 49,
+  "sourceFingerprint": "7b68beccf63ba45b14ba7f85102b540e1b9f66ffa48354a3264c835e792b90df",
   "documentation": {
     "documented": 0,
     "partially-documented": 12,
     "undocumented": 34,
-    "inventory-only": 2
+    "inventory-only": 3
   },
   "schemaGroups": {
     "cronjob": [
@@ -31,5 +31,5 @@
     ]
   },
   "schemaLoadError": null,
-  "generatedBy": "scripts/generate-module-llm-context.js"
+  "generatedBy": "npm run llm:generate"
 }

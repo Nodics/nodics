@@ -14,17 +14,17 @@
     "description": "Build configuration related functionalities for Nodics"
   },
   "sourceFiles": 11,
-  "testFiles": 6,
+  "testFiles": 7,
   "dataFiles": 0,
-  "ownedFiles": 27,
-  "sourceFingerprint": "5a7d244414ddc93e985dc886bc64bb73c0109eb8afc09fd79025c83cdcb6198c",
+  "ownedFiles": 28,
+  "sourceFingerprint": "99d80a9df3b2b4257c5b10c01a330a26048a528b6943f386483428113188712f",
   "documentation": {
-    "documented": 24,
+    "documented": 25,
     "partially-documented": 0,
     "undocumented": 0,
     "inventory-only": 3
   },
   "schemaGroups": {},
   "schemaLoadError": null,
-  "generatedBy": "scripts/generate-module-llm-context.js"
+  "generatedBy": "npm run llm:generate"
 }

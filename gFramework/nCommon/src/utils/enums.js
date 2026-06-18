@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nCommon/utils/enums
+ * @description Shared enum definitions for event targeting and configurable interceptor domains. nConfig converts these definitions into runtime Enum instances during startup.
+ * @layer utility
+ * @owner nCommon
+ * @override Later modules may extend enum definitions through layered `src/utils/enums.js` contributions without modifying nCommon.
+ */
 module.exports = {
     TargetType: {
         _options: {

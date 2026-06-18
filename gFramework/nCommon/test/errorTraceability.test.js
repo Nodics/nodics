@@ -1,3 +1,10 @@
+/**
+ * @module nCommon/test/errorTraceability
+ * @description Verifies structured Nodics error wrapping, nested causes, validation errors, safe serialization, and propagation of pipeline/import execution context.
+ * @layer test
+ * @owner nCommon
+ * @override Capability modules may add layer-specific context scenarios while preserving the common error serialization contract.
+ */
 const assert = require('assert');
 
 global.CONFIG = {

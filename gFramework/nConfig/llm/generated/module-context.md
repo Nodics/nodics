@@ -27,9 +27,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 11 |
-| Test files | 6 |
+| Test files | 7 |
 | Data files | 0 |
-| All module-owned files | 27 |
+| All module-owned files | 28 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -55,7 +55,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 24 |
+| Documented | 25 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 3 |
@@ -99,6 +99,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nConfig/src/utils/utils.js` | `src` | `documented` | 26/26 | Shared nConfig utilities for module discovery, runtime activation, hierarchy traversal, generated artifact creation, filesystem cleanup, and router/web enablement decisions. |  |
 | `gFramework/nConfig/test/artifactOverrideTraceability.test.js` | `test` | `documented` | 0/0 | Verifies that layered service, facade, controller, pipeline, and related artifact contributions retain ordered source-module override trace metadata. |  |
 | `gFramework/nConfig/test/configurationValidation.test.js` | `test` | `documented` | 0/0 | Validates consolidated and modular environment/server/node configuration resolution, canonical package kinds, required module ordering, topology declarations, and negative startup cases. |  |
+| `gFramework/nConfig/test/layeredCustomizationContract.test.js` | `test` | `documented` | 10/10 | Proves that a project-neutral framework, project, environment, server, and node hierarchy can customize configuration, schemas, routers, services, pipelines, facades, controllers, data, and tests before isolated tenant/runtime governance is applied. |  |
 | `gFramework/nConfig/test/nonRuntimePackageDiscovery.test.js` | `test` | `documented` | 0/0 | Verifies that setup and other explicitly non-runtime packages are excluded from Nodics runtime module discovery while canonical capability modules remain discoverable. |  |
 | `gFramework/nConfig/test/routerOverrideGovernance.test.js` | `test` | `documented` | 4/4 | Verifies additive and replacement router merging across ordered module layers, including route removal, breaking-change warnings, and contribution trace metadata. |  |
 | `gFramework/nConfig/test/runtimeOverrideGovernance.test.js` | `test` | `documented` | 0/0 | Verifies that persisted runtime schema and router contributions obey the same additive, replacement, removal, warning, and traceability rules as file-based module layers. |  |

@@ -16,15 +16,15 @@
   "sourceFiles": 0,
   "testFiles": 0,
   "dataFiles": 0,
-  "ownedFiles": 6,
-  "sourceFingerprint": "9357a5cba64650a119e35e5dcd50624c62f4ef11b0c385731647598a8a52ea12",
+  "ownedFiles": 7,
+  "sourceFingerprint": "cdbe2a2365426ecf005a8b30e8aeeef7ff547627f82b2212424c055edaf3d930",
   "documentation": {
     "documented": 0,
     "partially-documented": 1,
     "undocumented": 3,
-    "inventory-only": 2
+    "inventory-only": 3
   },
   "schemaGroups": {},
   "schemaLoadError": null,
-  "generatedBy": "scripts/generate-module-llm-context.js"
+  "generatedBy": "npm run llm:generate"
 }

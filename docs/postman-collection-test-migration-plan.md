@@ -42,7 +42,7 @@ The route contract runner discovers `*RouteContract.test.js` files from module-o
 
 Capability behavior tests use marker-based discovery. Add `@nodics-capability-behavior` to a module-owned `.test.js` file and tag it with `@nodics-area <area>`, such as `@nodics-area system` or `@nodics-area profile`. This lets project-specific modules add behavior coverage without changing Nodics package scripts.
 
-Run all migrated behavior tests with `npm run test:capability-behavior`, or one area with `node scripts/run-capability-behavior-tests.js --area=<area>`.
+Run all migrated behavior tests with `npm run test:capability-behavior`, or one area with `npm run test:capability-behavior -- --area=<area>`.
 
 ### CronJobs
 

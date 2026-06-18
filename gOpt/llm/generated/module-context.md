@@ -25,7 +25,7 @@
 | Source files | 0 |
 | Test files | 0 |
 | Data files | 0 |
-| All module-owned files | 6 |
+| All module-owned files | 7 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -51,12 +51,13 @@
 | Documented | 0 |
 | Partially documented | 1 |
 | Undocumented | 3 |
-| Inventory only | 2 |
+| Inventory only | 3 |
 
 ## Important Files
 
 - `gOpt/nodics.js`
 - `gOpt/package.json`
+- `gOpt/readme.md`
 - `gOpt/config/properties.js`
 - `gOpt/config/prescripts.js`
 - `gOpt/config/postscripts.js`
@@ -73,6 +74,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gOpt/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gOpt/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gOpt/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gOpt/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 
 ## Extension Contract
 
