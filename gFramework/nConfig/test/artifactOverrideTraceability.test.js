@@ -1,3 +1,10 @@
+/**
+ * @module config/test/artifactOverrideTraceability
+ * @description Verifies that layered service, facade, controller, pipeline, and related artifact contributions retain ordered source-module override trace metadata.
+ * @layer test
+ * @owner nConfig
+ * @override Project modules may add capability-specific traceability scenarios; the framework contract for ordered contribution history must remain unchanged.
+ */
 const assert = require('assert');
 
 global.NODICS = {

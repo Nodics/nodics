@@ -1,3 +1,10 @@
+/**
+ * @module config/test/nonRuntimePackageDiscovery
+ * @description Verifies that setup and other explicitly non-runtime packages are excluded from Nodics runtime module discovery while canonical capability modules remain discoverable.
+ * @layer test
+ * @owner nConfig
+ * @override New package kinds must extend this contract with explicit discovery expectations rather than path-name hardcoding.
+ */
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');

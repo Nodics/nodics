@@ -8,10 +8,11 @@
             "description": "nRouter services, routers, and request pipelines define the runtime API contract and must remain fully documented."
         },
         {
-            "name": "nConfig runtime startup contract",
-            "scope": "runtime",
+            "name": "nConfig complete startup and generation contract",
+            "scope": "all",
             "module": "nConfig",
-            "description": "nConfig startup, configuration loading, module hierarchy, clean/build, and extension-point contracts must remain fully documented."
+            "includeTests": true,
+            "description": "All nConfig runtime registries, configuration scripts, startup services, utilities, clean/build entrypoints, and governance tests must remain fully documented."
         },
         {
             "name": "nCommon runtime shared contract",

@@ -1,3 +1,10 @@
+/**
+ * @module config/test/schemaOverrideGovernance
+ * @description Verifies additive and replacement schema merging across ordered module layers, including property removal, type-change warnings, and contribution trace metadata.
+ * @layer test
+ * @owner nConfig
+ * @override Project modules may add schema-specific scenarios while preserving generic layered schema governance.
+ */
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
@@ -75,9 +82,11 @@ module.exports = {
 `);
 
 global.NODICS = {
+    /** @returns {string} Temporary Nodics home containing test module fixtures. */
     getNodicsHome: function () {
         return rootDir;
     },
+    /** @returns {Map<string,Object>} Ordered base and project module fixtures. */
     getIndexedModules: function () {
         return new Map([
             ['1.0', { name: 'baseModule', path: baseModulePath }],
@@ -98,7 +107,9 @@ global.CLASSES = {
 const loader = require('../src/service/defaultFilesLoaderService');
 let warnings = [];
 loader.LOG = {
+    /** @returns {void} Ignores debug output during the isolated test. */
     debug: function () {},
+    /** @param {string} message Governance warning to capture. @returns {void} */
     warn: function (message) {
         warnings.push(message);
     }

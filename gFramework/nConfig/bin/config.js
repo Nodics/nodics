@@ -11,6 +11,14 @@
 
 const _ = require('lodash');
 
+/**
+ * @module config/bin/Config
+ * @description Tenant-aware in-memory configuration registry used during startup and request processing. It stores the effective default and tenant-specific property maps produced by layered configuration loading.
+ * @layer config
+ * @owner nConfig
+ * @override Project modules should contribute layered `config/properties.js` values or governed runtime configuration instead of replacing this registry. A replacement must preserve default-tenant bootstrap behavior and tenant isolation.
+ * @property {Object<string,Object>} _tntProperties Private effective property maps keyed by tenant code.
+ */
 module.exports = function () {
     let _tntProperties = {};
 

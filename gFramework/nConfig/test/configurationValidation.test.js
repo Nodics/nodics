@@ -1,3 +1,10 @@
+/**
+ * @module config/test/configurationValidation
+ * @description Validates consolidated and modular environment/server/node configuration resolution, canonical package kinds, required module ordering, topology declarations, and negative startup cases.
+ * @layer test
+ * @owner nConfig
+ * @override Project applications should add their own topology fixtures through project modules while preserving these generic hierarchy and metadata invariants.
+ */
 const assert = require('assert');
 const path = require('path');
 

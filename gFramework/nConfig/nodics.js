@@ -22,12 +22,23 @@ const fileLoader = require('./src/service/defaultFilesLoaderService');
 const classesLoader = require('./src/service/defaultClassesHandlerService');
 const infra = require('./src/service/defaultInfraService');
 
+/**
+ * @module config/nodics
+ * @description nConfig module lifecycle bridge used by the root Nodics launcher. It prepares process-wide registries, resolves the active environment/server/node hierarchy, loads layered configuration and pre/post scripts, and delegates runtime, clean, and build phases to overrideable nConfig services.
+ * @layer module
+ * @owner nConfig
+ * @override Project modules should customize startup through metadata, configuration, scripts, and later-loaded services. Replacing this bridge requires preserving global registry initialization, hierarchy validation, lifecycle ordering, and generated artifact contracts.
+ * @property {Object} NODICS Process-wide runtime registry created during `prepareStart`.
+ * @property {Object} CONFIG Tenant-aware configuration registry created during `prepareStart`.
+ * @property {Object} UTILS Layered utility registry populated from active modules.
+ */
 module.exports = {
     /**
-    * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
-    * defined it that with Promise way
-    * @param {*} options 
-    */
+     * Provides the standard nConfig module initialization hook.
+     *
+     * @param {Object} options Nodics lifecycle options.
+     * @returns {Promise<boolean>} Resolves when the hook completes.
+     */
     init: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
@@ -35,9 +46,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize module loading process. If there is any functionalities, required to be executed after module loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Provides the standard nConfig post-initialization hook.
+     *
+     * @param {Object} options Nodics lifecycle options.
+     * @returns {Promise<boolean>} Resolves when the hook completes.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -45,26 +57,64 @@ module.exports = {
         });
     },
 
+    /**
+     * Delegates layered utility loading to the framework initializer service.
+     *
+     * @param {Object} options Nodics lifecycle options.
+     * @returns {Promise|*} Initializer-service result.
+     */
     initUtilities: function (options) {
         return initService.initUtilities(options);
     },
 
+    /**
+     * Delegates active-module loading and module lifecycle initialization.
+     *
+     * @param {Object} options Nodics lifecycle options.
+     * @returns {Promise|*} Initializer-service result.
+     */
     loadModules: function (options) {
         return initService.loadModules(options);
     },
 
+    /**
+     * Delegates service, pipeline, facade, controller, and class initialization.
+     *
+     * @param {Object} options Nodics lifecycle options.
+     * @returns {Promise|*} Initializer-service result.
+     */
     initEntities: function (options) {
         return initService.initEntities(options);
     },
 
+    /**
+     * Delegates entity post-initialization in active-module order.
+     *
+     * @param {Object} options Nodics lifecycle options.
+     * @returns {Promise|*} Initializer-service result.
+     */
     finalizeEntities: function (options) {
         return initService.finalizeEntities(options);
     },
 
+    /**
+     * Delegates final module post-initialization hooks.
+     *
+     * @param {Object} options Nodics lifecycle options.
+     * @returns {Promise|*} Initializer-service result.
+     */
     finalizeModules: function (options) {
         return initService.finalizeModules(options);
     },
 
+    /**
+     * Prepares the shared startup state used by start, clean, and build operations.
+     *
+     * @param {Object} options Launcher options including optional home and default server values.
+     * @returns {Promise<boolean>} Resolves after hierarchy discovery, configuration validation, logger setup, utility loading, and pre-scripts complete.
+     * @sideEffects Creates global registries, ensures the server log directory, loads active modules and configuration, and installs layered utilities.
+     * @throws Rejects when topology, configuration, file loading, or a pre-script fails.
+     */
     prepareStart: function (options) {
         return new Promise((resolve, reject) => {
             try {
@@ -112,6 +162,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Prepares runtime startup and loads layered post-scripts.
+     *
+     * @param {Object} options Launcher options.
+     * @returns {Promise<boolean>} Resolves when startup preparation and post-script discovery complete.
+     * @sideEffects Populates the runtime post-script registry; execution occurs in the later lifecycle phase.
+     */
     start: function (options) {
         return new Promise((resolve, reject) => {
             this.prepareStart(options).then(success => {
@@ -124,6 +181,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Reuses standard startup preparation before cleaning generated artifacts.
+     *
+     * @param {Object} options Launcher options.
+     * @returns {Promise<boolean>} Resolves when clean prerequisites are initialized.
+     */
     prepareClean: function (options) {
         return new Promise((resolve, reject) => {
             this.prepareStart(options).then(success => {
@@ -134,6 +197,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Removes generated entity and module artifacts through the infrastructure service.
+     *
+     * @returns {Promise<boolean>} Resolves when entity and module cleanup completes.
+     * @sideEffects Deletes generated source, test, distribution, and module build outputs owned by the clean contract.
+     */
     cleanModules: function () {
         return new Promise((resolve, reject) => {
             infra.cleanEntities().then(success => {
@@ -148,6 +217,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Reuses standard startup preparation before generating build artifacts.
+     *
+     * @param {Object} options Launcher options.
+     * @returns {Promise<boolean>} Resolves when build prerequisites are initialized.
+     */
     prepareBuild: function (options) {
         return new Promise((resolve, reject) => {
             this.prepareStart(options).then(success => {
@@ -158,6 +233,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Generates schema-driven entity and module artifacts through the infrastructure service.
+     *
+     * @returns {Promise<boolean>} Resolves when entity and module generation completes.
+     * @sideEffects Recreates services, facades, controllers, tests, and other generated module outputs from effective definitions.
+     */
     buildModules: function () {
         return new Promise((resolve, reject) => {
             infra.buildEntities().then(success => {

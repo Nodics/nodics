@@ -9,7 +9,20 @@
 
  */
 
+/**
+ * @module config/config/prescripts
+ * @description Baseline pre-start script contributions for nConfig. The default script installs legacy string-case helpers required by loaders and generated artifact naming before other modules initialize.
+ * @layer config
+ * @owner nConfig
+ * @override Later modules may contribute additional pre-scripts through the layered script loader. Replacements must run before code that relies on these compatibility helpers.
+ */
 module.exports = {
+    /**
+     * Installs string case-conversion and replacement helpers used by legacy generation and loader code.
+     *
+     * @returns {void}
+     * @sideEffects Adds helper functions to `String.prototype` for the current Node.js process.
+     */
     addStringCamelCaseFunction: function() {
         String.prototype.toUpperCaseFirstChar = function() {
             return this.substr(0, 1).toUpperCase() + this.substr(1);

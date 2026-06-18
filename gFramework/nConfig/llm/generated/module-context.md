@@ -55,9 +55,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 10 |
-| Partially documented | 2 |
-| Undocumented | 12 |
+| Documented | 24 |
+| Partially documented | 0 |
+| Undocumented | 0 |
 | Inventory only | 3 |
 
 ## Important Files
@@ -76,14 +76,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
-| `gFramework/nConfig/bin/config.js` | `bin` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nConfig/bin/enum.js` | `bin` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nConfig/bin/nodics.js` | `bin` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nConfig/config/postscripts.js` | `config` | `undocumented` | 0/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gFramework/nConfig/config/prescripts.js` | `config` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gFramework/nConfig/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nConfig/bin/config.js` | `bin` | `documented` | 0/0 | Tenant-aware in-memory configuration registry used during startup and request processing. It stores the effective default and tenant-specific property maps produced by layered configuration loading. |  |
+| `gFramework/nConfig/bin/enum.js` | `bin` | `documented` | 0/0 | Bundled enum compatibility implementation used by nConfig to construct runtime values from layered enum definitions, including flag combinations and case-insensitive lookup. |  |
+| `gFramework/nConfig/bin/nodics.js` | `bin` | `documented` | 0/0 | Mutable process-level runtime registry for Nodics paths, environment/server/node selection, indexed modules, tenant and enterprise state, models, loggers, scripts, authentication tokens, and startup state. |  |
+| `gFramework/nConfig/config/postscripts.js` | `config` | `documented` | 3/3 | Default nConfig post-start script hooks retained as layered startup extension points. They currently return diagnostic completion labels and do not mutate runtime state. |  |
+| `gFramework/nConfig/config/prescripts.js` | `config` | `documented` | 1/1 | Baseline pre-start script contributions for nConfig. The default script installs legacy string-case helpers required by loaders and generated artifact naming before other modules initialize. |  |
+| `gFramework/nConfig/config/properties.js` | `config` | `documented` | 0/0 | Baseline platform properties loaded before later active-module, external-file, tenant, and runtime configuration layers. These values support bootstrap when tenant-specific configuration is not yet available. |  |
 | `gFramework/nConfig/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nConfig/nodics.js` | `module` | `partially-documented` | 2/13 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 11 exported method(s) |
+| `gFramework/nConfig/nodics.js` | `module` | `documented` | 13/13 | nConfig module lifecycle bridge used by the root Nodics launcher. It prepares process-wide registries, resolves the active environment/server/node hierarchy, loads layered configuration and pre/post scripts, and delegates runtime, clean, and build phases to overrideable nConfig services. |  |
 | `gFramework/nConfig/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nConfig/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nConfig/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved nConfig Express app configuration file. nConfig does not add app middleware by default, but this file keeps the standard app configuration extension point available in the active module hierarchy. |  |
@@ -96,13 +96,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nConfig/src/service/defaultFilesLoaderService.js` | `src` | `documented` | 22/22 | Layer-aware file loading utility. It loads and merges matching files from indexed active modules and recursively processes artifact directories for the dynamic service, facade, controller, class, router, pipeline, and schema loaders. |  |
 | `gFramework/nConfig/src/service/defaultInfraService.js` | `src` | `documented` | 18/18 | Clean/build infrastructure service for generated Nodics artifacts. It removes generated services/facades/controllers/tests/dist folders and regenerates schema-driven runtime files and generated tests from effective definitions. |  |
 | `gFramework/nConfig/src/service/defaultModuleInitializerService.js` | `src` | `documented` | 2/2 | Reserved module initializer service for nConfig. It keeps the standard service lifecycle contract available for future module-specific initialization logic. |  |
-| `gFramework/nConfig/src/utils/utils.js` | `src` | `partially-documented` | 1/26 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 25 exported method(s) |
-| `gFramework/nConfig/test/artifactOverrideTraceability.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nConfig/test/configurationValidation.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nConfig/test/nonRuntimePackageDiscovery.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nConfig/test/routerOverrideGovernance.test.js` | `test` | `undocumented` | 0/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gFramework/nConfig/test/runtimeOverrideGovernance.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nConfig/test/schemaOverrideGovernance.test.js` | `test` | `undocumented` | 0/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nConfig/src/utils/utils.js` | `src` | `documented` | 26/26 | Shared nConfig utilities for module discovery, runtime activation, hierarchy traversal, generated artifact creation, filesystem cleanup, and router/web enablement decisions. |  |
+| `gFramework/nConfig/test/artifactOverrideTraceability.test.js` | `test` | `documented` | 0/0 | Verifies that layered service, facade, controller, pipeline, and related artifact contributions retain ordered source-module override trace metadata. |  |
+| `gFramework/nConfig/test/configurationValidation.test.js` | `test` | `documented` | 0/0 | Validates consolidated and modular environment/server/node configuration resolution, canonical package kinds, required module ordering, topology declarations, and negative startup cases. |  |
+| `gFramework/nConfig/test/nonRuntimePackageDiscovery.test.js` | `test` | `documented` | 0/0 | Verifies that setup and other explicitly non-runtime packages are excluded from Nodics runtime module discovery while canonical capability modules remain discoverable. |  |
+| `gFramework/nConfig/test/routerOverrideGovernance.test.js` | `test` | `documented` | 4/4 | Verifies additive and replacement router merging across ordered module layers, including route removal, breaking-change warnings, and contribution trace metadata. |  |
+| `gFramework/nConfig/test/runtimeOverrideGovernance.test.js` | `test` | `documented` | 0/0 | Verifies that persisted runtime schema and router contributions obey the same additive, replacement, removal, warning, and traceability rules as file-based module layers. |  |
+| `gFramework/nConfig/test/schemaOverrideGovernance.test.js` | `test` | `documented` | 4/4 | Verifies additive and replacement schema merging across ordered module layers, including property removal, type-change warnings, and contribution trace metadata. |  |
 
 ## Extension Contract
 

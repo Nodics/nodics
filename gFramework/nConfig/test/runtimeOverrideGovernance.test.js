@@ -1,3 +1,10 @@
+/**
+ * @module config/test/runtimeOverrideGovernance
+ * @description Verifies that persisted runtime schema and router contributions obey the same additive, replacement, removal, warning, and traceability rules as file-based module layers.
+ * @layer test
+ * @owner nConfig
+ * @override Project modules may add runtime override scenarios, but must preserve explicit breaking-change governance and source trace metadata.
+ */
 const assert = require('assert');
 
 global.NODICS = {

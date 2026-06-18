@@ -1,3 +1,10 @@
+/**
+ * @module config/bin/Enum
+ * @description Bundled enum compatibility implementation used by nConfig to construct runtime values from layered enum definitions, including flag combinations and case-insensitive lookup.
+ * @layer utility
+ * @owner nConfig
+ * @override Project modules should extend enum definitions through their own `src/utils/enums.js` files. Replacing this low-level implementation requires preserving the Enum API consumed by `defaultEnumService` and generated schema metadata.
+ */
 ! function(e) {
     if ("object" == typeof exports) module.exports = e();
     else if ("function" == typeof define && define.amd) define(e);

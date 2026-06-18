@@ -10,6 +10,18 @@
  */
 const _ = require('lodash');
 
+/**
+ * @module config/bin/NodicsRuntime
+ * @description Mutable process-level runtime registry for Nodics paths, environment/server/node selection, indexed modules, tenant and enterprise state, models, loggers, scripts, authentication tokens, and startup state.
+ * @layer module
+ * @owner nConfig
+ * @override Project modules should customize runtime state through module metadata, startup options, layered configuration, and services. Any replacement must preserve environment resolution, active-module ordering, tenant state, and registry accessors used across the platform.
+ * @property {Object<string,Object>} _rawModules Discovered runtime module metadata keyed by module name.
+ * @property {Map<string,Object>} _indexedModules Active modules ordered by hierarchical index.
+ * @property {string[]} _activeTenants Tenant codes initialized for request processing.
+ * @property {string|null} _serverName Selected server package name.
+ * @property {string|null} _nodeName Optional selected node package name.
+ */
 module.exports = function () {
 
     let _startTime = 0;

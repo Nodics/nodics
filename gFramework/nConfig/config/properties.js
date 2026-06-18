@@ -9,6 +9,17 @@
 
  */
 
+/**
+ * @module config/config/properties
+ * @description Baseline platform properties loaded before later active-module, external-file, tenant, and runtime configuration layers. These values support bootstrap when tenant-specific configuration is not yet available.
+ * @layer config
+ * @owner nConfig
+ * @override Later project, environment, server, and node modules may override these keys through their own `config/properties.js`; secrets and production credentials must come from governed external or runtime sources.
+ * @property {string} defaultTenant Bootstrap tenant used before request tenant resolution.
+ * @property {string} defaultEnterprise Bootstrap enterprise used before request enterprise resolution.
+ * @property {boolean} dynamoEnabled Enables governed runtime configuration capabilities.
+ * @property {Object} log Default logging transports and levels.
+ */
 module.exports = {
     errorExitCode: 1,
 
