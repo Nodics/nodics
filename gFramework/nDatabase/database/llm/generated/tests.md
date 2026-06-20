@@ -9,6 +9,7 @@
 - `gFramework/nDatabase/database/test/schemaIndexControllerRequestMapping.test.js`
 - `gFramework/nDatabase/database/test/schemaReadAccessPolicyService.test.js`
 - `gFramework/nDatabase/database/test/schemaWriteAccessPolicyService.test.js`
+- `gFramework/nDatabase/database/test/tenantDatabaseConfigurationValidation.test.js`
 
 ## Generated Tests
 

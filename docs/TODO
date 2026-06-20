@@ -94,6 +94,7 @@ Nodics Revolution:
 
   Control Plane Governance:
 
+    ✔ Govern tenant property changes through preview/request/approve/activate/audit/rollback with payload integrity and secret-path rejection. @security @runtime @properties @done
     ✔ Add route/action-level permissions for runtime configuration control-plane APIs. @security @runtime @done
     ✔ Add runtime governance summary endpoint for admin control-plane dashboards. @runtime @admin @done
     ✔ Add runtime governance cleanup preview/apply endpoints with safe defaults. @runtime @retention @done
@@ -107,6 +108,19 @@ Nodics Revolution:
     ✔ Extend import/export to honor schema/property access policies. @security @schema-access @import @export @done
     ☐ Make generated admin UI consume effective property access policy for hide/mask/read-only states. @admin @schema-access @ui
     ☐ Add preview/activate/audit/rollback lifecycle for schema/property access policy changes. @runtime @governance @schema-access
+
+  Authentication And Identity P2:
+
+    ✔ Define the replay, tenant-isolation, revocation, API-key, audit, migration-failure, and modular-token threat matrix. @auth @security @done
+    ✔ Add an isolated, layered P2 harness that rejects non-test tenant/database names. @auth @testing @tenant @done
+    ✔ Prove exactly-once refresh consumption under concurrent shared-cache access. @auth @cache @testing @done
+    ✔ Make Redis 4.x integration promise-based and declare distributed/atomic cache-engine capabilities. @auth @redis @cache @done
+    ✔ Reject local and placeholder Hazelcast engines for strict distributed auth state. @auth @cache @fail-closed @done
+    ✔ Enforce tenant-scoped security stamps for human, customer, and internal service tokens. @auth @revocation @tenant @done
+    ✔ Enforce scoped, expiring, hashed service API keys and credential-free correlated audit records. @auth @api-key @audit @done
+    ✔ Exercise preview/apply/idempotence/rotation/failure/rollback using isolated persisted identity fixtures. @auth @migration @rollback @done
+    ✔ Prove service-token tenant, permission, stamp, bootstrap-header, rotation, and cross-process contracts. @auth @modular @testing @done
+    ☐ Execute the mandatory live Redis release gate against an ephemeral Redis 6.2+ instance in CI/deployment. @auth @redis @integration @external
 
   LLM Enablement:
 
@@ -122,15 +136,15 @@ Nodics Revolution:
 
     ✔ Make configuration loading order explicit as a formal Nodics contract. @critical @config @done
     ✔ Add early configuration validation before module indexing and startup continue. @critical @config @done
-    ☐ Validate `activeModules.groups` and `activeModules.modules` references. @config @validation
+    ✔ Validate `activeModules.groups` and `activeModules.modules` references. @config @validation @done
     ✔ Validate invalid server, environment, and node references with clear errors. @config @validation @done
     ✔ Validate duplicate module indexes before sorted module loading. @config @validation @done
     ✔ Validate selected environment/server/node hierarchy and index order without hardcoding project names. @config @validation @done
-    ☐ Validate required `server.default` and default server port configuration. @config @validation
-    ☐ Validate profile server coordinates when running modular servers without local profile module. @config @topology
-    ☐ Validate database configuration per tenant/module before tenant model construction. @config @tenant
+    ✔ Validate required `server.default` and default server port configuration. @config @validation @done
+    ✔ Validate profile server coordinates when running modular servers without local profile module. @config @topology @done
+    ✔ Validate database configuration per tenant/module before tenant model construction. @config @tenant @done
     ☐ Separate local module activation from remote module coordinates in a future config model. @config @design
-    ☐ Add validation and audit around tenant runtime config overrides. @config @tenant @governance
+    ✔ Add validation and audit around tenant runtime config overrides. @config @tenant @governance @done
     ☐ Document environment/server/node naming and override responsibilities. @config @docs
     ☐ Fix configuration wording and typo issues gradually without changing behavior. @cleanup
     - work for the documentation of each individual files. what that file is, what are functionalities and so on.

@@ -22,7 +22,7 @@ module.exports = {
                 type: 'SYNC'
             },
             router: {
-                enabled: true
+                enabled: false
             },
             definition: {
                 config: {

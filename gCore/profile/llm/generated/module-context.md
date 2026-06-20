@@ -35,9 +35,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 47 |
-| Test files | 42 |
+| Test files | 43 |
 | Data files | 17 |
-| All module-owned files | 81 |
+| All module-owned files | 82 |
 | Local schema definitions | 11 |
 
 ## Ownership And Dependencies
@@ -71,7 +71,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 5 |
+| Documented | 6 |
 | Partially documented | 4 |
 | Undocumented | 67 |
 | Inventory only | 5 |
@@ -169,6 +169,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/test/env/local/localProfileTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
 | `gCore/profile/test/identityGovernanceContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/identityGovernanceP1Contract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/profile/test/identityGovernanceP2Integration.test.js` | `test` | `documented` | 0/0 | Exercises preview, persisted apply, idempotent repeat, service credential rotation, failure audit, and rollback using an isolated durable test repository. |  |
 | `gCore/profile/test/initRequiredFlag.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileInitRequiredDetection.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

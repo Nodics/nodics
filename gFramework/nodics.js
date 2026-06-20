@@ -89,15 +89,17 @@ module.exports = {
                             tenant: defaultAuthDetail.tenant,
                             apiKey: CONFIG.get('defaultAuthDetail').apiKey
                         }).then(employee => {
-                            NODICS.addInternalAuthToken(defaultTenant, SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
+                            SERVICE.DefaultServiceTokenService.issue({
                                 entCode: defaultAuthDetail.entCode,
                                 tenant: defaultAuthDetail.tenant,
                                 serviceId: defaultAuthDetail.loginId || 'nodics-runtime',
-                                tokenType: 'service',
+                                authVersion: employee.authVersion || 1,
                                 userGroups: employee.userGroupCodes,
                                 permissions: employee.userGroupPermissions
-                            }));
-                            resolve(true);
+                            }).then(authToken => {
+                                NODICS.addInternalAuthToken(defaultTenant, authToken);
+                                resolve(true);
+                            }).catch(reject);
                         }).catch(error => {
                             reject(error);
                         });

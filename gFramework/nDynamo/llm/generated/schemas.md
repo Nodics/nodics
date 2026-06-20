@@ -7,8 +7,8 @@
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `classConfiguration` | `base` | yes | yes | no | no | no | yes | `default` | 1 |
-| `configurationActivationLog` | `base` | yes | yes | yes | no | no | no | `default` | 17 |
-| `configurationActivationRequest` | `base` | yes | yes | yes | no | no | no | `default` | 14 |
+| `configurationActivationLog` | `base` | yes | yes | no | no | no | no | `default` | 17 |
+| `configurationActivationRequest` | `base` | yes | yes | no | no | no | no | `default` | 16 |
 | `pipeline` | `base` | yes | yes | yes | no | no | yes | `default` | 0 |
 | `routerConfiguration` | `base` | yes | yes | yes | no | no | yes | `default` | 12 |
 | `schemaAccessPolicy` | `base` | yes | yes | yes | no | no | yes | `default` | 15 |
@@ -45,7 +45,9 @@
 - `approvalReason` `string` optional: Reason supplied during approval or rejection
 - `approvalStatus` `string` optional: Approval status for the activation request
 - `approvedBy` `string` optional: User or process that approved the activation request
+- `configuration` `object` optional: Integrity-bound property patch used for property configuration activation
 - `configurationCode` `string` required: Code of the runtime configuration requested for activation
+- `configurationDigest` `string` optional: SHA-256 digest binding approval to the exact property patch
 - `configurationType` `string` required: Runtime configuration type requested for activation
 - `correlationId` `string` optional: Correlation id from the request
 - `moduleName` `string` optional: Owning module for the runtime configuration

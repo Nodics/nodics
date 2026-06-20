@@ -25,6 +25,11 @@ module.exports = {
                     delete values.apiKey;
                     Object.assign(values, credential);
                     let apiKey = CONFIG.get('authSecurity') && CONFIG.get('authSecurity').apiKey || {};
+                    let scopes = [].concat(values.apiKeyScopes || []).filter(Boolean);
+                    let catalog = CONFIG.get('identityGovernance') && CONFIG.get('identityGovernance').permissionCatalog || [];
+                    let invalidScopes = scopes.filter(scope => !catalog.includes(scope));
+                    if (invalidScopes.length > 0) throw new CLASSES.NodicsError('ERR_AUTH_00003', 'API-key scopes are not present in the identity permission catalog: ' + invalidScopes.join(', '));
+                    if (apiKey.requireScopes === true && scopes.length === 0) throw new CLASSES.NodicsError('ERR_AUTH_00003', 'At least one governed API-key scope is required');
                     if (apiKey.defaultLifetimeSeconds && !values.apiKeyExpiresAt) {
                         values.apiKeyExpiresAt = new Date(Date.now() + apiKey.defaultLifetimeSeconds * 1000);
                     }

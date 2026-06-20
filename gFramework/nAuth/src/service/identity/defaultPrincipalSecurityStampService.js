@@ -23,14 +23,20 @@ module.exports = {
     getKey: function (tenant, principalId) {
         return 'securityStamp:' + tenant + ':' + principalId;
     },
-    /** Rejects strict modular deployments that use local or fallback auth cache. */
+    /** Rejects strict deployments whose auth channel is not shared and atomic. */
     validateConfiguration: function () {
         let policy = this.getPolicy();
-        if (policy.enabled === false || policy.failClosed === false || policy.allowMissingStamp === true) return Promise.resolve(true);
+        let security = CONFIG.get('authSecurity') || {};
+        let refreshPolicy = security.refreshToken || {};
+        let strictStamp = policy.enabled !== false && policy.failClosed !== false && policy.allowMissingStamp !== true;
+        if (!strictStamp && refreshPolicy.requireDistributedCache !== true) return Promise.resolve(true);
         let cache = CONFIG.get('cache') || {};
         let channel = cache.profile && cache.profile.channels && cache.profile.channels.auth || {};
-        if (!channel.engine || channel.engine === 'local' || channel.fallback === true) {
-            return Promise.reject(new CLASSES.NodicsError('ERR_AUTH_00001', 'Strict security-stamp validation requires a shared auth cache with local fallback disabled'));
+        let profileEngines = cache.profile && cache.profile.engines || {};
+        let defaultEngines = cache.default && cache.default.engines || {};
+        let engine = profileEngines[channel.engine] || defaultEngines[channel.engine] || {};
+        if (!channel.engine || engine.distributed !== true || engine.atomicConsume !== true || channel.fallback === true) {
+            return Promise.reject(new CLASSES.NodicsError('ERR_AUTH_00001', 'Strict authentication state requires a distributed auth cache with atomic consume and local fallback disabled'));
         }
         return Promise.resolve(true);
     },
@@ -46,7 +52,7 @@ module.exports = {
     /** Compares a decoded token stamp with the current shared-cache value. */
     validate: function (payload) {
         let policy = this.getPolicy();
-        if (policy.enabled === false || payload.tokenType === 'service') return Promise.resolve(true);
+        if (policy.enabled === false) return Promise.resolve(true);
         let principalId = payload.loginId || payload.serviceId || payload.sub;
         if (!principalId || payload.authVersion === undefined) {
             return policy.allowMissingStamp === true ? Promise.resolve(true) : Promise.reject(new CLASSES.NodicsError('ERR_AUTH_00001', 'Token security stamp is required'));

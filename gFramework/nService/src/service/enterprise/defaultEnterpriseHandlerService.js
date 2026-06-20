@@ -236,20 +236,17 @@ module.exports = {
                                                     }
                                                 }).then(success => {
                                                     if (success.success && success.result.length > 0) {
-                                                        let authToken = SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
+                                                        return SERVICE.DefaultServiceTokenService.issue({
                                                             entCode: enterprise.code,
                                                             tenant: enterprise.tenant.code,
                                                             serviceId: success.result[0].loginId || 'nodics-runtime',
-                                                            tokenType: 'service',
+                                                            authVersion: success.result[0].authVersion || 1,
                                                             userGroups: success.result[0].userGroupCodes,
                                                             permissions: success.result[0].userGroupPermissions
-                                                        });
-                                                        NODICS.addInternalAuthToken(enterprise.tenant.code, authToken);
-                                                        _self.buildEnterprise(enterprises).then(success => {
-                                                            resolve(true);
-                                                        }).catch(error => {
-                                                            reject(error);
-                                                        });
+                                                        }).then(authToken => {
+                                                            NODICS.addInternalAuthToken(enterprise.tenant.code, authToken);
+                                                            return _self.buildEnterprise(enterprises);
+                                                        }).then(() => resolve(true)).catch(reject);
                                                     } else {
                                                         reject(new CLASSES.NodicsError('ERR_SYS_00000', 'Could not load default API key for tenant: ' + enterprise.tenant.code));
                                                     }
@@ -261,20 +258,17 @@ module.exports = {
                                                 reject(error);
                                             });
                                         } else {
-                                            let authToken = SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
+                                            SERVICE.DefaultServiceTokenService.issue({
                                                 entCode: enterprise.code,
                                                 tenant: enterprise.tenant.code,
                                                 serviceId: success.result[0].loginId || 'nodics-runtime',
-                                                tokenType: 'service',
+                                                authVersion: success.result[0].authVersion || 1,
                                                 userGroups: success.result[0].userGroupCodes,
                                                 permissions: success.result[0].userGroupPermissions
-                                            });
-                                            NODICS.addInternalAuthToken(enterprise.tenant.code, authToken);
-                                            _self.buildEnterprise(enterprises).then(success => {
-                                                resolve(true);
-                                            }).catch(error => {
-                                                reject(error);
-                                            });
+                                            }).then(authToken => {
+                                                NODICS.addInternalAuthToken(enterprise.tenant.code, authToken);
+                                                return _self.buildEnterprise(enterprises);
+                                            }).then(() => resolve(true)).catch(reject);
                                         }
                                     }).catch(error => {
                                         _self.LOG.error('Failed loading tenant: ' + enterprise.tenant.code);

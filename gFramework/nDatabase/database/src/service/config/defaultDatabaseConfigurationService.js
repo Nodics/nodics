@@ -103,6 +103,50 @@ module.exports = {
     },
 
     /**
+     * Validates the module and tenant owning a database registry operation.
+     *
+     * @param {string} moduleName Active module name.
+     * @param {string} tenant Active tenant code.
+     * @returns {void}
+     * @throws {CLASSES.NodicsError} When either scope is missing or inactive.
+     */
+    validateModuleTenant: function (moduleName, tenant) {
+        if (!moduleName || !NODICS.isModuleActive(moduleName) || !NODICS.getModule(moduleName)) {
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid or inactive database module: ' + moduleName);
+        }
+        let activeTenants = NODICS.getActiveTenants();
+        let defaultTenant = CONFIG.get('defaultTenant') || 'default';
+        let isBootstrapDefaultTenant = activeTenants.length === 0 && tenant === defaultTenant;
+        if (!tenant || (!isBootstrapDefaultTenant && !activeTenants.includes(tenant))) {
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid or inactive database tenant: ' + tenant);
+        }
+    },
+
+    /**
+     * Validates one effective database adapter configuration before connection creation.
+     *
+     * @param {string} moduleName Active module name.
+     * @param {string} tenant Active tenant code.
+     * @param {Object} databaseConfiguration Tenant-effective database configuration.
+     * @returns {Object} Validated adapter configuration.
+     * @throws {CLASSES.NodicsError} When database type, handler, or master endpoint is missing.
+     */
+    validateDatabaseConfiguration: function (moduleName, tenant, databaseConfiguration) {
+        if (!databaseConfiguration || !databaseConfiguration.options || !databaseConfiguration.options.databaseType) {
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'database.' + moduleName + '.options.databaseType is required for tenant: ' + tenant);
+        }
+        let databaseType = databaseConfiguration.options.databaseType;
+        let adapter = databaseConfiguration[databaseType];
+        if (!adapter || !adapter.options || !adapter.options.connectionHandler) {
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'database.' + moduleName + '.' + databaseType + '.options.connectionHandler is required for tenant: ' + tenant);
+        }
+        if (!adapter.master || !adapter.master.URI || !adapter.master.databaseName) {
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'database.' + moduleName + '.' + databaseType + '.master requires URI and databaseName for tenant: ' + tenant);
+        }
+        return adapter;
+    },
+
+    /**
      * Resolves the database connection configuration for a module and tenant.
      *
      * @param {string} moduleName Active module requesting a database connection.
@@ -111,21 +155,15 @@ module.exports = {
      * @throws {CLASSES.NodicsError} When the module, tenant, or database type configuration is invalid.
      */
     getDatabaseConfiguration: function (moduleName, tenant) {
-        if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid module name: ' + moduleName);
-        } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid tenant name: ' + tenant);
-        } else {
-            let defaultConfig = CONFIG.get('database', tenant);
-            let dbConfig = _.merge(_.merge({}, defaultConfig.default), defaultConfig[moduleName] || {});
-            let connConfig = dbConfig[dbConfig.options.databaseType];
-            if (connConfig) {
-                connConfig.options = _.merge(_.merge({}, dbConfig.options), connConfig.options);
-                return connConfig;
-            } else {
-                throw new CLASSES.NodicsError('ERR_DBS_00003', 'Configuration is not valid for module: ' + moduleName + ', tenant: ' + tenant);
-            }
+        this.validateModuleTenant(moduleName, tenant);
+        let tenantConfig = CONFIG.get('database', tenant);
+        if (!tenantConfig || !tenantConfig.default) {
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Tenant database configuration must define database.default for tenant: ' + tenant);
         }
+        let dbConfig = _.merge({}, tenantConfig.default, tenantConfig[moduleName] || {});
+        let connConfig = this.validateDatabaseConfiguration(moduleName, tenant, dbConfig);
+        connConfig.options = _.merge({}, dbConfig.options, connConfig.options);
+        return connConfig;
     },
 
     /**
@@ -139,16 +177,12 @@ module.exports = {
      * @throws {CLASSES.NodicsError} When module or tenant input is invalid.
      */
     addTenantDatabase: function (moduleName, tenant, database) {
-        if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid module name: ' + moduleName);
-        } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid tenant name: ' + tenant);
-        } else {
-            if (!this.dbs[moduleName]) {
-                this.dbs[moduleName] = {};
-            }
-            this.dbs[moduleName][tenant] = database;
+        this.validateModuleTenant(moduleName, tenant);
+        if (!database || typeof database !== 'object') {
+            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Tenant database handle is required for module: ' + moduleName + ', tenant: ' + tenant);
         }
+        if (!this.dbs[moduleName]) this.dbs[moduleName] = {};
+        this.dbs[moduleName][tenant] = database;
     },
 
     /**
@@ -160,19 +194,9 @@ module.exports = {
      * @throws {CLASSES.NodicsError} When module or tenant input is invalid.
      */
     getTenantDatabase: function (moduleName, tenant) {
-        if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid module name: ' + moduleName);
-        } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid tenant name: ' + tenant);
-        } else {
-            let database = {};
-            if (moduleName && this.dbs[moduleName]) {
-                database = this.dbs[moduleName];
-            } else {
-                database = this.dbs.default;
-            }
-            return database[tenant];
-        }
+        this.validateModuleTenant(moduleName, tenant);
+        let database = this.dbs[moduleName] || (moduleName !== 'default' ? this.dbs.default : undefined);
+        return database ? database[tenant] : undefined;
     },
 
     /**
@@ -185,11 +209,8 @@ module.exports = {
      * @throws {CLASSES.NodicsError} When module or tenant input is invalid.
      */
     removeTenantDatabase: function (moduleName, tenant) {
-        if (!moduleName && !NODICS.isModuleActive(moduleName)) {
-            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid module name: ' + moduleName);
-        } else if (!tenant && !NODICS.getActiveTenants().includes(tenant)) {
-            throw new CLASSES.NodicsError('ERR_DBS_00003', 'Invalid tenant name: ' + tenant);
-        } else if (this.dbs[moduleName] && this.dbs[moduleName][tenant]) {
+        this.validateModuleTenant(moduleName, tenant);
+        if (this.dbs[moduleName] && this.dbs[moduleName][tenant]) {
             delete this.dbs[moduleName][tenant];
         }
         return true;

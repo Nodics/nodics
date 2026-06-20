@@ -11,7 +11,7 @@
 
 /**
  * @module dynamo/service/audit/DefaultRuntimeConfigurationRollbackService
- * @description Restores runtime schema and router configurations from
+ * @description Restores runtime schema, router, and tenant-property configurations from
  * activation history without bypassing the normal generated service and
  * activation pipelines.
  * @layer service
@@ -150,7 +150,31 @@ module.exports = {
         if (activationLog.configurationType === 'routerConfiguration') {
             return this.restoreRouterConfiguration(request, activationLog, snapshot);
         }
+        if (activationLog.configurationType === 'propertyConfiguration') {
+            return this.restorePropertyConfiguration(request, snapshot);
+        }
         return Promise.reject(new CLASSES.NodicsError('ERR_SYS_00002', 'Rollback is not supported for configuration type: ' + activationLog.configurationType));
+    },
+
+    /**
+     * Restores a tenant-property snapshot through the standard system
+     * configuration service.
+     *
+     * @param {Object} request Rollback request context.
+     * @param {Object} snapshot Minimal property snapshot.
+     * @returns {Promise<Object>} Restoration result.
+     */
+    restorePropertyConfiguration: function (request, snapshot) {
+        if (!SERVICE.DefaultConfigurationService ||
+            typeof SERVICE.DefaultConfigurationService.restorePropertyConfigurationSnapshot !== 'function') {
+            return Promise.reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Property configuration service is not available for rollback'));
+        }
+        return SERVICE.DefaultConfigurationService.restorePropertyConfigurationSnapshot({
+            tenant: this.getRollbackTenant(request),
+            authData: request.authData,
+            autData: request.autData,
+            correlationId: request.correlationId
+        }, snapshot);
     },
 
     /**

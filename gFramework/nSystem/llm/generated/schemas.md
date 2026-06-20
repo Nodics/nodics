@@ -6,7 +6,7 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
-| `configuration` | `base` | yes | yes | yes | no | no | yes |  | 1 |
+| `configuration` | `base` | yes | yes | no | no | no | yes |  | 1 |
 | `eventListener` | `base` | yes | yes | yes | no | no | yes | `default` | 3 |
 | `interceptor` | `base` | yes | yes | yes | no | no | yes | `default` | 6 |
 

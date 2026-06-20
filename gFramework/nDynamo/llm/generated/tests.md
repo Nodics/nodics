@@ -19,26 +19,21 @@
 - `gFramework/nDynamo/test/runtimeConfigurationGovernanceSummaryService.test.js`
 - `gFramework/nDynamo/test/runtimeConfigurationPreviewService.test.js`
 - `gFramework/nDynamo/test/runtimeConfigurationRollbackService.test.js`
+- `gFramework/nDynamo/test/runtimePropertyConfigurationGovernance.test.js`
 - `gFramework/nDynamo/test/runtimeRouterConfigurationService.test.js`
 - `gFramework/nDynamo/test/schemaAccessPolicyContractService.test.js`
 - `gFramework/nDynamo/test/schemaAccessPolicyResolverService.test.js`
 
 ## Generated Tests
 
-- `gFramework/nDynamo/test/gen/api/configurationActivationLogApiContract.test.js`
-- `gFramework/nDynamo/test/gen/api/configurationActivationRequestApiContract.test.js`
 - `gFramework/nDynamo/test/gen/api/pipelineApiContract.test.js`
 - `gFramework/nDynamo/test/gen/api/routerConfigurationApiContract.test.js`
 - `gFramework/nDynamo/test/gen/api/schemaAccessPolicyApiContract.test.js`
 - `gFramework/nDynamo/test/gen/api/schemaConfigurationApiContract.test.js`
-- `gFramework/nDynamo/test/gen/apiScenario/configurationActivationLogApiScenario.test.js`
-- `gFramework/nDynamo/test/gen/apiScenario/configurationActivationRequestApiScenario.test.js`
 - `gFramework/nDynamo/test/gen/apiScenario/pipelineApiScenario.test.js`
 - `gFramework/nDynamo/test/gen/apiScenario/routerConfigurationApiScenario.test.js`
 - `gFramework/nDynamo/test/gen/apiScenario/schemaAccessPolicyApiScenario.test.js`
 - `gFramework/nDynamo/test/gen/apiScenario/schemaConfigurationApiScenario.test.js`
-- `gFramework/nDynamo/test/gen/crud/configurationActivationLogCrudScenario.test.js`
-- `gFramework/nDynamo/test/gen/crud/configurationActivationRequestCrudScenario.test.js`
 - `gFramework/nDynamo/test/gen/crud/pipelineCrudScenario.test.js`
 - `gFramework/nDynamo/test/gen/crud/routerConfigurationCrudScenario.test.js`
 - `gFramework/nDynamo/test/gen/crud/schemaAccessPolicyCrudScenario.test.js`

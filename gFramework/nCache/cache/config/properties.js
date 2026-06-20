@@ -41,6 +41,8 @@ module.exports = {
                 local: {
                     connectionHandler: 'DefaultLocalCacheEngineService',
                     cacheHandler: 'DefaultLocalCacheService',
+                    distributed: false,
+                    atomicConsume: true,
                     ttl: 100,
                     options: {
                         stdTTL: 100,
@@ -52,6 +54,8 @@ module.exports = {
                 redis: {
                     connectionHandler: 'DefaultRedisCacheEngineService',
                     cacheHandler: 'DefaultRedisCacheService',
+                    distributed: true,
+                    atomicConsume: true,
                     ttl: 100,
                     options: {
                         host: 'localhost',
@@ -61,6 +65,8 @@ module.exports = {
                 hazelcast: {
                     connectionHandler: 'DefaultHazelcastCacheEngineService',
                     cacheHandler: 'DefaultHazelcastCacheService',
+                    distributed: false,
+                    atomicConsume: false,
                     ttl: 100,
                     dbIndex: 0,
                     options: {

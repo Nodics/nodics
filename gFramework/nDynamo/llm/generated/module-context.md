@@ -33,9 +33,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 34 |
-| Test files | 43 |
+| Test files | 38 |
 | Data files | 0 |
-| All module-owned files | 60 |
+| All module-owned files | 61 |
 | Local schema definitions | 7 |
 
 ## Ownership And Dependencies
@@ -68,7 +68,7 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 10 |
-| Partially documented | 18 |
+| Partially documented | 19 |
 | Undocumented | 29 |
 | Inventory only | 3 |
 
@@ -110,12 +110,12 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/src/service/access/defaultSchemaAccessPolicyContractService.js` | `src` | `documented` | 14/14 | Defines and validates the runtime schema/property access policy contract used by the Nodics control plane. This service owns the common action/effect vocabulary only; read/write/import/export enforcement is added by later generated CRUD and data-processing layers. |  |
 | `gFramework/nDynamo/src/service/access/defaultSchemaAccessPolicyResolverService.js` | `src` | `documented` | 24/24 | Resolves effective runtime schema/property access policy decisions for a tenant, module, schema, property, action, and user-group context. This service computes decisions only; generated CRUD, import/export, and admin UI layers consume the decision in later enforcement slices. |  |
 | `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationActivationPolicyService.js` | `src` | `documented` | 9/9 | Applies approval governance before runtime schema and router configurations are activated. |  |
-| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationActivationRequestService.js` | `src` | `partially-documented` | 22/26 | Manages runtime configuration activation request lifecycle: request, approve, reject, and activate approved schema/router changes. | add JSDoc for 4 exported method(s) |
+| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationActivationRequestService.js` | `src` | `partially-documented` | 23/27 | Manages runtime configuration activation request lifecycle: request, approve, reject, and activate approved schema, router, and property changes. | add JSDoc for 4 exported method(s) |
 | `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationAuditService.js` | `src` | `documented` | 11/11 | Records runtime configuration activation attempts for schema, router, class, and pipeline control-plane changes without making activation dependent on audit persistence availability. |  |
 | `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationGovernanceCleanupService.js` | `src` | `documented` | 32/32 | Previews and applies retention cleanup for runtime configuration activation requests and activation audit logs through generated model services. |  |
 | `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationGovernanceSummaryService.js` | `src` | `documented` | 23/23 | Builds a read-only runtime governance summary for the admin control plane from activation requests and activation audit logs. |  |
-| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationPreviewService.js` | `src` | `documented` | 22/22 | Computes non-destructive previews for runtime schema and router configuration activations before they are saved or activated. |  |
-| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationRollbackService.js` | `src` | `documented` | 12/12 | Restores runtime schema and router configurations from activation history without bypassing the normal generated service and activation pipelines. |  |
+| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationPreviewService.js` | `src` | `documented` | 26/26 | Computes non-destructive previews for runtime schema, router, and tenant-property configuration activations before they are activated. |  |
+| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationRollbackService.js` | `src` | `documented` | 13/13 | Restores runtime schema, router, and tenant-property configurations from activation history without bypassing the normal generated service and activation pipelines. |  |
 | `gFramework/nDynamo/src/service/class/defaultClassConfigurationService.js` | `src` | `partially-documented` | 2/9 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
 | `gFramework/nDynamo/src/service/event/defaultClassConfigurationChangeListenerService.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
 | `gFramework/nDynamo/src/service/event/defaultRouterConfigurationChangeListenerService.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
@@ -146,6 +146,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/test/runtimeConfigurationGovernanceSummaryService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/test/runtimeConfigurationPreviewService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/test/runtimeConfigurationRollbackService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/runtimePropertyConfigurationGovernance.test.js` | `test` | `partially-documented` | 0/0 | Proves tenant properties use the shared preview, approval, integrity, audit, activation, and rollback lifecycle. | add @override |
 | `gFramework/nDynamo/test/runtimeRouterConfigurationService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/test/schemaAccessPolicyContractService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/test/schemaAccessPolicyResolverService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

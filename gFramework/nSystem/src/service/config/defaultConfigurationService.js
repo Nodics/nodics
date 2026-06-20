@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 module.exports = {
 
     /**
@@ -38,17 +40,118 @@ module.exports = {
             try {
                 if (UTILS.isBlank(request.config)) {
                     reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Configuration payload can not be null or empty'));
-                } else {
-                    CONFIG.changeTenantProperties(request.config, request.tenant);
-                    resolve({
-                        code: 'SUC_SYS_00000',
-                        message: 'Configuration updated successfully'
-                    });
+                    return;
                 }
+                if (!SERVICE.DefaultRuntimeConfigurationActivationRequestService ||
+                    typeof SERVICE.DefaultRuntimeConfigurationActivationRequestService.createActivationRequest !== 'function') {
+                    reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Runtime configuration activation request service is required'));
+                    return;
+                }
+                let governedRequest = Object.assign({}, request, {
+                    httpRequest: undefined,
+                    activationRequest: {
+                        configurationType: 'propertyConfiguration',
+                        configurationCode: 'tenantProperties',
+                        moduleName: 'system',
+                        configuration: request.config,
+                        requestReason: request.requestReason
+                    }
+                });
+                SERVICE.DefaultRuntimeConfigurationActivationRequestService.createActivationRequest(governedRequest).then(resolve).catch(reject);
             } catch (error) {
                 reject(new CLASSES.NodicsError(error, 'While changing runtime configuration', 'ERR_SYS_00000'));
             }
         });
+    },
+
+    /**
+     * Applies an integrity-checked, approved tenant-property patch and records
+     * its minimal rollback snapshots through the shared runtime audit service.
+     *
+     * @param {Object} request Approved runtime activation context.
+     * @param {Object} configuration Tenant property patch.
+     * @param {Object} preview Approved preview captured with the request.
+     * @returns {Promise<Object>} Activation response.
+     */
+    applyPropertyConfiguration: function (request, configuration, preview) {
+        return new Promise((resolve, reject) => {
+            let tenant = request.tenant || CONFIG.get('defaultTenant') || 'default';
+            let previewService = SERVICE.DefaultRuntimeConfigurationPreviewService;
+            try {
+                if (!previewService || typeof previewService.createPropertyPreview !== 'function') {
+                    throw new CLASSES.NodicsError('ERR_SYS_00001', 'Runtime property preview service is required');
+                }
+                let currentPreview = previewService.createPropertyPreview({
+                    configurationType: 'propertyConfiguration',
+                    configurationCode: 'tenantProperties',
+                    moduleName: 'system',
+                    tenant: tenant,
+                    configuration: configuration
+                });
+                if (preview && !_.isEqual(preview.nextSnapshot, currentPreview.nextSnapshot)) {
+                    throw new CLASSES.NodicsError('ERR_SYS_00002', 'Effective tenant properties changed after approval; create a new activation request');
+                }
+                CONFIG.changeTenantProperties(configuration, tenant);
+                let entry = {
+                    configurationType: 'propertyConfiguration',
+                    configurationCode: 'tenantProperties',
+                    moduleName: 'system',
+                    action: 'activate',
+                    status: 'SUCCESS',
+                    tenant: tenant,
+                    requestedBy: this.resolveRuntimeActor(request),
+                    approvalStatus: 'APPROVED',
+                    approvedBy: request.activationApproval && request.activationApproval.approvedBy,
+                    approvalReason: request.activationApproval && request.activationApproval.approvalReason,
+                    activationRequestCode: request.activationRequestCode,
+                    correlationId: request.correlationId,
+                    riskLevel: 'HIGH',
+                    warnings: currentPreview.warnings,
+                    previousSnapshot: currentPreview.previousSnapshot,
+                    nextSnapshot: currentPreview.nextSnapshot
+                };
+                this.recordPropertyConfigurationAudit(entry).then(() => resolve({
+                    code: 'SUC_SYS_00000',
+                    message: 'Approved tenant property configuration activated successfully',
+                    data: {
+                        tenant: tenant,
+                        changedPaths: currentPreview.changedPaths
+                    }
+                }));
+            } catch (error) {
+                this.recordPropertyConfigurationAudit({
+                    configurationType: 'propertyConfiguration', configurationCode: 'tenantProperties',
+                    moduleName: 'system', action: 'activate', status: 'FAILED', tenant: tenant,
+                    requestedBy: this.resolveRuntimeActor(request), correlationId: request.correlationId, error: error
+                }).then(() => reject(error));
+            }
+        });
+    },
+
+    /**
+     * Restores a minimal property snapshot captured by activation audit.
+     *
+     * @param {Object} request Rollback request context.
+     * @param {Object} snapshot Snapshot with values and missing paths.
+     * @returns {Promise<Object>} Rollback application result.
+     */
+    restorePropertyConfigurationSnapshot: function (request, snapshot) {
+        let tenant = request.tenant || CONFIG.get('defaultTenant') || 'default';
+        let properties = _.cloneDeep(CONFIG.getProperties(tenant) || {});
+        (snapshot.values || []).forEach(entry => _.set(properties, entry.path, _.cloneDeep(entry.value)));
+        (snapshot.missingPaths || []).forEach(path => _.unset(properties, path));
+        CONFIG.setProperties(properties, tenant);
+        return Promise.resolve({ tenant: tenant, restored: true });
+    },
+
+    recordPropertyConfigurationAudit: function (entry) {
+        let service = SERVICE.DefaultRuntimeConfigurationAuditService;
+        return service && typeof service.recordActivation === 'function' ? service.recordActivation(entry) : Promise.resolve(true);
+    },
+
+    resolveRuntimeActor: function (request) {
+        let authData = request && (request.authData || request.autData) || {};
+        return authData.loginId || authData.serviceId || authData.sub || authData.code || authData.userId || authData.uid || authData.email;
     },
 
     /**

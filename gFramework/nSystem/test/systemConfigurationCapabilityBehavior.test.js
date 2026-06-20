@@ -2,6 +2,7 @@ const assert = require('assert');
 
 // @nodics-capability-behavior @nodics-area system
 const changedConfigs = [];
+const activationRequests = [];
 
 global.CONFIG = {
     get: function (key) {
@@ -21,6 +22,16 @@ global.CONFIG = {
 };
 
 global.SERVICE = {
+    DefaultRuntimeConfigurationActivationRequestService: {
+        createActivationRequest: function (request) {
+            activationRequests.push(request.activationRequest);
+            return Promise.resolve({
+                code: 'SUC_SYS_00000',
+                message: 'Runtime configuration activation request created successfully',
+                data: { approvalStatus: 'PENDING' }
+            });
+        }
+    },
     DefaultStatusService: {
         get: function (code) {
             return {
@@ -84,18 +95,23 @@ const controller = require('../src/controller/config/defaultConfigurationControl
 
     let response = await controller.changeConfig(request);
     assert.strictEqual(response.code, 'SUC_SYS_00000');
+    assert.strictEqual(response.data.approvalStatus, 'PENDING');
     assert.deepStrictEqual(request.config, {
         featureFlags: {
             searchEnabled: true
         }
     });
-    assert.deepStrictEqual(changedConfigs, [{
-        tenant: 'electronicsTenant',
-        config: {
+    assert.deepStrictEqual(changedConfigs, [], 'Direct configuration endpoint must not mutate tenant properties');
+    assert.deepStrictEqual(activationRequests, [{
+        configurationType: 'propertyConfiguration',
+        configurationCode: 'tenantProperties',
+        moduleName: 'system',
+        configuration: {
             featureFlags: {
                 searchEnabled: true
             }
-        }
+        },
+        requestReason: undefined
     }]);
 
     let emptyConfigError;

@@ -33,7 +33,7 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 20 |
-| Test files | 19 |
+| Test files | 16 |
 | Data files | 0 |
 | All module-owned files | 33 |
 | Local schema definitions | 3 |
@@ -108,7 +108,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSystem/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nSystem/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nSystem/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nSystem/src/service/config/defaultConfigurationService.js` | `src` | `partially-documented` | 15/17 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
+| `gFramework/nSystem/src/service/config/defaultConfigurationService.js` | `src` | `partially-documented` | 17/21 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
 | `gFramework/nSystem/src/service/contract/defaultApiContractService.js` | `src` | `documented` | 8/8 | Resolves generated API contract artifacts from the active server module while preserving node-specific contract identity. |  |
 | `gFramework/nSystem/src/service/event/defaultConfigurationChangeListenerService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
 | `gFramework/nSystem/src/service/event/defaultInterceptorChangeListenerService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |

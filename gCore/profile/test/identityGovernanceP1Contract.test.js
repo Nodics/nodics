@@ -14,9 +14,11 @@ const values = {
         securityStamp: { enabled: true, failClosed: true, allowMissingStamp: false }
     },
     identityGovernance: {
+        permissionCatalog: ['auth.internal.token.read', 'auth.internal.token.read.anyTenant'],
         migration: {
             version: 1,
             servicePrincipalCodes: ['apiAdmin'],
+            servicePrincipalScopes: { apiAdmin: ['auth.internal.token.read', 'auth.internal.token.read.anyTenant'] },
             administratorCodes: ['admin'],
             serviceGroup: 'serviceAccountUserGroup',
             administratorGroups: ['adminGroup', 'runtimeConfigAdminUserGroup'],
@@ -80,8 +82,11 @@ async function validateSecurityStamp() {
     await stamp.validate({ tenant: 'default', loginId: 'user-a', authVersion: 7, tokenType: 'access' });
     await assert.rejects(stamp.validate({ tenant: 'default', loginId: 'user-a', authVersion: 6, tokenType: 'access' }));
     await assert.rejects(stamp.validate({ tenant: 'default', loginId: 'user-a', tokenType: 'access' }));
-    await assert.rejects(stamp.validateConfiguration(), /shared auth cache/);
-    values.cache = { profile: { channels: { auth: { engine: 'redis', fallback: false } } } };
+    await assert.rejects(stamp.validateConfiguration(), /distributed auth cache/);
+    values.cache = {
+        profile: { channels: { auth: { engine: 'redis', fallback: false } } },
+        default: { engines: { redis: { distributed: true, atomicConsume: true } } }
+    };
     await stamp.validateConfiguration();
     delete values.cache;
 }

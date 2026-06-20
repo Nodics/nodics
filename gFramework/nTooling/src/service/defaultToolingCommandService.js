@@ -159,9 +159,10 @@ function mergeCommand(registry, commandName, incoming, moduleObject) {
  * @returns {Object<string,Object>} Effective command definitions.
  */
 function loadCommands(home) {
-    const modules = collectModules(home, []);
-    if (!modules.some(moduleObject => path.resolve(moduleObject.path) === toolingModulePath)) {
-        collectModules(toolingModulePath, modules);
+    const targetHome = path.resolve(home);
+    const modules = collectModules(frameworkHome, []);
+    if (targetHome !== frameworkHome) {
+        collectModules(targetHome, modules);
     }
     const uniqueModules = Array.from(new Map(modules.map(moduleObject => [path.resolve(moduleObject.path), moduleObject])).values());
     uniqueModules.sort((left, right) => compareModuleIndex(left.index, right.index) || left.path.localeCompare(right.path));

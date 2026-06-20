@@ -28,7 +28,10 @@ legacy migration flag and must be disabled after migration.
 
 Refresh sessions are consumed through the cache engine's atomic `consume`
 contract before rotation. Cache integrations must fail closed when they cannot
-provide atomic single-use semantics.
+provide atomic single-use semantics. Redis is the supported distributed auth
+engine and uses the Redis 6.2+ `GETDEL` primitive. The current `hazelcast`
+module is a non-distributed compatibility placeholder and is rejected by strict
+auth configuration until a real distributed adapter supplies atomic take.
 
 ## Identity governance
 
@@ -43,12 +46,14 @@ restricted to service principals, while group inheritance must remain active,
 acyclic, and composed only from catalogued permissions.
 
 Security-stamp validation is enabled by `authSecurity.securityStamp`. It is
-fail-closed by default and compares each human/customer access token with the
-current tenant-scoped principal stamp. The kickoff-local layer permits missing
+fail-closed by default and compares every human, customer, and internal service
+token with the current tenant-scoped principal stamp. Internal tokens must be
+issued through `DefaultServiceTokenService`, which registers the service stamp
+before publishing the bounded JWT. The kickoff-local layer permits missing
 stamps only as an explicit development/backward-compatibility exception.
 Strict deployments must configure the `profile.auth` cache channel with a
-shared engine such as Redis or Hazelcast and disable local fallback; startup
-fails when strict validation detects a node-local cache.
+distributed engine whose metadata declares atomic consume support and must
+disable local fallback; startup fails otherwise.
 
 Principal updates resolve persisted records before assigning stamps, ensuring
 tokens and cache entries use the same stable `loginId`. Group changes invalidate
@@ -59,3 +64,39 @@ under `identityGovernance`. By default, a runtime configuration requester may
 not decide or activate the same request, and its approver may not activate it.
 Projects may integrate a workflow engine by overriding the corresponding
 services while preserving these governance outcomes.
+
+## P2 threat and acceptance contract
+
+The P2 boundary assumes attackers may replay refresh tokens concurrently,
+present a valid token in another tenant, retain a token after a principal or
+group change, use an expired/revoked/unscoped API key, inspect audit output for
+secrets, or exploit a partially failed migration. It also assumes modular nodes
+can race against the same shared state.
+
+Acceptance requires exactly one successful refresh exchange, tenant-keyed
+security stamps, immediate human and service token rejection after a stamp
+change, least-privilege API-key policy, credential-free audit records, and a
+preview/apply/repeat/fail/rollback migration lifecycle that never restores a
+plaintext credential.
+
+Run `npm run test:auth-p2` for deterministic P2 contracts plus an explicitly
+reported optional live Redis check. Before release, supply an isolated Redis
+endpoint and run `npm run test:auth-p2:release`; absence of the endpoint fails
+that gate. Test tenant and database names must contain a `test` marker.
+
+## Deployment and migration order
+
+1. Back up the dedicated tenant databases and verify restore procedures.
+2. Configure strong JWT and API-key secrets through a later project or
+   environment layer.
+3. Configure the profile auth channel to use Redis with local fallback disabled.
+4. Run P2 contracts and the required live Redis release test.
+5. Preview identity migration and retain its correlation identifier.
+6. Apply migration to one test tenant, inspect the redacted audit, and repeat to
+   prove `NO_CHANGES`.
+7. Rotate every service credential reported by the migration before enabling
+   traffic. Never distribute keys through logs or migration responses.
+8. Deploy profile first, then dependent modular nodes, and verify service-token
+   rotation and authorization.
+9. Roll back only through the audited change set. Rollback intentionally does
+   not restore plaintext credentials; affected service keys must be rotated.

@@ -233,6 +233,13 @@ module.exports = {
             if (!principal || (principal.principalType !== 'service' && !(principal.userGroups || []).includes(policy.serviceGroup))) throw new CLASSES.NodicsError('ERR_AUTH_00003', 'API keys may only be rotated for service principals');
             let keyPolicy = CONFIG.get('authSecurity').apiKey || {};
             let credential = SERVICE.DefaultAPIKeyCredentialService.prepare(payload.newApiKey);
+            let configuredScopes = policy.servicePrincipalScopes && policy.servicePrincipalScopes[principal.code] || [];
+            let scopes = Array.from(new Set([].concat(payload.apiKeyScopes || principal.apiKeyScopes || configuredScopes).filter(Boolean)));
+            let permissionCatalog = CONFIG.get('identityGovernance').permissionCatalog || [];
+            let invalidScopes = scopes.filter(scope => !permissionCatalog.includes(scope));
+            if (invalidScopes.length > 0) throw new CLASSES.NodicsError('ERR_AUTH_00003', 'API-key scopes are not present in the identity permission catalog: ' + invalidScopes.join(', '));
+            if (keyPolicy.requireScopes === true && scopes.length === 0) throw new CLASSES.NodicsError('ERR_AUTH_00003', 'At least one governed API-key scope is required');
+            credential.apiKeyScopes = scopes;
             if (keyPolicy.defaultLifetimeSeconds) credential.apiKeyExpiresAt = new Date(Date.now() + keyPolicy.defaultLifetimeSeconds * 1000);
             return SERVICE.DefaultEmployeeService.update(this.systemRequest(request, {
                 query: { code: principal.code, loginId: principal.loginId },

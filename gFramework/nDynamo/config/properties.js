@@ -12,5 +12,16 @@
 module.exports = {
     schemaAccessPolicy: {
         policyTenant: 'default'
+    },
+    runtimePropertyGovernance: {
+        sensitivePathPatterns: [
+            'password',
+            'passwd',
+            'secret',
+            'token',
+            'api[-_]?key',
+            'private[-_]?key',
+            'credential'
+        ]
     }
 };

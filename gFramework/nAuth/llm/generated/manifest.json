@@ -13,16 +13,16 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to nAuth"
   },
-  "sourceFiles": 12,
-  "testFiles": 3,
+  "sourceFiles": 13,
+  "testFiles": 9,
   "dataFiles": 0,
-  "ownedFiles": 22,
-  "sourceFingerprint": "b087862a2eeb34cbb78aad2868e42a1c268b2ab556b2527a5980fb44384c1900",
+  "ownedFiles": 30,
+  "sourceFingerprint": "57a6a6d233feeace21829f6ec4a455e08c0e7950b7a9dc9ee88f55a13a727949",
   "documentation": {
-    "documented": 2,
+    "documented": 9,
     "partially-documented": 3,
     "undocumented": 14,
-    "inventory-only": 3
+    "inventory-only": 4
   },
   "schemaGroups": {},
   "schemaLoadError": null,
