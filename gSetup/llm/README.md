@@ -9,21 +9,57 @@ Use this pack before making architectural recommendations, code changes, tests, 
 Start every AI-assisted Nodics session with:
 
 ```text
-Read gSetup/llm/README.md first, then follow the linked Nodics architecture, layering, schema, generation, testing, and feature-process rules before changing code.
+Read gSetup/llm/README.md and gSetup/llm/daily-change-checklist.md first. Load linked detailed guidance only for the affected artifact or active change gate.
 ```
 
-Recommended reading order:
+## Token-Efficient Reading Contract
+
+Do not load the complete enablement pack for every small edit. Use progressive
+disclosure so AI-assisted development remains affordable without weakening the
+Nodics contract.
+
+Always read:
+
+1. `README.md`
+2. `daily-change-checklist.md`
+3. the affected module's `llm/generated/module-context.md`
+
+Before reading module context or running verification, identify the working
+mode:
+
+- **Framework-maintainer mode:** the requested change owns or intentionally
+  refactors Nodics framework code. Framework source and proportional framework
+  gates are in scope.
+- **Application-developer mode:** the developer is building an application on
+  a released Nodics distribution. Treat Nodics framework source as an immutable,
+  previously qualified dependency. Read, edit, generate, and verify only the
+  project-owned modules and their effective configuration by default. Do not
+  scan, audit, modify, regenerate, or rerun framework-wide quality gates merely
+  to re-prove Nodics principles.
+
+Application-developer mode may inspect or modify Nodics framework source only
+when the developer explicitly requests it. If the working mode is not stated,
+infer it from ownership of the requested change and keep the verification scope
+to the smallest owned boundary. This scope rule is mandatory for token and
+execution efficiency; it does not weaken validation of project code.
+
+Load detailed files only when their subject is affected:
 
 1. `nodics-principles.md`
 2. `modular-architecture.md`
 3. `module-catalog.md`
-4. `schema-and-generation.md`
-5. `testing-playbook.md`
-6. `standards/module-standard.md`
-7. `standards/code-documentation-standard.md`
-8. `feature-process.md`
-9. `prompts/base-nodics-assistant-prompt.md`
-10. `prompts/enterprise-architecture-quality-prompt.md`
+4. `artifact-definition-and-change-guide.md`
+5. `schema-and-generation.md`
+6. `testing-playbook.md`
+7. `standards/module-standard.md`
+8. `standards/code-documentation-standard.md`
+9. `feature-process.md`
+10. `prompts/base-nodics-assistant-prompt.md`
+11. `prompts/enterprise-architecture-quality-prompt.md`
+
+Load `change-gate-contract.md` only at commit, merge/release, periodic-audit, or
+explicit comprehensive-review time. Canonical rules should be referenced rather
+than repeated in every prompt or progress update.
 
 ## Core Rule
 
@@ -32,6 +68,12 @@ Nodics is an enterprise application platform and application factory, not a ligh
 Capabilities are sacred; implementations are negotiable.
 
 Every feature must preserve layered customization, multi-tenancy, runtime governance, generated artifact regeneration, traceability, and backward compatibility.
+
+The `Change Acceptance Contract` in `nodics-principles.md` is mandatory for
+every modified or new source file. In particular, a new or changed extension
+point is incomplete until its later-loaded override path is documented and an
+override/customization test proves that customer code can change the behavior
+without modifying out-of-the-box Nodics code.
 
 ## What This Pack Covers
 
@@ -43,10 +85,15 @@ Every feature must preserve layered customization, multi-tenancy, runtime govern
 - Clean/build/generated artifact rules.
 - Test framework expectations.
 - Required process for adding new functionality.
+- Artifact-specific definition, layering, lifecycle, and change-impact rules.
+- Token-efficient daily, commit, merge/release, and periodic audit gates.
 - AI prompts, enterprise review expectations, and decision memory for future sessions.
 
 ## Important Boundaries
 
+- In application-developer mode, treat released Nodics code as immutable and
+  already qualified. Apply these contracts to project-owned code and overrides,
+  not to a new repository-wide framework audit, unless explicitly requested.
 - Do not hardcode project names such as `kickoff` in framework behavior.
 - Do not place generated files under `gSetup/llm`.
 - Keep source-derived module LLM files under each module's `llm/generated` folder.

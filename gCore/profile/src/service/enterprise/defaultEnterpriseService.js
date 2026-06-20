@@ -17,6 +17,7 @@ module.exports = {
             } else {
                 this.get({
                     tenant: CONFIG.get('defaultTenant') || 'default',
+                    authData: SERVICE.DefaultIdentityGovernanceService.getSystemAuthData(),
                     options: {
                         recursive: true
                     },
@@ -26,6 +27,8 @@ module.exports = {
                 }).then(enterprises => {
                     if (enterprises.result.length !== 1) {
                         reject(new CLASSES.NodicsError('ERR_PRFL_00003', 'None enterprise found for code: ' + entCode));
+                    } else if (!enterprises.result[0].active || !enterprises.result[0].tenant || enterprises.result[0].tenant.active === false) {
+                        reject(new CLASSES.NodicsError('ERR_AUTH_00003', 'Enterprise or tenant is inactive'));
                     } else {
                         resolve(enterprises.result[0]);
                     }

@@ -101,9 +101,17 @@ module.exports = {
                     reject(new CLASSES.NodicsError('ERR_SYS_00002', 'Activation request must be approved before activation'));
                     return;
                 }
+                let actor = this.resolveRequestedBy(request);
+                try {
+                    this.assertActivationSeparation(activationRequest, actor);
+                } catch (error) {
+                    reject(error);
+                    return;
+                }
                 this.activateConfiguration(request, activationRequest).then(success => {
                     let updatedRequest = Object.assign({}, activationRequest, {
-                        status: 'ACTIVATED'
+                        status: 'ACTIVATED',
+                        activatedBy: actor
                     });
                     this.persistRequestModel(request, updatedRequest).then(() => {
                         resolve({
@@ -171,10 +179,17 @@ module.exports = {
         return new Promise((resolve, reject) => {
             this.resolveActivationRequest(request).then(activationRequest => {
                 let payload = this.getPayload(request);
+                let actor = this.resolveRequestedBy(request);
+                try {
+                    this.assertDecisionSeparation(activationRequest, actor);
+                } catch (error) {
+                    reject(error);
+                    return;
+                }
                 let updatedRequest = Object.assign({}, activationRequest, {
                     approvalStatus: approvalStatus,
                     status: status,
-                    approvedBy: payload.approvedBy || this.resolveRequestedBy(request),
+                    approvedBy: actor,
                     approvalReason: payload.approvalReason || payload.reason
                 });
                 this.persistRequestModel(request, updatedRequest).then(success => {
@@ -254,6 +269,8 @@ module.exports = {
     createActivationContext: function (request, activationRequest) {
         return {
             tenant: this.getTenant(request),
+            runtimeActivationSource: 'approvedRequest',
+            trustedRuntimeActivation: true,
             authData: request.authData,
             autData: request.autData,
             correlationId: request.correlationId || activationRequest.correlationId,
@@ -290,13 +307,15 @@ module.exports = {
      * @returns {Object} Activation request model.
      */
     createRequestModel: function (request, payload, preview) {
+        let requestedBy = this.resolveRequestedBy(request);
+        this.assertActor(requestedBy);
         return {
             code: payload.code || this.createActivationRequestCode(payload),
             active: true,
             configurationType: payload.configurationType,
             configurationCode: payload.configurationCode || preview.configurationCode,
             moduleName: payload.moduleName || preview.moduleName,
-            requestedBy: payload.requestedBy || this.resolveRequestedBy(request),
+            requestedBy: requestedBy,
             requestReason: payload.requestReason || payload.reason,
             approvalStatus: 'PENDING',
             riskLevel: preview.destructive ? 'HIGH' : 'LOW',
@@ -485,6 +504,36 @@ module.exports = {
         if (!authData) {
             return undefined;
         }
-        return authData.code || authData.userId || authData.uid || authData.email || authData.apiKey;
+        return authData.loginId || authData.serviceId || authData.sub || authData.code || authData.userId || authData.uid || authData.email;
+    },
+
+    getSeparationPolicy: function () {
+        let governance = CONFIG.get('identityGovernance') || {};
+        return governance.separationOfDuties || {};
+    },
+
+    assertActor: function (actor) {
+        if (!actor && this.getSeparationPolicy().requireActor !== false) {
+            throw new CLASSES.NodicsError('ERR_AUTH_00003', 'An authenticated actor is required for governed runtime changes');
+        }
+    },
+
+    assertDecisionSeparation: function (activationRequest, actor) {
+        let policy = this.getSeparationPolicy();
+        this.assertActor(actor);
+        if (policy.preventSelfDecision !== false && actor === activationRequest.requestedBy) {
+            throw new CLASSES.NodicsError('ERR_AUTH_00003', 'The requester cannot approve or reject the same runtime change');
+        }
+    },
+
+    assertActivationSeparation: function (activationRequest, actor) {
+        let policy = this.getSeparationPolicy();
+        this.assertActor(actor);
+        if (policy.preventRequesterActivation !== false && actor === activationRequest.requestedBy) {
+            throw new CLASSES.NodicsError('ERR_AUTH_00003', 'The requester cannot activate the same runtime change');
+        }
+        if (policy.preventApproverActivation !== false && actor === activationRequest.approvedBy) {
+            throw new CLASSES.NodicsError('ERR_AUTH_00003', 'The approver cannot activate the same runtime change');
+        }
     }
 };

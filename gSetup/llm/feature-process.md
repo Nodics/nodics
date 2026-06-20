@@ -2,6 +2,11 @@
 
 Follow this process for every new Nodics capability or modernization change.
 
+For ordinary implementation, use the compact five-question workflow in
+`daily-change-checklist.md`. Apply this detailed process and
+`change-gate-contract.md` at the proportional commit, merge/release, or audit
+gate instead of repeating every step after every file edit.
+
 ## 1. Understand Ownership
 
 Identify:
@@ -15,6 +20,10 @@ Identify:
 - affected runtime topology
 - affected generated artifacts
 - affected tests
+
+Use `artifact-definition-and-change-guide.md` to classify every affected layer as
+mandatory, conditional, generated, runtime-merged, or unaffected. Do not omit a
+required layer, and do not create unnecessary changes in unaffected layers.
 
 Before implementation, verify the owning package follows
 `standards/module-standard.md`, including mandatory configuration files,
@@ -70,10 +79,16 @@ Minimum test categories:
 - positive behavior
 - negative behavior
 - missing dependency behavior
-- override/customization behavior where practical
+- override/customization behavior for every new or changed extension point
 - generated artifact contract if schema/router driven
 - tenant/request context behavior if relevant
+- security, access-control, traceability, and backward-compatibility behavior where applicable
 - clean/build regeneration if generated files are affected
+
+The override/customization test must prove that a later-loaded customer project
+module can change the effective behavior without modifying out-of-the-box Nodics
+code. A change is not complete when its customization path is absent,
+undocumented, or untested.
 
 ## 6. Run Verification
 
@@ -118,3 +133,16 @@ Examples:
 - `Add runtime access policy enforcement`
 
 Avoid mixing unrelated refactors with feature behavior.
+
+## 9. Definition Of Done
+
+A change is ready only when:
+
+- ownership and hierarchy placement are explicit
+- the default behavior follows existing Nodics extension mechanisms
+- customer/project assumptions are absent from framework code
+- the later-loaded override/customization path is documented and tested
+- tenant, security, validation, audit, rollback, diagnostics, and compatibility contracts are preserved where applicable
+- generated artifacts can be cleaned and recreated from effective source definitions
+- focused and required platform/topology tests pass
+- module and LLM documentation reflect the final contract

@@ -119,6 +119,14 @@ global.CLASSES.PipelineHead = require('../../nPipeline/src/lib/pipelineHead');
     assert.strictEqual(enrichedJson.contexts[0].emptyValue, undefined);
     assert.strictEqual(enrichedJson.contexts[0].missingValue, undefined);
 
+    let networkError = new Error('Connection refused');
+    networkError.code = 'ECONNREFUSED';
+    let normalizedNetworkError = global.CLASSES.NodicsError.enrich(networkError, {
+        layer: 'remote-module'
+    }, 'ERR_SYS_00000');
+    assert.strictEqual(normalizedNetworkError.code, 'ERR_SYS_00000');
+    assert.strictEqual(normalizedNetworkError.contexts[0].layer, 'remote-module');
+
     let pipeline = new global.CLASSES.PipelineHead('tracePipeline', {
         startNode: 'failNode',
         nodes: {

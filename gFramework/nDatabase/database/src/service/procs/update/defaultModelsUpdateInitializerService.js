@@ -80,7 +80,7 @@ module.exports = {
         this.LOG.debug('Checking model access');
         let rawSchema = request.schemaModel.rawSchema;
         if (SERVICE.DefaultSchemaAccessHandlerService.getAccessPoint(request.authData, rawSchema.accessGroups) >= CONFIG.get('accessPoints').writeAccessPoint) {
-            process.nextSuccess(request, response);
+            SERVICE.DefaultRecordOwnershipPolicyService.enforce(request, 'update').then(() => process.nextSuccess(request, response)).catch(error => process.error(request, response, error));
         } else {
             process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00003', 'current user do not have access to this resource'));
         }

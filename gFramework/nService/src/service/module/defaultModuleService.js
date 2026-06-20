@@ -11,7 +11,7 @@
 
 const requestPromise = require('node-fetch');
 const _ = require('lodash');
-const util = require('util');
+const https = require('https');
 
 /**
  * @module service/module/DefaultModuleService
@@ -104,9 +104,12 @@ module.exports = {
         if (!options.apiName.startsWith('/')) {
             url += '/';
         }
+        let apiName = options.apiName || '';
+        if (!apiName.startsWith('/')) apiName = '/' + apiName;
+        url = url.replace(/\/+$/, '');
         return {
             method: options.methodName || 'GET',
-            uri: url + options.apiName,
+            uri: url + '/' + (options.apiVersion || 'v0') + apiName,
             headers: header,
             body: options.requestBody || {},
             json: options.responseType || true,
@@ -155,7 +158,7 @@ module.exports = {
             headers: header,
             body: options.requestBody || {},
             json: options.responseType || true,
-            rejectUnauthorized: false,
+            rejectUnauthorized: options.rejectUnauthorized !== false,
             nodicsContext: {
                 layer: 'external-http',
                 methodName: options.methodName || 'GET',
@@ -191,10 +194,33 @@ module.exports = {
      * @throws {CLASSES.NodicsError} Rejects with enriched remote-call context.
      */
     fetch: function (requestUrl) {
-        this.LOG.debug('Hitting module communication URL : ' + JSON.stringify(requestUrl));
+        this.LOG.debug('Hitting module communication URL', {
+            methodName: requestUrl.method,
+            uri: requestUrl.uri,
+            layer: requestUrl.nodicsContext && requestUrl.nodicsContext.layer
+        });
         return new Promise((resolve, reject) => {
             try {
-                requestPromise(requestUrl).then(response => {
+                let fetchOptions = {
+                    method: requestUrl.method,
+                    headers: requestUrl.headers
+                };
+                if (!['GET', 'HEAD'].includes(String(requestUrl.method).toUpperCase()) && requestUrl.body !== undefined) {
+                    fetchOptions.body = typeof requestUrl.body === 'string' ? requestUrl.body : JSON.stringify(requestUrl.body);
+                }
+                if (requestUrl.uri.startsWith('https://')) {
+                    fetchOptions.agent = new https.Agent({ rejectUnauthorized: requestUrl.rejectUnauthorized !== false });
+                }
+                requestPromise(requestUrl.uri, fetchOptions).then(async response => {
+                    if (!response.ok) {
+                        let responseBody = await response.text();
+                        let error = new Error('Remote module request failed with HTTP status ' + response.status +
+                            (responseBody ? ': ' + responseBody.substring(0, 1000) : ''));
+                        error.status = response.status;
+                        throw error;
+                    }
+                    return requestUrl.json === false ? response.text() : response.json();
+                }).then(response => {
                     resolve(response);
                 }).catch(error => {
                     reject(CLASSES.NodicsError.enrich(error, this.buildFetchErrorContext(requestUrl)));

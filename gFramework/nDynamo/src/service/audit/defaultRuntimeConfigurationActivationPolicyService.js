@@ -60,21 +60,22 @@ module.exports = {
                 return;
             }
             this.resolvePreview(request, options).then(preview => {
-                let approval = this.resolveApproval(request);
-                let destructive = preview && preview.destructive;
-                if (destructive && !approval.approved) {
-                    reject(this.createPolicyError(options, preview, approval));
-                    return;
-                }
-                resolve(this.createDecision({
-                    approvalStatus: destructive ? 'APPROVED' : 'NOT_REQUIRED',
-                    riskLevel: destructive ? 'HIGH' : 'LOW',
-                    approved: true,
-                    approvedBy: destructive ? approval.approvedBy : undefined,
-                    approvalReason: destructive ? approval.approvalReason : undefined,
-                    activationRequestCode: approval.activationRequestCode || request.activationRequestCode,
-                    preview: preview
-                }));
+                this.resolveApproval(request, options).then(approval => {
+                    let destructive = preview && preview.destructive;
+                    if (destructive && !approval.approved) {
+                        reject(this.createPolicyError(options, preview, approval));
+                        return;
+                    }
+                    resolve(this.createDecision({
+                        approvalStatus: destructive ? 'APPROVED' : 'NOT_REQUIRED',
+                        riskLevel: destructive ? 'HIGH' : 'LOW',
+                        approved: true,
+                        approvedBy: destructive ? approval.approvedBy : undefined,
+                        approvalReason: destructive ? approval.approvalReason : undefined,
+                        activationRequestCode: approval.activationRequestCode || request.activationRequestCode,
+                        preview: preview
+                    }));
+                }).catch(reject);
             }).catch(error => {
                 reject(error);
             });
@@ -148,22 +149,35 @@ module.exports = {
     },
 
     /**
-     * Resolves approval information from request body, event payload, or direct request fields.
+     * Resolves approval only from a persisted approved activation request.
      *
      * @param {Object} request Nodics request context.
-     * @returns {Object} Approval payload.
+     * @returns {Promise<Object>} Verified approval payload.
      */
-    resolveApproval: function (request) {
-        let body = request.httpRequest && request.httpRequest.body ? request.httpRequest.body : {};
+    resolveApproval: function (request, options) {
         let eventData = request.event && request.event.data ? request.event.data : {};
-        let approval = request.activationApproval || body.activationApproval || eventData.activationApproval || {};
-        let approvedBy = approval.approvedBy || approval.approver || this.resolveRequestedBy(request);
-        return {
-            approved: approval.approved === true || approval.approvalStatus === 'APPROVED',
-            approvedBy: approvedBy,
-            approvalReason: approval.approvalReason || approval.reason,
-            activationRequestCode: approval.activationRequestCode || request.activationRequestCode
-        };
+        let approval = request.activationApproval || eventData.activationApproval || {};
+        let activationRequestCode = approval.activationRequestCode || request.activationRequestCode;
+        if (request.runtimeActivationSource !== 'approvedRequest' || request.trustedRuntimeActivation !== true || !activationRequestCode || !SERVICE.DefaultConfigurationActivationRequestService) {
+            return Promise.resolve({ approved: false, activationRequestCode: activationRequestCode });
+        }
+        let authData = SERVICE.DefaultIdentityGovernanceService && SERVICE.DefaultIdentityGovernanceService.getSystemAuthData ? SERVICE.DefaultIdentityGovernanceService.getSystemAuthData() : request.authData;
+        return SERVICE.DefaultConfigurationActivationRequestService.get({
+            tenant: request.tenant || CONFIG.get('defaultTenant') || 'default', authData: authData,
+            query: { code: activationRequestCode }, options: { recursive: false }
+        }).then(result => {
+            let persisted = result.result && result.result[0];
+            let valid = persisted && persisted.approvalStatus === 'APPROVED' && persisted.status === 'APPROVED' &&
+                persisted.configurationType === options.configurationType && persisted.configurationCode === options.configurationCode;
+            if (!valid) return { approved: false, activationRequestCode: activationRequestCode };
+            let actor = this.resolveRequestedBy(request);
+            let governance = CONFIG.get('identityGovernance') || {};
+            let separation = governance.separationOfDuties || {};
+            if (!actor || (separation.preventRequesterActivation !== false && actor === persisted.requestedBy) || (separation.preventApproverActivation !== false && actor === persisted.approvedBy)) {
+                throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Runtime activation violates separation-of-duties policy');
+            }
+            return { approved: true, approvedBy: persisted.approvedBy, approvalReason: persisted.approvalReason, activationRequestCode: persisted.code };
+        });
     },
 
     /**
@@ -189,6 +203,6 @@ module.exports = {
         if (!authData) {
             return undefined;
         }
-        return authData.code || authData.userId || authData.uid || authData.email || authData.apiKey;
+        return authData.loginId || authData.serviceId || authData.sub || authData.code || authData.userId || authData.uid || authData.email;
     }
 };

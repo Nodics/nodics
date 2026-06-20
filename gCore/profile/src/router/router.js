@@ -76,7 +76,7 @@ module.exports = {
                 operation: 'authenticateEmployee',
                 help: {
                     requestType: 'secured',
-                    message: 'loginId, password and x-enterprise-code header is preferred; legacy entCode header is deprecated',
+                    message: 'Send loginId and password in the JSON body; x-enterprise-code is the enterprise header',
                     method: 'POST',
                     url: 'http://host:port/nodics/profile/authenticate',
                 }
@@ -90,9 +90,39 @@ module.exports = {
                 operation: 'authenticateCustomer',
                 help: {
                     requestType: 'secured',
-                    message: 'loginId, password and x-enterprise-code header is preferred; legacy entCode header is deprecated',
+                    message: 'Send loginId and password in the JSON body; x-enterprise-code is the enterprise header',
                     method: 'POST',
                     url: 'http://host:port/nodics/profile/authenticate',
+                }
+            },
+            refreshToken: {
+                secured: false,
+                accessGroups: ['userGroup'],
+                key: '/token/refresh',
+                method: 'POST',
+                handler: 'DefaultAuthenticationProviderController',
+                operation: 'refreshToken',
+                help: {
+                    requestType: 'public',
+                    message: 'Exchange a refresh token once for a rotated token pair',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/profile/token/refresh',
+                    body: { refreshToken: '' }
+                }
+            },
+            logout: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                key: '/token/logout',
+                method: 'POST',
+                handler: 'DefaultAuthenticationProviderController',
+                operation: 'logout',
+                help: {
+                    requestType: 'secured',
+                    message: 'Revoke the current access token and optional refresh token',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/profile/token/logout',
+                    body: { refreshToken: '' }
                 }
             }
         },
@@ -111,6 +141,44 @@ module.exports = {
                     method: 'POST',
                     url: 'http://host:port/nodics/profile/authorize',
                 }
+            }
+        },
+        identityMigration: {
+            preview: {
+                secured: true,
+                accessGroups: ['runtimeConfigAdminUserGroup'],
+                permission: 'identity.migration.preview',
+                key: '/identity/migration/preview',
+                method: 'POST',
+                controller: 'DefaultIdentityGovernanceController',
+                operation: 'previewMigration'
+            },
+            apply: {
+                secured: true,
+                accessGroups: ['runtimeConfigAdminUserGroup'],
+                permission: 'identity.migration.apply',
+                key: '/identity/migration/apply',
+                method: 'POST',
+                controller: 'DefaultIdentityGovernanceController',
+                operation: 'applyMigration'
+            },
+            rollback: {
+                secured: true,
+                accessGroups: ['runtimeConfigAdminUserGroup'],
+                permission: 'identity.migration.rollback',
+                key: '/identity/migration/rollback',
+                method: 'POST',
+                controller: 'DefaultIdentityGovernanceController',
+                operation: 'rollbackMigration'
+            },
+            rotateServiceKey: {
+                secured: true,
+                accessGroups: ['runtimeConfigAdminUserGroup'],
+                permission: 'identity.credential.rotate',
+                key: '/identity/credential/rotate',
+                method: 'POST',
+                controller: 'DefaultIdentityGovernanceController',
+                operation: 'rotateServiceKey'
             }
         },
         customerExist: {

@@ -28,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 7 |
-| Test files | 2 |
+| Source files | 12 |
+| Test files | 3 |
 | Data files | 0 |
-| All module-owned files | 16 |
+| All module-owned files | 22 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,9 +59,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 1 |
-| Undocumented | 12 |
+| Documented | 2 |
+| Partially documented | 3 |
+| Undocumented | 14 |
 | Inventory only | 3 |
 
 ## Important Files
@@ -92,9 +92,15 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nAuth/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nAuth/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nAuth/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nAuth/src/service/audit/defaultAuthAuditService.js` | `src` | `partially-documented` | 0/2 | Records sanitized authentication lifecycle events without credentials. Project and environment modules may override this service to persist events in a SIEM, audit database, or governed event stream. | add JSDoc for 2 exported method(s) |
 | `gFramework/nAuth/src/service/authentication/defaultAuthenticationProviderService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gFramework/nAuth/src/service/identity/defaultAPIKeyCredentialService.js` | `src` | `documented` | 5/5 | Converts high-entropy API keys into keyed digests so usable credentials are never persisted. |  |
+| `gFramework/nAuth/src/service/identity/defaultIdentityGovernanceService.js` | `src` | `partially-documented` | 0/3 | Supplies layered identity governance decisions for trusted framework operations and administrative access checks. | add @override; add JSDoc for 3 exported method(s) |
+| `gFramework/nAuth/src/service/identity/defaultPrincipalSecurityStampService.js` | `src` | `documented` | 7/7 | Maintains tenant-scoped principal security stamps in the auth cache. Production deployments should use a shared auth-cache engine. |  |
+| `gFramework/nAuth/src/utils/authSecurity.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nAuth/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nAuth/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nAuth/test/authSecurityContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nAuth/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
 | `gFramework/nAuth/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
 

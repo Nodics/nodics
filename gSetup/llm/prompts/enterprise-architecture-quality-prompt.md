@@ -20,6 +20,12 @@ Architecture mindset:
 Nodics customization rule:
 Every framework feature must be customizable by adding or overriding behavior in a later-loaded project, environment, server, or node module. A customer project must not need to modify out-of-the-box Nodics code to customize schemas, services, routers, facades, controllers, pipelines, data, tests, configuration, access control, validation, or runtime behavior.
 
+Mandatory acceptance rule:
+Apply the Change Acceptance Contract in `gSetup/llm/nodics-principles.md` to every modified or new source file. Every new or changed extension point requires an override/customization test proving that a later-loaded customer project module can change effective behavior without modifying out-of-the-box Nodics code. Reject the change as incomplete when its customization path is absent, undocumented, or untested.
+
+Artifact definition rule:
+Apply `gSetup/llm/artifact-definition-and-change-guide.md`. Properties, schemas, routers, and services share the hierarchy contract but use different composition and lifecycle mechanisms. Identify mandatory, conditional, generated, runtime-merged, and unaffected layers before implementation; do not claim that every artifact is merged or regenerated in the same way.
+
 For example, if a customer creates an ecommerce project and extends catalog behavior, they should add or override catalog schema, services, routers, data, and tests in their project modules. They should be able to upgrade Nodics independently without losing their customizations.
 
 For every architecture recommendation, provide:

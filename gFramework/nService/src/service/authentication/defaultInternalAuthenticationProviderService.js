@@ -25,6 +25,7 @@ const _ = require('lodash');
  * @property {Object} SERVICE.DefaultModuleService Internal module HTTP client.
  */
 module.exports = {
+    _refreshTimer: null,
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -51,7 +52,7 @@ module.exports = {
      * Fetches an internal auth token for a tenant from the profile module.
      *
      * @param {string} tntCode Tenant code.
-     * @returns {Promise<Object|Object[]>} Internal token response or empty list when unavailable.
+     * @returns {Promise<Object>} Internal token response.
      */
     fetchInternalAuthToken: function (tntCode) {
         let _self = this;
@@ -72,12 +73,40 @@ module.exports = {
                     resolve(response.result || []);
                 }).catch(error => {
                     _self.LOG.error('While connecting profile server to fetch API Key', error);
-                    resolve([]);
+                    reject(new CLASSES.NodicsError(error, 'Could not fetch internal authentication token', 'ERR_AUTH_00001'));
                 });
             } catch (error) {
                 _self.LOG.error('While connecting profile server to fetch API Key', error);
-                resolve([]);
+                reject(new CLASSES.NodicsError(error, 'Could not fetch internal authentication token', 'ERR_AUTH_00001'));
             }
         });
+    },
+
+    /** Refreshes internal service tokens for all active tenant token slots. */
+    refreshInternalAuthTokens: function () {
+        let tenants = Object.keys(NODICS.getInternalAuthTokens() || {});
+        if (tenants.length === 0) tenants = [CONFIG.get('defaultTenant') || 'default'];
+        return Promise.all(tenants.map(tenant => this.fetchInternalAuthToken(tenant).then(result => {
+            if (!result || !result.authToken) {
+                throw new CLASSES.NodicsError('ERR_AUTH_00001', 'Rotated internal token is unavailable for tenant: ' + tenant);
+            }
+            NODICS.addInternalAuthToken(tenant, result.authToken);
+            return tenant;
+        })));
+    },
+
+    /** Schedules bounded internal service-token rotation. */
+    scheduleInternalAuthTokenRefresh: function () {
+        let authSecurity = CONFIG.get('authSecurity') || {};
+        let jwt = authSecurity.jwt || {};
+        let interval = jwt.serviceTokenRefreshIntervalMs || 10 * 60 * 1000;
+        if (this._refreshTimer) clearInterval(this._refreshTimer);
+        this._refreshTimer = setInterval(() => {
+            this.refreshInternalAuthTokens().catch(error => {
+                this.LOG.error('Internal authentication token rotation failed', error);
+            });
+        }, interval);
+        if (this._refreshTimer.unref) this._refreshTimer.unref();
+        return this._refreshTimer;
     }
 };

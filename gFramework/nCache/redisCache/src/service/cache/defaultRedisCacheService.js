@@ -81,6 +81,27 @@ module.exports = {
         });
     },
 
+    /** Atomically reads and deletes one value using Redis GETDEL. */
+    consume: function (options) {
+        return new Promise((resolve, reject) => {
+            try {
+                let key = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.key;
+                if (typeof options.channel.client.getDel !== 'function') {
+                    reject(new CLASSES.CacheError('ERR_CACHE_00006', 'Redis client does not support atomic GETDEL'));
+                    return;
+                }
+                Promise.resolve(options.channel.client.getDel(key)).then(value => {
+                    if (!value) throw new CLASSES.CacheError('ERR_CACHE_00001', 'Could not found any value for key: ' + key);
+                    value = typeof value === 'string' ? JSON.parse(value) : value;
+                    value.code = 'SUC_CACHE_00000';
+                    resolve(value);
+                }).catch(error => reject(error instanceof CLASSES.CacheError ? error : new CLASSES.CacheError(error)));
+            } catch (error) {
+                reject(new CLASSES.CacheError(error));
+            }
+        });
+    },
+
     flushByPrefix: function (options) {
         let _self = this;
         return new Promise((resolve, reject) => {

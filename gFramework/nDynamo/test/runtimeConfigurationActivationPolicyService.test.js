@@ -22,6 +22,16 @@ let preview = {
 };
 
 global.SERVICE = {
+    DefaultIdentityGovernanceService: { getSystemAuthData: function () { return { isSystem: true }; } },
+    DefaultConfigurationActivationRequestService: {
+        get: function () {
+            return Promise.resolve({ result: [{
+                code: 'approved-request', configurationType: 'routerConfiguration', configurationCode: 'runtimeUser',
+                requestedBy: 'requester', approvedBy: 'change-manager', approvalReason: 'Approved change ticket',
+                approvalStatus: 'APPROVED', status: 'APPROVED'
+            }] });
+        }
+    },
     DefaultRuntimeConfigurationPreviewService: {
         previewActivation: function () {
             return Promise.resolve({
@@ -59,6 +69,21 @@ service.evaluateActivation({
             approvedBy: 'change-manager',
             approvalReason: 'Approved change ticket'
         }
+    }, {
+        configurationType: 'routerConfiguration',
+        configurationCode: 'runtimeUser'
+    });
+}).then(() => {
+    throw new Error('Caller-supplied approval metadata must not authorize activation');
+}).catch(error => {
+    assert.strictEqual(error.code, 'ERR_SYS_00002');
+    return service.evaluateActivation({
+        tenant: 'default',
+        authData: { code: 'operator' },
+        runtimeActivationSource: 'approvedRequest',
+        trustedRuntimeActivation: true,
+        activationRequestCode: 'approved-request',
+        activationApproval: { approved: true, approvedBy: 'spoofed-approver', activationRequestCode: 'approved-request' }
     }, {
         configurationType: 'routerConfiguration',
         configurationCode: 'runtimeUser'

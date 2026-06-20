@@ -54,7 +54,7 @@ module.exports = {
      * @param {Object} value Token payload.
      * @returns {Promise<Object>} Cache put response.
      */
-    addToken: function (moduleName, isExpirable, hash, value) {
+    addToken: function (moduleName, isExpirable, hash, value, ttl) {
         return new Promise((resolve, reject) => {
             try {
                 let options = {
@@ -65,6 +65,8 @@ module.exports = {
                 };
                 if (!isExpirable) {
                     options.ttl = 0;
+                } else if (ttl) {
+                    options.ttl = ttl;
                 }
                 SERVICE.DefaultCacheService.put(options).then(success => {
                     resolve(success);
@@ -100,5 +102,42 @@ module.exports = {
                 reject(new CLASSES.NodicsError(error, null, 'ERR_AUTH_00000'));
             }
         });
+    },
+
+    /** Atomically consumes a single-use token or session from the auth cache. */
+    consumeToken: function (moduleName, token) {
+        return SERVICE.DefaultCacheService.consume({
+            moduleName: moduleName,
+            channelName: 'auth',
+            key: token
+        });
+    },
+
+    /** Removes a token or session from the auth cache namespace. */
+    removeToken: function (moduleName, token) {
+        return SERVICE.DefaultCacheService.flushCache({
+            moduleName: moduleName,
+            channelName: 'auth',
+            keys: [token]
+        });
+    },
+
+    /** Checks whether an access-token identifier has been revoked. */
+    isTokenRevoked: function (jti) {
+        if (!jti) return Promise.resolve(true);
+        return this.findToken(CONFIG.get('profileModuleName') || 'profile', 'revoked:' + jti)
+            .then(() => true)
+            .catch(() => false);
+    },
+
+    /** Persists a revocation marker for the remaining access-token lifetime. */
+    revokeAccessToken: function (authData) {
+        if (!authData || !authData.jti) return Promise.resolve(false);
+        let ttl = authData.exp ? Math.max(1, authData.exp - Math.floor(Date.now() / 1000)) : undefined;
+        return this.addToken(CONFIG.get('profileModuleName') || 'profile', true, 'revoked:' + authData.jti, {
+            tenant: authData.tenant,
+            loginId: authData.loginId,
+            revokedAt: new Date().toISOString()
+        }, ttl);
     }
 };

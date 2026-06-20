@@ -34,6 +34,16 @@ let registeredRouters = [];
 let auditEntries = [];
 
 global.SERVICE = {
+    DefaultIdentityGovernanceService: { getSystemAuthData: function () { return { isSystem: true }; } },
+    DefaultConfigurationActivationRequestService: {
+        get: function () {
+            return Promise.resolve({ result: [{
+                code: 'approved-router-request', configurationType: 'routerConfiguration', configurationCode: 'runtimeUser',
+                requestedBy: 'requester', approvedBy: 'change-manager', approvalReason: 'Approved change ticket',
+                approvalStatus: 'APPROVED', status: 'APPROVED'
+            }] });
+        }
+    },
     DefaultRuntimeConfigurationActivationPolicyService: require('../src/service/audit/defaultRuntimeConfigurationActivationPolicyService'),
     DefaultRuntimeConfigurationPreviewService: {
         previewActivation: function () {
@@ -113,12 +123,14 @@ routerService.registerRoutersFromDatabase({
     auditEntries = [];
     return routerService.registerRoutersFromDatabase({
         tenant: 'default',
-        authData: {
-            code: 'admin'
-        },
+        authData: { code: 'operator' },
+        runtimeActivationSource: 'approvedRequest',
+        trustedRuntimeActivation: true,
+        activationRequestCode: 'approved-router-request',
         activationApproval: {
             approved: true,
-            approvedBy: 'change-manager',
+            approvedBy: 'spoofed-approver',
+            activationRequestCode: 'approved-router-request',
             approvalReason: 'Approved change ticket'
         },
         correlationId: 'approved-router'

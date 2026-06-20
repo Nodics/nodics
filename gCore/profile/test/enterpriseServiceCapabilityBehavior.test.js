@@ -15,6 +15,11 @@ global.CONFIG = {
 };
 
 global.SERVICE = {
+    DefaultIdentityGovernanceService: {
+        getSystemAuthData: function () {
+            return { isSystem: true, userGroups: ['serviceAccountUserGroup'], permissions: [] };
+        }
+    },
     DefaultStatusService: {
         get: function (code) {
             return {
@@ -62,7 +67,8 @@ const enterpriseService = require('../src/service/enterprise/defaultEnterpriseSe
     let getCalls = [];
     let enterprise = {
         code: 'electronics',
-        active: true
+        active: true,
+        tenant: { code: 'electronicsTenant', active: true }
     };
     let service = Object.assign({}, enterpriseService, {
         get: function (request) {
@@ -77,6 +83,7 @@ const enterpriseService = require('../src/service/enterprise/defaultEnterpriseSe
     assert.strictEqual(result, enterprise);
     assert.deepStrictEqual(getCalls, [{
         tenant: 'masterTenant',
+        authData: { isSystem: true, userGroups: ['serviceAccountUserGroup'], permissions: [] },
         options: {
             recursive: true
         },

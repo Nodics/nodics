@@ -10,7 +10,7 @@
  */
 
 const jwt = require('jsonwebtoken');
-const _ = require('lodash');
+const authSecurity = require('../../../../nAuth/src/utils/authSecurity');
 
 /**
  * @module service/authorization/DefaultAuthorizationProviderService
@@ -58,15 +58,33 @@ module.exports = {
      */
     authorizeToken: function (request) {
         return new Promise((resolve, reject) => {
-            let jwtVerifyOptions = _.merge({}, CONFIG.get('profile').jwtVerifyOptions || {});
-            jwt.verify(request.authToken, CONFIG.get('jwtSecretKey') || 'nodics', jwtVerifyOptions, (error, payload) => {
+            let jwtVerifyOptions;
+            let jwtSecret;
+            try {
+                jwtVerifyOptions = authSecurity.getVerifyOptions(CONFIG);
+                jwtSecret = authSecurity.getJwtSecret(CONFIG);
+            } catch (error) {
+                reject(new CLASSES.NodicsError(error, null, 'ERR_AUTH_00001'));
+                return;
+            }
+            jwt.verify(request.authToken, jwtSecret, jwtVerifyOptions, (error, payload) => {
                 if (error) {
                     reject(new CLASSES.NodicsError(error, null, 'ERR_AUTH_00001'));
                 } else {
-                    resolve({
-                        code: 'SUC_SYS_00000',
-                        result: payload
-                    });
+                    let security = authSecurity.getSecurityConfiguration(CONFIG);
+                    if (security.jwt.requireJti !== false && !payload.jti) {
+                        reject(new CLASSES.NodicsError('ERR_AUTH_00001', 'Token identifier is required'));
+                        return;
+                    }
+                    SERVICE.DefaultAuthenticationProviderService.isTokenRevoked(payload.jti).then(revoked => {
+                        if (revoked) {
+                            reject(new CLASSES.NodicsError('ERR_AUTH_00001', 'Authentication token has been revoked'));
+                        } else {
+                            SERVICE.DefaultPrincipalSecurityStampService.validate(payload).then(() => {
+                                resolve({ code: 'SUC_SYS_00000', result: payload });
+                            }).catch(reject);
+                        }
+                    }).catch(reject);
                 }
             });
         });

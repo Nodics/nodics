@@ -72,6 +72,22 @@ module.exports = {
         });
     },
 
+    /** Atomically reads and deletes one value within the local event loop. */
+    consume: function (options) {
+        return new Promise((resolve, reject) => {
+            try {
+                let key = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.key;
+                let value = options.channel.client.get(key);
+                if (!value) return reject(new CLASSES.CacheError('ERR_CACHE_00001', 'Could not found any value for key: ' + key));
+                options.channel.client.del(key);
+                value.code = 'SUC_CACHE_00000';
+                resolve(value);
+            } catch (error) {
+                reject(new CLASSES.CacheError(error));
+            }
+        });
+    },
+
     flushByPrefix: function (options) {
         let _self = this;
         return new Promise((resolve, reject) => {

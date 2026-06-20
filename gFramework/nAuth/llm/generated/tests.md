@@ -4,6 +4,7 @@
 
 ## Hand-Authored Tests
 
+- `gFramework/nAuth/test/authSecurityContract.test.js`
 - `gFramework/nAuth/test/common/commonTest.js`
 - `gFramework/nAuth/test/env-local/envTest.js`
 

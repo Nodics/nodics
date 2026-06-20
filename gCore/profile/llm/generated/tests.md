@@ -7,6 +7,8 @@
 - `gCore/profile/test/common/profileTest.js`
 - `gCore/profile/test/enterpriseServiceCapabilityBehavior.test.js`
 - `gCore/profile/test/env/local/localProfileTest.js`
+- `gCore/profile/test/identityGovernanceContract.test.js`
+- `gCore/profile/test/identityGovernanceP1Contract.test.js`
 - `gCore/profile/test/initRequiredFlag.test.js`
 - `gCore/profile/test/profileControllerRequestMapping.test.js`
 - `gCore/profile/test/profileInitRequiredDetection.test.js`
@@ -41,6 +43,7 @@
 - `gCore/profile/test/gen/schema/customerSchemaContract.test.js`
 - `gCore/profile/test/gen/schema/employeeSchemaContract.test.js`
 - `gCore/profile/test/gen/schema/enterpriseSchemaContract.test.js`
+- `gCore/profile/test/gen/schema/identityMigrationAuditSchemaContract.test.js`
 - `gCore/profile/test/gen/schema/passwordSchemaContract.test.js`
 - `gCore/profile/test/gen/schema/tenantSchemaContract.test.js`
 - `gCore/profile/test/gen/schema/userGroupSchemaContract.test.js`

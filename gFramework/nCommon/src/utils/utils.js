@@ -79,7 +79,7 @@ module.exports = {
             UTILS.generatePasswordHash(password).then(hash => {
                 resolve(hash);
             }).catch(error => {
-                reject(err);
+                reject(error);
             });
         });
     },
@@ -293,19 +293,21 @@ module.exports = {
      * @param {string[]} [codes] Mutable result accumulator.
      * @returns {string[]} Effective group codes.
      */
-    getUserGroupCodes: function (userGroups, codes = []) {
+    getUserGroupCodes: function (userGroups, codes = [], visited = []) {
         let _self = this;
         if (userGroups && userGroups.length > 0) {
             userGroups.forEach(userGroup => {
                 if (UTILS.isObject(userGroup)) {
+                    if (userGroup.active === false || visited.includes(userGroup.code)) return;
+                    visited.push(userGroup.code);
                     if (!codes.includes(userGroup.code)) {
                         codes.push(userGroup.code);
                     }
                     if (userGroup.parentGroups) {
-                        _self.getUserGroupCodes(userGroup.parentGroups, codes);
+                        _self.getUserGroupCodes(userGroup.parentGroups, codes, visited);
                     }
                 } else {
-                    codes.push(userGroup);
+                    if (!codes.includes(userGroup)) codes.push(userGroup);
                 }
             });
         }
@@ -318,11 +320,13 @@ module.exports = {
      * @param {string[]} [permissions] Mutable result accumulator.
      * @returns {string[]} Effective inherited permissions.
      */
-    getUserGroupPermissions: function (userGroups, permissions = []) {
+    getUserGroupPermissions: function (userGroups, permissions = [], visited = []) {
         let _self = this;
         if (userGroups && userGroups.length > 0) {
             userGroups.forEach(userGroup => {
                 if (UTILS.isObject(userGroup)) {
+                    if (userGroup.active === false || visited.includes(userGroup.code)) return;
+                    visited.push(userGroup.code);
                     if (Array.isArray(userGroup.permissions)) {
                         userGroup.permissions.forEach(permission => {
                             if (!permissions.includes(permission)) {
@@ -331,7 +335,7 @@ module.exports = {
                         });
                     }
                     if (userGroup.parentGroups) {
-                        _self.getUserGroupPermissions(userGroup.parentGroups, permissions);
+                        _self.getUserGroupPermissions(userGroup.parentGroups, permissions, visited);
                     }
                 }
             });

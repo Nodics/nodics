@@ -7,7 +7,7 @@
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `base` | `super` | no | no | no | no | no | no |  | 1 |
-| `super` |  | no | no | no | no | no | no |  | 5 |
+| `super` |  | no | no | no | no | no | no |  | 9 |
 
 ### `default.base`
 
@@ -18,6 +18,10 @@
 - `accessGroups` `array` optional: User group code for which this user belongs
 - `active` `bool` required: Flag to check if tenant is still active
 - `created` `date` required: Timestamp when this item got created in database
+- `createdBy` `string` optional: Principal identifier that created this record
 - `description` `string` optional: Description of the property
+- `ownerId` `string` optional: Stable principal identifier owning this record
+- `ownerType` `string` optional: Principal category recorded when ownership was assigned
 - `updated` `date` required: Timestamp when this item got updated in database
+- `updatedBy` `string` optional: Principal identifier that last updated this record
 

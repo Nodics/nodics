@@ -44,7 +44,6 @@
 - `facade`
 - `service`
 - `utility`
-- `tooling`
 - `test`
 - `llm`
 
