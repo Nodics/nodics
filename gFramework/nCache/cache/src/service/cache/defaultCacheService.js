@@ -76,6 +76,26 @@ module.exports = {
         }
     },
 
+    /** Atomically removes and returns one cache value through the active engine. */
+    consume: function (options) {
+        try {
+            let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
+            if (!channel) {
+                return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00006', 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName));
+            }
+            let handler = SERVICE[channel.engineOptions.cacheHandler];
+            let operationName = options.channelName + 'Consume';
+            if (!handler[operationName] || typeof handler[operationName] !== 'function') operationName = 'consume';
+            if (!handler[operationName] || typeof handler[operationName] !== 'function') {
+                return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00006', 'Cache engine does not support atomic consume for channel: ' + options.channelName));
+            }
+            options.channel = channel;
+            return handler[operationName](options);
+        } catch (error) {
+            return Promise.reject(new CLASSES.CacheError(error, 'Error while atomically consuming cache value'));
+        }
+    },
+
     flushCache: function (options) {
         try {
             if (options.keys && options.keys instanceof Array && options.keys.length > 0) {

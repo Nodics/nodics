@@ -8,7 +8,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `classConfiguration` | `base` | yes | yes | no | no | no | yes | `default` | 1 |
 | `configurationActivationLog` | `base` | yes | yes | yes | no | no | no | `default` | 17 |
-| `configurationActivationRequest` | `base` | yes | yes | yes | no | no | no | `default` | 13 |
+| `configurationActivationRequest` | `base` | yes | yes | yes | no | no | no | `default` | 14 |
 | `pipeline` | `base` | yes | yes | yes | no | no | yes | `default` | 0 |
 | `routerConfiguration` | `base` | yes | yes | yes | no | no | yes | `default` | 12 |
 | `schemaAccessPolicy` | `base` | yes | yes | yes | no | no | yes | `default` | 15 |
@@ -40,6 +40,7 @@
 
 ### `dynamo.configurationActivationRequest`
 
+- `activatedBy` `string` optional: Operator that activated the approved runtime change
 - `activationLogCode` `string` optional: Activation audit log code linked after activation
 - `approvalReason` `string` optional: Reason supplied during approval or rejection
 - `approvalStatus` `string` optional: Approval status for the activation request

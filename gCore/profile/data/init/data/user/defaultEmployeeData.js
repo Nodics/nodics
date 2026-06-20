@@ -9,6 +9,9 @@
 
  */
 
+const crypto = require('crypto');
+const bootstrapIdentity = typeof CONFIG !== 'undefined' && CONFIG.get('bootstrapIdentity') || {};
+
 module.exports = {
     record0: {
         code: 'admin',
@@ -21,11 +24,11 @@ module.exports = {
         loginId: 'admin',
         password: {
             loginId: 'admin',
-            password: 'nodics',
+            password: bootstrapIdentity.adminPassword,
             active: true
         },
-        apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bfg',
-        userGroups: ['employeeUserGroup', 'runtimeConfigAdminUserGroup'],
+        principalType: 'human',
+        userGroups: ['adminGroup', 'runtimeConfigAdminUserGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']
     },
@@ -40,17 +43,18 @@ module.exports = {
         loginId: 'apiAdmin',
         password: {
             loginId: 'apiAdmin',
-            password: 'apiAdminInternalEmployee',
+            password: bootstrapIdentity.servicePassword,
             active: true
         },
-        apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff',
-        userGroups: ['employeeUserGroup', 'runtimeConfigAdminUserGroup'],
+        apiKey: bootstrapIdentity.serviceApiKey,
+        principalType: 'service',
+        userGroups: ['serviceAccountUserGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']
     },
     record2: {
         code: 'contentCreator',
-        active: true,
+        active: false,
         name: {
             title: 'Mr.',
             firstName: 'Content',
@@ -59,17 +63,17 @@ module.exports = {
         loginId: 'contentCreator',
         password: {
             loginId: 'contentCreator',
-            password: 'contentCreator',
+            password: crypto.randomBytes(32).toString('base64url'),
             active: true
         },
-        apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c835ff',
+        principalType: 'human',
         userGroups: ['contentCreatorUserGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']
     },
     record3: {
         code: 'contentApprover',
-        active: true,
+        active: false,
         name: {
             title: 'Mr.',
             firstName: 'Content',
@@ -78,10 +82,10 @@ module.exports = {
         loginId: 'contentApprover',
         password: {
             loginId: 'contentApprover',
-            password: 'contentApprover',
+            password: crypto.randomBytes(32).toString('base64url'),
             active: true
         },
-        apiKey: '944515ac-bbac-51cd-ac7e-3bbbsdc835ff',
+        principalType: 'human',
         userGroups: ['contentApproverUserGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']

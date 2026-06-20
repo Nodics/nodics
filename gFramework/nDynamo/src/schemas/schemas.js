@@ -316,6 +316,11 @@ module.exports = {
                     type: 'string',
                     required: false,
                     description: 'Activation audit log code linked after activation'
+                },
+                activatedBy: {
+                    type: 'string',
+                    required: false,
+                    description: 'Operator that activated the approved runtime change'
                 }
             }
         },

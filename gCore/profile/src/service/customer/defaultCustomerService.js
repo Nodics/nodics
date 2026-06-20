@@ -14,6 +14,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             this.get({
                 tenant: request.tenant,
+                authData: SERVICE.DefaultIdentityGovernanceService.getSystemAuthData(),
                 options: {
                     recursive: true,
                 },
@@ -35,6 +36,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             this.get({
                 tenant: request.tenant,
+                authData: request.authData || SERVICE.DefaultIdentityGovernanceService.getSystemAuthData(),
                 options: {
                     recursive: false,
                 },

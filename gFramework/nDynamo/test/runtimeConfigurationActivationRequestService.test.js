@@ -85,6 +85,7 @@ service.createActivationRequest({
     correlationId: 'request-correlation',
     activationRequest: {
         code: 'activationRequest_runtimeUser_1',
+        requestedBy: 'spoofed-requester',
         configurationType: 'routerConfiguration',
         configurationCode: 'runtimeUser',
         requestReason: 'Need new runtime route'
@@ -103,6 +104,7 @@ service.createActivationRequest({
         },
         activationRequest: {
             activationRequestCode: 'activationRequest_runtimeUser_1',
+            approvedBy: 'spoofed-approver',
             approvalReason: 'Approved change ticket'
         }
     });
@@ -155,6 +157,7 @@ service.createActivationRequest({
     };
     return service.activateApprovedRequest({
         tenant: 'default',
+        authData: { code: 'schemaOperator' },
         activationRequest: {
             activationRequestCode: 'schemaRequest'
         }

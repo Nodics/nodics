@@ -13,13 +13,13 @@ module.exports = {
     record0: {
         code: 'adminGroup',
         name: 'adminGroup',
-        active: true
+        active: true,
+        parentGroups: ['userGroup']
     },
     record1: {
         code: 'userGroup',
         name: 'userGroup',
-        active: true,
-        parentGroups: ['adminGroup']
+        active: true
     },
     record2: {
         code: 'employeeUserGroup',
@@ -102,7 +102,21 @@ module.exports = {
             'runtimeConfigApproverUserGroup'
         ],
         permissions: [
-            'runtime.config.cleanup.execute'
+            'runtime.config.cleanup.execute',
+            'identity.migration.preview',
+            'identity.migration.apply',
+            'identity.migration.rollback',
+            'identity.credential.rotate'
+        ]
+    },
+    record12: {
+        code: 'serviceAccountUserGroup',
+        name: 'serviceAccountUserGroup',
+        active: true,
+        parentGroups: ['userGroup'],
+        permissions: [
+            'auth.internal.token.read',
+            'auth.internal.token.read.anyTenant'
         ]
     }
 };

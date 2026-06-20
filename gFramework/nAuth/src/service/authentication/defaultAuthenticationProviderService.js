@@ -11,24 +11,15 @@
 
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
+const authSecurity = require('../../utils/authSecurity');
 
 module.exports = {
     generateAuthToken: function (options) {
         let token = null;
         try {
-            let jwtSignOptions = _.merge({}, CONFIG.get('profile').jwtSignOptions || {});
-            if (options.tokenLife) jwtSignOptions.expiresIn = options.tokenLife;
-            if (options.lifetime) delete jwtSignOptions.expiresIn;
-            let payload = {
-                entCode: options.entCode,
-                tenant: options.tenant,
-                refreshToken: options.refreshToken
-            };
-            if (options.loginId) payload.loginId = options.loginId;
-            if (options.apiKey) payload.apiKey = options.apiKey;
-            if (options.userGroups && options.userGroups.length > 0) payload.userGroups = options.userGroups;
-            if (options.permissions && options.permissions.length > 0) payload.permissions = options.permissions;
-            token = jwt.sign(payload, CONFIG.get('jwtSecretKey') || 'nodics', jwtSignOptions);
+            let jwtSignOptions = authSecurity.getSignOptions(CONFIG, options);
+            let payload = authSecurity.buildPayload(options);
+            token = jwt.sign(payload, authSecurity.getJwtSecret(CONFIG), jwtSignOptions);
         } catch (error) {
             throw new CLASSES.NodicsError(error, 'While generating auth token', 'ERR_AUTH_00000');
         }

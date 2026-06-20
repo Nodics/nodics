@@ -92,10 +92,10 @@ module.exports = {
                             NODICS.addInternalAuthToken(defaultTenant, SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
                                 entCode: defaultAuthDetail.entCode,
                                 tenant: defaultAuthDetail.tenant,
-                                apiKey: employee.apiKey,
+                                serviceId: defaultAuthDetail.loginId || 'nodics-runtime',
+                                tokenType: 'service',
                                 userGroups: employee.userGroupCodes,
-                                permissions: employee.userGroupPermissions,
-                                lifetime: true
+                                permissions: employee.userGroupPermissions
                             }));
                             resolve(true);
                         }).catch(error => {
@@ -121,6 +121,7 @@ module.exports = {
                     });
                 });
             }).then(() => {
+                SERVICE.DefaultInternalAuthenticationProviderService.scheduleInternalAuthTokenRefresh();
                 resolve(true);
             }).catch(error => {
                 reject(error);

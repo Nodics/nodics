@@ -67,6 +67,17 @@ assert(!runtimeAdminGroup.permissions.includes('*'), 'Runtime admin data should 
 let adminEmployee = employeeData.record0;
 let apiAdminEmployee = employeeData.record1;
 assert(adminEmployee.userGroups.includes('runtimeConfigAdminUserGroup'));
-assert(apiAdminEmployee.userGroups.includes('runtimeConfigAdminUserGroup'));
+assert(adminEmployee.userGroups.includes('adminGroup'));
+assert(apiAdminEmployee.userGroups.includes('serviceAccountUserGroup'));
+assert(!apiAdminEmployee.userGroups.includes('runtimeConfigAdminUserGroup'));
+assert.strictEqual(apiAdminEmployee.principalType, 'service');
+
+let baseUserGroup = Object.values(userGroupsData).find(group => group.code === 'userGroup');
+let adminGroup = Object.values(userGroupsData).find(group => group.code === 'adminGroup');
+assert(!baseUserGroup.parentGroups, 'Base userGroup must not inherit administrative groups');
+assert(adminGroup.parentGroups.includes('userGroup'), 'Administrative groups should inherit the base user capability');
+
+let inactiveGroup = { code: 'inactive', active: false, permissions: ['forbidden.permission'] };
+assert.deepStrictEqual(global.UTILS.getUserGroupPermissions([inactiveGroup]), []);
 
 console.log('Profile user group permission resolution validated');

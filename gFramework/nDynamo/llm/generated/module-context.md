@@ -52,7 +52,6 @@
 - `interceptor`
 - `event`
 - `utility`
-- `tooling`
 - `test`
 - `llm`
 
@@ -68,8 +67,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 11 |
-| Partially documented | 17 |
+| Documented | 10 |
+| Partially documented | 18 |
 | Undocumented | 29 |
 | Inventory only | 3 |
 
@@ -111,7 +110,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/src/service/access/defaultSchemaAccessPolicyContractService.js` | `src` | `documented` | 14/14 | Defines and validates the runtime schema/property access policy contract used by the Nodics control plane. This service owns the common action/effect vocabulary only; read/write/import/export enforcement is added by later generated CRUD and data-processing layers. |  |
 | `gFramework/nDynamo/src/service/access/defaultSchemaAccessPolicyResolverService.js` | `src` | `documented` | 24/24 | Resolves effective runtime schema/property access policy decisions for a tenant, module, schema, property, action, and user-group context. This service computes decisions only; generated CRUD, import/export, and admin UI layers consume the decision in later enforcement slices. |  |
 | `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationActivationPolicyService.js` | `src` | `documented` | 9/9 | Applies approval governance before runtime schema and router configurations are activated. |  |
-| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationActivationRequestService.js` | `src` | `documented` | 22/22 | Manages runtime configuration activation request lifecycle: request, approve, reject, and activate approved schema/router changes. |  |
+| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationActivationRequestService.js` | `src` | `partially-documented` | 22/26 | Manages runtime configuration activation request lifecycle: request, approve, reject, and activate approved schema/router changes. | add JSDoc for 4 exported method(s) |
 | `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationAuditService.js` | `src` | `documented` | 11/11 | Records runtime configuration activation attempts for schema, router, class, and pipeline control-plane changes without making activation dependent on audit persistence availability. |  |
 | `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationGovernanceCleanupService.js` | `src` | `documented` | 32/32 | Previews and applies retention cleanup for runtime configuration activation requests and activation audit logs through generated model services. |  |
 | `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationGovernanceSummaryService.js` | `src` | `documented` | 23/23 | Builds a read-only runtime governance summary for the admin control plane from activation requests and activation audit logs. |  |

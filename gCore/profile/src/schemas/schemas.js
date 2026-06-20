@@ -9,10 +9,33 @@
 
  */
 
+const profileAdministrativeAccess = function () {
+    return {
+        adminGroup: 10,
+        runtimeConfigAdminUserGroup: 10,
+        serviceAccountUserGroup: 10
+    };
+};
+
+const profileOwnedAccess = function () {
+    return Object.assign(profileAdministrativeAccess(), { customerUserGroup: 10 });
+};
+
+const profileOwnership = function () {
+    return {
+        enabled: true,
+        ownerProperty: 'ownerId',
+        bypassGroups: ['adminGroup', 'runtimeConfigAdminUserGroup', 'serviceAccountUserGroup'],
+        subjectGroups: ['customerUserGroup'],
+        principalTypes: ['customer']
+    };
+};
+
 module.exports = {
     profile: {
         tenant: {
             super: 'super',
+            accessGroups: profileAdministrativeAccess(),
             model: true,
             service: {
                 enabled: true
@@ -39,6 +62,8 @@ module.exports = {
 
         address: {
             super: 'base',
+            accessGroups: profileOwnedAccess(),
+            ownership: profileOwnership(),
             model: true,
             service: {
                 enabled: true
@@ -129,6 +154,8 @@ module.exports = {
 
         contact: {
             super: 'base',
+            accessGroups: profileOwnedAccess(),
+            ownership: profileOwnership(),
             model: true,
             service: {
                 enabled: true
@@ -162,6 +189,7 @@ module.exports = {
 
         enterprise: {
             super: 'base',
+            accessGroups: profileAdministrativeAccess(),
             model: true,
             service: {
                 enabled: true
@@ -282,6 +310,7 @@ module.exports = {
 
         userState: {
             super: 'super',
+            accessGroups: profileAdministrativeAccess(),
             model: true,
             service: {
                 enabled: true
@@ -319,6 +348,7 @@ module.exports = {
 
         userGroup: {
             super: 'base',
+            accessGroups: profileAdministrativeAccess(),
             model: true,
             service: {
                 enabled: true
@@ -355,6 +385,7 @@ module.exports = {
 
         password: {
             super: 'super',
+            accessGroups: profileAdministrativeAccess(),
             model: true,
             service: {
                 enabled: true
@@ -413,6 +444,22 @@ module.exports = {
                 }
             },
             definition: {
+                authVersion: {
+                    type: 'int',
+                    required: false,
+                    default: 1,
+                    description: 'Monotonic security stamp used to invalidate issued sessions'
+                },
+                identityMigrationVersion: {
+                    type: 'int',
+                    required: false,
+                    description: 'Last identity-governance migration applied to this principal'
+                },
+                principalType: {
+                    type: 'string',
+                    required: true,
+                    description: 'Principal category: human, service, or customer'
+                },
                 name: {
                     type: 'object',
                     required: true
@@ -495,6 +542,7 @@ module.exports = {
 
         employee: {
             super: 'user',
+            accessGroups: profileAdministrativeAccess(),
             model: true,
             service: {
                 enabled: true
@@ -505,14 +553,44 @@ module.exports = {
             definition: {
                 apiKey: {
                     type: 'string',
-                    required: true,
-                    description: 'Required to authenticate all internal requests'
+                    required: false,
+                    description: 'Legacy plaintext API key accepted only for governed migration and removed during rotation'
+                },
+                apiKeyHash: {
+                    type: 'string',
+                    required: false,
+                    description: 'Keyed digest used for service API-key lookup without persisting usable credential material'
+                },
+                apiKeyPrefix: {
+                    type: 'string',
+                    required: false,
+                    description: 'Non-secret API-key prefix used for operator identification'
+                },
+                apiKeyStatus: {
+                    type: 'string',
+                    required: false,
+                    description: 'API key lifecycle state: active, disabled, or revoked'
+                },
+                apiKeyCreatedAt: {
+                    type: 'date',
+                    required: false
+                },
+                apiKeyExpiresAt: {
+                    type: 'date',
+                    required: false
+                },
+                apiKeyScopes: {
+                    type: 'array',
+                    required: false,
+                    description: 'Optional least-privilege permissions granted to the API key'
                 }
             }
         },
 
         customer: {
             super: 'user',
+            accessGroups: profileOwnedAccess(),
+            ownership: profileOwnership(),
             model: true,
             service: {
                 enabled: true
@@ -523,6 +601,25 @@ module.exports = {
             cache: {
                 enabled: true,
                 ttl: 20
+            }
+        },
+
+        identityMigrationAudit: {
+            super: 'base',
+            accessGroups: profileAdministrativeAccess(),
+            model: true,
+            service: { enabled: true },
+            event: { enabled: false },
+            router: { enabled: false },
+            definition: {
+                migrationVersion: { type: 'int', required: true },
+                status: { type: 'string', required: true },
+                tenant: { type: 'string', required: true },
+                requestedBy: { type: 'string', required: false },
+                preview: { type: 'object', required: false },
+                snapshot: { type: 'object', required: false },
+                result: { type: 'object', required: false },
+                correlationId: { type: 'string', required: false }
             }
         }
     }

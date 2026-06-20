@@ -65,6 +65,9 @@ module.exports = {
             if (!modelAccessGroups || UTILS.isBlank(modelAccessGroups)) {
                 return CONFIG.get('accessPoints').fullAccessPoint;
             } else if (!authData || !authData.userGroups) {
+                if (typeof NODICS !== 'undefined' && NODICS && typeof NODICS.getServerState === 'function' && NODICS.getServerState() !== 'started') {
+                    return CONFIG.get('accessPoints').fullAccessPoint;
+                }
                 throw new CLASSES.NodicsError('Invalid request, could not found user groups');
             } else {
                 let accessPoint = 0;

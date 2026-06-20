@@ -124,7 +124,7 @@ const authorizationController = require('../src/controller/authorization/default
 
 (async function () {
     let employeeRequest = {
-        httpRequest: httpRequest({
+        httpRequest: httpRequest({}, {
             loginId: 'employee@example.com',
             password: 'secret',
             source: 'admin'
@@ -136,7 +136,7 @@ const authorizationController = require('../src/controller/authorization/default
     assert.strictEqual(employeeRequest.source, 'admin');
 
     let customerAuthRequest = {
-        httpRequest: httpRequest({
+        httpRequest: httpRequest({}, {
             loginId: 'customer@example.com',
             password: 'secret',
             source: 'web'

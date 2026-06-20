@@ -23,7 +23,7 @@
             "test",
             "llm"
         ],
-        "description": "Framework-owned tooling package that runs outside application startup and can be extended by project tooling contributions.",
+        "description": "Framework development and quality tooling package, not loaded by the Nodics runtime module loader.",
         "runtime": {
             "router": false,
             "publish": false,

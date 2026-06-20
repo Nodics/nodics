@@ -75,7 +75,6 @@ module.exports = {
     workflowModuleName: 'workflow',
     processRetrySleepTime: 2000,
     defaultAuthDetail: {
-        apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff',
         entCode: 'default',
         tenant: 'default',
         loginId: 'apiAdmin'
@@ -131,7 +130,5 @@ module.exports = {
                 }
             }
         }
-    },
-
-    jwtSecretKey: 'nodics'
+    }
 };

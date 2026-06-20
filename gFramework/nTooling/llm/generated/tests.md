@@ -4,6 +4,7 @@
 
 ## Hand-Authored Tests
 
+- `gFramework/nTooling/test/llmChangeAcceptanceContract.test.js`
 - `gFramework/nTooling/test/moduleLlmContext.test.js`
 - `gFramework/nTooling/test/moduleMetadata.test.js`
 - `gFramework/nTooling/test/moduleStructure.test.js`

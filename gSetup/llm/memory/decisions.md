@@ -22,6 +22,24 @@ Any customer project should customize Nodics by adding later-loaded modules, not
 
 Schemas, services, routers, pipelines, data, tests, configuration, and runtime behavior must be overrideable through module hierarchy.
 
+## Mandatory Change Acceptance Contract
+
+Every modification and every new source file must follow the Nodics patterns,
+remain replaceable through the effective framework/project/environment/server/node
+hierarchy, and ship with appropriate tests. Every new or changed extension point
+requires an override/customization test proving that a later-loaded customer
+project module can change effective behavior without modifying out-of-the-box
+Nodics code. A customization path that is absent, undocumented, or untested
+means the change is not complete.
+
+## Progressive Change Gates
+
+Normal development uses the compact `daily-change-checklist.md` once per coherent
+change slice. The full `change-gate-contract.md` runs against the accumulated
+diff at commit, merge/release, and periodic platform-audit gates. This preserves
+strict ownership, customization, maintainability, and verification requirements
+without repeatedly loading or restating the complete architecture pack.
+
 ## Backend/API First
 
 Nodics is backend/API-first. The admin/backoffice/control plane should be implemented as a client of backend APIs. Backend governance APIs are the platform contract.

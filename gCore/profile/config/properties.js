@@ -21,29 +21,11 @@ module.exports = {
             algorithm: "HS256"   // RSASSA [ "RS256", "RS384", "RS512" ]
         },
         jwtVerifyOptions: {
-            algorithm: ["HS256"]
+            algorithms: ["HS256"]
         },
         loginIdFormat: 'default',
         loginIdFormatValidators: {
             email: 'DefaultLoginIdAsEmailValidatorService'
-        }
-    },
-
-    cache: {
-        profile: {
-            channels: {
-                auth: {
-                    ttl: 60 * 60,
-                    enabled: true,
-                    fallback: true,
-                    engine: 'local',
-                    events: {
-                        expired: 'DefaultAuthTokenInvalidationService.publishTokenExpiredEvent',
-                        del: 'DefaultAuthTokenInvalidationService.publishTokenDeletedEvent',
-                        flushed: 'DefaultAuthTokenInvalidationService.publishTokenFlushedEvent'
-                    }
-                },
-            }
         }
     }
 };

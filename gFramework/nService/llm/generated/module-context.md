@@ -26,7 +26,7 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 77 |
+| Source files | 78 |
 | Test files | 2 |
 | Data files | 0 |
 | All module-owned files | 29 |
@@ -89,8 +89,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nService/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | nService pipeline extension slot. The base service module does not define additional pipelines, but this file preserves the layered location for service-level runtime orchestration. |  |
 | `gFramework/nService/src/service/apikey/defaultAPIKeyService.js` | `src` | `documented` | 2/2 | API key service extension slot for profile-backed and distributed API key lifecycle behavior. The active implementation is currently provided by generated/profile services; this file preserves the core override location for future API key synchronization handlers. |  |
 | `gFramework/nService/src/service/authentication/defaultAuthTokenInvalidationService.js` | `src` | `documented` | 5/5 | Cache listener callbacks for auth token expiration, deletion, and flush events. The default implementation logs token invalidation state and keeps the extension point for distributed token invalidation events. |  |
-| `gFramework/nService/src/service/authentication/defaultAuthenticationProviderService.js` | `src` | `documented` | 4/4 | Stores and retrieves authentication tokens in the Nodics cache layer. Tokens are scoped by module and the `auth` cache channel so generated and custom authentication providers share the same runtime contract. |  |
-| `gFramework/nService/src/service/authentication/defaultInternalAuthenticationProviderService.js` | `src` | `documented` | 3/3 | Fetches tenant-scoped internal auth tokens from the profile module when the profile module is deployed separately. This supports modular deployment where non-profile nodes still need internal service credentials. |  |
+| `gFramework/nService/src/service/authentication/defaultAuthenticationProviderService.js` | `src` | `documented` | 8/8 | Stores and retrieves authentication tokens in the Nodics cache layer. Tokens are scoped by module and the `auth` cache channel so generated and custom authentication providers share the same runtime contract. |  |
+| `gFramework/nService/src/service/authentication/defaultInternalAuthenticationProviderService.js` | `src` | `documented` | 5/5 | Fetches tenant-scoped internal auth tokens from the profile module when the profile module is deployed separately. This supports modular deployment where non-profile nodes still need internal service credentials. |  |
 | `gFramework/nService/src/service/authorization/defaultAuthorizationProviderService.js` | `src` | `documented` | 4/4 | Authorizes bearer tokens and API keys for Nodics requests. JWT token verification resolves request identity, while API key authorization delegates to the authentication provider extension point. |  |
 | `gFramework/nService/src/service/common.js` | `src` | `documented` | 11/11 | Template service used by generated schema services to delegate common CRUD operations into the Nodics database pipelines. During generation, placeholders are replaced with the owning module and model identifiers. |  |
 | `gFramework/nService/src/service/config/defaultConfigurationService.js` | `src` | `documented` | 2/2 | Runtime configuration service extension slot for nService. The base implementation has no behavior, but this file preserves a stable service name for project-specific configuration operations. |  |

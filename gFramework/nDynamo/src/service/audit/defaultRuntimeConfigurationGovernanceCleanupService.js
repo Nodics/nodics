@@ -652,7 +652,7 @@ module.exports = {
         if (!authData) {
             return undefined;
         }
-        return authData.code || authData.userId || authData.uid || authData.email || authData.apiKey;
+        return authData.loginId || authData.serviceId || authData.sub || authData.code || authData.userId || authData.uid || authData.email;
     },
 
     /**

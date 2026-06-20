@@ -9,10 +9,12 @@
 
  */
 
+const crypto = require('crypto');
+
 module.exports = {
     record0: {
         code: 'guest',
-        active: true,
+        active: false,
         name: {
             title: 'Mr.',
             firstName: 'Nodics',
@@ -21,10 +23,10 @@ module.exports = {
         loginId: 'guest',
         password: {
             loginId: 'guest',
-            password: 'nodics',
+            password: crypto.randomBytes(32).toString('base64url'),
             active: true
         },
-        apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bfg',
+        principalType: 'customer',
         userGroups: ['customerUserGroup'],
         addresses: ['defaultCustomerAddress'],
         contacts: ['defaultCustomerContact']

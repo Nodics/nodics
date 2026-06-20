@@ -9,11 +9,12 @@
 | `address` | `base` | yes | yes | yes | no | no | no |  | 12 |
 | `contact` | `base` | yes | yes | yes | no | no | no |  | 4 |
 | `customer` | `user` | yes | yes | yes | yes | no | no |  | 0 |
-| `employee` | `user` | yes | yes | yes | no | no | no |  | 1 |
+| `employee` | `user` | yes | yes | yes | no | no | no |  | 7 |
 | `enterprise` | `base` | yes | yes | yes | yes | no | no | `default` | 6 |
+| `identityMigrationAudit` | `base` | yes | yes | no | no | no | no |  | 8 |
 | `password` | `super` | yes | yes | no | no | no | no |  | 2 |
 | `tenant` | `super` | yes | yes | yes | yes | no | no | `default` | 1 |
-| `user` | `base` | no | no | no | no | no | no |  | 10 |
+| `user` | `base` | no | no | no | no | no | no |  | 13 |
 | `userGroup` | `base` | yes | yes | yes | no | no | no |  | 3 |
 | `userState` | `super` | yes | yes | no | no | no | no |  | 4 |
 
@@ -45,7 +46,13 @@
 
 ### `profile.employee`
 
-- `apiKey` `string` required: Required to authenticate all internal requests
+- `apiKey` `string` optional: Legacy plaintext API key accepted only for governed migration and removed during rotation
+- `apiKeyCreatedAt` `date` optional
+- `apiKeyExpiresAt` `date` optional
+- `apiKeyHash` `string` optional: Keyed digest used for service API-key lookup without persisting usable credential material
+- `apiKeyPrefix` `string` optional: Non-secret API-key prefix used for operator identification
+- `apiKeyScopes` `array` optional: Optional least-privilege permissions granted to the API key
+- `apiKeyStatus` `string` optional: API key lifecycle state: active, disabled, or revoked
 
 ### `profile.enterprise`
 
@@ -55,6 +62,17 @@
 - `subEnterprises` `array` optional: List of sub enterprises if any
 - `superEnterprise` `objectId` optional: Parent enterprise code if any
 - `tenant` `string` required: Required Code of associated tenant
+
+### `profile.identityMigrationAudit`
+
+- `correlationId` `string` optional
+- `migrationVersion` `int` required
+- `preview` `object` optional
+- `requestedBy` `string` optional
+- `result` `object` optional
+- `snapshot` `object` optional
+- `status` `string` required
+- `tenant` `string` required
 
 ### `profile.password`
 
@@ -68,7 +86,9 @@
 ### `profile.user`
 
 - `addresses` `array` optional: All associated addresses with this enterprise
+- `authVersion` `int` optional: Monotonic security stamp used to invalidate issued sessions
 - `contacts` `array` optional: All associated contacts with this enterprise
+- `identityMigrationVersion` `int` optional: Last identity-governance migration applied to this principal
 - `loginId` `string` required: Required unique login id
 - `name` `object` required
 - `name.firstName` `string` required: First name for the user
@@ -76,6 +96,7 @@
 - `name.middleName` `string` optional: Middle name for the user if any
 - `name.title` `string` optional: Title for the user
 - `password` `objectId` required: Required password for the login
+- `principalType` `string` required: Principal category: human, service, or customer
 - `userGroups` `array` required: User group code for which this user belongs
 
 ### `profile.userGroup`

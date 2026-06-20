@@ -39,6 +39,19 @@ module.exports = {
         } else if (!request.model) {
             process.error(request, response, new CLASSES.NodicsError('ERR_PRFL_00003', 'Invalid customer detail to execute'));
         } else {
+            let registration = CONFIG.get('identityGovernance') && CONFIG.get('identityGovernance').customerRegistration || {};
+            request.model.userGroups = [registration.group || 'customerUserGroup'];
+            request.model.principalType = 'customer';
+            request.model.ownerId = request.model.loginId;
+            request.model.ownerType = 'customer';
+            request.model.createdBy = request.model.loginId;
+            request.model.updatedBy = request.model.loginId;
+            request.model.active = registration.active === true;
+            request.model.accessGroups = [registration.group || 'customerUserGroup'];
+            delete request.model.apiKey;
+            delete request.model.apiKeyStatus;
+            delete request.model.apiKeyScopes;
+            delete request.model.permissions;
             process.nextSuccess(request, response);
         }
     },
@@ -68,7 +81,7 @@ module.exports = {
             response.success = success;
             process.nextSuccess(request, response);
         }).catch(error => {
-            reject(new CLASSES.NodicsError(error, null, 'ERR_PRFL_00006'));
+            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_PRFL_00006'));
         })
     }
 };

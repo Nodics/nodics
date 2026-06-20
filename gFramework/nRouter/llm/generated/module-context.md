@@ -42,7 +42,6 @@
 - `service`
 - `pipeline`
 - `utility`
-- `tooling`
 - `test`
 - `llm`
 

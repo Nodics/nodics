@@ -10,6 +10,18 @@
  */
 
 module.exports = {
+    validateUserGroupSave: { type: 'schema', item: 'userGroup', trigger: 'preSave', active: 'true', index: -20, handler: 'DefaultUserGroupGovernanceService.validate' },
+    validateUserGroupUpdate: { type: 'schema', item: 'userGroup', trigger: 'preUpdate', active: 'true', index: -20, handler: 'DefaultUserGroupGovernanceService.validate' },
+    validateEmployeeSave: { type: 'schema', item: 'employee', trigger: 'preSave', active: 'true', index: -20, handler: 'DefaultPrincipalGovernanceService.validate' },
+    validateEmployeeUpdate: { type: 'schema', item: 'employee', trigger: 'preUpdate', active: 'true', index: -20, handler: 'DefaultPrincipalGovernanceService.validate' },
+    validateCustomerSave: { type: 'schema', item: 'customer', trigger: 'preSave', active: 'true', index: -20, handler: 'DefaultPrincipalGovernanceService.validate' },
+    validateCustomerUpdate: { type: 'schema', item: 'customer', trigger: 'preUpdate', active: 'true', index: -20, handler: 'DefaultPrincipalGovernanceService.validate' },
+    prepareEmployeeSecurityStamp: { type: 'schema', item: 'employee', trigger: 'preUpdate', active: 'true', index: -10, handler: 'DefaultPrincipalSecurityStampGovernanceService.preparePrincipalUpdate' },
+    registerEmployeeSecurityStamp: { type: 'schema', item: 'employee', trigger: 'postUpdate', active: 'true', index: 10, handler: 'DefaultPrincipalSecurityStampGovernanceService.registerPreparedPrincipalUpdate' },
+    prepareCustomerSecurityStamp: { type: 'schema', item: 'customer', trigger: 'preUpdate', active: 'true', index: -10, handler: 'DefaultPrincipalSecurityStampGovernanceService.preparePrincipalUpdate' },
+    registerCustomerSecurityStamp: { type: 'schema', item: 'customer', trigger: 'postUpdate', active: 'true', index: 10, handler: 'DefaultPrincipalSecurityStampGovernanceService.registerPreparedPrincipalUpdate' },
+    bumpGroupMemberSecurityStamps: { type: 'schema', item: 'userGroup', trigger: 'postUpdate', active: 'true', index: 10, handler: 'DefaultPrincipalSecurityStampGovernanceService.bumpGroupMembers' },
+    bumpPasswordOwnerSecurityStamp: { type: 'schema', item: 'password', trigger: 'postUpdate', active: 'true', index: 10, handler: 'DefaultPrincipalSecurityStampGovernanceService.bumpLoginId' },
     encryptSavePassword: {
         type: 'schema',
         item: 'password',

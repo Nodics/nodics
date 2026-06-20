@@ -9,31 +9,43 @@
 
  */
 
-const util = require('util');
+const crypto = require('crypto');
 
 module.exports = {
+
+    recordAuthEvent: function (event) {
+        if (!SERVICE.DefaultAuthAuditService) return Promise.resolve(false);
+        let audit = CONFIG.get('authSecurity') && CONFIG.get('authSecurity').audit || {};
+        return SERVICE.DefaultAuthAuditService.record(event).catch(error => {
+            if (audit.failClosed === true) throw error;
+            this.LOG.error('Authentication audit recording failed', error);
+            return false;
+        });
+    },
 
     updateAuthData: function (options) {
         let _self = this;
         options.state.lastAttempt = new Date();
-        SERVICE.DefaultUserStateService.save({
+        return SERVICE.DefaultUserStateService.save({
             tenant: options.tenant,
             model: options.state
         }).then(success => {
             _self.LOG.debug('State data has been updated with current time');
+            return success;
         }).catch(error => {
             _self.LOG.error('While updating Active data with current time : ', error);
+            throw error;
         });
     },
 
     updateFailedAuthData: function (options) {
-        if (options.state.attempts < CONFIG.get('attemptsToLockAccount')) {
-            options.state.attempts = options.state.attempts + 1;
-        } else {
+        let threshold = CONFIG.get('attemptsToLockAccount') || 5;
+        options.state.attempts = (options.state.attempts || 0) + 1;
+        if (options.state.attempts >= threshold) {
             options.state.locked = true;
             options.state.lockedTime = new Date();
         }
-        this.updateAuthData(options);
+        return this.updateAuthData(options);
     },
 
     authenticateAPIKey: function (request) {
@@ -43,11 +55,17 @@ module.exports = {
                     tenant: enterprise.tenant.code,
                     apiKey: request.apiKey
                 }).then(employee => {
-                    resolve({
+                    return this.recordAuthEvent({
+                        eventType: 'api_key.authentication',
+                        outcome: 'success',
+                        tenant: enterprise.tenant.code,
+                        entCode: enterprise.code,
+                        principalId: employee.loginId
+                    }).then(() => resolve({
                         enterprise: enterprise,
                         person: employee,
                         tenant: enterprise.tenant.code
-                    });
+                    }));
                 }).catch(error => {
                     reject(error);
                 });
@@ -126,7 +144,7 @@ module.exports = {
                     loginId: options.person.loginId,
                     _id: options.person._id
                 }).then(state => {
-                    if (state.locked || !options.person.active) {
+                    if (state.locked || !options.person.active || !options.person.password || options.person.password.active === false || options.person.principalType === 'service') {
                         reject(new CLASSES.NodicsError('ERR_LIN_00002'));
                     } else {
                         UTILS.compareHash(options.request.password, options.person.password.password).then(match => {
@@ -137,28 +155,34 @@ module.exports = {
                                 _self.updateAuthData({
                                     state: state,
                                     tenant: options.enterprise.tenant.code
-                                });
-                                _self.createRefreshToken({
+                                }).then(() => _self.createRefreshToken({
                                     entCode: options.enterprise.code,
                                     tenant: options.enterprise.tenant.code,
                                     loginId: options.person.loginId,
-                                    password: options.request.password,
                                     type: options.type,
+                                    principalType: options.person.principalType,
+                                    authVersion: options.person.authVersion || 1,
                                     userGroups: userGroupCodes,
                                     permissions: userGroupPermissions
-                                }).then(refreshToken => {
+                                })).then(refreshToken => {
                                     let authToken = _self.generateAuthToken({
                                         entCode: options.enterprise.code,
                                         tenant: options.enterprise.tenant.code,
                                         loginId: options.person.loginId,
+                                        principalType: options.person.principalType,
+                                        authVersion: options.person.authVersion || 1,
                                         tokenLife: options.person.tokenLife,
-                                        refreshToken: refreshToken,
                                         userGroups: userGroupCodes,
                                         permissions: userGroupPermissions
                                     });
-                                    resolve({
-                                        authToken: authToken
-                                    });
+                                    SERVICE.DefaultPrincipalSecurityStampService.register(options.enterprise.tenant.code, options.person.loginId, options.person.authVersion || 1).then(() => _self.recordAuthEvent({
+                                        eventType: 'password.authentication',
+                                        outcome: 'success',
+                                        tenant: options.enterprise.tenant.code,
+                                        entCode: options.enterprise.code,
+                                        principalId: options.person.loginId,
+                                        tokenType: 'access'
+                                    })).then(() => resolve({ authToken: authToken, refreshToken: refreshToken })).catch(reject);
                                 }).catch(error => {
                                     reject(error);
                                 });
@@ -166,8 +190,18 @@ module.exports = {
                                 _self.updateFailedAuthData({
                                     state: state,
                                     tenant: options.enterprise.tenant.code
+                                }).then(() => {
+                                    _self.recordAuthEvent({
+                                        eventType: 'password.authentication',
+                                        outcome: 'failure',
+                                        tenant: options.enterprise.tenant.code,
+                                        entCode: options.enterprise.code,
+                                        principalId: options.person.loginId,
+                                        reasonCode: 'INVALID_CREDENTIALS'
+                                    }).then(() => reject(new CLASSES.NodicsError('ERR_AUTH_00002', 'Invalid login attempt'))).catch(reject);
+                                }).catch(error => {
+                                    reject(new CLASSES.NodicsError(error, 'Could not persist failed login state', 'ERR_AUTH_00000'));
                                 });
-                                reject(new CLASSES.NodicsError('ERR_AUTH_00002', 'Invalid login attampt'));
                             }
                         }).catch(error => {
                             reject(new CLASSES.NodicsError('ERR_AUTH_00000'));
@@ -185,16 +219,19 @@ module.exports = {
     createRefreshToken: function (options, callback) {
         return new Promise((resolve, reject) => {
             try {
-                let refreshToken = UTILS.generateHash(options.entCode + options.loginId + (new Date()).getTime());
-                this.addToken(CONFIG.get('profileModuleName') || 'profile', false, refreshToken, {
+                let refreshToken = crypto.randomBytes(48).toString('base64url');
+                let security = CONFIG.get('authSecurity') || {};
+                let refreshPolicy = security.refreshToken || {};
+                this.addToken(CONFIG.get('profileModuleName') || 'profile', true, refreshToken, {
                     entCode: options.entCode,
                     tenant: options.tenant,
                     loginId: options.loginId,
-                    password: options.password,
                     type: options.type,
+                    principalType: options.principalType,
+                    authVersion: options.authVersion,
                     userGroups: options.userGroups,
                     permissions: options.permissions
-                }).then(success => {
+                }, refreshPolicy.expiresInSeconds).then(success => {
                     resolve(refreshToken);
                 }).catch(error => {
                     reject(error);
@@ -203,5 +240,72 @@ module.exports = {
                 reject(new CLASSES.NodicsError('ERR_AUTH_00000'));
             }
         });
+    },
+
+    rotateRefreshToken: function (request) {
+        let _self = this;
+        let refreshToken = request.refreshToken;
+        if (!refreshToken) {
+            return Promise.reject(new CLASSES.NodicsError('ERR_AUTH_00002', 'Refresh token is required'));
+        }
+        let moduleName = CONFIG.get('profileModuleName') || 'profile';
+        return this.consumeToken(moduleName, refreshToken).then(session => {
+            if (!session || !session.tenant || !session.loginId) {
+                throw new CLASSES.NodicsError('ERR_AUTH_00001', 'Refresh session is invalid');
+            }
+            return SERVICE.DefaultEnterpriseService.retrieveEnterprise(session.entCode).then(enterprise => {
+                if (!enterprise.active || !enterprise.tenant || enterprise.tenant.active === false || enterprise.tenant.code !== session.tenant) {
+                    throw new CLASSES.NodicsError('ERR_AUTH_00001', 'Refresh session enterprise is inactive or mismatched');
+                }
+                let finder = session.type === 'Customer' ? SERVICE.DefaultCustomerService : SERVICE.DefaultEmployeeService;
+                return finder.findByLoginId({ tenant: session.tenant, loginId: session.loginId });
+            }).then(person => {
+                if (!person.active || person.principalType === 'service') {
+                    throw new CLASSES.NodicsError('ERR_AUTH_00001', 'Refresh principal is inactive or not eligible');
+                }
+                if (String(session.authVersion) !== String(person.authVersion || 1)) {
+                    throw new CLASSES.NodicsError('ERR_AUTH_00001', 'Refresh session security stamp is stale');
+                }
+                session.userGroups = person.userGroupCodes || UTILS.getUserGroupCodes(person.userGroups);
+                session.permissions = person.userGroupPermissions || UTILS.getUserGroupPermissions(person.userGroups);
+                session.principalType = person.principalType;
+                return _self.createRefreshToken(session);
+            }).then(nextRefreshToken => {
+                let result = {
+                    authToken: _self.generateAuthToken({
+                        entCode: session.entCode,
+                        tenant: session.tenant,
+                        loginId: session.loginId,
+                        principalType: session.principalType,
+                        authVersion: session.authVersion,
+                        userGroups: session.userGroups,
+                        permissions: session.permissions
+                    }),
+                    refreshToken: nextRefreshToken
+                };
+                return _self.recordAuthEvent({
+                    eventType: 'refresh_token.rotation',
+                    outcome: 'success',
+                    tenant: session.tenant,
+                    entCode: session.entCode,
+                    principalId: session.loginId,
+                    tokenType: 'refresh'
+                }).then(() => result);
+            });
+        });
+    },
+
+    revokeSession: function (request) {
+        let operations = [this.revokeAccessToken(request.authData)];
+        if (request.refreshToken) {
+            operations.push(this.removeToken(CONFIG.get('profileModuleName') || 'profile', request.refreshToken));
+        }
+        return Promise.all(operations).then(() => this.recordAuthEvent({
+            eventType: 'session.logout',
+            outcome: 'success',
+            tenant: request.authData && request.authData.tenant,
+            entCode: request.authData && request.authData.entCode,
+            principalId: request.authData && (request.authData.loginId || request.authData.serviceId)
+        })).then(() => true);
     }
 };

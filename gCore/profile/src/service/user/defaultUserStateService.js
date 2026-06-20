@@ -15,6 +15,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             _self.get({
                 tenant: request.tenant,
+                authData: SERVICE.DefaultIdentityGovernanceService.getSystemAuthData(),
                 query: {
                     $and: [{
                         loginId: request.loginId,
@@ -34,12 +35,7 @@ module.exports = {
                     resolve(actives.result[0]);
                 }
             }).catch(error => {
-                resolve({
-                    loginId: request.loginId,
-                    personId: request._id,
-                    attempts: 0,
-                    active: true
-                });
+                reject(new CLASSES.NodicsError(error, 'Could not resolve authentication state', 'ERR_AUTH_00000'));
             });
         });
     },

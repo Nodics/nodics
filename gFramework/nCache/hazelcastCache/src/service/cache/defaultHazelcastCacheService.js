@@ -73,5 +73,26 @@ module.exports = {
             }
 
         });
+    },
+    /** Atomically reads and removes one value from the configured Hazelcast-compatible client. */
+    consume: function (options) {
+        return new Promise((resolve, reject) => {
+            try {
+                let key = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.key;
+                let client = options.channel.client;
+                if (typeof client.take === 'function') {
+                    Promise.resolve(client.take(key)).then(value => value ? resolve(value) : reject(new CLASSES.CacheError('ERR_CACHE_00001'))).catch(reject);
+                } else if (typeof client.get === 'function' && typeof client.del === 'function') {
+                    let value = client.get(key);
+                    if (!value) return reject(new CLASSES.CacheError('ERR_CACHE_00001'));
+                    client.del(key);
+                    resolve(value);
+                } else {
+                    reject(new CLASSES.CacheError('ERR_CACHE_00006', 'Hazelcast cache client does not support atomic consume'));
+                }
+            } catch (error) {
+                reject(new CLASSES.CacheError(error));
+            }
+        });
     }
 };

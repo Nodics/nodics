@@ -75,7 +75,7 @@ module.exports = {
      */
     authorizeAPIKey: function (request, response, process) {
         if (request.apiKey) {
-            this.LOG.debug('Authorizing api key : ' + request.apiKey);
+            this.LOG.debug('Authorizing API key credential');
             SERVICE.DefaultAuthorizationProviderService.authorizeAPIKey(request).then(success => {
                 request.authData = {
                     enterprise: success.enterprise,
@@ -83,7 +83,8 @@ module.exports = {
                     entCode: success.enterprise.code,
                     person: success.person,
                     userGroups: success.person.userGroupCodes || UTILS.getUserGroupCodes(success.person.userGroups),
-                    permissions: success.person.userGroupPermissions || UTILS.getUserGroupPermissions(success.person.userGroups)
+                    permissions: success.person.apiKeyScopes || success.person.userGroupPermissions || UTILS.getUserGroupPermissions(success.person.userGroups),
+                    apiKeyScopes: success.person.apiKeyScopes || []
                 };
                 request.tenant = success.enterprise.tenant.code;
                 process.nextSuccess(request, response);
@@ -108,7 +109,7 @@ module.exports = {
      */
     authorizeAuthToken: function (request, response, process) {
         if (request.authToken) {
-            this.LOG.debug('Authorizing auth token : ' + request.authToken);
+            this.LOG.debug('Authorizing bearer token credential');
             SERVICE.DefaultAuthorizationProviderService.authorizeToken(request).then(success => {
                 try {
                     if (success.result && !UTILS.isBlank(success.result)) {

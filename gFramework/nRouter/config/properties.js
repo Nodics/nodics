@@ -34,11 +34,9 @@ module.exports = {
     },
     routeActionAuthorization: {
         enabled: true,
-        strict: false,
+        strict: true,
         superPermissions: ['*', 'runtime.config.*'],
-        groupPermissions: {
-            userGroup: ['*']
-        }
+        groupPermissions: {}
     },
     server: {
         options: {

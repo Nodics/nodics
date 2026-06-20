@@ -34,11 +34,11 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 42 |
-| Test files | 39 |
+| Source files | 47 |
+| Test files | 42 |
 | Data files | 17 |
-| All module-owned files | 74 |
-| Local schema definitions | 10 |
+| All module-owned files | 81 |
+| Local schema definitions | 11 |
 
 ## Ownership And Dependencies
 
@@ -71,9 +71,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
+| Documented | 5 |
 | Partially documented | 4 |
-| Undocumented | 65 |
+| Undocumented | 67 |
 | Inventory only | 5 |
 
 ## Important Files
@@ -117,11 +117,12 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/profile/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/profile/src/controller/authentication/defaultAuthenticationProviderController.js` | `src` | `undocumented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
+| `gCore/profile/src/controller/authentication/defaultAuthenticationProviderController.js` | `src` | `undocumented` | 0/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
 | `gCore/profile/src/controller/authentication/defaultInternalAuthenticationProviderController.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
 | `gCore/profile/src/controller/authorization/defaultAuthorizationProviderController.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
 | `gCore/profile/src/controller/customer/DefaultCustomerController.js` | `src` | `undocumented` | 0/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
 | `gCore/profile/src/controller/enterprise/defaultEnterpriseController.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gCore/profile/src/controller/identity/defaultIdentityGovernanceController.js` | `src` | `documented` | 5/5 | Maps permissioned identity migration and credential rotation HTTP requests to the layered governance service. |  |
 | `gCore/profile/src/controller/tenant/defaultTenantController.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
 | `gCore/profile/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/src/facade/authentication/defaultAuthenticationProviderFacade.js` | `src` | `undocumented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
@@ -133,7 +134,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/src/search/indexes.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/profile/src/service/authentication/defaultAuthenticationProviderService.js` | `src` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gCore/profile/src/service/authentication/defaultAuthenticationProviderService.js` | `src` | `undocumented` | 0/10 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 10 exported method(s) |
 | `gCore/profile/src/service/authentication/defaultAuthenticationService.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/src/service/authentication/defaultInternalAuthenticationProviderService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
 | `gCore/profile/src/service/authorization/defaultAuthorizationProviderService.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
@@ -141,6 +142,10 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/src/service/customer/defaultCustomerService.js` | `src` | `undocumented` | 0/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
 | `gCore/profile/src/service/employee/defaultEmployeeService.js` | `src` | `undocumented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
 | `gCore/profile/src/service/enterprise/defaultEnterpriseService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gCore/profile/src/service/group/defaultUserGroupGovernanceService.js` | `src` | `documented` | 6/6 | Validates active user-group inheritance, permission catalog membership, and acyclic group graphs before persistence. |  |
+| `gCore/profile/src/service/identity/defaultIdentityGovernanceMigrationService.js` | `src` | `documented` | 17/17 | Provides tenant-scoped preview, apply, audit, rollback, ownership backfill, and recoverable service-key rotation for identity governance upgrades. |  |
+| `gCore/profile/src/service/identity/defaultPrincipalGovernanceService.js` | `src` | `documented` | 5/5 | Enforces principal categories, active group assignment, and service-only API-key ownership before identity persistence. |  |
+| `gCore/profile/src/service/identity/defaultPrincipalSecurityStampGovernanceService.js` | `src` | `documented` | 8/8 | Advances principal security stamps for direct principal, password, and group-membership changes. |  |
 | `gCore/profile/src/service/interceptors/defaultAPIKeyInterceptorService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
 | `gCore/profile/src/service/interceptors/defaultCustomerGetInterceptorService.js` | `src` | `undocumented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
 | `gCore/profile/src/service/interceptors/defaultCustomerLoginIdInterceptorService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
@@ -162,6 +167,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/test/common/profileTest.js` | `test` | `undocumented` | 0/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 8 exported method(s) |
 | `gCore/profile/test/enterpriseServiceCapabilityBehavior.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/env/local/localProfileTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gCore/profile/test/identityGovernanceContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/profile/test/identityGovernanceP1Contract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/initRequiredFlag.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileInitRequiredDetection.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

@@ -239,10 +239,10 @@ module.exports = {
                                                         let authToken = SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
                                                             entCode: enterprise.code,
                                                             tenant: enterprise.tenant.code,
-                                                            apiKey: success.result[0].apiKey,
+                                                            serviceId: success.result[0].loginId || 'nodics-runtime',
+                                                            tokenType: 'service',
                                                             userGroups: success.result[0].userGroupCodes,
-                                                            permissions: success.result[0].userGroupPermissions,
-                                                            lifetime: true
+                                                            permissions: success.result[0].userGroupPermissions
                                                         });
                                                         NODICS.addInternalAuthToken(enterprise.tenant.code, authToken);
                                                         _self.buildEnterprise(enterprises).then(success => {
@@ -264,10 +264,10 @@ module.exports = {
                                             let authToken = SERVICE.DefaultAuthenticationProviderService.generateAuthToken({
                                                 entCode: enterprise.code,
                                                 tenant: enterprise.tenant.code,
-                                                apiKey: success.result[0].apiKey,
+                                                serviceId: success.result[0].loginId || 'nodics-runtime',
+                                                tokenType: 'service',
                                                 userGroups: success.result[0].userGroupCodes,
-                                                permissions: success.result[0].userGroupPermissions,
-                                                lifetime: true
+                                                permissions: success.result[0].userGroupPermissions
                                             });
                                             NODICS.addInternalAuthToken(enterprise.tenant.code, authToken);
                                             _self.buildEnterprise(enterprises).then(success => {

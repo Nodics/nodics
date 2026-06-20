@@ -63,6 +63,22 @@ module.exports = {
                     searchOptions: {
                         enabled: true, // default is false
                     }
+                },
+                ownerId: {
+                    type: 'string', required: false,
+                    description: 'Stable principal identifier owning this record'
+                },
+                ownerType: {
+                    type: 'string', required: false,
+                    description: 'Principal category recorded when ownership was assigned'
+                },
+                createdBy: {
+                    type: 'string', required: false,
+                    description: 'Principal identifier that created this record'
+                },
+                updatedBy: {
+                    type: 'string', required: false,
+                    description: 'Principal identifier that last updated this record'
                 }
             },
             options: {

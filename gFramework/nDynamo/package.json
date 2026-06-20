@@ -31,7 +31,6 @@
             "interceptor",
             "event",
             "utility",
-            "tooling",
             "test",
             "llm"
         ],

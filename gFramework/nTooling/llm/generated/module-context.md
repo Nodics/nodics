@@ -25,9 +25,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 11 |
-| Test files | 5 |
+| Test files | 6 |
 | Data files | 0 |
-| All module-owned files | 26 |
+| All module-owned files | 27 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -52,7 +52,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 22 |
+| Documented | 23 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -93,6 +93,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/src/quality/checkDocumentationCoverage.js` | `src` | `documented` | 0/0 | Collects project-scoped source documentation coverage by module, layer, contract scope, test inclusion, and generated-artifact policy. |  |
 | `gFramework/nTooling/src/quality/runDocumentationGates.js` | `src` | `documented` | 0/0 | Applies project-overridable documentation governance configuration to enforced and report-only coverage gates. |  |
 | `gFramework/nTooling/src/service/defaultToolingCommandService.js` | `src` | `documented` | 0/0 | Discovers non-runtime tooling command contributions from module-shaped packages, orders them by Nodics module index, applies explicit handler override governance, and executes commands against a selected project home. |  |
+| `gFramework/nTooling/test/llmChangeAcceptanceContract.test.js` | `test` | `documented` | 0/0 | Prevents the mandatory Nodics hierarchy, customization, and test-coverage contract from disappearing from canonical LLM guidance. |  |
 | `gFramework/nTooling/test/moduleLlmContext.test.js` | `test` | `documented` | 0/0 | Validates tool-neutral module context structure, generated inventories, source fingerprints, schema summaries, and documentation status contracts. |  |
 | `gFramework/nTooling/test/moduleMetadata.test.js` | `test` | `documented` | 0/0 | Validates canonical Nodics package kinds, runtime flags, loader eligibility, ownership, and topology metadata across the target project. |  |
 | `gFramework/nTooling/test/moduleStructure.test.js` | `test` | `documented` | 0/0 | Enforces mandatory configuration files, canonical README naming, safe runtime identifiers, and explicit framework-folder naming across all Nodics modules. |  |

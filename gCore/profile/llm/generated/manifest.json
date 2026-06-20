@@ -13,15 +13,15 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. It will hold all profile realted information"
   },
-  "sourceFiles": 42,
-  "testFiles": 39,
+  "sourceFiles": 47,
+  "testFiles": 42,
   "dataFiles": 17,
-  "ownedFiles": 74,
-  "sourceFingerprint": "89fd53529380d927447a1b22186b5be56edcf0d181cf2cd81b27f7629c922043",
+  "ownedFiles": 81,
+  "sourceFingerprint": "60376ec0d7cb70ecb4fd6690a779d0238cabba886a9c3223f0f97994b663d0d6",
   "documentation": {
-    "documented": 0,
+    "documented": 5,
     "partially-documented": 4,
-    "undocumented": 65,
+    "undocumented": 67,
     "inventory-only": 5
   },
   "schemaGroups": {
@@ -31,6 +31,7 @@
       "customer",
       "employee",
       "enterprise",
+      "identityMigrationAudit",
       "password",
       "tenant",
       "user",

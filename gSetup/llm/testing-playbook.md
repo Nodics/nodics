@@ -6,6 +6,11 @@ Nodics tests must protect platform capabilities, layered customization, generate
 
 Tests should not only validate one happy path. They should prove the framework remains customizable and safe when used by future project modules.
 
+Every new or changed extension point requires an override/customization test. The
+test must prove that a later-loaded customer project module can change the
+effective behavior without modifying out-of-the-box Nodics code. This is a
+change-acceptance requirement, not optional supplementary coverage.
+
 ## Basic And Full Suites
 
 `basic` should validate core platform health:

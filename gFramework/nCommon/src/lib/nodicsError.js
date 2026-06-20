@@ -54,7 +54,7 @@ module.exports = class NodicsError extends Error {
      * @throws Assertion error when a code or message cannot be resolved.
      */
     constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').NodicsError) {
-        if (error && !error.code && error instanceof Error) {
+        if (error instanceof Error && (!error.code || !String(error.code).startsWith('ERR_'))) {
             error = UTILS.extractFromError(error, message, defaultCode);
         } else if ((typeof error === 'string' || error instanceof String) && error.startsWith('ERR_')) {
             error = {
