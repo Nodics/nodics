@@ -59,7 +59,9 @@ module.exports = {
      * @throws Propagates facade errors through the callback or rejected promise.
      */
     changeConfig: function (request, callback) {
-        request.config = request.httpRequest.body || {};
+        let body = request.httpRequest.body || {};
+        request.config = body.configuration || body;
+        request.requestReason = body.requestReason || request.requestReason;
         if (callback) {
             FACADE.DefaultConfigurationFacade.changeConfig(request).then(success => {
                 callback(null, success);

@@ -14,7 +14,8 @@ module.exports = {
         let sanitized = {};
         [
             'eventType', 'outcome', 'tenant', 'entCode', 'principalId',
-            'tokenType', 'reasonCode', 'traceId', 'source', 'remoteAddress'
+            'tokenType', 'reasonCode', 'traceId', 'correlationId', 'requestId',
+            'source', 'remoteAddress'
         ].forEach(key => {
             if (source[key] !== undefined && source[key] !== null) sanitized[key] = source[key];
         });

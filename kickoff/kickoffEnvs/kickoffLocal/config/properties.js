@@ -31,6 +31,7 @@ module.exports = {
             crossTenantGroups: ['userGroup']
         },
         apiKey: {
+            requireScopes: false,
             allowLegacyHumanPrincipals: true,
             allowLegacyPlaintextLookup: true,
             pepper: process.env.NODICS_API_KEY_PEPPER || 'kickoff-local-api-key-pepper-change-before-deployment'
@@ -38,6 +39,9 @@ module.exports = {
         securityStamp: {
             failClosed: false,
             allowMissingStamp: true
+        },
+        refreshToken: {
+            requireDistributedCache: false
         }
     },
     test: {

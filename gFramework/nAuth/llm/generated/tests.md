@@ -7,6 +7,12 @@
 - `gFramework/nAuth/test/authSecurityContract.test.js`
 - `gFramework/nAuth/test/common/commonTest.js`
 - `gFramework/nAuth/test/env-local/envTest.js`
+- `gFramework/nAuth/test/integration/authP2IdentityIsolationContract.test.js`
+- `gFramework/nAuth/test/integration/authP2ModularAuthorizationContract.test.js`
+- `gFramework/nAuth/test/integration/authP2RedisLive.test.js`
+- `gFramework/nAuth/test/integration/authP2SharedCacheContract.test.js`
+- `gFramework/nAuth/test/integration/authP2TestConfiguration.js`
+- `gFramework/nAuth/test/integration/authP2TokenWorker.js`
 
 ## Generated Tests
 

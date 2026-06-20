@@ -13,13 +13,10 @@
 
 ## Generated Tests
 
-- `gFramework/nSystem/test/gen/api/configurationApiContract.test.js`
 - `gFramework/nSystem/test/gen/api/eventListenerApiContract.test.js`
 - `gFramework/nSystem/test/gen/api/interceptorApiContract.test.js`
-- `gFramework/nSystem/test/gen/apiScenario/configurationApiScenario.test.js`
 - `gFramework/nSystem/test/gen/apiScenario/eventListenerApiScenario.test.js`
 - `gFramework/nSystem/test/gen/apiScenario/interceptorApiScenario.test.js`
-- `gFramework/nSystem/test/gen/crud/configurationCrudScenario.test.js`
 - `gFramework/nSystem/test/gen/crud/eventListenerCrudScenario.test.js`
 - `gFramework/nSystem/test/gen/crud/interceptorCrudScenario.test.js`
 - `gFramework/nSystem/test/gen/schema/configurationSchemaContract.test.js`

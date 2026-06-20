@@ -167,6 +167,7 @@ module.exports = {
             changeConfigPost: {
                 secured: true,
                 accessGroups: ['userGroup'],
+                permission: 'runtime.config.request.create',
                 key: '/config',
                 method: 'POST',
                 controller: 'DefaultConfigurationController',
@@ -176,7 +177,10 @@ module.exports = {
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/config',
-                    body: 'complete configuration heirerchy '
+                    body: {
+                        configuration: 'Tenant property patch; sensitive values must use external configuration or a secret manager',
+                        requestReason: 'Required organizational change context when policy demands it'
+                    }
                 }
             }
         },
@@ -270,7 +274,7 @@ module.exports = {
                     method: 'POST',
                     url: 'http://host:port/nodics/system/config/runtime/preview',
                     body: {
-                        configurationType: 'schemaConfiguration or routerConfiguration',
+                        configurationType: 'schemaConfiguration, routerConfiguration, or propertyConfiguration',
                         configurationCode: 'Optional code to fetch persisted runtime configuration',
                         configuration: 'Optional proposed runtime configuration payload'
                     }

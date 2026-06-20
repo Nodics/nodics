@@ -9,10 +9,12 @@
 
  */
 
+const crypto = require('crypto');
+
 /**
  * @module dynamo/service/audit/DefaultRuntimeConfigurationActivationRequestService
  * @description Manages runtime configuration activation request lifecycle:
- * request, approve, reject, and activate approved schema/router changes.
+ * request, approve, reject, and activate approved schema, router, and property changes.
  * @layer service
  * @owner dynamo
  * @override Project modules may override this service to integrate enterprise
@@ -228,6 +230,7 @@ module.exports = {
             preview: {
                 configurationType: payload.configurationType,
                 configurationCode: payload.configurationCode,
+                moduleName: payload.moduleName,
                 configuration: payload.configuration
             }
         }).then(success => success.data);
@@ -255,6 +258,21 @@ module.exports = {
                 return Promise.reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Router configuration service is not available for activation request'));
             }
             return SERVICE.DefaultRouterConfigurationService.registerRoutersFromDatabase(activationContext);
+        }
+        if (activationRequest.configurationType === 'propertyConfiguration') {
+            if (!SERVICE.DefaultConfigurationService ||
+                typeof SERVICE.DefaultConfigurationService.applyPropertyConfiguration !== 'function') {
+                return Promise.reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Property configuration service is not available for activation request'));
+            }
+            if (!activationRequest.configuration ||
+                activationRequest.configurationDigest !== this.createConfigurationDigest(activationRequest.configuration)) {
+                return Promise.reject(new CLASSES.NodicsError('ERR_SYS_00002', 'Approved property configuration payload failed integrity validation'));
+            }
+            return SERVICE.DefaultConfigurationService.applyPropertyConfiguration(
+                activationContext,
+                activationRequest.configuration,
+                activationRequest.preview
+            );
         }
         return Promise.reject(new CLASSES.NodicsError('ERR_SYS_00002', 'Activation request is not supported for configuration type: ' + activationRequest.configurationType));
     },
@@ -309,7 +327,7 @@ module.exports = {
     createRequestModel: function (request, payload, preview) {
         let requestedBy = this.resolveRequestedBy(request);
         this.assertActor(requestedBy);
-        return {
+        let model = {
             code: payload.code || this.createActivationRequestCode(payload),
             active: true,
             configurationType: payload.configurationType,
@@ -323,6 +341,31 @@ module.exports = {
             status: 'REQUESTED',
             correlationId: request.correlationId
         };
+        if (payload.configurationType === 'propertyConfiguration') {
+            model.configuration = payload.configuration;
+            model.configurationDigest = this.createConfigurationDigest(payload.configuration);
+        }
+        return model;
+    },
+
+    /**
+     * Creates an order-independent digest binding approval to an exact patch.
+     *
+     * @param {Object} configuration Property patch.
+     * @returns {string} SHA-256 digest.
+     */
+    createConfigurationDigest: function (configuration) {
+        let canonicalize = value => {
+            if (Array.isArray(value)) return value.map(canonicalize);
+            if (value && typeof value === 'object') {
+                return Object.keys(value).sort().reduce((result, key) => {
+                    result[key] = canonicalize(value[key]);
+                    return result;
+                }, {});
+            }
+            return value;
+        };
+        return crypto.createHash('sha256').update(JSON.stringify(canonicalize(configuration || {}))).digest('hex');
     },
 
     /**

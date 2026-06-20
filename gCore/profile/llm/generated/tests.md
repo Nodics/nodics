@@ -9,6 +9,7 @@
 - `gCore/profile/test/env/local/localProfileTest.js`
 - `gCore/profile/test/identityGovernanceContract.test.js`
 - `gCore/profile/test/identityGovernanceP1Contract.test.js`
+- `gCore/profile/test/identityGovernanceP2Integration.test.js`
 - `gCore/profile/test/initRequiredFlag.test.js`
 - `gCore/profile/test/profileControllerRequestMapping.test.js`
 - `gCore/profile/test/profileInitRequiredDetection.test.js`

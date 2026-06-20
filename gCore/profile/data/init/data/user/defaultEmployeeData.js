@@ -47,6 +47,7 @@ module.exports = {
             active: true
         },
         apiKey: bootstrapIdentity.serviceApiKey,
+        apiKeyScopes: ['auth.internal.token.read', 'auth.internal.token.read.anyTenant'],
         principalType: 'service',
         userGroups: ['serviceAccountUserGroup'],
         addresses: ['defaultEmployeeAddress'],

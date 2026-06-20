@@ -9,7 +9,7 @@ const expectedRoutes = [
     { key: '/import/sample', method: 'POST', controller: 'DefaultImportController', operation: 'importSampleData', secured: true },
     { key: '/import/local', method: 'POST', controller: 'DefaultImportController', operation: 'importLocalData', secured: true },
     { key: '/log/level', method: 'POST', controller: 'DefaultLogController', operation: 'changeLogLevel', secured: true },
-    { key: '/config', method: 'POST', controller: 'DefaultConfigurationController', operation: 'changeConfig', secured: true },
+    { key: '/config', method: 'POST', controller: 'DefaultConfigurationController', operation: 'changeConfig', secured: true, permission: 'runtime.config.request.create' },
     { key: '/config/runtime/history', method: 'GET', controller: 'DefaultConfigurationController', operation: 'getRuntimeConfigurationHistory', secured: true, permission: 'runtime.config.history.view' },
     { key: '/config/runtime/summary', method: 'GET', controller: 'DefaultConfigurationController', operation: 'getRuntimeConfigurationGovernanceSummary', secured: true, permission: 'runtime.config.summary.view' },
     { key: '/config/runtime/cleanup/preview', method: 'POST', controller: 'DefaultConfigurationController', operation: 'previewRuntimeConfigurationGovernanceCleanup', secured: true, permission: 'runtime.config.cleanup.preview' },

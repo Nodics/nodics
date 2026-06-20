@@ -13,8 +13,8 @@ const _ = require('lodash');
 
 /**
  * @module dynamo/service/audit/DefaultRuntimeConfigurationPreviewService
- * @description Computes non-destructive previews for runtime schema and router
- * configuration activations before they are saved or activated.
+ * @description Computes non-destructive previews for runtime schema, router,
+ * and tenant-property configuration activations before they are activated.
  * @layer service
  * @owner dynamo
  * @override Project modules may override this service to enrich impact analysis,
@@ -83,6 +83,7 @@ module.exports = {
                     configurationType: configurationType,
                     configurationCode: payload.configurationCode || payload.configuration.code,
                     moduleName: payload.moduleName || payload.configuration.moduleName,
+                    tenant: this.getPreviewTenant(request),
                     configuration: payload.configuration
                 });
                 return;
@@ -149,7 +150,102 @@ module.exports = {
         if (descriptor.configurationType === 'routerConfiguration') {
             return this.createRouterPreview(descriptor);
         }
+        if (descriptor.configurationType === 'propertyConfiguration') {
+            return this.createPropertyPreview(descriptor);
+        }
         throw new CLASSES.NodicsError('ERR_SYS_00002', 'Preview is not supported for configuration type: ' + descriptor.configurationType);
+    },
+
+    /**
+     * Creates a tenant-property preview using only changed paths.
+     *
+     * @param {Object} descriptor Runtime property descriptor.
+     * @returns {Object} Property configuration preview.
+     */
+    createPropertyPreview: function (descriptor) {
+        let configuration = descriptor.configuration;
+        this.validatePropertyConfiguration(configuration);
+        let tenant = descriptor.tenant || CONFIG.get('defaultTenant') || 'default';
+        let previousProperties = CONFIG.getProperties(tenant) || {};
+        let nextProperties = _.merge({}, previousProperties, configuration);
+        let changedPaths = this.collectChangedPaths(previousProperties, nextProperties);
+        return {
+            operation: changedPaths.some(path => _.has(previousProperties, path)) ? 'update' : 'create',
+            destructive: changedPaths.length > 0,
+            configurationType: descriptor.configurationType,
+            configurationCode: descriptor.configurationCode || 'tenantProperties',
+            moduleName: descriptor.moduleName || 'system',
+            tenant: tenant,
+            previousSnapshot: this.createPropertySnapshot(previousProperties, changedPaths),
+            nextSnapshot: this.createPropertySnapshot(nextProperties, changedPaths),
+            changedPaths: changedPaths,
+            warnings: changedPaths.map(path => 'tenant runtime property will change: ' + path),
+            affectedArtifacts: changedPaths.map(path => ({ type: 'property', code: path }))
+        };
+    },
+
+    /**
+     * Rejects prototype-mutating keys and secret-bearing runtime property paths.
+     * Secrets belong in layered external configuration or a secret manager.
+     *
+     * @param {Object} configuration Proposed property patch.
+     * @returns {void}
+     */
+    validatePropertyConfiguration: function (configuration) {
+        if (!_.isPlainObject(configuration) || Object.keys(configuration).length === 0) {
+            throw new CLASSES.NodicsError('ERR_SYS_00001', 'Property configuration must be a non-empty object');
+        }
+        let unsafePaths = [];
+        let sensitivePaths = [];
+        let sensitivePatterns = this.getSensitivePropertyPatterns();
+        let inspect = (value, prefix) => {
+            Object.keys(value || {}).forEach(key => {
+                let path = prefix ? prefix + '.' + key : key;
+                if (key === '__proto__' || key === 'prototype' || key === 'constructor') unsafePaths.push(path);
+                if (sensitivePatterns.some(pattern => pattern.test(path))) sensitivePaths.push(path);
+                if (_.isPlainObject(value[key])) inspect(value[key], path);
+            });
+        };
+        inspect(configuration, '');
+        if (unsafePaths.length > 0) {
+            throw new CLASSES.NodicsError('ERR_SYS_00002', 'Unsafe runtime property paths are not allowed: ' + unsafePaths.join(', '));
+        }
+        if (sensitivePaths.length > 0) {
+            throw new CLASSES.NodicsError('ERR_SYS_00002', 'Sensitive properties must use layered external configuration or a secret manager: ' + sensitivePaths.join(', '));
+        }
+    },
+
+    /**
+     * Resolves layer-overridable sensitive property path patterns.
+     *
+     * @returns {RegExp[]} Case-insensitive sensitive path patterns.
+     */
+    getSensitivePropertyPatterns: function () {
+        let governance = CONFIG.get('runtimePropertyGovernance') || {};
+        let patterns = governance.sensitivePathPatterns || [
+            'password', 'passwd', 'secret', 'token', 'api[-_]?key', 'private[-_]?key', 'credential'
+        ];
+        return patterns.map(pattern => pattern instanceof RegExp ?
+            new RegExp(pattern.source, pattern.flags.replace('g', '')) : new RegExp(pattern, 'i'));
+    },
+
+    /**
+     * Captures values and absent paths required for deterministic rollback.
+     *
+     * @param {Object} properties Effective tenant properties.
+     * @param {string[]} changedPaths Changed property paths.
+     * @returns {Object} Minimal rollback snapshot.
+     */
+    createPropertySnapshot: function (properties, changedPaths) {
+        let snapshot = { values: [], missingPaths: [] };
+        (changedPaths || []).forEach(path => {
+            if (_.has(properties, path)) {
+                snapshot.values.push({ path: path, value: _.cloneDeep(_.get(properties, path)) });
+            } else {
+                snapshot.missingPaths.push(path);
+            }
+        });
+        return snapshot;
     },
 
     /**

@@ -144,7 +144,7 @@ module.exports = {
                 enabled: false
             },
             router: {
-                enabled: true
+                enabled: false
             },
             tenants: ['default'],
             definition: {
@@ -246,7 +246,7 @@ module.exports = {
                 enabled: false
             },
             router: {
-                enabled: true
+                enabled: false
             },
             tenants: ['default'],
             definition: {
@@ -300,6 +300,16 @@ module.exports = {
                     type: 'object',
                     required: false,
                     description: 'Preview captured when the activation request was created'
+                },
+                configuration: {
+                    type: 'object',
+                    required: false,
+                    description: 'Integrity-bound property patch used for property configuration activation'
+                },
+                configurationDigest: {
+                    type: 'string',
+                    required: false,
+                    description: 'SHA-256 digest binding approval to the exact property patch'
                 },
                 status: {
                     type: 'string',

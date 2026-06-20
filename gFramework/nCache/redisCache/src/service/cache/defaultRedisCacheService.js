@@ -9,8 +9,6 @@
 
  */
 
-const _ = require('lodash');
-
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -35,63 +33,41 @@ module.exports = {
     },
 
     put: function (options) {
-        return new Promise((resolve, reject) => {
-            try {
-                let key = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.key;
-                // this will allow user to keep value for infinite time
-                let ttl = 0;
-                if (options.ttl === undefined || options.ttl > 0) {
-                    ttl = options.ttl || options.channel.chennalOptions.ttl || options.channel.engineOptions.ttl || channel.engineOptions.options.ttl;
-                }
-                this.LOG.debug('Putting value in Redis cache storage with key: ' + key + ' TTL: ' + ttl);
-                if (ttl) {
-                    options.channel.client.set(key, JSON.stringify(options.value), 'EX', ttl);
-                } else {
-                    options.channel.client.set(key, JSON.stringify(options.value));
-                }
-                options.value.code = 'SUC_CACHE_00000';
-                resolve(options.value);
-            } catch (error) {
-                reject(new CLASSES.CacheError(error));
-            }
-
-        });
+        try {
+            let key = this.getKey(options);
+            let ttl = this.getTtl(options);
+            this.LOG.debug('Putting value in Redis cache storage with key: ' + key + ' TTL: ' + ttl);
+            let write = ttl > 0 ? options.channel.client.set(key, JSON.stringify(options.value), { EX: ttl }) : options.channel.client.set(key, JSON.stringify(options.value));
+            return Promise.resolve(write).then(() => Object.assign({}, options.value, { code: 'SUC_CACHE_00000' })).catch(error => { throw new CLASSES.CacheError(error); });
+        } catch (error) {
+            return Promise.reject(new CLASSES.CacheError(error));
+        }
     },
 
     get: function (options) {
-        return new Promise((resolve, reject) => {
-            try {
-                let key = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.key;
-                this.LOG.debug('Getting value from Redis cache storage with key: ' + key);
-                options.channel.client.get(key, (error, value) => {
-                    if (error) {
-                        reject(new CLASSES.CacheError(error));
-                    } else if (value) {
-                        value = JSON.parse(value);
-                        value.code = 'SUC_CACHE_00000';
-                        resolve(value);
-                    } else {
-                        reject(new CLASSES.CacheError('ERR_CACHE_00001', 'Could not found any value for key: ' + key));
-                    }
-                });
-            } catch (error) {
-                reject(new CLASSES.CacheError(error));
-            }
-
-        });
+        try {
+            let key = this.getKey(options);
+            this.LOG.debug('Getting value from Redis cache storage with key: ' + key);
+            return Promise.resolve(options.channel.client.get(key)).then(value => {
+                if (!value) throw new CLASSES.CacheError('ERR_CACHE_00001', 'Could not find any value for key: ' + key);
+                return Object.assign(typeof value === 'string' ? JSON.parse(value) : value, { code: 'SUC_CACHE_00000' });
+            }).catch(error => { throw error instanceof CLASSES.CacheError ? error : new CLASSES.CacheError(error); });
+        } catch (error) {
+            return Promise.reject(new CLASSES.CacheError(error));
+        }
     },
 
     /** Atomically reads and deletes one value using Redis GETDEL. */
     consume: function (options) {
         return new Promise((resolve, reject) => {
             try {
-                let key = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.key;
+                let key = this.getKey(options);
                 if (typeof options.channel.client.getDel !== 'function') {
                     reject(new CLASSES.CacheError('ERR_CACHE_00006', 'Redis client does not support atomic GETDEL'));
                     return;
                 }
                 Promise.resolve(options.channel.client.getDel(key)).then(value => {
-                    if (!value) throw new CLASSES.CacheError('ERR_CACHE_00001', 'Could not found any value for key: ' + key);
+                    if (!value) throw new CLASSES.CacheError('ERR_CACHE_00001', 'Could not find any value for key: ' + key);
                     value = typeof value === 'string' ? JSON.parse(value) : value;
                     value.code = 'SUC_CACHE_00000';
                     resolve(value);
@@ -103,45 +79,16 @@ module.exports = {
     },
 
     flushByPrefix: function (options) {
-        let _self = this;
-        return new Promise((resolve, reject) => {
-            try {
-                if (options.prefix) {
-                    let prefix = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.prefix;
-                    if (!prefix.endsWith('*')) {
-                        prefix += '*';
-                    }
-                    _self.LOG.debug('Flushing value in local cache stored with prefix: ' + prefix);
-                    options.channel.client.keys(prefix, function (err, cacheKeys) {
-                        if (err) {
-                            reject(new CLASSES.CacheError(error));
-                        } else {
-                            cacheKeys.forEach(key => {
-                                options.channel.client.del(key);
-                            });
-                            resolve({
-                                code: 'SUC_CACHE_00000',
-                                result: cacheKeys
-                            });
-                        }
-                    });
-                } else {
-                    options.channel.client.keys(function (err, cacheKeys) {
-                        if (err) {
-                            reject(new CLASSES.CacheError(err));
-                        } else {
-                            options.channel.client.flushAll();
-                            resolve({
-                                code: 'SUC_CACHE_00000',
-                                result: cacheKeys
-                            });
-                        }
-                    });
-                }
-            } catch (error) {
-                reject(new CLASSES.CacheError(error));
-            }
-        });
+        try {
+            let prefix = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + (options.prefix || '');
+            let pattern = prefix.endsWith('*') ? prefix : prefix + '*';
+            return this.collectKeys(options.channel.client, pattern).then(keys => {
+                let removal = keys.length > 0 ? options.channel.client.del(keys) : Promise.resolve(0);
+                return Promise.resolve(removal).then(() => ({ code: 'SUC_CACHE_00000', result: keys }));
+            }).catch(error => { throw new CLASSES.CacheError(error); });
+        } catch (error) {
+            return Promise.reject(new CLASSES.CacheError(error));
+        }
     },
 
     flushByKeys: function (options) {
@@ -155,14 +102,31 @@ module.exports = {
                     }
                 }
                 _self.LOG.debug('Flushing value in local cache stored with keys: ' + tmpKeys);
-                options.channel.client.del(tmpKeys);
-                resolve({
+                Promise.resolve(tmpKeys.length > 0 ? options.channel.client.del(tmpKeys) : 0).then(() => resolve({
                     code: 'SUC_CACHE_00000',
                     result: tmpKeys
-                });
+                })).catch(error => reject(new CLASSES.CacheError(error)));
             } catch (error) {
                 reject(new CLASSES.CacheError(error));
             }
         });
+    },
+
+    /** Builds the canonical cache key shared by all Redis operations. */
+    getKey: function (options) {
+        return options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.key;
+    },
+
+    /** Resolves the effective TTL while preserving explicit non-expiring values. */
+    getTtl: function (options) {
+        if (options.ttl === 0) return 0;
+        return Number(options.ttl || options.channel.chennalOptions && options.channel.chennalOptions.ttl || options.channel.engineOptions.ttl || options.channel.engineOptions.options.ttl || 0);
+    },
+
+    /** Uses incremental SCAN so prefix cleanup does not block a shared Redis server. */
+    collectKeys: async function (client, pattern) {
+        let keys = [];
+        for await (let key of client.scanIterator({ MATCH: pattern, COUNT: 100 })) keys.push(key);
+        return keys;
     }
 };

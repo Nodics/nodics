@@ -24,11 +24,12 @@ module.exports = {
         },
         refreshToken: {
             expiresInSeconds: 60 * 60 * 24 * 30,
-            rotateOnUse: true
+            rotateOnUse: true,
+            requireDistributedCache: true
         },
         apiKey: {
             defaultLifetimeSeconds: 60 * 60 * 24 * 90,
-            requireScopes: false,
+            requireScopes: true,
             allowLegacyHumanPrincipals: false,
             allowLegacyPlaintextLookup: false,
             pepper: process.env.NODICS_API_KEY_PEPPER,
@@ -100,6 +101,9 @@ module.exports = {
         migration: {
             version: 1,
             servicePrincipalCodes: ['apiAdmin'],
+            servicePrincipalScopes: {
+                apiAdmin: ['auth.internal.token.read', 'auth.internal.token.read.anyTenant']
+            },
             administratorCodes: ['admin'],
             serviceGroup: 'serviceAccountUserGroup',
             administratorGroups: ['adminGroup', 'runtimeConfigAdminUserGroup'],

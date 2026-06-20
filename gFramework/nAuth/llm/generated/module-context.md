@@ -28,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 12 |
-| Test files | 3 |
+| Source files | 13 |
+| Test files | 9 |
 | Data files | 0 |
-| All module-owned files | 22 |
+| All module-owned files | 30 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,10 +59,10 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 2 |
+| Documented | 9 |
 | Partially documented | 3 |
 | Undocumented | 14 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
@@ -97,12 +97,20 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nAuth/src/service/identity/defaultAPIKeyCredentialService.js` | `src` | `documented` | 5/5 | Converts high-entropy API keys into keyed digests so usable credentials are never persisted. |  |
 | `gFramework/nAuth/src/service/identity/defaultIdentityGovernanceService.js` | `src` | `partially-documented` | 0/3 | Supplies layered identity governance decisions for trusted framework operations and administrative access checks. | add @override; add JSDoc for 3 exported method(s) |
 | `gFramework/nAuth/src/service/identity/defaultPrincipalSecurityStampService.js` | `src` | `documented` | 7/7 | Maintains tenant-scoped principal security stamps in the auth cache. Production deployments should use a shared auth-cache engine. |  |
+| `gFramework/nAuth/src/service/identity/defaultServiceTokenService.js` | `src` | `documented` | 2/2 | Issues tenant-scoped internal service tokens and registers their current security stamp before the token becomes available to other modules. This makes service identity changes enforceable across modular nodes when the auth cache is distributed. |  |
 | `gFramework/nAuth/src/utils/authSecurity.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nAuth/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nAuth/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nAuth/test/authSecurityContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nAuth/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
 | `gFramework/nAuth/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nAuth/test/integration/README.md` | `test` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nAuth/test/integration/authP2IdentityIsolationContract.test.js` | `test` | `documented` | 0/0 | Proves tenant-scoped human and service security stamps, API-key lifecycle policy, least-privilege scopes, and credential-free audit records. |  |
+| `gFramework/nAuth/test/integration/authP2ModularAuthorizationContract.test.js` | `test` | `documented` | 0/0 | Proves bounded internal service tokens survive a process boundary while tenant, permission, bootstrap-header, and rotation contracts remain enforced. |  |
+| `gFramework/nAuth/test/integration/authP2RedisLive.test.js` | `test` | `documented` | 0/0 | Runs the exactly-once refresh-token race against two real Redis clients when an isolated live endpoint is explicitly supplied. |  |
+| `gFramework/nAuth/test/integration/authP2SharedCacheContract.test.js` | `test` | `documented` | 0/0 | Proves concurrent single-use refresh consumption and strict distributed auth-cache capability validation. |  |
+| `gFramework/nAuth/test/integration/authP2TestConfiguration.js` | `test` | `documented` | 0/0 | Resolves and validates isolated P2 authentication integration settings without embedding a customer project or production connection. |  |
+| `gFramework/nAuth/test/integration/authP2TokenWorker.js` | `test` | `documented` | 0/0 | Represents a separate modular node that verifies a service JWT and enforces the tenant and permission expected by its request context. |  |
 
 ## Extension Contract
 

@@ -10,7 +10,6 @@
  */
 
 const redis = require("redis");
-const _ = require('lodash');
 
 module.exports = {
     /**
@@ -38,20 +37,43 @@ module.exports = {
     initCache: function (redisCacheConfig, moduleName) {
         let _self = this;
         return new Promise((resolve, reject) => {
-            _self.LOG.info('Initializing Redis API Cache instance for module: ' + moduleName);
-            redisCacheConfig.options.db = redisCacheConfig.options.db || 0;
-            let client = redis.createClient(redisCacheConfig.options);
-            client.on("error", err => {
-                reject(new CLASSES.CacheError(err, 'While creating NodeCache client'));
-            });
-            client.on("connect", success => {
-                resolve({
-                    code: 'SUC_CACHE_00000',
-                    result: client
+            _self.LOG.info('Initializing Redis cache instance for module: ' + moduleName);
+            let source = Object.assign({}, redisCacheConfig.options || {});
+            let clientOptions = {};
+            if (source.url) clientOptions.url = source.url;
+            if (source.host || source.port || source.tls) {
+                clientOptions.socket = Object.assign({}, source.socket || {}, {
+                    host: source.host || source.socket && source.socket.host || '127.0.0.1',
+                    port: Number(source.port || source.socket && source.socket.port || 6379)
                 });
+                if (source.tls) clientOptions.socket.tls = true;
+            } else if (source.socket) {
+                clientOptions.socket = source.socket;
+            }
+            clientOptions.database = Number(source.database !== undefined ? source.database : source.db || 0);
+            ['username', 'password', 'name'].forEach(property => {
+                if (source[property] !== undefined) clientOptions[property] = source[property];
             });
-            client.on("ready", function (err) {
-                _self.LOG.debug('Item redis client is ready for module : ' + moduleName);
+            let client = redis.createClient(clientOptions);
+            let settled = false;
+            client.on('error', error => {
+                _self.LOG.error('Redis cache client error for module: ' + moduleName, error);
+                if (!settled) {
+                    settled = true;
+                    reject(new CLASSES.CacheError(error, 'While creating Redis cache client'));
+                }
+            });
+            client.connect().then(() => {
+                if (!settled) {
+                    settled = true;
+                    _self.LOG.debug('Redis cache client is ready for module: ' + moduleName);
+                    resolve({ code: 'SUC_CACHE_00000', result: client });
+                }
+            }).catch(error => {
+                if (!settled) {
+                    settled = true;
+                    reject(new CLASSES.CacheError(error, 'While connecting Redis cache client'));
+                }
             });
         });
     },
@@ -81,23 +103,21 @@ module.exports = {
 
     registerEvents: function (options) {
         let moduleObject = NODICS.getModule(options.moduleName);
-        options.publishClient.send_command('config', ['set', 'notify-keyspace-events', 'Ex'], function (error, success) {
-            let client = redis.createClient(options.cacheOptions);
-            _.each(options.options.events, (trigger, event) => {
+        let database = Number(options.cacheOptions.database !== undefined ? options.cacheOptions.database : options.cacheOptions.db || 0);
+        return options.publishClient.configSet('notify-keyspace-events', 'Ex').then(() => {
+            let subscriber = options.publishClient.duplicate();
+            return subscriber.connect().then(() => Promise.all(Object.keys(options.options.events || {}).map(event => {
+                let trigger = options.options.events[event];
                 let serviceName = trigger.substring(0, trigger.indexOf('.'));
-                let functionName = trigger.substring(trigger.indexOf('.') + 1, trigger.length);
-                client.subscribe('__keyevent@' + options.cacheOptions.db + '__:' + event, function () {
-                    client.on('message', function (channel, key) {
-                        if (key.startsWith('authToken_')) {
-                            key = key.substring(10, key.length);
-                        }
-                        SERVICE[serviceName][functionName](key, null, {
-                            moduleName: options.moduleName,
-                            moduleObject: moduleObject
-                        });
+                let functionName = trigger.substring(trigger.indexOf('.') + 1);
+                return subscriber.subscribe('__keyevent@' + database + '__:' + event, key => {
+                    if (key.startsWith('authToken_')) key = key.substring(10);
+                    SERVICE[serviceName][functionName](key, null, {
+                        moduleName: options.moduleName,
+                        moduleObject: moduleObject
                     });
                 });
-            });
+            }))).then(() => subscriber);
         });
     }
 };

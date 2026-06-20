@@ -33,9 +33,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 35 |
-| Test files | 5 |
+| Test files | 6 |
 | Data files | 0 |
-| All module-owned files | 47 |
+| All module-owned files | 48 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -68,7 +68,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 30 |
+| Documented | 31 |
 | Partially documented | 2 |
 | Undocumented | 12 |
 | Inventory only | 3 |
@@ -109,7 +109,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDatabase/database/src/router/router.js` | `src` | `documented` | 0/0 | Secured router definitions for schema index and schema validator maintenance APIs. These routes expose admin operations used to refresh generated database structures after schema changes. |  |
 | `gFramework/nDatabase/database/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/database/src/service/access/defaultRecordOwnershipPolicyService.js` | `src` | `partially-documented` | 5/5 | Applies schema-declared record ownership constraints to the existing generated CRUD request before persistence. Later modules may override this service or schema ownership metadata without changing core. | add @layer; add @owner; add @override |
-| `gFramework/nDatabase/database/src/service/config/defaultDatabaseConfigurationService.js` | `src` | `documented` | 18/18 | Runtime registry for Nodics database configuration, tenant database handles, raw schema contracts, schema interceptors, and schema validators. This service is part of the schema-driven persistence layer and must remain compatible with layered module overrides. |  |
+| `gFramework/nDatabase/database/src/service/config/defaultDatabaseConfigurationService.js` | `src` | `documented` | 20/20 | Runtime registry for Nodics database configuration, tenant database handles, raw schema contracts, schema interceptors, and schema validators. This service is part of the schema-driven persistence layer and must remain compatible with layered module overrides. |  |
 | `gFramework/nDatabase/database/src/service/connection/defaultDatabaseConnectionHandlerService.js` | `src` | `documented` | 8/8 | Coordinates tenant and module database connection lifecycle for Nodics. It creates default and module-specific database handles, registers them in the runtime registry, detects initialization requirements, retrieves runtime schemas, and closes active connections. |  |
 | `gFramework/nDatabase/database/src/service/init/defaultPropertyInitialValueProviderService.js` | `src` | `documented` | 1/1 | Provides default property values used by schema-driven model initialization. Generated save flows can reference this provider from schema property metadata to assign dynamic initial values. |  |
 | `gFramework/nDatabase/database/src/service/interceptors/defaultInterceptorService.js` | `src` | `documented` | 2/2 | Default schema interceptor utilities used by generated CRUD pipelines. These operations provide common mutation and guard behavior that can be referenced from schema interceptor configuration. |  |
@@ -137,6 +137,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDatabase/database/test/schemaIndexControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/database/test/schemaReadAccessPolicyService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/database/test/schemaWriteAccessPolicyService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDatabase/database/test/tenantDatabaseConfigurationValidation.test.js` | `test` | `documented` | 0/0 | Proves fail-fast tenant/module database configuration validation, registry isolation, and later-layer module connection overrides. |  |
 
 ## Extension Contract
 

@@ -78,6 +78,12 @@ fs.writeFileSync(path.join(projectModule, 'config', 'tooling.js'), [
 
 try {
     const projectRegistry = toolingCommandService.loadCommands(projectHome);
+    assert.strictEqual(projectRegistry['docs:openapi'].sourceModule, 'router',
+        'External projects must inherit framework-owned router tooling');
+    assert.strictEqual(projectRegistry['test:generated'].sourceModule, 'nTest',
+        'External projects must inherit framework-owned test tooling');
+    assert.strictEqual(projectRegistry['governance:report'].sourceModule, 'dynamo',
+        'External projects must inherit framework-owned governance tooling');
     assert.strictEqual(projectRegistry['quality:docs'].sourceModule, 'projectTooling');
     assert.strictEqual(projectRegistry['quality:docs'].handler, 'src/projectQuality.js');
     assert.strictEqual(projectRegistry['quality:docs'].xNodics.overrideTrace.length, 2);
