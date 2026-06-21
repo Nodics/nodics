@@ -86,16 +86,6 @@ function getSecurityParameters(route) {
     }
     return [
         {
-            name: 'Authorization',
-            in: 'header',
-            required: true,
-            description: 'Bearer token. Legacy authToken header is deprecated.',
-            schema: {
-                type: 'string',
-                example: 'Bearer <token>'
-            }
-        },
-        {
             name: 'x-enterprise-code',
             in: 'header',
             required: false,
@@ -103,17 +93,30 @@ function getSecurityParameters(route) {
             schema: {
                 type: 'string'
             }
-        },
-        {
-            name: 'x-api-key',
-            in: 'header',
-            required: false,
-            description: 'API key credential for routes that authorize through API key instead of bearer token. Legacy apiKey header is deprecated.',
-            schema: {
-                type: 'string'
-            }
         }
     ];
+}
+
+function getDeclaredParameters(route) {
+    const declared = route.parameters || (route.help && route.help.parameters) || [];
+    if (Array.isArray(declared)) return declared.map(parameter => clone(parameter));
+    return Object.keys(declared).map(name => {
+        const definition = declared[name];
+        if (definition && typeof definition === 'object') {
+            return Object.assign({ name: name, in: definition.in || 'query', required: !!definition.required }, definition);
+        }
+        return { name: name, in: 'query', required: false, description: String(definition), schema: { type: 'string' } };
+    });
+}
+
+function mergeParameters(parameters) {
+    const merged = new Map();
+    parameters.forEach(parameter => {
+        if (!parameter || !parameter.name || !parameter.in) return;
+        if (parameter.in === 'path') parameter.required = true;
+        merged.set(parameter.in + ':' + parameter.name, parameter);
+    });
+    return Array.from(merged.values());
 }
 
 function hasBody(method) {
@@ -145,10 +148,10 @@ function toJsonSchemaFormat(type) {
     return undefined;
 }
 
-function createSchemaProperty(propertyDefinition) {
+function createSchemaProperty(propertyDefinition, referenceDefinition) {
     const property = {};
     if (propertyDefinition.enum && Array.isArray(propertyDefinition.enum)) {
-        property.type = 'string';
+        property.type = toJsonSchemaType(propertyDefinition.type || typeof propertyDefinition.enum[0]);
         property.enum = propertyDefinition.enum;
     } else {
         property.type = toJsonSchemaType(propertyDefinition.type);
@@ -157,13 +160,59 @@ function createSchemaProperty(propertyDefinition) {
     if (format) {
         property.format = format;
     }
+    if (property.type === 'array') {
+        property.items = propertyDefinition.items ? createSchemaProperty(propertyDefinition.items) : {};
+    }
+    if (property.type === 'object' && propertyDefinition.properties) {
+        property.properties = {};
+        Object.keys(propertyDefinition.properties).forEach(name => {
+            property.properties[name] = createSchemaProperty(propertyDefinition.properties[name]);
+        });
+    }
     if (propertyDefinition.description) {
         property.description = propertyDefinition.description;
     }
     if (propertyDefinition.default !== undefined && typeof propertyDefinition.default !== 'function') {
         property.default = propertyDefinition.default;
     }
+    ['example', 'minimum', 'maximum', 'minLength', 'maxLength', 'pattern', 'readOnly', 'writeOnly', 'nullable'].forEach(name => {
+        if (propertyDefinition[name] !== undefined) {
+            property[name] = propertyDefinition[name];
+        }
+    });
+    if (referenceDefinition && referenceDefinition.enabled) {
+        property['x-nodics-reference'] = clone(referenceDefinition);
+    }
     return property;
+}
+
+function inferExampleSchema(value) {
+    if (Array.isArray(value)) {
+        return {
+            type: 'array',
+            items: value.length > 0 ? inferExampleSchema(value[0]) : {}
+        };
+    }
+    if (value && typeof value === 'object') {
+        const properties = {};
+        Object.keys(value).forEach(name => {
+            properties[name] = inferExampleSchema(value[name]);
+        });
+        return { type: 'object', properties: properties };
+    }
+    if (typeof value === 'boolean') return { type: 'boolean', example: value };
+    if (typeof value === 'number') return { type: Number.isInteger(value) ? 'integer' : 'number', example: value };
+    return { type: 'string', description: typeof value === 'string' ? value : undefined };
+}
+
+function createCrudRequestSchema(route) {
+    const componentName = route['x-nodics'] && route['x-nodics'].schemaComponentName;
+    if (!componentName) return undefined;
+    const model = { '$ref': '#/components/schemas/' + componentName };
+    if (route.operation === 'saveAll') return { type: 'array', items: model };
+    if (route.operation === 'update') return { oneOf: [model, { type: 'array', items: model }] };
+    if (route.operation === 'save') return model;
+    return undefined;
 }
 
 function createSchemaComponent(moduleName, schemaName, schemaObject) {
@@ -171,7 +220,7 @@ function createSchemaComponent(moduleName, schemaName, schemaObject) {
     const properties = {};
     Object.keys(schemaObject.definition || {}).forEach(propertyName => {
         const propertyDefinition = schemaObject.definition[propertyName] || {};
-        properties[propertyName] = createSchemaProperty(propertyDefinition);
+        properties[propertyName] = createSchemaProperty(propertyDefinition, schemaObject.refSchema && schemaObject.refSchema[propertyName]);
         if (propertyDefinition.required) {
             required.push(propertyName);
         }
@@ -199,8 +248,10 @@ function createRequestBody(route) {
     if (!hasBody(route.method)) {
         return undefined;
     }
-    const componentName = route['x-nodics'] && route['x-nodics'].schemaComponentName;
-    const schema = componentName ? { '$ref': '#/components/schemas/' + componentName } : { type: 'object' };
+    if (route.requestBody) return clone(route.requestBody);
+    const helpBody = route.help && route.help.body;
+    const schema = createCrudRequestSchema(route) || (helpBody ? inferExampleSchema(helpBody) : undefined);
+    if (!schema) return undefined;
     return {
         required: false,
         content: {
@@ -211,23 +262,33 @@ function createRequestBody(route) {
     };
 }
 
+function createResponses(route) {
+    if (route.responses) return clone(route.responses);
+    if (route.responseHandler === 'fileDownloadResponseHandler') {
+        return {
+            '200': {
+                description: 'Downloadable file.',
+                content: { 'application/octet-stream': { schema: { type: 'string', format: 'binary' } } }
+            },
+            default: { '$ref': '#/components/responses/NodicsError' }
+        };
+    }
+    return {
+        '200': { '$ref': '#/components/responses/NodicsSuccess' },
+        default: { '$ref': '#/components/responses/NodicsError' }
+    };
+}
+
 function createOperation(route) {
     const openApiPath = toOpenApiPath(route.url);
-    const parameters = getPathParameters(openApiPath).concat(getSecurityParameters(route));
+    const parameters = mergeParameters(getPathParameters(openApiPath).concat(getDeclaredParameters(route), getSecurityParameters(route)));
     const operation = {
         operationId: route.routerName,
-        summary: route.operation ? route.operation + ' via ' + (route.controller || route.handler) : route.routerName,
-        description: route.help && route.help.message ? route.help.message : 'Nodics route generated from the active module hierarchy.',
-        tags: [route.moduleName],
+        summary: route.summary || (route.operation ? route.operation + ' via ' + (route.controller || route.handler) : route.routerName),
+        description: route.description || (route.help && route.help.message ? route.help.message : 'Nodics route generated from the active module hierarchy.'),
+        tags: route.tags || [route.moduleName],
         parameters: parameters,
-        responses: {
-            '200': {
-                description: 'Successful Nodics response envelope.'
-            },
-            default: {
-                description: 'Nodics error response envelope.'
-            }
-        },
+        responses: createResponses(route),
         'x-nodics': route['x-nodics']
     };
     const requestBody = createRequestBody(route);
@@ -248,7 +309,7 @@ function createOperation(route) {
 }
 
 function addRoute(paths, route) {
-    if (!route || !route.url || !route.method) {
+    if (!route || !route.url || !route.method || route.active === false) {
         return;
     }
     const openApiPath = toOpenApiPath(route.url);
@@ -256,7 +317,36 @@ function addRoute(paths, route) {
     if (!paths[openApiPath]) {
         paths[openApiPath] = {};
     }
-    paths[openApiPath][method] = createOperation(route);
+    const incoming = createOperation(route);
+    if (paths[openApiPath][method]) {
+        const existing = paths[openApiPath][method];
+        const existingMetadata = existing['x-nodics'] || {};
+        const incomingMetadata = route['x-nodics'] || {};
+        const comparable = operation => JSON.stringify({
+            summary: operation.summary,
+            description: operation.description,
+            parameters: operation.parameters,
+            requestBody: operation.requestBody,
+            responses: operation.responses,
+            security: operation.security
+        });
+        const equivalent = comparable(existing) === comparable(incoming) &&
+            JSON.stringify(existingMetadata.accessGroups || []) === JSON.stringify(incomingMetadata.accessGroups || []) &&
+            existingMetadata.permission === incomingMetadata.permission &&
+            JSON.stringify(existingMetadata.permissions || []) === JSON.stringify(incomingMetadata.permissions || []);
+        if (equivalent) {
+            existingMetadata.duplicateDeclarations = existingMetadata.duplicateDeclarations || [];
+            existingMetadata.duplicateDeclarations.push({
+                moduleName: incomingMetadata.moduleName,
+                routerName: incomingMetadata.routerName,
+                source: incomingMetadata.source
+            });
+            return;
+        }
+        throw new Error('Duplicate effective route for ' + method.toUpperCase() + ' ' + openApiPath + ': ' +
+            existing.operationId + ' and ' + route.routerName);
+    }
+    paths[openApiPath][method] = incoming;
 }
 
 function prepareDefaultRoute(options) {
@@ -288,6 +378,8 @@ function prepareDefaultRoute(options) {
         accessGroups: definition.accessGroups || [],
         cache: definition.cache,
         active: definition.active,
+        permission: definition.permission,
+        permissions: definition.permissions || [],
         routerAlias: schemaObject.router && schemaObject.router.alias
     };
     return definition;
@@ -319,7 +411,10 @@ function prepareConfiguredRoute(options) {
         operation: definition.operation,
         accessGroups: definition.accessGroups || [],
         cache: definition.cache || {},
-        active: definition.active
+        active: definition.active,
+        permission: definition.permission,
+        permissions: definition.permissions || [],
+        responseHandler: definition.responseHandler
     };
     return definition;
 }
@@ -433,6 +528,48 @@ function collectRoutes(rawRouters, rawSchema, components) {
     return paths;
 }
 
+function validateDocument(document) {
+    const errors = [];
+    const operationIds = new Set();
+    const methods = ['get', 'post', 'put', 'patch', 'delete', 'options', 'head', 'trace'];
+    if (!document || document.openapi !== '3.0.3') errors.push('openapi must be 3.0.3');
+    if (!document.info || !document.info.title || !document.info.version) errors.push('info.title and info.version are required');
+    Object.keys(document.paths || {}).forEach(pathName => {
+        const declaredPathParameters = new Set((pathName.match(/\{[^}]+\}/g) || []).map(value => value.slice(1, -1)));
+        Object.keys(document.paths[pathName] || {}).forEach(method => {
+            if (!methods.includes(method)) return;
+            const operation = document.paths[pathName][method];
+            if (!operation.operationId) errors.push(method.toUpperCase() + ' ' + pathName + ' has no operationId');
+            if (operationIds.has(operation.operationId)) errors.push('Duplicate operationId: ' + operation.operationId);
+            operationIds.add(operation.operationId);
+            if (!operation.responses || Object.keys(operation.responses).length === 0) errors.push(operation.operationId + ' has no responses');
+            const parameterKeys = new Set();
+            (operation.parameters || []).forEach(parameter => {
+                const key = parameter.in + ':' + parameter.name;
+                if (parameterKeys.has(key)) errors.push(operation.operationId + ' has duplicate parameter ' + key);
+                parameterKeys.add(key);
+            });
+            const operationPathParameters = new Set((operation.parameters || []).filter(parameter => parameter.in === 'path').map(parameter => parameter.name));
+            declaredPathParameters.forEach(name => {
+                if (!operationPathParameters.has(name)) errors.push(operation.operationId + ' is missing path parameter ' + name);
+            });
+        });
+    });
+    const localReferences = [];
+    const collectReferences = value => {
+        if (!value || typeof value !== 'object') return;
+        if (typeof value.$ref === 'string' && value.$ref.indexOf('#/') === 0) localReferences.push(value.$ref);
+        Object.keys(value).forEach(name => collectReferences(value[name]));
+    };
+    const resolveReference = reference => reference.slice(2).split('/').reduce((value, name) => value && value[name], document);
+    collectReferences(document);
+    localReferences.forEach(reference => {
+        if (!resolveReference(reference)) errors.push('Unresolved local reference: ' + reference);
+    });
+    if (errors.length > 0) throw new Error('Invalid generated OpenAPI contract:\n- ' + errors.join('\n- '));
+    return true;
+}
+
 async function loadEffectiveSchemas(options, warnings) {
     SERVICE.DefaultDatabaseConfigurationService.setRawSchema(SERVICE.DefaultFilesLoaderService.loadSchemaFiles('/src/schemas/schemas.js', null));
     if (options.includeRuntimeSchemas && SERVICE.DefaultDatabaseConnectionHandlerService) {
@@ -484,7 +621,7 @@ async function initialize(options, warnings) {
 function createDocument(input) {
     const components = collectSchemas(input.rawSchema);
     const paths = collectRoutes(input.rawRouters, input.rawSchema, components);
-    return {
+    const document = {
         openapi: '3.0.3',
         info: {
             title: 'Nodics API Contract',
@@ -493,12 +630,8 @@ function createDocument(input) {
         },
         servers: [
             {
-                url: '/{contextRoot}',
-                variables: {
-                    contextRoot: {
-                        default: CONFIG.get('server').options.contextRoot || 'nodics'
-                    }
-                }
+                url: '/',
+                description: 'Host root; generated paths already include the effective Nodics context root.'
             }
         ],
         paths: paths,
@@ -515,7 +648,42 @@ function createDocument(input) {
                     name: 'x-api-key'
                 }
             },
-            schemas: components
+            schemas: Object.assign({
+                NodicsSuccessEnvelope: {
+                    type: 'object',
+                    required: ['code'],
+                    properties: {
+                        code: { type: 'string' },
+                        responseCode: { type: 'integer' },
+                        message: { type: 'string' },
+                        data: {},
+                        metadata: { type: 'object' }
+                    }
+                },
+                NodicsErrorEnvelope: {
+                    type: 'object',
+                    required: ['code', 'message'],
+                    properties: {
+                        code: { type: 'string' },
+                        responseCode: { type: 'integer' },
+                        message: { type: 'string' },
+                        traceId: { type: 'string' },
+                        contexts: { type: 'array', items: { type: 'object' } },
+                        causes: { type: 'array', items: { type: 'object' } },
+                        errors: { type: 'array', items: { type: 'object' } }
+                    }
+                }
+            }, components),
+            responses: {
+                NodicsSuccess: {
+                    description: 'Successful Nodics response envelope.',
+                    content: { 'application/json': { schema: { '$ref': '#/components/schemas/NodicsSuccessEnvelope' } } }
+                },
+                NodicsError: {
+                    description: 'Nodics error response envelope.',
+                    content: { 'application/json': { schema: { '$ref': '#/components/schemas/NodicsErrorEnvelope' } } }
+                }
+            }
         },
         'x-nodics': {
             generatedAt: new Date().toISOString(),
@@ -528,6 +696,8 @@ function createDocument(input) {
             warnings: input.warnings
         }
     };
+    validateDocument(document);
+    return document;
 }
 
 function createOptions(args) {
@@ -568,6 +738,7 @@ async function runCli(args) {
         options: options,
         warnings: warnings
     });
+    validateDocument(document);
     const outputDir = options.outputDir || getDefaultOutputDir();
     assertOutputDirAllowed(outputDir);
     fs.mkdirSync(outputDir, { recursive: true });
@@ -583,10 +754,15 @@ async function runCli(args) {
 }
 
 module.exports = {
+    addRoute: addRoute,
+    collectRoutes: collectRoutes,
+    createOperation: createOperation,
+    createSchemaComponent: createSchemaComponent,
     createDocument: createDocument,
     createOptions: createOptions,
     initialize: initialize,
-    runCli: runCli
+    runCli: runCli,
+    validateDocument: validateDocument
 };
 
 if (require.main === module) {

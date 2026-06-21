@@ -28,9 +28,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 19 |
-| Test files | 4 |
+| Test files | 5 |
 | Data files | 0 |
-| All module-owned files | 31 |
+| All module-owned files | 32 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -57,7 +57,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 18 |
+| Documented | 19 |
 | Partially documented | 1 |
 | Undocumented | 9 |
 | Inventory only | 3 |
@@ -107,6 +107,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nRouter/src/utils/utils.js` | `src` | `undocumented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
 | `gFramework/nRouter/test/authHeaderNormalization.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nRouter/test/jsonResponseStatusResolution.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nRouter/test/openapiContractGeneration.test.js` | `test` | `documented` | 0/0 | Verifies that OpenAPI generation follows effective layered schema and router definitions, excludes inactive capabilities, preserves security metadata, rejects conflicting routes and invalid references, and emits accurate request and response contracts. |  |
 | `gFramework/nRouter/test/routeActionAuthorization.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nRouter/test/routerContractTestUtils.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 

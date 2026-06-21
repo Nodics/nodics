@@ -59,7 +59,8 @@ module.exports = {
         permissions: [
             'runtime.config.history.view',
             'runtime.config.summary.view',
-            'runtime.config.request.view'
+            'runtime.config.request.view',
+            'system.contract.openapi.view'
         ]
     },
     record8: {

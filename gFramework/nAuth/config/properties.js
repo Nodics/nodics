@@ -96,7 +96,8 @@ module.exports = {
             'runtime.config.request.activate',
             'runtime.config.rollback',
             'runtime.config.cleanup.preview',
-            'runtime.config.cleanup.execute'
+            'runtime.config.cleanup.execute',
+            'system.contract.openapi.view'
         ],
         migration: {
             version: 1,

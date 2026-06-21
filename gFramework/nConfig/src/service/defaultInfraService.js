@@ -98,6 +98,8 @@ module.exports = {
             }).then(() => {
                 return _self.cleanDist(moduleObject);
             }).then(() => {
+                return _self.cleanGeneratedOpenApi(moduleObject);
+            }).then(() => {
                 resolve(true);
             }).catch((error) => {
                 reject(error);
@@ -197,6 +199,24 @@ module.exports = {
             this.LOG.debug('Cleaning all dist entities');
             try {
                 UTILS.removeDir(path.join(module.path + '/src/dist'));
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    /**
+     * Removes generated OpenAPI contracts owned by a module.
+     *
+     * @param {Object} module Raw module metadata.
+     * @returns {Promise<boolean>} Resolves after `generated/openapi` removal.
+     */
+    cleanGeneratedOpenApi: function (module) {
+        return new Promise((resolve, reject) => {
+            this.LOG.debug('Cleaning generated OpenAPI contracts');
+            try {
+                UTILS.removeDir(path.join(module.path, 'generated', 'openapi'));
                 resolve(true);
             } catch (error) {
                 reject(error);

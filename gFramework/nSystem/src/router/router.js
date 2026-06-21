@@ -379,6 +379,7 @@ module.exports = {
             getOpenApiContract: {
                 secured: true,
                 accessGroups: ['userGroup'],
+                permission: 'system.contract.openapi.view',
                 key: '/contract/openapi',
                 method: 'GET',
                 controller: 'DefaultApiContractController',
