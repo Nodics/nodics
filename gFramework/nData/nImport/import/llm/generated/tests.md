@@ -19,6 +19,8 @@
 - `gFramework/nData/nImport/import/test/importTenantPrecedence.test.js`
 - `gFramework/nData/nImport/import/test/mandatoryInitDataImportContract.test.js`
 - `gFramework/nData/nImport/import/test/multiFormatDataProcessors.test.js`
+- `gFramework/nData/nImport/import/test/remoteImportInitializerContract.test.js`
+- `gFramework/nData/nImport/import/test/remoteImportTransportGovernance.test.js`
 - `gFramework/nData/nImport/import/test/systemCoreSampleDataCatalog.test.js`
 - `gFramework/nData/nImport/import/test/systemDataImportInitializerValidation.test.js`
 - `gFramework/nData/nImport/import/test/systemImportControllerRequestMapping.test.js`

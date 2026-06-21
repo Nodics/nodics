@@ -53,7 +53,8 @@ Nodics Revolution:
     ✔ Make generated live CRUD fixtures inheritance-aware so schemas extending `user` or other super schemas get required parent fields. @generated-tests @schema @inheritance @testing @done
     ✔ Fix remove pipeline workflow-init event logging `Cannot read properties of undefined (reading 'models')` after successful model delete. @pipeline @workflow @crud @done
     ✔ Migrate deterministic Postman Data Import/Export lifecycle coverage for init, core, sample, local, remote extension, and default export behavior. @postman @import @export @testing @done
-      ☐ Implement and qualify a governed remote transport adapter before exposing a public remote-import route. @postman @import @remote @integration
+      ✔ Implement and qualify the internal governed remote transport-adapter contract. @postman @import @remote @integration @done
+      ☐ Add a project-selected production adapter and live integration test before exposing a public remote-import route. @postman @import @remote @integration
     ☐ Migrate Postman Cache coverage for item/API cache and flush behavior. @postman @cache @testing
     ☐ Migrate Postman EMS/Event coverage for publish, register, consume, close, and tenant failure paths. @postman @ems @event @testing
     ☐ Migrate Postman CronJob coverage for create, update, run, start, stop, pause, resume, and remove. @postman @cronjob @testing

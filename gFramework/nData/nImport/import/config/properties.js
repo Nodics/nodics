@@ -9,13 +9,37 @@
 
  */
 
+/**
+ * @module import/config/properties
+ * @description Defines layered import processing limits, error defaults, and the disabled-by-default governed remote source and transport registry.
+ * @layer config
+ * @owner import
+ * @override Projects enable and register remote sources and adapters in later configuration layers without changing framework defaults.
+ */
 module.exports = {
     data: {
         dataImportPhasesLimit: 5,
         finalizeImportDataAsync: true,
         importDataConvertEncoding: 'utf8',
         readBufferSize: 1024,
-        headerBatchSize: 0
+        headerBatchSize: 0,
+        remoteImport: {
+            enabled: false,
+            defaultTransport: null,
+            defaultHeaderDataType: 'core',
+            cleanupStaging: true,
+            policy: {
+                timeoutMs: 30000,
+                retries: 0,
+                maxFiles: 100,
+                maxFileBytes: 10485760,
+                maxTotalBytes: 104857600,
+                allowedExtensions: ['json', 'csv', 'xlsx'],
+                requireChecksums: true
+            },
+            transports: {},
+            sources: {}
+        }
     },
 
     defaultErrorCodes: {

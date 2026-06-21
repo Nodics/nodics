@@ -40,9 +40,19 @@ data in later active modules. They must not edit framework data files.
 - Environment, server, and node modules may contribute sample/init data through
   the same module-owned directories and active-module ordering.
 - `local` processes an explicitly provided local input structure.
-- `remote` currently provides an internal initializer extension point. A
-  project must supply a governed transport/file adapter before exposing it as a
-  public API; Nodics does not advertise a built-in production remote transport.
+- `remote` is an internal, disabled-by-default adapter lifecycle. Sources and
+  transports are keyed layered configuration entries. Requests select a source
+  name rather than supplying arbitrary URLs or credentials. The framework
+  enforces tenant/module allowlists, timeouts, bounded retries, isolated
+  server-owned staging, path and symlink safety, file-count and byte limits,
+  non-executable extensions, SHA-256 integrity, cleanup, and sanitized run
+  diagnostics.
+
+Remote adapters may stage data files only. Import headers always come from the
+selected active modules (`init`, `core`, or `sample`) so remote input cannot
+introduce executable schema or routing definitions. Projects must provide and
+qualify a production adapter in their own module layer before enabling a source.
+No public remote-import route is advertised by the framework yet.
 
 Generated/finalized files and reports are owned by the selected server module.
 Validation-only mode can inspect headers, files, target schemas/services, and

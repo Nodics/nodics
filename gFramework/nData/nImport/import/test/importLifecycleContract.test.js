@@ -39,6 +39,13 @@ function createHarness() {
                     return Promise.resolve({ code: 'SUC_IMP_READY' });
                 }
                 if (pipelineName === 'remoteDataImportInitializerPipeline') {
+                    request.importRun = request.importRun || { runId: 'remote_run', summary: {}, failures: [], validationErrors: [] };
+                    request.outputPath = {
+                        rootPath: '/tmp/nodics-remote-output',
+                        dataPath: '/tmp/nodics-remote-output/data',
+                        successPath: '/tmp/nodics-remote-output/success',
+                        errorPath: '/tmp/nodics-remote-output/error'
+                    };
                     return Promise.resolve({ code: 'SUC_IMP_REMOTE_READY' });
                 }
                 if (pipelineName === 'processDataImportPipeline') {
@@ -46,7 +53,8 @@ function createHarness() {
                 }
                 return Promise.reject(new Error('Unexpected pipeline: ' + pipelineName));
             }
-        }
+        },
+        DefaultRemoteImportTransportService: { cleanup: function () { return Promise.resolve(true); } }
     };
     return { service: service, calls: calls };
 }
@@ -83,10 +91,17 @@ function createHarness() {
     assert.strictEqual(harness.calls[0].request.dataType, 'local');
 
     harness = createHarness();
-    const remoteRequest = { connectionOptions: { provider: 'projectAdapter' }, localDir: '/tmp/remote', path: '/incoming' };
-    await harness.service.importRemoteData(remoteRequest);
+    const remoteRequest = { tenant: 'nodicsTest', modules: ['profile'], remoteImport: { source: 'projectSource' } };
+    const remoteResult = await harness.service.importRemoteData(remoteRequest);
+    assert.deepStrictEqual(harness.calls.map(call => call.pipelineName), ['remoteDataImportInitializerPipeline', 'processDataImportPipeline']);
+    assert.strictEqual(harness.calls[1].request.inputPath.dataType, 'remote');
+    assert.strictEqual(remoteResult.importRun.status, 'COMPLETED');
+
+    harness = createHarness();
+    const discoveryRequest = { modules: ['profile'], remoteImport: { source: 'projectSource' }, importFinalizeData: false };
+    await harness.service.importRemoteData(discoveryRequest);
     assert.deepStrictEqual(harness.calls.map(call => call.pipelineName), ['remoteDataImportInitializerPipeline']);
-    assert.strictEqual(remoteRequest.dataType, 'remote');
+    assert.strictEqual(discoveryRequest.dataType, 'remote');
 
     console.log('Import lifecycle contract validated for init, core, sample, local, and remote');
 })().catch(error => {
