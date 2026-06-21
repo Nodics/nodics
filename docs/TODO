@@ -17,12 +17,12 @@ Nodics Revolution:
     ✔ Include module, header, file, tenant, schema/index, and operation context in import failures. @diagnostics @done
     ✔ Add validation-only import mode that does not insert data. @validation @done
     ✔ Validate schema/index names, target services, target operations, and file type processors before import. @validation @done
-    ☐ Confirm how request-level tenant overrides header-level tenants. @tenant
-    ☐ Document default tenant bootstrap separately from enterprise tenant bootstrap. @tenant @docs
+    ✔ Confirm request-level tenant narrows header-level tenants through safe intersection semantics. @tenant @done
+    ✔ Document default tenant bootstrap separately from enterprise tenant bootstrap. @tenant @docs @done
     ✔ Preserve module-owned data boundaries, including module-specific cron jobs/indexers/workflows targeting shared schemas. @module-data @docs @done
     ✔ Ensure import diagnostics report both owning module and target schema/module. @module-data @diagnostics @done
-    ☐ Verify test tenant import does not contaminate real environment data. @tenant @testing
-    ☐ Add tests proving environment modules can contribute `data/sample` files. @sample @testing
+    ✔ Verify test tenant import does not contaminate real environment data. @tenant @testing @done
+    ✔ Add tests proving environment modules can contribute `data/sample` files. @sample @testing @done
     ✔ Add core/sample data catalog validation so enabled headers must match data files. @sample @testing @done
     ✔ Add multi-format processor validation for JS, JSON, CSV, and Excel import inputs. @import @testing @done
     ✔ Add finalized import dispatch validation before model persistence. @import @testing @done
@@ -52,7 +52,8 @@ Nodics Revolution:
     ✔ Execute guarded live generated access-policy scenarios against a dedicated test tenant with default control-plane policy storage. @schema-access @runtime @testing @tenant @done
     ✔ Make generated live CRUD fixtures inheritance-aware so schemas extending `user` or other super schemas get required parent fields. @generated-tests @schema @inheritance @testing @done
     ✔ Fix remove pipeline workflow-init event logging `Cannot read properties of undefined (reading 'models')` after successful model delete. @pipeline @workflow @crud @done
-    ☐ Migrate Postman Data Import/Export coverage for init, core, sample, local, remote paths. @postman @import @export @testing
+    ✔ Migrate deterministic Postman Data Import/Export lifecycle coverage for init, core, sample, local, remote extension, and default export behavior. @postman @import @export @testing @done
+      ☐ Implement and qualify a governed remote transport adapter before exposing a public remote-import route. @postman @import @remote @integration
     ☐ Migrate Postman Cache coverage for item/API cache and flush behavior. @postman @cache @testing
     ☐ Migrate Postman EMS/Event coverage for publish, register, consume, close, and tenant failure paths. @postman @ems @event @testing
     ☐ Migrate Postman CronJob coverage for create, update, run, start, stop, pause, resume, and remove. @postman @cronjob @testing
@@ -72,21 +73,21 @@ Nodics Revolution:
     ☐ Migrate Postman Catalog and OTP coverage. @postman @catalog @otp @testing
     ☐ Keep project-specific Postman coverage, such as CMS/CRES/DaaS, owned by active project modules only. @postman @project-modules @testing
     ☐ Refactor Postman collection after API/test migration stabilizes. @postman @docs
-    ☐ Re-check how `TEST.uTestPool` and `TEST.nTestPool` are populated. @critical
-    ☐ Make layered test loading explicit and observable. @critical
-    ☐ Preserve module `test/common`, environment-specific tests, server-specific tests, and node-specific tests. @layering
-    ☐ Preserve dedicated testing tenant/database isolation. @tenant
-    ☐ Add or formalize `basic` test category. @basic
-    ☐ Add or formalize `full` test category. @full
+    ✔ Re-check and restore how `TEST.uTestPool` and `TEST.nTestPool` are populated. @critical @done
+    ✔ Make layered test loading explicit and observable through `TEST.discovery`. @critical @done
+    ✔ Preserve module `test/common`, environment-specific tests, server-specific tests, and node-specific tests through active-module ordering. @layering @done
+    ✔ Preserve dedicated testing tenant/database isolation. @tenant @done
+    ✔ Add or formalize `basic` test category. @basic @done
+    ✔ Add or formalize `full` test category. @full @done
     ☐ Basic tests should cover framework startup, module loading, route availability, internal auth token availability, profile availability, mandatory init data availability, and inter-module communication smoke checks. @basic
     ☐ Full tests should cover module suites, init/core/sample imports, tenant scenarios, workflow, cron, NEMS/events, import/export, and distributed inter-module calls. @full
     ✔ Add consolidated topology testing for default server startup, such as `kickoffLocalServer`. @topology @consolidated @done
     ✔ Add modular/microservice topology testing with profile first, NEMS before event-dependent modules, cron after profile/NEMS where required, then business/content/workflow/data modules separately. @topology @modular @done
     ✔ Verify local service calls in consolidated mode. @topology @consolidated @done
     ✔ Verify API/event communication across process boundaries in modular mode. @topology @modular @done
-    ☐ Add import tests for mandatory init data. @testing @import
-    ☐ Add full import tests for init, core, sample, local, and remote import paths where applicable. @testing @import
-    ☐ Add sample data tests using environment module `data/sample` folders. @testing @sample
+    ✔ Add import tests for mandatory init data. @testing @import @done
+    ✔ Add full deterministic import lifecycle tests for init, core, sample, local, and remote extension paths where applicable. @testing @import @done
+    ✔ Add sample data tests using environment module `data/sample` folders. @testing @sample @done
     ✔ Add test reports for suite count, test count, pass/fail/skip counts, modules, environment, server, node, tenant, topology, and startup order. @reporting @done
     ✔ Add import run summaries when tests exercise data import. @reporting @import @done
     ✔ Persist and expose import run history for admin/control-plane visibility. @reporting @import @admin @done
@@ -134,6 +135,12 @@ Nodics Revolution:
 
   Configuration:
 
+    ☐ Formalize metadata-only environment/server/node discovery and sequencing; names and suffixes must never determine module kind or behavior. @architecture @config @hierarchy
+      ☐ Define the environment module responsibilities, activation contract, precedence, and validation independently. @environment @config
+      ☐ Define the server module responsibilities, selected-module topology, precedence, and validation independently. @server @topology
+      ☐ Define the optional node module responsibilities, instance-specific override boundary, precedence, and validation independently. @node @topology
+      ☐ Define and enforce the deterministic project/group/environment/server/node loading sequence using explicit metadata and parent relationships. @ordering @metadata
+      ☐ Add positive and negative tests using arbitrary module names without Env, Server, Node, or project-specific naming conventions. @testing @project-neutral
     ✔ Make configuration loading order explicit as a formal Nodics contract. @critical @config @done
     ✔ Add early configuration validation before module indexing and startup continue. @critical @config @done
     ✔ Validate `activeModules.groups` and `activeModules.modules` references. @config @validation @done
@@ -151,11 +158,11 @@ Nodics Revolution:
 
   Execution Order:
 
-    ☐ Finish remaining low-risk data import correctness fixes. @next
-    ☐ Add import diagnostics and summary objects. @next
-    ☐ Add data import validation-only mode.
-    ☐ Add focused data import tests.
-    ☐ Fix and formalize test discovery/execution.
+    ✔ Finish remaining low-risk data import correctness fixes. @done
+    ✔ Add import diagnostics and summary objects. @done
+    ✔ Add data import validation-only mode. @done
+    ✔ Add focused data import tests. @done
+    ✔ Fix and formalize test discovery/execution. @done
     ✔ Add basic consolidated topology tests. @done
     ✔ Add basic modular topology tests. @done
     ☐ Expand into full tests for import, workflow, cron, NEMS, tenants, and distributed communication.

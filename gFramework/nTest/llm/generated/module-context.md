@@ -28,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 16 |
-| Test files | 5 |
+| Source files | 17 |
+| Test files | 6 |
 | Data files | 0 |
-| All module-owned files | 29 |
+| All module-owned files | 31 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 10 |
+| Documented | 12 |
 | Partially documented | 4 |
 | Undocumented | 12 |
 | Inventory only | 3 |
@@ -94,6 +94,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTest/src/lib/testSuitePool.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nTest/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nTest/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nTest/src/service/defaultLayeredTestConfigurationService.js` | `src` | `documented` | 10/10 | Discovers declarative UTest and NTest suites from active modules in deterministic module-index order and merges later project, environment, server, and node contributions without inferring behavior from module names. |  |
 | `gFramework/nTest/src/service/generator/defaultSchemaTestGeneratorService.js` | `src` | `undocumented` | 0/45 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 45 exported method(s) |
 | `gFramework/nTest/src/service/testExecutionService.js` | `src` | `partially-documented` | 2/11 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 9 exported method(s) |
 | `gFramework/nTest/src/tooling/liveTestTenantGuard.js` | `src` | `documented` | 0/0 | Guards live and destructive test execution from missing tenant selection or accidental use of protected tenants. |  |
@@ -104,6 +105,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTest/src/tooling/runRouteContractTests.js` | `src` | `documented` | 0/0 | Discovers and executes module-owned route contract tests throughout a target Nodics project. |  |
 | `gFramework/nTest/src/tooling/runTestSuiteWithReport.js` | `src` | `documented` | 0/0 | Runs an arbitrary project test command, streams its output, extracts Nodics test metrics, and writes a structured report under the selected server module. |  |
 | `gFramework/nTest/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nTest/test/layeredTestDiscovery.test.js` | `test` | `documented` | 2/2 | Proves deterministic test composition across arbitrarily named capability, project, environment, server, and node modules with override traceability and configurable additional paths. |  |
 | `gFramework/nTest/test/liveTestTenantGuard.test.js` | `test` | `documented` | 0/0 | Verifies default and configured protected-tenant resolution plus explicit live-test override behavior. |  |
 | `gFramework/nTest/test/schemaTestGeneratorCrudFixtureInheritance.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nTest/test/schemaTestGeneratorEffectiveSchema.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

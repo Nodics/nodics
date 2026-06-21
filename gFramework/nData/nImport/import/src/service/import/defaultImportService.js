@@ -137,6 +137,7 @@ module.exports = {
     },
 
     importLocalData: function (request) {
+        request.dataType = 'local';
         if (request.importFinalizeData) {
             return new Promise((resolve, reject) => {
                 SERVICE.DefaultPipelineService.start('localDataImportInitializerPipeline', request, {}).then(success => {
@@ -165,7 +166,7 @@ module.exports = {
                             };
                         }
                         SERVICE.DefaultImportService.processImportData({
-                            tenant: request.tenant,
+                            tenant: request.tenant || CONFIG.get('defaultTenant') || 'default',
                             importRun: request.importRun,
                             inputPath: inputPath
                         }).then(success => {
@@ -188,6 +189,7 @@ module.exports = {
     },
 
     importRemoteData: function (request) {
+        request.dataType = 'remote';
         return SERVICE.DefaultPipelineService.start('remoteDataImportInitializerPipeline', request, {});
     },
 

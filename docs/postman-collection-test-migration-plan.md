@@ -159,10 +159,16 @@ Current migrated behavior tests:
 - `gFramework/nDatabase/database/test/schemaIndexControllerRequestMapping.test.js`
 - `gFramework/nSystem/test/systemConfigurationCapabilityBehavior.test.js`
 - `gFramework/nData/nExport/export/test/dataExportCapabilityBehavior.test.js`
+- `gFramework/nData/nImport/import/test/mandatoryInitDataImportContract.test.js`
+- `gFramework/nData/nImport/import/test/importLifecycleContract.test.js`
+- `gFramework/nData/nImport/import/test/importTenantPrecedence.test.js`
+- `gFramework/nData/nImport/import/test/testTenantImportIsolation.test.js`
+- `gFramework/nData/nImport/import/test/environmentSampleDataContribution.test.js`
 
 Open System findings:
 
 - `/system/export` route resolution is fixed with `DataExportController`, `DataExportFacade`, and `DataExportService`. The default service fails with a clear not-configured error until a project or framework module provides real export behavior.
+- Init, core, sample, and local imports now have deterministic controller and lifecycle coverage. The internal remote initializer remains an extension point; no public remote route should be advertised until a project-neutral transport adapter is implemented and qualified.
 
 ### Cache
 
@@ -347,7 +353,7 @@ This is the working order for migrating the remaining Postman coverage into Nodi
 | 1 | System import/export/test runner/config/log/file APIs | `gFramework/nSystem` | Done | Endpoint behavior and import/export integration |
 | 2 | Profile bootstrap, tenant, enterprise, auth, user groups | `gCore/profile` | Done | CRUD, auth, token, tenant isolation |
 | 3 | Router/schema-driven CRUD surface | `gFramework/nRouter`, generated module routers | Partial | Effective runtime route generation after hierarchy loading |
-| 4 | Data import/export processing | `gFramework/nData` | Not route-focused | Init/core/sample/local/remote behavior |
+| 4 | Data import/export processing | `gFramework/nData` | Deterministic lifecycle done | Live persistence and project-provided remote transport integration |
 | 5 | Cache | `gFramework/nCache/cache` | No explicit routes yet | Item/API cache lifecycle and flush behavior |
 | 6 | EMS and events | `gFramework/nEms/emsClient`, `gFramework/nEvent`, `gCore/nems` | EMS route contract done | Publish, consume, register, close, tenant failure paths |
 | 7 | CronJob | `gCore/cronjob` | Done | Job create/update/run/start/stop/pause/resume/remove behavior |

@@ -6,19 +6,24 @@
 
 - `gFramework/nData/nImport/import/test/common/commonTest.js`
 - `gFramework/nData/nImport/import/test/env-local/envTest.js`
+- `gFramework/nData/nImport/import/test/environmentSampleDataContribution.test.js`
 - `gFramework/nData/nImport/import/test/finalizedImportDispatch.test.js`
 - `gFramework/nData/nImport/import/test/finalizedRecordCounter.test.js`
 - `gFramework/nData/nImport/import/test/importDuplicateHeaderDiagnostics.test.js`
 - `gFramework/nData/nImport/import/test/importExportAccessPolicy.test.js`
 - `gFramework/nData/nImport/import/test/importFailureTraceability.test.js`
+- `gFramework/nData/nImport/import/test/importLifecycleContract.test.js`
 - `gFramework/nData/nImport/import/test/importRunHistoryControllerRoute.test.js`
 - `gFramework/nData/nImport/import/test/importRunHistoryService.test.js`
 - `gFramework/nData/nImport/import/test/importRunSummaryContract.test.js`
+- `gFramework/nData/nImport/import/test/importTenantPrecedence.test.js`
+- `gFramework/nData/nImport/import/test/mandatoryInitDataImportContract.test.js`
 - `gFramework/nData/nImport/import/test/multiFormatDataProcessors.test.js`
 - `gFramework/nData/nImport/import/test/systemCoreSampleDataCatalog.test.js`
 - `gFramework/nData/nImport/import/test/systemDataImportInitializerValidation.test.js`
 - `gFramework/nData/nImport/import/test/systemImportControllerRequestMapping.test.js`
 - `gFramework/nData/nImport/import/test/systemImportDiagnosticsValidationOnly.test.js`
+- `gFramework/nData/nImport/import/test/testTenantImportIsolation.test.js`
 
 ## Generated Tests
 

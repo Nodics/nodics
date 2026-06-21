@@ -45,5 +45,9 @@ module.exports = {
 
     importLocalData: function (request) {
         return SERVICE.DefaultImportService.importLocalData(request);
+    },
+
+    importRemoteData: function (request) {
+        return SERVICE.DefaultImportService.importRemoteData(request);
     }
 };
