@@ -6,6 +6,7 @@
 
 - `kickoff/test/data/kickoffLocalTestTenantDataCatalog.test.js`
 - `kickoff/test/topology/kickoffLocalRuntimeTopology.test.js`
+- `kickoff/test/topology/runtimeContractProbe.js`
 
 ## Generated Tests
 

@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. It will hold all profile realted information"
   },
-  "sourceFiles": 47,
-  "testFiles": 43,
+  "sourceFiles": 48,
+  "testFiles": 44,
   "dataFiles": 17,
-  "ownedFiles": 82,
-  "sourceFingerprint": "d545ff0cabe9ae5a268ba7f86ff5495d72427746394a1bc8a4ae0d6ead1d9a1c",
+  "ownedFiles": 84,
+  "sourceFingerprint": "018cbbc5cf50b17bb8ee11b7af88024c442bf0a3468fab4ef476ce434875001a",
   "documentation": {
-    "documented": 6,
+    "documented": 8,
     "partially-documented": 4,
     "undocumented": 67,
     "inventory-only": 5

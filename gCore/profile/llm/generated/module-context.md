@@ -34,10 +34,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 47 |
-| Test files | 43 |
+| Source files | 48 |
+| Test files | 44 |
 | Data files | 17 |
-| All module-owned files | 82 |
+| All module-owned files | 84 |
 | Local schema definitions | 11 |
 
 ## Ownership And Dependencies
@@ -71,7 +71,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 6 |
+| Documented | 8 |
 | Partially documented | 4 |
 | Undocumented | 67 |
 | Inventory only | 5 |
@@ -144,6 +144,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/src/service/enterprise/defaultEnterpriseService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
 | `gCore/profile/src/service/group/defaultUserGroupGovernanceService.js` | `src` | `documented` | 6/6 | Validates active user-group inheritance, permission catalog membership, and acyclic group graphs before persistence. |  |
 | `gCore/profile/src/service/identity/defaultIdentityGovernanceMigrationService.js` | `src` | `documented` | 17/17 | Provides tenant-scoped preview, apply, audit, rollback, ownership backfill, and recoverable service-key rotation for identity governance upgrades. |  |
+| `gCore/profile/src/service/identity/defaultMandatoryIdentityBootstrapService.js` | `src` | `documented` | 5/5 | Reconciles missing, non-secret identity-governance groups after init data is available. Existing records are never overwritten automatically, preserving project and tenant customizations while allowing safe framework upgrades. |  |
 | `gCore/profile/src/service/identity/defaultPrincipalGovernanceService.js` | `src` | `documented` | 5/5 | Enforces principal categories, active group assignment, and service-only API-key ownership before identity persistence. |  |
 | `gCore/profile/src/service/identity/defaultPrincipalSecurityStampGovernanceService.js` | `src` | `documented` | 8/8 | Advances principal security stamps for direct principal, password, and group-membership changes. |  |
 | `gCore/profile/src/service/interceptors/defaultAPIKeyInterceptorService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
@@ -171,6 +172,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/test/identityGovernanceP1Contract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/identityGovernanceP2Integration.test.js` | `test` | `documented` | 0/0 | Exercises preview, persisted apply, idempotent repeat, service credential rotation, failure audit, and rollback using an isolated durable test repository. |  |
 | `gCore/profile/test/initRequiredFlag.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/profile/test/mandatoryIdentityBootstrapService.test.js` | `test` | `documented` | 0/0 | Verifies idempotent, audited creation of missing configured identity groups without overwriting existing tenant customizations. |  |
 | `gCore/profile/test/profileControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileInitRequiredDetection.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

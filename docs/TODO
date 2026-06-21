@@ -79,8 +79,8 @@ Nodics Revolution:
     ✔ Preserve dedicated testing tenant/database isolation. @tenant @done
     ✔ Add or formalize `basic` test category. @basic @done
     ✔ Add or formalize `full` test category. @full @done
-    ☐ Basic tests should cover framework startup, module loading, route availability, internal auth token availability, profile availability, mandatory init data availability, and inter-module communication smoke checks. @basic
-    ☐ Full tests should cover module suites, init/core/sample imports, tenant scenarios, workflow, cron, NEMS/events, import/export, and distributed inter-module calls. @full
+    ✔ Basic tests cover framework startup, metadata-driven module loading, route availability, internal auth token readiness, profile availability, mandatory init data availability, and consolidated communication smoke checks. @basic @done
+    ✔ Full tests cover module contract suites, init/core/sample imports, tenant scenarios, workflow, cron, NEMS/events, import/export, and distributed modular communication. @full @done
     ✔ Add consolidated topology testing for default server startup, such as `kickoffLocalServer`. @topology @consolidated @done
     ✔ Add modular/microservice topology testing with profile first, NEMS before event-dependent modules, cron after profile/NEMS where required, then business/content/workflow/data modules separately. @topology @modular @done
     ✔ Verify local service calls in consolidated mode. @topology @consolidated @done

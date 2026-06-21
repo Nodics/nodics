@@ -14,14 +14,14 @@
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to kickoff"
   },
   "sourceFiles": 0,
-  "testFiles": 2,
+  "testFiles": 3,
   "dataFiles": 0,
-  "ownedFiles": 9,
-  "sourceFingerprint": "25bd873591a2e9541268fe0d9c64b7d8065fbd702bfaeb8b91a9e94057a1f88a",
+  "ownedFiles": 10,
+  "sourceFingerprint": "115668d8fb40120e160cb14a0e8a0c791f25746e3ad63c38f187c3b68a7bdb81",
   "documentation": {
-    "documented": 0,
+    "documented": 2,
     "partially-documented": 1,
-    "undocumented": 5,
+    "undocumented": 4,
     "inventory-only": 3
   },
   "schemaGroups": {},

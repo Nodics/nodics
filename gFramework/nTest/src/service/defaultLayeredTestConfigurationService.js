@@ -78,7 +78,7 @@ module.exports = {
             suitePools[suiteName] = poolName;
             const trace = {
                 moduleName: moduleObject.name,
-                moduleKind: moduleObject.metaData && moduleObject.metaData.nodics && moduleObject.metaData.nodics.kind,
+                moduleKind: this.getModuleKind(moduleObject),
                 relativePath: relativePath,
                 file: this.relativeFile(filePath),
                 suiteName: suiteName,
@@ -87,6 +87,13 @@ module.exports = {
             TEST.discovery.contributions.push(trace);
             if (overridden) TEST.discovery.overrides.push(trace);
         });
+    },
+
+    /** Returns canonical package kind from the raw registry with an indexed-fixture fallback. */
+    getModuleKind: function (moduleObject) {
+        const rawModule = NODICS.getRawModule && NODICS.getRawModule(moduleObject.name);
+        const metadata = rawModule && rawModule.metaData || moduleObject.metaData;
+        return metadata && metadata.nodics && metadata.nodics.kind;
     },
 
     /** Ensures callers and isolated tests receive the standard pool structure. */

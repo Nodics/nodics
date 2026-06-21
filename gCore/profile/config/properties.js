@@ -10,6 +10,13 @@
  */
 
 module.exports = {
+    mandatoryBootstrapServices: {
+        profileIdentity: {
+            enabled: true,
+            order: 100,
+            service: 'DefaultMandatoryIdentityBootstrapService'
+        }
+    },
     attemptsToLockAccount: 5,
     encryptSaltLength: 10,
     passwordLengthLimit: 25,

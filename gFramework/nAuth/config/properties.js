@@ -101,6 +101,7 @@ module.exports = {
         ],
         migration: {
             version: 1,
+            reconcileMissingGroupsOnStartup: true,
             servicePrincipalCodes: ['apiAdmin'],
             servicePrincipalScopes: {
                 apiAdmin: ['auth.internal.token.read', 'auth.internal.token.read.anyTenant']
