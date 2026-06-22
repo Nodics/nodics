@@ -24,7 +24,12 @@ const configurationService = require('../src/service/config/defaultCacheConfigur
 const localCacheService = Object.assign({}, require('../../nodeCache/src/service/cache/defaultLocalCacheService'), { LOG: { debug: () => {} } });
 const cacheServiceDefinition = require('../src/service/cache/defaultCacheService');
 const requestPipeline = Object.assign({}, require('../../../nRouter/src/service/request/defaultRequestHandlerPipelineService'), { LOG: { debug: () => {}, warn: () => {} } });
+const itemPipeline = Object.assign({}, require('../../../nDatabase/database/src/service/procs/get/defaultModelsGetInitializerService'), {
+    LOG: { debug: () => {}, warn: () => {} },
+    applyReadAccessPolicies: (_request, _response, process) => process.nextSuccess()
+});
 const eventService = require('../src/service/event/defaultCacheChangeListenerService');
+global.SERVICE = { DefaultCacheConfigurationService: configurationService };
 
 function requestFor(tenant, principal, groups = ['reader'], permissions = ['profile.read']) {
     return {
@@ -78,6 +83,26 @@ function requestFor(tenant, principal, groups = ['reader'], permissions = ['prof
     assert.strictEqual(stopped.code, 'SUC_PRFL_00000');
     assert.strictEqual(stopped.result[0].code, 'employee-a');
     assert.strictEqual(stopped.cache, 'api hit');
+
+    stopped = undefined;
+    global.SERVICE = {
+        DefaultCacheConfigurationService: { createItemKey: () => 'employee_tenant-a_hash' },
+        DefaultCacheService: {
+            getSchemaCacheChannel: () => 'schema',
+            get: () => Promise.resolve({ code: 'SUC_PRFL_00000', result: [{ code: 'employee-a' }] })
+        }
+    };
+    itemPipeline.lookupCache({
+        tenant: 'tenant-a',
+        schemaModel: { moduleName: 'profile', schemaName: 'employee', cache: { enabled: true } }
+    }, {}, {
+        stop: (_request, _response, value) => { stopped = value; },
+        nextSuccess: () => {},
+        error: (_request, _response, error) => { throw error; }
+    });
+    await new Promise(resolve => setImmediate(resolve));
+    assert.strictEqual(stopped.result[0].code, 'employee-a');
+    assert.strictEqual(stopped.cache, 'item hit');
 
     let flushed = false;
     const cacheService = Object.assign({}, cacheServiceDefinition);

@@ -45,12 +45,8 @@ module.exports = {
     put: function (options) {
         return new Promise((resolve, reject) => {
             try {
-                let key = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.key;
-                // this will allow user to keep value for infinite time
-                let ttl = 0;
-                if (options.ttl === undefined || options.ttl > 0) {
-                    ttl = options.ttl || options.channel.chennalOptions.ttl || options.channel.engineOptions.ttl || options.channel.engineOptions.options.ttl;
-                }
+                let key = SERVICE.DefaultCacheConfigurationService.createStorageKey(options);
+                let ttl = SERVICE.DefaultCacheConfigurationService.resolveTtl(options);
                 this.LOG.debug('Putting value in Local cache storage with key: ' + key + ' TTL: ' + ttl);
                 let storedValue = _.cloneDeep(options.value);
                 options.channel.client.set(key, storedValue, ttl);
@@ -65,7 +61,7 @@ module.exports = {
     get: function (options) {
         return new Promise((resolve, reject) => {
             try {
-                let key = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.key;
+                let key = SERVICE.DefaultCacheConfigurationService.createStorageKey(options);
                 this.LOG.debug('Getting value from Local cache storage with key: ' + key);
                 let value = options.channel.client.get(key);
                 if (value) {
@@ -84,7 +80,7 @@ module.exports = {
     consume: function (options) {
         return new Promise((resolve, reject) => {
             try {
-                let key = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.key;
+                let key = SERVICE.DefaultCacheConfigurationService.createStorageKey(options);
                 let value = options.channel.client.get(key);
                 if (!value) return reject(new CLASSES.CacheError('ERR_CACHE_00001', 'Could not found any value for key: ' + key));
                 options.channel.client.del(key);
@@ -100,34 +96,24 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                options.channel.client.keys(function (err, cacheKeys) {
-                    if (err) {
-                        reject(new CLASSES.CacheError(err));
-                    } else {
-                        if (options.prefix) {
-                            let prefix = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.prefix;
-                            _self.LOG.debug('Flushing value in local cache stored with prefix: ' + prefix);
-                            let delKeys = [];
-                            cacheKeys.forEach(key => {
-                                if (key.startsWith(prefix)) {
-                                    options.channel.client.del(key);
-                                    delKeys.push(key);
-                                }
-                            });
-                            resolve({
-                                code: 'SUC_CACHE_00000',
-                                result: delKeys
-                            });
-                        } else {
-                            _self.LOG.debug('Flushing all values stored in local cache');
-                            options.channel.client.flushAll();
-                            resolve({
-                                code: 'SUC_CACHE_00000',
-                                result: cacheKeys
-                            });
+                let cacheKeys = options.channel.client.keys();
+                if (!Array.isArray(cacheKeys)) throw new Error('Local cache client keys() must return an array');
+                if (options.prefix || options.tenant) {
+                    let prefix = SERVICE.DefaultCacheConfigurationService.createStoragePrefix(options) + (options.prefix || '');
+                    _self.LOG.debug('Flushing value in local cache stored with prefix: ' + prefix);
+                    let delKeys = [];
+                    cacheKeys.forEach(key => {
+                        if (key.startsWith(prefix)) {
+                            options.channel.client.del(key);
+                            delKeys.push(key);
                         }
-                    }
-                });
+                    });
+                    resolve({ code: 'SUC_CACHE_00000', result: delKeys });
+                } else {
+                    _self.LOG.debug('Flushing all values stored in local cache');
+                    options.channel.client.flushAll();
+                    resolve({ code: 'SUC_CACHE_00000', result: cacheKeys });
+                }
             } catch (error) {
                 reject(new CLASSES.CacheError(error));
             }
@@ -141,7 +127,7 @@ module.exports = {
                 let tmpKeys = [];
                 if (options.keys && options.keys.length > 0) {
                     for (var i = 0; i < options.keys.length; i++) {
-                        tmpKeys[i] = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.keys[i];
+                        tmpKeys[i] = SERVICE.DefaultCacheConfigurationService.createStorageKey(options, options.keys[i]);
                     }
                 }
                 _self.LOG.debug('Flushing value in local cache stored with keys: ' + tmpKeys);

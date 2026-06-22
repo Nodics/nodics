@@ -59,8 +59,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 3 |
+| Documented | 2 |
+| Partially documented | 1 |
 | Undocumented | 10 |
 | Inventory only | 3 |
 
@@ -92,8 +92,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/hazelcastCache/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/hazelcastCache/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/hazelcastCache/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCache/hazelcastCache/src/service/cache/defaultHazelcastCacheService.js` | `src` | `partially-documented` | 3/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gFramework/nCache/hazelcastCache/src/service/engine/defaultHazelcastCacheEngineService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nCache/hazelcastCache/src/service/cache/defaultHazelcastCacheService.js` | `src` | `documented` | 8/8 | Fail-closed placeholder for Hazelcast cache operations; it never masquerades as local or distributed storage. |  |
+| `gFramework/nCache/hazelcastCache/src/service/engine/defaultHazelcastCacheEngineService.js` | `src` | `documented` | 6/6 | Fail-closed placeholder for Hazelcast connection handling; projects must provide a real layered adapter before enabling this engine. |  |
 | `gFramework/nCache/hazelcastCache/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/hazelcastCache/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
 | `gFramework/nCache/hazelcastCache/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |

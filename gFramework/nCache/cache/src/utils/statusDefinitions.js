@@ -61,5 +61,13 @@ module.exports = {
     ERR_CACHE_00007: {
         code: '403',
         message: 'Cache mutation scope does not match the authorized tenant and active module'
+    },
+    ERR_CACHE_00008: {
+        code: '503',
+        message: 'Selected cache adapter is unsupported and cannot be activated'
+    },
+    ERR_CACHE_00009: {
+        code: '400',
+        message: 'Cache adapter contract or TTL configuration is invalid'
     }
 };

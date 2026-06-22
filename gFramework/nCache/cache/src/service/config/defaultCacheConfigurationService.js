@@ -64,6 +64,49 @@ module.exports = {
         }
     },
 
+    /** Returns normalized adapter capabilities while retaining legacy metadata compatibility. */
+    getEngineCapabilities: function (engineOptions) {
+        engineOptions = engineOptions || {};
+        return Object.assign({
+            distributed: engineOptions.distributed === true,
+            atomicConsume: engineOptions.atomicConsume === true,
+            ttl: true,
+            nonExpiringTtl: true,
+            prefixFlush: true,
+            keyFlush: true,
+            serialization: 'custom'
+        }, engineOptions.capabilities || {});
+    },
+
+    /** Resolves TTL consistently: explicit zero never expires, positive values override defaults, and negative/invalid values fail. */
+    resolveTtl: function (options) {
+        options = options || {};
+        let channel = options.channel || {};
+        let channelOptions = channel.channelOptions || channel.chennalOptions || {};
+        let engineOptions = channel.engineOptions || {};
+        let configured = options.ttl !== undefined ? options.ttl : channelOptions.ttl !== undefined ? channelOptions.ttl : engineOptions.ttl !== undefined ? engineOptions.ttl : engineOptions.options && engineOptions.options.ttl !== undefined ? engineOptions.options.ttl : 0;
+        let ttl = Number(configured);
+        if (!Number.isFinite(ttl) || ttl < 0) {
+            throw new CLASSES.CacheError('ERR_CACHE_00009', 'TTL must be zero or a positive number');
+        }
+        return ttl;
+    },
+
+    /** Builds the physical adapter namespace from channel, module prefix, and optional tenant scope. */
+    createStoragePrefix: function (options) {
+        options = options || {};
+        let channel = options.channel || {};
+        let engineOptions = channel.engineOptions || {};
+        let modulePrefix = engineOptions.options && engineOptions.options.prefix || options.moduleName;
+        let tenantPrefix = options.tenant ? '_' + options.tenant : '';
+        return channel.channelName + '_' + modulePrefix + tenantPrefix + '_';
+    },
+
+    /** Builds one physical cache key without changing the caller-owned logical key. */
+    createStorageKey: function (options, key) {
+        return this.createStoragePrefix(options) + (key !== undefined ? key : options.key);
+    },
+
     /** Composes default and module-owned cache configuration for all active modules. */
     loadCacheConfiguration: function () {
         return new Promise((resolve, reject) => {

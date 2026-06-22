@@ -55,16 +55,17 @@ Nodics Revolution:
     ✔ Migrate deterministic Postman Data Import/Export lifecycle coverage for init, core, sample, local, remote extension, and default export behavior. @postman @import @export @testing @done
       ✔ Implement and qualify the internal governed remote transport-adapter contract. @postman @import @remote @integration @done
       ☐ Add a project-selected production adapter and live integration test before exposing a public remote-import route. @postman @import @remote @integration
-    ☐ Migrate and harden Cache coverage for item/API/search/auth cache and flush behavior. @postman @cache @testing
+    ✔ Migrate and harden Cache coverage for item/API/search/auth cache and flush behavior. @postman @cache @testing @done
       ✔ P0: Make API cache keys use resolved tenant and governed principal/access context for bearer, API-key, and public requests; never key security boundaries from legacy headers alone. @cache @tenant @security @done
       ✔ P0: Preserve the standard response envelope on API/search-cache hits and stop supported local/Redis engines from mutating caller or cached values with transport status fields. @cache @api @compatibility @done
       ✔ P0: Change cache flush/configuration mutations from GET/general `userGroup` access to permissioned mutation routes with tenant- and module-safe scope. @cache @router @authorization @done
       ✔ P0: Fix cache configuration facade/service naming mismatch, custom `flushByKeys` dispatch, broken event target references, and unresolved successful item-cache change events. @cache @correctness @event @done
-      ☐ P1: Define one cache adapter contract for key construction, TTL zero/default semantics, miss errors, atomic consume, prefix/key flush, serialization, and capability metadata. @cache @adapter
-      ☐ P1: Keep local and Redis engines compliant; mark the current Hazelcast placeholder unsupported and fail closed until a real distributed adapter exists. @cache @redis @hazelcast @fail-closed
-      ☐ P1: Verify write/update/remove invalidation for item and search caches, plus cross-node invalidation behavior for distributed engines. @cache @invalidation @distributed
-      ☐ P1: Add deterministic local-engine tests and optional guarded Redis integration tests for tenant isolation, TTL/expiry, put/get/consume, prefix/key flush, API hits, item hits, and failures. @cache @testing @redis
-      ☐ P1: Document cache channels, engine selection/fallback, hierarchical overrides, runtime configuration events, security permissions, and operational diagnostics. @cache @docs @hierarchy
+      ✔ P1: Define one cache adapter contract for key construction, TTL zero/default semantics, miss errors, atomic consume, prefix/key flush, serialization, and capability metadata. @cache @adapter @done
+      ✔ P1: Keep local and Redis engines compliant; mark the current Hazelcast placeholder unsupported and fail closed until a real distributed adapter exists. @cache @redis @hazelcast @fail-closed @done
+      ✔ P1: Verify write/update/remove invalidation for item and search caches, plus cross-node invalidation behavior for distributed engines. @cache @invalidation @distributed @done
+      ✔ P1: Add deterministic local-engine tests and optional guarded Redis integration tests for tenant isolation, TTL/expiry, put/get/consume, prefix/key flush, API hits, item hits, and failures. @cache @testing @redis @done
+        ✔ Add deterministic Local/Redis adapter contract tests for capability metadata, TTL zero/default/invalid values, mutation-safe serialization, miss behavior, atomic consume, prefix flush, key flush, and Hazelcast fail-closed behavior. @cache @testing @done
+      ✔ P1: Document cache channels, engine selection/fallback, hierarchical overrides, runtime configuration events, security permissions, and operational diagnostics. @cache @docs @hierarchy @done
     ☐ Migrate Postman EMS/Event coverage for publish, register, consume, close, and tenant failure paths. @postman @ems @event @testing
     ☐ Migrate Postman CronJob coverage for create, update, run, start, stop, pause, resume, and remove. @postman @cronjob @testing
       ✔ Add CronJob controller request mapping and service lifecycle contract tests for create/update/run/start/stop/remove/pause/resume. @cronjob @testing @done

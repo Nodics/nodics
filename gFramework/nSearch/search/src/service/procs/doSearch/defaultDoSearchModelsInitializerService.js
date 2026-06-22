@@ -53,6 +53,7 @@ module.exports = {
             request.cacheKeyHash = SERVICE.DefaultCacheConfigurationService.createSearchKey(request);
             this.LOG.debug('Model cache lookup for key: ' + request.cacheKeyHash);
             SERVICE.DefaultCacheService.get({
+                tenant: request.tenant,
                 moduleName: request.searchModel.moduleName || request.schemaModel.moduleName,
                 channelName: SERVICE.DefaultCacheService.getSearchCacheChannel(request.searchModel.indexName),
                 key: request.cacheKeyHash
@@ -169,6 +170,7 @@ module.exports = {
         if (indexDef.cache && indexDef.cache.enabled && response.success.success && response.success.result) {
             let cache = request.searchModel.indexDef.cache;
             SERVICE.DefaultCacheService.put({
+                tenant: request.tenant,
                 moduleName: request.searchModel.moduleName || request.schemaModel.moduleName,
                 channelName: SERVICE.DefaultCacheService.getSearchCacheChannel(request.searchModel.indexName),
                 key: request.cacheKeyHash,

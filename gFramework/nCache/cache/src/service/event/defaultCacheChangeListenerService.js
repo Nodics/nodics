@@ -63,5 +63,36 @@ module.exports = {
                 message: error
             });
         }
+    },
+
+    /** Applies a trusted peer-node invalidation without publishing the event again. */
+    handleCacheInvalidationEvent: function (event, callback) {
+        try {
+            let data = event.data || {};
+            SERVICE.DefaultCacheService.flushCache({
+                tenant: event.tenant,
+                authData: { tenant: event.tenant, isSystem: true },
+                moduleName: event.target,
+                channelName: data.channelName,
+                prefix: data.prefix,
+                keys: data.keys,
+                internalCacheOperation: true,
+                suppressPropagation: true
+            }).then(success => callback(null, {
+                success: true,
+                code: 'SUC_EVNT_00000',
+                message: success
+            })).catch(error => callback({
+                success: false,
+                code: 'ERR_EVNT_00000',
+                message: error
+            }));
+        } catch (error) {
+            callback({
+                success: false,
+                code: 'ERR_EVNT_00000',
+                message: error
+            });
+        }
     }
 };

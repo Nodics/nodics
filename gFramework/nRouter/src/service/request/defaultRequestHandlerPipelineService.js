@@ -302,6 +302,7 @@ module.exports = {
             request.apiCacheKeyHash = request.router.prefix ? request.router.prefix + '_' + keyHash : keyHash;
             if (request.router.cache && request.router.cache.enabled) {
                 SERVICE.DefaultCacheService.get({
+                    tenant: request.tenant,
                     moduleName: request.moduleName,
                     channelName: SERVICE.DefaultCacheService.getRouterCacheChannel(request.router.routerName),
                     key: request.apiCacheKeyHash,
@@ -350,6 +351,7 @@ module.exports = {
                     response.success = success;
                     if (response.success && response.success.result && UTILS.isApiCashable(response.success.result, request.router)) {
                         SERVICE.DefaultCacheService.put({
+                            tenant: request.tenant,
                             moduleName: request.moduleName,
                             channelName: SERVICE.DefaultCacheService.getRouterCacheChannel(request.router.routerName),
                             key: request.apiCacheKeyHash,

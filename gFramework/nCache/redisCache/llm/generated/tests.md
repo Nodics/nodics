@@ -4,6 +4,7 @@
 
 ## Hand-Authored Tests
 
+- `gFramework/nCache/redisCache/test/cacheRedisLive.test.js`
 - `gFramework/nCache/redisCache/test/common/commonTest.js`
 - `gFramework/nCache/redisCache/test/env-local/envTest.js`
 

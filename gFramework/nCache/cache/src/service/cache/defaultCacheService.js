@@ -46,6 +46,7 @@ module.exports = {
         try {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
             if (channel) {
+                this.assertWriteCapabilities(channel, options.ttl);
                 let operationName = 'put';
                 if (SERVICE[channel.engineOptions.cacheHandler][options.channelName + 'Put'] && typeof SERVICE[channel.engineOptions.cacheHandler][options.channelName + 'Put'] === 'function') {
                     operationName = options.channelName + 'Put';
@@ -93,6 +94,7 @@ module.exports = {
                 return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00006', 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName));
             }
             let handler = SERVICE[channel.engineOptions.cacheHandler];
+            this.assertCapability(channel, 'atomicConsume');
             let operationName = options.channelName + 'Consume';
             if (!handler[operationName] || typeof handler[operationName] !== 'function') operationName = 'consume';
             if (!handler[operationName] || typeof handler[operationName] !== 'function') {
@@ -109,11 +111,13 @@ module.exports = {
     flushCache: function (options) {
         try {
             this.validateMutationScope(options);
+            let flush;
             if (options.keys && options.keys instanceof Array && options.keys.length > 0) {
-                return this.flushByKeys(options);
+                flush = this.flushByKeys(options);
             } else {
-                return this.flushByPrefix(options);
+                flush = this.flushByPrefix(options);
             }
+            return Promise.resolve(flush).then(result => this.propagateInvalidation(options).then(() => result));
         } catch (error) {
             return Promise.reject(new CLASSES.CacheError(error));
         }
@@ -124,6 +128,7 @@ module.exports = {
         try {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
             if (channel) {
+                this.assertCapability(channel, 'prefixFlush');
                 let operationName = 'flushByPrefix';
                 if (SERVICE[channel.engineOptions.cacheHandler][options.channelName + 'FlushByPrefix'] && typeof SERVICE[channel.engineOptions.cacheHandler][options.channelName + 'FlushByPrefix'] === 'function') {
                     operationName = options.channelName + 'FlushByPrefix';
@@ -146,6 +151,7 @@ module.exports = {
         try {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
             if (channel) {
+                this.assertCapability(channel, 'keyFlush');
                 let operationName = 'flushByKeys';
                 if (SERVICE[channel.engineOptions.cacheHandler][options.channelName + 'FlushByKeys'] && typeof SERVICE[channel.engineOptions.cacheHandler][options.channelName + 'FlushByKeys'] === 'function') {
                     operationName = options.channelName + 'FlushByKeys';
@@ -197,6 +203,100 @@ module.exports = {
             channelName = CONFIG.get('cache').authCacheChannelNameMapping[tenant];
         }
         return channelName;
+    },
+
+    /** Returns normalized capabilities for initialized and legacy custom adapters. */
+    getChannelCapabilities: function (channel) {
+        let engineOptions = channel && channel.engineOptions || {};
+        return Object.assign({
+            distributed: engineOptions.distributed === true,
+            atomicConsume: engineOptions.atomicConsume === true,
+            ttl: true,
+            nonExpiringTtl: true,
+            prefixFlush: true,
+            keyFlush: true,
+            serialization: 'custom'
+        }, engineOptions.capabilities || {});
+    },
+
+    /** Fails when an operation requires a capability the selected adapter did not declare. */
+    assertCapability: function (channel, capability) {
+        if (this.getChannelCapabilities(channel)[capability] !== true) {
+            throw new CLASSES.CacheError('ERR_CACHE_00009', 'Cache adapter does not support required capability: ' + capability);
+        }
+        return true;
+    },
+
+    /** Enforces declared TTL and explicit non-expiring write capabilities. */
+    assertWriteCapabilities: function (channel, ttl) {
+        if (ttl !== undefined) this.assertCapability(channel, 'ttl');
+        if (ttl === 0) this.assertCapability(channel, 'nonExpiringTtl');
+        return true;
+    },
+
+    /** Resolves a cache purpose through layered channel mappings. */
+    resolveCacheChannel: function (cacheType, resourceName, tenant) {
+        if (cacheType === 'router') return this.getRouterCacheChannel(resourceName);
+        if (cacheType === 'schema') return this.getSchemaCacheChannel(resourceName);
+        if (cacheType === 'search') return this.getSearchCacheChannel(resourceName);
+        if (cacheType === 'auth') return this.getAuthCacheChannel(tenant);
+        throw new CLASSES.CacheError('ERR_CACHE_00009', 'Unknown cache purpose: ' + cacheType);
+    },
+
+    /** Resolves every active channel that may contain a resource, including customized router-channel mappings. */
+    resolveInvalidationChannels: function (options) {
+        if (options.cacheType !== 'router') {
+            return [this.resolveCacheChannel(options.cacheType, options.resourceName, options.tenant)];
+        }
+        let cacheConfig = CONFIG.get('cache') || {};
+        let candidates = ['router'].concat(Object.values(cacheConfig.routerCacheChannelNameMapping || {}));
+        let configured = SERVICE.DefaultCacheConfigurationService.getCacheChannels(options.moduleName) || {};
+        let unique = Array.from(new Set(candidates));
+        let active = unique.filter(channelName => configured[channelName]);
+        return active.length > 0 ? active : [this.getRouterCacheChannel(options.resourceName)];
+    },
+
+    /** Invalidates one tenant-owned logical resource using the effective layered channel mapping. */
+    invalidateResource: function (options) {
+        options = Object.assign({}, options || {});
+        if (!options.resourceName || !options.cacheType) {
+            return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00009', 'resourceName and cacheType are required for cache invalidation'));
+        }
+        let channels = this.resolveInvalidationChannels(options);
+        return Promise.all(channels.map(channelName => this.flushCache(Object.assign({}, options, {
+            channelName: channelName,
+            prefix: options.resourceName,
+            internalCacheOperation: true
+        }))));
+    },
+
+    /** Broadcasts local-adapter invalidation to peer module nodes; shared adapters need no duplicate event. */
+    propagateInvalidation: function (options) {
+        let channel = options.channel || SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
+        let cacheConfig = CONFIG.get('cache') || {};
+        let policy = cacheConfig.invalidation || {};
+        if (options.suppressPropagation === true || policy.crossNode === false || this.getChannelCapabilities(channel).distributed === true) {
+            return Promise.resolve(true);
+        }
+        if (!SERVICE.DefaultEventService || typeof SERVICE.DefaultEventService.publish !== 'function') {
+            return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00009', 'Cross-node invalidation requires the configured event service'));
+        }
+        return SERVICE.DefaultEventService.publish({
+            tenant: options.tenant,
+            active: true,
+            event: policy.eventName || 'cacheInvalidation',
+            sourceName: options.moduleName,
+            sourceId: CONFIG.get('nodeId'),
+            target: options.moduleName,
+            state: 'NEW',
+            type: 'SYNC',
+            targetType: ENUMS.TargetType.MODULE_NODES.key,
+            data: {
+                channelName: options.channelName,
+                prefix: options.prefix,
+                keys: options.keys
+            }
+        });
     },
 
 
@@ -257,7 +357,8 @@ module.exports = {
         let modules = typeof NODICS !== 'undefined' && typeof NODICS.getModules === 'function' ? NODICS.getModules() : undefined;
         let activeModule = typeof NODICS !== 'undefined' && typeof NODICS.getModule === 'function' ? NODICS.getModule(moduleName) : modules && modules[moduleName];
         let activeTenants = typeof NODICS !== 'undefined' && typeof NODICS.getActiveTenants === 'function' ? NODICS.getActiveTenants() : undefined;
-        if (!moduleName || !tenant || authorizedTenant && authorizedTenant !== tenant || bodyTenant && bodyTenant !== tenant || bodyModule && bodyModule !== moduleName || (activeModule === undefined && (modules || typeof NODICS !== 'undefined' && typeof NODICS.getModule === 'function')) || Array.isArray(activeTenants) && activeTenants.length > 0 && !activeTenants.includes(tenant)) {
+        let internalOperation = request.internalCacheOperation === true;
+        if (!moduleName || (!tenant && !internalOperation) || authorizedTenant && authorizedTenant !== tenant || bodyTenant && bodyTenant !== tenant || bodyModule && bodyModule !== moduleName || (activeModule === undefined && (modules || typeof NODICS !== 'undefined' && typeof NODICS.getModule === 'function')) || tenant && Array.isArray(activeTenants) && activeTenants.length > 0 && !activeTenants.includes(tenant)) {
             throw new CLASSES.CacheError('ERR_CACHE_00007', 'Cache mutation must remain within authorized tenant ' + (tenant || '<missing>') + ' and active module ' + (moduleName || '<missing>'));
         }
         return true;

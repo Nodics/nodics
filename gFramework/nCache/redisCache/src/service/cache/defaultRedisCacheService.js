@@ -89,7 +89,7 @@ module.exports = {
     /** Invalidates matching namespaced Redis keys using incremental scanning. */
     flushByPrefix: function (options) {
         try {
-            let prefix = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + (options.prefix || '');
+            let prefix = SERVICE.DefaultCacheConfigurationService.createStoragePrefix(options) + (options.prefix || '');
             let pattern = prefix.endsWith('*') ? prefix : prefix + '*';
             return this.collectKeys(options.channel.client, pattern).then(keys => {
                 let removal = keys.length > 0 ? options.channel.client.del(keys) : Promise.resolve(0);
@@ -108,7 +108,7 @@ module.exports = {
                 let tmpKeys = [];
                 if (options.keys && options.keys.length > 0) {
                     for (var i = 0; i < options.keys.length; i++) {
-                        tmpKeys[i] = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.keys[i];
+                    tmpKeys[i] = SERVICE.DefaultCacheConfigurationService.createStorageKey(options, options.keys[i]);
                     }
                 }
                 _self.LOG.debug('Flushing value in local cache stored with keys: ' + tmpKeys);
@@ -124,13 +124,12 @@ module.exports = {
 
     /** Builds the canonical cache key shared by all Redis operations. */
     getKey: function (options) {
-        return options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.key;
+        return SERVICE.DefaultCacheConfigurationService.createStorageKey(options);
     },
 
     /** Resolves the effective TTL while preserving explicit non-expiring values. */
     getTtl: function (options) {
-        if (options.ttl === 0) return 0;
-        return Number(options.ttl || options.channel.chennalOptions && options.channel.chennalOptions.ttl || options.channel.engineOptions.ttl || options.channel.engineOptions.options.ttl || 0);
+        return SERVICE.DefaultCacheConfigurationService.resolveTtl(options);
     },
 
     /** Uses incremental SCAN so prefix cleanup does not block a shared Redis server. */

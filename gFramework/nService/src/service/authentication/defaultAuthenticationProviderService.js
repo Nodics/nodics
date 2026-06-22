@@ -118,7 +118,8 @@ module.exports = {
         return SERVICE.DefaultCacheService.flushCache({
             moduleName: moduleName,
             channelName: 'auth',
-            keys: [token]
+            keys: [token],
+            internalCacheOperation: true
         });
     },
 
