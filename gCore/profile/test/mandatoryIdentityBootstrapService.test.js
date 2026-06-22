@@ -42,11 +42,12 @@ global.SERVICE = {
     DefaultUserGroupService: {
         /** Returns mutable in-memory group fixtures. */
         get: function () { return Promise.resolve({ result: groups.slice() }); },
-        /** Saves one missing group fixture. */
-        save: function (request) {
-            saved.push(request.model);
-            groups.push(request.model);
-            return Promise.resolve({ result: request.model });
+        /** Saves missing group fixtures as one hierarchy-aware batch. */
+        saveAll: function (request) {
+            const models = [].concat(request.models || []);
+            saved.push(...models);
+            groups.push(...models);
+            return Promise.resolve({ result: request.models });
         }
     },
     DefaultIdentityMigrationAuditService: {

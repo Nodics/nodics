@@ -1,3 +1,10 @@
+/**
+ * @module profile/data/init/DefaultUserGroupsData
+ * @description Seeds the default user-group hierarchy and narrowly scoped administrative permissions required by profile and control-plane capabilities.
+ * @layer data
+ * @owner profile
+ * @override Project modules may extend or replace group assignments through layered data while preserving explicit permissions and least privilege.
+ */
 /*
     Nodics - Enterprice Micro-Services Management Framework
 
@@ -107,7 +114,10 @@ module.exports = {
             'identity.migration.preview',
             'identity.migration.apply',
             'identity.migration.rollback',
-            'identity.credential.rotate'
+            'identity.credential.rotate',
+            'cache.flush',
+            'cache.configuration.router.update',
+            'cache.configuration.item.update'
         ]
     },
     record12: {

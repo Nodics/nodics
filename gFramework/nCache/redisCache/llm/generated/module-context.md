@@ -59,8 +59,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 3 |
+| Documented | 1 |
+| Partially documented | 2 |
 | Undocumented | 10 |
 | Inventory only | 3 |
 
@@ -92,7 +92,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/redisCache/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/redisCache/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/redisCache/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCache/redisCache/src/service/cache/defaultRedisCacheService.js` | `src` | `partially-documented` | 6/10 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nCache/redisCache/src/service/cache/defaultRedisCacheService.js` | `src` | `documented` | 10/10 | Implements the distributed cache adapter contract using Redis namespacing, TTL, atomic consume, and incremental invalidation. |  |
 | `gFramework/nCache/redisCache/src/service/engine/defaultRedisCacheEngineService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
 | `gFramework/nCache/redisCache/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/redisCache/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |

@@ -71,9 +71,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 8 |
+| Documented | 9 |
 | Partially documented | 4 |
-| Undocumented | 67 |
+| Undocumented | 66 |
 | Inventory only | 5 |
 
 ## Important Files
@@ -104,7 +104,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/data/init/data/enterprise/defaultTenantsData.csv` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/profile/data/init/data/enterprise/defaultTenantsData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/data/init/data/enterprise/defaultTenantsData.xlsx` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/profile/data/init/data/groups/defaultUserGroupsData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/profile/data/init/data/groups/defaultUserGroupsData.js` | `data` | `documented` | 0/0 | Seeds the default user-group hierarchy and narrowly scoped administrative permissions required by profile and control-plane capabilities. |  |
 | `gCore/profile/data/init/data/user/defaultCutomerData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/data/init/data/user/defaultEmployeeData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/data/init/headers/address/defaultAddressesHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

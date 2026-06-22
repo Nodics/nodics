@@ -1,3 +1,10 @@
+/**
+ * @module nCache/nodeCache/service/cache/DefaultLocalCacheService
+ * @description Implements the cache adapter contract for process-local storage without mutating caller-owned values.
+ * @layer service
+ * @owner nCache/nodeCache
+ * @override Project modules may replace local storage while preserving namespacing, TTL, miss, consume, clone, and invalidation contracts.
+ */
 /*
     Nodics - Enterprice Micro-Services Management Framework
 
@@ -34,6 +41,7 @@ module.exports = {
         });
     },
 
+    /** Clone-stores a value with the effective TTL and returns the standard operation envelope. */
     put: function (options) {
         return new Promise((resolve, reject) => {
             try {
@@ -44,15 +52,16 @@ module.exports = {
                     ttl = options.ttl || options.channel.chennalOptions.ttl || options.channel.engineOptions.ttl || options.channel.engineOptions.options.ttl;
                 }
                 this.LOG.debug('Putting value in Local cache storage with key: ' + key + ' TTL: ' + ttl);
-                options.channel.client.set(key, options.value, ttl);
-                options.value.code = 'SUC_CACHE_00000';
-                resolve(options.value);
+                let storedValue = _.cloneDeep(options.value);
+                options.channel.client.set(key, storedValue, ttl);
+                resolve({ code: 'SUC_CACHE_00000', result: _.cloneDeep(storedValue) });
             } catch (error) {
                 reject(new CLASSES.CacheError(error));
             }
         });
     },
 
+    /** Returns a detached copy of a cached value or the standard cache-miss error. */
     get: function (options) {
         return new Promise((resolve, reject) => {
             try {
@@ -60,8 +69,7 @@ module.exports = {
                 this.LOG.debug('Getting value from Local cache storage with key: ' + key);
                 let value = options.channel.client.get(key);
                 if (value) {
-                    value.code = 'SUC_CACHE_00000';
-                    resolve(value);
+                    resolve(_.cloneDeep(value));
                 } else {
                     reject(new CLASSES.CacheError('ERR_CACHE_00001', 'Could not found any value for key: ' + key));
                 }
@@ -80,14 +88,14 @@ module.exports = {
                 let value = options.channel.client.get(key);
                 if (!value) return reject(new CLASSES.CacheError('ERR_CACHE_00001', 'Could not found any value for key: ' + key));
                 options.channel.client.del(key);
-                value.code = 'SUC_CACHE_00000';
-                resolve(value);
+                resolve(_.cloneDeep(value));
             } catch (error) {
                 reject(new CLASSES.CacheError(error));
             }
         });
     },
 
+    /** Invalidates keys within the configured channel and optional prefix scope. */
     flushByPrefix: function (options) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -125,6 +133,7 @@ module.exports = {
             }
         });
     },
+    /** Invalidates explicit keys within the configured channel namespace. */
     flushByKeys: function (options) {
         return new Promise((resolve, reject) => {
             try {

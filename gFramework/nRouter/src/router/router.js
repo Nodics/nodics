@@ -284,43 +284,46 @@ module.exports = {
         flushCache: {
             flushKey: {
                 secured: true,
-                accessGroups: ['userGroup'],
+                accessGroups: ['runtimeConfigAdminUserGroup'],
+                permission: 'cache.flush',
                 key: '/cache/:channelName/flush/key/:key',
-                method: 'GET',
+                method: 'DELETE',
                 controller: 'DefaultCacheController',
                 operation: 'flushCache',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'DELETE',
                     url: 'http://host:port/nodics/{moduleName}/cache/:channelName/flush/key/:key'
                 }
             },
             flushPrefix: {
                 secured: true,
-                accessGroups: ['userGroup'],
+                accessGroups: ['runtimeConfigAdminUserGroup'],
+                permission: 'cache.flush',
                 key: '/cache/:channelName/flush/prefix/:prefix',
-                method: 'GET',
+                method: 'DELETE',
                 controller: 'DefaultCacheController',
                 operation: 'flushCache',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'DELETE',
                     url: 'http://host:port/nodics/{moduleName}/cache/:channelName/flush/prefix/:prefix'
                 }
             },
             flushAPIAll: {
                 secured: true,
-                accessGroups: ['userGroup'],
+                accessGroups: ['runtimeConfigAdminUserGroup'],
+                permission: 'cache.flush',
                 key: '/cache/:channelName/flush',
-                method: 'GET',
+                method: 'DELETE',
                 controller: 'DefaultCacheController',
                 operation: 'flushCache',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'DELETE',
                     url: 'http://host:port/nodics/{moduleName}/cache/:channelName/flush'
                 }
             }
@@ -328,7 +331,8 @@ module.exports = {
         updateRouterCacheConfig: {
             apiConfig: {
                 secured: true,
-                accessGroups: ['userGroup'],
+                accessGroups: ['runtimeConfigAdminUserGroup'],
+                permission: 'cache.configuration.router.update',
                 key: '/cache/api',
                 method: 'POST',
                 controller: 'DefaultCacheController',
@@ -352,7 +356,8 @@ module.exports = {
         updateSchemaCacheConfig: {
             itemConfig: {
                 secured: true,
-                accessGroups: ['userGroup'],
+                accessGroups: ['runtimeConfigAdminUserGroup'],
+                permission: 'cache.configuration.item.update',
                 key: '/cache/item',
                 method: 'POST',
                 controller: 'DefaultCacheController',

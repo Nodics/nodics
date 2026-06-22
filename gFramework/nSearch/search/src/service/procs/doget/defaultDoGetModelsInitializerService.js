@@ -175,7 +175,7 @@ module.exports = {
                 moduleName: request.searchModel.moduleName || request.schemaModel.moduleName,
                 channelName: SERVICE.DefaultCacheService.getSearchCacheChannel(request.searchModel.indexName),
                 key: request.cacheKeyHash,
-                value: response.success.result,
+                value: response.success,
                 ttl: cache.ttl
             }).then(success => {
                 this.LOG.info('Item saved in item cache');

@@ -1,3 +1,10 @@
+/**
+ * @module nCache/cache/service/config/DefaultCacheConfigurationService
+ * @description Builds layered cache engine/channel configuration and deterministic tenant- and principal-scoped cache keys.
+ * @layer service
+ * @owner nCache/cache
+ * @override Project modules may extend channel mappings and cache-key material while preserving deterministic tenant and principal isolation.
+ */
 /*
     Nodics - Enterprice Micro-Services Management Framework
 
@@ -37,14 +44,17 @@ module.exports = {
         });
     },
 
+    /** Returns the effective cache channels for one active module. */
     getCacheChannels: function (moduleName) {
         return this.channels[moduleName];
     },
 
+    /** Returns the effective cache engines for one active module. */
     getCacheEngines: function (moduleName) {
         return this.engines[moduleName];
     },
 
+    /** Returns one effective cache engine or null when it is not configured. */
     getCacheEngine: function (moduleName, engineName) {
         let moduleEngines = this.engines[moduleName];
         if (moduleEngines) {
@@ -54,6 +64,7 @@ module.exports = {
         }
     },
 
+    /** Composes default and module-owned cache configuration for all active modules. */
     loadCacheConfiguration: function () {
         return new Promise((resolve, reject) => {
             try {
@@ -80,6 +91,7 @@ module.exports = {
         });
     },
 
+    /** Preserves the cache model-update lifecycle hook for layered extensions. */
     updateModels: function () {
         return new Promise((resolve, reject) => {
             try {
@@ -95,23 +107,35 @@ module.exports = {
         });
     },
 
+    /** Builds a deterministic API-cache key scoped by request, tenant, enterprise, and governed principal context. */
     createApiKey: function (request) {
-        let key = request.originalUrl;
-        let method = request.method;
-        if (method === 'POST' || method === 'post') {
-            if (request.body) {
-                key += '-' + JSON.stringify(request.body);
-            }
-        }
-        if (request.get('authToken')) {
-            key += '-' + request.get('authToken');
-        }
-        if (request.get('tenant')) {
-            key += '-' + request.get('tenant');
-        }
-        return method + '-' + key;
+        const httpRequest = request.httpRequest || request;
+        const authData = request.authData || {};
+        const method = String(httpRequest.method || request.method || 'GET').toUpperCase();
+        const principal = {
+            id: authData.serviceId || authData.loginId || authData.userId || authData.uid || authData.code || authData.email || null,
+            isSystem: authData.isSystem === true,
+            userGroups: [].concat(authData.userGroups || []).sort(),
+            permissions: [].concat(authData.permissions || []).sort()
+        };
+        return this.stableStringify({
+            method: method,
+            url: httpRequest.originalUrl || request.originalUrl,
+            body: ['POST', 'PUT', 'PATCH'].includes(method) ? httpRequest.body || null : null,
+            tenant: request.tenant || authData.tenant || CONFIG.get('defaultTenant') || 'default',
+            enterprise: request.entCode || authData.entCode || null,
+            principal: principal
+        });
     },
 
+    /** Deterministically serializes cache-key material without credential values. */
+    stableStringify: function (value) {
+        if (Array.isArray(value)) return '[' + value.map(item => this.stableStringify(item)).join(',') + ']';
+        if (value && typeof value === 'object') return '{' + Object.keys(value).sort().map(key => JSON.stringify(key) + ':' + this.stableStringify(value[key])).join(',') + '}';
+        return JSON.stringify(value);
+    },
+
+    /** Builds a tenant-scoped item-cache key from schema query and read options. */
     createItemKey: function (request) {
         let options = _.merge({}, request.options);
         let hashString = '';
@@ -124,6 +148,7 @@ module.exports = {
             UTILS.generateHash(hashString);
     },
 
+    /** Builds a tenant-scoped search-cache key from index query and search options. */
     createSearchKey: function (request) {
         let hashString = JSON.stringify(request.options) + JSON.stringify(request.searchOptions || {}) + JSON.stringify(request.query || {});
         return request.searchModel.indexName + '_' +

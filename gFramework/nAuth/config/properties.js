@@ -1,3 +1,10 @@
+/**
+ * @module nAuth/config/Properties
+ * @description Defines layered authentication security, identity governance, permission catalog, migration, and auth-cache defaults.
+ * @layer config
+ * @owner nAuth
+ * @override Project, environment, server, and node modules may merge stricter identity policies and additional governed permissions without weakening framework security contracts.
+ */
 /*
     Nodics - Enterprice Micro-Services Management Framework
 
@@ -97,6 +104,9 @@ module.exports = {
             'runtime.config.rollback',
             'runtime.config.cleanup.preview',
             'runtime.config.cleanup.execute',
+            'cache.flush',
+            'cache.configuration.router.update',
+            'cache.configuration.item.update',
             'system.contract.openapi.view'
         ],
         migration: {
@@ -114,6 +124,44 @@ module.exports = {
             groupTargets: {
                 userGroup: { parentGroups: [] },
                 adminGroup: { parentGroups: ['userGroup'] },
+                runtimeConfigViewerUserGroup: {
+                    parentGroups: ['employeeUserGroup'],
+                    permissions: [
+                        'runtime.config.history.view',
+                        'runtime.config.summary.view',
+                        'runtime.config.request.view',
+                        'system.contract.openapi.view'
+                    ]
+                },
+                runtimeConfigRequesterUserGroup: {
+                    parentGroups: ['runtimeConfigViewerUserGroup'],
+                    permissions: ['runtime.config.preview', 'runtime.config.request.create']
+                },
+                runtimeConfigApproverUserGroup: {
+                    parentGroups: ['runtimeConfigViewerUserGroup'],
+                    permissions: ['runtime.config.request.approve', 'runtime.config.request.reject']
+                },
+                runtimeConfigOperatorUserGroup: {
+                    parentGroups: ['runtimeConfigRequesterUserGroup'],
+                    permissions: [
+                        'runtime.config.request.activate',
+                        'runtime.config.rollback',
+                        'runtime.config.cleanup.preview'
+                    ]
+                },
+                runtimeConfigAdminUserGroup: {
+                    parentGroups: ['runtimeConfigOperatorUserGroup', 'runtimeConfigApproverUserGroup'],
+                    permissions: [
+                        'runtime.config.cleanup.execute',
+                        'identity.migration.preview',
+                        'identity.migration.apply',
+                        'identity.migration.rollback',
+                        'identity.credential.rotate',
+                        'cache.flush',
+                        'cache.configuration.router.update',
+                        'cache.configuration.item.update'
+                    ]
+                },
                 serviceAccountUserGroup: {
                     parentGroups: ['userGroup'],
                     permissions: ['auth.internal.token.read', 'auth.internal.token.read.anyTenant']

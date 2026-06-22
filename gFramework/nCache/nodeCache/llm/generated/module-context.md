@@ -59,8 +59,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 3 |
+| Documented | 1 |
+| Partially documented | 2 |
 | Undocumented | 10 |
 | Inventory only | 3 |
 
@@ -92,7 +92,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/nodeCache/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/nodeCache/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/nodeCache/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCache/nodeCache/src/service/cache/defaultLocalCacheService.js` | `src` | `partially-documented` | 3/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
+| `gFramework/nCache/nodeCache/src/service/cache/defaultLocalCacheService.js` | `src` | `documented` | 7/7 | Implements the cache adapter contract for process-local storage without mutating caller-owned values. |  |
 | `gFramework/nCache/nodeCache/src/service/engine/defaultLocalCacheEngineService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
 | `gFramework/nCache/nodeCache/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/nodeCache/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |

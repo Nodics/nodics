@@ -56,10 +56,10 @@ Nodics Revolution:
       ✔ Implement and qualify the internal governed remote transport-adapter contract. @postman @import @remote @integration @done
       ☐ Add a project-selected production adapter and live integration test before exposing a public remote-import route. @postman @import @remote @integration
     ☐ Migrate and harden Cache coverage for item/API/search/auth cache and flush behavior. @postman @cache @testing
-      ☐ P0: Make API cache keys use resolved tenant and governed principal/access context for bearer, API-key, and public requests; never key security boundaries from legacy headers alone. @cache @tenant @security
-      ☐ P0: Preserve the standard response envelope on API-cache hits and stop cache engines from mutating caller or cached values with transport status fields. @cache @api @compatibility
-      ☐ P0: Change cache flush/configuration mutations from GET/general `userGroup` access to permissioned mutation routes with tenant- and module-safe scope. @cache @router @authorization
-      ☐ P0: Fix cache configuration facade/service naming mismatch, custom `flushByKeys` dispatch, broken event target references, and unresolved successful item-cache change events. @cache @correctness @event
+      ✔ P0: Make API cache keys use resolved tenant and governed principal/access context for bearer, API-key, and public requests; never key security boundaries from legacy headers alone. @cache @tenant @security @done
+      ✔ P0: Preserve the standard response envelope on API/search-cache hits and stop supported local/Redis engines from mutating caller or cached values with transport status fields. @cache @api @compatibility @done
+      ✔ P0: Change cache flush/configuration mutations from GET/general `userGroup` access to permissioned mutation routes with tenant- and module-safe scope. @cache @router @authorization @done
+      ✔ P0: Fix cache configuration facade/service naming mismatch, custom `flushByKeys` dispatch, broken event target references, and unresolved successful item-cache change events. @cache @correctness @event @done
       ☐ P1: Define one cache adapter contract for key construction, TTL zero/default semantics, miss errors, atomic consume, prefix/key flush, serialization, and capability metadata. @cache @adapter
       ☐ P1: Keep local and Redis engines compliant; mark the current Hazelcast placeholder unsupported and fail closed until a real distributed adapter exists. @cache @redis @hazelcast @fail-closed
       ☐ P1: Verify write/update/remove invalidation for item and search caches, plus cross-node invalidation behavior for distributed engines. @cache @invalidation @distributed

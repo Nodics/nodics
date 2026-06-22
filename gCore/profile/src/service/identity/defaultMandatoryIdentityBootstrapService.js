@@ -51,18 +51,12 @@ module.exports = {
         const targets = policy.groupTargets || {};
         return SERVICE.DefaultUserGroupService.get(this.systemRequest(request, { query: {} })).then(response => {
             const existingCodes = new Set((response.result || []).map(group => group.code));
-            const createdGroups = [];
             const creationOrder = this.orderMissingGroups(targets, existingCodes);
-            return creationOrder.reduce((promise, code) => promise.then(() => {
-                const model = Object.assign({ code: code, name: code, active: true }, targets[code]);
-                return SERVICE.DefaultUserGroupService.save(this.systemRequest(request, { model: model })).then(() => {
-                    existingCodes.add(code);
-                    createdGroups.push(code);
-                    return true;
-                });
-            }), Promise.resolve()).then(() => this.recordAudit(request, createdGroups)).then(() => ({
-                status: createdGroups.length > 0 ? 'RECONCILED' : 'NO_CHANGES',
-                createdGroups: createdGroups
+            const models = creationOrder.map(code => Object.assign({ code: code, name: code, active: true }, targets[code]));
+            const save = models.length > 0 ? SERVICE.DefaultUserGroupService.saveAll(this.systemRequest(request, { models: models })) : Promise.resolve(true);
+            return save.then(() => this.recordAudit(request, creationOrder)).then(() => ({
+                status: creationOrder.length > 0 ? 'RECONCILED' : 'NO_CHANGES',
+                createdGroups: creationOrder
             }));
         });
     },

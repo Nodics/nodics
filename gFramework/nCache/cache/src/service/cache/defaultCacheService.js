@@ -1,3 +1,10 @@
+/**
+ * @module nCache/cache/service/cache/DefaultCacheService
+ * @description Routes cache operations and runtime cache-configuration changes through the layered engine and event contracts.
+ * @layer service
+ * @owner nCache/cache
+ * @override Project modules may replace cache behavior while preserving tenant scope, operation envelopes, and engine dispatch contracts.
+ */
 /*
     Nodics - Enterprice Micro-Services Management Framework
 
@@ -34,6 +41,7 @@ module.exports = {
         });
     },
 
+    /** Stores a value through the configured module and channel cache engine. */
     put: function (options) {
         try {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
@@ -55,6 +63,7 @@ module.exports = {
         }
     },
 
+    /** Reads a value through the configured module and channel cache engine. */
     get: function (options) {
         try {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
@@ -96,8 +105,10 @@ module.exports = {
         }
     },
 
+    /** Selects key-based or prefix-based invalidation from the supplied scope. */
     flushCache: function (options) {
         try {
+            this.validateMutationScope(options);
             if (options.keys && options.keys instanceof Array && options.keys.length > 0) {
                 return this.flushByKeys(options);
             } else {
@@ -108,6 +119,7 @@ module.exports = {
         }
     },
 
+    /** Invalidates values matching a prefix through the active cache engine. */
     flushByPrefix: function (options) {
         try {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
@@ -129,13 +141,14 @@ module.exports = {
         }
     },
 
+    /** Invalidates explicit keys through the active cache engine. */
     flushByKeys: function (options) {
         try {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
             if (channel) {
                 let operationName = 'flushByKeys';
                 if (SERVICE[channel.engineOptions.cacheHandler][options.channelName + 'FlushByKeys'] && typeof SERVICE[channel.engineOptions.cacheHandler][options.channelName + 'FlushByKeys'] === 'function') {
-                    operationName = channelName + 'FlushByKeys';
+                    operationName = options.channelName + 'FlushByKeys';
                 }
                 options.channel = channel;
                 return SERVICE[channel.engineOptions.cacheHandler][operationName](options);
@@ -150,6 +163,7 @@ module.exports = {
         }
     },
 
+    /** Resolves the layered search-cache channel for a schema. */
     getSearchCacheChannel: function (schemaName) {
         let channelName = 'search';
         if (CONFIG.get('cache').schemaCacheChannelNameMapping && CONFIG.get('cache').schemaCacheChannelNameMapping[schemaName]) {
@@ -158,6 +172,7 @@ module.exports = {
         return channelName;
     },
 
+    /** Resolves the layered item-cache channel for a schema. */
     getSchemaCacheChannel: function (schemaName) {
         let channelName = 'schema';
         if (CONFIG.get('cache').schemaCacheChannelNameMapping && CONFIG.get('cache').schemaCacheChannelNameMapping[schemaName]) {
@@ -166,6 +181,7 @@ module.exports = {
         return channelName;
     },
 
+    /** Resolves the layered API-cache channel for a router. */
     getRouterCacheChannel: function (routerName) {
         let channelName = 'router';
         if (CONFIG.get('cache').routerCacheChannelNameMapping && CONFIG.get('cache').routerCacheChannelNameMapping[routerName]) {
@@ -174,6 +190,7 @@ module.exports = {
         return channelName;
     },
 
+    /** Resolves the layered authentication-cache channel for a tenant. */
     getAuthCacheChannel: function (tenant) {
         let channelName = 'auth';
         if (CONFIG.get('cache').authCacheChannelNameMapping && CONFIG.get('cache').authCacheChannelNameMapping[tenant]) {
@@ -183,9 +200,11 @@ module.exports = {
     },
 
 
+    /** Publishes a governed runtime API-cache configuration update. */
     updateRouterCacheConfiguration: function (request) {
         return new Promise((resolve, reject) => {
             try {
+                this.validateMutationScope(request);
                 this.publishCacheChangeEvent(request, 'apiCacheChange').then(success => {
                     resolve({
                         code: 'SUC_CACHE_00000',
@@ -200,9 +219,11 @@ module.exports = {
         });
     },
 
+    /** Publishes a governed runtime item-cache configuration update. */
     updateItemCacheConfiguration: function (request) {
         return new Promise((resolve, reject) => {
             try {
+                this.validateMutationScope(request);
                 this.publishCacheChangeEvent(request, 'itemCacheChange').then(success => {
                     resolve({
                         code: 'SUC_CACHE_00000',
@@ -217,7 +238,33 @@ module.exports = {
         });
     },
 
+    /** Backward-compatible public schema-cache configuration operation. */
+    updateSchemaCacheConfiguration: function (request) {
+        return this.updateItemCacheConfiguration(request);
+    },
 
+    /** Rejects cache mutations that escape the authorized tenant or active route module. */
+    validateMutationScope: function (request) {
+        request = request || {};
+        let authData = request.authData || {};
+        let authorizedTenant = authData.tenant || authData.enterprise && authData.enterprise.tenant && authData.enterprise.tenant.code;
+        let body = request.httpRequest && request.httpRequest.body;
+        let config = request.config;
+        let moduleName = request.moduleName;
+        let tenant = request.tenant;
+        let bodyModule = body && !Array.isArray(body) && (body.moduleName || body.targetModule || body.targetModuleName) || config && (config.moduleName || config.targetModule || config.targetModuleName);
+        let bodyTenant = body && !Array.isArray(body) && body.tenant || config && config.tenant;
+        let modules = typeof NODICS !== 'undefined' && typeof NODICS.getModules === 'function' ? NODICS.getModules() : undefined;
+        let activeModule = typeof NODICS !== 'undefined' && typeof NODICS.getModule === 'function' ? NODICS.getModule(moduleName) : modules && modules[moduleName];
+        let activeTenants = typeof NODICS !== 'undefined' && typeof NODICS.getActiveTenants === 'function' ? NODICS.getActiveTenants() : undefined;
+        if (!moduleName || !tenant || authorizedTenant && authorizedTenant !== tenant || bodyTenant && bodyTenant !== tenant || bodyModule && bodyModule !== moduleName || (activeModule === undefined && (modules || typeof NODICS !== 'undefined' && typeof NODICS.getModule === 'function')) || Array.isArray(activeTenants) && activeTenants.length > 0 && !activeTenants.includes(tenant)) {
+            throw new CLASSES.CacheError('ERR_CACHE_00007', 'Cache mutation must remain within authorized tenant ' + (tenant || '<missing>') + ' and active module ' + (moduleName || '<missing>'));
+        }
+        return true;
+    },
+
+
+    /** Broadcasts a tenant-aware cache configuration change to active module nodes. */
     publishCacheChangeEvent: function (request, eventName) {
         return new Promise((resolve, reject) => {
             try {
@@ -227,7 +274,7 @@ module.exports = {
                     event: eventName,
                     sourceName: request.moduleName,
                     sourceId: CONFIG.get('nodeId'),
-                    target: request.modelName,
+                    target: request.moduleName,
                     state: "NEW",
                     type: 'SYNC',
                     targetType: ENUMS.TargetType.MODULE_NODES.key,
@@ -244,6 +291,7 @@ module.exports = {
     },
 
 
+    /** Applies an API-cache configuration event to the effective router definition. */
     handleRouterCacheChangeEvent: function (request) {
         return new Promise((resolve, reject) => {
             try {
@@ -277,6 +325,7 @@ module.exports = {
         });
     },
 
+    /** Applies an item-cache configuration event to every active tenant model. */
     handleItemCacheChangeEvent: function (request) {
         return new Promise((resolve, reject) => {
             try {
@@ -290,14 +339,16 @@ module.exports = {
                         NODICS.getActiveTenants().forEach(tntName => {
                             let model = NODICS.getModels(request.moduleName, tntName)[modelName];
                             if (model) {
-                                model.cache = _.merge(model.cache, request.config.cache || {});
+                                model.cache = _.merge(model.cache || {}, request.config.cache || {});
                             } else {
                                 throw new Error('Invalid schemaName: ' + request.config.schemaName + ' to update item cache');
                             }
                         });
                     } catch (error) {
                         reject(new CLASSES.CacheError(error));
+                        return;
                     }
+                    resolve({ code: 'SUC_CACHE_00000' });
                 }
             } catch (error) {
                 reject(new CLASSES.CacheError(error, 'Facing issue while updating item cache'));

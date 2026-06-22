@@ -1,3 +1,10 @@
+/**
+ * @module nCache/cache/utils/StatusDefinitions
+ * @description Defines stable success and error codes for cache operations, misses, configuration validation, client availability, and mutation-scope enforcement.
+ * @layer status
+ * @owner nCache/cache
+ * @override Project modules may add status definitions while preserving existing codes and HTTP semantics for backward compatibility.
+ */
 /*
     Nodics - Enterprice Micro-Services Management Framework
 
@@ -50,5 +57,9 @@ module.exports = {
     ERR_CACHE_00006: {
         code: '400',
         message: 'Cache client has not been configured for this module'
+    },
+    ERR_CACHE_00007: {
+        code: '403',
+        message: 'Cache mutation scope does not match the authorized tenant and active module'
     }
 };

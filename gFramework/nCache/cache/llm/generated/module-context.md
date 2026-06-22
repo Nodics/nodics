@@ -30,9 +30,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 12 |
-| Test files | 2 |
+| Test files | 4 |
 | Data files | 0 |
-| All module-owned files | 21 |
+| All module-owned files | 23 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -61,9 +61,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 4 |
-| Undocumented | 14 |
+| Documented | 6 |
+| Partially documented | 2 |
+| Undocumented | 12 |
 | Inventory only | 3 |
 
 ## Important Files
@@ -96,12 +96,14 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/cache/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/cache/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/cache/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCache/cache/src/service/cache/defaultCacheService.js` | `src` | `partially-documented` | 3/17 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 14 exported method(s) |
-| `gFramework/nCache/cache/src/service/config/defaultCacheConfigurationService.js` | `src` | `partially-documented` | 2/10 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 8 exported method(s) |
+| `gFramework/nCache/cache/src/service/cache/defaultCacheService.js` | `src` | `documented` | 19/19 | Routes cache operations and runtime cache-configuration changes through the layered engine and event contracts. |  |
+| `gFramework/nCache/cache/src/service/config/defaultCacheConfigurationService.js` | `src` | `documented` | 11/11 | Builds layered cache engine/channel configuration and deterministic tenant- and principal-scoped cache keys. |  |
 | `gFramework/nCache/cache/src/service/engine/defaultCacheEngineService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gFramework/nCache/cache/src/service/event/defaultCacheChangeListenerService.js` | `src` | `undocumented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gFramework/nCache/cache/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCache/cache/src/service/event/defaultCacheChangeListenerService.js` | `src` | `documented` | 2/2 | Adapts distributed cache configuration events into tenant-aware local service updates. |  |
+| `gFramework/nCache/cache/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Defines stable success and error codes for cache operations, misses, configuration validation, client availability, and mutation-scope enforcement. |  |
 | `gFramework/nCache/cache/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCache/cache/test/cacheIsolationAndCorrectnessContract.test.js` | `test` | `documented` | 0/0 | Verifies tenant/principal-safe API keys, response-envelope cache hits, mutation-free local storage, custom key flush dispatch, schema configuration compatibility, and event target propagation. |  |
+| `gFramework/nCache/cache/test/cacheMutationSecurityContract.test.js` | `test` | `documented` | 0/0 | Verifies permissioned cache mutation routes, governed administrative permissions, and tenant/module-safe service boundaries. |  |
 | `gFramework/nCache/cache/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
 | `gFramework/nCache/cache/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
 
