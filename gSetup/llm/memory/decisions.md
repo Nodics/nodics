@@ -84,6 +84,12 @@ cache hits bypass model query execution, then emit timing evidence. Avoid
 machine-specific latency thresholds in the core framework; customer projects may
 add heavier deployment/load benchmarks in later layers.
 
+Any benchmark or test assumption that a company/project may reasonably tune,
+such as iteration count, simulated downstream delay, payload size, or threshold
+policy, must be defined in layered properties with safe framework defaults. Do
+not hardcode these values in framework tests or services when they should be
+customizable through project, environment, server, or node modules.
+
 ## Testing Direction
 
 Tests should support basic and full categories.

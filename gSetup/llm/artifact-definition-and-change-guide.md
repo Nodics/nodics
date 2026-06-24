@@ -50,6 +50,7 @@ Property requirements:
 - prefer stable data over executable business logic
 - keep secrets in governed external or runtime sources
 - avoid customer/project assumptions in framework defaults
+- place benchmark, diagnostic, timeout, size, threshold, and workload assumptions in layered properties when companies or projects may need different values
 - use a resolver or replaceable service when a value depends on substantial runtime logic
 - define and test array, `null`, deletion, and type-change semantics before relying on them
 

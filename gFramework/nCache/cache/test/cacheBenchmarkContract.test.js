@@ -24,7 +24,8 @@ global.CLASSES = {
         }
     }
 };
-global.CONFIG = { get: key => key === 'defaultTenant' ? 'default' : undefined };
+const cacheProperties = require('../config/properties').cache;
+global.CONFIG = { get: key => key === 'defaultTenant' ? 'default' : key === 'cache' ? cacheProperties : undefined };
 global.UTILS = {
     generateHash: value => value,
     isApiCashable: () => true,
@@ -50,6 +51,15 @@ function elapsedMs(startedAt) {
 
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function getBenchmarkOptions() {
+    const benchmark = (CONFIG.get('cache') && CONFIG.get('cache').benchmark) || {};
+    return {
+        iterations: benchmark.iterations === undefined ? 12 : benchmark.iterations,
+        simulatedControllerDelayMs: benchmark.simulatedControllerDelayMs === undefined ? 4 : benchmark.simulatedControllerDelayMs,
+        simulatedDaoDelayMs: benchmark.simulatedDaoDelayMs === undefined ? 4 : benchmark.simulatedDaoDelayMs
+    };
 }
 
 function requestForRouter() {
@@ -107,7 +117,7 @@ function requestForItem() {
             schemaName: 'employee',
             cache: { enabled: true, ttl: 30 },
             getItems: async function (request) {
-                await delay(4);
+                await delay(getBenchmarkOptions().simulatedDaoDelayMs);
                 itemQueryCalls += 1;
                 return {
                     query: request.query,
@@ -159,12 +169,20 @@ let controllerCalls = 0;
 let itemQueryCalls = 0;
 
 (async function () {
-    const iterations = 12;
+    assert.strictEqual(getBenchmarkOptions().iterations, cacheProperties.benchmark.iterations);
+    const originalBenchmark = cacheProperties.benchmark;
+    cacheProperties.benchmark = Object.assign({}, originalBenchmark, { iterations: 3, simulatedControllerDelayMs: 0 });
+    assert.strictEqual(getBenchmarkOptions().iterations, 3, 'Cache benchmark options must be property-driven and hierarchy-overridable');
+    assert.strictEqual(getBenchmarkOptions().simulatedControllerDelayMs, 0, 'Cache benchmark zero-value overrides must remain valid');
+    cacheProperties.benchmark = originalBenchmark;
+
+    const benchmarkOptions = getBenchmarkOptions();
+    const iterations = benchmarkOptions.iterations;
 
     global.CONTROLLER = {
         BenchmarkController: {
             get: async (_request, callback) => {
-                await delay(4);
+                await delay(benchmarkOptions.simulatedControllerDelayMs);
                 controllerCalls += 1;
                 callback(null, { code: 'SUC_BENCH_00000', result: [{ code: 'employee-a' }] });
             }
@@ -212,6 +230,10 @@ let itemQueryCalls = 0;
     assert(itemHitMs < itemMissMs, 'DAO/schema cache hit path should be faster than miss/query path');
 
     console.log('Cache benchmark evidence validated: ' +
+        'iterations=' + iterations +
+        ', simulatedControllerDelayMs=' + benchmarkOptions.simulatedControllerDelayMs +
+        ', simulatedDaoDelayMs=' + benchmarkOptions.simulatedDaoDelayMs +
+        ', ' +
         'routerHitMs=' + routerHitMs.toFixed(3) +
         ', routerMissMs=' + routerMissMs.toFixed(3) +
         ', itemHitMs=' + itemHitMs.toFixed(3) +

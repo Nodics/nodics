@@ -23,6 +23,11 @@ module.exports = {
             enabled: true,
             includeTenant: true
         },
+        benchmark: {
+            iterations: 12,
+            simulatedControllerDelayMs: 4,
+            simulatedDaoDelayMs: 4
+        },
         invalidation: {
             crossNode: true,
             eventName: 'cacheInvalidation'

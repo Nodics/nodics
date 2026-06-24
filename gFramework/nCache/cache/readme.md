@@ -53,3 +53,15 @@ Use `DefaultCacheService.getCacheMetricsSnapshot(filter)` to read counters and `
 ## Lightweight benchmark contract
 
 `cacheBenchmarkContract.test.js` is intentionally a deterministic path benchmark rather than a machine-specific load test. It proves router/API-response cache hits bypass controller execution and DAO/schema-item cache hits bypass model query execution, then prints timing evidence for hit and miss paths. Customer or project modules may add heavier load tests later, but this contract keeps the core framework fast-path behavior guarded in the standard cache suite.
+
+Benchmark defaults live under `cache.benchmark` so companies and projects can override them through normal module hierarchy:
+
+```js
+{
+    iterations: 12,
+    simulatedControllerDelayMs: 4,
+    simulatedDaoDelayMs: 4
+}
+```
+
+The printed `routerHitMs`, `routerMissMs`, `itemHitMs`, and `itemMissMs` values are runtime measurements, not configured targets. The workload assumptions that produce those measurements are configurable.
