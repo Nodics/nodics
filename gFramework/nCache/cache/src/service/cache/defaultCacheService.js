@@ -20,6 +20,16 @@ const _ = require('lodash');
 
 module.exports = {
     /**
+     * In-memory diagnostics counters for cache operations.
+     *
+     * @type {Object}
+     */
+    cacheMetrics: {
+        startedAt: new Date().toISOString(),
+        operations: {}
+    },
+
+    /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
      * @param {*} options 
@@ -43,7 +53,7 @@ module.exports = {
 
     /** Stores a value through the configured module and channel cache engine. */
     put: function (options) {
-        try {
+        return this.observeCacheOperation('put', options, () => {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
             if (channel) {
                 this.assertWriteCapabilities(channel, options.ttl);
@@ -59,14 +69,12 @@ module.exports = {
                     message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
                 }));
             }
-        } catch (error) {
-            return Promise.reject(new CLASSES.CacheError(error, 'Error while putting value in cache'));
-        }
+        }, 'Error while putting value in cache');
     },
 
     /** Reads a value through the configured module and channel cache engine. */
     get: function (options) {
-        try {
+        return this.observeCacheOperation('get', options, () => {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
             if (channel) {
                 let operationName = 'get';
@@ -81,14 +89,12 @@ module.exports = {
                     message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
                 }));
             }
-        } catch (error) {
-            return Promise.reject(new CLASSES.CacheError(error, 'Error while getting value from cache'));
-        }
+        }, 'Error while getting value from cache');
     },
 
     /** Atomically removes and returns one cache value through the active engine. */
     consume: function (options) {
-        try {
+        return this.observeCacheOperation('consume', options, () => {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
             if (!channel) {
                 return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00006', 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName));
@@ -102,9 +108,7 @@ module.exports = {
             }
             options.channel = channel;
             return handler[operationName](options);
-        } catch (error) {
-            return Promise.reject(new CLASSES.CacheError(error, 'Error while atomically consuming cache value'));
-        }
+        }, 'Error while atomically consuming cache value');
     },
 
     /** Selects key-based or prefix-based invalidation from the supplied scope. */
@@ -125,7 +129,7 @@ module.exports = {
 
     /** Invalidates values matching a prefix through the active cache engine. */
     flushByPrefix: function (options) {
-        try {
+        return this.observeCacheOperation('flushByPrefix', options, () => {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
             if (channel) {
                 this.assertCapability(channel, 'prefixFlush');
@@ -141,14 +145,12 @@ module.exports = {
                     message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
                 }));
             }
-        } catch (error) {
-            return Promise.reject(new CLASSES.CacheError(error, 'Error while flushing cache'));
-        }
+        }, 'Error while flushing cache');
     },
 
     /** Invalidates explicit keys through the active cache engine. */
     flushByKeys: function (options) {
-        try {
+        return this.observeCacheOperation('flushByKeys', options, () => {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
             if (channel) {
                 this.assertCapability(channel, 'keyFlush');
@@ -164,9 +166,155 @@ module.exports = {
                     message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
                 }));
             }
+        }, 'Error while flushing keys in cache');
+    },
+
+    /**
+     * Wraps one cache operation with diagnostics recording without changing the adapter contract.
+     *
+     * @param {string} operation Cache operation name.
+     * @param {Object} options Cache operation options.
+     * @param {Function} executor Function that executes the underlying adapter operation.
+     * @param {string} errorMessage Context message for synchronous operation failures.
+     * @returns {Promise<*>} Original operation result.
+     */
+    observeCacheOperation: function (operation, options, executor, errorMessage) {
+        let startedAt = Date.now();
+        try {
+            return Promise.resolve(executor()).then(success => {
+                this.recordCacheMetric(operation, options, this.resolveMetricResult(operation, true), startedAt);
+                return success;
+            }).catch(error => {
+                this.recordCacheMetric(operation, options, this.resolveMetricResult(operation, false, error), startedAt, error);
+                throw error;
+            });
         } catch (error) {
-            return Promise.reject(new CLASSES.CacheError(error, 'Error while flushing keys in cache'));
+            this.recordCacheMetric(operation, options, this.resolveMetricResult(operation, false, error), startedAt, error);
+            return Promise.reject(new CLASSES.CacheError(error, errorMessage));
         }
+    },
+
+    /**
+     * Converts an operation outcome into a stable diagnostics result label.
+     *
+     * @param {string} operation Cache operation name.
+     * @param {boolean} success Whether the operation succeeded.
+     * @param {Error} error Optional operation error.
+     * @returns {string} One of `hit`, `miss`, `success`, or `error`.
+     */
+    resolveMetricResult: function (operation, success, error) {
+        if (success && (operation === 'get' || operation === 'consume')) return 'hit';
+        if (!success && error && error.code === 'ERR_CACHE_00001' && (operation === 'get' || operation === 'consume')) return 'miss';
+        return success ? 'success' : 'error';
+    },
+
+    /**
+     * Returns effective cache diagnostics configuration.
+     *
+     * @returns {Object} Effective diagnostics options.
+     */
+    getCacheDiagnosticsOptions: function () {
+        let defaults = { enabled: true, includeTenant: true };
+        try {
+            let cacheConfig = typeof CONFIG !== 'undefined' && CONFIG.get && CONFIG.get('cache') || {};
+            return _.merge({}, defaults, cacheConfig.diagnostics || {});
+        } catch (error) {
+            return defaults;
+        }
+    },
+
+    /**
+     * Builds non-sensitive cache metrics dimensions from operation options.
+     *
+     * @param {string} operation Cache operation name.
+     * @param {Object} options Cache operation options.
+     * @param {Object} diagnosticsOptions Effective diagnostics options.
+     * @returns {Object} Metrics dimensions.
+     */
+    buildCacheMetricDimensions: function (operation, options, diagnosticsOptions) {
+        options = options || {};
+        return {
+            moduleName: options.moduleName || '<unknown>',
+            tenant: diagnosticsOptions.includeTenant === false ? '<redacted>' : options.tenant || '<unknown>',
+            channelName: options.channelName || options.channel && options.channel.channelName || '<unknown>',
+            operation: operation
+        };
+    },
+
+    /**
+     * Records one cache operation metric in process memory.
+     *
+     * @param {string} operation Cache operation name.
+     * @param {Object} options Cache operation options.
+     * @param {string} result Stable result label.
+     * @param {number} startedAt Epoch milliseconds when the operation started.
+     * @param {Error} error Optional operation error.
+     * @returns {boolean} Always true when diagnostics are disabled or recorded.
+     */
+    recordCacheMetric: function (operation, options, result, startedAt, error) {
+        let diagnosticsOptions = this.getCacheDiagnosticsOptions();
+        if (diagnosticsOptions.enabled === false) return true;
+        let dimensions = this.buildCacheMetricDimensions(operation, options, diagnosticsOptions);
+        let key = [dimensions.moduleName, dimensions.tenant, dimensions.channelName, dimensions.operation].join('|');
+        let elapsedMs = Math.max(0, Date.now() - startedAt);
+        let existing = this.cacheMetrics.operations[key] || {
+            moduleName: dimensions.moduleName,
+            tenant: dimensions.tenant,
+            channelName: dimensions.channelName,
+            operation: dimensions.operation,
+            count: 0,
+            results: {},
+            totalLatencyMs: 0,
+            maxLatencyMs: 0,
+            lastLatencyMs: 0,
+            lastResult: null,
+            lastErrorCode: null,
+            updatedAt: null
+        };
+        existing.count += 1;
+        existing.results[result] = (existing.results[result] || 0) + 1;
+        existing.totalLatencyMs += elapsedMs;
+        existing.maxLatencyMs = Math.max(existing.maxLatencyMs, elapsedMs);
+        existing.lastLatencyMs = elapsedMs;
+        existing.lastResult = result;
+        existing.lastErrorCode = error && error.code || null;
+        existing.updatedAt = new Date().toISOString();
+        this.cacheMetrics.operations[key] = existing;
+        return true;
+    },
+
+    /**
+     * Returns a detached snapshot of cache diagnostics counters.
+     *
+     * @param {Object} filter Optional moduleName, tenant, channelName, or operation filter.
+     * @returns {Object} Metrics snapshot.
+     */
+    getCacheMetricsSnapshot: function (filter) {
+        filter = filter || {};
+        let snapshot = _.cloneDeep(this.cacheMetrics);
+        snapshot.operations = Object.keys(snapshot.operations).reduce((result, key) => {
+            let item = snapshot.operations[key];
+            if (filter.moduleName && item.moduleName !== filter.moduleName) return result;
+            if (filter.tenant && item.tenant !== filter.tenant) return result;
+            if (filter.channelName && item.channelName !== filter.channelName) return result;
+            if (filter.operation && item.operation !== filter.operation) return result;
+            result[key] = item;
+            return result;
+        }, {});
+        return snapshot;
+    },
+
+    /**
+     * Clears process-local cache diagnostics counters.
+     *
+     * @returns {Object} Reset metrics snapshot.
+     */
+    resetCacheMetrics: function () {
+        this.cacheMetrics = {
+            startedAt: new Date().toISOString(),
+            operations: {}
+        };
+        return this.getCacheMetricsSnapshot();
     },
 
     /** Resolves the layered search-cache channel for a schema. */

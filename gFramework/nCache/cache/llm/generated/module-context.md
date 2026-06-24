@@ -30,9 +30,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 12 |
-| Test files | 6 |
+| Test files | 7 |
 | Data files | 0 |
-| All module-owned files | 25 |
+| All module-owned files | 26 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -61,7 +61,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 11 |
+| Documented | 12 |
 | Partially documented | 1 |
 | Undocumented | 10 |
 | Inventory only | 3 |
@@ -96,13 +96,14 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/cache/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/cache/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/cache/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCache/cache/src/service/cache/defaultCacheService.js` | `src` | `documented` | 26/26 | Routes cache operations and runtime cache-configuration changes through the layered engine and event contracts. |  |
+| `gFramework/nCache/cache/src/service/cache/defaultCacheService.js` | `src` | `documented` | 33/33 | Routes cache operations and runtime cache-configuration changes through the layered engine and event contracts. |  |
 | `gFramework/nCache/cache/src/service/config/defaultCacheConfigurationService.js` | `src` | `documented` | 15/15 | Builds layered cache engine/channel configuration and deterministic tenant- and principal-scoped cache keys. |  |
 | `gFramework/nCache/cache/src/service/engine/defaultCacheEngineService.js` | `src` | `documented` | 8/8 | Builds cache channels from layered configuration and validates adapter capabilities before any connection or fallback is activated. |  |
 | `gFramework/nCache/cache/src/service/event/defaultCacheChangeListenerService.js` | `src` | `documented` | 3/3 | Adapts distributed cache configuration events into tenant-aware local service updates. |  |
 | `gFramework/nCache/cache/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Defines stable success and error codes for cache operations, misses, configuration validation, client availability, and mutation-scope enforcement. |  |
 | `gFramework/nCache/cache/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/cache/test/cacheAdapterContract.test.js` | `test` | `documented` | 0/0 | Verifies adapter capability metadata, TTL semantics, Local/Redis operation parity, and fail-closed Hazelcast activation. |  |
+| `gFramework/nCache/cache/test/cacheDiagnosticsContract.test.js` | `test` | `documented` | 0/0 | Verifies process-local cache diagnostics counters for hits, misses, writes, errors, filters, and tenant-redaction configuration. |  |
 | `gFramework/nCache/cache/test/cacheInvalidationContract.test.js` | `test` | `documented` | 0/0 | Verifies tenant-partitioned storage, layered resource invalidation, local peer propagation, shared-adapter suppression, and write-pipeline integration. |  |
 | `gFramework/nCache/cache/test/cacheIsolationAndCorrectnessContract.test.js` | `test` | `documented` | 0/0 | Verifies tenant/principal-safe API keys, response-envelope cache hits, mutation-free local storage, custom key flush dispatch, schema configuration compatibility, and event target propagation. |  |
 | `gFramework/nCache/cache/test/cacheMutationSecurityContract.test.js` | `test` | `documented` | 0/0 | Verifies permissioned cache mutation routes, governed administrative permissions, and tenant/module-safe service boundaries. |  |

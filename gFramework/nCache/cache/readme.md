@@ -34,3 +34,18 @@ NODICS_CACHE_REDIS_URL=redis://127.0.0.1:6379 npm run test:cache:release
 Public mutation routes require `runtimeConfigAdminUserGroup` plus `cache.flush`, `cache.configuration.router.update`, or `cache.configuration.item.update`. Flush routes use `DELETE`; configuration routes use `POST`. Service-level validation rejects tenant or module scope changes even when the service is called outside the router.
 
 Projects may override channel mappings, engine selection, capabilities, handlers, invalidation transport, and permissions through normal hierarchy layers. Overrides must preserve tenant isolation, capability honesty, response envelopes, diagnostics, and fail-closed security behavior.
+
+## Diagnostics
+
+`DefaultCacheService` records lightweight process-local diagnostics for all cache operations that pass through the orchestration layer. Metrics are grouped by module, tenant, channel, and operation, and track hit, miss, success, error, latency total, max latency, last result, and last error code.
+
+Configuration lives under `cache.diagnostics`:
+
+```js
+{
+    enabled: true,
+    includeTenant: true
+}
+```
+
+Use `DefaultCacheService.getCacheMetricsSnapshot(filter)` to read counters and `DefaultCacheService.resetCacheMetrics()` in tests or controlled diagnostics flows. Projects may override or forward these diagnostics to an external observability system from a later module layer, but must not bypass the cache service operation contract.

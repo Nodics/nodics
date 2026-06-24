@@ -72,6 +72,12 @@ principal/security isolation where applicable, TTL semantics, response
 envelopes, invalidation, Local/Redis adapter compliance, and later-module
 overrideability.
 
+Cache diagnostics belong at the shared cache orchestration layer by default, not
+inside one adapter only. Diagnostics must be lightweight, non-sensitive,
+filterable by module, tenant, channel, and operation, and overrideable or
+forwardable by later project modules without changing the Local or Redis adapter
+contracts.
+
 ## Testing Direction
 
 Tests should support basic and full categories.

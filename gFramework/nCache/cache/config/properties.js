@@ -19,6 +19,10 @@
 module.exports = {
 
     cache: {
+        diagnostics: {
+            enabled: true,
+            includeTenant: true
+        },
         invalidation: {
             crossNode: true,
             eventName: 'cacheInvalidation'
