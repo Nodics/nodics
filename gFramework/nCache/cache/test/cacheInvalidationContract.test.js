@@ -75,6 +75,10 @@ global.SERVICE = {
     assert.strictEqual(published[0].target, 'profile');
     assert.strictEqual(published[0].tenant, 'tenant-a');
     assert.strictEqual(published[0].data.channelName, 'schemaCustom');
+    let invalidationMetric = cacheService.getCacheMetricsSnapshot({ operation: 'invalidateResource', resourceName: 'employee' }).operations['profile|tenant-a|schemaCustom|invalidateResource'];
+    assert.strictEqual(invalidationMetric.results.success, 1);
+    assert.strictEqual(invalidationMetric.resources.employee, 1);
+    assert.strictEqual(invalidationMetric.layers.schema, 1);
 
     localChannel.engineOptions.capabilities.distributed = true;
     await cacheService.invalidateResource({

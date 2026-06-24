@@ -47,7 +47,10 @@ module.exports = {
             layer: 'router',
             legacyAllowed: legacyAllowed,
             payload: responseSuccess,
-            policyOwner: request.router
+            policyOwner: request.router,
+            tenant: request.tenant,
+            moduleName: request.moduleName,
+            channelName: typeof SERVICE !== 'undefined' && SERVICE.DefaultCacheService && typeof SERVICE.DefaultCacheService.getRouterCacheChannel === 'function' ? SERVICE.DefaultCacheService.getRouterCacheChannel(request.router.routerName) : 'router'
         });
     },
 
@@ -64,7 +67,10 @@ module.exports = {
             layer: 'schema',
             legacyAllowed: legacyAllowed,
             payload: responseSuccess,
-            policyOwner: request.schemaModel
+            policyOwner: request.schemaModel,
+            tenant: request.tenant,
+            moduleName: request.schemaModel && request.schemaModel.moduleName,
+            channelName: typeof SERVICE !== 'undefined' && SERVICE.DefaultCacheService && typeof SERVICE.DefaultCacheService.getSchemaCacheChannel === 'function' ? SERVICE.DefaultCacheService.getSchemaCacheChannel(request.schemaModel.schemaName) : 'schema'
         });
     },
 
@@ -83,7 +89,10 @@ module.exports = {
             layer: 'search',
             legacyAllowed: legacyAllowed,
             payload: responseSuccess,
-            policyOwner: searchModel
+            policyOwner: searchModel,
+            tenant: request.tenant,
+            moduleName: searchModel.moduleName || request.schemaModel && request.schemaModel.moduleName,
+            channelName: typeof SERVICE !== 'undefined' && SERVICE.DefaultCacheService && typeof SERVICE.DefaultCacheService.getSearchCacheChannel === 'function' ? SERVICE.DefaultCacheService.getSearchCacheChannel(searchModel.indexName) : 'search'
         });
     },
 
@@ -95,24 +104,38 @@ module.exports = {
      */
     evaluateCacheability: function (context) {
         let options = this.getPolicyOptions();
-        if (options.enabled === false) return this.reject(context, 'cacheabilityDisabled');
-        if (context.legacyAllowed === false) return this.reject(context, 'legacyPolicyRejected');
-        if (options.skipBinaryPayloads !== false && this.hasBinaryPayload(context.payload)) return this.reject(context, 'binaryPayload');
-        if (options.skipEmptyResults === true && this.hasEmptyResult(context.payload)) return this.reject(context, 'emptyResult');
+        if (options.enabled === false) return this.finalizeDecision(this.reject(context, 'cacheabilityDisabled'), context);
+        if (context.legacyAllowed === false) return this.finalizeDecision(this.reject(context, 'legacyPolicyRejected'), context);
+        if (options.skipBinaryPayloads !== false && this.hasBinaryPayload(context.payload)) return this.finalizeDecision(this.reject(context, 'binaryPayload'), context);
+        if (options.skipEmptyResults === true && this.hasEmptyResult(context.payload)) return this.finalizeDecision(this.reject(context, 'emptyResult'), context);
         if (options.allowSensitiveFields !== true) {
             let sensitiveField = this.findSensitiveField(context.payload, options.sensitiveFieldNames || []);
-            if (sensitiveField) return this.reject(context, 'sensitiveField', { sensitiveField: sensitiveField });
+            if (sensitiveField) return this.finalizeDecision(this.reject(context, 'sensitiveField', { sensitiveField: sensitiveField }), context);
         }
         let payloadBytes;
         try {
             payloadBytes = this.measurePayloadBytes(context.payload);
         } catch (error) {
-            return this.reject(context, 'payloadNotSerializable');
+            return this.finalizeDecision(this.reject(context, 'payloadNotSerializable'), context);
         }
         if (options.maxPayloadBytes !== undefined && options.maxPayloadBytes !== null && payloadBytes > options.maxPayloadBytes) {
-            return this.reject(context, 'payloadTooLarge', { payloadBytes: payloadBytes, maxPayloadBytes: options.maxPayloadBytes });
+            return this.finalizeDecision(this.reject(context, 'payloadTooLarge', { payloadBytes: payloadBytes, maxPayloadBytes: options.maxPayloadBytes }), context);
         }
-        return this.applyPolicyHandlers(context, this.accept(context, { payloadBytes: payloadBytes }), options);
+        return this.finalizeDecision(this.applyPolicyHandlers(context, this.accept(context, { payloadBytes: payloadBytes }), options), context);
+    },
+
+    /**
+     * Records the final cacheability decision through the shared cache diagnostics service.
+     *
+     * @param {Object} decision Cacheability decision.
+     * @param {Object} context Policy evaluation context.
+     * @returns {Object} Original decision.
+     */
+    finalizeDecision: function (decision, context) {
+        if (typeof SERVICE !== 'undefined' && SERVICE.DefaultCacheService && typeof SERVICE.DefaultCacheService.recordPolicyDecision === 'function') {
+            SERVICE.DefaultCacheService.recordPolicyDecision(decision, context);
+        }
+        return decision;
     },
 
     /**

@@ -2,7 +2,7 @@ const assert = require('assert');
 
 /**
  * @module cache/test/cacheDiagnosticsContract
- * @description Verifies process-local cache diagnostics counters for hits, misses, writes, errors, filters, and tenant-redaction configuration.
+ * @description Verifies process-local cache diagnostics counters for hits, misses, writes, errors, cacheability decisions, invalidation results, filters, and tenant-redaction configuration.
  * @layer test
  * @owner cache
  * @override Projects may replace diagnostics export/forwarding while preserving non-sensitive operation counters and filter semantics.
@@ -68,6 +68,46 @@ global.SERVICE = {
     assert.strictEqual(snapshot.operations['profile|tenant-a|router|flushByKeys'].results.error, 1);
     assert.strictEqual(snapshot.operations['profile|tenant-a|router|flushByKeys'].lastErrorCode, 'ERR_CACHE_00010');
 
+    cacheService.recordPolicyDecision({
+        cacheable: false,
+        layer: 'router',
+        reason: 'sensitiveField',
+        reasonCode: 'RSN_CACHE_00005'
+    }, {
+        tenant: 'tenant-a',
+        moduleName: 'profile',
+        layer: 'router',
+        channelName: 'router'
+    });
+    cacheService.recordPolicyDecision({
+        cacheable: true,
+        layer: 'search',
+        reason: 'accepted',
+        reasonCode: 'RSN_CACHE_00000'
+    }, {
+        tenant: 'tenant-a',
+        moduleName: 'search',
+        layer: 'search',
+        channelName: 'search'
+    });
+    snapshot = cacheService.getCacheMetricsSnapshot();
+    assert.strictEqual(snapshot.operations['profile|tenant-a|router|policyDecision'].results.skipped, 1);
+    assert.strictEqual(snapshot.operations['profile|tenant-a|router|policyDecision'].reasonCodes.RSN_CACHE_00005, 1);
+    assert.strictEqual(snapshot.operations['profile|tenant-a|router|policyDecision'].layers.router, 1);
+    assert.strictEqual(snapshot.operations['search|tenant-a|search|policyDecision'].results.accepted, 1);
+    assert.strictEqual(snapshot.operations['search|tenant-a|search|policyDecision'].reasonCodes.RSN_CACHE_00000, 1);
+
+    cacheService.recordCacheMetric('invalidateResource', {
+        tenant: 'tenant-a',
+        moduleName: 'profile',
+        channelName: 'schema',
+        cacheLayer: 'schema',
+        resourceName: 'employee'
+    }, 'success', Date.now());
+    snapshot = cacheService.getCacheMetricsSnapshot({ operation: 'invalidateResource', resourceName: 'employee' });
+    assert.strictEqual(snapshot.operations['profile|tenant-a|schema|invalidateResource'].resources.employee, 1);
+    assert.strictEqual(snapshot.operations['profile|tenant-a|schema|invalidateResource'].layers.schema, 1);
+
     let filtered = cacheService.getCacheMetricsSnapshot({ operation: 'get' });
     assert.strictEqual(Object.keys(filtered.operations).length, 1);
     assert(filtered.operations['profile|tenant-a|router|get']);
@@ -75,8 +115,20 @@ global.SERVICE = {
     cacheService.resetCacheMetrics();
     cacheConfig = { diagnostics: { enabled: true, includeTenant: false } };
     await cacheService.get({ tenant: 'tenant-secret', moduleName: 'profile', channelName: 'router', key: 'hit' });
+    cacheService.recordPolicyDecision({
+        cacheable: false,
+        layer: 'router',
+        reason: 'payloadTooLarge',
+        reasonCode: 'RSN_CACHE_00007'
+    }, {
+        tenant: 'tenant-secret',
+        moduleName: 'profile',
+        layer: 'router',
+        channelName: 'router'
+    });
     snapshot = cacheService.getCacheMetricsSnapshot();
     assert(snapshot.operations['profile|<redacted>|router|get']);
+    assert(snapshot.operations['profile|<redacted>|router|policyDecision']);
 
     cacheService.resetCacheMetrics();
     cacheConfig = { diagnostics: { enabled: false } };
