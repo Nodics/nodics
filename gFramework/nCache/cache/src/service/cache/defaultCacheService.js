@@ -237,7 +237,10 @@ module.exports = {
             moduleName: options.moduleName || '<unknown>',
             tenant: diagnosticsOptions.includeTenant === false ? '<redacted>' : options.tenant || '<unknown>',
             channelName: options.channelName || options.channel && options.channel.channelName || '<unknown>',
-            operation: operation
+            operation: operation,
+            cacheLayer: options.cacheLayer || options.layer || options.cacheType || '<unknown>',
+            resourceName: options.resourceName || options.prefix || '<unknown>',
+            reasonCode: options.reasonCode || '<none>'
         };
     },
 
@@ -264,29 +267,67 @@ module.exports = {
             operation: dimensions.operation,
             count: 0,
             results: {},
+            reasonCodes: {},
+            resources: {},
+            layers: {},
             totalLatencyMs: 0,
             maxLatencyMs: 0,
             lastLatencyMs: 0,
             lastResult: null,
             lastErrorCode: null,
+            lastReasonCode: null,
+            lastResourceName: null,
+            lastCacheLayer: null,
             updatedAt: null
         };
         existing.count += 1;
         existing.results[result] = (existing.results[result] || 0) + 1;
+        if (dimensions.reasonCode !== '<none>') {
+            existing.reasonCodes[dimensions.reasonCode] = (existing.reasonCodes[dimensions.reasonCode] || 0) + 1;
+        }
+        if (dimensions.resourceName !== '<unknown>') {
+            existing.resources[dimensions.resourceName] = (existing.resources[dimensions.resourceName] || 0) + 1;
+        }
+        if (dimensions.cacheLayer !== '<unknown>') {
+            existing.layers[dimensions.cacheLayer] = (existing.layers[dimensions.cacheLayer] || 0) + 1;
+        }
         existing.totalLatencyMs += elapsedMs;
         existing.maxLatencyMs = Math.max(existing.maxLatencyMs, elapsedMs);
         existing.lastLatencyMs = elapsedMs;
         existing.lastResult = result;
         existing.lastErrorCode = error && error.code || null;
+        existing.lastReasonCode = dimensions.reasonCode !== '<none>' ? dimensions.reasonCode : null;
+        existing.lastResourceName = dimensions.resourceName !== '<unknown>' ? dimensions.resourceName : null;
+        existing.lastCacheLayer = dimensions.cacheLayer !== '<unknown>' ? dimensions.cacheLayer : null;
         existing.updatedAt = new Date().toISOString();
         this.cacheMetrics.operations[key] = existing;
         return true;
     },
 
     /**
+     * Records one cacheability policy decision without exposing payload data.
+     *
+     * @param {Object} decision Cacheability decision.
+     * @param {Object} context Policy context.
+     * @returns {boolean} True when diagnostics are disabled or recorded.
+     */
+    recordPolicyDecision: function (decision, context) {
+        decision = decision || {};
+        context = context || {};
+        this.recordCacheMetric('policyDecision', {
+            tenant: context.tenant,
+            moduleName: context.moduleName,
+            channelName: context.channelName || decision.layer || context.layer,
+            cacheLayer: context.layer || decision.layer,
+            reasonCode: decision.reasonCode
+        }, decision.cacheable === false ? 'skipped' : 'accepted', Date.now());
+        return true;
+    },
+
+    /**
      * Returns a detached snapshot of cache diagnostics counters.
      *
-     * @param {Object} filter Optional moduleName, tenant, channelName, or operation filter.
+     * @param {Object} filter Optional moduleName, tenant, channelName, operation, cacheLayer, reasonCode, or resourceName filter.
      * @returns {Object} Metrics snapshot.
      */
     getCacheMetricsSnapshot: function (filter) {
@@ -298,6 +339,9 @@ module.exports = {
             if (filter.tenant && item.tenant !== filter.tenant) return result;
             if (filter.channelName && item.channelName !== filter.channelName) return result;
             if (filter.operation && item.operation !== filter.operation) return result;
+            if (filter.cacheLayer && !(item.layers && item.layers[filter.cacheLayer])) return result;
+            if (filter.reasonCode && !(item.reasonCodes && item.reasonCodes[filter.reasonCode])) return result;
+            if (filter.resourceName && !(item.resources && item.resources[filter.resourceName])) return result;
             result[key] = item;
             return result;
         }, {});
@@ -411,11 +455,24 @@ module.exports = {
             return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00009', 'resourceName and cacheType are required for cache invalidation'));
         }
         let channels = this.resolveInvalidationChannels(options);
+        let startedAt = Date.now();
         return Promise.all(channels.map(channelName => this.flushCache(Object.assign({}, options, {
             channelName: channelName,
             prefix: options.resourceName,
             internalCacheOperation: true
-        }))));
+        })))).then(success => {
+            this.recordCacheMetric('invalidateResource', Object.assign({}, options, {
+                channelName: channels.join(','),
+                cacheLayer: options.cacheType
+            }), 'success', startedAt);
+            return success;
+        }).catch(error => {
+            this.recordCacheMetric('invalidateResource', Object.assign({}, options, {
+                channelName: channels.join(','),
+                cacheLayer: options.cacheType
+            }), 'error', startedAt, error);
+            throw error;
+        });
     },
 
     /** Broadcasts local-adapter invalidation to peer module nodes; shared adapters need no duplicate event. */

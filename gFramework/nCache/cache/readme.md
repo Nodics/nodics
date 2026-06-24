@@ -39,6 +39,8 @@ Projects may override channel mappings, engine selection, capabilities, handlers
 
 `DefaultCacheService` records lightweight process-local diagnostics for all cache operations that pass through the orchestration layer. Metrics are grouped by module, tenant, channel, and operation, and track hit, miss, success, error, latency total, max latency, last result, and last error code.
 
+Cacheability decisions and resource invalidations are also recorded through the same diagnostics registry. Policy decisions use the `policyDecision` operation and aggregate accepted/skipped counts by `reasonCode` and cache layer (`router`, `schema`, or `search`). Resource invalidations use the `invalidateResource` operation and aggregate affected resource names and cache types without exposing payload values.
+
 Configuration lives under `cache.diagnostics`:
 
 ```js
@@ -48,7 +50,7 @@ Configuration lives under `cache.diagnostics`:
 }
 ```
 
-Use `DefaultCacheService.getCacheMetricsSnapshot(filter)` to read counters and `DefaultCacheService.resetCacheMetrics()` in tests or controlled diagnostics flows. Projects may override or forward these diagnostics to an external observability system from a later module layer, but must not bypass the cache service operation contract.
+Use `DefaultCacheService.getCacheMetricsSnapshot(filter)` to read counters and `DefaultCacheService.resetCacheMetrics()` in tests or controlled diagnostics flows. Filters support `moduleName`, `tenant`, `channelName`, `operation`, `cacheLayer`, `reasonCode`, and `resourceName`. Projects may override or forward these diagnostics to an external observability system from a later module layer, but must not bypass the cache service operation contract.
 
 ## Lightweight benchmark contract
 
