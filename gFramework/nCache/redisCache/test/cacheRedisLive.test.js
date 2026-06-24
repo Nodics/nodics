@@ -3,10 +3,10 @@ const redis = require('redis');
 
 /**
  * @module redisCache/test/cacheRedisLive
- * @description Optionally verifies the complete Redis cache adapter contract against an explicitly supplied isolated Redis endpoint.
+ * @description Optionally verifies the complete Redis cache adapter contract against an explicitly supplied isolated Redis endpoint, or fails closed for release gates.
  * @layer test
  * @owner nCache/redisCache
- * @override CI and deployment pipelines may provide NODICS_CACHE_REDIS_URL for guarded live qualification.
+ * @override CI and deployment pipelines may provide NODICS_CACHE_REDIS_URL for guarded live qualification and use --require-live for release enforcement.
  */
 
 class CacheError extends Error {
@@ -18,8 +18,10 @@ global.SERVICE = { DefaultCacheConfigurationService: configurationService };
 
 (async function () {
     const url = process.env.NODICS_CACHE_REDIS_URL;
+    const requireLive = process.argv.includes('--require-live') || process.env.NODICS_CACHE_REQUIRE_LIVE === 'true';
     if (!url) {
-        console.log('Redis cache live contract NOT EXECUTED: set NODICS_CACHE_REDIS_URL');
+        assert(!requireLive, 'NODICS_CACHE_REDIS_URL is required for the cache Redis release gate');
+        console.log('Redis cache live contract NOT EXECUTED: set NODICS_CACHE_REDIS_URL; use test:cache:release to require it');
         return;
     }
     const client = redis.createClient({ url });

@@ -23,6 +23,12 @@ Schema save, update, and remove pipelines invalidate both affected cache layers:
 
 Shared adapters such as Redis invalidate the shared store directly. Process-local adapters publish the configured `cacheInvalidation` event to peer module nodes; listeners suppress republication to prevent loops.
 
+For release readiness, run the fail-closed Redis gate against an isolated Redis endpoint:
+
+```bash
+NODICS_CACHE_REDIS_URL=redis://127.0.0.1:6379 npm run test:cache:release
+```
+
 ## Security and customization
 
 Public mutation routes require `runtimeConfigAdminUserGroup` plus `cache.flush`, `cache.configuration.router.update`, or `cache.configuration.item.update`. Flush routes use `DELETE`; configuration routes use `POST`. Service-level validation rejects tenant or module scope changes even when the service is called outside the router.
