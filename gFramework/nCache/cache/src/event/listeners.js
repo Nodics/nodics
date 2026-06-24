@@ -1,3 +1,10 @@
+/**
+ * @module nCache/cache/event/Listeners
+ * @description Registers layered cache configuration and peer-node invalidation event listeners.
+ * @layer event
+ * @owner nCache/cache
+ * @override Project modules may extend cache event listeners while preserving tenant and target-module scope.
+ */
 /*
     Nodics - Enterprice Micro-Services Management Framework
 
@@ -18,6 +25,10 @@ module.exports = {
         itemCacheChangeListener: {
             event: 'itemCacheChange',
             listener: 'DefaultCacheChangeListenerService.handleItemCacheChangeEvent'
+        },
+        cacheInvalidationListener: {
+            event: 'cacheInvalidation',
+            listener: 'DefaultCacheChangeListenerService.handleCacheInvalidationEvent'
         },
     }
 };

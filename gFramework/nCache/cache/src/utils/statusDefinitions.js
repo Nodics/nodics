@@ -1,3 +1,10 @@
+/**
+ * @module nCache/cache/utils/StatusDefinitions
+ * @description Defines stable success, error, and governance reason codes for cache operations, misses, configuration validation, client availability, mutation-scope enforcement, and cacheability decisions.
+ * @layer status
+ * @owner nCache/cache
+ * @override Project modules may add status definitions while preserving existing codes and HTTP semantics for backward compatibility.
+ */
 /*
     Nodics - Enterprice Micro-Services Management Framework
 
@@ -50,5 +57,78 @@ module.exports = {
     ERR_CACHE_00006: {
         code: '400',
         message: 'Cache client has not been configured for this module'
+    },
+    ERR_CACHE_00007: {
+        code: '403',
+        message: 'Cache mutation scope does not match the authorized tenant and active module'
+    },
+    ERR_CACHE_00008: {
+        code: '503',
+        message: 'Selected cache adapter is unsupported and cannot be activated'
+    },
+    ERR_CACHE_00009: {
+        code: '400',
+        message: 'Cache adapter contract or TTL configuration is invalid'
+    },
+
+    RSN_CACHE_00000: {
+        code: '200',
+        type: 'reason',
+        message: 'Cache write accepted by cacheability policy'
+    },
+    RSN_CACHE_00001: {
+        code: '200',
+        type: 'reason',
+        message: 'Cache write skipped because cacheability policy is disabled'
+    },
+    RSN_CACHE_00002: {
+        code: '200',
+        type: 'reason',
+        message: 'Cache write skipped because legacy cacheability utility rejected the payload'
+    },
+    RSN_CACHE_00003: {
+        code: '200',
+        type: 'reason',
+        message: 'Cache write skipped because payload contains binary data'
+    },
+    RSN_CACHE_00004: {
+        code: '200',
+        type: 'reason',
+        message: 'Cache write skipped because payload contains an empty result'
+    },
+    RSN_CACHE_00005: {
+        code: '200',
+        type: 'reason',
+        message: 'Cache write skipped because payload contains a sensitive field'
+    },
+    RSN_CACHE_00006: {
+        code: '200',
+        type: 'reason',
+        message: 'Cache write skipped because payload cannot be serialized safely'
+    },
+    RSN_CACHE_00007: {
+        code: '200',
+        type: 'reason',
+        message: 'Cache write skipped because payload is larger than configured cacheability limit'
+    },
+    RSN_CACHE_00008: {
+        code: '200',
+        type: 'reason',
+        message: 'Cache write skipped because a configured cacheability handler rejected the payload'
+    },
+    RSN_CACHE_00009: {
+        code: '200',
+        type: 'reason',
+        message: 'Cache write skipped because a configured cacheability handler failed'
+    },
+    RSN_CACHE_00010: {
+        code: '200',
+        type: 'reason',
+        message: 'Cache write followed legacy cacheability fallback path'
+    },
+    RSN_CACHE_99999: {
+        code: '200',
+        type: 'reason',
+        message: 'Cache write skipped or accepted with an uncataloged cacheability reason'
     }
 };

@@ -9,7 +9,13 @@
 
  */
 
-const _ = require('lodash');
+/**
+ * @module nCache/hazelcastCache/service/cache/DefaultHazelcastCacheService
+ * @description Fail-closed placeholder for Hazelcast cache operations; it never masquerades as local or distributed storage.
+ * @layer service
+ * @owner nCache/hazelcastCache
+ * @override A project may replace this service with a real Hazelcast adapter that satisfies every declared capability.
+ */
 
 module.exports = {
     /**
@@ -34,65 +40,33 @@ module.exports = {
         });
     },
 
+    /** Rejects writes through the unsupported placeholder. */
     put: function (options) {
-        return new Promise((resolve, reject) => {
-            try {
-                let key = channel.channelName + '_' + channel.engineOptions.options.prefix + '_' + options.key;
-                let ttl = 0;
-                if (!options.ttl || options.ttl > 0) {
-                    ttl = options.ttl || channel.chennalOptions.ttl || channel.engineOptions.ttl || channel.engineOptions.options.ttl;
-                }
-                this.LOG.debug('Putting value is local cache storage with key: ' + key + ' TTL: ' + ttl);
-                options.client.set(key, options.value, ttl || 0);
-                options.value.code = 'SUC_CACHE_00000';
-                resolve(options.value);
-            } catch (error) {
-                reject(new CLASSES.CacheError(error));
-            }
-
-        });
+        return this.unsupported('put');
     },
 
+    /** Rejects reads through the unsupported placeholder. */
     get: function (options) {
-        return new Promise((resolve, reject) => {
-            try {
-                let key = channel.channelName + '_' + channel.engineOptions.options.prefix + '_' + options.key;
-                this.LOG.debug('Getting value from local cache storage with key: ' + key);
-                options.client.get(key, (error, value) => {
-                    if (error) {
-                        reject(new CLASSES.CacheError(error));
-                    } else if (value) {
-                        value.code = 'SUC_CACHE_00000';
-                        resolve(value);
-                    } else {
-                        reject(new CLASSES.CacheError('ERR_CACHE_00001'));
-                    }
-                });
-            } catch (error) {
-                reject(new CLASSES.CacheError(error));
-            }
-
-        });
+        return this.unsupported('get');
     },
-    /** Atomically reads and removes one value from the configured Hazelcast-compatible client. */
+
+    /** Rejects consume through the unsupported placeholder. */
     consume: function (options) {
-        return new Promise((resolve, reject) => {
-            try {
-                let key = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.key;
-                let client = options.channel.client;
-                if (typeof client.take === 'function') {
-                    Promise.resolve(client.take(key)).then(value => value ? resolve(value) : reject(new CLASSES.CacheError('ERR_CACHE_00001'))).catch(reject);
-                } else if (typeof client.get === 'function' && typeof client.del === 'function') {
-                    let value = client.get(key);
-                    if (!value) return reject(new CLASSES.CacheError('ERR_CACHE_00001'));
-                    client.del(key);
-                    resolve(value);
-                } else {
-                    reject(new CLASSES.CacheError('ERR_CACHE_00006', 'Hazelcast cache client does not support atomic consume'));
-                }
-            } catch (error) {
-                reject(new CLASSES.CacheError(error));
-            }
-        });
+        return this.unsupported('consume');
+    },
+
+    /** Rejects prefix invalidation through the unsupported placeholder. */
+    flushByPrefix: function (options) {
+        return this.unsupported('flushByPrefix');
+    },
+
+    /** Rejects key invalidation through the unsupported placeholder. */
+    flushByKeys: function (options) {
+        return this.unsupported('flushByKeys');
+    },
+
+    /** Creates the standard fail-closed rejection for placeholder operations. */
+    unsupported: function (operation) {
+        return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00008', 'Bundled Hazelcast adapter does not support operation: ' + operation));
     }
 };

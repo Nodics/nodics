@@ -21,7 +21,7 @@ const expectedRoutes = [
     { key: '/config/runtime/request/reject', method: 'POST', controller: 'DefaultConfigurationController', operation: 'rejectRuntimeConfigurationActivationRequest', secured: true, permission: 'runtime.config.request.reject' },
     { key: '/config/runtime/request/activate', method: 'POST', controller: 'DefaultConfigurationController', operation: 'activateRuntimeConfigurationActivationRequest', secured: true, permission: 'runtime.config.request.activate' },
     { key: '/config/runtime/rollback', method: 'POST', controller: 'DefaultConfigurationController', operation: 'rollbackRuntimeConfiguration', secured: true, permission: 'runtime.config.rollback' },
-    { key: '/contract/openapi', method: 'GET', controller: 'DefaultApiContractController', operation: 'getOpenApiContract', secured: true },
+    { key: '/contract/openapi', method: 'GET', controller: 'DefaultApiContractController', operation: 'getOpenApiContract', secured: true, permission: 'system.contract.openapi.view' },
     { key: '/schema/indexes/all', method: 'GET', controller: 'DefaultSchemaIndexController', operation: 'updateModulesIndexes', secured: true },
     { key: '/test/runUTest', method: 'GET', controller: 'TestExecutionController', operation: 'runUTest', secured: true },
     { key: '/test/runNTest', method: 'GET', controller: 'TestExecutionController', operation: 'runNTest', secured: true },

@@ -310,10 +310,12 @@ module.exports = {
         try {
             let schemaModel = request.schemaModel;
             if (response.success && response.success.result && response.success.result.n && response.success.result.n > 0) {
-                SERVICE.DefaultCacheService.flushCache({
+                SERVICE.DefaultCacheService.invalidateResource({
+                    tenant: request.tenant,
+                    authData: request.authData,
                     moduleName: schemaModel.moduleName,
-                    channelName: 'router',
-                    prefix: schemaModel.schemaName
+                    cacheType: 'router',
+                    resourceName: schemaModel.schemaName
                 }).then(success => {
                     this.LOG.debug('Cache for router: ' + schemaModel.schemaName + ' has been flushed cuccessfully');
                 }).catch(error => {
@@ -342,10 +344,12 @@ module.exports = {
             let schemaModel = request.schemaModel;
             if (response.success && response.success.result && response.success.result.n && response.success.result.n > 0 &&
                 schemaModel.rawSchema.cache && schemaModel.rawSchema.cache.enabled) {
-                SERVICE.DefaultCacheService.flushCache({
+                SERVICE.DefaultCacheService.invalidateResource({
+                    tenant: request.tenant,
+                    authData: request.authData,
                     moduleName: schemaModel.moduleName,
-                    channelName: 'schema',
-                    prefix: schemaModel.schemaName
+                    cacheType: 'schema',
+                    resourceName: schemaModel.schemaName
                 }).then(success => {
                     this.LOG.debug('Cache for schema: ' + schemaModel.schemaName + ' has been flushed cuccessfully');
                 }).catch(error => {

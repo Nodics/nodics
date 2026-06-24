@@ -128,10 +128,12 @@ module.exports = {
                 prefix = request.schemaModel.schemaName;
             }
             if (response.success.success) {
-                SERVICE.DefaultCacheService.flushCache({
+                SERVICE.DefaultCacheService.invalidateResource({
+                    tenant: request.tenant,
+                    authData: request.authData,
                     moduleName: searchModel.moduleName,
-                    channelName: 'router',
-                    prefix: prefix
+                    cacheType: 'router',
+                    resourceName: prefix
                 }).then(success => {
                     this.LOG.debug('Cache for router: ' + searchModel.indexName + ' has been flushed cuccessfully');
                 }).catch(error => {
@@ -152,10 +154,12 @@ module.exports = {
             let searchModel = request.searchModel;
             let cache = searchModel.indexDef.cache;
             if (response.success.success && cache && cache.enabled) {
-                SERVICE.DefaultCacheService.flushCache({
+                SERVICE.DefaultCacheService.invalidateResource({
+                    tenant: request.tenant,
+                    authData: request.authData,
                     moduleName: searchModel.moduleName,
-                    channelName: 'search',
-                    prefix: searchModel.indexName
+                    cacheType: 'search',
+                    resourceName: searchModel.indexName
                 }).then(success => {
                     this.LOG.debug('Cache for index: ' + searchModel.indexName + ' has been flushed cuccessfully');
                 }).catch(error => {

@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Generate test scripts for all generated layers for application"
   },
-  "sourceFiles": 16,
-  "testFiles": 5,
+  "sourceFiles": 17,
+  "testFiles": 6,
   "dataFiles": 0,
-  "ownedFiles": 29,
-  "sourceFingerprint": "dfadeae5e2ec9228ac563e0c131bfe0f3fee69e7c5d8d49eac374ea39284c3d9",
+  "ownedFiles": 31,
+  "sourceFingerprint": "98421a115c7cc97ba1eac8f50efbd359e34ebc9279de002aa265231c5854fd8c",
   "documentation": {
-    "documented": 10,
+    "documented": 12,
     "partially-documented": 4,
     "undocumented": 12,
     "inventory-only": 3

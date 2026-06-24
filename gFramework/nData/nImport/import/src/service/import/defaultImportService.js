@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module import/service/DefaultImportService
+ * @description Coordinates init, core, sample, local, and governed remote import lifecycles, finalized-data processing, run status, and staging cleanup.
+ * @layer service
+ * @owner import
+ * @override Projects may override individual import operations while preserving tenant scope, diagnostics, trusted headers, and cleanup behavior.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +39,7 @@ module.exports = {
         });
     },
 
+    /** Imports layered initialization data for selected modules and tenant scope. */
     importInitData: function (request) {
         request.dataType = 'init';
         return new Promise((resolve, reject) => {
@@ -59,6 +67,7 @@ module.exports = {
         });
     },
 
+    /** Imports layered core data for selected modules and tenant scope. */
     importCoreData: function (request) {
         request.dataType = 'core';
         return new Promise((resolve, reject) => {
@@ -86,6 +95,7 @@ module.exports = {
         });
     },
 
+    /** Imports layered sample data for selected modules and tenant scope. */
     importSampleData: function (request) {
         request.dataType = 'sample';
         return new Promise((resolve, reject) => {
@@ -113,6 +123,7 @@ module.exports = {
         });
     },
 
+    /** Builds the finalized-data processing request for a system import. */
     createSystemProcessRequest: function (request) {
         return {
             tenant: request.tenant || CONFIG.get('defaultTenant') || 'default',
@@ -125,6 +136,7 @@ module.exports = {
         };
     },
 
+    /** Finalizes run diagnostics through the configured diagnostics service. */
     finalizeImportRun: function (request, status) {
         if (SERVICE.DefaultImportDiagnosticsService && typeof SERVICE.DefaultImportDiagnosticsService.finalizeRun === 'function') {
             return SERVICE.DefaultImportDiagnosticsService.finalizeRun(request, status);
@@ -136,7 +148,9 @@ module.exports = {
         return request.importRun;
     },
 
+    /** Initializes local data and optionally dispatches its finalized records. */
     importLocalData: function (request) {
+        request.dataType = 'local';
         if (request.importFinalizeData) {
             return new Promise((resolve, reject) => {
                 SERVICE.DefaultPipelineService.start('localDataImportInitializerPipeline', request, {}).then(success => {
@@ -165,7 +179,7 @@ module.exports = {
                             };
                         }
                         SERVICE.DefaultImportService.processImportData({
-                            tenant: request.tenant,
+                            tenant: request.tenant || CONFIG.get('defaultTenant') || 'default',
                             importRun: request.importRun,
                             inputPath: inputPath
                         }).then(success => {
@@ -187,10 +201,46 @@ module.exports = {
         }
     },
 
+    /** Stages governed remote data and optionally dispatches its finalized records. */
     importRemoteData: function (request) {
-        return SERVICE.DefaultPipelineService.start('remoteDataImportInitializerPipeline', request, {});
+        request.dataType = 'remote';
+        request.importFinalizeData = request.importFinalizeData !== false;
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultPipelineService.start('remoteDataImportInitializerPipeline', request, {}).then(success => {
+                if (!request.importFinalizeData || success && (success.code === 'SUC_IMP_00001' || success.validationOnly)) {
+                    resolve(success);
+                    return;
+                }
+                let result = { finalizer: success, importRun: request.importRun };
+                this.processImportData({
+                    tenant: request.tenant || CONFIG.get('defaultTenant') || 'default',
+                    importRun: request.importRun,
+                    inputPath: {
+                        rootPath: request.outputPath.rootPath,
+                        dataPath: request.outputPath.dataPath,
+                        successPath: request.outputPath.successPath,
+                        errorPath: request.outputPath.errorPath,
+                        dataType: 'remote',
+                        postFix: 'data'
+                    }
+                }).then(importResult => {
+                    result.import = importResult;
+                    this.finalizeImportRun(request, 'COMPLETED');
+                    resolve(result);
+                }).catch(error => {
+                    this.finalizeImportRun(request, 'FAILED');
+                    reject(error);
+                });
+            }).catch(error => {
+                this.finalizeImportRun(request, 'FAILED');
+                reject(error);
+            });
+        }).finally(() => {
+            if (SERVICE.DefaultRemoteImportTransportService) return SERVICE.DefaultRemoteImportTransportService.cleanup(request);
+        });
     },
 
+    /** Dispatches finalized import files through the standard processing pipeline. */
     processImportData: function (request) {
         return SERVICE.DefaultPipelineService.start('processDataImportPipeline', request, {});
     }

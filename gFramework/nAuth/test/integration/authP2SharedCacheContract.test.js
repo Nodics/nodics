@@ -21,6 +21,9 @@ class NodicsError extends Error {
 }
 
 global.CLASSES = { CacheError, NodicsError };
+global.SERVICE = {
+    DefaultCacheConfigurationService: require('../../../nCache/cache/src/service/config/defaultCacheConfigurationService')
+};
 
 function channel(client, engine) {
     return {

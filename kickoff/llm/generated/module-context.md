@@ -24,9 +24,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 0 |
-| Test files | 2 |
+| Test files | 3 |
 | Data files | 0 |
-| All module-owned files | 9 |
+| All module-owned files | 10 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -50,9 +50,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
+| Documented | 2 |
 | Partially documented | 1 |
-| Undocumented | 5 |
+| Undocumented | 4 |
 | Inventory only | 3 |
 
 ## Important Files
@@ -78,7 +78,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `kickoff/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `kickoff/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `kickoff/test/data/kickoffLocalTestTenantDataCatalog.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `kickoff/test/topology/kickoffLocalRuntimeTopology.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `kickoff/test/topology/kickoffLocalRuntimeTopology.test.js` | `test` | `documented` | 0/0 | Starts the configured consolidated and modular kickoff servers and proves runtime readiness, metadata-driven module activation, tenant and internal-auth initialization, mandatory profile data, route availability, and cross-process communication. |  |
+| `kickoff/test/topology/runtimeContractProbe.js` | `test` | `documented` | 4/4 | Emits a sanitized runtime-readiness snapshot from a spawned Nodics server so topology tests can prove startup, module loading, tenant activation, internal authentication, and mandatory profile data without adding a production diagnostics route. |  |
 
 ## Extension Contract
 

@@ -48,8 +48,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 1 |
+| Documented | 1 |
+| Partially documented | 0 |
 | Undocumented | 3 |
 | Inventory only | 3 |
 
@@ -72,7 +72,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nodics.js` | `module` | `partially-documented` | 2/11 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 9 exported method(s) |
+| `gFramework/nodics.js` | `module` | `documented` | 13/13 | Coordinates Nodics runtime initialization, layered mandatory bootstrap hooks, server startup, generators, clean, and build lifecycles for the active module hierarchy. |  |
 | `gFramework/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 

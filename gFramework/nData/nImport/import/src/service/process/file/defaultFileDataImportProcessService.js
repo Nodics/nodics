@@ -51,9 +51,12 @@ module.exports = {
         this.LOG.debug('Processing models from file: ' + request.fileName);
         if (request.fileData.models && Object.keys(request.fileData.models).length > 0) {
             let header = request.fileData.header;
-            let tenants = [].concat(header.options.tenants || NODICS.getActiveTenants());
-            if (request.tenant) {
-                tenants = [request.tenant];
+            let tenants;
+            try {
+                tenants = this.resolveTargetTenants(request, header);
+            } catch (error) {
+                process.error(request, response, error);
+                return;
             }
             this.processTenantModel(request, response, {
                 tenants: tenants,
@@ -65,6 +68,55 @@ module.exports = {
             });
         } else {
             process.nextSuccess(request, response);
+        }
+    },
+
+    /**
+     * Resolves the safe tenant set for one finalized import header.
+     * A request tenant narrows the header tenant set and can never broaden it.
+     *
+     * @param {Object} request Import request carrying an optional trusted tenant scope.
+     * @param {Object} header Effective layered import header.
+     * @returns {string[]} Active tenants allowed by both request and header contracts.
+     * @throws {CLASSES.DataImportError} When an explicit request tenant is inactive.
+     */
+    resolveTargetTenants: function (request, header) {
+        let activeTenants = Array.from(new Set([].concat(NODICS.getActiveTenants() || []).filter(Boolean)));
+        let configuredTenants = header && header.options && header.options.tenants;
+        let headerTenants = configuredTenants && configuredTenants.length > 0 ?
+            Array.from(new Set([].concat(configuredTenants).filter(Boolean))) : activeTenants;
+        if (request.tenant) {
+            if (!activeTenants.includes(request.tenant)) {
+                throw new CLASSES.DataImportError('ERR_IMP_00003', 'Requested import tenant is not active: ' + request.tenant);
+            }
+            if (!headerTenants.includes(request.tenant)) {
+                this.recordTenantExclusion(request, request.tenant, headerTenants);
+                return [];
+            }
+            this.recordTargetTenants(request, [request.tenant]);
+            return [request.tenant];
+        }
+        let resolvedTenants = headerTenants.filter(tenant => activeTenants.includes(tenant));
+        this.recordTargetTenants(request, resolvedTenants);
+        return resolvedTenants;
+    },
+
+    /** Records resolved target tenants in import diagnostics without duplicates. */
+    recordTargetTenants: function (request, tenants) {
+        if (request.importRun) {
+            request.importRun.targetTenants = Array.from(new Set([].concat(request.importRun.targetTenants || [], tenants || [])));
+        }
+    },
+
+    /** Records a safe no-dispatch decision when request and header tenant scopes do not intersect. */
+    recordTenantExclusion: function (request, tenant, headerTenants) {
+        this.LOG.warn('Skipping import header because requested tenant is outside header scope: ' + tenant);
+        if (request.importRun) {
+            request.importRun.tenantExclusions = request.importRun.tenantExclusions || [];
+            request.importRun.tenantExclusions.push({
+                requestedTenant: tenant,
+                headerTenants: [].concat(headerTenants || [])
+            });
         }
     },
 

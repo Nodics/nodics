@@ -9,8 +9,13 @@
 
  */
 
-const NodeCache = require("node-cache");
-const _ = require('lodash');
+/**
+ * @module nCache/hazelcastCache/service/engine/DefaultHazelcastCacheEngineService
+ * @description Fail-closed placeholder for Hazelcast connection handling; projects must provide a real layered adapter before enabling this engine.
+ * @layer service
+ * @owner nCache/hazelcastCache
+ * @override A project may replace this service with a real Hazelcast client while declaring truthful capabilities and preserving the cache adapter contract.
+ */
 
 module.exports = {
     /**
@@ -35,57 +40,23 @@ module.exports = {
         });
     },
 
-    initCache: function (localCacheConfig, moduleName) {
-        return new Promise((resolve, reject) => {
-            try {
-                let client = new NodeCache(localCacheConfig.options);
-                resolve({
-                    code: 'SUC_CACHE_00000',
-                    result: client
-                });
-            } catch (error) {
-                reject(new CLASSES.CacheError(error));
-            }
-        });
+    /** Rejects activation until a real distributed Hazelcast implementation overrides this service. */
+    initCache: function (hazelcastCacheConfig, moduleName) {
+        return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00008', 'Bundled Hazelcast adapter is unsupported for module: ' + moduleName));
     },
 
-    schema: function (localCacheConfig, moduleName) {
-        let moduleObject = NODICS.getModule(moduleName);
-        if (moduleObject && !UTILS.isBlank(moduleObject.rawSchema)) {
-            return this.initCache(localCacheConfig, moduleName);
-        } else {
-            return Promise.resolve({
-                code: 'SUC_CACHE_00001',
-                message: 'None schema found for module: ' + moduleName
-            });
-        }
+    /** Rejects schema-channel activation for the unsupported placeholder. */
+    schema: function (hazelcastCacheConfig, moduleName) {
+        return this.initCache(hazelcastCacheConfig, moduleName);
     },
 
-    router: function (localCacheConfig, moduleName) {
-        if (UTILS.isRouterEnabled(moduleName)) {
-            return this.initCache(localCacheConfig, moduleName);
-        } else {
-            return Promise.resolve({
-                code: 'SUC_CACHE_00001',
-                message: 'Router is not enabled for module: ' + moduleName
-            });
-        }
+    /** Rejects router-channel activation for the unsupported placeholder. */
+    router: function (hazelcastCacheConfig, moduleName) {
+        return this.initCache(hazelcastCacheConfig, moduleName);
     },
 
+    /** Rejects event registration because no Hazelcast client is active. */
     registerEvents: function (options) {
-        let moduleObject = NODICS.getModule(options.moduleName);
-        _.each(options.options.events, (trigger, event) => {
-            let serviceName = trigger.substring(0, trigger.indexOf('.'));
-            let functionName = trigger.substring(trigger.indexOf('.') + 1, trigger.length);
-            options.publishClient.on(event, function (key, value) {
-                if (key.startsWith('authToken_')) {
-                    key = key.substring(10, key.length);
-                }
-                SERVICE[serviceName][functionName](key, value, {
-                    moduleName: options.moduleName,
-                    moduleObject: moduleObject
-                });
-            });
-        });
+        return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00008', 'Bundled Hazelcast adapter does not support events'));
     }
 };

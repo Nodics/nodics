@@ -1,3 +1,10 @@
+/**
+ * @module nCache/cache/service/cache/DefaultCacheService
+ * @description Routes cache operations and runtime cache-configuration changes through the layered engine and event contracts.
+ * @layer service
+ * @owner nCache/cache
+ * @override Project modules may replace cache behavior while preserving tenant scope, operation envelopes, and engine dispatch contracts.
+ */
 /*
     Nodics - Enterprice Micro-Services Management Framework
 
@@ -12,6 +19,16 @@
 const _ = require('lodash');
 
 module.exports = {
+    /**
+     * In-memory diagnostics counters for cache operations.
+     *
+     * @type {Object}
+     */
+    cacheMetrics: {
+        startedAt: new Date().toISOString(),
+        operations: {}
+    },
+
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
@@ -34,10 +51,12 @@ module.exports = {
         });
     },
 
+    /** Stores a value through the configured module and channel cache engine. */
     put: function (options) {
-        try {
+        return this.observeCacheOperation('put', options, () => {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
             if (channel) {
+                this.assertWriteCapabilities(channel, options.ttl);
                 let operationName = 'put';
                 if (SERVICE[channel.engineOptions.cacheHandler][options.channelName + 'Put'] && typeof SERVICE[channel.engineOptions.cacheHandler][options.channelName + 'Put'] === 'function') {
                     operationName = options.channelName + 'Put';
@@ -50,13 +69,12 @@ module.exports = {
                     message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
                 }));
             }
-        } catch (error) {
-            return Promise.reject(new CLASSES.CacheError(error, 'Error while putting value in cache'));
-        }
+        }, 'Error while putting value in cache');
     },
 
+    /** Reads a value through the configured module and channel cache engine. */
     get: function (options) {
-        try {
+        return this.observeCacheOperation('get', options, () => {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
             if (channel) {
                 let operationName = 'get';
@@ -71,19 +89,18 @@ module.exports = {
                     message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
                 }));
             }
-        } catch (error) {
-            return Promise.reject(new CLASSES.CacheError(error, 'Error while getting value from cache'));
-        }
+        }, 'Error while getting value from cache');
     },
 
     /** Atomically removes and returns one cache value through the active engine. */
     consume: function (options) {
-        try {
+        return this.observeCacheOperation('consume', options, () => {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
             if (!channel) {
                 return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00006', 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName));
             }
             let handler = SERVICE[channel.engineOptions.cacheHandler];
+            this.assertCapability(channel, 'atomicConsume');
             let operationName = options.channelName + 'Consume';
             if (!handler[operationName] || typeof handler[operationName] !== 'function') operationName = 'consume';
             if (!handler[operationName] || typeof handler[operationName] !== 'function') {
@@ -91,27 +108,31 @@ module.exports = {
             }
             options.channel = channel;
             return handler[operationName](options);
-        } catch (error) {
-            return Promise.reject(new CLASSES.CacheError(error, 'Error while atomically consuming cache value'));
-        }
+        }, 'Error while atomically consuming cache value');
     },
 
+    /** Selects key-based or prefix-based invalidation from the supplied scope. */
     flushCache: function (options) {
         try {
+            this.validateMutationScope(options);
+            let flush;
             if (options.keys && options.keys instanceof Array && options.keys.length > 0) {
-                return this.flushByKeys(options);
+                flush = this.flushByKeys(options);
             } else {
-                return this.flushByPrefix(options);
+                flush = this.flushByPrefix(options);
             }
+            return Promise.resolve(flush).then(result => this.propagateInvalidation(options).then(() => result));
         } catch (error) {
             return Promise.reject(new CLASSES.CacheError(error));
         }
     },
 
+    /** Invalidates values matching a prefix through the active cache engine. */
     flushByPrefix: function (options) {
-        try {
+        return this.observeCacheOperation('flushByPrefix', options, () => {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
             if (channel) {
+                this.assertCapability(channel, 'prefixFlush');
                 let operationName = 'flushByPrefix';
                 if (SERVICE[channel.engineOptions.cacheHandler][options.channelName + 'FlushByPrefix'] && typeof SERVICE[channel.engineOptions.cacheHandler][options.channelName + 'FlushByPrefix'] === 'function') {
                     operationName = options.channelName + 'FlushByPrefix';
@@ -124,18 +145,18 @@ module.exports = {
                     message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
                 }));
             }
-        } catch (error) {
-            return Promise.reject(new CLASSES.CacheError(error, 'Error while flushing cache'));
-        }
+        }, 'Error while flushing cache');
     },
 
+    /** Invalidates explicit keys through the active cache engine. */
     flushByKeys: function (options) {
-        try {
+        return this.observeCacheOperation('flushByKeys', options, () => {
             let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
             if (channel) {
+                this.assertCapability(channel, 'keyFlush');
                 let operationName = 'flushByKeys';
                 if (SERVICE[channel.engineOptions.cacheHandler][options.channelName + 'FlushByKeys'] && typeof SERVICE[channel.engineOptions.cacheHandler][options.channelName + 'FlushByKeys'] === 'function') {
-                    operationName = channelName + 'FlushByKeys';
+                    operationName = options.channelName + 'FlushByKeys';
                 }
                 options.channel = channel;
                 return SERVICE[channel.engineOptions.cacheHandler][operationName](options);
@@ -145,11 +166,158 @@ module.exports = {
                     message: 'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName
                 }));
             }
+        }, 'Error while flushing keys in cache');
+    },
+
+    /**
+     * Wraps one cache operation with diagnostics recording without changing the adapter contract.
+     *
+     * @param {string} operation Cache operation name.
+     * @param {Object} options Cache operation options.
+     * @param {Function} executor Function that executes the underlying adapter operation.
+     * @param {string} errorMessage Context message for synchronous operation failures.
+     * @returns {Promise<*>} Original operation result.
+     */
+    observeCacheOperation: function (operation, options, executor, errorMessage) {
+        let startedAt = Date.now();
+        try {
+            return Promise.resolve(executor()).then(success => {
+                this.recordCacheMetric(operation, options, this.resolveMetricResult(operation, true), startedAt);
+                return success;
+            }).catch(error => {
+                this.recordCacheMetric(operation, options, this.resolveMetricResult(operation, false, error), startedAt, error);
+                throw error;
+            });
         } catch (error) {
-            return Promise.reject(new CLASSES.CacheError(error, 'Error while flushing keys in cache'));
+            this.recordCacheMetric(operation, options, this.resolveMetricResult(operation, false, error), startedAt, error);
+            return Promise.reject(new CLASSES.CacheError(error, errorMessage));
         }
     },
 
+    /**
+     * Converts an operation outcome into a stable diagnostics result label.
+     *
+     * @param {string} operation Cache operation name.
+     * @param {boolean} success Whether the operation succeeded.
+     * @param {Error} error Optional operation error.
+     * @returns {string} One of `hit`, `miss`, `success`, or `error`.
+     */
+    resolveMetricResult: function (operation, success, error) {
+        if (success && (operation === 'get' || operation === 'consume')) return 'hit';
+        if (!success && error && error.code === 'ERR_CACHE_00001' && (operation === 'get' || operation === 'consume')) return 'miss';
+        return success ? 'success' : 'error';
+    },
+
+    /**
+     * Returns effective cache diagnostics configuration.
+     *
+     * @returns {Object} Effective diagnostics options.
+     */
+    getCacheDiagnosticsOptions: function () {
+        let defaults = { enabled: true, includeTenant: true };
+        try {
+            let cacheConfig = typeof CONFIG !== 'undefined' && CONFIG.get && CONFIG.get('cache') || {};
+            return _.merge({}, defaults, cacheConfig.diagnostics || {});
+        } catch (error) {
+            return defaults;
+        }
+    },
+
+    /**
+     * Builds non-sensitive cache metrics dimensions from operation options.
+     *
+     * @param {string} operation Cache operation name.
+     * @param {Object} options Cache operation options.
+     * @param {Object} diagnosticsOptions Effective diagnostics options.
+     * @returns {Object} Metrics dimensions.
+     */
+    buildCacheMetricDimensions: function (operation, options, diagnosticsOptions) {
+        options = options || {};
+        return {
+            moduleName: options.moduleName || '<unknown>',
+            tenant: diagnosticsOptions.includeTenant === false ? '<redacted>' : options.tenant || '<unknown>',
+            channelName: options.channelName || options.channel && options.channel.channelName || '<unknown>',
+            operation: operation
+        };
+    },
+
+    /**
+     * Records one cache operation metric in process memory.
+     *
+     * @param {string} operation Cache operation name.
+     * @param {Object} options Cache operation options.
+     * @param {string} result Stable result label.
+     * @param {number} startedAt Epoch milliseconds when the operation started.
+     * @param {Error} error Optional operation error.
+     * @returns {boolean} Always true when diagnostics are disabled or recorded.
+     */
+    recordCacheMetric: function (operation, options, result, startedAt, error) {
+        let diagnosticsOptions = this.getCacheDiagnosticsOptions();
+        if (diagnosticsOptions.enabled === false) return true;
+        let dimensions = this.buildCacheMetricDimensions(operation, options, diagnosticsOptions);
+        let key = [dimensions.moduleName, dimensions.tenant, dimensions.channelName, dimensions.operation].join('|');
+        let elapsedMs = Math.max(0, Date.now() - startedAt);
+        let existing = this.cacheMetrics.operations[key] || {
+            moduleName: dimensions.moduleName,
+            tenant: dimensions.tenant,
+            channelName: dimensions.channelName,
+            operation: dimensions.operation,
+            count: 0,
+            results: {},
+            totalLatencyMs: 0,
+            maxLatencyMs: 0,
+            lastLatencyMs: 0,
+            lastResult: null,
+            lastErrorCode: null,
+            updatedAt: null
+        };
+        existing.count += 1;
+        existing.results[result] = (existing.results[result] || 0) + 1;
+        existing.totalLatencyMs += elapsedMs;
+        existing.maxLatencyMs = Math.max(existing.maxLatencyMs, elapsedMs);
+        existing.lastLatencyMs = elapsedMs;
+        existing.lastResult = result;
+        existing.lastErrorCode = error && error.code || null;
+        existing.updatedAt = new Date().toISOString();
+        this.cacheMetrics.operations[key] = existing;
+        return true;
+    },
+
+    /**
+     * Returns a detached snapshot of cache diagnostics counters.
+     *
+     * @param {Object} filter Optional moduleName, tenant, channelName, or operation filter.
+     * @returns {Object} Metrics snapshot.
+     */
+    getCacheMetricsSnapshot: function (filter) {
+        filter = filter || {};
+        let snapshot = _.cloneDeep(this.cacheMetrics);
+        snapshot.operations = Object.keys(snapshot.operations).reduce((result, key) => {
+            let item = snapshot.operations[key];
+            if (filter.moduleName && item.moduleName !== filter.moduleName) return result;
+            if (filter.tenant && item.tenant !== filter.tenant) return result;
+            if (filter.channelName && item.channelName !== filter.channelName) return result;
+            if (filter.operation && item.operation !== filter.operation) return result;
+            result[key] = item;
+            return result;
+        }, {});
+        return snapshot;
+    },
+
+    /**
+     * Clears process-local cache diagnostics counters.
+     *
+     * @returns {Object} Reset metrics snapshot.
+     */
+    resetCacheMetrics: function () {
+        this.cacheMetrics = {
+            startedAt: new Date().toISOString(),
+            operations: {}
+        };
+        return this.getCacheMetricsSnapshot();
+    },
+
+    /** Resolves the layered search-cache channel for a schema. */
     getSearchCacheChannel: function (schemaName) {
         let channelName = 'search';
         if (CONFIG.get('cache').schemaCacheChannelNameMapping && CONFIG.get('cache').schemaCacheChannelNameMapping[schemaName]) {
@@ -158,6 +326,7 @@ module.exports = {
         return channelName;
     },
 
+    /** Resolves the layered item-cache channel for a schema. */
     getSchemaCacheChannel: function (schemaName) {
         let channelName = 'schema';
         if (CONFIG.get('cache').schemaCacheChannelNameMapping && CONFIG.get('cache').schemaCacheChannelNameMapping[schemaName]) {
@@ -166,6 +335,7 @@ module.exports = {
         return channelName;
     },
 
+    /** Resolves the layered API-cache channel for a router. */
     getRouterCacheChannel: function (routerName) {
         let channelName = 'router';
         if (CONFIG.get('cache').routerCacheChannelNameMapping && CONFIG.get('cache').routerCacheChannelNameMapping[routerName]) {
@@ -174,6 +344,7 @@ module.exports = {
         return channelName;
     },
 
+    /** Resolves the layered authentication-cache channel for a tenant. */
     getAuthCacheChannel: function (tenant) {
         let channelName = 'auth';
         if (CONFIG.get('cache').authCacheChannelNameMapping && CONFIG.get('cache').authCacheChannelNameMapping[tenant]) {
@@ -182,10 +353,106 @@ module.exports = {
         return channelName;
     },
 
+    /** Returns normalized capabilities for initialized and legacy custom adapters. */
+    getChannelCapabilities: function (channel) {
+        let engineOptions = channel && channel.engineOptions || {};
+        return Object.assign({
+            distributed: engineOptions.distributed === true,
+            atomicConsume: engineOptions.atomicConsume === true,
+            ttl: true,
+            nonExpiringTtl: true,
+            prefixFlush: true,
+            keyFlush: true,
+            serialization: 'custom'
+        }, engineOptions.capabilities || {});
+    },
 
+    /** Fails when an operation requires a capability the selected adapter did not declare. */
+    assertCapability: function (channel, capability) {
+        if (this.getChannelCapabilities(channel)[capability] !== true) {
+            throw new CLASSES.CacheError('ERR_CACHE_00009', 'Cache adapter does not support required capability: ' + capability);
+        }
+        return true;
+    },
+
+    /** Enforces declared TTL and explicit non-expiring write capabilities. */
+    assertWriteCapabilities: function (channel, ttl) {
+        if (ttl !== undefined) this.assertCapability(channel, 'ttl');
+        if (ttl === 0) this.assertCapability(channel, 'nonExpiringTtl');
+        return true;
+    },
+
+    /** Resolves a cache purpose through layered channel mappings. */
+    resolveCacheChannel: function (cacheType, resourceName, tenant) {
+        if (cacheType === 'router') return this.getRouterCacheChannel(resourceName);
+        if (cacheType === 'schema') return this.getSchemaCacheChannel(resourceName);
+        if (cacheType === 'search') return this.getSearchCacheChannel(resourceName);
+        if (cacheType === 'auth') return this.getAuthCacheChannel(tenant);
+        throw new CLASSES.CacheError('ERR_CACHE_00009', 'Unknown cache purpose: ' + cacheType);
+    },
+
+    /** Resolves every active channel that may contain a resource, including customized router-channel mappings. */
+    resolveInvalidationChannels: function (options) {
+        if (options.cacheType !== 'router') {
+            return [this.resolveCacheChannel(options.cacheType, options.resourceName, options.tenant)];
+        }
+        let cacheConfig = CONFIG.get('cache') || {};
+        let candidates = ['router'].concat(Object.values(cacheConfig.routerCacheChannelNameMapping || {}));
+        let configured = SERVICE.DefaultCacheConfigurationService.getCacheChannels(options.moduleName) || {};
+        let unique = Array.from(new Set(candidates));
+        let active = unique.filter(channelName => configured[channelName]);
+        return active.length > 0 ? active : [this.getRouterCacheChannel(options.resourceName)];
+    },
+
+    /** Invalidates one tenant-owned logical resource using the effective layered channel mapping. */
+    invalidateResource: function (options) {
+        options = Object.assign({}, options || {});
+        if (!options.resourceName || !options.cacheType) {
+            return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00009', 'resourceName and cacheType are required for cache invalidation'));
+        }
+        let channels = this.resolveInvalidationChannels(options);
+        return Promise.all(channels.map(channelName => this.flushCache(Object.assign({}, options, {
+            channelName: channelName,
+            prefix: options.resourceName,
+            internalCacheOperation: true
+        }))));
+    },
+
+    /** Broadcasts local-adapter invalidation to peer module nodes; shared adapters need no duplicate event. */
+    propagateInvalidation: function (options) {
+        let channel = options.channel || SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
+        let cacheConfig = CONFIG.get('cache') || {};
+        let policy = cacheConfig.invalidation || {};
+        if (options.suppressPropagation === true || policy.crossNode === false || this.getChannelCapabilities(channel).distributed === true) {
+            return Promise.resolve(true);
+        }
+        if (!SERVICE.DefaultEventService || typeof SERVICE.DefaultEventService.publish !== 'function') {
+            return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00009', 'Cross-node invalidation requires the configured event service'));
+        }
+        return SERVICE.DefaultEventService.publish({
+            tenant: options.tenant,
+            active: true,
+            event: policy.eventName || 'cacheInvalidation',
+            sourceName: options.moduleName,
+            sourceId: CONFIG.get('nodeId'),
+            target: options.moduleName,
+            state: 'NEW',
+            type: 'SYNC',
+            targetType: ENUMS.TargetType.MODULE_NODES.key,
+            data: {
+                channelName: options.channelName,
+                prefix: options.prefix,
+                keys: options.keys
+            }
+        });
+    },
+
+
+    /** Publishes a governed runtime API-cache configuration update. */
     updateRouterCacheConfiguration: function (request) {
         return new Promise((resolve, reject) => {
             try {
+                this.validateMutationScope(request);
                 this.publishCacheChangeEvent(request, 'apiCacheChange').then(success => {
                     resolve({
                         code: 'SUC_CACHE_00000',
@@ -200,9 +467,11 @@ module.exports = {
         });
     },
 
+    /** Publishes a governed runtime item-cache configuration update. */
     updateItemCacheConfiguration: function (request) {
         return new Promise((resolve, reject) => {
             try {
+                this.validateMutationScope(request);
                 this.publishCacheChangeEvent(request, 'itemCacheChange').then(success => {
                     resolve({
                         code: 'SUC_CACHE_00000',
@@ -217,7 +486,34 @@ module.exports = {
         });
     },
 
+    /** Backward-compatible public schema-cache configuration operation. */
+    updateSchemaCacheConfiguration: function (request) {
+        return this.updateItemCacheConfiguration(request);
+    },
 
+    /** Rejects cache mutations that escape the authorized tenant or active route module. */
+    validateMutationScope: function (request) {
+        request = request || {};
+        let authData = request.authData || {};
+        let authorizedTenant = authData.tenant || authData.enterprise && authData.enterprise.tenant && authData.enterprise.tenant.code;
+        let body = request.httpRequest && request.httpRequest.body;
+        let config = request.config;
+        let moduleName = request.moduleName;
+        let tenant = request.tenant;
+        let bodyModule = body && !Array.isArray(body) && (body.moduleName || body.targetModule || body.targetModuleName) || config && (config.moduleName || config.targetModule || config.targetModuleName);
+        let bodyTenant = body && !Array.isArray(body) && body.tenant || config && config.tenant;
+        let modules = typeof NODICS !== 'undefined' && typeof NODICS.getModules === 'function' ? NODICS.getModules() : undefined;
+        let activeModule = typeof NODICS !== 'undefined' && typeof NODICS.getModule === 'function' ? NODICS.getModule(moduleName) : modules && modules[moduleName];
+        let activeTenants = typeof NODICS !== 'undefined' && typeof NODICS.getActiveTenants === 'function' ? NODICS.getActiveTenants() : undefined;
+        let internalOperation = request.internalCacheOperation === true;
+        if (!moduleName || (!tenant && !internalOperation) || authorizedTenant && authorizedTenant !== tenant || bodyTenant && bodyTenant !== tenant || bodyModule && bodyModule !== moduleName || (activeModule === undefined && (modules || typeof NODICS !== 'undefined' && typeof NODICS.getModule === 'function')) || tenant && Array.isArray(activeTenants) && activeTenants.length > 0 && !activeTenants.includes(tenant)) {
+            throw new CLASSES.CacheError('ERR_CACHE_00007', 'Cache mutation must remain within authorized tenant ' + (tenant || '<missing>') + ' and active module ' + (moduleName || '<missing>'));
+        }
+        return true;
+    },
+
+
+    /** Broadcasts a tenant-aware cache configuration change to active module nodes. */
     publishCacheChangeEvent: function (request, eventName) {
         return new Promise((resolve, reject) => {
             try {
@@ -227,7 +523,7 @@ module.exports = {
                     event: eventName,
                     sourceName: request.moduleName,
                     sourceId: CONFIG.get('nodeId'),
-                    target: request.modelName,
+                    target: request.moduleName,
                     state: "NEW",
                     type: 'SYNC',
                     targetType: ENUMS.TargetType.MODULE_NODES.key,
@@ -244,6 +540,7 @@ module.exports = {
     },
 
 
+    /** Applies an API-cache configuration event to the effective router definition. */
     handleRouterCacheChangeEvent: function (request) {
         return new Promise((resolve, reject) => {
             try {
@@ -277,6 +574,7 @@ module.exports = {
         });
     },
 
+    /** Applies an item-cache configuration event to every active tenant model. */
     handleItemCacheChangeEvent: function (request) {
         return new Promise((resolve, reject) => {
             try {
@@ -290,14 +588,16 @@ module.exports = {
                         NODICS.getActiveTenants().forEach(tntName => {
                             let model = NODICS.getModels(request.moduleName, tntName)[modelName];
                             if (model) {
-                                model.cache = _.merge(model.cache, request.config.cache || {});
+                                model.cache = _.merge(model.cache || {}, request.config.cache || {});
                             } else {
                                 throw new Error('Invalid schemaName: ' + request.config.schemaName + ' to update item cache');
                             }
                         });
                     } catch (error) {
                         reject(new CLASSES.CacheError(error));
+                        return;
                     }
+                    resolve({ code: 'SUC_CACHE_00000' });
                 }
             } catch (error) {
                 reject(new CLASSES.CacheError(error, 'Facing issue while updating item cache'));

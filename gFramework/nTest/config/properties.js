@@ -12,6 +12,10 @@
 module.exports = {
     test: {
         enabled: false,
+        layeredDiscovery: {
+            enabled: true,
+            paths: []
+        },
         uTest: {
             enabled: true,
             runOnStartup: true

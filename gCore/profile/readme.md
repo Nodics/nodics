@@ -47,3 +47,17 @@ and nodes. Strict startup validation rejects an unsafe local-cache deployment.
 Principal stamp targets are resolved from persisted records and registered only
 after successful updates. Group updates traverse descendant groups so inherited
 permission changes invalidate every affected session.
+
+## Mandatory identity bootstrap
+
+Profile contributes `DefaultMandatoryIdentityBootstrapService` through the
+layered `mandatoryBootstrapServices` configuration. It runs after init data is
+available and before internal service tokens are issued. The default
+implementation creates only missing non-secret groups declared by the effective
+identity-governance policy, never overwrites existing group customizations, and
+records every creation in the identity migration audit model.
+
+Projects can replace the service list, override the reconciler in a later module
+layer, extend `identityGovernance.migration.groupTargets`, or disable automatic
+group reconciliation. Missing service principals or credentials are not
+silently recreated; those remain fail-closed governed recovery operations.

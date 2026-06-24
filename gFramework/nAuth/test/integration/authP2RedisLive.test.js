@@ -14,6 +14,9 @@ class CacheError extends Error {
     constructor(code, message) { super(message || code && code.message || String(code)); }
 }
 global.CLASSES = { CacheError };
+global.SERVICE = {
+    DefaultCacheConfigurationService: require('../../../nCache/cache/src/service/config/defaultCacheConfigurationService')
+};
 
 async function run() {
     if (!configuration.redisUrl) {

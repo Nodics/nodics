@@ -413,10 +413,12 @@ module.exports = {
             let schemaModel = request.schemaModel;
             if (response.success) {
                 this.LOG.debug('Invalidating router cache for modified model');
-                SERVICE.DefaultCacheService.flushCache({
+                SERVICE.DefaultCacheService.invalidateResource({
+                    tenant: request.tenant,
+                    authData: request.authData,
                     moduleName: schemaModel.moduleName,
-                    channelName: 'router',
-                    prefix: schemaModel.schemaName
+                    cacheType: 'router',
+                    resourceName: schemaModel.schemaName
                 }).then(success => {
                     this.LOG.debug('Cache for router: ' + schemaModel.schemaName + ' has been flushed cuccessfully');
                 }).catch(error => {
@@ -442,10 +444,12 @@ module.exports = {
             let schemaModel = request.schemaModel;
             if (response.success && schemaModel.cache && schemaModel.cache.enabled) {
                 this.LOG.debug('Invalidating item cache for modified model');
-                SERVICE.DefaultCacheService.flushCache({
+                SERVICE.DefaultCacheService.invalidateResource({
+                    tenant: request.tenant,
+                    authData: request.authData,
                     moduleName: schemaModel.moduleName,
-                    channelName: 'schema',
-                    prefix: schemaModel.schemaName
+                    cacheType: 'schema',
+                    resourceName: schemaModel.schemaName
                 }).then(success => {
                     this.LOG.debug('Cache for schema: ' + schemaModel.schemaName + ' has been flushed cuccessfully');
                 }).catch(error => {

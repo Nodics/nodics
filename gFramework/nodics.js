@@ -13,6 +13,13 @@ const config = require('./nConfig');
 const env = require('../env');
 const util = require('util');
 
+/**
+ * @module gFramework/NodicsFramework
+ * @description Coordinates Nodics runtime initialization, layered mandatory bootstrap hooks, server startup, generators, clean, and build lifecycles for the active module hierarchy.
+ * @layer module
+ * @owner gFramework
+ * @override Projects customize behavior through active-module metadata, configuration, scripts, services, and configured bootstrap reconcilers rather than modifying this coordinator.
+ */
 module.exports = {
     /**
     * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
@@ -36,6 +43,7 @@ module.exports = {
         });
     },
 
+    /** Initializes modules, entities, init data, bootstrap reconcilers, internal authentication, and enterprises. */
     initFramework: function (options) {
         return new Promise((resolve, reject) => {
             config.start(options).then(() => {
@@ -67,6 +75,8 @@ module.exports = {
                         resolve(true);
                     }
                 });
+            }).then(() => {
+                return this.executeMandatoryBootstrapServices();
             }).then(() => {
                 return new Promise((resolve, reject) => {
                     if (NODICS.isInitRequired()) {
@@ -131,6 +141,38 @@ module.exports = {
         });
     },
 
+    /**
+     * Executes configured, layered, idempotent bootstrap reconcilers after init data is available.
+     *
+     * @returns {Promise<Array>} Reconciler results in configured order.
+     * @sideEffects May create missing mandatory platform records through project-overridable services.
+     */
+    executeMandatoryBootstrapServices: function () {
+        const serviceNames = this.getMandatoryBootstrapServiceNames();
+        return serviceNames.reduce((promise, serviceName) => promise.then(results => {
+            const service = SERVICE[serviceName];
+            if (!service || typeof service.reconcile !== 'function') {
+                throw new Error('Mandatory bootstrap service is not available: ' + serviceName);
+            }
+            return service.reconcile({
+                tenant: CONFIG.get('defaultTenant') || 'default',
+                modules: NODICS.getActiveModules(),
+                source: 'startup'
+            }).then(result => results.concat([result]));
+        }), Promise.resolve([]));
+    },
+
+    /** Resolves enabled reconcilers from a merge-friendly ordered map with legacy array compatibility. */
+    getMandatoryBootstrapServiceNames: function () {
+        const configured = CONFIG.get('mandatoryBootstrapServices') || {};
+        if (Array.isArray(configured)) return configured.filter(Boolean);
+        return Object.keys(configured).map(key => Object.assign({ key: key }, configured[key] || {}))
+            .filter(item => item.enabled !== false && item.service)
+            .sort((left, right) => Number(left.order || 0) - Number(right.order || 0) || left.key.localeCompare(right.key))
+            .map(item => item.service);
+    },
+
+    /** Starts the configured Nodics server after the framework lifecycle completes. */
     start: function () {
         let options = env.defaultOptions;
         this.initFramework(options).then(success => {
@@ -155,6 +197,7 @@ module.exports = {
         });
     },
 
+    /** Runs the legacy application generator through the layered infrastructure service. */
     genApp: function (options) {
         config.start(options).then(() => {
             return config.initUtilities(options);
@@ -167,6 +210,7 @@ module.exports = {
         });
     },
 
+    /** Runs the module-group generator using active default options. */
     genGroup: function () {
         let options = env.defaultOptions;
         config.start(options).then(() => {
@@ -180,6 +224,7 @@ module.exports = {
         });
     },
 
+    /** Runs the backend module generator using active default options. */
     genModule: function () {
         let options = env.defaultOptions;
         config.start(options).then(() => {
@@ -192,6 +237,7 @@ module.exports = {
             console.error(error);
         });
     },
+    /** Runs the optional React-client module generator through the infrastructure extension point. */
     genReactModule: function () {
         let options = env.defaultOptions;
         config.start(options).then(() => {
@@ -205,6 +251,7 @@ module.exports = {
         });
     },
 
+    /** Runs the optional Vue-client module generator through the infrastructure extension point. */
     genVueModule: function () {
         let options = env.defaultOptions;
         config.start(options).then(() => {
@@ -218,6 +265,7 @@ module.exports = {
         });
     },
 
+    /** Cleans generated artifacts for every active module through the standard clean lifecycle. */
     cleanAll: function () {
         let options = env.defaultOptions;
         config.prepareClean(options).then(() => {
@@ -229,6 +277,7 @@ module.exports = {
         });
     },
 
+    /** Recreates generated framework artifacts from active layered source definitions. */
     buildAll: function () {
         let options = env.defaultOptions;
         config.prepareBuild(options).then(() => {

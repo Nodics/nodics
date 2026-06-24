@@ -55,6 +55,7 @@ module.exports = {
             request.cacheKeyHash = SERVICE.DefaultCacheConfigurationService.createSearchKey(request);
             this.LOG.debug('Model cache lookup for key: ' + request.cacheKeyHash);
             SERVICE.DefaultCacheService.get({
+                tenant: request.tenant,
                 moduleName: request.searchModel.moduleName || request.schemaModel.moduleName,
                 channelName: SERVICE.DefaultCacheService.getSearchCacheChannel(request.searchModel.indexName),
                 key: request.cacheKeyHash
@@ -169,19 +170,26 @@ module.exports = {
         this.LOG.debug('Updating cache for new Items');
         let searchModel = request.searchModel;
         let indexDef = searchModel.indexDef;
-        if (indexDef.cache && indexDef.cache.enabled && response.success.success && response.success.result) {
+        let cacheDecision = SERVICE.DefaultCachePolicyService && typeof SERVICE.DefaultCachePolicyService.isSearchCacheable === 'function' ?
+            SERVICE.DefaultCachePolicyService.isSearchCacheable(request, response.success) :
+            { cacheable: !!(indexDef.cache && indexDef.cache.enabled && response.success && response.success.result), reason: 'legacyPolicy', reasonCode: 'RSN_CACHE_00010' };
+        request.cachePolicyDecision = cacheDecision;
+        if (cacheDecision.cacheable) {
             let cache = request.searchModel.indexDef.cache;
             SERVICE.DefaultCacheService.put({
-                moduleName: request.searchModel.moduleName || request.schemaModel.moduleName,
+                tenant: request.tenant,
+                moduleName: request.searchModel.moduleName || request.schemaModel && request.schemaModel.moduleName,
                 channelName: SERVICE.DefaultCacheService.getSearchCacheChannel(request.searchModel.indexName),
                 key: request.cacheKeyHash,
-                value: response.success.result,
+                value: response.success,
                 ttl: cache.ttl
             }).then(success => {
                 this.LOG.info('Item saved in item cache');
             }).catch(error => {
                 this.LOG.error('While saving item in item cache : ', error);
             });
+        } else if (cacheDecision.reason && cacheDecision.reason !== 'legacyPolicy' && (!CONFIG.get('cache') || !CONFIG.get('cache').cacheability || CONFIG.get('cache').cacheability.logSkippedReason !== false)) {
+            this.LOG.debug('Skipping search cache write: ' + cacheDecision.reasonCode + ' ' + cacheDecision.reason);
         }
         process.nextSuccess(request, response);
     }

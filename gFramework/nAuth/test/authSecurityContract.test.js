@@ -181,6 +181,7 @@ async function validateAsyncContracts() {
         del: key => localValues.delete(key)
     };
     const localCache = require(path.join(repositoryRoot, 'gFramework/nCache/nodeCache/src/service/cache/defaultLocalCacheService'));
+    global.SERVICE.DefaultCacheConfigurationService = require(path.join(repositoryRoot, 'gFramework/nCache/cache/src/service/config/defaultCacheConfigurationService'));
     let localOptions = {
         key: 'refresh-token',
         channel: { channelName: 'auth', engineOptions: { options: { prefix: 'profile' } }, client: localClient }

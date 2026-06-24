@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module import/pipelines/pipelinesDefinition
+ * @description Declares system, local, governed remote, header, file, and model import pipelines using reusable initializer and processing services.
+ * @layer pipeline
+ * @owner import
+ * @override Later modules may override pipeline nodes while preserving tenant validation, trusted-header, diagnostics, and persistence contracts.
+ */
 module.exports = {
     systemDataImportInitializerPipeline: {
         startNode: "validateRequest",
@@ -127,21 +134,41 @@ module.exports = {
             validateRequest: {
                 type: 'function',
                 handler: 'DefaultRemoteDataImportInitializerService.validateRequest',
-                success: 'prepareOutputURL'
+                success: 'preparePaths'
             },
-            prepareOutputURL: {
+            preparePaths: {
                 type: 'function',
-                handler: 'DefaultRemoteDataImportInitializerService.prepareOutputURL',
+                handler: 'DefaultRemoteDataImportInitializerService.preparePaths',
+                success: 'flushOutputFolder'
+            },
+            flushOutputFolder: {
+                type: 'function',
+                handler: 'DefaultRemoteDataImportInitializerService.flushOutputFolder',
+                success: 'stageRemoteData'
+            },
+            stageRemoteData: {
+                type: 'function',
+                handler: 'DefaultRemoteDataImportInitializerService.stageRemoteData',
                 success: 'loadHeaderFileList'
             },
             loadHeaderFileList: {
                 type: 'function',
                 handler: 'DefaultRemoteDataImportInitializerService.loadHeaderFileList',
+                success: 'buildHeaderInstances'
+            },
+            buildHeaderInstances: {
+                type: 'function',
+                handler: 'DefaultSystemDataImportInitializerService.buildHeaderInstances',
                 success: 'loadDataFileList'
             },
             loadDataFileList: {
                 type: 'function',
-                handler: 'DefaultRemoteDataImportInitializerService.loadDataFileList',
+                handler: 'DefaultLocalDataImportInitializerService.loadDataFileList',
+                success: 'resolveFileType'
+            },
+            resolveFileType: {
+                type: 'function',
+                handler: 'DefaultLocalDataImportInitializerService.resolveFileType',
                 success: 'initDataImport'
             },
             initDataImport: {

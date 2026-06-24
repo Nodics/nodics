@@ -1,3 +1,10 @@
+/**
+ * @module nCache/redisCache/service/cache/DefaultRedisCacheService
+ * @description Implements the distributed cache adapter contract using Redis namespacing, TTL, atomic consume, and incremental invalidation.
+ * @layer service
+ * @owner nCache/redisCache
+ * @override Project modules may replace Redis integration while preserving namespacing, TTL, atomic consume, serialization, and invalidation contracts.
+ */
 /*
     Nodics - Enterprice Micro-Services Management Framework
 
@@ -32,25 +39,27 @@ module.exports = {
         });
     },
 
+    /** Serializes and stores a value with the effective Redis TTL. */
     put: function (options) {
         try {
             let key = this.getKey(options);
             let ttl = this.getTtl(options);
             this.LOG.debug('Putting value in Redis cache storage with key: ' + key + ' TTL: ' + ttl);
             let write = ttl > 0 ? options.channel.client.set(key, JSON.stringify(options.value), { EX: ttl }) : options.channel.client.set(key, JSON.stringify(options.value));
-            return Promise.resolve(write).then(() => Object.assign({}, options.value, { code: 'SUC_CACHE_00000' })).catch(error => { throw new CLASSES.CacheError(error); });
+            return Promise.resolve(write).then(() => ({ code: 'SUC_CACHE_00000', result: options.value })).catch(error => { throw new CLASSES.CacheError(error); });
         } catch (error) {
             return Promise.reject(new CLASSES.CacheError(error));
         }
     },
 
+    /** Reads and deserializes one Redis value or returns the standard cache-miss error. */
     get: function (options) {
         try {
             let key = this.getKey(options);
             this.LOG.debug('Getting value from Redis cache storage with key: ' + key);
             return Promise.resolve(options.channel.client.get(key)).then(value => {
                 if (!value) throw new CLASSES.CacheError('ERR_CACHE_00001', 'Could not find any value for key: ' + key);
-                return Object.assign(typeof value === 'string' ? JSON.parse(value) : value, { code: 'SUC_CACHE_00000' });
+                return typeof value === 'string' ? JSON.parse(value) : value;
             }).catch(error => { throw error instanceof CLASSES.CacheError ? error : new CLASSES.CacheError(error); });
         } catch (error) {
             return Promise.reject(new CLASSES.CacheError(error));
@@ -69,7 +78,6 @@ module.exports = {
                 Promise.resolve(options.channel.client.getDel(key)).then(value => {
                     if (!value) throw new CLASSES.CacheError('ERR_CACHE_00001', 'Could not find any value for key: ' + key);
                     value = typeof value === 'string' ? JSON.parse(value) : value;
-                    value.code = 'SUC_CACHE_00000';
                     resolve(value);
                 }).catch(error => reject(error instanceof CLASSES.CacheError ? error : new CLASSES.CacheError(error)));
             } catch (error) {
@@ -78,9 +86,10 @@ module.exports = {
         });
     },
 
+    /** Invalidates matching namespaced Redis keys using incremental scanning. */
     flushByPrefix: function (options) {
         try {
-            let prefix = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + (options.prefix || '');
+            let prefix = SERVICE.DefaultCacheConfigurationService.createStoragePrefix(options) + (options.prefix || '');
             let pattern = prefix.endsWith('*') ? prefix : prefix + '*';
             return this.collectKeys(options.channel.client, pattern).then(keys => {
                 let removal = keys.length > 0 ? options.channel.client.del(keys) : Promise.resolve(0);
@@ -91,6 +100,7 @@ module.exports = {
         }
     },
 
+    /** Invalidates explicit namespaced Redis keys. */
     flushByKeys: function (options) {
         return new Promise((resolve, reject) => {
             try {
@@ -98,7 +108,7 @@ module.exports = {
                 let tmpKeys = [];
                 if (options.keys && options.keys.length > 0) {
                     for (var i = 0; i < options.keys.length; i++) {
-                        tmpKeys[i] = options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.keys[i];
+                    tmpKeys[i] = SERVICE.DefaultCacheConfigurationService.createStorageKey(options, options.keys[i]);
                     }
                 }
                 _self.LOG.debug('Flushing value in local cache stored with keys: ' + tmpKeys);
@@ -114,13 +124,12 @@ module.exports = {
 
     /** Builds the canonical cache key shared by all Redis operations. */
     getKey: function (options) {
-        return options.channel.channelName + '_' + options.channel.engineOptions.options.prefix + '_' + options.key;
+        return SERVICE.DefaultCacheConfigurationService.createStorageKey(options);
     },
 
     /** Resolves the effective TTL while preserving explicit non-expiring values. */
     getTtl: function (options) {
-        if (options.ttl === 0) return 0;
-        return Number(options.ttl || options.channel.chennalOptions && options.channel.chennalOptions.ttl || options.channel.engineOptions.ttl || options.channel.engineOptions.options.ttl || 0);
+        return SERVICE.DefaultCacheConfigurationService.resolveTtl(options);
     },
 
     /** Uses incremental SCAN so prefix cleanup does not block a shared Redis server. */

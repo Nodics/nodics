@@ -4,6 +4,13 @@
 
 ## Hand-Authored Tests
 
+- `gFramework/nCache/cache/test/cacheAdapterContract.test.js`
+- `gFramework/nCache/cache/test/cacheBenchmarkContract.test.js`
+- `gFramework/nCache/cache/test/cacheDiagnosticsContract.test.js`
+- `gFramework/nCache/cache/test/cacheInvalidationContract.test.js`
+- `gFramework/nCache/cache/test/cacheIsolationAndCorrectnessContract.test.js`
+- `gFramework/nCache/cache/test/cacheMutationSecurityContract.test.js`
+- `gFramework/nCache/cache/test/cachePolicyContract.test.js`
 - `gFramework/nCache/cache/test/common/commonTest.js`
 - `gFramework/nCache/cache/test/env-local/envTest.js`
 

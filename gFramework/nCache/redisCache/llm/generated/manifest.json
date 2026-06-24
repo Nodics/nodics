@@ -14,13 +14,13 @@
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to redisCache"
   },
   "sourceFiles": 7,
-  "testFiles": 2,
+  "testFiles": 3,
   "dataFiles": 0,
-  "ownedFiles": 16,
-  "sourceFingerprint": "73877e7d8839b4895b7ef9fed3679098883da4f8904bcda71ff64d0d50ea4f48",
+  "ownedFiles": 17,
+  "sourceFingerprint": "d7be8bf1c17ec66fc8dd82c20990cdc3996375d6003c3f7ea17ce6229a6a47ee",
   "documentation": {
-    "documented": 0,
-    "partially-documented": 3,
+    "documented": 2,
+    "partially-documented": 2,
     "undocumented": 10,
     "inventory-only": 3
   },

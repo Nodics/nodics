@@ -6,10 +6,19 @@ const path = require('path');
 const { spawn } = require('child_process');
 const _ = require('lodash');
 
+/**
+ * @module kickoff/test/topology/kickoffLocalRuntimeTopology
+ * @description Starts the configured consolidated and modular kickoff servers and proves runtime readiness, metadata-driven module activation, tenant and internal-auth initialization, mandatory profile data, route availability, and cross-process communication.
+ * @layer test
+ * @owner kickoff
+ * @override Project environments define their topology and communication checks through layered `test.runtimeTopology` configuration.
+ */
+
 const ROOT = path.resolve(__dirname, '../../..');
 const LOCAL_ENV = path.join(ROOT, 'kickoff/kickoffEnvs/kickoffLocal');
 const environmentProperties = require(path.join(LOCAL_ENV, 'config/properties.js'));
 const STARTUP_TIMEOUT_MS = Number(process.env.NODICS_TOPOLOGY_TIMEOUT_MS || 60000);
+const CONTRACT_TIMEOUT_MS = Number(process.env.NODICS_TOPOLOGY_CONTRACT_TIMEOUT_MS || STARTUP_TIMEOUT_MS);
 const SHUTDOWN_TIMEOUT_MS = 5000;
 const TOPOLOGY_MODE = getTopologyMode();
 const TOPOLOGY_CONFIG = _.get(environmentProperties, 'test.runtimeTopology', {});
@@ -106,16 +115,36 @@ function requestModuleEndpoint(options) {
 }
 
 function startServer(serverName, nodeName) {
-    let args = ['-e', 'require("./nodics").start()', 'SERVER=' + serverName];
+    let args = ['-e', 'require("./nodics").start(); require("./kickoff/test/topology/runtimeContractProbe").watch()', 'SERVER=' + serverName];
     if (nodeName) {
         args.push('NODE=' + nodeName);
     }
     let label = nodeName ? serverName + '/' + nodeName : serverName;
     let port = getServerNodePort(serverName, nodeName);
     let output = '';
+    let contractTimeout;
+    let contractSnapshot;
     let child = spawn(process.execPath, args, {
         cwd: ROOT,
-        env: Object.assign({}, process.env)
+        env: Object.assign({}, process.env),
+        stdio: ['ignore', 'pipe', 'pipe', 'ipc']
+    });
+
+    let runtimeContract = new Promise((resolve, reject) => {
+        contractTimeout = setTimeout(() => {
+            reject(new Error(label + ' did not emit its runtime contract within ' + CONTRACT_TIMEOUT_MS + 'ms'));
+        }, CONTRACT_TIMEOUT_MS);
+        child.on('message', message => {
+            if (!message || !message.type) return;
+            if (message.type === 'nodics-runtime-contract') {
+                clearTimeout(contractTimeout);
+                contractSnapshot = message.snapshot;
+                resolve(message.snapshot);
+            } else if (message.type === 'nodics-runtime-contract-error') {
+                clearTimeout(contractTimeout);
+                reject(new Error(label + ' runtime contract failed: ' + message.error));
+            }
+        });
     });
 
     child.stdout.on('data', data => {
@@ -127,6 +156,7 @@ function startServer(serverName, nodeName) {
 
     let exited = new Promise((resolve, reject) => {
         child.once('exit', code => {
+            clearTimeout(contractTimeout);
             if (code === 0) {
                 resolve();
             } else {
@@ -136,19 +166,43 @@ function startServer(serverName, nodeName) {
     });
 
     return Promise.race([
-        waitForPort(port, STARTUP_TIMEOUT_MS),
+        Promise.all([waitForPort(port, STARTUP_TIMEOUT_MS), runtimeContract]),
         exited
     ]).then(() => {
         return {
             child,
             label,
+            serverName,
+            nodeName: nodeName || null,
             port,
-            output: output
+            output: output,
+            contract: contractSnapshot
         };
     }).catch(error => {
         stopServer({ child, label }).finally(() => {});
         throw new Error(label + ' failed to start on port ' + port + ': ' + error.message + '\n' + output);
     });
+}
+
+function assertRuntimeContract(runtime) {
+    const contract = runtime.contract;
+    assert(contract, runtime.label + ' must emit a runtime contract');
+    assert.strictEqual(contract.serverState, 'started', runtime.label + ' must reach started state');
+    assert.strictEqual(contract.serverName, runtime.serverName, runtime.label + ' must report its selected server module');
+    assert.strictEqual(contract.nodeName, runtime.nodeName, runtime.label + ' must report its selected node module');
+    assert(contract.activeModules.length > 0, runtime.label + ' must load active modules');
+    assert(contract.indexedModules.length > 0, runtime.label + ' must index active modules');
+    assert(contract.indexedModules.every(moduleObject => moduleObject.name && moduleObject.kind), runtime.label + ' modules require metadata kind');
+    assert(contract.activeTenants.includes('default'), runtime.label + ' must activate the default tenant');
+    assert.strictEqual(contract.internalAuthReady, true, runtime.label + ' must initialize its internal auth token');
+    if (contract.profileActive) {
+        assert.deepStrictEqual(contract.mandatoryData, {
+            enterprise: true,
+            tenant: true,
+            servicePrincipal: true,
+            serviceGroup: true
+        }, runtime.label + ' must expose mandatory profile bootstrap data');
+    }
 }
 
 function stopServer(runtime) {
@@ -178,6 +232,7 @@ function stopServer(runtime) {
 async function runConsolidatedSmoke() {
     let runtime = await startServer(CONSOLIDATED_SERVER);
     try {
+        assertRuntimeContract(runtime);
         return {
             runtime: runtime,
             communication: await runConsolidatedCommunicationSmoke()
@@ -192,6 +247,7 @@ async function runModularSmoke() {
     try {
         for (let serverName of SERVER_ORDER) {
             let runtime = await startServer(serverName);
+            assertRuntimeContract(runtime);
             runtimes.push(runtime);
         }
         return {

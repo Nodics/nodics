@@ -50,6 +50,7 @@ Property requirements:
 - prefer stable data over executable business logic
 - keep secrets in governed external or runtime sources
 - avoid customer/project assumptions in framework defaults
+- place benchmark, diagnostic, timeout, size, threshold, and workload assumptions in layered properties when companies or projects may need different values
 - use a resolver or replaceable service when a value depends on substantial runtime logic
 - define and test array, `null`, deletion, and type-change semantics before relying on them
 
@@ -99,6 +100,11 @@ and error contracts, OpenAPI/help metadata, backward compatibility, and route
 override tests. Runtime route contributions must use the governed runtime router
 path.
 
+When a route enables cache, treat it as router/API-response cache. Verify the
+cache key includes the resolved tenant and governed principal/access context,
+the cached value preserves the standard response envelope, and schema mutations
+invalidate the affected router cache through layered channel resolution.
+
 ## Services
 
 Define handwritten services under `src/service/**` with filenames ending in
@@ -119,6 +125,42 @@ Service requirements:
 
 Handwritten services are runtime-loaded source and must not be removed by clean.
 Schema-generated services are derived artifacts and must be recreated by build.
+
+## Cache-Aware Changes
+
+Cache behavior is a cross-layer contract, not a single implementation detail.
+Nodics has router/API-response cache in the request pipeline and DAO/schema-item
+cache in the database get pipeline.
+
+When adding or changing a cacheable feature:
+
+- define cache policy at the owning source artifact: route metadata for
+  router/API-response cache, schema metadata for DAO/schema-item cache
+- keep adapters, TTL behavior, physical key construction, and invalidation in
+  `nCache` services so project modules can override them through hierarchy
+- verify tenant isolation for both layers and principal/access isolation for
+  router/API-response cache
+- preserve response envelopes and do not mutate caller-owned or cached values
+- re-apply runtime schema/property access policies to DAO/schema-item cache hits
+- route cache write eligibility through the cache policy service and layered
+  `cache.cacheability` properties instead of hardcoding payload or sensitivity
+  rules in router, DAO, adapter, or test code
+- route search query cache write eligibility through the same cache policy
+  service; search cache is a specialized query-result cache, not a separate
+  governance path
+- preserve `cachePolicyDecision.reason` and `cachePolicyDecision.reasonCode`
+  for every accepted or skipped cache write so diagnostics can use stable
+  governance codes
+- keep framework-owned reason codes in the owning module's
+  `src/utils/statusDefinitions.js` as `RSN_*` definitions; do not place
+  canonical code catalogs in layered behavior properties
+- add project-specific cacheability rules with ordered
+  `cache.cacheability.policyHandlers` that point to layered services before
+  considering a full core policy-service override
+- invalidate both router/API-response and DAO/schema-item cache on schema save,
+  update, and remove through `DefaultCacheService.invalidateResource`
+- test Local behavior deterministically and Redis behavior through the guarded
+  live Redis gate when validating release readiness
 
 ## Functionality Change-Impact Matrix
 
