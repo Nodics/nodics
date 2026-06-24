@@ -44,6 +44,25 @@ module.exports = {
             requireDistributedCache: false
         }
     },
+    cache: {
+        default: {
+            channels: {
+                router: {
+                    engine: 'redis'
+                },
+                schema: {
+                    engine: 'redis'
+                }
+            },
+            engines: {
+                redis: {
+                    options: {
+                        url: process.env.NODICS_CACHE_REDIS_URL || 'redis://127.0.0.1:6379'
+                    }
+                }
+            }
+        }
+    },
     test: {
         runtimeTopology: {
             consolidatedServer: 'kickoffLocalServer',

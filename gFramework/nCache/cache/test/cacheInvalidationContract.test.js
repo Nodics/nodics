@@ -98,6 +98,14 @@ global.SERVICE = {
     assert.strictEqual(peerRequest.internalCacheOperation, true);
     assert.strictEqual(peerRequest.tenant, 'tenant-a');
 
+    await new Promise(resolve => listenerService.handleCacheInvalidationEvent({
+        tenant: 'tenant-a', target: 'profile', data: { prefix: 'employee' }
+    }, error => {
+        assert.strictEqual(error.success, false);
+        assert.strictEqual(error.message.code, 'ERR_CACHE_00010');
+        resolve();
+    }));
+
     const repositoryRoot = path.resolve(__dirname, '../../../..');
     [
         'gFramework/nDatabase/database/src/service/procs/save/defaultModelSaveInitializerService.js',

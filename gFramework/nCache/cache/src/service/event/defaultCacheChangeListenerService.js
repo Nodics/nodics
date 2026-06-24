@@ -68,6 +68,7 @@ module.exports = {
     /** Applies a trusted peer-node invalidation without publishing the event again. */
     handleCacheInvalidationEvent: function (event, callback) {
         try {
+            this.validateCacheInvalidationEvent(event);
             let data = event.data || {};
             SERVICE.DefaultCacheService.flushCache({
                 tenant: event.tenant,
@@ -94,5 +95,20 @@ module.exports = {
                 message: error
             });
         }
+    },
+
+    /**
+     * Validates the minimum tenant, module, and channel scope required before a peer invalidation may flush local cache.
+     *
+     * @param {Object} event Peer invalidation event.
+     * @returns {boolean} True when the event is safe to apply.
+     */
+    validateCacheInvalidationEvent: function (event) {
+        event = event || {};
+        let data = event.data || {};
+        if (!event.tenant || !event.target || !data.channelName) {
+            throw new CLASSES.CacheError('ERR_CACHE_00010', 'Cache invalidation event must include tenant, target module, and channelName');
+        }
+        return true;
     }
 };

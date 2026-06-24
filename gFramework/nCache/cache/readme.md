@@ -21,7 +21,7 @@ API, item, and search operations pass the resolved tenant into storage. Physical
 
 Schema save, update, and remove pipelines invalidate both affected cache layers: router/API-response cache for generated endpoints that may expose the changed schema data, and DAO/schema-item cache for direct model reads. Invalidation must continue to use `invalidateResource` rather than bypassing layered channel resolution.
 
-Shared adapters such as Redis invalidate the shared store directly. Process-local adapters publish the configured `cacheInvalidation` event to peer module nodes; listeners suppress republication to prevent loops.
+Shared adapters such as Redis invalidate the shared store directly. Process-local adapters publish the configured `cacheInvalidation` event to peer module nodes; listeners suppress republication to prevent loops. Peer invalidation events must carry an explicit tenant, target module, and channel name before any local flush is applied.
 
 For release readiness, run the fail-closed Redis gate against an isolated Redis endpoint:
 
