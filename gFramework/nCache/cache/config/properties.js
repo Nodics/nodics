@@ -28,6 +28,24 @@ module.exports = {
             simulatedControllerDelayMs: 4,
             simulatedDaoDelayMs: 4
         },
+        cacheability: {
+            enabled: true,
+            maxPayloadBytes: 262144,
+            allowSensitiveFields: false,
+            skipEmptyResults: false,
+            skipBinaryPayloads: true,
+            logSkippedReason: true,
+            sensitiveFieldNames: [
+                'password',
+                'token',
+                'accessToken',
+                'refreshToken',
+                'authorization',
+                'apiKey',
+                'secret',
+                'credential'
+            ]
+        },
         invalidation: {
             crossNode: true,
             eventName: 'cacheInvalidation'

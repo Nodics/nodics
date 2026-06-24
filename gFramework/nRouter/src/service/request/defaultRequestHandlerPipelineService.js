@@ -349,7 +349,11 @@ module.exports = {
                     process.error(request, response, error);
                 } else {
                     response.success = success;
-                    if (response.success && response.success.result && UTILS.isApiCashable(response.success.result, request.router)) {
+                    let cacheDecision = SERVICE.DefaultCachePolicyService && typeof SERVICE.DefaultCachePolicyService.isApiCacheable === 'function' ?
+                        SERVICE.DefaultCachePolicyService.isApiCacheable(request, response.success) :
+                        { cacheable: response.success && response.success.result && UTILS.isApiCashable(response.success.result, request.router), reason: 'legacyPolicy' };
+                    request.cachePolicyDecision = cacheDecision;
+                    if (cacheDecision.cacheable) {
                         SERVICE.DefaultCacheService.put({
                             tenant: request.tenant,
                             moduleName: request.moduleName,
@@ -362,6 +366,8 @@ module.exports = {
                         }).catch(error => {
                             _self.LOG.warn(error.message);
                         });
+                    } else if (cacheDecision.reason && cacheDecision.reason !== 'legacyPolicy' && (!CONFIG.get('cache') || !CONFIG.get('cache').cacheability || CONFIG.get('cache').cacheability.logSkippedReason !== false)) {
+                        _self.LOG.debug('Skipping API cache write: ' + cacheDecision.reason);
                     }
                     process.nextSuccess(request, response);
                 }

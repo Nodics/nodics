@@ -29,10 +29,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 12 |
-| Test files | 8 |
+| Source files | 13 |
+| Test files | 9 |
 | Data files | 0 |
-| All module-owned files | 27 |
+| All module-owned files | 29 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -61,7 +61,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 13 |
+| Documented | 15 |
 | Partially documented | 1 |
 | Undocumented | 10 |
 | Inventory only | 3 |
@@ -100,6 +100,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/cache/src/service/config/defaultCacheConfigurationService.js` | `src` | `documented` | 15/15 | Builds layered cache engine/channel configuration and deterministic tenant- and principal-scoped cache keys. |  |
 | `gFramework/nCache/cache/src/service/engine/defaultCacheEngineService.js` | `src` | `documented` | 8/8 | Builds cache channels from layered configuration and validates adapter capabilities before any connection or fallback is activated. |  |
 | `gFramework/nCache/cache/src/service/event/defaultCacheChangeListenerService.js` | `src` | `documented` | 3/3 | Adapts distributed cache configuration events into tenant-aware local service updates. |  |
+| `gFramework/nCache/cache/src/service/policy/defaultCachePolicyService.js` | `src` | `documented` | 10/10 | Centralizes router/API and DAO/schema cacheability decisions using layered properties while preserving legacy utility checks. |  |
 | `gFramework/nCache/cache/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Defines stable success and error codes for cache operations, misses, configuration validation, client availability, and mutation-scope enforcement. |  |
 | `gFramework/nCache/cache/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/cache/test/cacheAdapterContract.test.js` | `test` | `documented` | 0/0 | Verifies adapter capability metadata, TTL semantics, Local/Redis operation parity, and fail-closed Hazelcast activation. |  |
@@ -108,6 +109,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/cache/test/cacheInvalidationContract.test.js` | `test` | `documented` | 0/0 | Verifies tenant-partitioned storage, layered resource invalidation, local peer propagation, shared-adapter suppression, and write-pipeline integration. |  |
 | `gFramework/nCache/cache/test/cacheIsolationAndCorrectnessContract.test.js` | `test` | `documented` | 0/0 | Verifies tenant/principal-safe API keys, response-envelope cache hits, mutation-free local storage, custom key flush dispatch, schema configuration compatibility, and event target propagation. |  |
 | `gFramework/nCache/cache/test/cacheMutationSecurityContract.test.js` | `test` | `documented` | 0/0 | Verifies permissioned cache mutation routes, governed administrative permissions, and tenant/module-safe service boundaries. |  |
+| `gFramework/nCache/cache/test/cachePolicyContract.test.js` | `test` | `documented` | 0/0 | Verifies layered cacheability governance for payload size, sensitive fields, empty results, binary payloads, skip reasons, and write-path integration. |  |
 | `gFramework/nCache/cache/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
 | `gFramework/nCache/cache/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
 

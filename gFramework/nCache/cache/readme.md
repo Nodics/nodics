@@ -65,3 +65,32 @@ Benchmark defaults live under `cache.benchmark` so companies and projects can ov
 ```
 
 The printed `routerHitMs`, `routerMissMs`, `itemHitMs`, and `itemMissMs` values are runtime measurements, not configured targets. The workload assumptions that produce those measurements are configurable.
+
+## Cacheability governance
+
+`DefaultCachePolicyService` centralizes the decision to cache router/API responses and DAO/schema-item results. The policy preserves legacy `UTILS.isApiCashable` and `UTILS.isItemCashable` behavior, then applies layered enterprise guardrails from `cache.cacheability`.
+
+Default policy:
+
+```js
+{
+    enabled: true,
+    maxPayloadBytes: 262144,
+    allowSensitiveFields: false,
+    skipEmptyResults: false,
+    skipBinaryPayloads: true,
+    logSkippedReason: true,
+    sensitiveFieldNames: [
+        'password',
+        'token',
+        'accessToken',
+        'refreshToken',
+        'authorization',
+        'apiKey',
+        'secret',
+        'credential'
+    ]
+}
+```
+
+Skipped cache writes do not fail the business request. The decision is attached to the request as `cachePolicyDecision` with a stable reason such as `payloadTooLarge`, `sensitiveField`, `emptyResult`, `binaryPayload`, `payloadNotSerializable`, or `legacyPolicyRejected`. Projects may override the policy service or the layered properties to tune cacheability without modifying Nodics framework code.

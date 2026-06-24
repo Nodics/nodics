@@ -142,6 +142,9 @@ When adding or changing a cacheable feature:
   router/API-response cache
 - preserve response envelopes and do not mutate caller-owned or cached values
 - re-apply runtime schema/property access policies to DAO/schema-item cache hits
+- route cache write eligibility through the cache policy service and layered
+  `cache.cacheability` properties instead of hardcoding payload or sensitivity
+  rules in router, DAO, adapter, or test code
 - invalidate both router/API-response and DAO/schema-item cache on schema save,
   update, and remove through `DefaultCacheService.invalidateResource`
 - test Local behavior deterministically and Redis behavior through the guarded

@@ -90,6 +90,12 @@ policy, must be defined in layered properties with safe framework defaults. Do
 not hardcode these values in framework tests or services when they should be
 customizable through project, environment, server, or node modules.
 
+Cacheability decisions must be centralized behind an overrideable policy service
+and layered properties. Router/API and DAO/schema cache write paths should not
+embed payload-size, sensitive-field, binary, empty-result, or skip-reason logic
+directly. Skipped cache writes must be observable and must not fail the business
+request.
+
 ## Testing Direction
 
 Tests should support basic and full categories.
