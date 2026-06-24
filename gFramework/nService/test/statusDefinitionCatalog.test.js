@@ -4,7 +4,7 @@ const path = require('path');
 
 const rootDir = path.resolve(__dirname, '../../..');
 const ignoredDirectories = new Set(['.git', 'node_modules']);
-const statusCodePattern = /(?:code\s*:\s*|new\s+CLASSES\.(?:NodicsError|[A-Za-z0-9_]+Error)\(\s*|DefaultStatusService\.get\(\s*|\.enrich\([\s\S]{0,120}?)['"]((?:SUC|ERR)_[A-Z0-9]+_\d{5})['"]/g;
+const statusCodePattern = /['"]((?:SUC|ERR|RSN)_[A-Z0-9]+_\d{5})['"]/g;
 
 function walk(directory, callback) {
     fs.readdirSync(directory, { withFileTypes: true }).forEach(entry => {
@@ -38,7 +38,8 @@ function collectStatusDefinitions(javaScriptFiles) {
         Object.keys(moduleDefinitions || {}).forEach(statusCode => {
             let definition = moduleDefinitions[statusCode];
             let httpCode = Number(definition && definition.code);
-            if (!definition || !Number.isInteger(httpCode) || httpCode < 100 || httpCode > 599 || !definition.message) {
+            let invalidReasonType = statusCode.startsWith('RSN_') && definition && definition.type !== 'reason';
+            if (!definition || !Number.isInteger(httpCode) || httpCode < 100 || httpCode > 599 || !definition.message || invalidReasonType) {
                 invalidDefinitions.push({
                     statusCode: statusCode,
                     file: path.relative(rootDir, filePath)

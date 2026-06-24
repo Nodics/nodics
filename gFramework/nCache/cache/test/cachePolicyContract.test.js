@@ -79,12 +79,16 @@ function runItemUpdate(request, success) {
 
 (async function () {
     resetPolicy();
-    assert.strictEqual(policyService.isApiCacheable(apiRequest(), { code: 'SUC', result: [{ code: 'a' }] }).cacheable, true);
+    let decision = policyService.isApiCacheable(apiRequest(), { code: 'SUC', result: [{ code: 'a' }] });
+    assert.strictEqual(decision.cacheable, true);
+    assert.strictEqual(decision.reason, 'accepted');
+    assert.strictEqual(decision.reasonCode, 'RSN_CACHE_00000');
 
     resetPolicy({ maxPayloadBytes: 10 });
-    let decision = policyService.isApiCacheable(apiRequest(), { code: 'SUC', result: [{ code: 'employee-a' }] });
+    decision = policyService.isApiCacheable(apiRequest(), { code: 'SUC', result: [{ code: 'employee-a' }] });
     assert.strictEqual(decision.cacheable, false);
     assert.strictEqual(decision.reason, 'payloadTooLarge');
+    assert.strictEqual(decision.reasonCode, 'RSN_CACHE_00007');
     assert(decision.payloadBytes > decision.maxPayloadBytes);
 
     resetPolicy();
@@ -119,6 +123,73 @@ function runItemUpdate(request, success) {
     assert.strictEqual(decision.cacheable, false);
     assert.strictEqual(decision.reason, 'payloadNotSerializable');
 
+    resetPolicy({
+        policyHandlers: [
+            { code: 'tenant-cache-deny', index: 10, handler: 'TenantCachePolicyService.evaluate' }
+        ]
+    });
+    global.SERVICE = {
+        TenantCachePolicyService: {
+            evaluate: () => ({
+                cacheable: false,
+                reason: 'tenantRuleDenied',
+                reasonCode: 'RSN_TENANTCACHE_00001'
+            })
+        }
+    };
+    decision = policyService.isApiCacheable(apiRequest(), { code: 'SUC', result: [{ code: 'employee-a' }] });
+    assert.strictEqual(decision.cacheable, false);
+    assert.strictEqual(decision.reason, 'tenantRuleDenied');
+    assert.strictEqual(decision.reasonCode, 'RSN_TENANTCACHE_00001');
+    assert.strictEqual(decision.handlerCode, 'tenant-cache-deny');
+
+    resetPolicy({
+        policyHandlers: [
+            { code: 'default-handler-deny', index: 10, handler: 'DefaultDenyCachePolicyService.evaluate' }
+        ]
+    });
+    global.SERVICE = {
+        DefaultDenyCachePolicyService: {
+            evaluate: () => ({ cacheable: false })
+        }
+    };
+    decision = policyService.isApiCacheable(apiRequest(), { code: 'SUC', result: [{ code: 'employee-a' }] });
+    assert.strictEqual(decision.cacheable, false);
+    assert.strictEqual(decision.reason, 'handlerRejected');
+    assert.strictEqual(decision.reasonCode, 'RSN_CACHE_00008');
+    assert.strictEqual(decision.handlerCode, 'default-handler-deny');
+
+    resetPolicy({
+        policyHandlers: [
+            { code: 'second', index: 20, handler: 'SecondCachePolicyService.evaluate' },
+            { code: 'first', index: 10, handler: 'FirstCachePolicyService.evaluate' }
+        ]
+    });
+    const handlerOrder = [];
+    global.SERVICE = {
+        FirstCachePolicyService: {
+            evaluate: () => { handlerOrder.push('first'); return { cacheable: true }; }
+        },
+        SecondCachePolicyService: {
+            evaluate: () => { handlerOrder.push('second'); return { cacheable: true }; }
+        }
+    };
+    decision = policyService.isItemCacheable(itemRequest(), { code: 'SUC', result: [{ code: 'employee-a' }] });
+    assert.strictEqual(decision.cacheable, true);
+    assert.deepStrictEqual(handlerOrder, ['first', 'second']);
+
+    resetPolicy({
+        policyHandlers: [
+            { code: 'missing', index: 10, handler: 'MissingCachePolicyService.evaluate' }
+        ]
+    });
+    global.SERVICE = {};
+    decision = policyService.isApiCacheable(apiRequest(), { code: 'SUC', result: [{ code: 'employee-a' }] });
+    assert.strictEqual(decision.cacheable, false);
+    assert.strictEqual(decision.reason, 'handlerError');
+    assert.strictEqual(decision.reasonCode, 'RSN_CACHE_00009');
+    assert.strictEqual(decision.handlerCode, 'missing');
+
     let putCalls = 0;
     global.CONTROLLER = {
         PolicyController: {
@@ -138,6 +209,7 @@ function runItemUpdate(request, success) {
     await runRouterHandle(request);
     assert.strictEqual(putCalls, 0);
     assert.strictEqual(request.cachePolicyDecision.reason, 'sensitiveField');
+    assert.strictEqual(request.cachePolicyDecision.reasonCode, 'RSN_CACHE_00005');
 
     putCalls = 0;
     resetPolicy({ allowSensitiveFields: true });
@@ -151,6 +223,7 @@ function runItemUpdate(request, success) {
     await runItemUpdate(modelRequest, { code: 'SUC', result: [{ code: 'employee-a' }] });
     assert.strictEqual(putCalls, 0);
     assert.strictEqual(modelRequest.cachePolicyDecision.reason, 'payloadTooLarge');
+    assert.strictEqual(modelRequest.cachePolicyDecision.reasonCode, 'RSN_CACHE_00007');
 
     console.log('Cache policy contracts validated');
 })().catch(error => {

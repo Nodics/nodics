@@ -80,6 +80,8 @@ Default policy:
     skipEmptyResults: false,
     skipBinaryPayloads: true,
     logSkippedReason: true,
+    handlerFailureMode: 'failClosed',
+    policyHandlers: [],
     sensitiveFieldNames: [
         'password',
         'token',
@@ -93,4 +95,17 @@ Default policy:
 }
 ```
 
-Skipped cache writes do not fail the business request. The decision is attached to the request as `cachePolicyDecision` with a stable reason such as `payloadTooLarge`, `sensitiveField`, `emptyResult`, `binaryPayload`, `payloadNotSerializable`, or `legacyPolicyRejected`. Projects may override the policy service or the layered properties to tune cacheability without modifying Nodics framework code.
+Skipped cache writes do not fail the business request. The decision is attached to the request as `cachePolicyDecision` with a stable `reason` and `reasonCode`, such as `payloadTooLarge` with `RSN_CACHE_00007` or `sensitiveField` with `RSN_CACHE_00005`. Framework-owned reason codes live in this module's `src/utils/statusDefinitions.js`; properties configure behavior, not canonical code catalogs.
+
+Projects should tune cacheability through layered properties before replacing core services. Add ordered `policyHandlers` when tenant, project, route, schema, or payload-specific rules are needed:
+
+```js
+{
+    code: 'tenant-cache-policy',
+    index: 100,
+    handler: 'TenantCachePolicyService.evaluate',
+    active: true
+}
+```
+
+The handler is a normal layered Nodics service method. It receives `(context, decision, handler)` and may return `{ cacheable: false, reason: 'tenantRuleDenied', reasonCode: 'RSN_TENANTCACHE_00001' }` to reject a write with a project-specific code. Project-specific reason codes should be added to the owning project/module `src/utils/statusDefinitions.js`. Core safety checks run first, so handlers extend accepted decisions and do not bypass built-in binary, sensitive-field, serialization, or payload-size protections unless the layered properties explicitly change those protections. `handlerFailureMode: 'failClosed'` rejects cache writes when a configured handler is missing or throws; set it to `'ignore'` only when the project intentionally prefers cache availability over custom-rule enforcement.

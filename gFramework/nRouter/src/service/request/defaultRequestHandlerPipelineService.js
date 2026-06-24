@@ -351,7 +351,7 @@ module.exports = {
                     response.success = success;
                     let cacheDecision = SERVICE.DefaultCachePolicyService && typeof SERVICE.DefaultCachePolicyService.isApiCacheable === 'function' ?
                         SERVICE.DefaultCachePolicyService.isApiCacheable(request, response.success) :
-                        { cacheable: response.success && response.success.result && UTILS.isApiCashable(response.success.result, request.router), reason: 'legacyPolicy' };
+                        { cacheable: response.success && response.success.result && UTILS.isApiCashable(response.success.result, request.router), reason: 'legacyPolicy', reasonCode: 'RSN_CACHE_00010' };
                     request.cachePolicyDecision = cacheDecision;
                     if (cacheDecision.cacheable) {
                         SERVICE.DefaultCacheService.put({
@@ -367,7 +367,7 @@ module.exports = {
                             _self.LOG.warn(error.message);
                         });
                     } else if (cacheDecision.reason && cacheDecision.reason !== 'legacyPolicy' && (!CONFIG.get('cache') || !CONFIG.get('cache').cacheability || CONFIG.get('cache').cacheability.logSkippedReason !== false)) {
-                        _self.LOG.debug('Skipping API cache write: ' + cacheDecision.reason);
+                        _self.LOG.debug('Skipping API cache write: ' + cacheDecision.reasonCode + ' ' + cacheDecision.reason);
                     }
                     process.nextSuccess(request, response);
                 }

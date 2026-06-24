@@ -145,6 +145,15 @@ When adding or changing a cacheable feature:
 - route cache write eligibility through the cache policy service and layered
   `cache.cacheability` properties instead of hardcoding payload or sensitivity
   rules in router, DAO, adapter, or test code
+- preserve `cachePolicyDecision.reason` and `cachePolicyDecision.reasonCode`
+  for every accepted or skipped cache write so diagnostics can use stable
+  governance codes
+- keep framework-owned reason codes in the owning module's
+  `src/utils/statusDefinitions.js` as `RSN_*` definitions; do not place
+  canonical code catalogs in layered behavior properties
+- add project-specific cacheability rules with ordered
+  `cache.cacheability.policyHandlers` that point to layered services before
+  considering a full core policy-service override
 - invalidate both router/API-response and DAO/schema-item cache on schema save,
   update, and remove through `DefaultCacheService.invalidateResource`
 - test Local behavior deterministically and Redis behavior through the guarded

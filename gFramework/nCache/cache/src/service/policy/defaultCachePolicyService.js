@@ -22,6 +22,8 @@ module.exports = {
             skipEmptyResults: false,
             skipBinaryPayloads: true,
             logSkippedReason: true,
+            handlerFailureMode: 'failClosed',
+            policyHandlers: [],
             sensitiveFieldNames: ['password', 'token', 'accessToken', 'refreshToken', 'authorization', 'apiKey', 'secret', 'credential']
         };
         try {
@@ -91,7 +93,131 @@ module.exports = {
         if (options.maxPayloadBytes !== undefined && options.maxPayloadBytes !== null && payloadBytes > options.maxPayloadBytes) {
             return this.reject(context, 'payloadTooLarge', { payloadBytes: payloadBytes, maxPayloadBytes: options.maxPayloadBytes });
         }
-        return this.accept(context, { payloadBytes: payloadBytes });
+        return this.applyPolicyHandlers(context, this.accept(context, { payloadBytes: payloadBytes }), options);
+    },
+
+    /**
+     * Applies ordered, layered custom policy handlers after the core safety policy accepts a payload.
+     *
+     * @param {Object} context Policy evaluation context.
+     * @param {Object} decision Current accepted decision.
+     * @param {Object} options Effective policy options.
+     * @returns {Object} Final cacheability decision.
+     */
+    applyPolicyHandlers: function (context, decision, options) {
+        let handlers = this.getActivePolicyHandlers(options);
+        for (let index = 0; index < handlers.length; index++) {
+            let handler = handlers[index];
+            try {
+                let delegate = this.resolvePolicyHandler(handler);
+                let handlerResult = delegate(context, decision, handler);
+                decision = this.mergeHandlerDecision(context, decision, handlerResult, handler);
+                if (decision.cacheable === false) return decision;
+            } catch (error) {
+                if ((options.handlerFailureMode || 'failClosed') === 'ignore') {
+                    decision.handlerWarnings = (decision.handlerWarnings || []).concat({
+                        handlerCode: this.getHandlerCode(handler),
+                        errorMessage: error.message
+                    });
+                } else {
+                    return this.reject(context, 'handlerError', {
+                        handlerCode: this.getHandlerCode(handler),
+                        errorMessage: error.message
+                    });
+                }
+            }
+        }
+        return decision;
+    },
+
+    /**
+     * Returns active policy handlers sorted by configured order.
+     *
+     * @param {Object} options Effective policy options.
+     * @returns {Object[]} Active ordered handler definitions.
+     */
+    getActivePolicyHandlers: function (options) {
+        return (options.policyHandlers || [])
+            .filter(handler => handler && handler.active !== false && handler.enabled !== false)
+            .sort((left, right) => (left.index || left.order || 0) - (right.index || right.order || 0));
+    },
+
+    /**
+     * Resolves a configured service handler.
+     *
+     * @param {Object|string} handler Handler configuration or service.method string.
+     * @returns {Function} Bound service method.
+     */
+    resolvePolicyHandler: function (handler) {
+        let handlerPath = typeof handler === 'string' ? handler : handler.handler || handler.service;
+        if (!handlerPath || typeof handlerPath !== 'string') throw new Error('Cache policy handler path is required');
+        let parts = handlerPath.split('.');
+        let serviceName = parts[0];
+        let methodName = parts[1] || 'evaluate';
+        if (!SERVICE || !SERVICE[serviceName] || typeof SERVICE[serviceName][methodName] !== 'function') {
+            throw new Error('Cache policy handler not found: ' + handlerPath);
+        }
+        return SERVICE[serviceName][methodName].bind(SERVICE[serviceName]);
+    },
+
+    /**
+     * Merges a handler decision into the current policy decision.
+     *
+     * @param {Object} context Policy evaluation context.
+     * @param {Object} decision Current decision.
+     * @param {Object} handlerResult Handler response.
+     * @param {Object|string} handler Handler configuration.
+     * @returns {Object} Merged policy decision.
+     */
+    mergeHandlerDecision: function (context, decision, handlerResult, handler) {
+        if (!handlerResult) return decision;
+        let merged = Object.assign({}, decision, handlerResult);
+        merged.layer = merged.layer || context.layer;
+        if (!merged.reason) merged.reason = merged.cacheable === false ? 'handlerRejected' : 'accepted';
+        if (merged.cacheable === false && (!handlerResult.reason || handlerResult.reason === 'accepted')) {
+            merged.reason = 'handlerRejected';
+        }
+        if (merged.cacheable === false && !handlerResult.reasonCode) {
+            merged.reasonCode = this.getReasonCode(merged.reason);
+        } else if (!merged.reasonCode) {
+            merged.reasonCode = this.getReasonCode(merged.reason);
+        }
+        if (merged.cacheable === false && !merged.handlerCode) merged.handlerCode = this.getHandlerCode(handler);
+        return merged;
+    },
+
+    /**
+     * Returns a stable handler code for diagnostics.
+     *
+     * @param {Object|string} handler Handler configuration.
+     * @returns {string} Handler code.
+     */
+    getHandlerCode: function (handler) {
+        if (typeof handler === 'string') return handler;
+        return handler.code || handler.name || handler.handler || handler.service || 'unknownCachePolicyHandler';
+    },
+
+    /**
+     * Resolves a stable policy reason code.
+     *
+     * @param {string} reason Policy reason.
+     * @returns {string} Stable reason code.
+     */
+    getReasonCode: function (reason) {
+        let reasonStatusCodes = {
+            accepted: 'RSN_CACHE_00000',
+            cacheabilityDisabled: 'RSN_CACHE_00001',
+            legacyPolicyRejected: 'RSN_CACHE_00002',
+            binaryPayload: 'RSN_CACHE_00003',
+            emptyResult: 'RSN_CACHE_00004',
+            sensitiveField: 'RSN_CACHE_00005',
+            payloadNotSerializable: 'RSN_CACHE_00006',
+            payloadTooLarge: 'RSN_CACHE_00007',
+            handlerRejected: 'RSN_CACHE_00008',
+            handlerError: 'RSN_CACHE_00009',
+            legacyPolicy: 'RSN_CACHE_00010'
+        };
+        return reasonStatusCodes[reason] || 'RSN_CACHE_99999';
     },
 
     /**
@@ -105,7 +231,8 @@ module.exports = {
         return Object.assign({
             cacheable: true,
             layer: context.layer,
-            reason: 'accepted'
+            reason: 'accepted',
+            reasonCode: this.getReasonCode('accepted')
         }, metadata || {});
     },
 
@@ -121,7 +248,8 @@ module.exports = {
         return Object.assign({
             cacheable: false,
             layer: context.layer,
-            reason: reason
+            reason: reason,
+            reasonCode: this.getReasonCode(reason)
         }, metadata || {});
     },
 

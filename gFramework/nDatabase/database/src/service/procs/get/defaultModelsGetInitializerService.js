@@ -369,7 +369,7 @@ module.exports = {
         this.LOG.debug('Updating cache for new Items');
         let cacheDecision = SERVICE.DefaultCachePolicyService && typeof SERVICE.DefaultCachePolicyService.isItemCacheable === 'function' ?
             SERVICE.DefaultCachePolicyService.isItemCacheable(request, response.success) :
-            { cacheable: UTILS.isItemCashable(response.success.result, request.schemaModel), reason: 'legacyPolicy' };
+            { cacheable: UTILS.isItemCashable(response.success.result, request.schemaModel), reason: 'legacyPolicy', reasonCode: 'RSN_CACHE_00010' };
         request.cachePolicyDecision = cacheDecision;
         if (cacheDecision.cacheable) {
             SERVICE.DefaultCacheService.put({
@@ -385,7 +385,7 @@ module.exports = {
                 this.LOG.error('While saving item in item cache : ', error);
             });
         } else if (cacheDecision.reason && cacheDecision.reason !== 'legacyPolicy' && (!CONFIG.get('cache') || !CONFIG.get('cache').cacheability || CONFIG.get('cache').cacheability.logSkippedReason !== false)) {
-            this.LOG.debug('Skipping item cache write: ' + cacheDecision.reason);
+            this.LOG.debug('Skipping item cache write: ' + cacheDecision.reasonCode + ' ' + cacheDecision.reason);
         }
         process.nextSuccess(request, response);
     },

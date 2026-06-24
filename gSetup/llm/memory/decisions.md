@@ -96,6 +96,20 @@ embed payload-size, sensitive-field, binary, empty-result, or skip-reason logic
 directly. Skipped cache writes must be observable and must not fail the business
 request.
 
+Every cacheability decision must include both a stable `reason` and a unique
+`reasonCode` so logs, diagnostics, reports, tests, and customer governance can
+match decisions without parsing message text.
+Framework-owned reason codes belong in the owning module's
+`src/utils/statusDefinitions.js` as `RSN_*` definitions. Layered properties
+configure cache behavior and handlers; they must not become canonical code
+catalogs.
+
+Project-specific cacheability rules should be added with ordered
+`cache.cacheability.policyHandlers` that point to normal layered service methods
+instead of editing Nodics core or overriding the full policy service for every
+business rule. Handler results may return custom `reason` and `reasonCode`
+values, while core safety checks remain the default first gate.
+
 ## Testing Direction
 
 Tests should support basic and full categories.

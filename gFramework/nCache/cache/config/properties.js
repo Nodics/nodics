@@ -35,6 +35,8 @@ module.exports = {
             skipEmptyResults: false,
             skipBinaryPayloads: true,
             logSkippedReason: true,
+            handlerFailureMode: 'failClosed',
+            policyHandlers: [],
             sensitiveFieldNames: [
                 'password',
                 'token',
