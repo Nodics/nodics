@@ -50,6 +50,28 @@ Generated artifacts are recreated by build and removed by clean. Source definiti
 
 Schema and router level generated tests must be regenerated when schema/router definitions change.
 
+## Cache Layer Contract
+
+Nodics provides two first-class cache layers that must be designed, reviewed,
+tested, and documented together:
+
+- Router/API-response cache lives in the request/router pipeline and speeds full
+  controller responses for cacheable routes. It must preserve the standard
+  response envelope and key entries by resolved tenant, enterprise, route,
+  method/body where applicable, and governed principal/access context.
+- DAO/schema-item cache lives behind the database/model get pipeline and speeds
+  schema read results. It must key entries by schema, tenant, query, search
+  options, and read options, and cached reads must still pass runtime
+  schema/property access policies before returning data.
+
+Both layers share the same layered cache channel and adapter contract. Save,
+update, and remove pipelines must invalidate both router/API-response cache and
+DAO/schema-item cache through `DefaultCacheService.invalidateResource`, not by
+hardcoding an engine or channel. Any cache change must verify tenant isolation,
+principal/security isolation where applicable, TTL semantics, response
+envelopes, invalidation, Local/Redis adapter compliance, and later-module
+overrideability.
+
 ## Testing Direction
 
 Tests should support basic and full categories.

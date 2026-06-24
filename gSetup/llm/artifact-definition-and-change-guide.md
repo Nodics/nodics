@@ -99,6 +99,11 @@ and error contracts, OpenAPI/help metadata, backward compatibility, and route
 override tests. Runtime route contributions must use the governed runtime router
 path.
 
+When a route enables cache, treat it as router/API-response cache. Verify the
+cache key includes the resolved tenant and governed principal/access context,
+the cached value preserves the standard response envelope, and schema mutations
+invalidate the affected router cache through layered channel resolution.
+
 ## Services
 
 Define handwritten services under `src/service/**` with filenames ending in
@@ -119,6 +124,27 @@ Service requirements:
 
 Handwritten services are runtime-loaded source and must not be removed by clean.
 Schema-generated services are derived artifacts and must be recreated by build.
+
+## Cache-Aware Changes
+
+Cache behavior is a cross-layer contract, not a single implementation detail.
+Nodics has router/API-response cache in the request pipeline and DAO/schema-item
+cache in the database get pipeline.
+
+When adding or changing a cacheable feature:
+
+- define cache policy at the owning source artifact: route metadata for
+  router/API-response cache, schema metadata for DAO/schema-item cache
+- keep adapters, TTL behavior, physical key construction, and invalidation in
+  `nCache` services so project modules can override them through hierarchy
+- verify tenant isolation for both layers and principal/access isolation for
+  router/API-response cache
+- preserve response envelopes and do not mutate caller-owned or cached values
+- re-apply runtime schema/property access policies to DAO/schema-item cache hits
+- invalidate both router/API-response and DAO/schema-item cache on schema save,
+  update, and remove through `DefaultCacheService.invalidateResource`
+- test Local behavior deterministically and Redis behavior through the guarded
+  live Redis gate when validating release readiness
 
 ## Functionality Change-Impact Matrix
 
