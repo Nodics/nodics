@@ -30,9 +30,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 12 |
-| Test files | 7 |
+| Test files | 8 |
 | Data files | 0 |
-| All module-owned files | 26 |
+| All module-owned files | 27 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -61,7 +61,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 12 |
+| Documented | 13 |
 | Partially documented | 1 |
 | Undocumented | 10 |
 | Inventory only | 3 |
@@ -103,6 +103,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/cache/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Defines stable success and error codes for cache operations, misses, configuration validation, client availability, and mutation-scope enforcement. |  |
 | `gFramework/nCache/cache/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/cache/test/cacheAdapterContract.test.js` | `test` | `documented` | 0/0 | Verifies adapter capability metadata, TTL semantics, Local/Redis operation parity, and fail-closed Hazelcast activation. |  |
+| `gFramework/nCache/cache/test/cacheBenchmarkContract.test.js` | `test` | `documented` | 0/0 | Provides deterministic lightweight benchmark evidence that router/API and DAO/schema cache hits avoid downstream recomputation. |  |
 | `gFramework/nCache/cache/test/cacheDiagnosticsContract.test.js` | `test` | `documented` | 0/0 | Verifies process-local cache diagnostics counters for hits, misses, writes, errors, filters, and tenant-redaction configuration. |  |
 | `gFramework/nCache/cache/test/cacheInvalidationContract.test.js` | `test` | `documented` | 0/0 | Verifies tenant-partitioned storage, layered resource invalidation, local peer propagation, shared-adapter suppression, and write-pipeline integration. |  |
 | `gFramework/nCache/cache/test/cacheIsolationAndCorrectnessContract.test.js` | `test` | `documented` | 0/0 | Verifies tenant/principal-safe API keys, response-envelope cache hits, mutation-free local storage, custom key flush dispatch, schema configuration compatibility, and event target propagation. |  |

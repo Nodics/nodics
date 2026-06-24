@@ -78,6 +78,12 @@ filterable by module, tenant, channel, and operation, and overrideable or
 forwardable by later project modules without changing the Local or Redis adapter
 contracts.
 
+Cache benchmarks in core should be deterministic path contracts first: prove
+router/API-response cache hits bypass controller execution and DAO/schema-item
+cache hits bypass model query execution, then emit timing evidence. Avoid
+machine-specific latency thresholds in the core framework; customer projects may
+add heavier deployment/load benchmarks in later layers.
+
 ## Testing Direction
 
 Tests should support basic and full categories.
