@@ -33,9 +33,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 42 |
-| Test files | 19 |
+| Test files | 20 |
 | Data files | 0 |
-| All module-owned files | 55 |
+| All module-owned files | 56 |
 | Local schema definitions | 4 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
+| Documented | 1 |
 | Partially documented | 29 |
 | Undocumented | 23 |
 | Inventory only | 3 |
@@ -141,6 +141,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSearch/search/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
 | `gFramework/nSearch/search/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
 | `gFramework/nSearch/search/test/indexerServiceContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/test/searchCachePolicyContract.test.js` | `test` | `documented` | 0/0 | Verifies search query cache writes use the centralized cacheability policy and preserve configured doSearch caching. |  |
 | `gFramework/nSearch/search/test/searchControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nSearch/search/test/searchRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nSearch/search/test/searchServicePipelineContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

@@ -68,7 +68,7 @@ The printed `routerHitMs`, `routerMissMs`, `itemHitMs`, and `itemMissMs` values 
 
 ## Cacheability governance
 
-`DefaultCachePolicyService` centralizes the decision to cache router/API responses and DAO/schema-item results. The policy preserves legacy `UTILS.isApiCashable` and `UTILS.isItemCashable` behavior, then applies layered enterprise guardrails from `cache.cacheability`.
+`DefaultCachePolicyService` centralizes the decision to cache router/API responses, DAO/schema-item results, and search query results. The policy preserves legacy `UTILS.isApiCashable` and `UTILS.isItemCashable` behavior where applicable, then applies layered enterprise guardrails from `cache.cacheability`.
 
 Default policy:
 

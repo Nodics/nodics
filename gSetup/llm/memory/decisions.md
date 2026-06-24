@@ -91,10 +91,10 @@ not hardcode these values in framework tests or services when they should be
 customizable through project, environment, server, or node modules.
 
 Cacheability decisions must be centralized behind an overrideable policy service
-and layered properties. Router/API and DAO/schema cache write paths should not
-embed payload-size, sensitive-field, binary, empty-result, or skip-reason logic
-directly. Skipped cache writes must be observable and must not fail the business
-request.
+and layered properties. Router/API, DAO/schema, and search query cache write
+paths should not embed payload-size, sensitive-field, binary, empty-result, or
+skip-reason logic directly. Skipped cache writes must be observable and must not
+fail the business request.
 
 Every cacheability decision must include both a stable `reason` and a unique
 `reasonCode` so logs, diagnostics, reports, tests, and customer governance can

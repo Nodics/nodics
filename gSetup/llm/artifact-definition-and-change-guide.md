@@ -145,6 +145,9 @@ When adding or changing a cacheable feature:
 - route cache write eligibility through the cache policy service and layered
   `cache.cacheability` properties instead of hardcoding payload or sensitivity
   rules in router, DAO, adapter, or test code
+- route search query cache write eligibility through the same cache policy
+  service; search cache is a specialized query-result cache, not a separate
+  governance path
 - preserve `cachePolicyDecision.reason` and `cachePolicyDecision.reasonCode`
   for every accepted or skipped cache write so diagnostics can use stable
   governance codes

@@ -69,6 +69,25 @@ module.exports = {
     },
 
     /**
+     * Decides whether a search query response may be cached.
+     *
+     * @param {Object} request Nodics search request.
+     * @param {Object} responseSuccess Successful search response envelope.
+     * @returns {Object} Cacheability decision with reason and metadata.
+     */
+    isSearchCacheable: function (request, responseSuccess) {
+        let searchModel = request.searchModel || {};
+        let indexDef = searchModel.indexDef || {};
+        let legacyAllowed = !!(indexDef.cache && indexDef.cache.enabled && responseSuccess && responseSuccess.result);
+        return this.evaluateCacheability({
+            layer: 'search',
+            legacyAllowed: legacyAllowed,
+            payload: responseSuccess,
+            policyOwner: searchModel
+        });
+    },
+
+    /**
      * Applies common cacheability policy to one payload.
      *
      * @param {Object} context Policy evaluation context.
