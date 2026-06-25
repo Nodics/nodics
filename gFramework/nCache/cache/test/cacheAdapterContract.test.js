@@ -31,14 +31,18 @@ global.SERVICE = {
     DefaultCacheConfigurationService: configurationService,
     DefaultLocalCacheService: localService,
     DefaultRedisCacheService: redisService,
-    DefaultLocalCacheEngineService: { initCache: () => Promise.resolve(true) },
-    DefaultRedisCacheEngineService: { initCache: () => Promise.resolve(true) }
+    DefaultHazelcastCacheService: hazelcastService,
+    DefaultLocalCacheEngineService: { initCache: () => Promise.resolve({ code: 'SUC_CACHE_00000', result: 'local-client' }) },
+    DefaultRedisCacheEngineService: { initCache: () => Promise.resolve({ code: 'SUC_CACHE_00000', result: 'redis-client' }) },
+    DefaultHazelcastCacheEngineService: hazelcastEngine
 };
 
 const engines = properties.cache.default.engines;
+const enabledRedisEngine = Object.assign({}, engines.redis, { enabled: true });
 assert.strictEqual(engineService.validateEngineContract('local', engines.local, 'schema').serialization, 'clone');
-assert.strictEqual(engineService.validateEngineContract('redis', engines.redis, 'schema').distributed, true);
+assert.strictEqual(engineService.validateEngineContract('redis', enabledRedisEngine, 'schema').distributed, true);
 assert.throws(() => engineService.validateEngineContract('hazelcast', engines.hazelcast, 'schema'), error => error.code === 'ERR_CACHE_00008');
+assert.throws(() => engineService.validateEngineContract('redis', Object.assign({}, enabledRedisEngine, { enabled: false }), 'schema'), error => error.code === 'ERR_CACHE_00008');
 
 const ttlChannel = { channelOptions: { ttl: 12 }, engineOptions: { ttl: 20, options: { ttl: 30 } } };
 assert.strictEqual(configurationService.resolveTtl({ channel: ttlChannel }), 12);
@@ -77,6 +81,43 @@ function redisClient() {
 }
 
 (async function () {
+    const originalConfig = global.CONFIG;
+    let initCount = 0;
+    global.SERVICE.DefaultRedisCacheEngineService = {
+        initCache: () => {
+            initCount += 1;
+            return Promise.resolve({ code: 'SUC_CACHE_00000', result: 'redis-client' });
+        }
+    };
+    configurationService.channels = { profile: { router: { enabled: false, engine: 'redis' }, schema: { enabled: false, engine: 'redis' } } };
+    configurationService.engines = { profile: { redis: Object.assign({}, enabledRedisEngine, { options: { url: 'redis://127.0.0.1:6379' } }) } };
+    engineService.cacheClients = {};
+    engineService.engineClients = {};
+    await engineService.buildCacheEngines(['profile']);
+    assert.strictEqual(initCount, 1, 'Enabled engine must start even when all channels are disabled');
+    assert.strictEqual(engineService.getEngineClient('profile', 'redis'), 'redis-client');
+    assert.strictEqual(engineService.getCacheEngine('profile', 'router'), null);
+
+    configurationService.channels = { profile: { router: { enabled: true, engine: 'redis' } } };
+    configurationService.engines = { profile: { redis: Object.assign({}, enabledRedisEngine, { enabled: false, options: { url: 'redis://127.0.0.1:6379' } }) } };
+    engineService.cacheClients = {};
+    engineService.engineClients = {};
+    await assert.rejects(engineService.buildCacheEngines(['profile']), error => error.code === 'ERR_CACHE_00008');
+
+    configurationService.channels = { profile: { router: { enabled: true, engine: 'hazelcast' } } };
+    configurationService.engines = { profile: { hazelcast: Object.assign({}, engines.hazelcast, { enabled: true }) } };
+    engineService.cacheClients = {};
+    engineService.engineClients = {};
+    await assert.rejects(engineService.buildCacheEngines(['profile']), error => error.code === 'ERR_CACHE_00008');
+
+    global.CONFIG = { get: key => key === 'cache' ? { enabled: false } : undefined };
+    initCount = 0;
+    engineService.cacheClients = {};
+    engineService.engineClients = {};
+    await engineService.buildCacheEngines(['profile']);
+    assert.strictEqual(initCount, 0, 'Disabled cache subsystem must not start enabled engines');
+    global.CONFIG = originalConfig;
+
     const local = localClient();
     const localChannel = { channelName: 'schema', channelOptions: { ttl: 8 }, engineOptions: Object.assign({}, engines.local, { options: { prefix: 'profile', ttl: 30 } }), client: local };
     const original = { result: { code: 'a' } };
@@ -114,7 +155,7 @@ function redisClient() {
     await assert.rejects(localService.get({ channel: expiringChannel, key: 'expires' }), error => error.code === 'ERR_CACHE_00001');
 
     const redis = redisClient();
-    const redisChannel = { channelName: 'schema', channelOptions: { ttl: 9 }, engineOptions: Object.assign({}, engines.redis, { options: { prefix: 'profile', ttl: 30 } }), client: redis };
+    const redisChannel = { channelName: 'schema', channelOptions: { ttl: 9 }, engineOptions: Object.assign({}, enabledRedisEngine, { options: { prefix: 'profile', ttl: 30 } }), client: redis };
     await redisService.put({ channel: redisChannel, key: 'one', value: { result: { code: 'r' } }, ttl: 5 });
     assert.deepStrictEqual(redis.writes[0].options, { EX: 5 });
     assert.strictEqual((await redisService.get({ channel: redisChannel, key: 'one' })).result.code, 'r');

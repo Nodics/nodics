@@ -300,7 +300,8 @@ module.exports = {
         try {
             let keyHash = UTILS.generateHash(SERVICE.DefaultCacheConfigurationService.createApiKey(request));
             request.apiCacheKeyHash = request.router.prefix ? request.router.prefix + '_' + keyHash : keyHash;
-            if (request.router.cache && request.router.cache.enabled) {
+            let cacheConfig = CONFIG.get('cache') || {};
+            if (cacheConfig.enabled !== false && request.router.cache && request.router.cache.enabled) {
                 SERVICE.DefaultCacheService.get({
                     tenant: request.tenant,
                     moduleName: request.moduleName,

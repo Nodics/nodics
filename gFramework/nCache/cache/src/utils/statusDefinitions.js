@@ -64,7 +64,7 @@ module.exports = {
     },
     ERR_CACHE_00008: {
         code: '503',
-        message: 'Selected cache adapter is unsupported and cannot be activated'
+        message: 'Selected cache adapter is disabled, unavailable, or cannot be activated'
     },
     ERR_CACHE_00009: {
         code: '400',

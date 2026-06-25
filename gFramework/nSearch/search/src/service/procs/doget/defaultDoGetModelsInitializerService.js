@@ -51,7 +51,8 @@ module.exports = {
     lookupCache: function (request, response, process) {
         let searchModel = request.searchModel;
         let indexDef = searchModel.indexDef;
-        if (indexDef.cache && indexDef.cache.enabled) {
+        let cacheConfig = CONFIG.get('cache') || {};
+        if (cacheConfig.enabled !== false && indexDef.cache && indexDef.cache.enabled) {
             request.cacheKeyHash = SERVICE.DefaultCacheConfigurationService.createSearchKey(request);
             this.LOG.debug('Model cache lookup for key: ' + request.cacheKeyHash);
             SERVICE.DefaultCacheService.get({

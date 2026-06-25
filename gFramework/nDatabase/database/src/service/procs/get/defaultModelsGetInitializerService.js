@@ -137,7 +137,9 @@ module.exports = {
      * @returns {undefined}
      */
     lookupCache: function (request, response, process) {
-        if (request.schemaModel.cache &&
+        let cacheConfig = CONFIG.get('cache') || {};
+        if (cacheConfig.enabled !== false &&
+            request.schemaModel.cache &&
             request.schemaModel.cache.enabled) {
             request.cacheKeyHash = request.cacheKeyHash || SERVICE.DefaultCacheConfigurationService.createItemKey(request);
             this.LOG.debug('Model cache lookup for key: ' + request.cacheKeyHash);

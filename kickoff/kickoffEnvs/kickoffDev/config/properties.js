@@ -50,6 +50,7 @@ module.exports = {
             },
             engines: {
                 redis: {
+                    enabled: true,
                     options: {
                         host: '10.21.77.75',
                         port: 6379

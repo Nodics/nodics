@@ -28,7 +28,9 @@ module.exports = {
         };
         try {
             let cacheConfig = typeof CONFIG !== 'undefined' && CONFIG.get && CONFIG.get('cache') || {};
-            return _.merge({}, defaults, cacheConfig.cacheability || {});
+            let options = _.merge({}, defaults, cacheConfig.cacheability || {});
+            if (cacheConfig.enabled === false) options.enabled = false;
+            return options;
         } catch (error) {
             return defaults;
         }
