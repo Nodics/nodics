@@ -19,6 +19,7 @@
 module.exports = {
 
     cache: {
+        enabled: true,
         diagnostics: {
             enabled: true,
             includeTenant: true
@@ -79,8 +80,8 @@ module.exports = {
             },
             engines: {
                 local: {
+                    enabled: true,
                     contractVersion: 1,
-                    supported: true,
                     connectionHandler: 'DefaultLocalCacheEngineService',
                     cacheHandler: 'DefaultLocalCacheService',
                     distributed: false,
@@ -103,8 +104,8 @@ module.exports = {
                     }
                 },
                 redis: {
+                    enabled: false,
                     contractVersion: 1,
-                    supported: true,
                     connectionHandler: 'DefaultRedisCacheEngineService',
                     cacheHandler: 'DefaultRedisCacheService',
                     distributed: true,
@@ -125,9 +126,9 @@ module.exports = {
                     }
                 },
                 hazelcast: {
+                    enabled: false,
                     contractVersion: 1,
-                    supported: false,
-                    unsupportedReason: 'The bundled Hazelcast adapter is a placeholder and must not be selected until a real distributed implementation overrides it',
+                    disabledReason: 'The bundled Hazelcast adapter is a placeholder and must not be selected until a real distributed implementation overrides it',
                     connectionHandler: 'DefaultHazelcastCacheEngineService',
                     cacheHandler: 'DefaultHazelcastCacheService',
                     distributed: false,

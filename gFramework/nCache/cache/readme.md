@@ -11,7 +11,9 @@ Both layers use the same adapter contract and layered channel mapping. A cache c
 
 ## Adapter contract
 
-Every supported engine declares `contractVersion`, `supported`, handlers, and truthful capabilities for distribution, atomic consume, TTL, non-expiring TTL, prefix flush, key flush, and serialization. The existing dispatcher validates these declarations before connecting; projects extend the same path by overriding engine metadata and services in later module layers.
+Every enabled engine declares `contractVersion`, handlers, and truthful capabilities for distribution, atomic consume, TTL, non-expiring TTL, prefix flush, key flush, and serialization. The existing dispatcher validates these declarations before connecting; projects extend the same path by overriding engine metadata and services in later module layers.
+
+Cache activation is governed only by layered Nodics configuration. `cache.enabled: false` disables cache startup and runtime cache reads/writes. Enabled engines start during application startup even when no enabled channel currently uses them, so infrastructure readiness is validated early. If an enabled engine cannot connect, startup fails; connection properties such as Redis URLs are values only and must not enable cache behavior by themselves. Enabled channels bind to their configured enabled engine, while disabled channels skip cache reads/writes.
 
 TTL `0` means non-expiring. Positive values are seconds. Undefined TTL resolves through channel, engine, then engine-option defaults. Negative and non-numeric values fail with `ERR_CACHE_00009`. Cache misses use `ERR_CACHE_00001`.
 
@@ -21,7 +23,7 @@ API, item, and search operations pass the resolved tenant into storage. Physical
 
 Schema save, update, and remove pipelines invalidate both affected cache layers: router/API-response cache for generated endpoints that may expose the changed schema data, and DAO/schema-item cache for direct model reads. Invalidation must continue to use `invalidateResource` rather than bypassing layered channel resolution.
 
-Shared adapters such as Redis invalidate the shared store directly. Process-local adapters publish the configured `cacheInvalidation` event to peer module nodes; listeners suppress republication to prevent loops.
+Shared adapters such as Redis invalidate the shared store directly. Process-local adapters publish the configured `cacheInvalidation` event to peer module nodes; listeners suppress republication to prevent loops. Peer invalidation events must carry an explicit tenant, target module, and channel name before any local flush is applied.
 
 For release readiness, run the fail-closed Redis gate against an isolated Redis endpoint:
 

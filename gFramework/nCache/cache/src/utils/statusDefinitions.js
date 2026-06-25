@@ -64,11 +64,15 @@ module.exports = {
     },
     ERR_CACHE_00008: {
         code: '503',
-        message: 'Selected cache adapter is unsupported and cannot be activated'
+        message: 'Selected cache adapter is disabled, unavailable, or cannot be activated'
     },
     ERR_CACHE_00009: {
         code: '400',
         message: 'Cache adapter contract or TTL configuration is invalid'
+    },
+    ERR_CACHE_00010: {
+        code: '400',
+        message: 'Cache invalidation event must include tenant, target module, and channel scope'
     },
 
     RSN_CACHE_00000: {

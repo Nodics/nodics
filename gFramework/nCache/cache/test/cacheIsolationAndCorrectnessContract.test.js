@@ -84,6 +84,28 @@ function requestFor(tenant, principal, groups = ['reader'], permissions = ['prof
     assert.strictEqual(stopped.result[0].code, 'employee-a');
     assert.strictEqual(stopped.cache, 'api hit');
 
+    let cacheLookupAttempted = false;
+    let cacheBypassed = false;
+    global.CONFIG = { get: key => key === 'defaultTenant' ? 'default' : key === 'cache' ? { enabled: false } : undefined };
+    global.SERVICE = {
+        DefaultCacheConfigurationService: configurationService,
+        DefaultCacheService: {
+            getRouterCacheChannel: () => 'router',
+            get: () => { cacheLookupAttempted = true; return Promise.resolve({}); }
+        }
+    };
+    requestPipeline.lookupCache(Object.assign(requestFor('tenant-a', 'alice'), {
+        originalUrl: '/nodics/profile/v0/employee', moduleName: 'profile', router: { routerName: 'get', cache: { enabled: true } }
+    }), {}, {
+        stop: () => { throw new Error('Global cache disable must not stop from API cache'); },
+        nextSuccess: () => { cacheBypassed = true; },
+        error: (_request, _response, error) => { throw error; }
+    });
+    await new Promise(resolve => setImmediate(resolve));
+    assert.strictEqual(cacheLookupAttempted, false);
+    assert.strictEqual(cacheBypassed, true);
+    global.CONFIG = { get: key => key === 'defaultTenant' ? 'default' : key === 'cache' ? {} : undefined };
+
     stopped = undefined;
     global.SERVICE = {
         DefaultCacheConfigurationService: { createItemKey: () => 'employee_tenant-a_hash' },
@@ -103,6 +125,29 @@ function requestFor(tenant, principal, groups = ['reader'], permissions = ['prof
     await new Promise(resolve => setImmediate(resolve));
     assert.strictEqual(stopped.result[0].code, 'employee-a');
     assert.strictEqual(stopped.cache, 'item hit');
+
+    cacheLookupAttempted = false;
+    cacheBypassed = false;
+    global.CONFIG = { get: key => key === 'defaultTenant' ? 'default' : key === 'cache' ? { enabled: false } : undefined };
+    global.SERVICE = {
+        DefaultCacheConfigurationService: { createItemKey: () => 'employee_tenant-a_hash' },
+        DefaultCacheService: {
+            getSchemaCacheChannel: () => 'schema',
+            get: () => { cacheLookupAttempted = true; return Promise.resolve({}); }
+        }
+    };
+    itemPipeline.lookupCache({
+        tenant: 'tenant-a',
+        schemaModel: { moduleName: 'profile', schemaName: 'employee', cache: { enabled: true } }
+    }, {}, {
+        stop: () => { throw new Error('Global cache disable must not stop from item cache'); },
+        nextSuccess: () => { cacheBypassed = true; },
+        error: (_request, _response, error) => { throw error; }
+    });
+    await new Promise(resolve => setImmediate(resolve));
+    assert.strictEqual(cacheLookupAttempted, false);
+    assert.strictEqual(cacheBypassed, true);
+    global.CONFIG = { get: key => key === 'defaultTenant' ? 'default' : key === 'cache' ? {} : undefined };
 
     let flushed = false;
     const cacheService = Object.assign({}, cacheServiceDefinition);
