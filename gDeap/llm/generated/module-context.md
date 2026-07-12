@@ -25,7 +25,7 @@
 | Source files | 0 |
 | Test files | 0 |
 | Data files | 0 |
-| All module-owned files | 7 |
+| All module-owned files | 8 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -51,13 +51,14 @@
 | Documented | 0 |
 | Partially documented | 1 |
 | Undocumented | 3 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gDeap/AGENTS.md`
 - `gDeap/nodics.js`
 - `gDeap/package.json`
-- `gDeap/readme.md`
+- `gDeap/README.md`
 - `gDeap/config/properties.js`
 - `gDeap/config/prescripts.js`
 - `gDeap/config/postscripts.js`
@@ -68,13 +69,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gDeap/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gDeap/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gDeap/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gDeap/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gDeap/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gDeap/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gDeap/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gDeap/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gDeap/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 
 ## Extension Contract
 

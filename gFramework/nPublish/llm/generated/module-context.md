@@ -30,7 +30,7 @@
 | Source files | 5 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 14 |
+| All module-owned files | 15 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -60,13 +60,14 @@
 | Documented | 0 |
 | Partially documented | 1 |
 | Undocumented | 10 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gFramework/nPublish/AGENTS.md`
 - `gFramework/nPublish/nodics.js`
 - `gFramework/nPublish/package.json`
-- `gFramework/nPublish/readme.md`
+- `gFramework/nPublish/README.md`
 - `gFramework/nPublish/config/properties.js`
 - `gFramework/nPublish/config/prescripts.js`
 - `gFramework/nPublish/config/postscripts.js`
@@ -79,13 +80,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gFramework/nPublish/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nPublish/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nPublish/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nPublish/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nPublish/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nPublish/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nPublish/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nPublish/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nPublish/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nPublish/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nPublish/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nPublish/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

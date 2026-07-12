@@ -32,7 +32,7 @@
 | Source files | 13 |
 | Test files | 9 |
 | Data files | 0 |
-| All module-owned files | 29 |
+| All module-owned files | 30 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -64,13 +64,14 @@
 | Documented | 15 |
 | Partially documented | 1 |
 | Undocumented | 10 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gFramework/nCache/cache/AGENTS.md`
 - `gFramework/nCache/cache/nodics.js`
 - `gFramework/nCache/cache/package.json`
-- `gFramework/nCache/cache/readme.md`
+- `gFramework/nCache/cache/README.md`
 - `gFramework/nCache/cache/config/properties.js`
 - `gFramework/nCache/cache/config/prescripts.js`
 - `gFramework/nCache/cache/config/postscripts.js`
@@ -83,13 +84,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gFramework/nCache/cache/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nCache/cache/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nCache/cache/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/cache/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/cache/config/properties.js` | `config` | `documented` | 0/0 | Defines layered cache channels, adapters, capability metadata, TTL defaults, and schema/router/auth channel mappings. |  |
 | `gFramework/nCache/cache/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nCache/cache/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/cache/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nCache/cache/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nCache/cache/src/event/listeners.js` | `src` | `documented` | 0/0 | Registers layered cache configuration and peer-node invalidation event listeners. |  |
 | `gFramework/nCache/cache/src/lib/cacheError.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/cache/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

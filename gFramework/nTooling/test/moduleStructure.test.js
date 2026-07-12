@@ -33,8 +33,8 @@ modules.forEach(moduleObject => {
     });
 
     const readmes = fs.readdirSync(moduleObject.path).filter(name => /^readme\.md$/i.test(name));
-    assert.deepStrictEqual(readmes, ['readme.md'],
-        'Module must contain exactly one canonical readme.md: ' + moduleObject.relativePath);
+    assert.deepStrictEqual(readmes, ['README.md'],
+        'Module must contain exactly one canonical README.md: ' + moduleObject.relativePath);
 
     assert(/^[A-Za-z][A-Za-z0-9]*$/.test(packageJson.name),
         'Invalid package runtime name: ' + moduleObject.relativePath + ' -> ' + packageJson.name);

@@ -30,7 +30,7 @@
 | Source files | 5 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 14 |
+| All module-owned files | 15 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -60,13 +60,14 @@
 | Documented | 3 |
 | Partially documented | 1 |
 | Undocumented | 7 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gFramework/nDatabase/cassandradb/AGENTS.md`
 - `gFramework/nDatabase/cassandradb/nodics.js`
 - `gFramework/nDatabase/cassandradb/package.json`
-- `gFramework/nDatabase/cassandradb/readme.md`
+- `gFramework/nDatabase/cassandradb/README.md`
 - `gFramework/nDatabase/cassandradb/config/properties.js`
 - `gFramework/nDatabase/cassandradb/config/prescripts.js`
 - `gFramework/nDatabase/cassandradb/config/postscripts.js`
@@ -79,13 +80,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gFramework/nDatabase/cassandradb/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nDatabase/cassandradb/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/cassandradb/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/cassandradb/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/cassandradb/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/cassandradb/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/cassandradb/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/cassandradb/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nDatabase/cassandradb/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/cassandradb/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Cassandra database adapter pipeline extension slot. The base adapter does not define custom pipelines, but layered modules can add Cassandra-specific database behavior here. |  |
 | `gFramework/nDatabase/cassandradb/src/router/appConfig.js` | `src` | `documented` | 0/0 | Cassandra database adapter router app configuration extension slot. |  |
 | `gFramework/nDatabase/cassandradb/src/router/router.js` | `src` | `documented` | 0/0 | Cassandra database adapter route definition extension slot. |  |

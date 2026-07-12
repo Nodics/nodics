@@ -33,7 +33,7 @@
 | Source files | 15 |
 | Test files | 9 |
 | Data files | 0 |
-| All module-owned files | 27 |
+| All module-owned files | 28 |
 | Local schema definitions | 1 |
 
 ## Ownership And Dependencies
@@ -66,13 +66,14 @@
 | Documented | 0 |
 | Partially documented | 8 |
 | Undocumented | 16 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gFramework/nEms/emsClient/AGENTS.md`
 - `gFramework/nEms/emsClient/nodics.js`
 - `gFramework/nEms/emsClient/package.json`
-- `gFramework/nEms/emsClient/readme.md`
+- `gFramework/nEms/emsClient/README.md`
 - `gFramework/nEms/emsClient/config/properties.js`
 - `gFramework/nEms/emsClient/config/prescripts.js`
 - `gFramework/nEms/emsClient/config/postscripts.js`
@@ -85,13 +86,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gFramework/nEms/emsClient/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nEms/emsClient/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nEms/emsClient/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nEms/emsClient/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nEms/emsClient/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nEms/emsClient/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nEms/emsClient/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nEms/emsClient/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nEms/emsClient/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nEms/emsClient/src/controller/defaultEmsClientController.js` | `src` | `undocumented` | 0/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
 | `gFramework/nEms/emsClient/src/facade/defaultEmsClientFacade.js` | `src` | `undocumented` | 0/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
 | `gFramework/nEms/emsClient/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

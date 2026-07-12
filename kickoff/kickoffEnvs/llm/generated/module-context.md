@@ -25,7 +25,7 @@
 | Source files | 0 |
 | Test files | 0 |
 | Data files | 0 |
-| All module-owned files | 7 |
+| All module-owned files | 8 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -51,13 +51,14 @@
 | Documented | 0 |
 | Partially documented | 1 |
 | Undocumented | 3 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `kickoff/kickoffEnvs/AGENTS.md`
 - `kickoff/kickoffEnvs/nodics.js`
 - `kickoff/kickoffEnvs/package.json`
-- `kickoff/kickoffEnvs/readme.md`
+- `kickoff/kickoffEnvs/README.md`
 - `kickoff/kickoffEnvs/config/properties.js`
 - `kickoff/kickoffEnvs/config/prescripts.js`
 - `kickoff/kickoffEnvs/config/postscripts.js`
@@ -68,13 +69,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `kickoff/kickoffEnvs/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `kickoff/kickoffEnvs/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `kickoff/kickoffEnvs/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `kickoff/kickoffEnvs/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `kickoff/kickoffEnvs/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `kickoff/kickoffEnvs/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `kickoff/kickoffEnvs/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `kickoff/kickoffEnvs/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `kickoff/kickoffEnvs/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 
 ## Extension Contract
 

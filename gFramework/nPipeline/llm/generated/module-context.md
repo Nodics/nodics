@@ -30,7 +30,7 @@
 | Source files | 9 |
 | Test files | 0 |
 | Data files | 0 |
-| All module-owned files | 16 |
+| All module-owned files | 17 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -60,13 +60,14 @@
 | Documented | 6 |
 | Partially documented | 1 |
 | Undocumented | 6 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gFramework/nPipeline/AGENTS.md`
 - `gFramework/nPipeline/nodics.js`
 - `gFramework/nPipeline/package.json`
-- `gFramework/nPipeline/readme.md`
+- `gFramework/nPipeline/README.md`
 - `gFramework/nPipeline/config/properties.js`
 - `gFramework/nPipeline/config/prescripts.js`
 - `gFramework/nPipeline/config/postscripts.js`
@@ -77,13 +78,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gFramework/nPipeline/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nPipeline/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nPipeline/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nPipeline/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nPipeline/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nPipeline/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nPipeline/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nPipeline/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nPipeline/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nPipeline/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nPipeline/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Pipeline interceptor registry extension slot. The base pipeline module currently ships no active interceptors, but this file preserves the layered configuration location for pipeline persistence or governance hooks. |  |
 | `gFramework/nPipeline/src/lib/pipelineHead.js` | `src` | `documented` | 0/0 | Runtime pipeline executor for Nodics. A pipeline head builds node instances from the effective pipeline definition, tracks execution state, moves through success/error links, executes nested pipelines, and enriches errors with contextual metadata for database, search, event, and import flows. |  |

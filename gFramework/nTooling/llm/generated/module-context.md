@@ -24,10 +24,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 11 |
+| Source files | 12 |
 | Test files | 6 |
 | Data files | 0 |
-| All module-owned files | 27 |
+| All module-owned files | 29 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -52,16 +52,17 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 23 |
+| Documented | 24 |
 | Partially documented | 0 |
 | Undocumented | 0 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
+- `gFramework/nTooling/AGENTS.md`
 - `gFramework/nTooling/nodics.js`
 - `gFramework/nTooling/package.json`
-- `gFramework/nTooling/readme.md`
+- `gFramework/nTooling/README.md`
 - `gFramework/nTooling/config/properties.js`
 - `gFramework/nTooling/config/prescripts.js`
 - `gFramework/nTooling/config/postscripts.js`
@@ -72,6 +73,8 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gFramework/nTooling/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nTooling/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nTooling/bin/nodics-tool.js` | `bin` | `documented` | 0/0 | CLI entrypoint that delegates non-runtime commands to the governed, project-aware tooling command service. |  |
 | `gFramework/nTooling/config/documentation-governance.json` | `config` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nTooling/config/postscripts.js` | `config` | `documented` | 0/0 | Reserved post-script contribution required by the module structure contract; nTooling does not execute during runtime startup. |  |
@@ -81,7 +84,6 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nTooling/nodics.js` | `module` | `documented` | 2/2 | Module-shaped entrypoint for Nodics development and quality tooling. Package metadata excludes nTooling from application startup; executable commands use dedicated tooling entrypoints instead. |  |
 | `gFramework/nTooling/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nTooling/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nTooling/src/command/documentationCoverageCommand.js` | `src` | `documented` | 1/1 | Tooling command adapter for project-scoped documentation coverage inspection. |  |
 | `gFramework/nTooling/src/command/documentationGatesCommand.js` | `src` | `documented` | 1/1 | Tooling command adapter for governed project documentation gates. |  |
 | `gFramework/nTooling/src/command/nodeScriptCommand.js` | `src` | `documented` | 1/1 | Executes a trusted Node.js tooling script owned by the effective command-contributing module while preserving the selected project home. |  |
@@ -92,6 +94,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/src/debug/nodicsDebug.js` | `src` | `documented` | 0/0 | Launches Nodics start, build, or clean lifecycle methods under the Node inspector while preserving project arguments and exit status. |  |
 | `gFramework/nTooling/src/quality/checkDocumentationCoverage.js` | `src` | `documented` | 0/0 | Collects project-scoped source documentation coverage by module, layer, contract scope, test inclusion, and generated-artifact policy. |  |
 | `gFramework/nTooling/src/quality/runDocumentationGates.js` | `src` | `documented` | 0/0 | Applies project-overridable documentation governance configuration to enforced and report-only coverage gates. |  |
+| `gFramework/nTooling/src/quality/validateAiGovernance.js` | `src` | `documented` | 0/0 | Validates portable AI-agent governance files, canonical module guidance, README casing, tool bridge files, and generated-context entrypoints across a Nodics workspace. |  |
 | `gFramework/nTooling/src/service/defaultToolingCommandService.js` | `src` | `documented` | 0/0 | Discovers non-runtime tooling command contributions from module-shaped packages, orders them by Nodics module index, applies explicit handler override governance, and executes commands against a selected project home. |  |
 | `gFramework/nTooling/test/llmChangeAcceptanceContract.test.js` | `test` | `documented` | 0/0 | Prevents the mandatory Nodics hierarchy, customization, and test-coverage contract from disappearing from canonical LLM guidance. |  |
 | `gFramework/nTooling/test/moduleLlmContext.test.js` | `test` | `documented` | 0/0 | Validates tool-neutral module context structure, generated inventories, source fingerprints, schema summaries, and documentation status contracts. |  |

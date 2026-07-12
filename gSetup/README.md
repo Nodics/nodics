@@ -4,7 +4,7 @@
 
 It intentionally looks like a first-class Nodics top-level area, but it is **not** part of Nodics runtime module loading.
 
-`gSetup` includes the standard module-shaped files `package.json`, `nodics.js`, and `readme.md` so developers recognize it as a first-class Nodics repository area.
+`gSetup` includes the standard module-shaped files `package.json`, `nodics.js`, and `README.md` so developers recognize it as a first-class Nodics repository area.
 
 It is excluded from runtime startup by `package.json` metadata:
 

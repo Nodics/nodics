@@ -31,7 +31,7 @@
 | Source files | 6 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 15 |
+| All module-owned files | 16 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -62,13 +62,14 @@
 | Documented | 0 |
 | Partially documented | 2 |
 | Undocumented | 10 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/AGENTS.md`
 - `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/nodics.js`
 - `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/package.json`
-- `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/readme.md`
+- `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/README.md`
 - `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/config/properties.js`
 - `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/config/prescripts.js`
 - `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/config/postscripts.js`
@@ -81,13 +82,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode1/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

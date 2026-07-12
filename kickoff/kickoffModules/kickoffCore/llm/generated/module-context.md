@@ -31,7 +31,7 @@
 | Source files | 6 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 15 |
+| All module-owned files | 16 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -62,13 +62,14 @@
 | Documented | 0 |
 | Partially documented | 2 |
 | Undocumented | 10 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `kickoff/kickoffModules/kickoffCore/AGENTS.md`
 - `kickoff/kickoffModules/kickoffCore/nodics.js`
 - `kickoff/kickoffModules/kickoffCore/package.json`
-- `kickoff/kickoffModules/kickoffCore/readme.md`
+- `kickoff/kickoffModules/kickoffCore/README.md`
 - `kickoff/kickoffModules/kickoffCore/config/properties.js`
 - `kickoff/kickoffModules/kickoffCore/config/prescripts.js`
 - `kickoff/kickoffModules/kickoffCore/config/postscripts.js`
@@ -81,13 +82,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `kickoff/kickoffModules/kickoffCore/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `kickoff/kickoffModules/kickoffCore/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `kickoff/kickoffModules/kickoffCore/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `kickoff/kickoffModules/kickoffCore/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `kickoff/kickoffModules/kickoffCore/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `kickoff/kickoffModules/kickoffCore/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `kickoff/kickoffModules/kickoffCore/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `kickoff/kickoffModules/kickoffCore/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `kickoff/kickoffModules/kickoffCore/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `kickoff/kickoffModules/kickoffCore/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `kickoff/kickoffModules/kickoffCore/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `kickoff/kickoffModules/kickoffCore/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

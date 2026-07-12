@@ -35,7 +35,7 @@
 | Source files | 20 |
 | Test files | 16 |
 | Data files | 0 |
-| All module-owned files | 33 |
+| All module-owned files | 34 |
 | Local schema definitions | 3 |
 
 ## Ownership And Dependencies
@@ -70,13 +70,14 @@
 | Documented | 4 |
 | Partially documented | 6 |
 | Undocumented | 20 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gFramework/nSystem/AGENTS.md`
 - `gFramework/nSystem/nodics.js`
 - `gFramework/nSystem/package.json`
-- `gFramework/nSystem/readme.md`
+- `gFramework/nSystem/README.md`
 - `gFramework/nSystem/config/properties.js`
 - `gFramework/nSystem/config/prescripts.js`
 - `gFramework/nSystem/config/postscripts.js`
@@ -89,13 +90,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gFramework/nSystem/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nSystem/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nSystem/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nSystem/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nSystem/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nSystem/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nSystem/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nSystem/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nSystem/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nSystem/src/controller/config/defaultConfigurationController.js` | `src` | `documented` | 14/14 | Controller for runtime configuration changes in the Nodics control plane. |  |
 | `gFramework/nSystem/src/controller/contract/defaultApiContractController.js` | `src` | `documented` | 3/3 | Controller for exposing generated API contracts from the active server or node module context. |  |
 | `gFramework/nSystem/src/controller/file/defaultFileController.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |

@@ -30,7 +30,7 @@
 | Source files | 13 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 22 |
+| All module-owned files | 23 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -60,13 +60,14 @@
 | Documented | 19 |
 | Partially documented | 0 |
 | Undocumented | 0 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gFramework/nCommon/AGENTS.md`
 - `gFramework/nCommon/nodics.js`
 - `gFramework/nCommon/package.json`
-- `gFramework/nCommon/readme.md`
+- `gFramework/nCommon/README.md`
 - `gFramework/nCommon/config/properties.js`
 - `gFramework/nCommon/config/prescripts.js`
 - `gFramework/nCommon/config/postscripts.js`
@@ -77,13 +78,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gFramework/nCommon/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nCommon/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nCommon/config/postscripts.js` | `config` | `documented` | 3/3 | Default nCommon post-start script hooks retained for layered startup compatibility. They return diagnostic labels and do not mutate runtime state. |  |
 | `gFramework/nCommon/config/prescripts.js` | `config` | `documented` | 0/0 | Reserved nCommon pre-start script contribution. It is intentionally empty so later modules can add shared pre-initialization behavior through the standard layered script loader. |  |
 | `gFramework/nCommon/config/properties.js` | `config` | `documented` | 0/0 | Baseline shared properties for error serialization, external data staging, and default error-code resolution. |  |
 | `gFramework/nCommon/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nCommon/nodics.js` | `module` | `documented` | 2/2 | nCommon lifecycle contribution that loads effective interceptor definitions after service initialization, making layered dynamic behavior available to downstream modules. |  |
 | `gFramework/nCommon/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nCommon/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nCommon/src/event/listeners.js` | `src` | `documented` | 0/0 | Event-listener definitions that refresh effective interceptor configuration after interceptor records are created or updated. |  |
 | `gFramework/nCommon/src/lib/nodicsError.js` | `src` | `documented` | 0/0 | Standard Nodics error type used across pipelines, services, controllers, generated APIs, imports, processors, and interceptors. It preserves response code, status code, metadata, nested causes, validation errors, trace id, contexts, and safe JSON serialization. |  |
 | `gFramework/nCommon/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Pipeline definition for runtime interceptor updates. It validates update payloads, loads changed interceptor definitions, merges them into effective runtime state, and publishes cleanup events. |  |

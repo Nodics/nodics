@@ -279,9 +279,10 @@ function createModuleContext(module, files, schemaGroups, fileInventory) {
         '## Important Files',
         '',
         formatList([
+            getRelativeIfExists(module.path, 'AGENTS.md'),
             getRelativeIfExists(module.path, 'nodics.js'),
             getRelativeIfExists(module.path, 'package.json'),
-            getRelativeIfExists(module.path, 'readme.md'),
+            getRelativeIfExists(module.path, 'README.md'),
             getRelativeIfExists(module.path, 'config/properties.js'),
             getRelativeIfExists(module.path, 'config/prescripts.js'),
             getRelativeIfExists(module.path, 'config/postscripts.js'),

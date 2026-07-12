@@ -35,7 +35,7 @@
 | Source files | 35 |
 | Test files | 6 |
 | Data files | 0 |
-| All module-owned files | 48 |
+| All module-owned files | 49 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -71,13 +71,14 @@
 | Documented | 31 |
 | Partially documented | 2 |
 | Undocumented | 12 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gFramework/nDatabase/database/AGENTS.md`
 - `gFramework/nDatabase/database/nodics.js`
 - `gFramework/nDatabase/database/package.json`
-- `gFramework/nDatabase/database/readme.md`
+- `gFramework/nDatabase/database/README.md`
 - `gFramework/nDatabase/database/config/properties.js`
 - `gFramework/nDatabase/database/config/prescripts.js`
 - `gFramework/nDatabase/database/config/postscripts.js`
@@ -90,13 +91,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gFramework/nDatabase/database/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nDatabase/database/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/database/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/database/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/database/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/database/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/database/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/database/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nDatabase/database/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/database/src/controller/schema/defaultSchemaIndexController.js` | `src` | `documented` | 2/2 | Controller for secured schema index maintenance routes. It delegates module-wide and schema-specific index refresh requests to the schema index facade. |  |
 | `gFramework/nDatabase/database/src/controller/schema/defaultSchemaValidatorController.js` | `src` | `documented` | 2/2 | Controller for secured schema validator maintenance routes. It delegates module-wide and schema-specific validator refresh requests to the schema validator facade. |  |
 | `gFramework/nDatabase/database/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

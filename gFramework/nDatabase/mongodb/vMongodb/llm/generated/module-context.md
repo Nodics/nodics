@@ -31,7 +31,7 @@
 | Source files | 7 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 16 |
+| All module-owned files | 17 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -62,13 +62,14 @@
 | Documented | 4 |
 | Partially documented | 1 |
 | Undocumented | 8 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gFramework/nDatabase/mongodb/vMongodb/AGENTS.md`
 - `gFramework/nDatabase/mongodb/vMongodb/nodics.js`
 - `gFramework/nDatabase/mongodb/vMongodb/package.json`
-- `gFramework/nDatabase/mongodb/vMongodb/readme.md`
+- `gFramework/nDatabase/mongodb/vMongodb/README.md`
 - `gFramework/nDatabase/mongodb/vMongodb/config/properties.js`
 - `gFramework/nDatabase/mongodb/vMongodb/config/prescripts.js`
 - `gFramework/nDatabase/mongodb/vMongodb/config/postscripts.js`
@@ -81,13 +82,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gFramework/nDatabase/mongodb/vMongodb/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nDatabase/mongodb/vMongodb/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/mongodb/vMongodb/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/mongodb/vMongodb/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/mongodb/vMongodb/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/mongodb/vMongodb/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/mongodb/vMongodb/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/mongodb/vMongodb/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nDatabase/mongodb/vMongodb/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/mongodb/vMongodb/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Versioned MongoDB adapter pipeline extension slot. |  |
 | `gFramework/nDatabase/mongodb/vMongodb/src/router/appConfig.js` | `src` | `documented` | 0/0 | Versioned MongoDB adapter router app configuration extension slot. |  |
 | `gFramework/nDatabase/mongodb/vMongodb/src/router/router.js` | `src` | `documented` | 0/0 | Versioned MongoDB adapter route definition extension slot. |  |

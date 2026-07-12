@@ -34,7 +34,7 @@
 | Source files | 10 |
 | Test files | 10 |
 | Data files | 4 |
-| All module-owned files | 23 |
+| All module-owned files | 24 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -68,13 +68,14 @@
 | Documented | 0 |
 | Partially documented | 4 |
 | Undocumented | 16 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gDeap/dataConsumer/AGENTS.md`
 - `gDeap/dataConsumer/nodics.js`
 - `gDeap/dataConsumer/package.json`
-- `gDeap/dataConsumer/readme.md`
+- `gDeap/dataConsumer/README.md`
 - `gDeap/dataConsumer/config/properties.js`
 - `gDeap/dataConsumer/config/prescripts.js`
 - `gDeap/dataConsumer/config/postscripts.js`
@@ -87,6 +88,8 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gDeap/dataConsumer/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gDeap/dataConsumer/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gDeap/dataConsumer/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gDeap/dataConsumer/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gDeap/dataConsumer/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
@@ -97,7 +100,6 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gDeap/dataConsumer/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gDeap/dataConsumer/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gDeap/dataConsumer/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gDeap/dataConsumer/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gDeap/dataConsumer/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gDeap/dataConsumer/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gDeap/dataConsumer/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

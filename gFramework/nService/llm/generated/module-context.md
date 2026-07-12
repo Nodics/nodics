@@ -29,7 +29,7 @@
 | Source files | 78 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 29 |
+| All module-owned files | 30 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,13 +59,14 @@
 | Documented | 18 |
 | Partially documented | 1 |
 | Undocumented | 7 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gFramework/nService/AGENTS.md`
 - `gFramework/nService/nodics.js`
 - `gFramework/nService/package.json`
-- `gFramework/nService/readme.md`
+- `gFramework/nService/README.md`
 - `gFramework/nService/config/properties.js`
 - `gFramework/nService/config/prescripts.js`
 - `gFramework/nService/config/postscripts.js`
@@ -76,13 +77,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gFramework/nService/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nService/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nService/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nService/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nService/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nService/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nService/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nService/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nService/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nService/src/lib/moduleConfiguration.js` | `src` | `documented` | 0/0 | Runtime topology descriptor for one module in a distributed Nodics deployment. It stores module-level request options, server endpoint, abstract server endpoint, node endpoints, and server-running state. |  |
 | `gFramework/nService/src/lib/modulesConfigurationContainer.js` | `src` | `documented` | 0/0 | Runtime container for module topology configuration loaded from layered `server` properties. It builds `ModuleConfiguration` objects used for internal module communication and distributed node routing. |  |
 | `gFramework/nService/src/lib/nodeConfiguration.js` | `src` | `documented` | 0/0 | Runtime endpoint descriptor for one server or node. Module topology objects use this class to expose HTTP/HTTPS host and port data for internal service calls. |  |

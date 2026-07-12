@@ -35,7 +35,7 @@
 | Source files | 29 |
 | Test files | 26 |
 | Data files | 0 |
-| All module-owned files | 58 |
+| All module-owned files | 59 |
 | Local schema definitions | 1 |
 
 ## Ownership And Dependencies
@@ -70,13 +70,14 @@
 | Documented | 14 |
 | Partially documented | 15 |
 | Undocumented | 26 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gFramework/nData/nImport/import/AGENTS.md`
 - `gFramework/nData/nImport/import/nodics.js`
 - `gFramework/nData/nImport/import/package.json`
-- `gFramework/nData/nImport/import/readme.md`
+- `gFramework/nData/nImport/import/README.md`
 - `gFramework/nData/nImport/import/config/properties.js`
 - `gFramework/nData/nImport/import/config/prescripts.js`
 - `gFramework/nData/nImport/import/config/postscripts.js`
@@ -89,13 +90,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gFramework/nData/nImport/import/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nData/nImport/import/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nData/nImport/import/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/config/properties.js` | `config` | `documented` | 0/0 | Defines layered import processing limits, error defaults, and the disabled-by-default governed remote source and transport registry. |  |
 | `gFramework/nData/nImport/import/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nData/nImport/import/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nData/nImport/import/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nData/nImport/import/src/controller/history/defaultImportRunHistoryController.js` | `src` | `documented` | 5/5 | Controller for import run history control-plane APIs. |  |
 | `gFramework/nData/nImport/import/src/controller/import/DefaultImportController.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
 | `gFramework/nData/nImport/import/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
