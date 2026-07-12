@@ -35,9 +35,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 48 |
-| Test files | 44 |
+| Test files | 45 |
 | Data files | 17 |
-| All module-owned files | 85 |
+| All module-owned files | 86 |
 | Local schema definitions | 11 |
 
 ## Ownership And Dependencies
@@ -71,7 +71,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 9 |
+| Documented | 10 |
 | Partially documented | 4 |
 | Undocumented | 66 |
 | Inventory only | 6 |
@@ -175,6 +175,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/test/identityGovernanceP2Integration.test.js` | `test` | `documented` | 0/0 | Exercises preview, persisted apply, idempotent repeat, service credential rotation, failure audit, and rollback using an isolated durable test repository. |  |
 | `gCore/profile/test/initRequiredFlag.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/mandatoryIdentityBootstrapService.test.js` | `test` | `documented` | 0/0 | Verifies idempotent, audited creation of missing configured identity groups without overwriting existing tenant customizations. |  |
+| `gCore/profile/test/profileAuthenticationRouteSecurity.test.js` | `test` | `documented` | 0/0 | Verifies username/password login uses the pre-authentication enterprise-resolution pipeline while module-to-module internal token retrieval remains a secured service capability. |  |
 | `gCore/profile/test/profileControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileInitRequiredDetection.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

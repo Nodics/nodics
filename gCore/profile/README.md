@@ -18,6 +18,13 @@ requires the configured cross-tenant permission such as
 through layered identity governance configuration, but must keep internal-token
 access least-privilege and tenant-scoped.
 
+Employee and customer username/password authentication routes are
+pre-authentication routes. They are not protected by an existing bearer token or
+API key, but they still require enterprise context so the non-secured request
+pipeline can resolve the active tenant before credentials are validated.
+Module-to-module communication remains a separate secured capability using API
+keys and internal service tokens.
+
 User-group save and update interceptors validate parent existence, active
 parents, acyclic inheritance, and permission catalog membership. Principal
 interceptors validate principal type, active group assignment, and service-only

@@ -19,3 +19,7 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
 - Internal authentication token routes are service capabilities, not generic
   user routes. Preserve explicit route permissions and tenant/cross-tenant
   governance when changing profile authentication routers or controllers.
+- Employee and customer username/password authentication routes are
+  pre-authentication routes: they must resolve enterprise/tenant context before
+  credential validation without requiring an existing bearer token or API key.
+  Do not weaken module-to-module internal token routes when changing them.

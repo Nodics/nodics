@@ -12,6 +12,7 @@
 - `gCore/profile/test/identityGovernanceP2Integration.test.js`
 - `gCore/profile/test/initRequiredFlag.test.js`
 - `gCore/profile/test/mandatoryIdentityBootstrapService.test.js`
+- `gCore/profile/test/profileAuthenticationRouteSecurity.test.js`
 - `gCore/profile/test/profileControllerRequestMapping.test.js`
 - `gCore/profile/test/profileInitRequiredDetection.test.js`
 - `gCore/profile/test/profileRouteContract.test.js`
