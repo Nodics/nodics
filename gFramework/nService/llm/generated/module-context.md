@@ -27,9 +27,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 78 |
-| Test files | 2 |
+| Test files | 3 |
 | Data files | 0 |
-| All module-owned files | 30 |
+| All module-owned files | 31 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -56,7 +56,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 18 |
+| Documented | 19 |
 | Partially documented | 1 |
 | Undocumented | 7 |
 | Inventory only | 4 |
@@ -90,7 +90,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nService/src/lib/nodeConfiguration.js` | `src` | `documented` | 0/0 | Runtime endpoint descriptor for one server or node. Module topology objects use this class to expose HTTP/HTTPS host and port data for internal service calls. |  |
 | `gFramework/nService/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | nService pipeline extension slot. The base service module does not define additional pipelines, but this file preserves the layered location for service-level runtime orchestration. |  |
 | `gFramework/nService/src/service/apikey/defaultAPIKeyService.js` | `src` | `documented` | 2/2 | API key service extension slot for profile-backed and distributed API key lifecycle behavior. The active implementation is currently provided by generated/profile services; this file preserves the core override location for future API key synchronization handlers. |  |
-| `gFramework/nService/src/service/authentication/defaultAuthTokenInvalidationService.js` | `src` | `documented` | 5/5 | Cache listener callbacks for auth token expiration, deletion, and flush events. The default implementation logs token invalidation state and keeps the extension point for distributed token invalidation events. |  |
+| `gFramework/nService/src/service/authentication/defaultAuthTokenInvalidationService.js` | `src` | `documented` | 7/7 | Cache listener callbacks for auth token expiration, deletion, and flush events. The default implementation logs sanitized invalidation context and keeps the extension point for distributed token invalidation events. |  |
 | `gFramework/nService/src/service/authentication/defaultAuthenticationProviderService.js` | `src` | `documented` | 8/8 | Stores and retrieves authentication tokens in the Nodics cache layer. Tokens are scoped by module and the `auth` cache channel so generated and custom authentication providers share the same runtime contract. |  |
 | `gFramework/nService/src/service/authentication/defaultInternalAuthenticationProviderService.js` | `src` | `documented` | 5/5 | Fetches tenant-scoped internal auth tokens from the profile module when the profile module is deployed separately. This supports modular deployment where non-profile nodes still need internal service credentials. |  |
 | `gFramework/nService/src/service/authorization/defaultAuthorizationProviderService.js` | `src` | `documented` | 4/4 | Authorizes bearer tokens and API keys for Nodics requests. JWT token verification resolves request identity, while API key authorization delegates to the authentication provider extension point. |  |
@@ -105,6 +105,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nService/src/service/tenant/defaultTenantHandlerService.js` | `src` | `documented` | 3/3 | Deactivates tenants from the runtime node by removing tenant registry entries, stopping tenant cron jobs, dropping tenant database handles, removing generated models, and cleaning search runtime state. |  |
 | `gFramework/nService/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nService/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/test/authTokenInvalidationService.test.js` | `test` | `documented` | 0/0 | Verifies auth cache invalidation callbacks produce sanitized observability without logging token material or cache keys. |  |
 | `gFramework/nService/test/moduleRequestHeaderNormalization.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nService/test/statusDefinitionCatalog.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 
