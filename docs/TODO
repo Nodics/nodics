@@ -144,6 +144,11 @@ Nodics Revolution:
     ☐ Extend module-level descriptions as modules are modernized. @llm @docs @modules
     ☐ Add workflow-specific prompts for review, refactor, testing, schema changes, and runtime governance. @llm @prompts
     ☐ Keep LLM decision memory aligned with completed architecture slices. @llm @memory
+    ☐ Design and implement Nodics MCP support as a future AI tooling layer that exposes and enforces existing Nodics source-of-truth contracts without becoming a second governance source. @llm @mcp @tooling @future
+      ☐ Phase 1: Add read-only governance MCP for workspace summary, module discovery, nearest AGENTS.md lookup, generated module context lookup, and change-impact guidance. @mcp @read-only @governance
+      ☐ Phase 2: Add validation MCP tools that run approved governance checks such as `npm run ai:validate`, `npm run llm:validate`, docs validation, and focused module tests with structured results. @mcp @validation @quality
+      ☐ Phase 3: Add runtime-aware MCP tools for effective configuration, active module hierarchy, artifact ownership, and override-path explanation after resolver boundaries are stable. @mcp @runtime-config @hierarchy
+      ☐ Phase 4: Add guarded mutation/generation MCP tools for module skeletons, documentation updates, generated artifacts, and safe build/clean workflows only after read-only and validation phases are trusted. @mcp @generation @guarded
 
   Configuration:
 

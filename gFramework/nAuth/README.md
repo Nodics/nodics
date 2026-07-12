@@ -52,8 +52,10 @@ issued through `DefaultServiceTokenService`, which registers the service stamp
 before publishing the bounded JWT. The kickoff-local layer permits missing
 stamps only as an explicit development/backward-compatibility exception.
 Strict deployments must configure the `profile.auth` cache channel with a
-distributed engine whose metadata declares atomic consume support and must
-disable local fallback; startup fails otherwise.
+distributed engine whose metadata declares atomic consume support, must keep
+the global cache subsystem, auth channel, and selected engine enabled, and must
+disable local fallback; startup fails otherwise. A Redis URL or engine
+definition alone is not an activation signal.
 
 Principal updates resolve persisted records before assigning stamps, ensuring
 tokens and cache entries use the same stable `loginId`. Group changes invalidate

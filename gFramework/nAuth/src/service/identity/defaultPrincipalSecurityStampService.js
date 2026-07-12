@@ -23,7 +23,7 @@ module.exports = {
     getKey: function (tenant, principalId) {
         return 'securityStamp:' + tenant + ':' + principalId;
     },
-    /** Rejects strict deployments whose auth channel is not shared and atomic. */
+    /** Rejects strict deployments whose auth channel is disabled, local-only, or non-atomic. */
     validateConfiguration: function () {
         let policy = this.getPolicy();
         let security = CONFIG.get('authSecurity') || {};
@@ -35,8 +35,9 @@ module.exports = {
         let profileEngines = cache.profile && cache.profile.engines || {};
         let defaultEngines = cache.default && cache.default.engines || {};
         let engine = profileEngines[channel.engine] || defaultEngines[channel.engine] || {};
-        if (!channel.engine || engine.distributed !== true || engine.atomicConsume !== true || channel.fallback === true) {
-            return Promise.reject(new CLASSES.NodicsError('ERR_AUTH_00001', 'Strict authentication state requires a distributed auth cache with atomic consume and local fallback disabled'));
+        if (cache.enabled === false || channel.enabled === false || engine.enabled === false ||
+            !channel.engine || engine.distributed !== true || engine.atomicConsume !== true || channel.fallback === true) {
+            return Promise.reject(new CLASSES.NodicsError('ERR_AUTH_00001', 'Strict authentication state requires an enabled distributed auth cache with atomic consume and local fallback disabled'));
         }
         return Promise.resolve(true);
     },

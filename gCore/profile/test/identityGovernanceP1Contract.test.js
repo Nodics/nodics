@@ -84,6 +84,22 @@ async function validateSecurityStamp() {
     await assert.rejects(stamp.validate({ tenant: 'default', loginId: 'user-a', tokenType: 'access' }));
     await assert.rejects(stamp.validateConfiguration(), /distributed auth cache/);
     values.cache = {
+        enabled: false,
+        profile: { channels: { auth: { engine: 'redis', fallback: false } } },
+        default: { engines: { redis: { distributed: true, atomicConsume: true } } }
+    };
+    await assert.rejects(stamp.validateConfiguration(), /enabled distributed auth cache/);
+    values.cache = {
+        profile: { channels: { auth: { engine: 'redis', fallback: false, enabled: false } } },
+        default: { engines: { redis: { distributed: true, atomicConsume: true } } }
+    };
+    await assert.rejects(stamp.validateConfiguration(), /enabled distributed auth cache/);
+    values.cache = {
+        profile: { channels: { auth: { engine: 'redis', fallback: false } } },
+        default: { engines: { redis: { distributed: true, atomicConsume: true, enabled: false } } }
+    };
+    await assert.rejects(stamp.validateConfiguration(), /enabled distributed auth cache/);
+    values.cache = {
         profile: { channels: { auth: { engine: 'redis', fallback: false } } },
         default: { engines: { redis: { distributed: true, atomicConsume: true } } }
     };
