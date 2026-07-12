@@ -16,13 +16,13 @@
   "sourceFiles": 0,
   "testFiles": 0,
   "dataFiles": 0,
-  "ownedFiles": 7,
-  "sourceFingerprint": "6481503997329577ee4e57f71444cb080a1b976737baaf604e741469b472038f",
+  "ownedFiles": 8,
+  "sourceFingerprint": "8944d0893b60c4477c2dd0ea731b0bef7c4efb008d419730721eceb19bd46dae",
   "documentation": {
     "documented": 0,
     "partially-documented": 1,
     "undocumented": 3,
-    "inventory-only": 3
+    "inventory-only": 4
   },
   "schemaGroups": {},
   "schemaLoadError": null,

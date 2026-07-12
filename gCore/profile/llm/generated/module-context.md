@@ -37,7 +37,7 @@
 | Source files | 48 |
 | Test files | 44 |
 | Data files | 17 |
-| All module-owned files | 84 |
+| All module-owned files | 85 |
 | Local schema definitions | 11 |
 
 ## Ownership And Dependencies
@@ -74,13 +74,14 @@
 | Documented | 9 |
 | Partially documented | 4 |
 | Undocumented | 66 |
-| Inventory only | 5 |
+| Inventory only | 6 |
 
 ## Important Files
 
+- `gCore/profile/AGENTS.md`
 - `gCore/profile/nodics.js`
 - `gCore/profile/package.json`
-- `gCore/profile/readme.md`
+- `gCore/profile/README.md`
 - `gCore/profile/config/properties.js`
 - `gCore/profile/config/prescripts.js`
 - `gCore/profile/config/postscripts.js`
@@ -93,6 +94,8 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gCore/profile/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gCore/profile/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/profile/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
@@ -116,7 +119,6 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/profile/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/profile/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/profile/src/controller/authentication/defaultAuthenticationProviderController.js` | `src` | `undocumented` | 0/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
 | `gCore/profile/src/controller/authentication/defaultInternalAuthenticationProviderController.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
 | `gCore/profile/src/controller/authorization/defaultAuthorizationProviderController.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |

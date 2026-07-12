@@ -34,7 +34,7 @@
 | Source files | 9 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 18 |
+| All module-owned files | 19 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -68,13 +68,14 @@
 | Documented | 0 |
 | Partially documented | 4 |
 | Undocumented | 11 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gOpt/kyc/kycApi/AGENTS.md`
 - `gOpt/kyc/kycApi/nodics.js`
 - `gOpt/kyc/kycApi/package.json`
-- `gOpt/kyc/kycApi/readme.md`
+- `gOpt/kyc/kycApi/README.md`
 - `gOpt/kyc/kycApi/config/properties.js`
 - `gOpt/kyc/kycApi/config/prescripts.js`
 - `gOpt/kyc/kycApi/config/postscripts.js`
@@ -87,13 +88,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gOpt/kyc/kycApi/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gOpt/kyc/kycApi/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gOpt/kyc/kycApi/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gOpt/kyc/kycApi/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gOpt/kyc/kycApi/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gOpt/kyc/kycApi/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gOpt/kyc/kycApi/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gOpt/kyc/kycApi/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gOpt/kyc/kycApi/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gOpt/kyc/kycApi/src/controller/defaultKycController.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
 | `gOpt/kyc/kycApi/src/facade/defaultKycFacade.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
 | `gOpt/kyc/kycApi/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

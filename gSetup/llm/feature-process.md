@@ -27,7 +27,7 @@ required layer, and do not create unnecessary changes in unaffected layers.
 
 Before implementation, verify the owning package follows
 `standards/module-standard.md`, including mandatory configuration files,
-canonical `readme.md`, stable runtime naming, and generated context.
+canonical `README.md`, stable runtime naming, and generated context.
 
 Do not start coding before knowing whether behavior belongs in framework, core business module, project module, environment module, server module, or node module.
 

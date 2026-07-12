@@ -36,7 +36,7 @@
 | Source files | 33 |
 | Test files | 13 |
 | Data files | 4 |
-| All module-owned files | 49 |
+| All module-owned files | 50 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -72,13 +72,14 @@
 | Documented | 0 |
 | Partially documented | 12 |
 | Undocumented | 34 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gCore/cronjob/AGENTS.md`
 - `gCore/cronjob/nodics.js`
 - `gCore/cronjob/package.json`
-- `gCore/cronjob/readme.md`
+- `gCore/cronjob/README.md`
 - `gCore/cronjob/config/properties.js`
 - `gCore/cronjob/config/prescripts.js`
 - `gCore/cronjob/config/postscripts.js`
@@ -91,6 +92,8 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gCore/cronjob/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gCore/cronjob/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/cronjob/config/postscripts.js` | `config` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
 | `gCore/cronjob/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/cronjob/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
@@ -101,7 +104,6 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/cronjob/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/cronjob/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/cronjob/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/cronjob/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/cronjob/src/controller/defaultCronJobController.js` | `src` | `undocumented` | 0/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 8 exported method(s) |
 | `gCore/cronjob/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/cronjob/src/facade/defaultCronJobFacade.js` | `src` | `undocumented` | 0/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 8 exported method(s) |

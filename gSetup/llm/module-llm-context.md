@@ -2,7 +2,7 @@
 
 Nodics modules may own their own LLM context just like they own `config`, `data`, `src`, and `test`.
 
-Global LLM instructions live in `gSetup/llm`. Module-specific knowledge lives beside the module that owns the capability.
+Global LLM instructions live in root `AGENTS.md` and `gSetup/llm`. Module-specific knowledge lives beside the module that owns the capability.
 
 `gSetup` itself is the global human-authored LLM enablement module. It should not receive generated module context under `gSetup/llm/generated`.
 
@@ -11,6 +11,8 @@ Global LLM instructions live in `gSetup/llm`. Module-specific knowledge lives be
 Each module can contain:
 
 ```text
+AGENTS.md
+README.md
 llm/
   README.md
   generated/
@@ -20,7 +22,7 @@ llm/
     manifest.json
 ```
 
-`README.md` is the stable module entry point. Developers may add more human-authored files for intent, examples, extension decisions, and implementation guidance.
+`README.md` is the stable human module entry point. `AGENTS.md` is the stable AI/developer behavior contract for that module boundary. Developers may add more human-authored files for intent, examples, extension decisions, and implementation guidance.
 
 `generated/` is recreated from source definitions. Do not edit generated LLM files manually.
 
@@ -63,7 +65,7 @@ These states describe documentation only; they never imply that a file, module, 
 
 ## Tool-Neutrality Contract
 
-The `llm` folder name describes the intended consumer category; it does not bind Nodics to a vendor or product. Canonical guidance must remain portable Markdown and JSON, avoid proprietary command requirements, and work for humans as well as automated assistants. Optional vendor adapters may point to `gSetup/llm/README.md`, but must not duplicate or replace canonical Nodics rules.
+The `llm` folder name describes the intended consumer category; it does not bind Nodics to a vendor or product. Canonical guidance must remain portable Markdown and JSON, avoid proprietary command requirements, and work for humans as well as automated assistants. Optional vendor adapters may point to root `AGENTS.md` and `gSetup/llm/README.md`, but must not duplicate or replace canonical Nodics rules.
 
 ## Override Rule
 

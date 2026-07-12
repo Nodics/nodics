@@ -33,7 +33,7 @@
 | Source files | 7 |
 | Test files | 6 |
 | Data files | 8 |
-| All module-owned files | 24 |
+| All module-owned files | 25 |
 | Local schema definitions | 1 |
 
 ## Ownership And Dependencies
@@ -66,13 +66,14 @@
 | Documented | 0 |
 | Partially documented | 2 |
 | Undocumented | 19 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gMrkty/cres/AGENTS.md`
 - `gMrkty/cres/nodics.js`
 - `gMrkty/cres/package.json`
-- `gMrkty/cres/readme.md`
+- `gMrkty/cres/README.md`
 - `gMrkty/cres/config/properties.js`
 - `gMrkty/cres/config/prescripts.js`
 - `gMrkty/cres/config/postscripts.js`
@@ -85,6 +86,8 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gMrkty/cres/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gMrkty/cres/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gMrkty/cres/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gMrkty/cres/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gMrkty/cres/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
@@ -99,7 +102,6 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gMrkty/cres/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gMrkty/cres/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gMrkty/cres/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gMrkty/cres/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gMrkty/cres/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gMrkty/cres/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gMrkty/cres/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

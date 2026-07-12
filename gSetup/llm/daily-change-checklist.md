@@ -28,6 +28,9 @@ During implementation:
 - preserve tenant, security, validation, audit, diagnostics, and compatibility contracts
 - keep generated output derived from source
 - keep code understandable by a developer who did not create it
+- update affected `AGENTS.md`, `README.md`, `docs/`, `llm/contracts/`,
+  `llm/examples/`, generated LLM context, and tests when behavior or extension
+  guidance changes
 - run focused tests after changing the relevant behavior
 
 Load detailed guidance only when relevant:

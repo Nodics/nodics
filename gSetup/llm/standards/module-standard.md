@@ -7,7 +7,8 @@ layered customization contract.
 
 - `package.json`
 - `nodics.js`
-- `readme.md`
+- `AGENTS.md`
+- `README.md`
 - `config/properties.js`
 - `config/prescripts.js`
 - `config/postscripts.js`
@@ -28,7 +29,8 @@ Never rename an established runtime identifier merely to match a folder. Such a
 change requires an explicit compatibility migration for active-module lists,
 dependencies, persisted configuration, routes, tests, and generated artifacts.
 
-The repository-standard human entrypoint is lower-case `readme.md`.
+The repository-standard human entrypoint is upper-case `README.md`. The
+repository-standard AI/developer behavior contract is upper-case `AGENTS.md`.
 
 ## Configuration
 
@@ -39,8 +41,9 @@ they are empty. Runtime behavior must not be hidden in tooling or documentation.
 ## Documentation And Tests
 
 The module README explains purpose, ownership, dependencies, configuration, and
-customization. Source files document their real contracts. Generated context
-reports factual gaps and must not invent missing intent.
+customization. The module AGENTS file explains how AI agents and developers must
+work inside that module boundary. Source files document their real contracts.
+Generated context reports factual gaps and must not invent missing intent.
 
 Capabilities require focused behavior tests. Container, topology, setup, and
 template modules may rely on composition or topology tests, but their untested

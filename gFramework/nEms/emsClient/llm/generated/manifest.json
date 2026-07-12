@@ -16,13 +16,13 @@
   "sourceFiles": 15,
   "testFiles": 9,
   "dataFiles": 0,
-  "ownedFiles": 27,
-  "sourceFingerprint": "7092cb427d59055fc973b20536667211faca24af0d27dce961ac1856b0d697b4",
+  "ownedFiles": 28,
+  "sourceFingerprint": "c9af67a6ea3e8b386c09b12189ba2f94ad3482865cf3cd411c3e326188b092d3",
   "documentation": {
     "documented": 0,
     "partially-documented": 8,
     "undocumented": 16,
-    "inventory-only": 3
+    "inventory-only": 4
   },
   "schemaGroups": {
     "emsClient": [

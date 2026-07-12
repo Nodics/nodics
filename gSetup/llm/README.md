@@ -9,7 +9,7 @@ Use this pack before making architectural recommendations, code changes, tests, 
 Start every AI-assisted Nodics session with:
 
 ```text
-Read gSetup/llm/README.md and gSetup/llm/daily-change-checklist.md first. Load linked detailed guidance only for the affected artifact or active change gate.
+Read AGENTS.md, the nearest module-level AGENTS.md, gSetup/llm/README.md, and gSetup/llm/daily-change-checklist.md first. Load linked detailed guidance only for the affected artifact or active change gate.
 ```
 
 ## Token-Efficient Reading Contract
@@ -20,9 +20,11 @@ Nodics contract.
 
 Always read:
 
-1. `README.md`
-2. `daily-change-checklist.md`
-3. the affected module's `llm/generated/module-context.md`
+1. root `AGENTS.md`
+2. nearest module-level `AGENTS.md`
+3. `gSetup/llm/README.md`
+4. `daily-change-checklist.md`
+5. the affected module's `llm/generated/module-context.md`
 
 Before reading module context or running verification, identify the working
 mode:
@@ -45,17 +47,22 @@ execution efficiency; it does not weaken validation of project code.
 
 Load detailed files only when their subject is affected:
 
-1. `nodics-principles.md`
-2. `modular-architecture.md`
-3. `module-catalog.md`
-4. `artifact-definition-and-change-guide.md`
-5. `schema-and-generation.md`
-6. `testing-playbook.md`
-7. `standards/module-standard.md`
-8. `standards/code-documentation-standard.md`
-9. `feature-process.md`
-10. `prompts/base-nodics-assistant-prompt.md`
-11. `prompts/enterprise-architecture-quality-prompt.md`
+1. `contracts/nodics-principles.md`
+2. `contracts/module-structure-contract.md`
+3. `contracts/documentation-impact-contract.md`
+4. `contracts/testing-and-release-contract.md`
+5. `contracts/customer-project-mode-contract.md`
+6. `nodics-principles.md`
+7. `modular-architecture.md`
+8. `module-catalog.md`
+9. `artifact-definition-and-change-guide.md`
+10. `schema-and-generation.md`
+11. `testing-playbook.md`
+12. `standards/module-standard.md`
+13. `standards/code-documentation-standard.md`
+14. `feature-process.md`
+15. `prompts/base-nodics-assistant-prompt.md`
+16. `prompts/enterprise-architecture-quality-prompt.md`
 
 Load `change-gate-contract.md` only at commit, merge/release, periodic-audit, or
 explicit comprehensive-review time. Canonical rules should be referenced rather
@@ -88,6 +95,8 @@ without modifying out-of-the-box Nodics code.
 - Artifact-specific definition, layering, lifecycle, and change-impact rules.
 - Token-efficient daily, commit, merge/release, and periodic audit gates.
 - AI prompts, enterprise review expectations, and decision memory for future sessions.
+- Portable AI-agent contracts, tool bridge files, and `npm run ai:validate`
+  governance checks.
 
 ## Important Boundaries
 

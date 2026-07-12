@@ -31,7 +31,7 @@
 | Source files | 10 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 19 |
+| All module-owned files | 20 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -62,13 +62,14 @@
 | Documented | 8 |
 | Partially documented | 1 |
 | Undocumented | 7 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gFramework/nService/vService/AGENTS.md`
 - `gFramework/nService/vService/nodics.js`
 - `gFramework/nService/vService/package.json`
-- `gFramework/nService/vService/readme.md`
+- `gFramework/nService/vService/README.md`
 - `gFramework/nService/vService/config/properties.js`
 - `gFramework/nService/vService/config/prescripts.js`
 - `gFramework/nService/vService/config/postscripts.js`
@@ -81,13 +82,14 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gFramework/nService/vService/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nService/vService/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nService/vService/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nService/vService/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nService/vService/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nService/vService/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nService/vService/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nService/vService/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nService/vService/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nService/vService/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Versioned service pipeline extension slot. |  |
 | `gFramework/nService/vService/src/router/appConfig.js` | `src` | `documented` | 0/0 | Versioned service router app configuration extension slot. |  |
 | `gFramework/nService/vService/src/router/router.js` | `src` | `documented` | 0/0 | Versioned service route definition extension slot. |  |

@@ -30,7 +30,7 @@
 | Source files | 19 |
 | Test files | 5 |
 | Data files | 0 |
-| All module-owned files | 32 |
+| All module-owned files | 33 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -60,13 +60,14 @@
 | Documented | 19 |
 | Partially documented | 1 |
 | Undocumented | 9 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gFramework/nRouter/AGENTS.md`
 - `gFramework/nRouter/nodics.js`
 - `gFramework/nRouter/package.json`
-- `gFramework/nRouter/readme.md`
+- `gFramework/nRouter/README.md`
 - `gFramework/nRouter/config/properties.js`
 - `gFramework/nRouter/config/prescripts.js`
 - `gFramework/nRouter/config/postscripts.js`
@@ -78,6 +79,8 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gFramework/nRouter/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nRouter/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nRouter/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nRouter/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nRouter/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
@@ -85,7 +88,6 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nRouter/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nRouter/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nRouter/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nRouter/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nRouter/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Pipeline definitions for Nodics API request execution. These definitions compose the request handler pipeline, secured authorization pipeline, and non-secured enterprise/tenant resolution pipeline used by `DefaultRequestHandlerService`. |  |
 | `gFramework/nRouter/src/router/appConfig.js` | `src` | `documented` | 8/8 | Default Express application configuration hooks for nRouter. These hooks are executed by `DefaultRouterConfigurationService` against the consolidated default app or module-specific apps based on the selected runtime topology. |  |
 | `gFramework/nRouter/src/router/router.js` | `src` | `documented` | 0/0 | Default nRouter route contract definitions. These definitions provide schema-driven CRUD route templates and common platform routes that are expanded per active schema and module by `DefaultRouterService`. |  |

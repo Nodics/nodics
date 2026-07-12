@@ -29,7 +29,7 @@
 | Source files | 11 |
 | Test files | 7 |
 | Data files | 0 |
-| All module-owned files | 28 |
+| All module-owned files | 29 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -58,13 +58,14 @@
 | Documented | 25 |
 | Partially documented | 0 |
 | Undocumented | 0 |
-| Inventory only | 3 |
+| Inventory only | 4 |
 
 ## Important Files
 
+- `gFramework/nConfig/AGENTS.md`
 - `gFramework/nConfig/nodics.js`
 - `gFramework/nConfig/package.json`
-- `gFramework/nConfig/readme.md`
+- `gFramework/nConfig/README.md`
 - `gFramework/nConfig/config/properties.js`
 - `gFramework/nConfig/config/prescripts.js`
 - `gFramework/nConfig/config/postscripts.js`
@@ -76,6 +77,8 @@ This inventory covers every module-owned file included in the context fingerprin
 
 | File | Area | Status | Methods | Purpose | Gaps |
 | --- | --- | --- | ---: | --- | --- |
+| `gFramework/nConfig/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nConfig/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nConfig/bin/config.js` | `bin` | `documented` | 0/0 | Tenant-aware in-memory configuration registry used during startup and request processing. It stores the effective default and tenant-specific property maps produced by layered configuration loading. |  |
 | `gFramework/nConfig/bin/enum.js` | `bin` | `documented` | 0/0 | Bundled enum compatibility implementation used by nConfig to construct runtime values from layered enum definitions, including flag combinations and case-insensitive lookup. |  |
 | `gFramework/nConfig/bin/nodics.js` | `bin` | `documented` | 0/0 | Mutable process-level runtime registry for Nodics paths, environment/server/node selection, indexed modules, tenant and enterprise state, models, loggers, scripts, authentication tokens, and startup state. |  |
@@ -85,7 +88,6 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nConfig/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nConfig/nodics.js` | `module` | `documented` | 13/13 | nConfig module lifecycle bridge used by the root Nodics launcher. It prepares process-wide registries, resolves the active environment/server/node hierarchy, loads layered configuration and pre/post scripts, and delegates runtime, clean, and build phases to overrideable nConfig services. |  |
 | `gFramework/nConfig/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nConfig/readme.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nConfig/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved nConfig Express app configuration file. nConfig does not add app middleware by default, but this file keeps the standard app configuration extension point available in the active module hierarchy. |  |
 | `gFramework/nConfig/src/router/router.js` | `src` | `documented` | 0/0 | Reserved nConfig router definition file. nConfig does not expose direct API routes by default, but this file preserves the standard layered router extension point for project or environment modules. |  |
 | `gFramework/nConfig/src/service/DefaultFrameworkInitializerService.js` | `src` | `documented` | 59/59 | Core Nodics startup coordinator. It resolves the active module hierarchy, validates environment/server/node topology, loads layered configuration, initializes global registries, loads services/pipelines/facades/controllers, and executes entity lifecycle hooks in module index order. |  |
