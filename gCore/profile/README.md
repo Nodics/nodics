@@ -10,6 +10,13 @@ authenticated users do not receive generated CRUD access to identity records.
 Customer registration forces the configured customer group and removes caller-
 supplied API keys, permissions, and privileged group assignments.
 
+Internal authentication token retrieval is a secured service capability. The
+route requires `auth.internal.token.read`, while cross-tenant retrieval also
+requires the configured cross-tenant permission such as
+`auth.internal.token.read.anyTenant`. Projects may change these permissions
+through layered identity governance configuration, but must keep internal-token
+access least-privilege and tenant-scoped.
+
 User-group save and update interceptors validate parent existence, active
 parents, acyclic inheritance, and permission catalog membership. Principal
 interceptors validate principal type, active group assignment, and service-only
