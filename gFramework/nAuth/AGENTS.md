@@ -24,4 +24,7 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
 - Strict auth cache state must respect layered cache activation: global cache,
   the `profile.auth` channel, and the selected distributed engine must all be
   enabled before strict token/session state can start.
+- Internal-token route permissions must be defined through
+  `authSecurity.internalToken.routePermission` and resolved by router metadata,
+  not hardcoded into profile routers.
 - Preserve tenant isolation, replay protection, revocation, audit traceability, hashed secrets, scoped permissions, and distributed-cache correctness.

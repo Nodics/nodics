@@ -41,6 +41,11 @@ catalog. Projects extend these values through normal configuration hierarchy;
 core services consume `DefaultIdentityGovernanceService` rather than embedding
 project role names.
 
+Internal-token route authorization is also layered. The default route
+permission is `authSecurity.internalToken.routePermission`, which resolves to
+`auth.internal.token.read`; cross-tenant token access is governed separately by
+`authSecurity.internalToken.crossTenantPermissions`.
+
 Human, customer, and service principals are distinct categories. API keys are
 restricted to service principals, while group inheritance must remain active,
 acyclic, and composed only from catalogued permissions.

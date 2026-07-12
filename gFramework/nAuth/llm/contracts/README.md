@@ -15,3 +15,12 @@ Use these files for rules that are more specific than root `AGENTS.md` and the m
 - Project/environment/server/node modules may override the selected auth cache
   engine and channel policy, but must preserve tenant isolation, exactly-once
   consume semantics, and fail-closed startup validation.
+
+## Internal-token route permission
+
+- The default internal-token route permission belongs in
+  `authSecurity.internalToken.routePermission`; routers should reference it
+  through `permissionConfig` instead of hardcoding the permission literal.
+- Cross-tenant internal-token access remains separately governed by
+  `authSecurity.internalToken.crossTenantPermissions` and optional
+  `crossTenantGroups`.

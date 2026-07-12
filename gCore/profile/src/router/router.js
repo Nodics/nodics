@@ -15,7 +15,7 @@ module.exports = {
             getInternalAuthToken: {
                 secured: true,
                 accessGroups: ['userGroup'],
-                permission: 'auth.internal.token.read',
+                permissionConfig: 'authSecurity.internalToken.routePermission',
                 key: '/auth/token/:tntCode',
                 method: 'GET',
                 controller: 'DefaultInternalAuthenticationProviderController',

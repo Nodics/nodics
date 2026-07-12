@@ -110,6 +110,10 @@ without modifying out-of-the-box Nodics code.
 - Do not require vendor-specific commands, hidden instruction files, response formats, or proprietary agent features for the standard Nodics workflow.
 - Keep instructions in portable Markdown and source-derived JSON. Vendor adapters may reference this pack, but must not become its source of truth.
 - Do not bypass Nodics loaders, schema generation, service/facade/controller/router layers, tenant context, or runtime governance.
+- Do not hardcode security, access, routing, cache, audit, validation, or
+  governance values that projects may need to change. Define defaults in
+  layered `properties.js` or runtime governance and reference them from source
+  through a resolver such as router `permissionConfig`.
 - Do not remove existing capabilities just because they are complex.
 - Do not provide generic architecture or testing advice without mapping it to Nodics modules, layers, tenants, generated artifacts, runtime governance, and override paths.
 

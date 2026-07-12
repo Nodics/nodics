@@ -11,7 +11,8 @@ Customer registration forces the configured customer group and removes caller-
 supplied API keys, permissions, and privileged group assignments.
 
 Internal authentication token retrieval is a secured service capability. The
-route requires `auth.internal.token.read`, while cross-tenant retrieval also
+route permission is resolved from `authSecurity.internalToken.routePermission`,
+which defaults to `auth.internal.token.read`. Cross-tenant retrieval also
 requires the configured cross-tenant permission such as
 `auth.internal.token.read.anyTenant`. Projects may change these permissions
 through layered identity governance configuration, but must keep internal-token

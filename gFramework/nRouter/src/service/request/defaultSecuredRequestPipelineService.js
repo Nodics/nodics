@@ -15,6 +15,7 @@
  * @property {string} request.tenant Active tenant resolved from the authorized credential.
  * @property {string[]} request.router.accessGroups Groups allowed to access the selected router.
  * @property {string|string[]} request.router.permission Action permission required by the selected router.
+ * @property {string|string[]} request.router.permissionConfig Layered configuration path for route permissions.
  */
 module.exports = {
     /**
@@ -191,6 +192,9 @@ module.exports = {
 
     /**
      * Checks action-level route permission when route metadata asks for it.
+     * Routes may define literal `permission`/`permissions` values or
+     * `permissionConfig` paths that resolve through the effective layered
+     * configuration.
      *
      * @param {Object} request Nodics request context.
      * @returns {boolean} True when route permission check passes.
@@ -218,11 +222,39 @@ module.exports = {
      * @returns {string[]} Required route permissions.
      */
     getRoutePermissions: function (router) {
-        let permissions = router.permissions || router.permission || [];
+        let permissions = []
+            .concat(this.normalizePermissions(router.permissions))
+            .concat(this.normalizePermissions(router.permission))
+            .concat(this.resolveConfiguredRoutePermissions(router.permissionConfig));
+        return Array.from(new Set(permissions.filter(Boolean)));
+    },
+
+    /** Normalizes route permission metadata to an array. */
+    normalizePermissions: function (permissions) {
         if (typeof permissions === 'string') {
             return [permissions];
         }
         return Array.isArray(permissions) ? permissions : [];
+    },
+
+    /** Resolves one or more route permission configuration paths. */
+    resolveConfiguredRoutePermissions: function (permissionConfig) {
+        return this.normalizePermissions(permissionConfig).reduce((permissions, configPath) => {
+            return permissions.concat(this.normalizePermissions(this.getConfigurationValue(configPath)));
+        }, []);
+    },
+
+    /** Reads a layered configuration value by direct key or dotted path. */
+    getConfigurationValue: function (configPath) {
+        if (!configPath || typeof CONFIG === 'undefined' || typeof CONFIG.get !== 'function') return undefined;
+        let directValue = CONFIG.get(configPath);
+        if (directValue !== undefined) return directValue;
+        let pathParts = configPath.split('.');
+        let value = CONFIG.get(pathParts.shift());
+        while (value !== undefined && value !== null && pathParts.length > 0) {
+            value = value[pathParts.shift()];
+        }
+        return value;
     },
 
     /**
