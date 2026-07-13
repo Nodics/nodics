@@ -4,7 +4,7 @@
     Copyright (c) 2017 Nodics All rights reserved.
 
     This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the 
+    You shall not disclose such Confidential Information and shall use it only in accordance with the
     terms of the license agreement you entered into with Nodics.
 
  */
@@ -412,20 +412,20 @@ module.exports = {
     },
 
     /**
-     * Returns the legacy Nodics copyright header used by generated JavaScript files.
+     * Returns the standard Nodics copyright header used by generated JavaScript files.
      * @returns {string} Generated source header.
      */
     getCopywriteComment: function () {
         return '/*\n' +
-            '\tNodics - Enterprice Micro-Services Management Framework\n\n' +
-
-            '\tCopyright (c) 2017 Nodics All rights reserved.\n\n' +
-
-            '\tThis software is the confidential and proprietary information of Nodics ("Confidential Information")\n' +
-            '\tYou shall not disclose such Confidential Information and shall use it only in accordance with the\n' +
-            '\tterms of the license agreement you entered into with Nodics\n' +
-
-            '*/\n\n';
+            '    Nodics - Enterprice Micro-Services Management Framework\n' +
+            '\n' +
+            '    Copyright (c) 2017 Nodics All rights reserved.\n' +
+            '\n' +
+            '    This software is the confidential and proprietary information of Nodics ("Confidential Information").\n' +
+            '    You shall not disclose such Confidential Information and shall use it only in accordance with the\n' +
+            '    terms of the license agreement you entered into with Nodics.\n' +
+            '\n' +
+            ' */\n';
     },
 
     /**

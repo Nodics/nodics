@@ -1,3 +1,14 @@
+/*
+    Nodics - Enterprice Micro-Services Management Framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
 /**
  * @module config/test/layeredCustomizationContract
  * @description Proves that a project-neutral framework, project, environment, server, and node hierarchy can customize configuration, schemas, routers, services, pipelines, facades, controllers, data, and tests before isolated tenant/runtime governance is applied.

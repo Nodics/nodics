@@ -4,12 +4,23 @@
     Copyright (c) 2017 Nodics All rights reserved.
 
     This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the 
+    You shall not disclose such Confidential Information and shall use it only in accordance with the
     terms of the license agreement you entered into with Nodics.
 
  */
 
 const fse = require('fs-extra');
+
+const copyrightHeader = '/*\n' +
+    '    Nodics - Enterprice Micro-Services Management Framework\n' +
+    '\n' +
+    '    Copyright (c) 2017 Nodics All rights reserved.\n' +
+    '\n' +
+    '    This software is the confidential and proprietary information of Nodics ("Confidential Information").\n' +
+    '    You shall not disclose such Confidential Information and shall use it only in accordance with the\n' +
+    '    terms of the license agreement you entered into with Nodics.\n' +
+    '\n' +
+    ' */\n';
 
 /**
  * @module gFramework/nData/dataCore/src/service/writer/defaultDataWriterService
@@ -80,7 +91,8 @@ module.exports = {
                         models: options.finalData
                     };
                     this.LOG.debug('Writing data into file: ' + fileName.replace(NODICS.getNodicsHome(), '.'));
-                    fs.writeFileSync(fileName, 'module.exports = ' + JSON.stringify(finalObject, null, 4) + ';', CONFIG.get('data').importDataConvertEncoding || 'utf8');
+                    let header = typeof UTILS !== 'undefined' && UTILS.getCopywriteComment ? UTILS.getCopywriteComment() : copyrightHeader;
+                    fs.writeFileSync(fileName, header + '\nmodule.exports = ' + JSON.stringify(finalObject, null, 4) + ';', CONFIG.get('data').importDataConvertEncoding || 'utf8');
                     resolve(true);
                 }).catch(error => {
                     reject(new CLASSES.DataError(error, 'failed to write data into file: ' + options.outputPath.fileName));

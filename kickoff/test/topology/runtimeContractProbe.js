@@ -1,3 +1,14 @@
+/*
+    Nodics - Enterprice Micro-Services Management Framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
 /**
  * @module kickoff/test/topology/runtimeContractProbe
  * @description Emits a sanitized runtime-readiness snapshot from a spawned Nodics server so topology tests can prove startup, module loading, tenant activation, internal authentication, and mandatory profile data without adding a production diagnostics route.

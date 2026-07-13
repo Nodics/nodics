@@ -1,3 +1,14 @@
+/*
+    Nodics - Enterprice Micro-Services Management Framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
 /**
  * @module profile/service/identity/DefaultMandatoryIdentityBootstrapService
  * @description Reconciles missing, non-secret identity-governance groups after init data is available. Existing records are never overwritten automatically, preserving project and tenant customizations while allowing safe framework upgrades.

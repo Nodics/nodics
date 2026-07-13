@@ -4,13 +4,32 @@
     Copyright (c) 2017 Nodics All rights reserved.
 
     This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the 
+    You shall not disclose such Confidential Information and shall use it only in accordance with the
     terms of the license agreement you entered into with Nodics.
 
  */
 
 const _ = require('lodash');
 const RequireFromString = require('require-from-string');
+
+const copyrightHeader = '/*\n' +
+    '    Nodics - Enterprice Micro-Services Management Framework\n' +
+    '\n' +
+    '    Copyright (c) 2017 Nodics All rights reserved.\n' +
+    '\n' +
+    '    This software is the confidential and proprietary information of Nodics ("Confidential Information").\n' +
+    '    You shall not disclose such Confidential Information and shall use it only in accordance with the\n' +
+    '    terms of the license agreement you entered into with Nodics.\n' +
+    '\n' +
+    ' */\n';
+
+function getCopyrightHeader() {
+    return typeof UTILS !== 'undefined' && UTILS.getCopywriteComment ? UTILS.getCopywriteComment() : copyrightHeader;
+}
+
+function createModuleBody(body) {
+    return getCopyrightHeader() + '\n' + 'module' + '.exports = ' + body + ';';
+}
 
 /**
  * @module gFramework/nDynamo/src/service/class/defaultClassConfigurationService
@@ -113,7 +132,7 @@ module.exports = {
                         return value;
                     }
                 }, 4);
-                resolve('module.exports = ' + finalClassData.replace(/\\n/gm, '\n').replace(/\\t/gm, '').replaceAll("\"", "") + ';');
+                resolve(createModuleBody(finalClassData.replace(/\\n/gm, '\n').replace(/\\t/gm, '').replaceAll("\"", "")));
             }
         });
     },
@@ -197,10 +216,10 @@ module.exports = {
                             return value;
                         }
                     }, 4);
-                    finalClassData = 'module.exports = ' + finalClassData.replace(/\\n/gm, '\n').replace(/\\t/gm, '').replaceAll("\"", "") + ';';
+                    finalClassData = createModuleBody(finalClassData.replace(/\\n/gm, '\n').replace(/\\t/gm, '').replaceAll("\"", ""));
                     byteBody = Buffer.from(finalClassData, 'utf8');
                 } else {
-                    byteBody = Buffer.from('module.exports = ' + body + ';', 'utf8');
+                    byteBody = Buffer.from(createModuleBody(body), 'utf8');
                 }
                 resolve(byteBody);
             }).catch(error => {

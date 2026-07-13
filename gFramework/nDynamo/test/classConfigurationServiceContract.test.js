@@ -1,3 +1,14 @@
+/*
+    Nodics - Enterprice Micro-Services Management Framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
 /**
  * @module gFramework/nDynamo/test/classConfigurationServiceContract.test
  * @description Validates persisted and runtime class configuration behavior for dynamic Nodics service classes.
@@ -111,7 +122,8 @@ async function run() {
         type: 'SERVICE',
         className: 'defaultDynamicClassService'
     });
-    assert(snapshot.startsWith('module.exports = '));
+    assert(snapshot.includes('Nodics - Enterprice Micro-Services Management Framework'));
+    assert(snapshot.includes('module.exports = '));
     assert(snapshot.includes('ping: function'));
     assert(snapshot.includes("status: 'ready'"));
 
@@ -119,7 +131,8 @@ async function run() {
     setPersistedBody(null);
     const finalizedBody = await service.finalizeClass('defaultDynamicClassService', '{ ping: function () { return "pong"; } }');
     assert(Buffer.isBuffer(finalizedBody));
-    assert(finalizedBody.toString('utf8').startsWith('module.exports = { ping: function ()'));
+    assert(finalizedBody.toString('utf8').includes('Nodics - Enterprice Micro-Services Management Framework'));
+    assert(finalizedBody.toString('utf8').includes('module.exports = { ping: function ()'));
 
     resetGlobals();
     setPersistedBody(null);
