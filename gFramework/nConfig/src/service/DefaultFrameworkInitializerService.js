@@ -87,7 +87,7 @@ module.exports = {
      */
     printInfo: function () {
         if (!NODICS) {
-            this.LOG.error("System initialization error: options cann't be null or empty");
+            this.LOG.error("System initialization error: options cannot be null or empty");
             process.exit(1);
         }
         this.LOG.info('###   Initializing Nodics, Node based enterprise application solution   ###');
@@ -242,12 +242,12 @@ module.exports = {
                 }
             });
             modules.forEach(moduleName => {
-                this.resolveModuleHiererchy(moduleName);
+                this.resolveModuleHierarchy(moduleName);
             });
             let dependantModules = [];
             modules.forEach(moduleName => {
-                this.resolveSubDependancy(moduleName, dependantModules);
-                this.resolveParentDependancy(moduleName, dependantModules);
+                this.resolveSubDependency(moduleName, dependantModules);
+                this.resolveParentDependency(moduleName, dependantModules);
             });
             dependantModules.forEach(moduleName => {
                 if (!modules.includes(moduleName)) modules.push(moduleName);
@@ -723,7 +723,7 @@ module.exports = {
      * @returns {string[]} Parent hierarchy module names.
      * @sideEffects Caches `parentModules` on raw module metadata.
      */
-    resolveModuleHiererchy: function (moduleName) {
+    resolveModuleHierarchy: function (moduleName) {
         let moduleObject = NODICS.getRawModule(moduleName);
         let modules = [moduleName];
         if (!moduleObject.parent) {
@@ -732,11 +732,16 @@ module.exports = {
             return [];
         } else {
             if (!moduleObject.parentModules) {
-                moduleObject.parentModules = this.resolveModuleHiererchy(moduleObject.parent);
+                moduleObject.parentModules = this.resolveModuleHierarchy(moduleObject.parent);
             }
             modules = modules.concat(moduleObject.parentModules);
             return modules;
         }
+    },
+
+    /** Backward-compatible alias for legacy callers. */
+    resolveModuleHiererchy: function (moduleName) {
+        return this.resolveModuleHierarchy(moduleName);
     },
 
     /**
@@ -747,7 +752,7 @@ module.exports = {
      * @returns {void}
      * @sideEffects Adds dependency names to `dependantModules` and exits process for invalid module metadata.
      */
-    resolveSubDependancy: function (moduleName, dependantModules) {
+    resolveSubDependency: function (moduleName, dependantModules) {
         let _self = this;
         let rawModule = NODICS.getRawModule(moduleName);
         if (!rawModule || !rawModule.metaData) {
@@ -757,10 +762,15 @@ module.exports = {
             if (rawModule.metaData.requiredModules && rawModule.metaData.requiredModules.length > 0) {
                 rawModule.metaData.requiredModules.forEach(nxtModuleName => {
                     if (!dependantModules.includes(nxtModuleName)) dependantModules.push(nxtModuleName);
-                    _self.resolveSubDependancy(nxtModuleName, dependantModules);
+                    _self.resolveSubDependency(nxtModuleName, dependantModules);
                 });
             }
         }
+    },
+
+    /** Backward-compatible alias for legacy callers. */
+    resolveSubDependancy: function (moduleName, dependantModules) {
+        return this.resolveSubDependency(moduleName, dependantModules);
     },
 
     /**
@@ -771,7 +781,7 @@ module.exports = {
      * @returns {void}
      * @sideEffects Adds parent module names to `dependantModules` and exits process for invalid module metadata.
      */
-    resolveParentDependancy: function (moduleName, dependantModules) {
+    resolveParentDependency: function (moduleName, dependantModules) {
         let _self = this;
         let rawModule = NODICS.getRawModule(moduleName);
         if (!rawModule || !rawModule.metaData) {
@@ -781,10 +791,15 @@ module.exports = {
             if (rawModule.parentModules && rawModule.parentModules.length > 0) {
                 rawModule.parentModules.forEach(pModuleName => {
                     if (!dependantModules.includes(pModuleName)) dependantModules.push(pModuleName);
-                    _self.resolveParentDependancy(pModuleName, dependantModules);
+                    _self.resolveParentDependency(pModuleName, dependantModules);
                 });
             }
         }
+    },
+
+    /** Backward-compatible alias for legacy callers. */
+    resolveParentDependancy: function (moduleName, dependantModules) {
+        return this.resolveParentDependency(moduleName, dependantModules);
     },
 
     /**
@@ -891,7 +906,7 @@ module.exports = {
     loadConfiguration: function (filePath) {
         let config = CONFIG.getProperties();
         if (fs.existsSync(filePath)) {
-            this.LOG.debug('Loading configration file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
+            this.LOG.debug('Loading configuration file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
             var propertyFile = require(filePath);
             config = _.merge(config, propertyFile);
         }
@@ -911,7 +926,7 @@ module.exports = {
         if (files && files.length > 0) {
             files.forEach(function (filePath) {
                 if (fs.existsSync(filePath)) {
-                    _self.LOG.debug('Loading configration file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
+                    _self.LOG.debug('Loading configuration file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
                     let props = CONFIG.getProperties();
                     if (tntCode) {
                         props = CONFIG.getProperties(tntCode);

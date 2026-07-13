@@ -219,7 +219,7 @@ function assertLayeredArtifact(artifact, expectedLayer) {
         assert.strictEqual(discoveredModules.sampleServer.parent, 'sampleEnvironment');
         assert.strictEqual(discoveredModules.sampleNode.parent, 'sampleServer');
         assert.deepStrictEqual(
-            configUtils.resolveModuleHiererchy('sampleNode', discoveredModules),
+            configUtils.resolveModuleHierarchy('sampleNode', discoveredModules),
             ['sampleNode', 'sampleServer', 'sampleEnvironment', 'sampleProject']
         );
         assert.deepStrictEqual(

@@ -199,7 +199,7 @@ module.exports = {
         let modulesList = {};
         this.collectModulesList(homePath, modulesList);
         // Object.keys(modulesList).forEach(moduleName => {
-        //     this.resolveModuleHiererchy(moduleName, modulesList);
+        //     this.resolveModuleHierarchy(moduleName, modulesList);
         // });
         if (modulesList && !this.isBlank(modulesList)) {
             NODICS.addRawModules(modulesList);
@@ -283,17 +283,23 @@ module.exports = {
      * @param {Object<string,Object>} modulesList Discovered modules.
      * @returns {string[]} Module followed by parent module names.
      */
-    resolveModuleHiererchy: function (moduleName, modulesList) {
+    resolveModuleHierarchy: function (moduleName, modulesList) {
         let moduleObject = modulesList[moduleName];
         let modules = [moduleName];
         if (moduleObject.parent) {
             if (!moduleObject.parentModules) {
-                moduleObject.parentModules = this.resolveModuleHiererchy(moduleObject.parent, modulesList);
+                moduleObject.parentModules = this.resolveModuleHierarchy(moduleObject.parent, modulesList);
             }
             modules = modules.concat(moduleObject.parentModules);
         }
         return modules;
     },
+
+    /** Backward-compatible alias for legacy callers. */
+    resolveModuleHiererchy: function (moduleName, modulesList) {
+        return this.resolveModuleHierarchy(moduleName, modulesList);
+    },
+
     /**
      * Returns own function-valued properties from a script contribution.
      * @param {Object} envScripts Script export object.
