@@ -218,6 +218,30 @@ module.exports = {
     },
 
     /**
+     * Returns active module groups with the framework group always first.
+     *
+     * @param {Object} serverProperties Merged selected-runtime properties.
+     * @returns {string[]} Configured active module groups.
+     */
+    getConfiguredActiveModuleGroups: function (serverProperties) {
+        return ['gFramework'].concat(serverProperties.activeModules ? serverProperties.activeModules.groups || [] : []);
+    },
+
+    /**
+     * Returns configured active modules plus the selected node without mutating configuration.
+     *
+     * @param {Object} serverProperties Merged selected-runtime properties.
+     * @returns {string[]} Configured active module names.
+     */
+    getConfiguredActiveModuleNames: function (serverProperties) {
+        let configuredModules = [].concat(serverProperties.activeModules ? serverProperties.activeModules.modules || [] : []);
+        if (NODICS.getNodePath() && !configuredModules.includes(NODICS.getNodeName())) {
+            configuredModules.push(NODICS.getNodeName());
+        }
+        return configuredModules;
+    },
+
+    /**
      * Resolves active modules from gFramework, configured groups/modules, selected node, parents, and dependencies.
      *
      * @returns {string[]} Active module names that should participate in startup.
@@ -227,16 +251,13 @@ module.exports = {
         try {
             let modules = [];
             let serverProperties = this.loadServerProperties();
-            let prop = _.merge(props, serverProperties);
+            let prop = _.merge({}, props, serverProperties);
             this.LOG = logger.createLogger('DefaultModuleInitializerService', prop.log);
-            let moduleGroups = ['gFramework'].concat(serverProperties.activeModules ? serverProperties.activeModules.groups || [] : []);
+            let moduleGroups = this.getConfiguredActiveModuleGroups(serverProperties);
             moduleGroups.forEach((groupName) => {
                 utils.prepareActiveModuleList(prop, groupName, modules);
             });
-            if (NODICS.getNodePath()) {
-                serverProperties.activeModules.modules.push(NODICS.getNodeName());
-            }
-            serverProperties.activeModules.modules.forEach(moduleName => {
+            this.getConfiguredActiveModuleNames(serverProperties).forEach(moduleName => {
                 if (!modules.includes(moduleName)) {
                     modules.push(moduleName);
                 }

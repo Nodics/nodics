@@ -67,6 +67,12 @@ localServers.forEach(serverName => {
 initializeConfiguration('kickoffLocalServer', 'kickoffLocalNode0');
 assert.strictEqual(NODICS.getNodeName(), 'kickoffLocalNode0');
 assert(NODICS.isModuleActive('kickoffLocalNode0'), 'selected node module should be active');
+assert.strictEqual(NODICS.getActiveModules().filter(moduleName => moduleName === 'kickoffLocalNode0').length, 1);
+let nodeServerProperties = initService.loadServerProperties();
+let nodeConfiguredModules = nodeServerProperties.activeModules.modules.slice();
+let configuredWithNode = initService.getConfiguredActiveModuleNames(nodeServerProperties);
+assert.strictEqual(configuredWithNode.filter(moduleName => moduleName === 'kickoffLocalNode0').length, 1);
+assert.deepStrictEqual(nodeServerProperties.activeModules.modules, nodeConfiguredModules);
 
 initializeConfiguration('kickoffLocalServer');
 assert(NODICS.isModuleActive('profile'), 'consolidated local server should include profile');
