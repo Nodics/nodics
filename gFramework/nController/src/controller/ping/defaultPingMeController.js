@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nController/src/controller/ping/defaultPingMeController
+ * @description Exposes request handlers for nController default ping me controller operations.
+ * @layer controller
+ * @owner nController
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -31,6 +38,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Executes ping behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     ping: function (request, callback) {
         callback(null, {

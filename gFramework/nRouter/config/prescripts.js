@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nRouter/config/prescripts
+ * @description Reserved pre-start script contribution for router initialization work.
+ * @layer config
+ * @owner nRouter
+ * @override Project modules may add later pre-scripts for route startup preparation without changing framework defaults.
+ */
 module.exports = {
 
 };

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gDeap/dataConsumer/src/pipelines/pipelinesDefinition
+ * @description Defines dataConsumer pipeline wiring and execution contracts.
+ * @layer pipelines
+ * @owner dataConsumer
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     processInternalDataPushEventPipeline: {
         startNode: "validateRequest",

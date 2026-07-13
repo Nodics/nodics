@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nSearch/search/src/service/procs/dosave/defaultDoSaveModelInitializerService
+ * @description Implements nSearch default do save model initializer service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +41,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates model rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateModel: function (request, response, process) {
         this.LOG.debug('Validating input for doSaving model');
         if (!request.model) {
@@ -43,10 +66,42 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Builds query data.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building query to doSave model');
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Executes apply value providers behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     applyValueProviders: function (request, response, process) {
         this.LOG.debug('Applying default values to the model');
@@ -62,6 +117,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes apply default values behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     applyDefaultValues: function (request, response, process) {
         this.LOG.debug('Applying default values to the model');
         let defaultValues = request.schemaModel.rawSchema.schemaOptions[request.tenant].defaultValues;
@@ -72,6 +143,22 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Retrieves default property information.
+
+     *
+
+     * @param {*} properties Method input.
+
+     * @param {*} model Method input.
+
+     * @param {*} value Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     resolveDefaultProperty: function (properties, model, value) {
         if (properties && properties.length > 1) {
@@ -90,6 +177,22 @@ module.exports = {
         return model;
     },
 
+    /**
+
+     * Removes or clears virtual properties information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     removeVirtualProperties: function (request, response, process) {
         this.LOG.debug('Removing virtual properties from model');
         let virtualProperties = SERVICE.DefaultSearchConfigurationService.getTenantRawSearchSchema(request.moduleName, request.tenant, request.indexName).virtualProperties;
@@ -98,6 +201,20 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Executes exclude property behavior.
+
+     *
+
+     * @param {*} model Method input.
+
+     * @param {*} virtualProperties Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     excludeProperty: function (model, virtualProperties) {
         let _self = this;
@@ -119,6 +236,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes apply pre interceptors behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre doSave model interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
@@ -133,6 +266,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Executes apply pre validators behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     applyPreValidators: function (request, response, process) {
         this.LOG.debug('Applying pre doSave model validators');
@@ -149,6 +298,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes do save model behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     doSaveModel: function (request, response, process) {
         this.LOG.debug('Executing doSave operation');
         request.searchModel.doSave(request).then(result => {
@@ -162,6 +327,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes populate virtual properties behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     populateVirtualProperties: function (request, response, process) {
         this.LOG.debug('Populating virtual properties');
         let virtualProperties = SERVICE.DefaultSearchConfigurationService.getTenantRawSearchSchema(request.moduleName, request.tenant, request.indexName).virtualProperties;
@@ -172,6 +353,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Executes apply post validators behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     applyPostValidators: function (request, response, process) {
         this.LOG.debug('Applying post do save model validators');
@@ -188,6 +385,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes apply post interceptors behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do save model interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
@@ -202,6 +415,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Executes invalidate router cache behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     invalidateRouterCache: function (request, response, process) {
         this.LOG.debug('Invalidating router cache for modified model');
@@ -232,6 +461,22 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+
+     * Executes invalidate search cache behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     invalidateSearchCache: function (request, response, process) {
         this.LOG.debug('Invalidating item cache for modified model');
         try {
@@ -257,6 +502,22 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Processes model change event behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     triggerModelChangeEvent: function (request, response, process) {
         this.LOG.debug('Triggering event for modified model');

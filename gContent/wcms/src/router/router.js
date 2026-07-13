@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module wcms/router/router
+ * @description Reserved route definition contribution point for WCMS content APIs.
+ * @layer router
+ * @owner wcms
+ * @override Project content modules may add later WCMS routes without modifying the base module.
+ */
 module.exports = {
 
 };

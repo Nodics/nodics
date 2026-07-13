@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gCore/workflow/flowCore/src/service/procs/next/defaultNextWorkflowActionPipelineService
+ * @description Implements workflow default next workflow action pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to assogn item to next action');
         if (!request.tenant) {
@@ -47,6 +70,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Runs pre-processing logic for update carrier.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     preUpdateCarrier: function (request, response, process) {
         let workflowCarrier = request.workflowCarrier;
         if (workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.PROCESSING.key) {
@@ -69,6 +100,14 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    /**
+     * Updates carrier information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     updateCarrier: function (request, response, process) {
         SERVICE.DefaultWorkflowCarrierService.save({
             tenant: request.tenant,
@@ -85,6 +124,14 @@ module.exports = {
             process.error(request, response, new CLASSES.WorkflowError(error, 'Invalid request, workflowCode can not be null or empty'));
         });
     },
+    /**
+     * Processes next action behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     executeNextAction: function (request, response, process) {
         if (!SERVICE.DefaultWorkflowUtilsService.isProcessingAllowed(request.workflowCarrier)) {
             response.success.messages.push('Action: ' + request.workflowAction.code + ' processing not allowed @: ' + new Date());

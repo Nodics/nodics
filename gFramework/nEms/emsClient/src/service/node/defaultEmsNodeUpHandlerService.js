@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nEms/emsClient/src/service/node/defaultEmsNodeUpHandlerService
+ * @description Implements nEms default ems node up handler service business behavior and extension logic.
+ * @layer service
+ * @owner nEms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +41,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         if (!request.moduleName) {
             process.error(request, response, new CLASSES.NodicsError('ERR_EMS_00000', 'Invalid moduleName'));
@@ -43,6 +66,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Executes shutdown responsibilities behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     shutdownResponsibilities: function (request, response, process) {
         SERVICE.DefaultEmsClientConfigurationService.closeConsumers(request.remoteData.consumers).then(success => {

@@ -13,6 +13,13 @@
    Change this file name as per test case name. This just a sample file.
    You can create n-number of test file and n-number of different environment as well
 */
+/**
+ * @module nDefault/test/env-local/envTest
+ * @description Local-environment sample test scaffold for the default framework module.
+ * @layer test
+ * @owner nDefault
+ * @override Later modules may add environment-specific default-layer contract tests.
+ */
 const Chai = require('chai');
 const expect = Chai.expect;
 

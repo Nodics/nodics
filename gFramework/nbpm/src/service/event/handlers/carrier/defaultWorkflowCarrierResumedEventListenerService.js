@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nbpm/src/service/event/handlers/carrier/defaultWorkflowCarrierResumedEventListenerService
+ * @description Implements nbpm default workflow carrier resumed event listener service business behavior and extension logic.
+ * @layer service
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -34,6 +41,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Processes workflow carrier resumed event behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleWorkflowCarrierResumedEvent: function (request, callback) {
         try {

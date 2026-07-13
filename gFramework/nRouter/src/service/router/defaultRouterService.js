@@ -172,10 +172,9 @@ module.exports = {
                     app = moduleObject.app || modules.default.app;
                     moduleRouter = moduleObject.moduleRouter || modules.default.moduleRouter;
                     try {
-                        SERVICE.DefaultRouterOperationService.registerWeb(app, moduleObject);
                         _self.activateRouters(moduleRouter, moduleObject, moduleName, routers);
                     } catch (error) {
-                        _self.LOG.error('While registration process of web path for module : ' + moduleName);
+                        _self.LOG.error('While registration process of router path for module : ' + moduleName);
                         _self.LOG.error(error);
                         process.exit(1);
                     }

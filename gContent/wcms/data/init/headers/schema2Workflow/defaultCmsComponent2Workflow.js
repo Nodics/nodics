@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module wcms/data/init/headers/schema2Workflow/defaultCmsComponent2Workflow
+ * @description Import header for saving CMS component schema-to-workflow mappings.
+ * @layer data
+ * @owner wcms
+ * @override Project modules may add later headers for custom component workflow bindings.
+ */
 module.exports = {
     cmsWorkflow: {
         defaultCmsComponent2Workflow: {

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nData/nImport/import/src/service/interceptor/import/defaultMandatePropertyImportInterceptorService
+ * @description Implements nData default mandate property import interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -31,6 +38,30 @@ module.exports = {
             resolve(true);
         });
     },
+
+
+
+    /**
+
+
+
+     * Processes mandate properties behavior.
+
+
+
+     *
+
+
+
+     * @param {*} options Method input.
+
+
+
+     * @returns {*} Method result.
+
+
+
+     */
 
 
 

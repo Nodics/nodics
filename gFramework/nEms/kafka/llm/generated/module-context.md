@@ -59,9 +59,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
+| Documented | 10 |
 | Partially documented | 2 |
-| Undocumented | 11 |
+| Undocumented | 1 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -84,20 +84,20 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nEms/kafka/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nEms/kafka/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nEms/kafka/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEms/kafka/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEms/kafka/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/kafka/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nEms configuration used during module startup and layering. |  |
+| `gFramework/nEms/kafka/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nEms configuration used during module startup and layering. |  |
+| `gFramework/nEms/kafka/config/properties.js` | `config` | `documented` | 0/0 | Defines default nEms configuration used during module startup and layering. |  |
 | `gFramework/nEms/kafka/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nEms/kafka/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/kafka/nodics.js` | `module` | `documented` | 2/2 | Registers the nEms module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nEms/kafka/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nEms/kafka/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEms/kafka/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEms/kafka/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEms/kafka/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEms/kafka/src/service/kafka/defaultKafkaClientService.js` | `src` | `partially-documented` | 2/11 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 9 exported method(s) |
-| `gFramework/nEms/kafka/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEms/kafka/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gFramework/nEms/kafka/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nEms/kafka/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nEms pipeline wiring and execution contracts. |  |
+| `gFramework/nEms/kafka/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nEms route registration and HTTP exposure metadata. |  |
+| `gFramework/nEms/kafka/src/router/router.js` | `src` | `documented` | 0/0 | Defines nEms route registration and HTTP exposure metadata. |  |
+| `gFramework/nEms/kafka/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nEms schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nEms/kafka/src/service/kafka/defaultKafkaClientService.js` | `src` | `documented` | 11/11 | Implements nEms default kafka client service business behavior and extension logic. |  |
+| `gFramework/nEms/kafka/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nEms utility exports for utils. |  |
+| `gFramework/nEms/kafka/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nEms test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nEms/kafka/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nEms test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nEms/kafka/test/kafkaPublishCapabilityBehavior.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 
 ## Extension Contract

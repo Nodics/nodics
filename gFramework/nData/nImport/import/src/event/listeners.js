@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nData/nImport/import/src/event/listeners
+ * @description Documents nData listeners module behavior.
+ * @layer event
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     common: {
         importExternalModels: {

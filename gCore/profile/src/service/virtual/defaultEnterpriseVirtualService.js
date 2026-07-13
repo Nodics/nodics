@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/profile/src/service/virtual/defaultEnterpriseVirtualService
+ * @description Implements profile default enterprise virtual service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -31,6 +38,18 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Retrieves full name information.
+
+     *
+
+     * @param {*} doc Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getFullName: function (doc) {
         return doc.name + ' Nodics Framework';

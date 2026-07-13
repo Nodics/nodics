@@ -9,14 +9,48 @@
 
  */
 
+/**
+ * @module gFramework/nData/nImport/import/src/service/diagnostics/defaultImportDiagnosticsService
+ * @description Implements nData default import diagnostics service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+    /**
+     * Initializes  behavior for the module runtime.
+     *
+     * @returns {*} Method result.
+     */
     init: function () {
         return Promise.resolve(true);
     },
 
+    /**
+
+     * Runs post-initialization behavior after the module runtime is available.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     postInit: function () {
         return Promise.resolve(true);
     },
+
+    /**
+
+     * Executes ensure summary behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     ensureSummary: function (request) {
         if (!request.importRun) {
@@ -30,6 +64,18 @@ module.exports = {
         });
         return request.importRun.summary;
     },
+
+    /**
+
+     * Executes ensure run behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     ensureRun: function (request) {
         if (!request.importRun) {
@@ -50,12 +96,44 @@ module.exports = {
         return request.importRun;
     },
 
+    /**
+
+     * Executes increment behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} key Method input.
+
+     * @param {*} count Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     increment: function (request, key, count) {
         let summary = this.ensureSummary(request);
         if (summary) {
             summary[key] = (summary[key] || 0) + (count || 0);
         }
     },
+
+    /**
+
+     * Executes finalize run behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} status Method input.
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     finalizeRun: function (request, status, options) {
         let importRun = this.ensureRun(request);
@@ -82,6 +160,18 @@ module.exports = {
         return importRun;
     },
 
+    /**
+
+     * Executes record run history behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     recordRunHistory: function (request) {
         if (typeof SERVICE === 'undefined' || !SERVICE.DefaultImportRunHistoryService || typeof SERVICE.DefaultImportRunHistoryService.recordRun !== 'function') {
             return;
@@ -105,6 +195,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves status information.
+
+     *
+
+     * @param {*} importRun Method input.
+
+     * @param {*} requestedStatus Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     resolveStatus: function (importRun, requestedStatus) {
         if (!importRun) {
             return 'UNKNOWN';
@@ -121,6 +225,20 @@ module.exports = {
         return 'COMPLETED';
     },
 
+    /**
+
+     * Updates failure information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} failure Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     addFailure: function (request, failure) {
         let summary = this.ensureSummary(request);
         if (summary) {
@@ -131,6 +249,18 @@ module.exports = {
             request.importRun.failures.push(this.normalizeFailure(request, failure));
         }
     },
+
+    /**
+
+     * Executes normalize error behavior.
+
+     *
+
+     * @param {*} error Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     normalizeError: function (error) {
         if (!error) {
@@ -148,6 +278,20 @@ module.exports = {
             errors: error.errors
         };
     },
+
+    /**
+
+     * Builds failure context data.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} failure Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     buildFailureContext: function (request, failure) {
         let context = {
@@ -172,6 +316,20 @@ module.exports = {
         return context;
     },
 
+    /**
+
+     * Executes enrich failure error behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} failure Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     enrichFailureError: function (request, failure) {
         if (failure.error) {
             let context = this.buildFailureContext(request, failure);
@@ -182,6 +340,20 @@ module.exports = {
             }
         }
     },
+
+    /**
+
+     * Executes normalize failure behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} failure Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     normalizeFailure: function (request, failure) {
         this.enrichFailureError(request, failure);

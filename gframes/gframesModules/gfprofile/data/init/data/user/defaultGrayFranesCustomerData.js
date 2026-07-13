@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gframes/gframesModules/gfprofile/data/init/data/user/defaultGrayFranesCustomerData
+ * @description Provides gframesModules initializer or sample data consumed by the import layer.
+ * @layer data
+ * @owner gframesModules
+ * @override Projects may override or extend this initializer data through layered import data rather than editing out-of-the-box framework records.
+ */
 module.exports = {
     record0: {
         code: 'himkar',

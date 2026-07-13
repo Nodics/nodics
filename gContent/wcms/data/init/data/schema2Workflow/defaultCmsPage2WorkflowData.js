@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module wcms/data/init/data/schema2Workflow/defaultCmsPage2WorkflowData
+ * @description Seed mapping that binds CMS page schemas to the default page approval workflow.
+ * @layer data
+ * @owner wcms
+ * @override Project modules may provide later schema-to-workflow mappings for custom page governance.
+ */
 module.exports = {
     record0: {
         workflowCode: 'cmsPagesApprovalFlowHead',

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSystem/src/facade/file/defaultFileFacade
+ * @description Coordinates facade-level delegation for nSystem default file facade operations.
+ * @layer facade
+ * @owner nSystem
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -33,9 +40,33 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves file content information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getFileContent: function (request) {
         return SERVICE.DefaultFileService.getFileContent(request);
     },
+
+    /**
+
+     * Executes download file behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     downloadFile: function (request) {
         return SERVICE.DefaultFileService.downloadFile(request);

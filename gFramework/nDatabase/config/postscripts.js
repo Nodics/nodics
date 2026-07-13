@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nDatabase/config/postscripts
+ * @description Defines default nDatabase configuration used during module startup and layering.
+ * @layer config
+ * @owner nDatabase
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };

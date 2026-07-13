@@ -9,12 +9,22 @@
 
  */
 
+/**
+ * @module nRouter/module/nodics
+ * @description nRouter module lifecycle entrypoint that loads router definitions, initializes router services, applies configuration, registers routes, and loads persisted runtime routers.
+ * @layer module
+ * @owner nRouter
+ * @override Project modules may contribute router definitions and persisted router records; this framework entrypoint should stay project-neutral.
+ * @property {Object} SERVICE.DefaultRouterService Prepares module router configuration and registers routes.
+ * @property {Object} SERVICE.DefaultRouterConfigurationService Owns raw and persisted router configuration.
+ */
 module.exports = {
 
     /**
-     * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes nRouter during module loading.
+     *
+     * @param {Object} options Module loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -23,9 +33,11 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize module loading process. If there is any functionalities, required to be executed after module loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes router startup by loading, configuring, registering, and overlaying route definitions.
+     *
+     * @param {Object} options Module loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves after routers and persisted router overrides are available.
+     * @sideEffects Loads router files, writes raw router configuration, registers HTTP routers, and loads persisted router records.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {

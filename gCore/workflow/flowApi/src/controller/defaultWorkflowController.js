@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gCore/workflow/flowApi/src/controller/defaultWorkflowController
+ * @description Exposes request handlers for workflow default workflow controller operations.
+ * @layer controller
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +41,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Initializes carrier behavior for the module runtime.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     initCarrier: function (request, callback) {
         request = _.merge(request || {}, request.httpRequest.body);
         if (callback) {
@@ -46,6 +67,13 @@ module.exports = {
             return FACADE.DefaultWorkflowFacade.initCarrier(request);
         }
     },
+    /**
+     * Executes release carrier behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} callback Method input.
+     * @returns {*} Method result.
+     */
     releaseCarrier: function (request, callback) {
         request.carrierCode = request.httpRequest.params.carrierCode;
         request.comment = request.httpRequest.body.comment;
@@ -59,6 +87,13 @@ module.exports = {
             return FACADE.DefaultWorkflowFacade.releaseCarrier(request);
         }
     },
+    /**
+     * Updates carrier information.
+     *
+     * @param {*} request Method input.
+     * @param {*} callback Method input.
+     * @returns {*} Method result.
+     */
     updateCarrier: function (request, callback) {
         request = _.merge(request || {}, request.httpRequest.body);
         if (callback) {

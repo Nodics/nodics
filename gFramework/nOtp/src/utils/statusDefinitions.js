@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nOtp/src/utils/statusDefinitions
+ * @description Provides shared nOtp utility exports for status definitions.
+ * @layer utils
+ * @owner nOtp
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**

@@ -7,8 +7,15 @@
     You shall not disclose such Confidential Information and shall use it only in accordance with the 
     terms of the license agreement you entered into with Nodics.
 
-*/
+ */
 
+/**
+ * @module cronjob/pipelines/pipelinesDefinition
+ * @description Cronjob lifecycle pipeline definitions for start, stop, pause, resume, run, complete, error, node up, and node down processing.
+ * @layer pipeline
+ * @owner cronjob
+ * @override Project modules may override or extend cronjob pipelines through later pipeline fragments.
+ */
 module.exports = {
     defaultCronJobTriggerHandlerPipeline: {
         startNode: "validateRequest",

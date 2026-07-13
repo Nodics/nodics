@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gCore/workflow/flowCore/src/service/utils/defaultWorkflowUtilsService
+ * @description Implements workflow default workflow utils service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     processingAllowedStates: [ENUMS.WorkflowCarrierState.RELEASED.key, ENUMS.WorkflowCarrierState.PROCESSING.key, ENUMS.WorkflowCarrierState.ERROR.key],
@@ -36,9 +43,35 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves event configuration information.
+
+     *
+
+     * @param {*} workflowAction Method input.
+
+     * @param {*} workflowCarrier Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getEventConfiguration: function (workflowAction, workflowCarrier) {
         return _.merge(_.merge({}, workflowAction.event || {}), workflowCarrier.event);
     },
+
+    /**
+
+     * Validates processing allowed rules.
+
+     *
+
+     * @param {*} workflowCarrier Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     isProcessingAllowed: function (workflowCarrier) {
         return this.processingAllowedStates.includes(workflowCarrier.currentState.state);

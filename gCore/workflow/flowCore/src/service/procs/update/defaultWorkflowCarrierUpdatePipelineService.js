@@ -10,6 +10,13 @@
  */
 const _ = require('lodash');
 
+/**
+ * @module gCore/workflow/flowCore/src/service/procs/update/defaultWorkflowCarrierUpdatePipelineService
+ * @description Implements workflow default workflow carrier update pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -34,6 +41,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to release workflow carrier');
         if (!request.tenant) {
@@ -44,6 +67,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Validates valid request rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     checkValidRequest: function (request, response, process) {
         if (request.workflowCarrier.type === ENUMS.WorkflowCarrierType.FIXED.key && request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.INIT.key) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, items can not be added in FIXED carrier, after its released'));
@@ -53,6 +84,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Runs pre-processing logic for pare updates.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     prepareUpdates: function (request, response, process) {
         let workflowCarrier = request.workflowCarrier;
         request.carrierUpdated = false;
@@ -80,6 +119,14 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    /**
+     * Updates carrier information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     updateCarrier: function (request, response, process) {
         if (request.carrierUpdated) {
             SERVICE.DefaultWorkflowCarrierService.save({

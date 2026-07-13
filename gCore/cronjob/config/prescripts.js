@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cronjob/config/prescripts
+ * @description Reserved pre-start script contribution for cronjob startup prerequisites.
+ * @layer config
+ * @owner cronjob
+ * @override Project modules may add later pre-start scripts for customer-specific cronjob setup.
+ */
 module.exports = {
 
 };

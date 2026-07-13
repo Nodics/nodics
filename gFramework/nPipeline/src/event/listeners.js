@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nPipeline/event/listeners
+ * @description Event listener registrations that refresh pipeline runtime state when pipeline definitions are saved, updated, or removed.
+ * @layer event
+ * @owner nPipeline
+ * @override Project modules may add or replace pipeline event listeners through later module contributions.
+ */
 module.exports = {
     common: {
         pipelineSavedListener: {

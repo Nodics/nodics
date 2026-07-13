@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nValidator/data/init/data/validator/defaultSampleValidatorData
+ * @description Provides nValidator initializer or sample data consumed by the import layer.
+ * @layer data
+ * @owner nValidator
+ * @override Projects may override or extend this initializer data through layered import data rather than editing out-of-the-box framework records.
+ */
 module.exports = {
     record0: {
         code: 'sampleDefaultValidator',

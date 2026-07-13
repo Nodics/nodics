@@ -31,6 +31,13 @@ const profileOwnership = function () {
     };
 };
 
+/**
+ * @module gCore/profile/src/schemas/schemas
+ * @description Defines profile schema metadata, model contracts, and generated capability settings.
+ * @layer schemas
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     profile: {
         tenant: {

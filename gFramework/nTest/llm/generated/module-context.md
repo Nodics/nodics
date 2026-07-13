@@ -59,9 +59,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 12 |
-| Partially documented | 4 |
-| Undocumented | 12 |
+| Documented | 25 |
+| Partially documented | 0 |
+| Undocumented | 3 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -83,22 +83,22 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nTest/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nTest/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nTest/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nTest/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nTest/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nTest/config/postscripts.js` | `config` | `documented` | 0/0 | Reserved post-start script contribution for Nodics test execution and generated-test tooling. |  |
+| `gFramework/nTest/config/prescripts.js` | `config` | `documented` | 0/0 | Reserved pre-start script contribution for Nodics test execution and generated-test tooling. |  |
+| `gFramework/nTest/config/properties.js` | `config` | `documented` | 0/0 | Default test execution settings for unit tests, Nodics tests, and layered test discovery. |  |
 | `gFramework/nTest/config/tooling.js` | `config` | `documented` | 0/0 | Contributes project-aware test discovery, execution, live-safety, and reporting commands to the non-runtime Nodics tooling registry. |  |
 | `gFramework/nTest/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nTest/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nTest/nodics.js` | `module` | `documented` | 2/2 | nTest module lifecycle entrypoint for test execution and generated-test capabilities. |  |
 | `gFramework/nTest/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nTest/src/controller/testExecutionController.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gFramework/nTest/src/facade/testExecutionFacade.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gFramework/nTest/src/lib/testSuite.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nTest/src/lib/testSuitePool.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nTest/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nTest/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nTest/src/controller/testExecutionController.js` | `src` | `documented` | 4/4 | Controller entrypoint that adapts route request context into test execution facade calls. |  |
+| `gFramework/nTest/src/facade/testExecutionFacade.js` | `src` | `documented` | 4/4 | Facade boundary that delegates governed unit and Nodics test execution to the test service. |  |
+| `gFramework/nTest/src/lib/testSuite.js` | `src` | `documented` | 0/0 | Lightweight in-memory holder for a Nodics test suite, its index, and child suites. |  |
+| `gFramework/nTest/src/lib/testSuitePool.js` | `src` | `documented` | 0/0 | Lightweight in-memory pool of named Nodics test suites. |  |
+| `gFramework/nTest/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved application router configuration contribution for test execution APIs. |  |
+| `gFramework/nTest/src/router/router.js` | `src` | `documented` | 0/0 | Reserved route definition contribution for test execution APIs. |  |
 | `gFramework/nTest/src/service/defaultLayeredTestConfigurationService.js` | `src` | `documented` | 11/11 | Discovers declarative UTest and NTest suites from active modules in deterministic module-index order and merges later project, environment, server, and node contributions without inferring behavior from module names. |  |
-| `gFramework/nTest/src/service/generator/defaultSchemaTestGeneratorService.js` | `src` | `undocumented` | 0/45 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 45 exported method(s) |
-| `gFramework/nTest/src/service/testExecutionService.js` | `src` | `partially-documented` | 2/11 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 9 exported method(s) |
+| `gFramework/nTest/src/service/generator/defaultSchemaTestGeneratorService.js` | `src` | `documented` | 45/45 | Generates schema, API, scenario, CRUD, and access-policy test artifacts from effective schema and router contracts. |  |
+| `gFramework/nTest/src/service/testExecutionService.js` | `src` | `documented` | 11/11 | Executes Nodics unit-test and n-test pools by translating layered test definitions into Mocha suites. |  |
 | `gFramework/nTest/src/tooling/liveTestTenantGuard.js` | `src` | `documented` | 0/0 | Guards live and destructive test execution from missing tenant selection or accidental use of protected tenants. |  |
 | `gFramework/nTest/src/tooling/runCapabilityBehaviorTests.js` | `src` | `documented` | 0/0 | Discovers marker-based capability behavior tests across a target project and executes them with optional area filtering. |  |
 | `gFramework/nTest/src/tooling/runGeneratedAccessPolicyLiveTests.js` | `src` | `documented` | 0/0 | Executes generated live access-policy scenarios with explicit enablement, authentication, tenant protection, and dry-run contract safeguards. |  |
@@ -106,7 +106,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTest/src/tooling/runGeneratedTests.js` | `src` | `documented` | 0/0 | Discovers and executes generated schema, API, API-scenario, and opt-in destructive CRUD tests across a target Nodics project. |  |
 | `gFramework/nTest/src/tooling/runRouteContractTests.js` | `src` | `documented` | 0/0 | Discovers and executes module-owned route contract tests throughout a target Nodics project. |  |
 | `gFramework/nTest/src/tooling/runTestSuiteWithReport.js` | `src` | `documented` | 0/0 | Runs an arbitrary project test command, streams its output, extracts Nodics test metrics, and writes a structured report under the selected server module. |  |
-| `gFramework/nTest/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nTest/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility contribution point for test execution and generated-test helper functions. |  |
 | `gFramework/nTest/test/layeredTestDiscovery.test.js` | `test` | `documented` | 2/2 | Proves deterministic test composition across arbitrarily named capability, project, environment, server, and node modules with override traceability and configurable additional paths. |  |
 | `gFramework/nTest/test/liveTestTenantGuard.test.js` | `test` | `documented` | 0/0 | Verifies default and configured protected-tenant resolution plus explicit live-test override behavior. |  |
 | `gFramework/nTest/test/schemaTestGeneratorCrudFixtureInheritance.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

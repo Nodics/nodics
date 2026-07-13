@@ -53,9 +53,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 5 |
-| Undocumented | 7 |
+| Documented | 11 |
+| Partially documented | 0 |
+| Undocumented | 1 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -76,19 +76,19 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nController/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nController/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nController/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nController/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nController/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nController/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nController configuration used during module startup and layering. |  |
+| `gFramework/nController/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nController configuration used during module startup and layering. |  |
+| `gFramework/nController/config/properties.js` | `config` | `documented` | 0/0 | Defines default nController configuration used during module startup and layering. |  |
 | `gFramework/nController/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nController/nodics.js` | `module` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gFramework/nController/nodics.js` | `module` | `documented` | 3/3 | Registers the nController module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nController/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nController/src/controller/cache/defaultCacheController.js` | `src` | `partially-documented` | 5/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nController/src/controller/common.js` | `src` | `partially-documented` | 2/9 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gFramework/nController/src/controller/interceptor/defaultInterceptorController.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gFramework/nController/src/controller/log/defaultLogController.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gFramework/nController/src/controller/ping/defaultPingMeController.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gFramework/nController/src/controller/validator/defaultValidatorController.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gFramework/nController/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nController/src/controller/cache/defaultCacheController.js` | `src` | `documented` | 5/5 | Exposes request handlers for nController default cache controller operations. |  |
+| `gFramework/nController/src/controller/common.js` | `src` | `documented` | 9/9 | Exposes request handlers for nController common operations. |  |
+| `gFramework/nController/src/controller/interceptor/defaultInterceptorController.js` | `src` | `documented` | 1/1 | Exposes request handlers for nController default interceptor controller operations. |  |
+| `gFramework/nController/src/controller/log/defaultLogController.js` | `src` | `documented` | 3/3 | Exposes request handlers for nController default log controller operations. |  |
+| `gFramework/nController/src/controller/ping/defaultPingMeController.js` | `src` | `documented` | 3/3 | Exposes request handlers for nController default ping me controller operations. |  |
+| `gFramework/nController/src/controller/validator/defaultValidatorController.js` | `src` | `documented` | 1/1 | Exposes request handlers for nController default validator controller operations. |  |
+| `gFramework/nController/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nController utility exports for utils. |  |
 | `gFramework/nController/test/logControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 
 ## Extension Contract

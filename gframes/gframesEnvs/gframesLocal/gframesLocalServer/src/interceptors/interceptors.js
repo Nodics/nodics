@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/interceptors/interceptors
+ * @description Registers gframesEnvs interceptor wiring for pipeline extension points.
+ * @layer interceptors
+ * @owner gframesEnvs
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

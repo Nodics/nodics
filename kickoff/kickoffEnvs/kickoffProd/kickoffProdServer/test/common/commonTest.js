@@ -15,6 +15,13 @@
 const Chai = require('chai');
 const expect = Chai.expect;
 
+/**
+ * @module kickoff/kickoffEnvs/kickoffProd/kickoffProdServer/test/common/commonTest
+ * @description Defines kickoffEnvs test fixtures or suites for module behavior validation.
+ * @layer test
+ * @owner kickoffEnvs
+ * @override Projects may add focused tests beside this file while preserving the module contract under test.
+ */
 module.exports = {
     /*
         sampleTestSuite: {

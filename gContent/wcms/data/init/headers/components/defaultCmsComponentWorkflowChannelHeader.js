@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module wcms/data/init/headers/components/defaultCmsComponentWorkflowChannelHeader
+ * @description Import header for saving default CMS component workflow channel records.
+ * @layer data
+ * @owner wcms
+ * @override Project modules may add later headers when component workflow channel import behavior changes.
+ */
 module.exports = {
     workflow: {
         defaultCmsComponentWorkflowChannel: {

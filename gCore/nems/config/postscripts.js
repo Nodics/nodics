@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nems/config/postscripts
+ * @description Reserved post-start script contribution for Nodics event management startup follow-up.
+ * @layer config
+ * @owner nems
+ * @override Project modules may add later post-start scripts for customer-specific event processing.
+ */
 module.exports = {
 
 };

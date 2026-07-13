@@ -48,9 +48,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 1 |
-| Undocumented | 3 |
+| Documented | 4 |
+| Partially documented | 0 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -71,11 +71,11 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gframes/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gframes/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gframes/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gframes/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default gframes configuration used during module startup and layering. |  |
+| `gframes/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default gframes configuration used during module startup and layering. |  |
+| `gframes/config/properties.js` | `config` | `documented` | 0/0 | Defines default gframes configuration used during module startup and layering. |  |
 | `gframes/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gframes/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gframes/nodics.js` | `module` | `documented` | 2/2 | Registers the gframes module lifecycle hooks and module-level startup behavior. |  |
 | `gframes/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 
 ## Extension Contract

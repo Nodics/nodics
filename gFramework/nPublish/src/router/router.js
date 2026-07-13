@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nPublish/router/router
+ * @description Reserved route definition contribution for publish/version promotion APIs.
+ * @layer router
+ * @owner nPublish
+ * @override Project modules may add later routes for customer publishing capabilities.
+ */
 module.exports = {
 
 };

@@ -9,7 +9,28 @@
 
  */
 
+/**
+ * @module gCore/profile/src/controller/authorization/defaultAuthorizationProviderController
+ * @description Exposes request handlers for profile default authorization provider controller operations.
+ * @layer controller
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+
+    /**
+
+     * Executes authorize token behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     authorizeToken: function (request, callback) {
         if (request.httpRequest && request.httpRequest.body && request.httpRequest.body.authToken) {

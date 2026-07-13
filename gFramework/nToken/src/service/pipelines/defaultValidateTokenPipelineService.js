@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nToken/src/service/pipelines/defaultValidateTokenPipelineService
+ * @description Implements nToken default validate token pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner nToken
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,10 +41,34 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating Token generation request');
         process.nextSuccess(request, response);
     },
+    /**
+     * Validates mandate values rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateMandateValues: function (request, response, process) {
         this.LOG.debug('Validating Token generation mandate values');
         if (!request.model.key || !request.model.ops || !request.model.value) {
@@ -46,10 +77,26 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Builds query data.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building Token generation query');
         process.nextSuccess(request, response);
     },
+    /**
+     * Validates token rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateToken: function (request, response, process) {
         this.LOG.debug('Fatching existing Token');
         request.tokenService.get(_.merge(_.merge({}, request), {
@@ -112,10 +159,26 @@ module.exports = {
             process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
         });
     },
+    /**
+     * Processes sucess end behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
         process.resolve(response.success);
     },
+    /**
+     * Processes error end behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');
         process.reject(response.error);

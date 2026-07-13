@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nPublish/config/prescripts
+ * @description Reserved pre-start script contribution for publish/version promotion capabilities.
+ * @layer config
+ * @owner nPublish
+ * @override Project modules may add later pre-scripts for customer publishing setup.
+ */
 module.exports = {
 
 };

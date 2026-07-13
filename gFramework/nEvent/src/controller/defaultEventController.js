@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nEvent/src/controller/defaultEventController
+ * @description Exposes request handlers for nEvent default event controller operations.
+ * @layer controller
+ * @owner nEvent
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -33,12 +40,38 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates event rules.
+
+     *
+
+     * @param {*} event Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateEvent: function (event) {
         if (UTILS.isBlank(event)) {
             throw new CLASSES.EventError('ERR_EVNT_00003', 'Event definition can not be null or empty');
         }
         return true;
     },
+
+    /**
+
+     * Processes event behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleEvent: function (request, callback) {
         try {

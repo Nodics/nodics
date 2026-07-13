@@ -65,9 +65,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 4 |
-| Undocumented | 13 |
+| Documented | 17 |
+| Partially documented | 0 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -90,25 +90,25 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nEvent/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nEvent/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nEvent/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEvent/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEvent/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEvent/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nEvent configuration used during module startup and layering. |  |
+| `gFramework/nEvent/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nEvent configuration used during module startup and layering. |  |
+| `gFramework/nEvent/config/properties.js` | `config` | `documented` | 0/0 | Defines default nEvent configuration used during module startup and layering. |  |
 | `gFramework/nEvent/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nEvent/nodics.js` | `module` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gFramework/nEvent/nodics.js` | `module` | `documented` | 3/3 | Registers the nEvent module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nEvent/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nEvent/src/controller/defaultEventController.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gFramework/nEvent/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEvent/src/facade/defaultEventFacade.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gFramework/nEvent/src/lib/eventError.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEvent/src/lib/eventService.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEvent/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEvent/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEvent/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEvent/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEvent/src/service/event/defaultEventService.js` | `src` | `partially-documented` | 2/14 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 12 exported method(s) |
-| `gFramework/nEvent/src/service/event/defaultListenerChangeListenerService.js` | `src` | `undocumented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gFramework/nEvent/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEvent/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEvent/src/controller/defaultEventController.js` | `src` | `documented` | 4/4 | Exposes request handlers for nEvent default event controller operations. |  |
+| `gFramework/nEvent/src/event/listeners.js` | `src` | `documented` | 0/0 | Documents nEvent listeners module behavior. |  |
+| `gFramework/nEvent/src/facade/defaultEventFacade.js` | `src` | `documented` | 4/4 | Coordinates facade-level delegation for nEvent default event facade operations. |  |
+| `gFramework/nEvent/src/lib/eventError.js` | `src` | `documented` | 0/0 | Provides reusable nEvent library primitives for event error. |  |
+| `gFramework/nEvent/src/lib/eventService.js` | `src` | `documented` | 0/0 | Provides reusable nEvent library primitives for event service. |  |
+| `gFramework/nEvent/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nEvent pipeline wiring and execution contracts. |  |
+| `gFramework/nEvent/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nEvent route registration and HTTP exposure metadata. |  |
+| `gFramework/nEvent/src/router/router.js` | `src` | `documented` | 0/0 | Defines nEvent route registration and HTTP exposure metadata. |  |
+| `gFramework/nEvent/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nEvent schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nEvent/src/service/event/defaultEventService.js` | `src` | `documented` | 14/14 | Implements nEvent default event service business behavior and extension logic. |  |
+| `gFramework/nEvent/src/service/event/defaultListenerChangeListenerService.js` | `src` | `documented` | 2/2 | Implements nEvent default listener change listener service business behavior and extension logic. |  |
+| `gFramework/nEvent/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nEvent utility exports for status definitions. |  |
+| `gFramework/nEvent/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nEvent utility exports for utils. |  |
 
 ## Extension Contract
 

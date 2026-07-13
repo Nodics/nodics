@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module vService/config/postscripts
+ * @description Reserved post-start script contribution for versioned service support after core artifacts are available.
+ * @layer config
+ * @owner vService
+ * @override Project modules may add later post-scripts for versioned-service startup follow-up.
+ */
 module.exports = {
 
 };

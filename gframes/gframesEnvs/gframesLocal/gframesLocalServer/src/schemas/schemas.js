@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/schemas/schemas
+ * @description Defines gframesEnvs schema metadata, model contracts, and generated capability settings.
+ * @layer schemas
+ * @owner gframesEnvs
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

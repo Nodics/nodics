@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cronjob/schemas/schemas
+ * @description Cronjob schema definitions for job records, triggers, logs, and node responsibility models.
+ * @layer schema
+ * @owner cronjob
+ * @override Project modules may extend cronjob schemas through later schema fragments.
+ */
 module.exports = {
     cronjob: {
         cronJobLog: {

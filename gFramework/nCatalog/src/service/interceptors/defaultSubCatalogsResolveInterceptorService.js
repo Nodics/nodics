@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nCatalog/src/service/interceptors/defaultSubCatalogsResolveInterceptorService
+ * @description Implements nCatalog default sub catalogs resolve interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner nCatalog
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +41,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves sub catalogs information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     loadSubCatalogs: function (request, response) {
         return new Promise((resolve, reject) => {
             this.fatchSubCatalog(request, response.success.result).then(success => {
@@ -43,6 +64,22 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Executes fatch sub catalog behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} models Method input.
+
+     * @param {*} counter Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     fatchSubCatalog: function (request, models, counter = 0) {
         return new Promise((resolve, reject) => {

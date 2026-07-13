@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gOptional/kyc/kycApi/src/facade/defaultKycFacade
+ * @description Coordinates facade-level delegation for kyc default kyc facade operations.
+ * @layer facade
+ * @owner kyc
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,12 +39,36 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Initializes mobile kyc behavior for the module runtime.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     initMobileKyc: function (request) {
         return SERVICE.DefaultKycService.initMobileKyc(request);
     },
+    /**
+     * Validates mobile kyc rules.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     validateMobileKyc: function (request) {
         return SERVICE.DefaultKycService.validateMobileKyc(request);
     },
+    /**
+     * Initializes email kyc behavior for the module runtime.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     initEmailKyc: function (request) {
         return SERVICE.DefaultKycService.initEmailKyc(request);
     }

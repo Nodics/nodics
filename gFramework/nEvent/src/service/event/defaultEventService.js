@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nEvent/src/service/event/defaultEventService
+ * @description Implements nEvent default event service business behavior and extension logic.
+ * @layer service
+ * @owner nEvent
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     listeners: {},
     /**
@@ -36,9 +43,29 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves listeners information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     getListeners: function () {
         return this.listeners;
     },
+
+    /**
+
+     * Retrieves persisted listeners information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
 
     loadPersistedListeners: function () {
         return new Promise((resolve, reject) => {
@@ -71,6 +98,16 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates persisted listener model available rules.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     isPersistedListenerModelAvailable: function () {
         if (!SERVICE.DefaultEventListenerService || typeof SERVICE.DefaultEventListenerService.get !== 'function') {
             return false;
@@ -82,6 +119,18 @@ module.exports = {
             return false;
         }
     },
+
+    /**
+
+     * Processes listener update event behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleListenerUpdateEvent: function (request) {
         return new Promise((resolve, reject) => {
@@ -118,6 +167,18 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Processes listener removed event behavior.
+
+     *
+
+     * @param {*} listener Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleListenerRemovedEvent: function (listener) {
         let _self = this;
@@ -161,6 +222,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates event listeners information.
+
+     *
+
+     * @param {*} listeners Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     registerEventListeners: function (listeners = this.getListeners()) {
         this.LOG.debug('Registering events');
         let _self = this;
@@ -176,6 +249,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Updates common events information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} commonListeners Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     registerCommonEvents: function (moduleName, commonListeners) {
         let _self = this;
@@ -203,6 +290,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Updates module events information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} moduleListeners Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     registerModuleEvents: function (moduleName, moduleListeners) {
         let _self = this;
         let moduleObject = NODICS.getModule(moduleName);
@@ -229,6 +330,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes enrich event error behavior.
+
+     *
+
+     * @param {*} error Method input.
+
+     * @param {*} event Method input.
+
+     * @param {*} phase Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     enrichEventError: function (error, event, phase) {
         return CLASSES.NodicsError.enrich(error, {
             layer: 'event',
@@ -244,6 +361,18 @@ module.exports = {
             type: event && event.type
         }, 'ERR_EVNT_00000');
     },
+
+    /**
+
+     * Processes event behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleEvent: function (request) {
         let _self = this;
@@ -309,6 +438,12 @@ module.exports = {
             }
         });
     },
+    /**
+     * Runs pre-processing logic for pare url.
+     *
+     * @param {*} eventDef Method input.
+     * @returns {*} Method result.
+     */
     prepareURL: function (eventDef) {
         return SERVICE.DefaultModuleService.buildRequest({
             moduleName: CONFIG.get('nemsModuleName') || 'nems',
@@ -321,6 +456,18 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Processes  behavior.
+
+     *
+
+     * @param {*} event Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     publish: function (event) {
         return new Promise((resolve, reject) => {

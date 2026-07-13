@@ -61,9 +61,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
+| Documented | 11 |
 | Partially documented | 2 |
-| Undocumented | 11 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -86,21 +86,21 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gCore/quizer/wquiz/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/quizer/wquiz/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/quizer/wquiz/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/quizer/wquiz/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/quizer/wquiz/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/quizer/wquiz/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default quizer configuration used during module startup and layering. |  |
+| `gCore/quizer/wquiz/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default quizer configuration used during module startup and layering. |  |
+| `gCore/quizer/wquiz/config/properties.js` | `config` | `documented` | 0/0 | Defines default quizer configuration used during module startup and layering. |  |
 | `gCore/quizer/wquiz/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/quizer/wquiz/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/quizer/wquiz/nodics.js` | `module` | `documented` | 2/2 | Registers the quizer module lifecycle hooks and module-level startup behavior. |  |
 | `gCore/quizer/wquiz/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/quizer/wquiz/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/quizer/wquiz/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/quizer/wquiz/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/quizer/wquiz/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/quizer/wquiz/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/quizer/wquiz/src/service/defaultSampleService.js` | `src` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/quizer/wquiz/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/quizer/wquiz/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gCore/quizer/wquiz/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gCore/quizer/wquiz/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers quizer interceptor wiring for pipeline extension points. |  |
+| `gCore/quizer/wquiz/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines quizer pipeline wiring and execution contracts. |  |
+| `gCore/quizer/wquiz/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines quizer route registration and HTTP exposure metadata. |  |
+| `gCore/quizer/wquiz/src/router/router.js` | `src` | `documented` | 0/0 | Defines quizer route registration and HTTP exposure metadata. |  |
+| `gCore/quizer/wquiz/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines quizer schema metadata, model contracts, and generated capability settings. |  |
+| `gCore/quizer/wquiz/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements quizer default sample service business behavior and extension logic. |  |
+| `gCore/quizer/wquiz/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared quizer utility exports for utils. |  |
+| `gCore/quizer/wquiz/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines quizer test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gCore/quizer/wquiz/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines quizer test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

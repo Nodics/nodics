@@ -63,9 +63,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
+| Documented | 27 |
 | Partially documented | 2 |
-| Undocumented | 27 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -88,37 +88,37 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gContent/wcms/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gContent/wcms/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gContent/wcms/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/data/init/data/components/defaultCmsComponentWorkflowActionData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/data/init/data/components/defaultCmsComponentWorkflowChannelData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/data/init/data/components/defaultCmsComponentWorkflowHeadData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/data/init/data/pages/defaultCmsPageWorkflowActionData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/data/init/data/pages/defaultCmsPageWorkflowChannelData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/data/init/data/pages/defaultCmsPageWorkflowHeadData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/data/init/data/schema2Workflow/defaultCmsComponent2WorkflowData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/data/init/data/schema2Workflow/defaultCmsPage2WorkflowData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/data/init/headers/components/defaultCmsComponentWorkflowActionHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/data/init/headers/components/defaultCmsComponentWorkflowChannelHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/data/init/headers/components/defaultCmsComponentWorkflowHeadHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/data/init/headers/pages/defaultCmsPageWorkflowActionHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/data/init/headers/pages/defaultCmsPageWorkflowChannelHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/data/init/headers/pages/defaultCmsPageWorkflowHeadHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/data/init/headers/schema2Workflow/defaultCmsComponent2Workflow.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/data/init/headers/schema2Workflow/defaultCmsPage2Workflow.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gContent/wcms/config/postscripts.js` | `config` | `documented` | 0/0 | Reserved WCMS post-start script contribution for content module startup follow-up. |  |
+| `gContent/wcms/config/prescripts.js` | `config` | `documented` | 0/0 | Reserved WCMS pre-start script contribution for content module startup prerequisites. |  |
+| `gContent/wcms/config/properties.js` | `config` | `documented` | 0/0 | Reserved WCMS property contribution for workflow-backed content management behavior. |  |
+| `gContent/wcms/data/init/data/components/defaultCmsComponentWorkflowActionData.js` | `data` | `documented` | 0/0 | Seed workflow action data for manual CMS component review decisions. |  |
+| `gContent/wcms/data/init/data/components/defaultCmsComponentWorkflowChannelData.js` | `data` | `documented` | 0/0 | Seed workflow channel data routing successful CMS component approval flow execution. |  |
+| `gContent/wcms/data/init/data/components/defaultCmsComponentWorkflowHeadData.js` | `data` | `documented` | 0/0 | Seed workflow head action data that starts CMS component approval processing. |  |
+| `gContent/wcms/data/init/data/pages/defaultCmsPageWorkflowActionData.js` | `data` | `documented` | 0/0 | Seed workflow action data for manual CMS page review decisions. |  |
+| `gContent/wcms/data/init/data/pages/defaultCmsPageWorkflowChannelData.js` | `data` | `documented` | 0/0 | Seed workflow channel data routing successful CMS page approval flow execution. |  |
+| `gContent/wcms/data/init/data/pages/defaultCmsPageWorkflowHeadData.js` | `data` | `documented` | 0/0 | Seed workflow head action data that starts CMS page approval processing. |  |
+| `gContent/wcms/data/init/data/schema2Workflow/defaultCmsComponent2WorkflowData.js` | `data` | `documented` | 0/0 | Seed mapping that binds CMS component schemas to the default component approval workflow. |  |
+| `gContent/wcms/data/init/data/schema2Workflow/defaultCmsPage2WorkflowData.js` | `data` | `documented` | 0/0 | Seed mapping that binds CMS page schemas to the default page approval workflow. |  |
+| `gContent/wcms/data/init/headers/components/defaultCmsComponentWorkflowActionHeader.js` | `data` | `documented` | 0/0 | Import header for saving default CMS component workflow action records. |  |
+| `gContent/wcms/data/init/headers/components/defaultCmsComponentWorkflowChannelHeader.js` | `data` | `documented` | 0/0 | Import header for saving default CMS component workflow channel records. |  |
+| `gContent/wcms/data/init/headers/components/defaultCmsComponentWorkflowHeadHeader.js` | `data` | `documented` | 0/0 | Import header for saving the default CMS component workflow head record. |  |
+| `gContent/wcms/data/init/headers/pages/defaultCmsPageWorkflowActionHeader.js` | `data` | `documented` | 0/0 | Import header for saving default CMS page workflow action records. |  |
+| `gContent/wcms/data/init/headers/pages/defaultCmsPageWorkflowChannelHeader.js` | `data` | `documented` | 0/0 | Import header for saving default CMS page workflow channel records. |  |
+| `gContent/wcms/data/init/headers/pages/defaultCmsPageWorkflowHeadHeader.js` | `data` | `documented` | 0/0 | Import header for saving the default CMS page workflow head record. |  |
+| `gContent/wcms/data/init/headers/schema2Workflow/defaultCmsComponent2Workflow.js` | `data` | `documented` | 0/0 | Import header for saving CMS component schema-to-workflow mappings. |  |
+| `gContent/wcms/data/init/headers/schema2Workflow/defaultCmsPage2Workflow.js` | `data` | `documented` | 0/0 | Import header for saving CMS page schema-to-workflow mappings. |  |
 | `gContent/wcms/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gContent/wcms/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gContent/wcms/nodics.js` | `module` | `documented` | 2/2 | WCMS module lifecycle entrypoint for workflow-enabled content management features. |  |
 | `gContent/wcms/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gContent/wcms/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/src/service/defaultSampleService.js` | `src` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/wcms/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gContent/wcms/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gContent/wcms/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Reserved interceptor contribution point for WCMS content validation and workflow governance. |  |
+| `gContent/wcms/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Reserved pipeline definition contribution point for WCMS content workflows. |  |
+| `gContent/wcms/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved router application configuration contribution for WCMS APIs. |  |
+| `gContent/wcms/src/router/router.js` | `src` | `documented` | 0/0 | Reserved route definition contribution point for WCMS content APIs. |  |
+| `gContent/wcms/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Reserved schema contribution point for WCMS content model extensions. |  |
+| `gContent/wcms/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Sample WCMS service scaffold showing the service lifecycle shape for content modules. |  |
+| `gContent/wcms/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility contribution point for WCMS content helper functions. |  |
+| `gContent/wcms/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Common sample test scaffold for WCMS content module contracts. | add JSDoc for 7 exported method(s) |
+| `gContent/wcms/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Local-environment sample test scaffold for WCMS content behavior. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

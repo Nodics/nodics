@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nDynamo/src/service/event/defaultRouterConfigurationChangeListenerService
+ * @description Implements nDynamo default router configuration change listener service business behavior and extension logic.
+ * @layer service
+ * @owner nDynamo
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -32,6 +39,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Processes router update event handler behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleRouterUpdateEventHandler: function (request, callback) {
         try {

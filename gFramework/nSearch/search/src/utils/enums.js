@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSearch/search/src/utils/enums
+ * @description Provides shared nSearch utility exports for enums.
+ * @layer utils
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     IndexerType: {
         _options: {

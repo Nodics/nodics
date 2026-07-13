@@ -11,8 +11,21 @@
 
 const _ = require('lodash');
 
+/**
+ * @module nems/service/event/DefaultEventHandlerService
+ * @description Processes persisted NEMS events by claiming eligible records, dispatching targets, logging successes, and retaining retryable errors.
+ * @layer service
+ * @owner nems
+ * @override Project modules may override this service to customize event claiming, dispatch, retry, logging, or target request construction.
+ */
 module.exports = {
 
+    /**
+     * Resets stale PROCESSING events back to NEW so they can be retried.
+     *
+     * @param {Object} input Event update request with optional query and body.
+     * @returns {Promise<Object>} Event update result.
+     */
     resetEvents: function (input) {
         return new Promise((resolve, reject) => {
             let currentDate = new Date();
@@ -39,6 +52,11 @@ module.exports = {
         });
     },
 
+    /**
+     * Builds the default claim query that marks NEW or ERROR events as PROCESSING for retry.
+     *
+     * @returns {Object} Event update request fragment.
+     */
     buildQuery: function () {
         return {
             options: {
@@ -61,6 +79,12 @@ module.exports = {
         };
     },
 
+    /**
+     * Claims eligible events for processing by updating their state to PROCESSING.
+     *
+     * @param {Object} input Event service request.
+     * @returns {Promise<Object[]>} Claimed event models.
+     */
     fetchEvents: function (input) {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Retrieving events to broadcast');
@@ -77,6 +101,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Processes pending asynchronous events.
+     *
+     * @param {Object} request Event processing request.
+     * @returns {Promise<Object|Object[]>} Success status when no events exist, or processed event list.
+     */
     processEvents: function (request) {
         let _self = this;
         this.LOG.debug('Broadcasting async events');
@@ -100,6 +130,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Processes synchronous events immediately after they are saved.
+     *
+     * @param {Object[]} events Event models to broadcast.
+     * @returns {Promise<Object[]>} Processed event list.
+     */
     processSyncEvents: function (events) {
         let _self = this;
         this.LOG.debug('Broadcasting Sync events');
@@ -112,6 +148,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Broadcasts events sequentially and records each processed event outcome.
+     *
+     * @param {Object[]} events Event models to broadcast.
+     * @param {number} [counter] Current recursion index.
+     * @returns {Promise<boolean>} Resolves when all events have been handled.
+     */
     broadcastEvents: function (events, counter) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -143,6 +186,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Removes finished events and optionally logs them, or updates error events for retry visibility.
+     *
+     * @param {Object} event Processed event model.
+     * @returns {void}
+     */
     handleProcessedEvent: function (event) {
         let _self = this;
         try {
@@ -183,6 +232,12 @@ module.exports = {
         }
     },
 
+    /**
+     * Broadcasts one event to its prepared target list.
+     *
+     * @param {Object} event Event model with concrete targets.
+     * @returns {Promise<boolean>} Resolves when target broadcasting completes.
+     */
     broadcastEvent: function (event) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -205,6 +260,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Broadcasts an event to concrete targets sequentially and records target-level logs.
+     *
+     * @param {Object} event Event model being broadcast.
+     * @param {Object[]} targets Concrete target list.
+     * @param {number} [counter] Current recursion index.
+     * @returns {Promise<boolean>} Resolves when all targets have been attempted.
+     */
     broadcastEventToTarget: function (event, targets, counter) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -274,6 +337,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Builds an authenticated internal module request for a module target.
+     *
+     * @param {Object} event Event payload sent to the target module.
+     * @param {Object} target Concrete target metadata.
+     * @returns {Object} Module request descriptor.
+     */
     prepareURL: function (event, target) {
         let connectionType = 'abstract';
         let nodeId = CONFIG.get('nodeId');

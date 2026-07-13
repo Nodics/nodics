@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nPublish/schemas/schemas
+ * @description Reserved schema contribution for publish/version promotion models.
+ * @layer schema
+ * @owner nPublish
+ * @override Project modules may add later schemas for customer publishing governance.
+ */
 module.exports = {
 
 };

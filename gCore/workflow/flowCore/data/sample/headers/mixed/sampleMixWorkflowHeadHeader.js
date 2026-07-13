@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/workflow/flowCore/data/sample/headers/mixed/sampleMixWorkflowHeadHeader
+ * @description Provides workflow initializer or sample data consumed by the import layer.
+ * @layer data
+ * @owner workflow
+ * @override Projects may override or extend this initializer data through layered import data rather than editing out-of-the-box framework records.
+ */
 module.exports = {
     workflow: {
         sampleMixWorkflowHead: {

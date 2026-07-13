@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module kickoff/kickoffEnvs/kickoffPreProd/config/postscripts
+ * @description Defines default kickoffEnvs configuration used during module startup and layering.
+ * @layer config
+ * @owner kickoffEnvs
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };

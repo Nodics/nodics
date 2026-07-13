@@ -9,7 +9,20 @@
 
  */
 
+/**
+ * @module gCore/profile/src/service/user/defaultUserStateService
+ * @description Implements profile default user state service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+    /**
+     * Retrieves user state information.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     findUserState: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {

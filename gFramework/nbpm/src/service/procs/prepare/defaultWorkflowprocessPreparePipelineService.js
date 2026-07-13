@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nbpm/src/service/procs/prepare/defaultWorkflowprocessPreparePipelineService
+ * @description Implements nbpm default workflowprocess prepare pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +41,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating input for workflow item assigned process');
         if (!request.tenant) {
@@ -48,6 +71,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Validates operation rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     checkOperation: function (request, response, process) {
         this.LOG.debug('Validating input for workflow item assigned process');
         let sourceDetail = request.data.carrier.sourceDetail;
@@ -62,6 +93,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Retrieves schema service information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     loadSchemaService: function (request, response, process) {
         this.LOG.debug('Validating input for workflow item assigned process');
         let sourceDetail = request.data.carrier.sourceDetail;
@@ -72,6 +111,22 @@ module.exports = {
             process.error(request, response, new CLASSES.WorkflowError('Invalid schemaName, could not found any service'));
         }
     },
+
+    /**
+
+     * Retrieves schema model information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     loadSchemaModel: function (request, response, process) {
         this.LOG.debug('Loading schema item for triggered workflow');
@@ -105,6 +160,14 @@ module.exports = {
         }
 
     },
+    /**
+     * Retrieves search service information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     loadSearchService: function (request, response, process) {
         this.LOG.debug('Validating input for workflow item assigned process');
         process.error(request, response, new CLASSES.WorkflowError('Not yet implemented this functionality loadSearchService: DefaultWorkflowProcessPreparePipelineService'));
@@ -115,6 +178,14 @@ module.exports = {
         //     process.error(request, response, new CLASSES.WorkflowError('Invalid indexName, could not found any service'));
         // }
     },
+    /**
+     * Retrieves search model information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     loadSearchModel: function (request, response, process) {
         this.LOG.debug('Loading search item for triggered workflow');
         process.error(request, response, new CLASSES.WorkflowError('Not yet implemented this functionality loadSearchModel: DefaultWorkflowProcessPreparePipelineService'));
@@ -133,6 +204,14 @@ module.exports = {
         //     process.error(request, response, new CLASSES.WorkflowError(error, 'Could not load item for the workflow: ' + request.data.originalCode));
         // });
     },
+    /**
+     * Validates response rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateresponse: function (request, response, process) {
         this.LOG.debug('Validating loaded response, number of models');
         let carrierData = request.data.carrier;

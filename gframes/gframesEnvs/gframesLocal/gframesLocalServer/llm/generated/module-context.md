@@ -61,9 +61,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
+| Documented | 11 |
 | Partially documented | 2 |
-| Undocumented | 11 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -86,21 +86,21 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gframes/gframesEnvs/gframesLocal/gframesLocalServer/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gframes/gframesEnvs/gframesLocal/gframesLocalServer/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default gframesEnvs configuration used during module startup and layering. |  |
+| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default gframesEnvs configuration used during module startup and layering. |  |
+| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/config/properties.js` | `config` | `documented` | 0/0 | Defines default gframesEnvs configuration used during module startup and layering. |  |
 | `gframes/gframesEnvs/gframesLocal/gframesLocalServer/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/nodics.js` | `module` | `documented` | 2/2 | Registers the gframesEnvs module lifecycle hooks and module-level startup behavior. |  |
 | `gframes/gframesEnvs/gframesLocal/gframesLocalServer/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/service/defaultSampleService.js` | `src` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers gframesEnvs interceptor wiring for pipeline extension points. |  |
+| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines gframesEnvs pipeline wiring and execution contracts. |  |
+| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines gframesEnvs route registration and HTTP exposure metadata. |  |
+| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/router/router.js` | `src` | `documented` | 0/0 | Defines gframesEnvs route registration and HTTP exposure metadata. |  |
+| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines gframesEnvs schema metadata, model contracts, and generated capability settings. |  |
+| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements gframesEnvs default sample service business behavior and extension logic. |  |
+| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared gframesEnvs utility exports for utils. |  |
+| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines gframesEnvs test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gframes/gframesEnvs/gframesLocal/gframesLocalServer/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines gframesEnvs test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

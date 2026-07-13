@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nDefault/utils/utils
+ * @description Reserved utility contribution for the default framework baseline.
+ * @layer utility
+ * @owner nDefault
+ * @override Later modules provide concrete utilities through layered utility fragments.
+ */
 module.exports = {
 
 };

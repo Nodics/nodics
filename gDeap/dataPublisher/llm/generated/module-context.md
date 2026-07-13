@@ -59,9 +59,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
+| Documented | 10 |
 | Partially documented | 2 |
-| Undocumented | 10 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -84,20 +84,20 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gDeap/dataPublisher/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gDeap/dataPublisher/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gDeap/dataPublisher/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataPublisher/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataPublisher/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gDeap/dataPublisher/config/postscripts.js` | `config` | `documented` | 0/0 | Reserved post-start script contribution for DEAP data publishing. |  |
+| `gDeap/dataPublisher/config/prescripts.js` | `config` | `documented` | 0/0 | Reserved pre-start script contribution for DEAP data publishing. |  |
+| `gDeap/dataPublisher/config/properties.js` | `config` | `documented` | 0/0 | Reserved property contribution for DEAP data publishing behavior. |  |
 | `gDeap/dataPublisher/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gDeap/dataPublisher/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gDeap/dataPublisher/nodics.js` | `module` | `documented` | 2/2 | DEAP data publisher module lifecycle entrypoint. |  |
 | `gDeap/dataPublisher/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gDeap/dataPublisher/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataPublisher/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataPublisher/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataPublisher/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataPublisher/src/service/defaultSampleService.js` | `src` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataPublisher/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataPublisher/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gDeap/dataPublisher/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gDeap/dataPublisher/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Reserved pipeline definition contribution for DEAP data publishing flows. |  |
+| `gDeap/dataPublisher/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved application router configuration contribution for DEAP data publisher APIs. |  |
+| `gDeap/dataPublisher/src/router/router.js` | `src` | `documented` | 0/0 | Reserved route definition contribution for DEAP data publisher APIs. |  |
+| `gDeap/dataPublisher/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Reserved schema contribution for DEAP data publishing models. |  |
+| `gDeap/dataPublisher/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Sample service scaffold for DEAP data publishing capabilities. |  |
+| `gDeap/dataPublisher/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility contribution for DEAP data publishing helpers. |  |
+| `gDeap/dataPublisher/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Common sample test scaffold for DEAP data publisher contracts. | add JSDoc for 7 exported method(s) |
+| `gDeap/dataPublisher/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Local-environment sample test scaffold for DEAP data publisher behavior. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

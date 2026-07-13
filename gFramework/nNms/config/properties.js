@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nNms/config/properties
+ * @description Defines default nNms configuration used during module startup and layering.
+ * @layer config
+ * @owner nNms
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
     activateNodePing: false,
     nodePingTimeout: 10 * 1000

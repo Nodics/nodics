@@ -9,7 +9,28 @@
 
  */
 
+/**
+ * @module gCore/profile/src/controller/enterprise/defaultEnterpriseController
+ * @description Exposes request handlers for profile default enterprise controller operations.
+ * @layer controller
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+
+    /**
+
+     * Retrieves enterprise information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getEnterprise: function (request, callback) {
         if (UTILS.isBlank(request.entCode)) {

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module wcms/interceptors/interceptors
+ * @description Reserved interceptor contribution point for WCMS content validation and workflow governance.
+ * @layer interceptor
+ * @owner wcms
+ * @override Project content modules may add later interceptors for customer-specific CMS rules.
+ */
 module.exports = {
 
 };

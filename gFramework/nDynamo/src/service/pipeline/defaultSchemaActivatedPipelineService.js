@@ -13,6 +13,13 @@ const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 
+/**
+ * @module gFramework/nDynamo/src/service/pipeline/defaultSchemaActivatedPipelineService
+ * @description Implements nDynamo default schema activated pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner nDynamo
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -37,10 +44,42 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates schema rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateSchema: function (request, response, process) {
         this.LOG.debug('Validating request for schema : ' + request.runtimeSchema.code);
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Builds raw schema data.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     buildRawSchema: function (request, response, process) {
         this.LOG.debug('Validating request for schema : ' + request.runtimeSchema.code);
@@ -50,6 +89,22 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+
+    /**
+
+     * Builds models data.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     buildModels: function (request, response, process) {
         this.LOG.debug('Validating request for schema : ' + request.runtimeSchema.code);
@@ -80,6 +135,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Builds search schema data.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     buildSearchSchema: function (request, response, process) {
         this.LOG.debug('Preparing search schema : ' + request.runtimeSchema.code);
         try {
@@ -92,6 +163,22 @@ module.exports = {
             process.error(request, response, error);
         }
     },
+
+    /**
+
+     * Builds search models data.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     buildSearchModels: function (request, response, process) {
         this.LOG.debug('Preparing search models : ' + request.runtimeSchema.code);
@@ -117,6 +204,22 @@ module.exports = {
             process.error(request, response, error);
         }
     },
+
+    /**
+
+     * Updates search indexes information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     updateSearchIndexes: function (request, response, process) {
         this.LOG.debug('Preparing search indexes : ' + request.runtimeSchema.code);
@@ -146,6 +249,22 @@ module.exports = {
             process.error(request, response, error);
         }
     },
+
+    /**
+
+     * Builds services data.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     buildServices: function (request, response, process) {
         this.LOG.debug('Validating request for schema : ' + request.runtimeSchema.code);
@@ -182,6 +301,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Builds facades data.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     buildFacades: function (request, response, process) {
         this.LOG.debug('Validating request for schema : ' + request.runtimeSchema.code);
         let runtimeSchema = request.runtimeSchema;
@@ -217,6 +352,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Builds controller data.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     buildController: function (request, response, process) {
         this.LOG.debug('Validating request for schema : ' + request.runtimeSchema.code);
         let runtimeSchema = request.runtimeSchema;
@@ -251,6 +402,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Executes activate routers behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     activateRouters: function (request, response, process) {
         this.LOG.debug('Validating request for schema : ' + request.runtimeSchema.code);

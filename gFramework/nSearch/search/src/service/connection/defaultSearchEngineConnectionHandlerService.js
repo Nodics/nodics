@@ -11,6 +11,13 @@
 
 
 
+/**
+ * @module gFramework/nSearch/search/src/service/connection/defaultSearchEngineConnectionHandlerService
+ * @description Implements nSearch default search engine connection handler service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,16 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates search connections information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     createSearchConnections: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -47,6 +64,18 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Updates tenants search engines information.
+
+     *
+
+     * @param {*} tntCodes Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     createTenantsSearchEngines: function (tntCodes) {
         let _self = this;
@@ -73,6 +102,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates modules search engines information.
+
+     *
+
+     * @param {*} modules Method input.
+
+     * @param {*} tntCode Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     createModulesSearchEngines: function (modules, tntCode) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -96,6 +139,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Updates module search engines information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} tntCode Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     createModuleSearchEngines: function (moduleName, tntCode) {
         let _self = this;

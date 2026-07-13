@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nCache/redisCache/src/pipelines/pipelinesDefinition
+ * @description Defines nCache pipeline wiring and execution contracts.
+ * @layer pipelines
+ * @owner nCache
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

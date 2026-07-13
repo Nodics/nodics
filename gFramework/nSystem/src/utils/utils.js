@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSystem/src/utils/utils
+ * @description Provides shared nSystem utility exports for utils.
+ * @layer utils
+ * @owner nSystem
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

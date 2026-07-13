@@ -12,6 +12,13 @@
 /*
    Change this file name as per test case name. This just a sample file
 */
+/**
+ * @module dataPublisher/test/common/commonTest
+ * @description Common sample test scaffold for DEAP data publisher contracts.
+ * @layer test
+ * @owner dataPublisher
+ * @override Project DEAP modules may replace this scaffold with concrete publishing tests.
+ */
 const Chai = require('chai');
 const expect = Chai.expect;
 

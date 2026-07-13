@@ -1,3 +1,10 @@
+/**
+ * @module gFramework/nData/nImport/import/test/multiFormatDataProcessors.test
+ * @description Validates JavaScript, JSON, CSV, and Excel import data processors against shared import diagnostics behavior.
+ * @layer test
+ * @owner nData
+ * @override Projects may add focused processor fixtures beside this test while preserving import format behavior.
+ */
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
@@ -23,6 +30,12 @@ let pipelineCalls = [];
 const importDiagnostics = require('../src/service/diagnostics/defaultImportDiagnosticsService');
 
 global.CONFIG = {
+    /**
+     * Retrieves  information.
+     *
+     * @param {*} key Method input.
+     * @returns {*} Method result.
+     */
     get: function (key) {
         if (key === 'data') {
             return {
@@ -47,6 +60,13 @@ global.CONFIG = {
 global.SERVICE = {
     DefaultImportDiagnosticsService: importDiagnostics,
     DefaultPipelineService: {
+        /**
+         * Processes  behavior.
+         *
+         * @param {*} pipelineName Method input.
+         * @param {*} request Method input.
+         * @returns {*} Method result.
+         */
         start: function (pipelineName, request) {
             pipelineCalls.push({
                 pipelineName: pipelineName,
@@ -61,7 +81,17 @@ global.SERVICE = {
 function createService(processor) {
     return Object.assign({}, processor, {
         LOG: {
+            /**
+             * Records debug output for the test fixture.
+             *
+             * @returns {*} Method result.
+             */
             debug: function () {},
+            /**
+             * Records warn output for the test fixture.
+             *
+             * @returns {*} Method result.
+             */
             warn: function () {}
         }
     });
@@ -83,9 +113,22 @@ function runProcessor(processor, files) {
             }
         };
         createService(processor).processDataChunk(request, {}, {
+            /**
+             * Processes success behavior.
+             *
+             * @returns {*} Method result.
+             */
             nextSuccess: function () {
                 resolve(request);
             },
+            /**
+             * Records error output for the test fixture.
+             *
+             * @param {*} _request Method input.
+             * @param {*} _response Method input.
+             * @param {*} error Method input.
+             * @returns {*} Method result.
+             */
             error: function (_request, _response, error) {
                 reject(error);
             }

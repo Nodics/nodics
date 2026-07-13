@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/workflow/flowApi/src/facade/defaultWorkflowFacade
+ * @description Coordinates facade-level delegation for workflow default workflow facade operations.
+ * @layer facade
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,15 +39,45 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Initializes carrier behavior for the module runtime.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     initCarrier: function (request) {
         return SERVICE.DefaultWorkflowService.initCarrier(request);
     },
+    /**
+     * Executes release carrier behavior.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     releaseCarrier: function (request) {
         return SERVICE.DefaultWorkflowService.releaseCarrier(request);
     },
+    /**
+     * Updates carrier information.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     updateCarrier: function (request) {
         return SERVICE.DefaultWorkflowService.updateCarrier(request);
     },
+    /**
+     * Executes perform action behavior.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     performAction: function (request) {
         return SERVICE.DefaultWorkflowService.performAction(request);
     },

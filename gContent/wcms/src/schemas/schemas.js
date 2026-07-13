@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module wcms/schemas/schemas
+ * @description Reserved schema contribution point for WCMS content model extensions.
+ * @layer schema
+ * @owner wcms
+ * @override Project content modules may add later schemas for customer-specific content types.
+ */
 module.exports = {
 
 };

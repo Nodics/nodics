@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nData/dataCore/nodics
+ * @description Registers the nData module lifecycle hooks and module-level startup behavior.
+ * @layer module
+ * @owner nData
+ * @override Projects may override lifecycle behavior through later active modules instead of modifying this module directly.
+ */
 module.exports = {
     /**
      * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 

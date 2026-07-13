@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nCatalog/config/properties
+ * @description Defines default nCatalog configuration used during module startup and layering.
+ * @layer config
+ * @owner nCatalog
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };

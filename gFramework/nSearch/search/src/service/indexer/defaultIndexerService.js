@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSearch/search/src/service/indexer/defaultIndexerService
+ * @description Implements nSearch default indexer service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -31,6 +38,18 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Runs pre-processing logic for pare indexer.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     prepareIndexer: function (request) {
         return new Promise((resolve, reject) => {

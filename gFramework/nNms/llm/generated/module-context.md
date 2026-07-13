@@ -65,9 +65,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 8 |
-| Undocumented | 12 |
+| Documented | 18 |
+| Partially documented | 2 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -90,28 +90,28 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nNms/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nNms/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nNms/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nNms/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nNms/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nNms/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nNms configuration used during module startup and layering. |  |
+| `gFramework/nNms/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nNms configuration used during module startup and layering. |  |
+| `gFramework/nNms/config/properties.js` | `config` | `documented` | 0/0 | Defines default nNms configuration used during module startup and layering. |  |
 | `gFramework/nNms/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nNms/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nNms/nodics.js` | `module` | `documented` | 2/2 | Registers the nNms module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nNms/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nNms/src/controller/defaultNodeManagerController.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gFramework/nNms/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nNms/src/facade/defaultNodeManagerFacade.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gFramework/nNms/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nNms/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nNms/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nNms/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nNms/src/service/config/defaultNodeConfigurationService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gFramework/nNms/src/service/node/defaultNodeDownHandlerService.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gFramework/nNms/src/service/node/defaultNodeManagerService.js` | `src` | `partially-documented` | 2/9 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gFramework/nNms/src/service/node/defaultNodeStateChangeHandlerService.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gFramework/nNms/src/service/node/defaultNodeUpHandlerService.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gFramework/nNms/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nNms/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nNms/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gFramework/nNms/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nNms/src/controller/defaultNodeManagerController.js` | `src` | `documented` | 5/5 | Exposes request handlers for nNms default node manager controller operations. |  |
+| `gFramework/nNms/src/event/listeners.js` | `src` | `documented` | 0/0 | Documents nNms listeners module behavior. |  |
+| `gFramework/nNms/src/facade/defaultNodeManagerFacade.js` | `src` | `documented` | 5/5 | Coordinates facade-level delegation for nNms default node manager facade operations. |  |
+| `gFramework/nNms/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nNms pipeline wiring and execution contracts. |  |
+| `gFramework/nNms/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nNms route registration and HTTP exposure metadata. |  |
+| `gFramework/nNms/src/router/router.js` | `src` | `documented` | 0/0 | Defines nNms route registration and HTTP exposure metadata. |  |
+| `gFramework/nNms/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nNms schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nNms/src/service/config/defaultNodeConfigurationService.js` | `src` | `documented` | 6/6 | Implements nNms default node configuration service business behavior and extension logic. |  |
+| `gFramework/nNms/src/service/node/defaultNodeDownHandlerService.js` | `src` | `documented` | 4/4 | Implements nNms default node down handler service business behavior and extension logic. |  |
+| `gFramework/nNms/src/service/node/defaultNodeManagerService.js` | `src` | `documented` | 9/9 | Implements nNms default node manager service business behavior and extension logic. |  |
+| `gFramework/nNms/src/service/node/defaultNodeStateChangeHandlerService.js` | `src` | `documented` | 4/4 | Implements nNms default node state change handler service business behavior and extension logic. |  |
+| `gFramework/nNms/src/service/node/defaultNodeUpHandlerService.js` | `src` | `documented` | 3/3 | Implements nNms default node up handler service business behavior and extension logic. |  |
+| `gFramework/nNms/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nNms utility exports for status definitions. |  |
+| `gFramework/nNms/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nNms utility exports for utils. |  |
+| `gFramework/nNms/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nNms test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nNms/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nNms test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

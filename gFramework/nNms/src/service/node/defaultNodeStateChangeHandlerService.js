@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nNms/src/service/node/defaultNodeStateChangeHandlerService
+ * @description Implements nNms default node state change handler service business behavior and extension logic.
+ * @layer service
+ * @owner nNms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Processes node active behavior.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} nodeId Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     handleNodeActive: function (moduleName, nodeId) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -53,6 +74,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Processes node inactive behavior.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} nodeId Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleNodeInactive: function (moduleName, nodeId) {
         let _self = this;

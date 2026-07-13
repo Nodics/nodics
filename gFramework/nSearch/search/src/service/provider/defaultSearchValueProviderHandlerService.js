@@ -11,7 +11,28 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nSearch/search/src/service/provider/defaultSearchValueProviderHandlerService
+ * @description Implements nSearch default search value provider handler service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+
+    /**
+
+     * Processes value providers behavior.
+
+     *
+
+     * @param {*} valueProviders Method input.
+
+     * @param {*} model Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleValueProviders: function (valueProviders, model) {
         let _self = this;
@@ -23,6 +44,14 @@ module.exports = {
             });
         });
     },
+    /**
+     * Processes value provider behavior.
+     *
+     * @param {*} properties Method input.
+     * @param {*} valueProviders Method input.
+     * @param {*} model Method input.
+     * @returns {*} Method result.
+     */
     handleValueProvider: function (properties, valueProviders, model) {
         let _self = this;
         return new Promise((resolve, reject) => {

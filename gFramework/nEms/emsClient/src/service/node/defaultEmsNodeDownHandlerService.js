@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nEms/emsClient/src/service/node/defaultEmsNodeDownHandlerService
+ * @description Implements nEms default ems node down handler service business behavior and extension logic.
+ * @layer service
+ * @owner nEms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +41,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         if (!request.moduleName) {
             process.error(request, response, new CLASSES.NodicsError('ERR_EMS_00000', 'Invalid moduleName'));
@@ -41,6 +64,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Processes responsibilities behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleResponsibilities: function (request, response, process) {
         this.startRemotePublishers(request.moduleName, request.remoteNode).then(() => {
@@ -51,6 +90,20 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+
+    /**
+
+     * Executes start remote publishers behavior.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} remoteNode Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     startRemotePublishers: function (moduleName, remoteNode) {
         return new Promise((resolve, reject) => {
@@ -84,6 +137,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Executes start remote consumers behavior.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} remoteNode Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     startRemoteConsumers: function (moduleName, remoteNode) {
         let _self = this;

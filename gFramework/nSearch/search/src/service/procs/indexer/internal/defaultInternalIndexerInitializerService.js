@@ -12,6 +12,13 @@ const _ = require('lodash');
 var sizeof = require('object-sizeof');
 const fse = require('fs-extra');
 
+/**
+ * @module gFramework/nSearch/search/src/service/procs/indexer/internal/defaultInternalIndexerInitializerService
+ * @description Implements nSearch default internal indexer initializer service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -35,10 +42,42 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating internal indexer request');
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Runs pre-processing logic for pare header.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     prepareHeader: function (request, response, process) {
         this.LOG.debug('Building options for internal indexer');
@@ -70,11 +109,43 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+
+     * Runs pre-processing logic for pare input path.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     prepareInputPath: function (request, response, process) {
         this.LOG.debug('Preparing input data path');
         request.inputPath = {};
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Runs pre-processing logic for pare output path.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     prepareOutputPath: function (request, response, process) {
         this.LOG.debug('Preparing output file path');
@@ -89,6 +160,22 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+
+     * Executes flush output folder behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     flushOutputFolder: function (request, response, process) {
         if (request.header.options.finalizeData) {
             this.LOG.debug('Cleaning output directory : ' + request.outputPath.dataPath);
@@ -101,6 +188,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Builds query data.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     buildQuery: function (request, response, process) {
         let indexerConfig = request.header.local.indexerConfig;
         let query = _.merge({}, indexerConfig.schema.query || {});
@@ -118,6 +213,22 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+
+     * Initializes fatch data behavior for the module runtime.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     initFatchData: function (request, response, process) {
         this.LOG.debug('Changing state of current indexer: ' + request.header.local.indexerConfig.code);
         this.fatchData(request, {
@@ -134,6 +245,20 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+
+    /**
+
+     * Executes fatch data behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     fatchData: function (request, options) {
         let _self = this;
@@ -174,6 +299,16 @@ module.exports = {
             }
         });
     },
+    /**
+     * Processes data behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} options Method input.
+     * @param {*} data Method input.
+     * @param {*} resolve Method input.
+     * @param {*} reject Method input.
+     * @returns {*} Method result.
+     */
     processData: function (request, options, data, resolve, reject) {
         let _self = this;
         try {
@@ -238,6 +373,14 @@ module.exports = {
             reject(new CLASSES.SearchError(error));
         }
     },
+    /**
+     * Executes import finalize data behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     importFinalizeData: function (request, response, process) {
         try {
             if (request.header.options.finalizeData) {

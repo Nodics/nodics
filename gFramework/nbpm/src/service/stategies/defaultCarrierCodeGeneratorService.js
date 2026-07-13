@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nbpm/src/service/stategies/defaultCarrierCodeGeneratorService
+ * @description Implements nbpm default carrier code generator service business behavior and extension logic.
+ * @layer service
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -34,6 +41,18 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Executes generate carrier code behavior.
+
+     *
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     generateCarrierCode: function (options) {
         return options.model.code;

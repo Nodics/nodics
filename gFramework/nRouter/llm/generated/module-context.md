@@ -57,9 +57,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 19 |
-| Partially documented | 1 |
-| Undocumented | 9 |
+| Documented | 26 |
+| Partially documented | 0 |
+| Undocumented | 3 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -81,12 +81,12 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nRouter/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nRouter/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nRouter/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nRouter/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nRouter/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nRouter/config/postscripts.js` | `config` | `documented` | 0/0 | Reserved post-start script contribution for router initialization after route artifacts are available. |  |
+| `gFramework/nRouter/config/prescripts.js` | `config` | `documented` | 0/0 | Reserved pre-start script contribution for router initialization work. |  |
+| `gFramework/nRouter/config/properties.js` | `config` | `documented` | 0/0 | Default router configuration for route initialization order, body/response handlers, authorization, and server endpoints. |  |
 | `gFramework/nRouter/config/tooling.js` | `config` | `documented` | 0/0 | Contributes OpenAPI contract generation to the non-runtime Nodics tooling registry. |  |
 | `gFramework/nRouter/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nRouter/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nRouter/nodics.js` | `module` | `documented` | 2/2 | nRouter module lifecycle entrypoint that loads router definitions, initializes router services, applies configuration, registers routes, and loads persisted runtime routers. |  |
 | `gFramework/nRouter/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nRouter/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Pipeline definitions for Nodics API request execution. These definitions compose the request handler pipeline, secured authorization pipeline, and non-secured enterprise/tenant resolution pipeline used by `DefaultRequestHandlerService`. |  |
 | `gFramework/nRouter/src/router/appConfig.js` | `src` | `documented` | 8/8 | Default Express application configuration hooks for nRouter. These hooks are executed by `DefaultRouterConfigurationService` against the consolidated default app or module-specific apps based on the selected runtime topology. |  |
@@ -102,16 +102,16 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nRouter/src/service/request/defaultRequestHandlerPipelineService.js` | `src` | `documented` | 12/12 | Shared request pipeline service that normalizes authentication headers, handles help and special requests, chooses secured versus non-secured flow, performs API cache lookup, and dispatches requests to generated or custom controllers. |  |
 | `gFramework/nRouter/src/service/request/defaultSecuredRequestPipelineService.js` | `src` | `documented` | 18/18 | Secured API request pipeline that validates credentials, authorizes API keys or bearer tokens, resolves active tenant context, checks route access groups, and optionally checks action-level route permissions before controller execution. |  |
 | `gFramework/nRouter/src/service/router/defaultRouterInitializerService.js` | `src` | `documented` | 1/1 | Initializes Express application and router instances for router-enabled modules according to the selected consolidated or modular runtime topology. |  |
-| `gFramework/nRouter/src/service/router/defaultRouterOperationService.js` | `src` | `documented` | 9/9 | Bridges effective Nodics router definitions to Express operations. It binds HTTP methods, delegates incoming requests to the request handler service, and keeps the runtime API-only when web modules are present but not part of the server profile. |  |
+| `gFramework/nRouter/src/service/router/defaultRouterOperationService.js` | `src` | `documented` | 8/8 | Bridges effective Nodics router definitions to Express operations. It binds HTTP methods and delegates incoming requests to the request handler service. |  |
 | `gFramework/nRouter/src/service/router/defaultRouterService.js` | `src` | `documented` | 14/14 | Builds and starts Nodics API routing from the effective module hierarchy. It prepares module server configuration, generates schema-driven default routers, registers common and module-specific routers, and starts HTTP/HTTPS listeners for consolidated or modular runtime topologies. |  |
 | `gFramework/nRouter/src/tooling/generateOpenapiContract.js` | `src` | `documented` | 0/0 | Generates an OpenAPI contract from the effective layered router and schema definitions for a selected Nodics server or node. |  |
-| `gFramework/nRouter/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nRouter/src/utils/utils.js` | `src` | `undocumented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
+| `gFramework/nRouter/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Status and error definitions for router help, route governance, and override validation. |  |
+| `gFramework/nRouter/src/utils/utils.js` | `src` | `documented` | 2/2 | Router utility helpers for route/model cache eligibility decisions. |  |
 | `gFramework/nRouter/test/authHeaderNormalization.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nRouter/test/jsonResponseStatusResolution.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nRouter/test/openapiContractGeneration.test.js` | `test` | `documented` | 0/0 | Verifies that OpenAPI generation follows effective layered schema and router definitions, excludes inactive capabilities, preserves security metadata, rejects conflicting routes and invalid references, and emits accurate request and response contracts. |  |
 | `gFramework/nRouter/test/routeActionAuthorization.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nRouter/test/routerContractTestUtils.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nRouter/test/routerContractTestUtils.js` | `test` | `documented` | 0/0 | Shared router test helpers for flattening nested route definitions and asserting route contract fields. |  |
 
 ## Extension Contract
 

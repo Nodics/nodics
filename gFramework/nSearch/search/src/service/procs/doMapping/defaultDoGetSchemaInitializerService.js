@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSearch/search/src/service/procs/doMapping/defaultDoGetSchemaInitializerService
+ * @description Implements nSearch default do get schema initializer service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +39,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating do get schema request');
         if (!request.searchModel) {
@@ -40,6 +63,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Executes apply pre interceptors behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do get schema interceptors');
@@ -56,6 +95,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes apply pre validators behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     applyPreValidators: function (request, response, process) {
         this.LOG.debug('Applying pre do get schema validators');
         let indexName = request.indexName || request.searchModel.indexName;
@@ -71,6 +126,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Processes query behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing do get schema query');
         request.searchModel.doGetSchema(request).then(result => {
@@ -83,6 +154,22 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+
+    /**
+
+     * Executes apply post validators behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     applyPostValidators: function (request, response, process) {
         this.LOG.debug('Applying pre do get schema validators');
@@ -98,6 +185,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Executes apply post interceptors behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do get schema interceptors');

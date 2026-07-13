@@ -10,6 +10,13 @@
  */
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nData/nImport/jsImport/src/service/init/defaultJsFileDataProcessService
+ * @description Implements nData default js file data process service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -33,6 +40,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to process JS file');
         if (!request.files || !(request.files instanceof Array) || request.files.length <= 0) {
@@ -43,6 +66,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Processes data chunk behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     processDataChunk: function (request, response, process) {
         this.LOG.debug('Starting processing data chunks');
@@ -70,6 +109,24 @@ module.exports = {
             process.error(request, response, new CLASSES.DataImportError(error));
         });
     },
+
+    /**
+
+     * Processes files behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} files Method input.
+
+     * @param {*} models Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleFiles: function (request, response, files, models = {}) {
         let _self = this;

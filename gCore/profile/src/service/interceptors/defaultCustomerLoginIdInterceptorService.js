@@ -9,7 +9,21 @@
 
  */
 
+/**
+ * @module gCore/profile/src/service/interceptors/defaultCustomerLoginIdInterceptorService
+ * @description Implements profile default customer login id interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+    /**
+     * Validates login id rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @returns {*} Method result.
+     */
     validateLoginId: function (request, response) {
         let loginIdFormat = CONFIG.get('profile').loginIdFormat;
         let loginIdFormatValidator = CONFIG.get('profile').loginIdFormatValidators[loginIdFormat];

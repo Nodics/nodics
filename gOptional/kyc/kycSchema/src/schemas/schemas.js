@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gOptional/kyc/kycSchema/src/schemas/schemas
+ * @description Defines kyc schema metadata, model contracts, and generated capability settings.
+ * @layer schemas
+ * @owner kyc
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     kyc: {
         kyc: {

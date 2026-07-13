@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nNms/src/service/node/defaultNodeDownHandlerService
+ * @description Implements nNms default node down handler service business behavior and extension logic.
+ * @layer service
+ * @owner nNms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -34,6 +41,22 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Processes node down behavior.
+
+     *
+
+     * @param {*} event Method input.
+
+     * @param {*} callback Method input.
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleNodeDown: function (event, callback, request) {
         event.moduleConfig = CONFIG.get('nodePingableModules')[event.target];
@@ -61,6 +84,22 @@ module.exports = {
             });
         }
     },
+
+    /**
+
+     * Executes request responsibility behavior.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} downNode Method input.
+
+     * @param {*} nodes Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     requestResponsibility: function (moduleName, downNode, nodes) {
         return new Promise((resolve, reject) => {

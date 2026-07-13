@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nNms/src/service/node/defaultNodeUpHandlerService
+ * @description Implements nNms default node up handler service business behavior and extension logic.
+ * @layer service
+ * @owner nNms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -34,6 +41,22 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Processes node up behavior.
+
+     *
+
+     * @param {*} event Method input.
+
+     * @param {*} callback Method input.
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleNodeUp: function (event, callback, request) {
         event.moduleConfig = CONFIG.get('nodePingableModules')[event.target];

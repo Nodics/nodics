@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module wcms/config/properties
+ * @description Reserved WCMS property contribution for workflow-backed content management behavior.
+ * @layer config
+ * @owner wcms
+ * @override Project content modules may provide later property fragments for WCMS behavior.
+ */
 module.exports = {
 
 };

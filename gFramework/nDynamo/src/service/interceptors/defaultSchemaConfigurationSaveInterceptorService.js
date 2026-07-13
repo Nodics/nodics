@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nDynamo/src/service/interceptors/defaultSchemaConfigurationSaveInterceptorService
+ * @description Implements nDynamo default schema configuration save interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner nDynamo
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -36,6 +43,27 @@ module.exports = {
     },
 
 
+    /**
+
+
+     * Validates if module active rules.
+
+
+     *
+
+
+     * @param {*} request Method input.
+
+
+     * @param {*} response Method input.
+
+
+     * @returns {*} Method result.
+
+
+     */
+
+
     checkIfModuleActive: function (request, response) {
         return new Promise((resolve, reject) => {
             let moduleName = request.model.moduleName;
@@ -47,6 +75,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes assign default access group behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     assignDefaultAccessGroup: function (request, response) {
         return new Promise((resolve, reject) => {
             if (!request.model.accessGroups || UTILS.isArray(request.model.accessGroups)) {
@@ -57,6 +99,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Executes merge existing schema behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     mergeExistingSchema: function (request, response) {
         return new Promise((resolve, reject) => {

@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gCore/workflow/flowCore/src/service/procs/prepare/defaultWorkflowPreparePipelineService
+ * @description Implements workflow default workflow prepare pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         if (!request.tenant) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
@@ -44,6 +67,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Runs pre-processing logic for pare response.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     prepareResponse: function (request, response, process) {
         if (!response.success) {
             response.success = {
@@ -52,6 +83,14 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    /**
+     * Retrieves workflow carrier information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     loadWorkflowCarrier: function (request, response, process) {
         if (!request.workflowCarrier && request.carrierCode) {
             SERVICE.DefaultWorkflowCarrierService.getWorkflowCarrier({
@@ -69,6 +108,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Retrieves workflow action information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     loadWorkflowAction: function (request, response, process) {
         if (!request.workflowAction) {
             let actionCode = request.actionCode || request.workflowCarrier.activeAction.code;
@@ -86,6 +133,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Retrieves workflow head information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     loadWorkflowHead: function (request, response, process) {
         if (!request.workflowHead) {
             let activeHeadCode = request.workflowCarrier.activeHead
@@ -100,6 +155,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Validates loaded data rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateLoadedData: function (request, response, process) {
         if (!request.workflowCarrier) {
             process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, workflow carrier can not be loaded'));

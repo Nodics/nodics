@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nems/pipelines/pipelinesDefinition
+ * @description Reserved pipeline definition contribution point for event processing workflows.
+ * @layer pipeline
+ * @owner nems
+ * @override Project modules may add later NEMS pipelines for custom event orchestration.
+ */
 module.exports = {
 
 };

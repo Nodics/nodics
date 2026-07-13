@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gOptional/kyc/kycCore/src/service/notify/defaultKycNotificationInitPipelineService
+ * @description Implements kyc default kyc notification init pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner kyc
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -32,6 +39,14 @@ module.exports = {
             resolve(true);
         });
     },
+    /**
+     * Validates request rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to init kyc notification');
         if (!request.tenant || !request.authData) {
@@ -40,6 +55,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Builds kyc query data.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     buildKycQuery: function (request, response, process) {
         this.LOG.debug('Building mobile KYC model retrive query');
         request.kycInput = {
@@ -58,6 +81,14 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    /**
+     * Retrieves kyc mode information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     loadKycMode: function (request, response, process) {
         this.LOG.debug('Loading mobile KYC model');
         SERVICE.DefaultKycService.get({
@@ -76,6 +107,14 @@ module.exports = {
             process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_KYC_00000'));
         });
     },
+    /**
+     * Validates kyc type rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     checkKycType: function (request, response, process) {
         if (request.kycModel.type === ENUMS.KYCType.MOBILE.key) {
             response.targetNode = 'mobileKyc';
@@ -90,6 +129,14 @@ module.exports = {
             process.error(request, response, new CLASSES.WorkflowError('ERR_KYC_00002'));
         }
     },
+    /**
+     * Processes success behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     handleSuccess: function (request, response, process) {
         process.resolve(response.success);
     }

@@ -9,7 +9,21 @@
 
  */
 
+/**
+ * @module cronjob/service/interceptor/DefaultJobActivatorInterceptorService
+ * @description Activates newly saved cronjob records by creating and starting them in the scheduler pool.
+ * @layer service
+ * @owner cronjob
+ * @override Project modules may override this interceptor to change automatic job activation behavior.
+ */
 module.exports = {
+    /**
+     * Creates and starts a newly saved active job whose state is NEW.
+     *
+     * @param {Object} request Interceptor request containing tenant and model.
+     * @param {Object} response Interceptor response context.
+     * @returns {Promise<boolean>} Resolves immediately after scheduling best-effort activation.
+     */
     activateJob: function (request, response) {
         let _self = this;
         return new Promise((resolve, reject) => {

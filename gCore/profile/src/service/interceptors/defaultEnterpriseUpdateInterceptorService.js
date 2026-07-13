@@ -9,9 +9,23 @@
 
  */
 
+/**
+ * @module gCore/profile/src/service/interceptors/defaultEnterpriseUpdateInterceptorService
+ * @description Implements profile default enterprise update interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     // Enterprise Save Events
+    /**
+     * Executes enterprise pre save behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @returns {*} Method result.
+     */
     enterprisePreSave: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.returnModified = request.options.returnModified || true;
@@ -20,6 +34,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes enterprise pre update behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     enterprisePreUpdate: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.returnModified = request.options.returnModified || true;
@@ -27,6 +55,13 @@ module.exports = {
             resolve(true);
         });
     },
+    /**
+     * Executes enterprise pre remove behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @returns {*} Method result.
+     */
     enterprisePreRemove: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.returnModified = request.options.returnModified || true;
@@ -34,6 +69,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Executes enterprise save event behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     enterpriseSaveEvent: function (request, response) {
         return new Promise((resolve, reject) => {
@@ -46,6 +95,20 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Executes enterprise update event behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     enterpriseUpdateEvent: function (request, response) {
         return new Promise((resolve, reject) => {
@@ -63,6 +126,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes enterprise remove event behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     enterpriseRemoveEvent: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve(true);
@@ -78,6 +155,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Processes enterprise update event behavior.
+
+     *
+
+     * @param {*} enterprise Method input.
+
+     * @param {*} isRemoved Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     triggerEnterpriseUpdateEvent: function (enterprise, isRemoved) {
         return new Promise((resolve, reject) => {

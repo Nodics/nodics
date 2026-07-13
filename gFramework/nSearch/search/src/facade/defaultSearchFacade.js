@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSearch/search/src/facade/defaultSearchFacade
+ * @description Coordinates facade-level delegation for nSearch default search facade operations.
+ * @layer facade
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 

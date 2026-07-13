@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gCore/workflow/flowCore/src/service/config/defaultWorkflowConfigurationService
+ * @description Implements workflow default workflow configuration service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     interceptors: {},
     validators: {},
@@ -37,9 +44,33 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates workflow interceptors information.
+
+     *
+
+     * @param {*} interceptors Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     setWorkflowInterceptors: function (interceptors) {
         this.interceptors = interceptors;
     },
+
+    /**
+
+     * Retrieves workflow interceptors information.
+
+     *
+
+     * @param {*} itemCode Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getWorkflowInterceptors: function (itemCode) {
         if (!this.interceptors[itemCode]) {
@@ -47,6 +78,18 @@ module.exports = {
         }
         return this.interceptors[itemCode];
     },
+
+    /**
+
+     * Executes refresh workflow interceptors behavior.
+
+     *
+
+     * @param {*} itemCode Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     refreshWorkflowInterceptors: function (itemCode) {
         if (this.interceptors && !UTILS.isBlank(this.interceptors)) {
@@ -62,6 +105,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Processes workflow interceptor updated behavior.
+
+     *
+
+     * @param {*} event Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     handleWorkflowInterceptorUpdated: function (event, callback) {
         try {
             let itemCode = event.data.item;
@@ -75,9 +132,35 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Updates workflow validators information.
+
+     *
+
+     * @param {*} validators Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     setWorkflowValidators: function (validators) {
         this.validators = validators;
     },
+
+    /**
+
+     * Retrieves workflow validators information.
+
+     *
+
+     * @param {*} tenant Method input.
+
+     * @param {*} itemCode Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getWorkflowValidators: function (tenant, itemCode) {
         if (!this.validators[tenant] || !this.validators[tenant][itemCode]) {
@@ -86,6 +169,20 @@ module.exports = {
         }
         return this.validators[tenant][itemCode];
     },
+
+    /**
+
+     * Executes refresh workflow validators behavior.
+
+     *
+
+     * @param {*} tenant Method input.
+
+     * @param {*} itemCode Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     refreshWorkflowValidators: function (tenant, itemCode) {
         if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant])) {
@@ -100,6 +197,20 @@ module.exports = {
             }
         }
     },
+
+    /**
+
+     * Processes workflow validator updated behavior.
+
+     *
+
+     * @param {*} event Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleWorkflowValidatorUpdated: function (event, callback) {
         try {

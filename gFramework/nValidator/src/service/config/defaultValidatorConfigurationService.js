@@ -9,6 +9,13 @@
 
  */
 const _ = require('lodash');
+/**
+ * @module gFramework/nValidator/src/service/config/defaultValidatorConfigurationService
+ * @description Implements nValidator default validator configuration service business behavior and extension logic.
+ * @layer service
+ * @owner nValidator
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     rawValidators: {},
 
@@ -34,17 +41,67 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates raw validators information.
+
+     *
+
+     * @param {*} rawValidators Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     setRawValidators: function (rawValidators) {
         this.rawValidators = rawValidators;
     },
+
+    /**
+
+     * Retrieves raw validators information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
 
     getRawValidators: function () {
         return this.rawValidators;
     },
 
+    /**
+
+     * Retrieves tenant raw validators information.
+
+     *
+
+     * @param {*} tenant Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getTenantRawValidators: function (tenant) {
         return this.rawValidators[tenant] ? this.rawValidators[tenant] : {};
     },
+
+    /**
+
+     * Runs pre-processing logic for pare item validators.
+
+     *
+
+     * @param {*} tenant Method input.
+
+     * @param {*} itemName Method input.
+
+     * @param {*} type Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     prepareItemValidators: function (tenant, itemName, type) {
         if (!tenant || !NODICS.getActiveTenants().includes(tenant)) {
@@ -65,6 +122,18 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes arrange by tigger behavior.
+
+     *
+
+     * @param {*} itemValidators Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     arrangeByTigger: function (itemValidators) {
         let validatorList = {};
         if (itemValidators && !UTILS.isBlank(itemValidators)) {
@@ -77,6 +146,18 @@ module.exports = {
         }
         return validatorList;
     },
+
+    /**
+
+     * Executes sort validators behavior.
+
+     *
+
+     * @param {*} itemValidators Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     sortValidators: function (itemValidators) {
         let validatorList = {};

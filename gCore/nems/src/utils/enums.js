@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nems/utils/enums
+ * @description Event state and event type enum definitions used by NEMS processing and dispatch.
+ * @layer utility
+ * @owner nems
+ * @override Project modules may add later enum fragments only when event processing supports them.
+ */
 module.exports = {
     EventState: {
         _options: {

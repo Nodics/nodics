@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nController/src/controller/cache/defaultCacheController
+ * @description Exposes request handlers for nController default cache controller operations.
+ * @layer controller
+ * @owner nController
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**

@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module cronjob/lib/CronJobContainer
+ * @description Process-local tenant/job pool that creates, updates, runs, starts, stops, pauses, resumes, and removes cronjob wrappers.
+ * @layer lib
+ * @owner cronjob
+ * @override Project modules may replace this container only when scheduler pooling semantics are intentionally changed.
+ */
 module.exports = function () {
     let _jobPool = {};
     this.LOG = SERVICE.DefaultLoggerService.createLogger('CronJobContainer');

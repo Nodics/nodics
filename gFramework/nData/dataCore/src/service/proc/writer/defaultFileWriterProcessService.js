@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nData/dataCore/src/service/proc/writer/defaultFileWriterProcessService
+ * @description Implements nData default file writer process service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +41,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to finalize local data import');
         if (!request.models || request.models.length <= 0) {
@@ -44,6 +67,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Executes generate data key behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     generateDataKey: function (request, response, process) {
         this.LOG.debug('Generating unique hash key');
@@ -61,6 +100,22 @@ module.exports = {
             process.error(request, response, new CLASSES.DataError(error, 'while generating unique identifier for the data'));
         }
     },
+
+    /**
+
+     * Executes write into file behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     writeIntoFile: function (request, response, process) {
         this.LOG.debug('Writing data object into file');

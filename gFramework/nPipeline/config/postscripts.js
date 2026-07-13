@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nPipeline/config/postscripts
+ * @description Reserved post-start script contribution for nPipeline after pipeline artifacts are available.
+ * @layer config
+ * @owner nPipeline
+ * @override Project modules may add later post-scripts for pipeline startup follow-up without changing framework defaults.
+ */
 module.exports = {
 
 };

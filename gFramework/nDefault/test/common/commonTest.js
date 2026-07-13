@@ -12,6 +12,13 @@
 /*
    Change this file name as per test case name. This just a sample file
 */
+/**
+ * @module nDefault/test/common/commonTest
+ * @description Common sample test scaffold for the default framework module.
+ * @layer test
+ * @owner nDefault
+ * @override Later modules may replace scaffolds with concrete default-layer contract tests.
+ */
 const Chai = require('chai');
 const expect = Chai.expect;
 

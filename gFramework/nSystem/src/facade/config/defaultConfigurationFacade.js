@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSystem/src/facade/config/defaultConfigurationFacade
+ * @description Coordinates facade-level delegation for nSystem default configuration facade operations.
+ * @layer facade
+ * @owner nSystem
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -32,6 +39,18 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Executes change config behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     changeConfig: function (request) {
         return SERVICE.DefaultConfigurationService.changeConfig(request);

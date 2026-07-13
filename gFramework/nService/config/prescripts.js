@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nService/config/prescripts
+ * @description Reserved pre-start script contribution for service-layer initialization work.
+ * @layer config
+ * @owner nService
+ * @override Project modules may add later pre-scripts for service startup preparation without changing framework defaults.
+ */
 module.exports = {
 
 };

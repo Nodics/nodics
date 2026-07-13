@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nDatabase/database/src/event/listeners
+ * @description Documents nDatabase listeners module behavior.
+ * @layer event
+ * @owner nDatabase
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     common: {
         schemaInterceptorUpdatedListener: {

@@ -13,7 +13,20 @@ const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 const authSecurity = require('../../utils/authSecurity');
 
+/**
+ * @module gFramework/nAuth/src/service/authentication/defaultAuthenticationProviderService
+ * @description Implements nAuth default authentication provider service business behavior and extension logic.
+ * @layer service
+ * @owner nAuth
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+    /**
+     * Executes generate auth token behavior.
+     *
+     * @param {*} options Method input.
+     * @returns {*} Method result.
+     */
     generateAuthToken: function (options) {
         let token = null;
         try {

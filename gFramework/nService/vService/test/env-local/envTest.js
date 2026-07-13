@@ -13,6 +13,13 @@
    Change this file name as per test case name. This just a sample file.
    You can create n-number of test file and n-number of different environment as well
 */
+/**
+ * @module vService/test/env-local/envTest
+ * @description Local-environment sample test scaffold for versioned service module behavior.
+ * @layer test
+ * @owner vService
+ * @override Project modules may add environment-specific versioned service tests in later layers.
+ */
 const Chai = require('chai');
 const expect = Chai.expect;
 

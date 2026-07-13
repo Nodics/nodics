@@ -12,6 +12,13 @@
 /*
    Change this file name as per test case name. This just a sample file
 */
+/**
+ * @module nPublish/test/common/commonTest
+ * @description Common sample test scaffold for publish module contracts.
+ * @layer test
+ * @owner nPublish
+ * @override Project modules may replace this scaffold with concrete publishing tests.
+ */
 const Chai = require('chai');
 const expect = Chai.expect;
 

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nems/utils/utils
+ * @description Reserved utility contribution point for NEMS event helper functions.
+ * @layer utility
+ * @owner nems
+ * @override Project modules may add event utilities through later utility fragments.
+ */
 module.exports = {
 
 };

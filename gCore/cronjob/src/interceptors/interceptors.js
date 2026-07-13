@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cronjob/interceptors/interceptors
+ * @description Reserved interceptor contribution point for cronjob lifecycle validation and mutation hooks.
+ * @layer interceptor
+ * @owner cronjob
+ * @override Project modules may add cronjob interceptors through later fragments.
+ */
 module.exports = {
     preSaveConvertToDateValue: {
         type: 'schema',

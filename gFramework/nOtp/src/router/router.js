@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nOtp/src/router/router
+ * @description Defines nOtp route registration and HTTP exposure metadata.
+ * @layer router
+ * @owner nOtp
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     otp: {

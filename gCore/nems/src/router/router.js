@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nems/router/router
+ * @description Secured NEMS route contracts for processing and resetting persisted events.
+ * @layer router
+ * @owner nems
+ * @override Project modules may add or override NEMS routes through later router fragments.
+ */
 module.exports = {
     nems: {
         processEvent: {

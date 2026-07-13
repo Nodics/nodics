@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module vService/utils/utils
+ * @description Reserved utility extension point for versioned service helper functions.
+ * @layer utils
+ * @owner vService
+ * @override Project modules may add or replace versioned service utilities in later module layers.
+ */
 module.exports = {
 
 };

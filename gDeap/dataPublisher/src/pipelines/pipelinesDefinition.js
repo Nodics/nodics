@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module dataPublisher/pipelines/pipelinesDefinition
+ * @description Reserved pipeline definition contribution for DEAP data publishing flows.
+ * @layer pipeline
+ * @owner dataPublisher
+ * @override Project DEAP modules may add later publishing pipelines.
+ */
 module.exports = {
 
 };

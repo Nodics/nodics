@@ -65,9 +65,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 4 |
-| Undocumented | 16 |
+| Documented | 18 |
+| Partially documented | 2 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -90,28 +90,28 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gDeap/dataConsumer/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gDeap/dataConsumer/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gDeap/dataConsumer/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataConsumer/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataConsumer/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataConsumer/data/core/data/defaultIndexerData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataConsumer/data/core/data/defaultIndexerJobsData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataConsumer/data/core/headers/defaultIndexerHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataConsumer/data/core/headers/defaultIndexerJobsHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gDeap/dataConsumer/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default dataConsumer configuration used during module startup and layering. |  |
+| `gDeap/dataConsumer/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default dataConsumer configuration used during module startup and layering. |  |
+| `gDeap/dataConsumer/config/properties.js` | `config` | `documented` | 0/0 | Defines default dataConsumer configuration used during module startup and layering. |  |
+| `gDeap/dataConsumer/data/core/data/defaultIndexerData.js` | `data` | `documented` | 0/0 | Provides dataConsumer initializer or sample data consumed by the import layer. |  |
+| `gDeap/dataConsumer/data/core/data/defaultIndexerJobsData.js` | `data` | `documented` | 0/0 | Provides dataConsumer initializer or sample data consumed by the import layer. |  |
+| `gDeap/dataConsumer/data/core/headers/defaultIndexerHeader.js` | `data` | `documented` | 0/0 | Provides dataConsumer initializer or sample data consumed by the import layer. |  |
+| `gDeap/dataConsumer/data/core/headers/defaultIndexerJobsHeader.js` | `data` | `documented` | 0/0 | Provides dataConsumer initializer or sample data consumed by the import layer. |  |
 | `gDeap/dataConsumer/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gDeap/dataConsumer/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gDeap/dataConsumer/nodics.js` | `module` | `documented` | 2/2 | Registers the dataConsumer module lifecycle hooks and module-level startup behavior. |  |
 | `gDeap/dataConsumer/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gDeap/dataConsumer/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataConsumer/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataConsumer/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataConsumer/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataConsumer/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataConsumer/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataConsumer/src/service/event/handlers/defaultExternalDataEventHandlerService.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gDeap/dataConsumer/src/service/event/handlers/defaultInternalDataEventHandlerService.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gDeap/dataConsumer/src/service/proc/defaultInternalDataConsumeProcessService.js` | `src` | `partially-documented` | 2/11 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 9 exported method(s) |
-| `gDeap/dataConsumer/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gDeap/dataConsumer/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gDeap/dataConsumer/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gDeap/dataConsumer/src/event/listeners.js` | `src` | `documented` | 0/0 | Documents dataConsumer listeners module behavior. |  |
+| `gDeap/dataConsumer/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers dataConsumer interceptor wiring for pipeline extension points. |  |
+| `gDeap/dataConsumer/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines dataConsumer pipeline wiring and execution contracts. |  |
+| `gDeap/dataConsumer/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines dataConsumer route registration and HTTP exposure metadata. |  |
+| `gDeap/dataConsumer/src/router/router.js` | `src` | `documented` | 0/0 | Defines dataConsumer route registration and HTTP exposure metadata. |  |
+| `gDeap/dataConsumer/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines dataConsumer schema metadata, model contracts, and generated capability settings. |  |
+| `gDeap/dataConsumer/src/service/event/handlers/defaultExternalDataEventHandlerService.js` | `src` | `documented` | 3/3 | Implements dataConsumer default external data event handler service business behavior and extension logic. |  |
+| `gDeap/dataConsumer/src/service/event/handlers/defaultInternalDataEventHandlerService.js` | `src` | `documented` | 3/3 | Implements dataConsumer default internal data event handler service business behavior and extension logic. |  |
+| `gDeap/dataConsumer/src/service/proc/defaultInternalDataConsumeProcessService.js` | `src` | `documented` | 11/11 | Implements dataConsumer default internal data consume process service business behavior and extension logic. |  |
+| `gDeap/dataConsumer/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared dataConsumer utility exports for utils. |  |
+| `gDeap/dataConsumer/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines dataConsumer test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gDeap/dataConsumer/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines dataConsumer test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

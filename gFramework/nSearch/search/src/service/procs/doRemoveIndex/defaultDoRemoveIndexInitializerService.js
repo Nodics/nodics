@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSearch/search/src/service/procs/doRemoveIndex/defaultDoRemoveIndexInitializerService
+ * @description Implements nSearch default do remove index initializer service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +39,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating do remove index request');
         if (!request.searchModel) {
@@ -41,10 +64,42 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Builds options data.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     buildOptions: function (request, response, process) {
         this.LOG.debug('Building query options');
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Executes apply pre interceptors behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre do remove index interceptors');
@@ -61,6 +116,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes apply pre validators behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     applyPreValidators: function (request, response, process) {
         this.LOG.debug('Applying pre do remove index validators');
         let indexName = request.indexName || request.searchModel.indexName;
@@ -76,6 +147,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Processes query behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing do remove index query');
         request.searchModel.doRemoveIndex(request).then(result => {
@@ -88,6 +175,22 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+
+    /**
+
+     * Executes apply post validators behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     applyPostValidators: function (request, response, process) {
         this.LOG.debug('Applying post do remove index validators');
@@ -104,6 +207,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes apply post interceptors behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do remove index interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
@@ -118,6 +237,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Executes invalidate router cache behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     invalidateRouterCache: function (request, response, process) {
         this.LOG.debug('Invalidating router cache for removed index');
@@ -148,6 +283,22 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+
+     * Executes invalidate search cache behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     invalidateSearchCache: function (request, response, process) {
         this.LOG.debug('Invalidating item cache for removed index');
         try {
@@ -173,6 +324,22 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Processes model change event behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     triggerModelChangeEvent: function (request, response, process) {
         this.LOG.debug('Triggering event for modified model');

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nNms/src/router/router
+ * @description Defines nNms route registration and HTTP exposure metadata.
+ * @layer router
+ * @owner nNms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     common: {
         nodeStateChanges: {

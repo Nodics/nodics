@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gDeap/dataConsumer/config/properties
+ * @description Defines default dataConsumer configuration used during module startup and layering.
+ * @layer config
+ * @owner dataConsumer
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
     emsClient: {

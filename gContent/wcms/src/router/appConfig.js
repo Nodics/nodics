@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module wcms/router/appConfig
+ * @description Reserved router application configuration contribution for WCMS APIs.
+ * @layer router
+ * @owner wcms
+ * @override Project content modules may add later app-level route configuration for CMS APIs.
+ */
 module.exports = {
 
 };

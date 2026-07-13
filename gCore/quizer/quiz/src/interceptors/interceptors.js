@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/quizer/quiz/src/interceptors/interceptors
+ * @description Registers quizer interceptor wiring for pipeline extension points.
+ * @layer interceptors
+ * @owner quizer
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

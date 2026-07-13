@@ -11,6 +11,13 @@
 
 
 
+/**
+ * @module gFramework/nValidator/src/service/pipeline/defaultValidatorUpdatedPipelineService
+ * @description Implements nValidator default validator updated pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner nValidator
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating validator update request');
         let data = request.data;
@@ -46,6 +69,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Retrieves validator information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     loadValidator: function (request, response, process) {
         this.LOG.debug('Fatching updated validator object : ' + request.code);
@@ -93,6 +132,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes merge existing behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     mergeExisting: function (request, response, process) {
         this.LOG.debug('Adding updated validator with existing one');
         let rawValidators = {};
@@ -100,6 +155,22 @@ module.exports = {
         SERVICE.DefaultValidatorService.loadRawValidators(rawValidators);
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Processes cleanup behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     publishCleanup: function (request, response, process) {
         this.LOG.debug('Publishing cleanup event');

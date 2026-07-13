@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nCache/hazelcastCache/src/schemas/schemas
+ * @description Defines nCache schema metadata, model contracts, and generated capability settings.
+ * @layer schemas
+ * @owner nCache
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

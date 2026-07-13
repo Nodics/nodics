@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module dataPublisher/utils/utils
+ * @description Reserved utility contribution for DEAP data publishing helpers.
+ * @layer utility
+ * @owner dataPublisher
+ * @override Project DEAP modules may add later publishing utilities.
+ */
 module.exports = {
 
 };

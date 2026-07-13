@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSystem/src/event/listeners
+ * @description Documents nSystem listeners module behavior.
+ * @layer event
+ * @owner nSystem
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     common: {
         configurationChangeListener: {

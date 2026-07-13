@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nems/router/appConfig
+ * @description Reserved application router configuration contribution for NEMS APIs.
+ * @layer router
+ * @owner nems
+ * @override Project modules may add later app-level hooks for event APIs.
+ */
 module.exports = {
 
 };

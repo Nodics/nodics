@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/profile/src/service/authorization/defaultAuthorizationProviderService
+ * @description Implements profile default authorization provider service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

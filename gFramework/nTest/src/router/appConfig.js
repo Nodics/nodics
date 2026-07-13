@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nTest/router/appConfig
+ * @description Reserved application router configuration contribution for test execution APIs.
+ * @layer router
+ * @owner nTest
+ * @override Project modules may add later app-level route configuration for governed test execution.
+ */
 module.exports = {
 
 };

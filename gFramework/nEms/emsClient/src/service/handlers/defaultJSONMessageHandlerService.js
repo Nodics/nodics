@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nEms/emsClient/src/service/handlers/defaultJSONMessageHandlerService
+ * @description Implements nEms default jsonmessage handler service business behavior and extension logic.
+ * @layer service
+ * @owner nEms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +39,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating JSON message handler request');
         if (!request.queue) {
@@ -42,6 +65,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Processes message behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     processMessage: function (request, response, process) {
         this.LOG.debug('Applying message translator');

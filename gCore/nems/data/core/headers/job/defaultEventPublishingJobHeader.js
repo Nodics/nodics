@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nems/data/core/headers/job/defaultEventPublishingJobHeader
+ * @description Import header for saving the default asynchronous event publishing cronjob.
+ * @layer data
+ * @owner nems
+ * @override Project modules may add later headers for custom event processing jobs.
+ */
 module.exports = {
     cronjob: {
         defaultEventPublishingJob: {

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gframes/gframesEnvs/gframesLocal/config/properties
+ * @description Defines default gframesEnvs configuration used during module startup and layering.
+ * @layer config
+ * @owner gframesEnvs
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };

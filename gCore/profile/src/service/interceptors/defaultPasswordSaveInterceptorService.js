@@ -9,7 +9,21 @@
 
  */
 
+/**
+ * @module gCore/profile/src/service/interceptors/defaultPasswordSaveInterceptorService
+ * @description Implements profile default password save interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+    /**
+     * Executes encrypt password behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @returns {*} Method result.
+     */
     encryptPassword: function (request, response) {
         return new Promise((resolve, reject) => {
             let password = request.model.password;

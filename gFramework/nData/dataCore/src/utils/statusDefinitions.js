@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nData/dataCore/src/utils/statusDefinitions
+ * @description Provides shared nData utility exports for status definitions.
+ * @layer utils
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     SUC_DATA_00000: {

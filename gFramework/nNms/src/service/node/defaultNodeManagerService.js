@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nNms/src/service/node/defaultNodeManagerService
+ * @description Implements nNms default node manager service business behavior and extension logic.
+ * @layer service
+ * @owner nNms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes stop health check behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     stopHealthCheck: function (request) {
         return new Promise((resolve, reject) => {
             try {
@@ -51,6 +70,18 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Executes request responsibility behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     requestResponsibility: function (request) {
         return new Promise((resolve, reject) => {
@@ -76,6 +107,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Processes node activated behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     handleNodeActivated: function (request) {
         return new Promise((resolve, reject) => {
             if (request.nodeId === undefined) {
@@ -93,6 +136,18 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Executes notify node started behavior.
+
+     *
+
+     * @param {*} moduleList Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     notifyNodeStarted: function (moduleList = Object.keys(CONFIG.get('nodePingableModules'))) {
         return new Promise((resolve, reject) => {
@@ -123,6 +178,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Executes notify node behavior.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} nodes Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     notifyNode: function (moduleName, nodes) {
         let _self = this;
@@ -174,6 +243,16 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates active nodes rules.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     checkActiveNodes: function () {
         let _self = this;
         let moduleList = Object.keys(CONFIG.get('nodePingableModules'));
@@ -195,6 +274,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Validates active node rules.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} nodes Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     checkActiveNode: function (moduleName, nodes) {
         let _self = this;

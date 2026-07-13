@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nPublish/config/postscripts
+ * @description Reserved post-start script contribution for publish/version promotion capabilities.
+ * @layer config
+ * @owner nPublish
+ * @override Project modules may add later post-scripts for customer publishing setup.
+ */
 module.exports = {
 
 };

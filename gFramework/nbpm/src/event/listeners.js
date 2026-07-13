@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nbpm/src/event/listeners
+ * @description Documents nbpm listeners module behavior.
+ * @layer event
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     common: {
         workflow2SchemaSaveListener: {

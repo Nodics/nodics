@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nCache/hazelcastCache/src/utils/utils
+ * @description Provides shared nCache utility exports for utils.
+ * @layer utils
+ * @owner nCache
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

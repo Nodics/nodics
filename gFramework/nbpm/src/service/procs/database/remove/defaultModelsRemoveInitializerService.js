@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nbpm/src/service/procs/database/remove/defaultModelsRemoveInitializerService
+ * @description Implements nbpm default models remove initializer service business behavior and extension logic.
+ * @layer service
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -34,6 +41,22 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Processes workflow process behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleWorkflowProcess: function (request, response, process) {
         try {

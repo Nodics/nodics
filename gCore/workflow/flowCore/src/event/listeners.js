@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/workflow/flowCore/src/event/listeners
+ * @description Documents workflow listeners module behavior.
+ * @layer event
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     workflow: {
         initializeInternalItem: {

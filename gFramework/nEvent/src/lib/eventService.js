@@ -11,6 +11,13 @@
 
 const EventEmitter = require('events');
 
+/**
+ * @module gFramework/nEvent/src/lib/eventService
+ * @description Provides reusable nEvent library primitives for event service.
+ * @layer lib
+ * @owner nEvent
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = class EventService extends EventEmitter {
 
     addListenerHandler(listenerName, handler) {

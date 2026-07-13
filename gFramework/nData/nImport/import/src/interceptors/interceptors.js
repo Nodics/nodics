@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nData/nImport/import/src/interceptors/interceptors
+ * @description Registers nData interceptor wiring for pipeline extension points.
+ * @layer interceptors
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     defaultImportDataProcessor: {

@@ -16,6 +16,13 @@
 const Chai = require('chai');
 const expect = Chai.expect;
 
+/**
+ * @module gFramework/nCache/cache/test/env-local/envTest
+ * @description Defines nCache test fixtures or suites for module behavior validation.
+ * @layer test
+ * @owner nCache
+ * @override Projects may add focused tests beside this file while preserving the module contract under test.
+ */
 module.exports = {
     /*
         sampleTestSuite: {

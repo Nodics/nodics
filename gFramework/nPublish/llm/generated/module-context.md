@@ -57,9 +57,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 1 |
-| Undocumented | 10 |
+| Documented | 9 |
+| Partially documented | 2 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -82,19 +82,19 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nPublish/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nPublish/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nPublish/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nPublish/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nPublish/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nPublish/config/postscripts.js` | `config` | `documented` | 0/0 | Reserved post-start script contribution for publish/version promotion capabilities. |  |
+| `gFramework/nPublish/config/prescripts.js` | `config` | `documented` | 0/0 | Reserved pre-start script contribution for publish/version promotion capabilities. |  |
+| `gFramework/nPublish/config/properties.js` | `config` | `documented` | 0/0 | Reserved property contribution for publish/version promotion behavior. |  |
 | `gFramework/nPublish/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nPublish/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nPublish/nodics.js` | `module` | `documented` | 2/2 | Publish module lifecycle entrypoint for staged-to-online data promotion capabilities. |  |
 | `gFramework/nPublish/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nPublish/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nPublish/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nPublish/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nPublish/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nPublish/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nPublish/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gFramework/nPublish/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nPublish/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Reserved pipeline definition contribution for publishing and version promotion flows. |  |
+| `gFramework/nPublish/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved application router configuration contribution for publish APIs. |  |
+| `gFramework/nPublish/src/router/router.js` | `src` | `documented` | 0/0 | Reserved route definition contribution for publish/version promotion APIs. |  |
+| `gFramework/nPublish/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Reserved schema contribution for publish/version promotion models. |  |
+| `gFramework/nPublish/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility contribution for publish/version promotion helpers. |  |
+| `gFramework/nPublish/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Common sample test scaffold for publish module contracts. | add JSDoc for 7 exported method(s) |
+| `gFramework/nPublish/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Local-environment sample test scaffold for publish module behavior. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

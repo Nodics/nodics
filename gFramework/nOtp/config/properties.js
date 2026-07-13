@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nOtp/config/properties
+ * @description Defines default nOtp configuration used during module startup and layering.
+ * @layer config
+ * @owner nOtp
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
     token: {

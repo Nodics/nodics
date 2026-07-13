@@ -13,6 +13,13 @@ const fs = require('fs');
 const path = require('path');
 const RequireFromString = require('require-from-string');
 
+/**
+ * @module gFramework/nDynamo/src/facade/class/defaultClassConfigurationFacade
+ * @description Coordinates facade-level delegation for nDynamo default class configuration facade operations.
+ * @layer facade
+ * @owner nDynamo
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -37,17 +44,65 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves class information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getClass: function (request) {
         return SERVICE.DefaultClassConfigurationService.getClass(request);
     },
+
+    /**
+
+     * Retrieves snapshot information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getSnapshot: function (request) {
         return SERVICE.DefaultClassConfigurationService.getSnapshot(request);
     },
 
+    /**
+
+     * Updates class information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     updateClass: function (request) {
         return SERVICE.DefaultClassConfigurationService.updateClass(request);
     },
+
+    /**
+
+     * Processes class behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     executeClass: function (request) {
         return SERVICE.DefaultClassConfigurationService.executeClass(request);

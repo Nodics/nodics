@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nPipeline/config/prescripts
+ * @description Reserved pre-start script contribution for nPipeline initialization work.
+ * @layer config
+ * @owner nPipeline
+ * @override Project modules may add later pre-scripts for pipeline startup preparation without changing framework defaults.
+ */
 module.exports = {
 
 };

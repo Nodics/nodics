@@ -11,6 +11,13 @@
 
 const util = require('util');
 
+/**
+ * @module gFramework/nData/nImport/import/src/service/process/file/defaultFileDataImportProcessService
+ * @description Implements nData default file data import process service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +41,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.fileName) {
@@ -46,6 +69,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Processes models behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     processModels: function (request, response, process) {
         this.LOG.debug('Processing models from file: ' + request.fileName);
@@ -120,6 +159,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Processes tenant model behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     processTenantModel: function (request, response, options) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -152,6 +207,22 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Processes model behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     processModel: function (request, response, options) {
         let _self = this;

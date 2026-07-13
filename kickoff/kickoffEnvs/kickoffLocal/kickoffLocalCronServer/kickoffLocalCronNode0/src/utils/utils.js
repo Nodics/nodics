@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module kickoff/kickoffEnvs/kickoffLocal/kickoffLocalCronServer/kickoffLocalCronNode0/src/utils/utils
+ * @description Provides shared kickoffEnvs utility exports for utils.
+ * @layer utils
+ * @owner kickoffEnvs
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

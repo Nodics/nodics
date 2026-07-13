@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nbpm/src/service/event/handlers/carrier/defaultWorkflowChannelsEvaluatedEventListenerService
+ * @description Implements nbpm default workflow channels evaluated event listener service business behavior and extension logic.
+ * @layer service
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -34,6 +41,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Processes workflow channels evaluated event behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleWorkflowChannelsEvaluatedEvent: function (request, callback) {
         try {

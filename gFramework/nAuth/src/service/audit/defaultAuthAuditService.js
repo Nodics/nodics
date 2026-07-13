@@ -9,6 +9,12 @@
  * passwords, bearer tokens, refresh tokens, or API keys.
  */
 module.exports = {
+    /**
+     * Executes sanitize behavior.
+     *
+     * @param {*} event Method input.
+     * @returns {*} Method result.
+     */
     sanitize: function (event) {
         let source = event || {};
         let sanitized = {};
@@ -23,6 +29,18 @@ module.exports = {
         sanitized.nodeId = source.nodeId || CONFIG.get('nodeId');
         return sanitized;
     },
+
+    /**
+
+     * Executes record behavior.
+
+     *
+
+     * @param {*} event Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     record: function (event) {
         let auditConfiguration = CONFIG.get('authSecurity') && CONFIG.get('authSecurity').audit || {};

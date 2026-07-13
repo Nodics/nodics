@@ -1,8 +1,20 @@
+/**
+ * @module gFramework/nDynamo/test/classConfigurationServiceContract.test
+ * @description Validates persisted and runtime class configuration behavior for dynamic Nodics service classes.
+ * @layer test
+ * @owner nDynamo
+ * @override Projects may add focused dynamic-class fixtures beside this test while preserving class configuration contracts.
+ */
 const assert = require('assert');
 const service = require('../src/service/class/defaultClassConfigurationService');
 
 if (!String.prototype.toUpperCaseFirstChar) {
     Object.defineProperty(String.prototype, 'toUpperCaseFirstChar', {
+        /**
+         * Executes value behavior.
+         *
+         * @returns {*} Method result.
+         */
         value: function () {
             return this.charAt(0).toUpperCase() + this.slice(1);
         }
@@ -18,6 +30,12 @@ class NodicsError extends Error {
 
 function resetGlobals() {
     global.CONFIG = {
+        /**
+         * Retrieves  information.
+         *
+         * @param {*} key Method input.
+         * @returns {*} Method result.
+         */
         get: function (key) {
             return key === 'defaultTenant' ? 'default' : undefined;
         }
@@ -30,8 +48,23 @@ function resetGlobals() {
     };
     global.GLOBAL = global;
     service.LOG = {
+        /**
+         * Records debug output for the test fixture.
+         *
+         * @returns {*} Method result.
+         */
         debug: function () { },
+        /**
+         * Records warn output for the test fixture.
+         *
+         * @returns {*} Method result.
+         */
         warn: function () { },
+        /**
+         * Records error output for the test fixture.
+         *
+         * @returns {*} Method result.
+         */
         error: function () { }
     };
 }
@@ -65,6 +98,11 @@ async function run() {
     resetGlobals();
     global.SERVICE.DefaultDynamicClassService = {
         status: 'ready',
+        /**
+         * Executes ping behavior.
+         *
+         * @returns {*} Method result.
+         */
         ping: function () {
             return 'pong';
         }
@@ -104,9 +142,21 @@ async function run() {
 
     resetGlobals();
     global.SERVICE.DefaultDynamicClassService = {
+        /**
+         * Executes sum behavior.
+         *
+         * @param {*} first Method input.
+         * @param {*} second Method input.
+         * @returns {*} Method result.
+         */
         sum: function (first, second) {
             return first + second;
         },
+        /**
+         * Executes async ping behavior.
+         *
+         * @returns {*} Method result.
+         */
         asyncPing: function () {
             return Promise.resolve('pong');
         }

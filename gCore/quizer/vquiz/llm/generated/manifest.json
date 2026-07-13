@@ -17,11 +17,11 @@
   "testFiles": 2,
   "dataFiles": 0,
   "ownedFiles": 17,
-  "sourceFingerprint": "12fe1ee7ff25beb6f5dfd86878c05e8a61b38f4a60ac13336c74b4e28752afb5",
+  "sourceFingerprint": "406a4d2fd2e054706314b5a05944602c5ec08712bd6bbe81d1dbb8e1d36a9448",
   "documentation": {
-    "documented": 0,
+    "documented": 11,
     "partially-documented": 2,
-    "undocumented": 11,
+    "undocumented": 0,
     "inventory-only": 4
   },
   "schemaGroups": {},

@@ -12,6 +12,13 @@
 const _ = require('lodash');
 const util = require('util');
 
+/**
+ * @module gCore/workflow/flowCore/src/service/events/defaultWorkflowEventService
+ * @description Implements workflow default workflow event service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,22 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Processes event behavior.
+
+     *
+
+     * @param {*} event Method input.
+
+     * @param {*} workflowAction Method input.
+
+     * @param {*} workflowCarrier Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     publishEvent: function (event, workflowAction, workflowCarrier) {
         return new Promise((resolve, reject) => {
@@ -89,6 +112,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Processes internal event behavior.
+
+     *
+
+     * @param {*} event Method input.
+
+     * @param {*} workflowCarrier Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     publishInternalEvent: function (event, workflowCarrier) {
         return new Promise((resolve, reject) => {
             try {
@@ -106,6 +143,22 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Processes external event behavior.
+
+     *
+
+     * @param {*} event Method input.
+
+     * @param {*} workflowCarrier Method input.
+
+     * @param {*} workflowAction Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     publishExternalEvent: function (event, workflowCarrier, workflowAction) {
         return new Promise((resolve, reject) => {

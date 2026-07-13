@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nRouter/utils/statusDefinitions
+ * @description Status and error definitions for router help, route governance, and override validation.
+ * @layer data
+ * @owner nRouter
+ * @override Project modules may contribute additional router status definitions or localized messages through later modules.
+ */
 module.exports = {
     SUC_HLP_00000: {
         code: '200',

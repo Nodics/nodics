@@ -48,9 +48,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 1 |
-| Undocumented | 3 |
+| Documented | 4 |
+| Partially documented | 0 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -71,11 +71,11 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nData/nExport/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nData/nExport/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nData/nExport/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nData/nExport/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nData/nExport/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nExport/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nData configuration used during module startup and layering. |  |
+| `gFramework/nData/nExport/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nData configuration used during module startup and layering. |  |
+| `gFramework/nData/nExport/config/properties.js` | `config` | `documented` | 0/0 | Defines default nData configuration used during module startup and layering. |  |
 | `gFramework/nData/nExport/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nData/nExport/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nExport/nodics.js` | `module` | `documented` | 2/2 | Registers the nData module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nData/nExport/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 
 ## Extension Contract

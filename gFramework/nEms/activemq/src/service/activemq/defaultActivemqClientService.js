@@ -11,6 +11,13 @@
 const _ = require('lodash');
 const stompit = require('stompit');
 
+/**
+ * @module gFramework/nEms/activemq/src/service/activemq/defaultActivemqClientService
+ * @description Implements nEms default activemq client service business behavior and extension logic.
+ * @layer service
+ * @owner nEms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     client: {},
 
@@ -35,6 +42,18 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Executes configure client behavior.
+
+     *
+
+     * @param {*} config Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     configureClient: function (config) {
         let _self = this;
@@ -79,6 +98,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates producer information.
+
+     *
+
+     * @param {*} client Method input.
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     createProducer: function (client, options) {
         return new Promise((resolve, reject) => {
             try {
@@ -88,6 +121,18 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Executes configure publisher behavior.
+
+     *
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     configurePublisher: function (options) {
         return new Promise((resolve, reject) => {
@@ -102,6 +147,24 @@ module.exports = {
             }
         });
     },
+
+
+    /**
+
+
+     * Processes  behavior.
+
+
+     *
+
+
+     * @param {*} payload Method input.
+
+
+     * @returns {*} Method result.
+
+
+     */
 
 
     publish: function (payload) {
@@ -128,6 +191,18 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Updates consumer information.
+
+     *
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     registerConsumer: function (options) {
         _self = this;
@@ -182,6 +257,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Processes consumer error behavior.
+
+     *
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     handleConsumerError: function (options) {
         let _self = this;
         try {
@@ -211,6 +298,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes on consume behavior.
+
+     *
+
+     * @param {*} queue Method input.
+
+     * @param {*} body Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     onConsume: function (queue, body) {
         return new Promise((resolve, reject) => {
             try {
@@ -229,6 +330,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Executes close consumer behavior.
+
+     *
+
+     * @param {*} consumerName Method input.
+
+     * @param {*} consumer Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     closeConsumer: function (consumerName, consumer) {
         return new Promise((resolve, reject) => {

@@ -9,9 +9,14 @@
 
  */
 
+/**
+ * @module nRouter/config/properties
+ * @description Default router configuration for route initialization order, body/response handlers, authorization, and server endpoints.
+ * @layer config
+ * @owner nRouter
+ * @override Project, environment, server, or node modules may override router properties through layered configuration without changing framework defaults.
+ */
 module.exports = {
-    webRootDirName: 'web',
-    webDistDirName: 'lib',
     routerInitFunction: [
         'initProperties',
         'initSession',

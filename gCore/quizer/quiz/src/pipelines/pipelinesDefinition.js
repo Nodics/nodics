@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/quizer/quiz/src/pipelines/pipelinesDefinition
+ * @description Defines quizer pipeline wiring and execution contracts.
+ * @layer pipelines
+ * @owner quizer
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

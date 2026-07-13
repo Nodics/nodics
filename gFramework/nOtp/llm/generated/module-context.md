@@ -65,9 +65,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
+| Documented | 15 |
 | Partially documented | 2 |
-| Undocumented | 15 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -90,25 +90,25 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nOtp/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nOtp/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nOtp/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nOtp/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nOtp/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nOtp/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nOtp configuration used during module startup and layering. |  |
+| `gFramework/nOtp/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nOtp configuration used during module startup and layering. |  |
+| `gFramework/nOtp/config/properties.js` | `config` | `documented` | 0/0 | Defines default nOtp configuration used during module startup and layering. |  |
 | `gFramework/nOtp/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nOtp/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nOtp/nodics.js` | `module` | `documented` | 2/2 | Registers the nOtp module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nOtp/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nOtp/src/controller/DefaultOtpController.js` | `src` | `undocumented` | 0/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gFramework/nOtp/src/facade/DefaultOtpFacade.js` | `src` | `undocumented` | 0/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gFramework/nOtp/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nOtp/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nOtp/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nOtp/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nOtp/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nOtp/src/service/DefaultOtpService.js` | `src` | `undocumented` | 0/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gFramework/nOtp/src/service/handler/defaultOtpHandlerService.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gFramework/nOtp/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nOtp/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nOtp/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gFramework/nOtp/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nOtp/src/controller/DefaultOtpController.js` | `src` | `documented` | 4/4 | Exposes request handlers for nOtp default otp controller operations. |  |
+| `gFramework/nOtp/src/facade/DefaultOtpFacade.js` | `src` | `documented` | 4/4 | Coordinates facade-level delegation for nOtp default otp facade operations. |  |
+| `gFramework/nOtp/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers nOtp interceptor wiring for pipeline extension points. |  |
+| `gFramework/nOtp/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nOtp pipeline wiring and execution contracts. |  |
+| `gFramework/nOtp/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nOtp route registration and HTTP exposure metadata. |  |
+| `gFramework/nOtp/src/router/router.js` | `src` | `documented` | 0/0 | Defines nOtp route registration and HTTP exposure metadata. |  |
+| `gFramework/nOtp/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nOtp schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nOtp/src/service/DefaultOtpService.js` | `src` | `documented` | 4/4 | Implements nOtp default otp service business behavior and extension logic. |  |
+| `gFramework/nOtp/src/service/handler/defaultOtpHandlerService.js` | `src` | `documented` | 4/4 | Implements nOtp default otp handler service business behavior and extension logic. |  |
+| `gFramework/nOtp/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nOtp utility exports for status definitions. |  |
+| `gFramework/nOtp/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nOtp utility exports for utils. |  |
+| `gFramework/nOtp/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nOtp test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nOtp/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nOtp test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

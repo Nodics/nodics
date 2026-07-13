@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nDynamo/src/service/schema/defaultSchemaConfigurationService
+ * @description Implements nDynamo default schema configuration service business behavior and extension logic.
+ * @layer service
+ * @owner nDynamo
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -33,6 +40,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes schema update event handler behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     schemaUpdateEventHandler: function (request) {
         return new Promise((resolve, reject) => {
             try {
@@ -46,6 +65,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Processes schema update behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} schemaList Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleSchemaUpdate: function (request, schemaList) {
         return new Promise((resolve, reject) => {
@@ -191,21 +224,53 @@ module.exports = {
         return module && module.rawSchema ? module.rawSchema[schemaCode] : undefined;
     },
 
+    /**
+
+     * Removes or clears  information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     remove: function (request) {
         return new Promise((resolve, reject) => {
             reject(new CLASSES.NodicsError('ERR_SYS_00002', 'This operation is not supported currently'));
         });
     },
+    /**
+     * Removes or clears by id information.
+     *
+     * @param {*} ids Method input.
+     * @param {*} tenant Method input.
+     * @returns {*} Method result.
+     */
     removeById: function (ids, tenant) {
         return new Promise((resolve, reject) => {
             reject(new CLASSES.NodicsError('ERR_SYS_00002', 'This operation is not supported currently'));
         });
     },
+    /**
+     * Removes or clears by code information.
+     *
+     * @param {*} codes Method input.
+     * @param {*} tenant Method input.
+     * @returns {*} Method result.
+     */
     removeByCode: function (codes, tenant) {
         return new Promise((resolve, reject) => {
             reject(new CLASSES.NodicsError('ERR_SYS_00002', 'This operation is not supported currently'));
         });
     },
+    /**
+     * Updates  information.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     update: function (request) {
         return new Promise((resolve, reject) => {
             reject(new CLASSES.NodicsError('ERR_SYS_00002', 'This operation is not supported currently'));

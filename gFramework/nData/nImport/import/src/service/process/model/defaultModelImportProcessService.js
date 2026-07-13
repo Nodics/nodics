@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nData/nImport/import/src/service/process/model/defaultModelImportProcessService
+ * @description Implements nData default model import process service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +41,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.header) {
@@ -46,6 +69,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Retrieves raw schema information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     loadRawSchema: function (request, response, process) {
         this.LOG.debug('Loading raw schema for header');
@@ -92,6 +131,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes populate schema dependancies behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     populateSchemaDependancies: function (request, response, process) {
         this.LOG.debug('Populating all schema dependancies');
         let header = request.header;
@@ -115,6 +170,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Retrieves relation information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     resolveRelation: function (request, response, options) {
         let _self = this;
@@ -173,6 +244,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves one to one relation information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     resolveOneToOneRelation: function (request, response, options) {
         return new Promise((resolve, reject) => {
             this.fetchModel(request, response, {
@@ -186,6 +273,22 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Retrieves one to many relation information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     resolveOneToManyRelation: function (request, response, options) {
         let _self = this;
@@ -211,6 +314,22 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Retrieves model information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     fetchModel: function (request, response, options) {
         return new Promise((resolve, reject) => {
@@ -255,10 +374,42 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes populate search dependancies behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     populateSearchDependancies: function (request, response, process) {
         this.LOG.debug('Populating all search dependancies');
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Updates model information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     insertModel: function (request, response, process) {
         let header = request.header;
@@ -297,6 +448,13 @@ module.exports = {
             });
         }
     },
+    /**
+     * Updates local schema model information.
+     *
+     * @param {*} request Method input.
+     * @param {*} models Method input.
+     * @returns {*} Method result.
+     */
     insertLocalSchemaModel: function (request, models) {
         let header = request.header;
         return new Promise((resolve, reject) => {
@@ -329,6 +487,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates local search model information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} models Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     insertLocalSearchModel: function (request, models) {
         let header = request.header;
         return new Promise((resolve, reject) => {
@@ -354,6 +526,20 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Updates remote model information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} models Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     insertRemoteModel: function (request, models) {
         let header = request.header;

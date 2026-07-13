@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gframes/gframesModules/gfapi/config/properties
+ * @description Defines default gframesModules configuration used during module startup and layering.
+ * @layer config
+ * @owner gframesModules
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };

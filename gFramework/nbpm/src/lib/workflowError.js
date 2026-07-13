@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nbpm/src/lib/workflowError
+ * @description Provides reusable nbpm library primitives for workflow error.
+ * @layer lib
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = class WorkflowError extends CLASSES.NodicsError {
     constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').workflowError) {
         super(error, message, defaultCode);

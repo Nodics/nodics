@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/workflow/flowCore/src/service/procs/evaluate/defaultExecuteChannelQualifierPipelineService
+ * @description Implements workflow default execute channel qualifier pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -51,6 +58,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Validates decision rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     checkDecision: function (request, response, process) {
         if (request.channel.qualifier.decision) {
             if (request.channel.qualifier.decision === request.actionResponse.decision) {
@@ -62,6 +77,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Processes handler behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     executeHandler: function (request, response, process) {
         if (request.channel.qualifier.handler) {
             let handler = request.channel.qualifier.handler;
@@ -93,6 +116,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Processes script behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     executeScript: function (request, response, process) {
         if (request.channel.qualifier.script) {
             try {
@@ -106,6 +137,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Executes invalid channel behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     invalidChannel: function (request, response, process) {
         this.LOG.debug('Please validate your channel, It should contain one of [decision, handler or script]');
         process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00009', 'Please validate your channel, It should contain one of [decision, handler or script]'));

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSearch/search/src/service/procs/indexer/defaultIndexerDataHandlerService
+ * @description Implements nSearch default indexer data handler service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -31,6 +38,22 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to process Indexer data handler');
@@ -61,6 +84,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes apply interceptors behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     applyInterceptors: function (request, response, process) {
         this.LOG.debug('Applying indexer interceptors');
         request.moduleName = request.moduleName || request.header.options.moduleName;
@@ -77,6 +116,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes apply validators behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     applyValidators: function (request, response, process) {
         this.LOG.debug('Applying indexer validators');
         request.indexName = request.indexName || request.searchModel.indexName;
@@ -91,6 +146,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Processes indexer pipeline behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     executeIndexerPipeline: function (request, response, process) {
         if (request.header && request.header.local && request.header.local.indexerConfig && request.header.local.indexerConfig.processPipeline) {
@@ -113,6 +184,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Processes data behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     processData: function (request, response, process) {
         let _self = this;
@@ -142,6 +229,20 @@ module.exports = {
             process.error(request, response, error);
         }
     },
+
+    /**
+
+     * Processes models behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     processModels: function (request, options) {
         let _self = this;

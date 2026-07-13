@@ -11,11 +11,19 @@
 
 const _ = require('lodash');
 
+/**
+ * @module cronjob/service/node/DefaultCronJobNodeUpHandlerService
+ * @description Releases temporary cronjob responsibility when a remote node comes back online.
+ * @layer service
+ * @owner cronjob
+ * @override Project modules may override this handler to customize responsibility restoration.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the node-up handler during service loading.
+     *
+     * @param {Object} options Loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -24,9 +32,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the node-up handler after service loading.
+     *
+     * @param {Object} options Loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -34,6 +43,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Validates node-up pipeline input before temporary jobs are removed.
+     *
+     * @param {Object} request Pipeline request containing module name and remote data.
+     * @param {Object} response Pipeline response.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     */
     validateRequest: function (request, response, process) {
         if (!request.moduleName) {
             process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00003', 'Invalid moduleName'));
@@ -44,6 +61,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Removes jobs that were temporarily owned while the remote node was down.
+     *
+     * @param {Object} request Pipeline request containing remote job data.
+     * @param {Object} response Pipeline response.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     */
     shutdownResponsibilities: function (request, response, process) {
         this.removeRemoteJobs(NODICS.getActiveTenants(), request.remoteData).then(success => {
             process.nextSuccess(request, response);
@@ -52,6 +77,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Recursively removes temporarily owned jobs for active tenants.
+     *
+     * @param {string[]} tenants Tenants to process.
+     * @param {Object} remoteData Job-code map by tenant.
+     * @returns {Promise<boolean>} Resolves after temporary jobs are removed.
+     */
     removeRemoteJobs: function (tenants, remoteData) {
         let _self = this;
         return new Promise((resolve, reject) => {

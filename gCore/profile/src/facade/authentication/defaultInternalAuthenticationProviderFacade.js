@@ -9,7 +9,26 @@
 
  */
 
+/**
+ * @module gCore/profile/src/facade/authentication/defaultInternalAuthenticationProviderFacade
+ * @description Coordinates facade-level delegation for profile default internal authentication provider facade operations.
+ * @layer facade
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+
+    /**
+
+     * Retrieves internal auth token information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getInternalAuthToken: function (request) {
         return SERVICE.DefaultInternalAuthenticationProviderService.getInternalAuthToken(request);

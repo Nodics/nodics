@@ -9,11 +9,19 @@
 
  */
 
+/**
+ * @module wcms/service/defaultSampleService
+ * @description Sample WCMS service scaffold showing the service lifecycle shape for content modules.
+ * @layer service
+ * @owner wcms
+ * @override Project content modules should replace scaffolds with concrete WCMS services in later layers.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the sample WCMS service scaffold.
+     *
+     * @param {Object} options Service loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -22,9 +30,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the sample WCMS service scaffold after loading.
+     *
+     * @param {Object} options Service loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {

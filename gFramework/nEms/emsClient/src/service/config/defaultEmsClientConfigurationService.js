@@ -10,6 +10,13 @@
  */
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nEms/emsClient/src/service/config/defaultEmsClientConfigurationService
+ * @description Implements nEms default ems client configuration service business behavior and extension logic.
+ * @layer service
+ * @owner nEms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     emsClients: {},
     emsPublishers: {},
@@ -36,13 +43,45 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves ems clients information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     getEmsClients: function () {
         return this.emsClients;
     },
 
+    /**
+
+     * Retrieves publisher information.
+
+     *
+
+     * @param {*} queueName Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getPublisher: function (queueName) {
         return this.emsPublishers[queueName];
     },
+
+    /**
+
+     * Executes configure emsclients behavior.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
 
     configureEMSClients: function () {
         let _self = this;
@@ -60,6 +99,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Executes configure emsclient behavior.
+
+     *
+
+     * @param {*} clientList Method input.
+
+     * @param {*} clients Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     configureEMSClient: function (clientList, clients) {
         let _self = this;
@@ -105,6 +158,16 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes configure publishers behavior.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     configurePublishers: function () {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -125,6 +188,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Executes configure publisher behavior.
+
+     *
+
+     * @param {*} publisherList Method input.
+
+     * @param {*} publishers Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     configurePublisher: function (publisherList, publishers) {
         let _self = this;
@@ -169,6 +246,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes close publishers behavior.
+
+     *
+
+     * @param {*} publishers Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     closePublishers: function (publishers) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -203,6 +292,16 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates consumers information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     registerConsumers: function () {
         let _self = this;
         if (NODICS.getServerState() === 'started' && NODICS.getActiveChannel() !== 'test' &&
@@ -227,6 +326,20 @@ module.exports = {
             }, CONFIG.get('processRetrySleepTime') || 2000);
         }
     },
+
+    /**
+
+     * Updates consumer information.
+
+     *
+
+     * @param {*} consumerList Method input.
+
+     * @param {*} consumers Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     registerConsumer: function (consumerList, consumers) {
         let _self = this;
@@ -288,6 +401,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates consumer rules.
+
+     *
+
+     * @param {*} consumerName Method input.
+
+     * @param {*} consumer Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateConsumer: function (consumerName, consumer) {
         let valid = false;
         if (!consumer.runOnNode) {
@@ -299,6 +426,18 @@ module.exports = {
         }
         return valid;
     },
+
+    /**
+
+     * Executes close consumers behavior.
+
+     *
+
+     * @param {*} consumers Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     closeConsumers: function (consumers) {
         let _self = this;

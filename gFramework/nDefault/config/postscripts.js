@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nDefault/config/postscripts
+ * @description Reserved post-start script contribution for the default framework module.
+ * @layer config
+ * @owner nDefault
+ * @override Project modules may add later post-scripts while keeping nDefault as the base fallback layer.
+ */
 module.exports = {
 
 };

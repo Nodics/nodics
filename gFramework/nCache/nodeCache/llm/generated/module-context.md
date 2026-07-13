@@ -59,9 +59,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 1 |
+| Documented | 11 |
 | Partially documented | 2 |
-| Undocumented | 10 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -84,21 +84,21 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nCache/nodeCache/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nCache/nodeCache/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nCache/nodeCache/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCache/nodeCache/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCache/nodeCache/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCache/nodeCache/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nCache configuration used during module startup and layering. |  |
+| `gFramework/nCache/nodeCache/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nCache configuration used during module startup and layering. |  |
+| `gFramework/nCache/nodeCache/config/properties.js` | `config` | `documented` | 0/0 | Defines default nCache configuration used during module startup and layering. |  |
 | `gFramework/nCache/nodeCache/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nCache/nodeCache/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCache/nodeCache/nodics.js` | `module` | `documented` | 2/2 | Registers the nCache module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nCache/nodeCache/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nCache/nodeCache/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCache/nodeCache/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCache/nodeCache/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCache/nodeCache/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCache/nodeCache/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nCache pipeline wiring and execution contracts. |  |
+| `gFramework/nCache/nodeCache/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
+| `gFramework/nCache/nodeCache/src/router/router.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
+| `gFramework/nCache/nodeCache/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nCache schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nCache/nodeCache/src/service/cache/defaultLocalCacheService.js` | `src` | `documented` | 7/7 | Implements the cache adapter contract for process-local storage without mutating caller-owned values. |  |
-| `gFramework/nCache/nodeCache/src/service/engine/defaultLocalCacheEngineService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gFramework/nCache/nodeCache/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCache/nodeCache/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gFramework/nCache/nodeCache/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nCache/nodeCache/src/service/engine/defaultLocalCacheEngineService.js` | `src` | `documented` | 6/6 | Implements nCache default local cache engine service business behavior and extension logic. |  |
+| `gFramework/nCache/nodeCache/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nCache utility exports for utils. |  |
+| `gFramework/nCache/nodeCache/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nCache test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nCache/nodeCache/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nCache test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

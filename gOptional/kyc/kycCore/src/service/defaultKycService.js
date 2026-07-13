@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gOptional/kyc/kycCore/src/service/defaultKycService
+ * @description Implements kyc default kyc service business behavior and extension logic.
+ * @layer service
+ * @owner kyc
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Initializes mobile kyc behavior for the module runtime.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     initMobileKyc: function (request, response) {
         request.kycService = this;
         request.type = ENUMS.KYCType.MOBILE.key;
@@ -50,6 +71,13 @@ module.exports = {
             }
         });
     },
+    /**
+     * Validates mobile kyc rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @returns {*} Method result.
+     */
     validateMobileKyc: function (request, response) {
         request.kycService = this;
         return new Promise((resolve, reject) => {
@@ -64,6 +92,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Initializes email kyc behavior for the module runtime.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     initEmailKyc: function (request, response) {
         request.kycService = this;
@@ -80,6 +122,13 @@ module.exports = {
             }
         });
     },
+    /**
+     * Validates email kyc rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @returns {*} Method result.
+     */
     validateEmailKyc: function (request, response) {
         request.kycService = this;
         return new Promise((resolve, reject) => {

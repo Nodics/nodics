@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module dataProcessor/schemas/schemas
+ * @description Reserved schema contribution for DEAP data processing models.
+ * @layer schema
+ * @owner dataProcessor
+ * @override Project DEAP modules may add later processing schemas.
+ */
 module.exports = {
 
 };

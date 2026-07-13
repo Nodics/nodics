@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nFacade/config/postscripts
+ * @description Defines default nFacade configuration used during module startup and layering.
+ * @layer config
+ * @owner nFacade
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };

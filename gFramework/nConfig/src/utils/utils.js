@@ -15,7 +15,7 @@ const path = require('path');
 
 /**
  * @module config/utils/utils
- * @description Shared nConfig utilities for module discovery, runtime activation, hierarchy traversal, generated artifact creation, filesystem cleanup, and router/web enablement decisions.
+ * @description Shared nConfig utilities for module discovery, runtime activation, hierarchy traversal, generated artifact creation, filesystem cleanup, and router enablement decisions.
  * @layer utility
  * @owner nConfig
  * @override Later modules may merge additional utility functions through the layered utility loader. Replacements must preserve metadata-driven discovery, module ownership boundaries, effective-schema generation, and clean/build behavior.
@@ -89,8 +89,6 @@ module.exports = {
                     console.log(datetime, ' info: [DefaultModuleInitializerService] Dynamo module is not activated');
                 } else if (this.isPublishModule(moduleObject.metaData) && props.publishEnabled) {
                     modulesList.push(moduleName);
-                } else if (this.isWebModule(moduleObject.metaData) && props.webEnabled) {
-                    modulesList.push(moduleName);
                 } else if (this.isAlwaysLoadableModule(moduleObject.metaData)) {
                     modulesList.push(moduleName);
                 }
@@ -159,22 +157,13 @@ module.exports = {
     },
 
     /**
-     * Checks whether a package is activated by the web runtime.
-     * @param {Object} metaData Package metadata.
-     * @returns {boolean} Web activation flag.
-     */
-    isWebModule: function (metaData) {
-        return this.getModuleRuntime(metaData).web === true;
-    },
-
-    /**
-     * Determines whether a non-publish, non-web package kind is normally loadable.
+     * Determines whether a non-publish package kind is normally loadable.
      * @param {Object} metaData Package metadata.
      * @returns {boolean} True for supported application, capability, topology, group, or template kinds.
      */
     isAlwaysLoadableModule: function (metaData) {
         let runtime = this.getModuleRuntime(metaData);
-        if (runtime.publish === true || runtime.web === true) {
+        if (runtime.publish === true) {
             return false;
         }
         let moduleKind = this.getModuleKind(metaData);
@@ -496,30 +485,14 @@ module.exports = {
     /**
      * Determines whether API routing is enabled for an active module.
      * @param {string} moduleName Active module name.
-     * @returns {boolean} True when router or web metadata permits routing and optional Dynamo activation is satisfied.
+     * @returns {boolean} True when router metadata permits routing and optional Dynamo activation is satisfied.
      */
     isRouterEnabled: function (moduleName) {
         let moduleObject = NODICS.getModule(moduleName);
         if (moduleObject &&
             moduleObject.metaData &&
-            (this.getModuleRuntime(moduleObject.metaData).router === true ||
-                this.isWebModule(moduleObject.metaData)) &&
+            this.getModuleRuntime(moduleObject.metaData).router === true &&
             (moduleName !== (CONFIG.get('dynamoModuleName') || 'dynamo') || CONFIG.get('dynamoEnabled'))) {
-            return true;
-        }
-        return false;
-    },
-
-    /**
-     * Determines whether an active module owns a web runtime.
-     * @param {string} moduleName Active module name.
-     * @returns {boolean} True when canonical metadata enables the web runtime.
-     */
-    isWebEnabled: function (moduleName) {
-        let moduleObject = NODICS.getModule(moduleName);
-        if (moduleObject &&
-            moduleObject.metaData &&
-            this.isWebModule(moduleObject.metaData)) {
             return true;
         }
         return false;

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nDynamo/src/pipelines/pipelinesDefinition
+ * @description Defines nDynamo pipeline wiring and execution contracts.
+ * @layer pipelines
+ * @owner nDynamo
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     schemaUpdatedPipeline: {

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSearch/search/src/lib/searchError
+ * @description Provides reusable nSearch library primitives for search error.
+ * @layer lib
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = class SearchError extends CLASSES.NodicsError {
     constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').SearchError) {
         super(error, message, defaultCode);

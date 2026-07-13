@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nDynamo/src/controller/router/defaultRouterConfigurationController
+ * @description Exposes request handlers for nDynamo default router configuration controller operations.
+ * @layer controller
+ * @owner nDynamo
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -33,6 +40,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates router information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     addRouter: function (request, callback) {
         request.config = request.httpRequest.body || {};
         if (callback) {
@@ -46,6 +67,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Updates router information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     updateRouter: function (request, callback) {
         request.config = request.httpRequest.body || {};
         if (callback) {
@@ -58,6 +93,20 @@ module.exports = {
             return FACADE.DefaultRouterConfigurationFacade.updateRouter(request);
         }
     },
+
+    /**
+
+     * Removes or clears router information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     removeRouter: function (request, callback) {
         request.config = request.httpRequest.body || {};

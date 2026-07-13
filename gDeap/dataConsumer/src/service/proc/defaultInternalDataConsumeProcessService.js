@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gDeap/dataConsumer/src/service/proc/defaultInternalDataConsumeProcessService
+ * @description Implements dataConsumer default internal data consume process service business behavior and extension logic.
+ * @layer service
+ * @owner dataConsumer
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +39,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating internal indexer request');
         if (!request.header) {
@@ -42,6 +65,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Runs pre-processing logic for pare header.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     prepareHeader: function (request, response, process) {
         this.LOG.debug('Building options for internal indexer');
@@ -82,11 +121,43 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Runs pre-processing logic for pare input path.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     prepareInputPath: function (request, response, process) {
         this.LOG.debug('Preparing input data path');
         request.inputPath = {};
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Runs pre-processing logic for pare output path.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     prepareOutputPath: function (request, response, process) {
         this.LOG.debug('Preparing output file path');
@@ -102,6 +173,22 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+
+     * Executes flush output folder behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     flushOutputFolder: function (request, response, process) {
         if (request.header.options.finalizeData) {
             this.LOG.debug('Cleaning output directory : ' + request.outputPath.dataPath);
@@ -114,6 +201,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Processes data behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     processData: function (request, response, process) {
         try {
@@ -150,6 +253,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes import finalize data behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     importFinalizeData: function (request, response, process) {
         try {
             if (request.header.options.finalizeData) {
@@ -175,11 +294,43 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Processes sucess end behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
         response.success.msg = SERVICE.DefaultStatusService.get(response.success.code || 'SUC_SYS_00000').message;
         process.resolve(response.success);
     },
+
+    /**
+
+     * Processes error end behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');

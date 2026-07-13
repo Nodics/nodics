@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nems/config/prescripts
+ * @description Reserved pre-start script contribution for Nodics event management startup prerequisites.
+ * @layer config
+ * @owner nems
+ * @override Project modules may add later pre-start scripts for customer-specific event setup.
+ */
 module.exports = {
 
 };

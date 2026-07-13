@@ -550,16 +550,52 @@ module.exports = {
         return authData.loginId || authData.serviceId || authData.sub || authData.code || authData.userId || authData.uid || authData.email;
     },
 
+    /**
+
+     * Retrieves separation policy information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     getSeparationPolicy: function () {
         let governance = CONFIG.get('identityGovernance') || {};
         return governance.separationOfDuties || {};
     },
+
+    /**
+
+     * Executes assert actor behavior.
+
+     *
+
+     * @param {*} actor Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     assertActor: function (actor) {
         if (!actor && this.getSeparationPolicy().requireActor !== false) {
             throw new CLASSES.NodicsError('ERR_AUTH_00003', 'An authenticated actor is required for governed runtime changes');
         }
     },
+
+    /**
+
+     * Executes assert decision separation behavior.
+
+     *
+
+     * @param {*} activationRequest Method input.
+
+     * @param {*} actor Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     assertDecisionSeparation: function (activationRequest, actor) {
         let policy = this.getSeparationPolicy();
@@ -568,6 +604,20 @@ module.exports = {
             throw new CLASSES.NodicsError('ERR_AUTH_00003', 'The requester cannot approve or reject the same runtime change');
         }
     },
+
+    /**
+
+     * Executes assert activation separation behavior.
+
+     *
+
+     * @param {*} activationRequest Method input.
+
+     * @param {*} actor Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     assertActivationSeparation: function (activationRequest, actor) {
         let policy = this.getSeparationPolicy();

@@ -11,8 +11,23 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nDatabase/mongodb/vMongodb/src/schemas/model
+ * @description Defines nDatabase schema metadata, model contracts, and generated capability settings.
+ * @layer schemas
+ * @owner nDatabase
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     default: {
+        /**
+         * Validates model rules.
+         *
+         * @param {*} query Method input.
+         * @param {*} searchOptions Method input.
+         * @param {*} model Method input.
+         * @returns {*} Method result.
+         */
         validateModel: function (query, searchOptions, model) {
             return new Promise((resolve, reject) => {
                 if (!model) {
@@ -56,6 +71,18 @@ module.exports = {
             });
         },
 
+        /**
+
+         * Updates versioned items information.
+
+         *
+
+         * @param {*} input Method input.
+
+         * @returns {*} Method result.
+
+         */
+
         saveVersionedItems: function (input) {
             let _self = this;
             return new Promise((resolve, reject) => {
@@ -78,6 +105,22 @@ module.exports = {
                 }
             });
         },
+
+        /**
+
+         * Retrieves previous items information.
+
+         *
+
+         * @param {*} matchedItems Method input.
+
+         * @param {*} newItem Method input.
+
+         * @param {*} finalizeData Method input.
+
+         * @returns {*} Method result.
+
+         */
 
         fetchPreviousItems: function (matchedItems, newItem, finalizeData) {
             let _self = this;
@@ -117,6 +160,18 @@ module.exports = {
             });
 
         },
+
+        /**
+
+         * Updates versioned items information.
+
+         *
+
+         * @param {*} input Method input.
+
+         * @returns {*} Method result.
+
+         */
 
         updateVersionedItems: function (input) {
             let _self = this;

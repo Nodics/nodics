@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module wcms/pipelines/pipelinesDefinition
+ * @description Reserved pipeline definition contribution point for WCMS content workflows.
+ * @layer pipeline
+ * @owner wcms
+ * @override Project content modules may add later pipelines for custom CMS lifecycle processing.
+ */
 module.exports = {
 
 };

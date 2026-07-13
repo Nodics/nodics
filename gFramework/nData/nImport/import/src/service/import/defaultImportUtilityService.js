@@ -12,6 +12,13 @@
 const _ = require('lodash');
 const fs = require('fs');
 
+/**
+ * @module gFramework/nData/nImport/import/src/service/import/defaultImportUtilityService
+ * @description Implements nData default import utility service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +41,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Retrieves system data headers information.
+
+     *
+
+     * @param {*} moduleList Method input.
+
+     * @param {*} dataType Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getSystemDataHeaders: function (moduleList, dataType) {
         let _self = this;
@@ -63,6 +84,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Retrieves header files information.
+
+     *
+
+     * @param {*} path Method input.
+
+     * @param {*} fileList Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getHeaderFiles: function (path, fileList) {
         if (fs.existsSync(path)) {
@@ -113,6 +148,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves data files information.
+
+     *
+
+     * @param {*} path Method input.
+
+     * @param {*} fileList Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getDataFiles: function (path, fileList) {
         if (fs.existsSync(path)) {
             let moduleFiles = {};
@@ -127,6 +176,18 @@ module.exports = {
             return fileList;
         }
     },
+
+    /**
+
+     * Retrieves local header files information.
+
+     *
+
+     * @param {*} filePath Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getLocalHeaderFiles: function (filePath) {
         let fileList = {};
@@ -159,6 +220,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves all frefix files information.
+
+     *
+
+     * @param {*} filePath Method input.
+
+     * @param {*} fileList Method input.
+
+     * @param {*} preFix Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getAllFrefixFiles: function (filePath, fileList, preFix) {
         let _self = this;
         if (fs.existsSync(filePath)) {
@@ -181,6 +258,18 @@ module.exports = {
             }
         }
     },
+
+    /**
+
+     * Retrieves import files information.
+
+     *
+
+     * @param {*} filePath Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getImportFiles: function (filePath) {
         let fileList = {};
@@ -206,6 +295,18 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Validates import pending rules.
+
+     *
+
+     * @param {*} dataFiles Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     isImportPending: function (dataFiles) {
         let pending = false;

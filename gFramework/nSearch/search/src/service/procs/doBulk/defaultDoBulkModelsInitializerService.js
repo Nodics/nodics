@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSearch/search/src/service/procs/doBulk/defaultDoBulkModelsInitializerService
+ * @description Implements nSearch default do bulk models initializer service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,24 +39,104 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating do save request');
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Builds options data.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     buildOptions: function (request, response, process) {
         this.LOG.debug('Building query options');
         process.nextSuccess(request, response);
     },
 
+    /**
+
+     * Executes lookup cache behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     lookupCache: function (request, response, process) {
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Executes apply pre interceptors behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post get model interceptors');
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Processes query behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing get query');
@@ -64,20 +151,84 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes populate sub models behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     populateSubModels: function (request, response, process) {
         this.LOG.debug('Populating sub models');
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Executes populate virtual properties behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     populateVirtualProperties: function (request, response, process) {
         this.LOG.debug('Populating virtual properties');
         process.nextSuccess(request, response);
     },
 
+    /**
+
+     * Executes apply post interceptors behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post model interceptors');
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Updates cache information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     updateCache: function (request, response, process) {
         this.LOG.debug('Updating cache for new Items');

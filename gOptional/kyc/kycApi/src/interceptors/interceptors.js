@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gOptional/kyc/kycApi/src/interceptors/interceptors
+ * @description Registers kyc interceptor wiring for pipeline extension points.
+ * @layer interceptors
+ * @owner kyc
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

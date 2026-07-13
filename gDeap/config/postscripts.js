@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gDeap/config/postscripts
+ * @description Defines default gDeap configuration used during module startup and layering.
+ * @layer config
+ * @owner gDeap
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };

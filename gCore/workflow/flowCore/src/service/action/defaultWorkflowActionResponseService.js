@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gCore/workflow/flowCore/src/service/action/defaultWorkflowActionResponseService
+ * @description Implements workflow default workflow action response service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -34,6 +41,18 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Retrieves action response information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getActionResponse: function (request) {
         return new Promise((resolve, reject) => {

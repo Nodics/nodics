@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nDefault/router/router
+ * @description Reserved route definition contribution for the default framework baseline.
+ * @layer router
+ * @owner nDefault
+ * @override Later modules provide concrete routes without changing this baseline.
+ */
 module.exports = {
 
 };

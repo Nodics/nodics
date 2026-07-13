@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/profile/src/interceptors/interceptors
+ * @description Registers profile interceptor wiring for pipeline extension points.
+ * @layer interceptors
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     validateUserGroupSave: { type: 'schema', item: 'userGroup', trigger: 'preSave', active: 'true', index: -20, handler: 'DefaultUserGroupGovernanceService.validate' },
     validateUserGroupUpdate: { type: 'schema', item: 'userGroup', trigger: 'preUpdate', active: 'true', index: -20, handler: 'DefaultUserGroupGovernanceService.validate' },

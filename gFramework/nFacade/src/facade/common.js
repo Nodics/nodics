@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nFacade/src/facade/common
+ * @description Coordinates facade-level delegation for nFacade common operations.
+ * @layer facade
+ * @owner nFacade
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,37 +39,149 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves  information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     get: function (request) {
         return SERVICE.srvcName.get(request);
     },
+
+    /**
+
+     * Retrieves by id information.
+
+     *
+
+     * @param {*} id Method input.
+
+     * @param {*} tenant Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getById: function (id, tenant) {
         return SERVICE.srvcName.getById(id, tenant);
     },
 
+    /**
+
+     * Retrieves by code information.
+
+     *
+
+     * @param {*} code Method input.
+
+     * @param {*} tenant Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getByCode: function (code, tenant) {
         return SERVICE.srvcName.getByCode(code, tenant);
     },
+
+    /**
+
+     * Updates  information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     save: function (request) {
         return SERVICE.srvcName.save(request);
     },
 
+    /**
+
+     * Updates all information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     saveAll: function (request) {
         return SERVICE.srvcName.saveAll(request);
     },
+
+    /**
+
+     * Removes or clears  information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     remove: function (request) {
         return SERVICE.srvcName.remove(request);
     },
 
+    /**
+
+     * Removes or clears by id information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     removeById: function (request) {
         return SERVICE.srvcName.remove(request);
     },
 
+    /**
+
+     * Removes or clears by code information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     removeByCode: function (request) {
         return SERVICE.srvcName.remove(request);
     },
+
+    /**
+
+     * Updates  information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     update: function (request) {
         return SERVICE.srvcName.update(request);

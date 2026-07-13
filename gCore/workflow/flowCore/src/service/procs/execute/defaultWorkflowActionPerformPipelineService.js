@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gCore/workflow/flowCore/src/service/procs/execute/defaultWorkflowActionPerformPipelineService
+ * @description Implements workflow default workflow action perform pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -53,6 +60,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Validates operation rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateOperation: function (request, response, process) {
         let workflowCarrier = request.workflowCarrier;
         if (!SERVICE.DefaultWorkflowUtilsService.isProcessingAllowed(request.workflowCarrier)) {
@@ -69,6 +84,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Runs pre-processing logic for update carrier.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     preUpdateCarrier: function (request, response, process) {
         this.LOG.debug('Carrier started processing');
         if (request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.PROCESSING.key) {
@@ -84,6 +107,14 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    /**
+     * Processes manual action behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     handleManualAction: function (request, response, process) {
         if ((request.workflowAction.type === ENUMS.WorkflowActionType.MANUAL.key ||
             request.workflowAction.type === ENUMS.WorkflowActionType.PARALLEL.key) &&
@@ -98,6 +129,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Processes auto action behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     handleAutoAction: function (request, response, process) {
         if ((request.workflowAction.type === ENUMS.WorkflowActionType.AUTO.key ||
             request.workflowAction.type === ENUMS.WorkflowActionType.PARALLEL.key) &&
@@ -115,6 +154,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Processes action handler behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     executeActionHandler: function (request, response, process) {
         SERVICE.DefaultPipelineService.start('executeActionHandlerPipeline', {
             tenant: request.tenant,
@@ -131,6 +178,14 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    /**
+     * Processes action script behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     executeActionScript: function (request, response, process) {
         SERVICE.DefaultPipelineService.start('executeActionScriptPipeline', {
             tenant: request.tenant,
@@ -147,6 +202,14 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    /**
+     * Updates step response information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     createStepResponse: function (request, response, process) {
         let actionResponse = response.success[request.workflowAction.code];
         actionResponse = _.merge(
@@ -160,6 +223,14 @@ module.exports = {
         response.success[request.workflowAction.code] = actionResponse;
         process.nextSuccess(request, response);
     },
+    /**
+     * Validates action response rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateActionResponse: function (request, response, process) {
         let actionResponse = response.success[request.workflowAction.code];
         if (!actionResponse.decision) {
@@ -170,6 +241,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Updates post carrier state information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     updatePostCarrierState: function (request, response, process) {
         let actionResponse = response.success[request.workflowAction.code];
         if (actionResponse.type === ENUMS.WorkflowActionResponseType.ERROR.key) {
@@ -190,6 +269,14 @@ module.exports = {
         request.workflowCarrier.activeAction.actionResponse = actionResponse
         process.nextSuccess(request, response);
     },
+    /**
+     * Executes evaluate channels behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     evaluateChannels: function (request, response, process) {
         let actionResponse = response.success[request.workflowAction.code];
         SERVICE.DefaultPipelineService.start('evaluateChannelsPipeline', {
@@ -218,6 +305,14 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    /**
+     * Updates action response information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     updateActionResponse: function (request, response, process) {
         let actionResponse = response.success[request.workflowAction.code];
         SERVICE.DefaultActionResponseService.save({
@@ -231,6 +326,14 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    /**
+     * Validates end action rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateEndAction: function (request, response, process) {
         let actionResponse = response.success[request.workflowAction.code];
         let qualifiedChannels = actionResponse.qualifiedChannels;
@@ -249,6 +352,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Runs pre-processing logic for pare channel requests.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     prepareChannelRequests: function (request, response, process) {
         let actionResponse = response.success[request.workflowAction.code];
         SERVICE.DefaultPipelineService.start('prepareChannelRequestsPipeline', {
@@ -266,6 +377,14 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    /**
+     * Updates workflow carrier information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     updateWorkflowCarrier: function (request, response, process) {
         let actionResponse = response.success[request.workflowAction.code];
         let channelRequests = response.channelRequests;
@@ -305,6 +424,14 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    /**
+     * Processes channels behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     executeChannels: function (request, response, process) {
         let channelRequests = response.channelRequests;
         this.walkThroughChannels(channelRequests, request, response).then(success => {
@@ -313,6 +440,14 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    /**
+     * Executes walk through channels behavior.
+     *
+     * @param {*} channelRequests Method input.
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @returns {*} Method result.
+     */
     walkThroughChannels: function (channelRequests, request, response) {
         return new Promise((resolve, reject) => {
             if (channelRequests && channelRequests.length > 0) {

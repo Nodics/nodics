@@ -9,7 +9,19 @@
 
  */
 
+/**
+ * @module cronjob/config/postscripts
+ * @description Startup script contribution that starts configured cron jobs after the server reaches the started state.
+ * @layer config
+ * @owner cronjob
+ * @override Project modules may add later post-start scripts for customer-specific job activation.
+ */
 module.exports = {
+    /**
+     * Starts active jobs on startup when `cronjob.runOnStartup` is enabled.
+     *
+     * @returns {void}
+     */
     startJobsOnStartup: function () {
         SERVICE.DefaultCronJobService.startOnStartup();
     }

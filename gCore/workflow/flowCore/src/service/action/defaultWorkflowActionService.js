@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gCore/workflow/flowCore/src/service/action/defaultWorkflowActionService
+ * @description Implements workflow default workflow action service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves workflow head information.
+
+     *
+
+     * @param {*} code Method input.
+
+     * @param {*} tenant Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getWorkflowHead: function (code, tenant) {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Loading workflow head: ' + code);
@@ -58,6 +79,13 @@ module.exports = {
             });
         });
     },
+    /**
+     * Retrieves workflow action information.
+     *
+     * @param {*} actionCode Method input.
+     * @param {*} tenant Method input.
+     * @returns {*} Method result.
+     */
     getWorkflowAction: function (actionCode, tenant) {
         return new Promise((resolve, reject) => {
             this.LOG.debug('Loading workflow action: ' + actionCode);

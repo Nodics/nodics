@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nSearch/search/src/service/procs/dosave/defaultDoSaveModelsInitializerService
+ * @description Implements nSearch default do save models initializer service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -33,6 +40,22 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Validates input rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     validateInput: function (request, response, process) {
         this.LOG.debug('Validating input for doSaving models');
@@ -60,6 +83,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Runs pre-processing logic for processor.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     preProcessor: function (request, response, process) {
         this.LOG.debug('Applying pre processors in models');
         let indexName = request.indexName || request.searchModel.indexName;
@@ -75,6 +114,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Processes models behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     processModels: function (request, response, process) {
         this.LOG.debug('Processing models');
         if (request.query && !UTILS.isBlank(request.query)) {
@@ -86,6 +141,22 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+
+    /**
+
+     * Processes models do save behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} models Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleModelsDoSave: function (request, response, models) {
         return new Promise((resolve, reject) => {
@@ -122,6 +193,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Runs post-processing logic for processor.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     postProcessor: function (request, response, process) {
         this.LOG.debug('Applying post processors in models');
         let indexName = request.indexName || request.searchModel.indexName;
@@ -136,6 +223,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Processes sucess end behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleSucessEnd: function (request, response, process) {
         let code = 'SUC_SRCH_00000';

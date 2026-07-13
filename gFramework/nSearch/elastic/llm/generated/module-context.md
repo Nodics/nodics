@@ -59,9 +59,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 3 |
-| Undocumented | 11 |
+| Documented | 12 |
+| Partially documented | 2 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -84,22 +84,22 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nSearch/elastic/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nSearch/elastic/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nSearch/elastic/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nSearch/elastic/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nSearch/elastic/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/elastic/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nSearch configuration used during module startup and layering. |  |
+| `gFramework/nSearch/elastic/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nSearch configuration used during module startup and layering. |  |
+| `gFramework/nSearch/elastic/config/properties.js` | `config` | `documented` | 0/0 | Defines default nSearch configuration used during module startup and layering. |  |
 | `gFramework/nSearch/elastic/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nSearch/elastic/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/elastic/nodics.js` | `module` | `documented` | 2/2 | Registers the nSearch module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nSearch/elastic/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nSearch/elastic/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nSearch/elastic/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nSearch/elastic/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nSearch/elastic/src/schemas/elasticSearchModel.js` | `src` | `undocumented` | 0/14 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 14 exported method(s) |
-| `gFramework/nSearch/elastic/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nSearch/elastic/src/service/connection/defaultElasticSearchEngineConnectionHandlerService.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gFramework/nSearch/elastic/src/service/schema/defaultElasticSearchSchemaHandlerService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gFramework/nSearch/elastic/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nSearch/elastic/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gFramework/nSearch/elastic/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nSearch/elastic/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nSearch pipeline wiring and execution contracts. |  |
+| `gFramework/nSearch/elastic/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nSearch route registration and HTTP exposure metadata. |  |
+| `gFramework/nSearch/elastic/src/router/router.js` | `src` | `documented` | 0/0 | Defines nSearch route registration and HTTP exposure metadata. |  |
+| `gFramework/nSearch/elastic/src/schemas/elasticSearchModel.js` | `src` | `documented` | 14/14 | Defines nSearch schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nSearch/elastic/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nSearch schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nSearch/elastic/src/service/connection/defaultElasticSearchEngineConnectionHandlerService.js` | `src` | `documented` | 5/5 | Implements nSearch default elastic search engine connection handler service business behavior and extension logic. |  |
+| `gFramework/nSearch/elastic/src/service/schema/defaultElasticSearchSchemaHandlerService.js` | `src` | `documented` | 7/7 | Implements nSearch default elastic search schema handler service business behavior and extension logic. |  |
+| `gFramework/nSearch/elastic/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nSearch utility exports for utils. |  |
+| `gFramework/nSearch/elastic/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nSearch test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nSearch/elastic/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nSearch test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

@@ -10,7 +10,28 @@
  */
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nSystem/src/service/interceptors/defaultConfigurationSaveInterceptorService
+ * @description Implements nSystem default configuration save interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner nSystem
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+
+    /**
+
+     * Executes merge existing behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     mergeExisting: function (request, response) {
         return new Promise((resolve, reject) => {

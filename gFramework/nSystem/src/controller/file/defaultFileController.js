@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSystem/src/controller/file/defaultFileController
+ * @description Exposes request handlers for nSystem default file controller operations.
+ * @layer controller
+ * @owner nSystem
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -33,6 +40,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves file content information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getFileContent: function (request, callback) {
         if (request.httpRequest.body) {
             request.type = request.httpRequest.body.type;
@@ -49,6 +70,20 @@ module.exports = {
             return FACADE.DefaultFileFacade.getFileContent(request);
         }
     },
+
+    /**
+
+     * Executes download file behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     downloadFile: function (request, callback) {
         if (request.httpRequest.body) {

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nEvent/src/event/listeners
+ * @description Documents nEvent listeners module behavior.
+ * @layer event
+ * @owner nEvent
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     common: {
         apiKeyUpdateListener: {

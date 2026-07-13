@@ -63,9 +63,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
+| Documented | 19 |
 | Partially documented | 2 |
-| Undocumented | 19 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -88,29 +88,29 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gMrkty/cres/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gMrkty/cres/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gMrkty/cres/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/data/init/data/schema2Workflow/defaultReview2WorkflowData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/data/init/data/workflows/reviewWorkflowActionData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/data/init/data/workflows/reviewWorkflowChannelData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/data/init/data/workflows/reviewWorkflowHeadData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/data/init/headers/schema2Workflow/defaultReview2WorkflowHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/data/init/headers/workflows/reviewWorkflowActionHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/data/init/headers/workflows/reviewWorkflowChannelHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/data/init/headers/workflows/reviewWorkflowHeadHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gMrkty/cres/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default cres configuration used during module startup and layering. |  |
+| `gMrkty/cres/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default cres configuration used during module startup and layering. |  |
+| `gMrkty/cres/config/properties.js` | `config` | `documented` | 0/0 | Defines default cres configuration used during module startup and layering. |  |
+| `gMrkty/cres/data/init/data/schema2Workflow/defaultReview2WorkflowData.js` | `data` | `documented` | 0/0 | Provides cres initializer or sample data consumed by the import layer. |  |
+| `gMrkty/cres/data/init/data/workflows/reviewWorkflowActionData.js` | `data` | `documented` | 0/0 | Provides cres initializer or sample data consumed by the import layer. |  |
+| `gMrkty/cres/data/init/data/workflows/reviewWorkflowChannelData.js` | `data` | `documented` | 0/0 | Provides cres initializer or sample data consumed by the import layer. |  |
+| `gMrkty/cres/data/init/data/workflows/reviewWorkflowHeadData.js` | `data` | `documented` | 0/0 | Provides cres initializer or sample data consumed by the import layer. |  |
+| `gMrkty/cres/data/init/headers/schema2Workflow/defaultReview2WorkflowHeader.js` | `data` | `documented` | 0/0 | Provides cres initializer or sample data consumed by the import layer. |  |
+| `gMrkty/cres/data/init/headers/workflows/reviewWorkflowActionHeader.js` | `data` | `documented` | 0/0 | Provides cres initializer or sample data consumed by the import layer. |  |
+| `gMrkty/cres/data/init/headers/workflows/reviewWorkflowChannelHeader.js` | `data` | `documented` | 0/0 | Provides cres initializer or sample data consumed by the import layer. |  |
+| `gMrkty/cres/data/init/headers/workflows/reviewWorkflowHeadHeader.js` | `data` | `documented` | 0/0 | Provides cres initializer or sample data consumed by the import layer. |  |
 | `gMrkty/cres/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gMrkty/cres/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gMrkty/cres/nodics.js` | `module` | `documented` | 2/2 | Registers the cres module lifecycle hooks and module-level startup behavior. |  |
 | `gMrkty/cres/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gMrkty/cres/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/src/service/defaultSampleService.js` | `src` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gMrkty/cres/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gMrkty/cres/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gMrkty/cres/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers cres interceptor wiring for pipeline extension points. |  |
+| `gMrkty/cres/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines cres pipeline wiring and execution contracts. |  |
+| `gMrkty/cres/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines cres route registration and HTTP exposure metadata. |  |
+| `gMrkty/cres/src/router/router.js` | `src` | `documented` | 0/0 | Defines cres route registration and HTTP exposure metadata. |  |
+| `gMrkty/cres/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines cres schema metadata, model contracts, and generated capability settings. |  |
+| `gMrkty/cres/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements cres default sample service business behavior and extension logic. |  |
+| `gMrkty/cres/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared cres utility exports for utils. |  |
+| `gMrkty/cres/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines cres test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gMrkty/cres/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines cres test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

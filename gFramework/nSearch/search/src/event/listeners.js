@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSearch/search/src/event/listeners
+ * @description Documents nSearch listeners module behavior.
+ * @layer event
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     common: {
         searchInterceptorUpdatedListener: {

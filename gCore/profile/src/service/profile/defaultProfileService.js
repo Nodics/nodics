@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/profile/src/service/profile/defaultProfileService
+ * @description Implements profile default profile service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,13 +39,43 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves profile module name information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     getProfileModuleName: function () {
         return (typeof CONFIG !== 'undefined' && CONFIG.get && CONFIG.get('profileModuleName')) || 'profile';
     },
 
+    /**
+
+     * Retrieves default tenant information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     getDefaultTenant: function () {
         return (typeof CONFIG !== 'undefined' && CONFIG.get && CONFIG.get('defaultTenant')) || 'default';
     },
+
+    /**
+
+     * Validates init required rules.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
 
     isInitRequired: function () {
         let _self = this;

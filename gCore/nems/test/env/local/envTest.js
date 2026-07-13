@@ -9,10 +9,13 @@
 
  */
 
-/*
-   Change this file name as per test case name. This just a sample file.
-   You can create n-number of test file and n-number of different environment as well
-*/
+/**
+ * @module nems/test/env/local/envTest
+ * @description Provides a local-environment NEMS test scaffold for environment-specific event-processing test suites.
+ * @layer test
+ * @owner nems
+ * @override Project modules may replace this scaffold with local NEMS integration or environment validation tests.
+ */
 const Chai = require('chai');
 const expect = Chai.expect;
 

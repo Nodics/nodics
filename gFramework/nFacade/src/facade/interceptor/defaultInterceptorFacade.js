@@ -8,7 +8,26 @@
     terms of the license agreement you entered into with Nodics.
  */
 
+/**
+ * @module gFramework/nFacade/src/facade/interceptor/defaultInterceptorFacade
+ * @description Coordinates facade-level delegation for nFacade default interceptor facade operations.
+ * @layer facade
+ * @owner nFacade
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+
+    /**
+
+     * Executes refresh interceptors behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     refreshInterceptors: function (request) {
         return SERVICE.DefaultInterceptorService.refreshInterceptors(request);

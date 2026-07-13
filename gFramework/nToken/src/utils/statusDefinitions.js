@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nToken/src/utils/statusDefinitions
+ * @description Provides shared nToken utility exports for status definitions.
+ * @layer utils
+ * @owner nToken
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**

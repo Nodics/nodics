@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nTest/lib/testSuitePool
+ * @description Lightweight in-memory pool of named Nodics test suites.
+ * @layer lib
+ * @owner nTest
+ * @override Project modules may replace this class when suite pooling requires custom lookup behavior.
+ */
 module.exports = function() {
     let _testSuites = {};
 

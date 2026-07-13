@@ -61,9 +61,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 1 |
-| Undocumented | 27 |
+| Documented | 26 |
+| Partially documented | 2 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -86,36 +86,36 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gframes/gframesModules/gfcms/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gframes/gframesModules/gfcms/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gframes/gframesModules/gfcms/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/data/core/data/components/grayFramesFooterCmsComponentsData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/data/core/data/components/grayFramesHeaderCmsComponentsData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/data/core/data/components/grayFramesHomePageCmsComponentsData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/data/core/data/components/grayFramesMainCmsComponentsData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/data/core/data/pages/grayFramesCmsPagesData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/data/core/data/sites/grayFramesCmsSiteData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/data/core/data/typeCodes/grayFramesTypeCode2RendererData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/data/core/data/typeCodes/grayFramesTypeCodeData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/data/core/headers/components/grayFramesFooterCmsComponentsDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/data/core/headers/components/grayFramesHeaderCmsComponentsDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/data/core/headers/components/grayFramesHomePageCmsComponentsDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/data/core/headers/components/grayFramesMainCmsComponentsDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/data/core/headers/pages/grayFramesCmsPagesDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/data/core/headers/sites/grayFramesCmsSiteDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/data/core/headers/typeCodes/grayFramesTypeCode2RendererDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/data/core/headers/typeCodes/grayFramesTypeCodeDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gframes/gframesModules/gfcms/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default gframesModules configuration used during module startup and layering. |  |
+| `gframes/gframesModules/gfcms/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default gframesModules configuration used during module startup and layering. |  |
+| `gframes/gframesModules/gfcms/config/properties.js` | `config` | `documented` | 0/0 | Defines default gframesModules configuration used during module startup and layering. |  |
+| `gframes/gframesModules/gfcms/data/core/data/components/grayFramesFooterCmsComponentsData.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
+| `gframes/gframesModules/gfcms/data/core/data/components/grayFramesHeaderCmsComponentsData.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
+| `gframes/gframesModules/gfcms/data/core/data/components/grayFramesHomePageCmsComponentsData.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
+| `gframes/gframesModules/gfcms/data/core/data/components/grayFramesMainCmsComponentsData.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
+| `gframes/gframesModules/gfcms/data/core/data/pages/grayFramesCmsPagesData.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
+| `gframes/gframesModules/gfcms/data/core/data/sites/grayFramesCmsSiteData.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
+| `gframes/gframesModules/gfcms/data/core/data/typeCodes/grayFramesTypeCode2RendererData.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
+| `gframes/gframesModules/gfcms/data/core/data/typeCodes/grayFramesTypeCodeData.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
+| `gframes/gframesModules/gfcms/data/core/headers/components/grayFramesFooterCmsComponentsDataHeader.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
+| `gframes/gframesModules/gfcms/data/core/headers/components/grayFramesHeaderCmsComponentsDataHeader.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
+| `gframes/gframesModules/gfcms/data/core/headers/components/grayFramesHomePageCmsComponentsDataHeader.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
+| `gframes/gframesModules/gfcms/data/core/headers/components/grayFramesMainCmsComponentsDataHeader.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
+| `gframes/gframesModules/gfcms/data/core/headers/pages/grayFramesCmsPagesDataHeader.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
+| `gframes/gframesModules/gfcms/data/core/headers/sites/grayFramesCmsSiteDataHeader.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
+| `gframes/gframesModules/gfcms/data/core/headers/typeCodes/grayFramesTypeCode2RendererDataHeader.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
+| `gframes/gframesModules/gfcms/data/core/headers/typeCodes/grayFramesTypeCodeDataHeader.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
 | `gframes/gframesModules/gfcms/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gframes/gframesModules/gfcms/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gframes/gframesModules/gfcms/nodics.js` | `module` | `documented` | 2/2 | Registers the gframesModules module lifecycle hooks and module-level startup behavior. |  |
 | `gframes/gframesModules/gfcms/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gframes/gframesModules/gfcms/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfcms/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gframes/gframesModules/gfcms/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gframes/gframesModules/gfcms/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers gframesModules interceptor wiring for pipeline extension points. |  |
+| `gframes/gframesModules/gfcms/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines gframesModules pipeline wiring and execution contracts. |  |
+| `gframes/gframesModules/gfcms/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines gframesModules route registration and HTTP exposure metadata. |  |
+| `gframes/gframesModules/gfcms/src/router/router.js` | `src` | `documented` | 0/0 | Defines gframesModules route registration and HTTP exposure metadata. |  |
+| `gframes/gframesModules/gfcms/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines gframesModules schema metadata, model contracts, and generated capability settings. |  |
+| `gframes/gframesModules/gfcms/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared gframesModules utility exports for utils. |  |
+| `gframes/gframesModules/gfcms/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines gframesModules test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gframes/gframesModules/gfcms/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines gframesModules test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

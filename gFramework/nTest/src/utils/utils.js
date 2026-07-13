@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nTest/utils/utils
+ * @description Reserved utility contribution point for test execution and generated-test helper functions.
+ * @layer utility
+ * @owner nTest
+ * @override Project modules may add later utilities for custom test tooling.
+ */
 module.exports = {
 
 };

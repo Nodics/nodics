@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module wcms/data/init/data/schema2Workflow/defaultCmsComponent2WorkflowData
+ * @description Seed mapping that binds CMS component schemas to the default component approval workflow.
+ * @layer data
+ * @owner wcms
+ * @override Project modules may provide later schema-to-workflow mappings for custom component governance.
+ */
 module.exports = {
     record0: {
         workflowCode: 'cmsComponentApprovalFlowHead',

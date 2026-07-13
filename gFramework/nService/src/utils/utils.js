@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nService/utils/utils
+ * @description Reserved utility extension point for shared service-layer helper functions.
+ * @layer utils
+ * @owner nService
+ * @override Project modules may add or replace service utilities in later module layers.
+ */
 module.exports = {
 
 };

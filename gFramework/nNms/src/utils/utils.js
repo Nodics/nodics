@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nNms/src/utils/utils
+ * @description Provides shared nNms utility exports for utils.
+ * @layer utils
+ * @owner nNms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

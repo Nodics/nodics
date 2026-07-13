@@ -69,9 +69,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 12 |
-| Undocumented | 34 |
+| Documented | 41 |
+| Partially documented | 2 |
+| Undocumented | 3 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -94,54 +94,54 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gCore/cronjob/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/cronjob/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/cronjob/config/postscripts.js` | `config` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gCore/cronjob/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/data/core/data/indexer/defaultIndexerData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/data/core/data/jobs/defaultIndexerJobsData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/data/core/headers/indexer/defaultIndexerHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/data/core/headers/jobs/defaultIndexerJobsHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/config/postscripts.js` | `config` | `documented` | 1/1 | Startup script contribution that starts configured cron jobs after the server reaches the started state. |  |
+| `gCore/cronjob/config/prescripts.js` | `config` | `documented` | 0/0 | Reserved pre-start script contribution for cronjob startup prerequisites. |  |
+| `gCore/cronjob/config/properties.js` | `config` | `documented` | 0/0 | Cronjob runtime properties for node responsibility handlers, startup activation, retry timing, and default error codes. |  |
+| `gCore/cronjob/data/core/data/indexer/defaultIndexerData.js` | `data` | `documented` | 0/0 | Core initializer data for cronjob indexer support records. |  |
+| `gCore/cronjob/data/core/data/jobs/defaultIndexerJobsData.js` | `data` | `documented` | 0/0 | Core initializer data for default cronjob records related to indexing. |  |
+| `gCore/cronjob/data/core/headers/indexer/defaultIndexerHeader.js` | `data` | `documented` | 0/0 | Import header for saving cronjob indexer support records. |  |
+| `gCore/cronjob/data/core/headers/jobs/defaultIndexerJobsHeader.js` | `data` | `documented` | 0/0 | Import header for saving default cronjob records related to indexing. |  |
 | `gCore/cronjob/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/cronjob/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/nodics.js` | `module` | `documented` | 2/2 | Cronjob module lifecycle entrypoint for scheduler, route, pipeline, and node-responsibility capabilities. |  |
 | `gCore/cronjob/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/cronjob/src/controller/defaultCronJobController.js` | `src` | `undocumented` | 0/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 8 exported method(s) |
-| `gCore/cronjob/src/event/listeners.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/src/facade/defaultCronJobFacade.js` | `src` | `undocumented` | 0/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 8 exported method(s) |
-| `gCore/cronjob/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/src/lib/classes.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/src/lib/cronJob.js` | `src` | `undocumented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gCore/cronjob/src/lib/cronJobContainer.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/src/lib/cronJobError.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/src/router/appConfig.js` | `src` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gCore/cronjob/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/src/service/config/defaultCronJobConfigurationService.js` | `src` | `partially-documented` | 2/11 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 9 exported method(s) |
-| `gCore/cronjob/src/service/cronjob/defaultCronJobService.js` | `src` | `undocumented` | 0/12 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 12 exported method(s) |
-| `gCore/cronjob/src/service/event/defaultEventHandlerJobService.js` | `src` | `undocumented` | 0/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gCore/cronjob/src/service/handler/defaultJobHandlerService.js` | `src` | `undocumented` | 0/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 8 exported method(s) |
-| `gCore/cronjob/src/service/interceptor/defaultJobActivatorInterceptorService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gCore/cronjob/src/service/interceptor/defaultStartValueValidatorInterceptorService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gCore/cronjob/src/service/node/defaultCronJobNodeDownHandlerService.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gCore/cronjob/src/service/node/defaultCronJobNodeUpHandlerService.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gCore/cronjob/src/service/test/defaultTestCronJobService.js` | `src` | `undocumented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gCore/cronjob/src/service/trigger/defaultCronJobCompletedHandlerService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gCore/cronjob/src/service/trigger/defaultCronJobErrorHandlerService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gCore/cronjob/src/service/trigger/defaultCronJobPausedHandlerService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gCore/cronjob/src/service/trigger/defaultCronJobRemovedHandlerService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gCore/cronjob/src/service/trigger/defaultCronJobResumedHandlerService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gCore/cronjob/src/service/trigger/defaultCronJobStartHandlerService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gCore/cronjob/src/service/trigger/defaultCronJobStopHandlerService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gCore/cronjob/src/service/trigger/defaultCronJobTriggerHandlerService.js` | `src` | `partially-documented` | 2/14 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 12 exported method(s) |
-| `gCore/cronjob/src/service/virtual/defaultCronJobVirtualService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gCore/cronjob/src/utils/enums.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gCore/cronjob/src/controller/defaultCronJobController.js` | `src` | `documented` | 8/8 | Adapts secured cronjob API requests into facade calls for job lifecycle operations. |  |
+| `gCore/cronjob/src/event/listeners.js` | `src` | `documented` | 0/0 | Event listener registrations for refreshing cronjob interceptor and validator runtime caches. |  |
+| `gCore/cronjob/src/facade/defaultCronJobFacade.js` | `src` | `documented` | 8/8 | Facade boundary that delegates cronjob lifecycle commands from controllers to the scheduler service. |  |
+| `gCore/cronjob/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Reserved interceptor contribution point for cronjob lifecycle validation and mutation hooks. |  |
+| `gCore/cronjob/src/lib/classes.js` | `src` | `documented` | 0/0 | Class registrations for cronjob runtime wrappers, containers, and cronjob-specific errors. |  |
+| `gCore/cronjob/src/lib/cronJob.js` | `src` | `documented` | 2/2 | Runtime wrapper around the `cron` package that controls one tenant-scoped scheduled job and its lifecycle pipelines. |  |
+| `gCore/cronjob/src/lib/cronJobContainer.js` | `src` | `documented` | 0/0 | Process-local tenant/job pool that creates, updates, runs, starts, stops, pauses, resumes, and removes cronjob wrappers. |  |
+| `gCore/cronjob/src/lib/cronJobError.js` | `src` | `documented` | 0/0 | Cronjob-specific Nodics error class using the configured cronjob default error code. |  |
+| `gCore/cronjob/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Cronjob lifecycle pipeline definitions for start, stop, pause, resume, run, complete, error, node up, and node down processing. |  |
+| `gCore/cronjob/src/router/appConfig.js` | `src` | `documented` | 7/7 | Reserved cronjob application router hooks for session, logging, cache, body parser, headers, error routes, and extras. |  |
+| `gCore/cronjob/src/router/router.js` | `src` | `documented` | 0/0 | Secured cronjob route contracts for creating, updating, running, starting, stopping, removing, pausing, and resuming jobs. |  |
+| `gCore/cronjob/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Cronjob schema definitions for job records, triggers, logs, and node responsibility models. |  |
+| `gCore/cronjob/src/service/config/defaultCronJobConfigurationService.js` | `src` | `documented` | 11/11 | Caches cronjob interceptor and validator configuration and supplies the default active-job query. |  |
+| `gCore/cronjob/src/service/cronjob/defaultCronJobService.js` | `src` | `documented` | 12/12 | Coordinates persisted cronjob definitions with the in-memory scheduler container across tenants. |  |
+| `gCore/cronjob/src/service/event/defaultEventHandlerJobService.js` | `src` | `documented` | 5/5 | Cronjob job implementation that triggers NEMS event processing and records job outcome. |  |
+| `gCore/cronjob/src/service/handler/defaultJobHandlerService.js` | `src` | `documented` | 8/8 | Default logging hooks for cronjob lifecycle events. |  |
+| `gCore/cronjob/src/service/interceptor/defaultJobActivatorInterceptorService.js` | `src` | `documented` | 1/1 | Activates newly saved cronjob records by creating and starting them in the scheduler pool. |  |
+| `gCore/cronjob/src/service/interceptor/defaultStartValueValidatorInterceptorService.js` | `src` | `documented` | 1/1 | Normalizes cronjob start and end values into Date instances before persistence. |  |
+| `gCore/cronjob/src/service/node/defaultCronJobNodeDownHandlerService.js` | `src` | `documented` | 5/5 | Handles cronjob responsibility takeover when a remote node goes down. |  |
+| `gCore/cronjob/src/service/node/defaultCronJobNodeUpHandlerService.js` | `src` | `documented` | 5/5 | Releases temporary cronjob responsibility when a remote node comes back online. |  |
+| `gCore/cronjob/src/service/test/defaultTestCronJobService.js` | `src` | `documented` | 2/2 | Sample cronjob target service used to validate scheduler execution and stop flows. |  |
+| `gCore/cronjob/src/service/trigger/defaultCronJobCompletedHandlerService.js` | `src` | `documented` | 7/7 | Pipeline service for validating, governing, persisting, and publishing cronjob completion transitions. |  |
+| `gCore/cronjob/src/service/trigger/defaultCronJobErrorHandlerService.js` | `src` | `documented` | 7/7 | Pipeline service for validating, governing, persisting, and publishing cronjob error transitions. |  |
+| `gCore/cronjob/src/service/trigger/defaultCronJobPausedHandlerService.js` | `src` | `documented` | 7/7 | Pipeline service for validating, governing, persisting, and publishing cronjob pause transitions. |  |
+| `gCore/cronjob/src/service/trigger/defaultCronJobRemovedHandlerService.js` | `src` | `documented` | 7/7 | Pipeline service for validating, governing, persisting, and publishing cronjob removal transitions. |  |
+| `gCore/cronjob/src/service/trigger/defaultCronJobResumedHandlerService.js` | `src` | `documented` | 7/7 | Pipeline service for validating, governing, persisting, and publishing cronjob resume transitions. |  |
+| `gCore/cronjob/src/service/trigger/defaultCronJobStartHandlerService.js` | `src` | `documented` | 7/7 | Pipeline service for validating, governing, persisting, and publishing cronjob start transitions. |  |
+| `gCore/cronjob/src/service/trigger/defaultCronJobStopHandlerService.js` | `src` | `documented` | 7/7 | Pipeline service for validating, governing, persisting, and publishing cronjob stop transitions. |  |
+| `gCore/cronjob/src/service/trigger/defaultCronJobTriggerHandlerService.js` | `src` | `documented` | 14/14 | Pipeline service that governs cronjob execution, invokes configured job targets, persists results, and publishes execution events. |  |
+| `gCore/cronjob/src/service/virtual/defaultCronJobVirtualService.js` | `src` | `documented` | 1/1 | Virtual field service for deriving cronjob display values. |  |
+| `gCore/cronjob/src/utils/enums.js` | `src` | `documented` | 0/0 | Cronjob enum definitions for lifecycle state, trigger status, and scheduling behavior. |  |
+| `gCore/cronjob/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Cronjob success and error status definitions used by lifecycle APIs and scheduler services. |  |
+| `gCore/cronjob/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved cronjob utility contribution point for scheduler helper functions. |  |
+| `gCore/cronjob/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Common sample test scaffold for cronjob module contracts. | add JSDoc for 7 exported method(s) |
 | `gCore/cronjob/test/cronJobControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/cronjob/test/cronJobRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/cronjob/test/cronJobServiceLifecycleContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/test/env/local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gCore/cronjob/test/env/local/envTest.js` | `test` | `partially-documented` | 0/7 | Local-environment sample test scaffold for cronjob module behavior. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

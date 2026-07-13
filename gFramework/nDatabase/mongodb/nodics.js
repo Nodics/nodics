@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nDatabase/mongodb/nodics
+ * @description Registers the nDatabase module lifecycle hooks and module-level startup behavior.
+ * @layer module
+ * @owner nDatabase
+ * @override Projects may override lifecycle behavior through later active modules instead of modifying this module directly.
+ */
 module.exports = {
     /**
      * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 

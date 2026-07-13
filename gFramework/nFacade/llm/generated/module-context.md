@@ -51,9 +51,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 5 |
-| Undocumented | 6 |
+| Documented | 11 |
+| Partially documented | 0 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -74,19 +74,19 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nFacade/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nFacade/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nFacade/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nFacade/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nFacade/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nFacade/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nFacade configuration used during module startup and layering. |  |
+| `gFramework/nFacade/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nFacade configuration used during module startup and layering. |  |
+| `gFramework/nFacade/config/properties.js` | `config` | `documented` | 0/0 | Defines default nFacade configuration used during module startup and layering. |  |
 | `gFramework/nFacade/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nFacade/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nFacade/nodics.js` | `module` | `documented` | 2/2 | Registers the nFacade module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nFacade/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nFacade/src/facade/apikey/defaultAPIKeyFacade.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gFramework/nFacade/src/facade/cache/defaultCacheFacade.js` | `src` | `partially-documented` | 3/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gFramework/nFacade/src/facade/common.js` | `src` | `partially-documented` | 2/11 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 9 exported method(s) |
-| `gFramework/nFacade/src/facade/interceptor/defaultInterceptorFacade.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gFramework/nFacade/src/facade/log/defaultLogFacade.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gFramework/nFacade/src/facade/validator/defaultValidatorFacade.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gFramework/nFacade/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nFacade/src/facade/apikey/defaultAPIKeyFacade.js` | `src` | `documented` | 3/3 | Coordinates facade-level delegation for nFacade default apikey facade operations. |  |
+| `gFramework/nFacade/src/facade/cache/defaultCacheFacade.js` | `src` | `documented` | 5/5 | Coordinates facade-level delegation for nFacade default cache facade operations. |  |
+| `gFramework/nFacade/src/facade/common.js` | `src` | `documented` | 11/11 | Coordinates facade-level delegation for nFacade common operations. |  |
+| `gFramework/nFacade/src/facade/interceptor/defaultInterceptorFacade.js` | `src` | `documented` | 1/1 | Coordinates facade-level delegation for nFacade default interceptor facade operations. |  |
+| `gFramework/nFacade/src/facade/log/defaultLogFacade.js` | `src` | `documented` | 3/3 | Coordinates facade-level delegation for nFacade default log facade operations. |  |
+| `gFramework/nFacade/src/facade/validator/defaultValidatorFacade.js` | `src` | `documented` | 1/1 | Coordinates facade-level delegation for nFacade default validator facade operations. |  |
+| `gFramework/nFacade/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nFacade utility exports for utils. |  |
 
 ## Extension Contract
 

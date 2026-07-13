@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nSearch/search/src/service/model/defaultSearchModelHandlerService
+ * @description Implements nSearch default search model handler service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Removes or clears search model from module information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} indexName Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     removeSearchModelFromModule: function (moduleName, indexName) {
         let moduleObject = NODICS.getModule(moduleName);
         let searchModelName = indexName.toUpperCaseFirstChar() + 'SearchModel';
@@ -44,6 +65,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Runs pre-processing logic for pare search models.
+
+     *
+
+     * @param {*} modules Method input.
+
+     * @param {*} tenants Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     prepareSearchModels: function (modules = Object.keys(NODICS.getModules()), tenants = NODICS.getActiveTenants()) {
         let _self = this;
@@ -72,6 +107,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Runs pre-processing logic for pare module search models.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} tenants Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     prepareModuleSearchModels: function (moduleName, tenants = NODICS.getActiveTenants()) {
         let _self = this;
@@ -105,6 +154,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Runs pre-processing logic for pare tenant search models.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} tntCode Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     prepareTenantSearchModels: function (moduleName, tntCode) {
         let _self = this;
@@ -141,6 +204,12 @@ module.exports = {
             }
         });
     },
+    /**
+     * Runs pre-processing logic for pare type search models.
+     *
+     * @param {*} options Method input.
+     * @returns {*} Method result.
+     */
     prepareTypeSearchModels: function (options) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -198,6 +267,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates search models information.
+
+     *
+
+     * @param {*} defaultSearchModelDef Method input.
+
+     * @param {*} modelSchema Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     registerSearchModels: function (defaultSearchModelDef, modelSchema) {
         if (defaultSearchModelDef) {
             Object.keys(defaultSearchModelDef).forEach(element => {
@@ -205,6 +288,20 @@ module.exports = {
             });
         }
     },
+
+    /**
+
+     * Updates indexes schema information.
+
+     *
+
+     * @param {*} modules Method input.
+
+     * @param {*} tenants Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     updateIndexesSchema: function (modules = Object.keys(NODICS.getModules()), tenants = NODICS.getActiveTenants()) {
         let _self = this;
@@ -233,6 +330,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Updates module indexes schema information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} tenants Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     updateModuleIndexesSchema: function (moduleName, tenants = NODICS.getActiveTenants()) {
         let _self = this;
@@ -277,6 +388,18 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Updates index type schema information.
+
+     *
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     updateIndexTypeSchema: function (options) {
         let _self = this;

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nService/config/postscripts
+ * @description Reserved post-start script contribution for service-layer initialization after core services are available.
+ * @layer config
+ * @owner nService
+ * @override Project modules may add later post-scripts for service startup follow-up without changing framework defaults.
+ */
 module.exports = {
 
 };

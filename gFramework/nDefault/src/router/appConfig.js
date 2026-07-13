@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nDefault/router/appConfig
+ * @description Reserved application router configuration contribution for the default framework baseline.
+ * @layer router
+ * @owner nDefault
+ * @override Later modules provide concrete application router configuration.
+ */
 module.exports = {
 
 };

@@ -10,6 +10,13 @@
  */
 const _ = require('lodash');
 
+/**
+ * @module gCore/workflow/flowCore/src/service/procs/prepare/defaultPrepareChannelRequestsPipelineService
+ * @description Implements workflow default prepare channel requests pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -51,6 +58,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Runs pre-processing logic for pare response.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     prepareResponse: function (request, response, process) {
         this.LOG.debug('Preparing response for action execution');
         if (!response.success) {
@@ -60,6 +75,14 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    /**
+     * Executes finalize channels behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     finalizeChannels: function (request, response, process) {
         let qualifiedChannels = request.actionResponse.qualifiedChannels;
         if (qualifiedChannels.length > 1) {
@@ -95,6 +118,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Runs pre-processing logic for pare channels request.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     prepareChannelsRequest: function (request, response, process) {
         let qualifiedChannels = request.actionResponse.qualifiedChannels;
         response.success.channelRequests = [];

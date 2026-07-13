@@ -9,7 +9,20 @@
 
  */
 
+/**
+ * @module gCore/profile/src/service/enterprise/defaultEnterpriseService
+ * @description Implements profile default enterprise service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+    /**
+     * Retrieves enterprise information.
+     *
+     * @param {*} entCode Method input.
+     * @returns {*} Method result.
+     */
     retrieveEnterprise: function (entCode) {
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(entCode)) {

@@ -57,9 +57,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 1 |
-| Undocumented | 10 |
+| Documented | 9 |
+| Partially documented | 2 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -82,19 +82,19 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nData/nExport/csvExport/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nData/nExport/csvExport/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nData/nExport/csvExport/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nData/nExport/csvExport/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nData/nExport/csvExport/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nExport/csvExport/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nData configuration used during module startup and layering. |  |
+| `gFramework/nData/nExport/csvExport/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nData configuration used during module startup and layering. |  |
+| `gFramework/nData/nExport/csvExport/config/properties.js` | `config` | `documented` | 0/0 | Defines default nData configuration used during module startup and layering. |  |
 | `gFramework/nData/nExport/csvExport/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nData/nExport/csvExport/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nExport/csvExport/nodics.js` | `module` | `documented` | 2/2 | Registers the nData module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nData/nExport/csvExport/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nData/nExport/csvExport/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nData/nExport/csvExport/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nData/nExport/csvExport/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nData/nExport/csvExport/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nData/nExport/csvExport/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nData/nExport/csvExport/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gFramework/nData/nExport/csvExport/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nData/nExport/csvExport/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nData pipeline wiring and execution contracts. |  |
+| `gFramework/nData/nExport/csvExport/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
+| `gFramework/nData/nExport/csvExport/src/router/router.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
+| `gFramework/nData/nExport/csvExport/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nData schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nData/nExport/csvExport/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nData utility exports for utils. |  |
+| `gFramework/nData/nExport/csvExport/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nData test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nData/nExport/csvExport/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nData test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

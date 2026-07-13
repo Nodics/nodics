@@ -11,14 +11,22 @@
 
 const _ = require('lodash');
 
+/**
+ * @module cronjob/service/config/DefaultCronJobConfigurationService
+ * @description Caches cronjob interceptor and validator configuration and supplies the default active-job query.
+ * @layer service
+ * @owner cronjob
+ * @override Project modules may override this service to customize cronjob interceptor, validator, or eligibility resolution.
+ */
 module.exports = {
 
     interceptors: {},
     valodators: {},
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the cronjob configuration service during service loading.
+     *
+     * @param {Object} options Loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -27,9 +35,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the cronjob configuration service after service loading.
+     *
+     * @param {Object} options Loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -37,10 +46,22 @@ module.exports = {
         });
     },
 
+    /**
+     * Replaces the cached job interceptor map.
+     *
+     * @param {Object} interceptors Interceptors keyed by job code.
+     * @returns {void}
+     */
     setJobInterceptors: function (interceptors) {
         this.interceptors = interceptors;
     },
 
+    /**
+     * Returns configured interceptors for a job, preparing them lazily when missing.
+     *
+     * @param {string} jobCode Cronjob code.
+     * @returns {Object} Prepared interceptor chain.
+     */
     getJobInterceptors: function (jobCode) {
         if (!this.interceptors[jobCode]) {
             this.interceptors[jobCode] = SERVICE.DefaultInterceptorConfigurationService.prepareItemInterceptors(jobCode, ENUMS.InterceptorType.job.key);
@@ -48,6 +69,12 @@ module.exports = {
         return this.interceptors[jobCode];
     },
 
+    /**
+     * Refreshes cached interceptor chains for changed jobs.
+     *
+     * @param {string[]} jobCodes Job codes to refresh; `default` refreshes all cached jobs.
+     * @returns {void}
+     */
     refreshJobInterceptors: function (jobCodes) {
         if (this.interceptors && !UTILS.isBlank(this.interceptors) && jobCodes && jobCodes.length > 0) {
             jobCodes.forEach(jobCode => {
@@ -64,6 +91,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Handles interceptor update events by refreshing affected job interceptor chains.
+     *
+     * @param {Object} request Event request containing updated job codes.
+     * @param {Function} callback Node-style completion callback.
+     * @returns {void}
+     */
     handleJobInterceptorUpdated: function (request, callback) {
         try {
             this.refreshJobInterceptors(request.event.data);
@@ -73,10 +107,23 @@ module.exports = {
         }
     },
 
+    /**
+     * Replaces the cached tenant validator map.
+     *
+     * @param {Object} validators Validators keyed by tenant and job code.
+     * @returns {void}
+     */
     setJobValidators: function (validators) {
         this.validators = validators;
     },
 
+    /**
+     * Returns configured validators for a tenant/job pair, preparing them lazily when missing.
+     *
+     * @param {string} tenant Tenant code.
+     * @param {string} jobCode Cronjob code.
+     * @returns {Object} Prepared validator chain.
+     */
     getJobValidators: function (tenant, jobCode) {
         if (!this.validators[tenant] || !this.validators[tenant][jobCode]) {
             if (!this.validators[tenant]) this.validators[tenant] = {};
@@ -85,6 +132,13 @@ module.exports = {
         return this.validators[tenant][jobCode];
     },
 
+    /**
+     * Refreshes cached validator chains for a tenant and changed jobs.
+     *
+     * @param {string} tenant Tenant code.
+     * @param {string[]} jobCodes Job codes to refresh; `default` refreshes all cached jobs for the tenant.
+     * @returns {void}
+     */
     refreshJobValidators: function (tenant, jobCodes) {
         if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant]) && jobCodes && jobCodes.length > 0) {
             jobCodes.forEach(jobCode => {
@@ -101,6 +155,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Handles validator update events by refreshing affected tenant/job validator chains.
+     *
+     * @param {Object} request Event request containing tenant and updated job codes.
+     * @param {Function} callback Node-style completion callback.
+     * @returns {void}
+     */
     handleJobValidatorUpdated: function (request, callback) {
         try {
             this.refreshJobValidators(request.tenant, request.event.data);
@@ -110,6 +171,11 @@ module.exports = {
         }
     },
 
+    /**
+     * Builds the default query for active jobs whose start/end windows allow scheduling.
+     *
+     * @returns {Object} Mongo-style query fragment for eligible jobs.
+     */
     getDefaultQuery: function () {
         return {
             $and: [{

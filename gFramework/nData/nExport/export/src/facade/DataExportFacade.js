@@ -9,7 +9,26 @@
 
  */
 
+/**
+ * @module gFramework/nData/nExport/export/src/facade/DataExportFacade
+ * @description Coordinates facade-level delegation for nData data export facade operations.
+ * @layer facade
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+
+    /**
+
+     * Executes export behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     export: function (request) {
         return SERVICE.DataExportService.export(request);

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nDynamo/src/service/router/defaultRouterConfigurationService
+ * @description Implements nDynamo default router configuration service business behavior and extension logic.
+ * @layer service
+ * @owner nDynamo
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -32,6 +39,18 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Executes router update event handler behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     routerUpdateEventHandler: function (request) {
         let _self = this;
@@ -64,6 +83,16 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves persisted routers information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     loadPersistedRouters: function () {
         return new Promise((resolve, reject) => {
             if (typeof this.get !== 'function') {
@@ -81,6 +110,18 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Updates routers from database information.
+
+     *
+
+     * @param {*} query Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     registerRoutersFromDatabase: function(query){
         return new Promise((resolve, reject) => {
@@ -258,16 +299,36 @@ module.exports = {
         });
         return Promise.all(records).then(() => true);
     },
+    /**
+     * Removes or clears  information.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     remove: function (request) {
         return new Promise((resolve, reject) => {
             reject(new CLASSES.NodicsError('ERR_SYS_00002', 'This operation is not supported currently'));
         });
     },
+    /**
+     * Removes or clears by id information.
+     *
+     * @param {*} ids Method input.
+     * @param {*} tenant Method input.
+     * @returns {*} Method result.
+     */
     removeById: function (ids, tenant) {
         return new Promise((resolve, reject) => {
             reject(new CLASSES.NodicsError('ERR_SYS_00002', 'This operation is not supported currently'));
         });
     },
+    /**
+     * Removes or clears by code information.
+     *
+     * @param {*} codes Method input.
+     * @param {*} tenant Method input.
+     * @returns {*} Method result.
+     */
     removeByCode: function (codes, tenant) {
         return new Promise((resolve, reject) => {
             reject(new CLASSES.NodicsError('ERR_SYS_00002', 'This operation is not supported currently'));

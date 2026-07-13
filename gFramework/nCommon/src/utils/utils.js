@@ -215,22 +215,6 @@ module.exports = {
     },
 
     /**
-     * Loads page files from an active module's configured web root.
-     * @param {string} moduleName Runtime module name.
-     * @returns {Object<string,string>|undefined} Page-name to file-path map when the web root exists.
-     */
-    getPages: function (moduleName) {
-        let moduleObject = NODICS.getRawModule(moduleName);
-        let webPath = moduleObject.path + '/' + CONFIG.get('webRootDirName');
-        let pagesPath = webPath + '/pages';
-        if (fs.existsSync(webPath) && fs.existsSync(pagesPath)) {
-            let fileList = {};
-            this.getAllFiles(pagesPath, fileList);
-            return fileList;
-        }
-    },
-
-    /**
      * Evaluates a trusted configured script with request and response in lexical scope.
      * @param {Object} request Nodics request context.
      * @param {Object} response Nodics response context.

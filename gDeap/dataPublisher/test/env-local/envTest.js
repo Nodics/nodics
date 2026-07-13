@@ -13,6 +13,13 @@
    Change this file name as per test case name. This just a sample file.
    You can create n-number of test file and n-number of different environment as well
 */
+/**
+ * @module dataPublisher/test/env-local/envTest
+ * @description Local-environment sample test scaffold for DEAP data publisher behavior.
+ * @layer test
+ * @owner dataPublisher
+ * @override Project DEAP modules may add environment-specific publishing tests.
+ */
 const Chai = require('chai');
 const expect = Chai.expect;
 

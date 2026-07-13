@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/workflow/flowCore/src/service/procs/execute/defaultExecuteActionScriptPipelineService
+ * @description Implements workflow default execute action script pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -34,6 +41,30 @@ module.exports = {
     },
 
 
+    /**
+
+
+     * Validates request rules.
+
+
+     *
+
+
+     * @param {*} request Method input.
+
+
+     * @param {*} response Method input.
+
+
+     * @param {*} process Method input.
+
+
+     * @returns {*} Method result.
+
+
+     */
+
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request for executing action script');
         if (!request.workflowAction) {
@@ -44,6 +75,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Processes script behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     executeScript: function (request, response, process) {
         this.LOG.debug('Executing action script');

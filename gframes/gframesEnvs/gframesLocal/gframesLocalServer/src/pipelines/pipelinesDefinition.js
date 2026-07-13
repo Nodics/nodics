@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gframes/gframesEnvs/gframesLocal/gframesLocalServer/src/pipelines/pipelinesDefinition
+ * @description Defines gframesEnvs pipeline wiring and execution contracts.
+ * @layer pipelines
+ * @owner gframesEnvs
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

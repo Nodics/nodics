@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nController/src/utils/utils
+ * @description Provides shared nController utility exports for utils.
+ * @layer utils
+ * @owner nController
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

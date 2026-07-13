@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSearch/search/src/service/handlers/defaultSearchPropertiesValueHandlerService
+ * @description Implements nSearch default search properties value handler service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -31,6 +38,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Processes value providers behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} count Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     processValueProviders: function (request, count = 0) {
         return new Promise((resolve, reject) => {
@@ -56,6 +77,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Processes properties value provider behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     processPropertiesValueProvider: function (request) {
         return new Promise((resolve, reject) => {
             if (request.properties && request.properties.length > 0) {
@@ -75,6 +108,22 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Processes value provider behavior.
+
+     *
+
+     * @param {*} model Method input.
+
+     * @param {*} propName Method input.
+
+     * @param {*} propDef Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     processValueProvider: function (model, propName, propDef) {
         return new Promise((resolve, reject) => {

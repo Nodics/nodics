@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module wcms/utils/utils
+ * @description Reserved utility contribution point for WCMS content helper functions.
+ * @layer utility
+ * @owner wcms
+ * @override Project content modules may add later utilities for customer-specific WCMS behavior.
+ */
 module.exports = {
 
 };

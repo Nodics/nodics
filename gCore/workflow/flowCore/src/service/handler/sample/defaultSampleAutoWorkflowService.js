@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gCore/workflow/flowCore/src/service/handler/sample/defaultSampleAutoWorkflowService
+ * @description Implements workflow default sample auto workflow service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes perform head operation behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     performHeadOperation: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve({
@@ -45,6 +66,13 @@ module.exports = {
             });
         });
     },
+    /**
+     * Executes perform mix head operation behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @returns {*} Method result.
+     */
     performMixHeadOperation: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve({
@@ -55,6 +83,20 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Executes perform action one behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     performActionOne: function (request, response) {
         return new Promise((resolve, reject) => {
@@ -67,6 +109,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes perform action two behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     performActionTwo: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve({
@@ -77,6 +133,13 @@ module.exports = {
             });
         });
     },
+    /**
+     * Executes perform mix action two behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @returns {*} Method result.
+     */
     performMixActionTwo: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve({

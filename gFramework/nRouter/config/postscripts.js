@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nRouter/config/postscripts
+ * @description Reserved post-start script contribution for router initialization after route artifacts are available.
+ * @layer config
+ * @owner nRouter
+ * @override Project modules may add later post-scripts for route startup follow-up without changing framework defaults.
+ */
 module.exports = {
 
 };

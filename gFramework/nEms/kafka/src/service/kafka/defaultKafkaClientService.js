@@ -54,6 +54,13 @@ function toMessageList(payload) {
     });
 }
 
+/**
+ * @module gFramework/nEms/kafka/src/service/kafka/defaultKafkaClientService
+ * @description Implements nEms default kafka client service business behavior and extension logic.
+ * @layer service
+ * @owner nEms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -77,6 +84,18 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Executes configure client behavior.
+
+     *
+
+     * @param {*} config Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     configureClient: function (config) {
         return new Promise(async (resolve, reject) => {
@@ -125,6 +144,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates producer information.
+
+     *
+
+     * @param {*} client Method input.
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     createProducer: function (client, options) {
         let _self = this;
         return new Promise(async (resolve, reject) => {
@@ -140,6 +173,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes configure publisher behavior.
+
+     *
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     configurePublisher: function (options) {
         return new Promise((resolve, reject) => {
             try {
@@ -153,6 +198,18 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Processes  behavior.
+
+     *
+
+     * @param {*} payload Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     publish: function (payload) {
         return new Promise(async (resolve, reject) => {
@@ -172,6 +229,18 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Updates consumer information.
+
+     *
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     registerConsumer: function (options) {
         let _self = this;
@@ -219,6 +288,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates queue rules.
+
+     *
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     checkQueue: function (options) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -252,6 +333,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Processes consumer error behavior.
+
+     *
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     handleConsumerError: function (options) {
         let _self = this;
         try {
@@ -281,6 +374,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes on consume behavior.
+
+     *
+
+     * @param {*} queue Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     onConsume: function (queue, response, callback) {
         try {
             SERVICE.DefaultPipelineService.start('processConsumedMessagePipeline', {
@@ -307,6 +416,20 @@ module.exports = {
             }
         }
     },
+
+    /**
+
+     * Executes close consumer behavior.
+
+     *
+
+     * @param {*} consumerName Method input.
+
+     * @param {*} consumer Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     closeConsumer: function (consumerName, consumer) {
         return new Promise(async (resolve, reject) => {

@@ -63,9 +63,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 3 |
-| Undocumented | 12 |
+| Documented | 12 |
+| Partially documented | 2 |
+| Undocumented | 1 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -88,22 +88,22 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gCore/workflow/flowApi/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/workflow/flowApi/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/workflow/flowApi/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/workflow/flowApi/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/workflow/flowApi/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/workflow/flowApi/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default workflow configuration used during module startup and layering. |  |
+| `gCore/workflow/flowApi/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default workflow configuration used during module startup and layering. |  |
+| `gCore/workflow/flowApi/config/properties.js` | `config` | `documented` | 0/0 | Defines default workflow configuration used during module startup and layering. |  |
 | `gCore/workflow/flowApi/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/workflow/flowApi/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/workflow/flowApi/nodics.js` | `module` | `documented` | 2/2 | Registers the workflow module lifecycle hooks and module-level startup behavior. |  |
 | `gCore/workflow/flowApi/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/workflow/flowApi/src/controller/defaultWorkflowController.js` | `src` | `partially-documented` | 3/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gCore/workflow/flowApi/src/facade/defaultWorkflowFacade.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gCore/workflow/flowApi/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/workflow/flowApi/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/workflow/flowApi/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/workflow/flowApi/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/workflow/flowApi/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/workflow/flowApi/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/workflow/flowApi/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gCore/workflow/flowApi/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gCore/workflow/flowApi/src/controller/defaultWorkflowController.js` | `src` | `documented` | 6/6 | Exposes request handlers for workflow default workflow controller operations. |  |
+| `gCore/workflow/flowApi/src/facade/defaultWorkflowFacade.js` | `src` | `documented` | 6/6 | Coordinates facade-level delegation for workflow default workflow facade operations. |  |
+| `gCore/workflow/flowApi/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers workflow interceptor wiring for pipeline extension points. |  |
+| `gCore/workflow/flowApi/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines workflow pipeline wiring and execution contracts. |  |
+| `gCore/workflow/flowApi/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines workflow route registration and HTTP exposure metadata. |  |
+| `gCore/workflow/flowApi/src/router/router.js` | `src` | `documented` | 0/0 | Defines workflow route registration and HTTP exposure metadata. |  |
+| `gCore/workflow/flowApi/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines workflow schema metadata, model contracts, and generated capability settings. |  |
+| `gCore/workflow/flowApi/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared workflow utility exports for utils. |  |
+| `gCore/workflow/flowApi/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines workflow test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gCore/workflow/flowApi/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines workflow test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gCore/workflow/flowApi/test/workflowRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 
 ## Extension Contract

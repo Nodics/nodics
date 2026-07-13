@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gDeap/dataConsumer/data/core/headers/defaultIndexerJobsHeader
+ * @description Provides dataConsumer initializer or sample data consumed by the import layer.
+ * @layer data
+ * @owner dataConsumer
+ * @override Projects may override or extend this initializer data through layered import data rather than editing out-of-the-box framework records.
+ */
 module.exports = {
     cronjob: {
         indexerJob: {

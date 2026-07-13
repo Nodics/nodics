@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nAuth/src/pipelines/pipelinesDefinition
+ * @description Defines nAuth pipeline wiring and execution contracts.
+ * @layer pipelines
+ * @owner nAuth
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

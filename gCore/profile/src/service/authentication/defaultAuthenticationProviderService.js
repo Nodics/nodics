@@ -11,7 +11,26 @@
 
 const crypto = require('crypto');
 
+/**
+ * @module gCore/profile/src/service/authentication/defaultAuthenticationProviderService
+ * @description Implements profile default authentication provider service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+
+    /**
+
+     * Executes record auth event behavior.
+
+     *
+
+     * @param {*} event Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     recordAuthEvent: function (event) {
         if (!SERVICE.DefaultAuthAuditService) return Promise.resolve(false);
@@ -22,6 +41,18 @@ module.exports = {
             return false;
         });
     },
+
+    /**
+
+     * Updates auth data information.
+
+     *
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     updateAuthData: function (options) {
         let _self = this;
@@ -38,6 +69,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates failed auth data information.
+
+     *
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     updateFailedAuthData: function (options) {
         let threshold = CONFIG.get('attemptsToLockAccount') || 5;
         options.state.attempts = (options.state.attempts || 0) + 1;
@@ -47,6 +90,18 @@ module.exports = {
         }
         return this.updateAuthData(options);
     },
+
+    /**
+
+     * Executes authenticate apikey behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     authenticateAPIKey: function (request) {
         return new Promise((resolve, reject) => {
@@ -74,6 +129,18 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Executes authenticate employee behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     authenticateEmployee: function (request) {
         return new Promise((resolve, reject) => {
@@ -105,6 +172,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes authenticate customer behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     authenticateCustomer: function (request) {
         return new Promise((resolve, reject) => {
             let _self = this;
@@ -134,6 +213,18 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Executes authenticate behavior.
+
+     *
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     authenticate: function (options) {
         let _self = this;
@@ -216,6 +307,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates refresh token information.
+
+     *
+
+     * @param {*} options Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     createRefreshToken: function (options, callback) {
         return new Promise((resolve, reject) => {
             try {
@@ -241,6 +346,18 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Executes rotate refresh token behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     rotateRefreshToken: function (request) {
         let _self = this;
@@ -294,6 +411,18 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Removes or clears session information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     revokeSession: function (request) {
         let operations = [this.revokeAccessToken(request.authData)];

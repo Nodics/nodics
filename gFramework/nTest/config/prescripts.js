@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nTest/config/prescripts
+ * @description Reserved pre-start script contribution for Nodics test execution and generated-test tooling.
+ * @layer config
+ * @owner nTest
+ * @override Project modules may add later pre-scripts for customer-specific test orchestration.
+ */
 module.exports = {
 
 };

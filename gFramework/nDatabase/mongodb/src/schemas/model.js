@@ -11,8 +11,21 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nDatabase/mongodb/src/schemas/model
+ * @description Defines nDatabase schema metadata, model contracts, and generated capability settings.
+ * @layer schemas
+ * @owner nDatabase
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     default: {
+        /**
+         * Retrieves items information.
+         *
+         * @param {*} input Method input.
+         * @returns {*} Method result.
+         */
         getItems: function (input) {
             return new Promise((resolve, reject) => {
                 try {
@@ -41,6 +54,18 @@ module.exports = {
                 }
             });
         },
+
+        /**
+
+         * Updates items information.
+
+         *
+
+         * @param {*} input Method input.
+
+         * @returns {*} Method result.
+
+         */
 
         saveItems: function (input) {
             return new Promise((resolve, reject) => {
@@ -102,6 +127,18 @@ module.exports = {
             });
         },
 
+        /**
+
+         * Updates items information.
+
+         *
+
+         * @param {*} input Method input.
+
+         * @returns {*} Method result.
+
+         */
+
         updateItems: function (input) {
             return new Promise((resolve, reject) => {
                 if (!input.model) {
@@ -145,6 +182,18 @@ module.exports = {
                 }
             });
         },
+
+        /**
+
+         * Removes or clears items information.
+
+         *
+
+         * @param {*} input Method input.
+
+         * @returns {*} Method result.
+
+         */
 
         removeItems: function (input) {
             return new Promise((resolve, reject) => {

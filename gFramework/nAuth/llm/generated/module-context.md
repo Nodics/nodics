@@ -59,9 +59,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 10 |
+| Documented | 22 |
 | Partially documented | 3 |
-| Undocumented | 13 |
+| Undocumented | 1 |
 | Inventory only | 5 |
 
 ## Important Files
@@ -84,28 +84,28 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nAuth/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nAuth/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nAuth/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nAuth/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nAuth/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nAuth configuration used during module startup and layering. |  |
+| `gFramework/nAuth/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nAuth configuration used during module startup and layering. |  |
 | `gFramework/nAuth/config/properties.js` | `config` | `documented` | 0/0 | Defines layered authentication security, identity governance, permission catalog, migration, and auth-cache defaults. |  |
 | `gFramework/nAuth/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nAuth/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nAuth/nodics.js` | `module` | `documented` | 2/2 | Registers the nAuth module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nAuth/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nAuth/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nAuth/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nAuth/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nAuth/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nAuth/src/service/audit/defaultAuthAuditService.js` | `src` | `partially-documented` | 0/2 | Records sanitized authentication lifecycle events without credentials. Project and environment modules may override this service to persist events in a SIEM, audit database, or governed event stream. | add JSDoc for 2 exported method(s) |
-| `gFramework/nAuth/src/service/authentication/defaultAuthenticationProviderService.js` | `src` | `undocumented` | 0/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
+| `gFramework/nAuth/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nAuth pipeline wiring and execution contracts. |  |
+| `gFramework/nAuth/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nAuth route registration and HTTP exposure metadata. |  |
+| `gFramework/nAuth/src/router/router.js` | `src` | `documented` | 0/0 | Defines nAuth route registration and HTTP exposure metadata. |  |
+| `gFramework/nAuth/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nAuth schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nAuth/src/service/audit/defaultAuthAuditService.js` | `src` | `documented` | 2/2 | Records sanitized authentication lifecycle events without credentials. Project and environment modules may override this service to persist events in a SIEM, audit database, or governed event stream. |  |
+| `gFramework/nAuth/src/service/authentication/defaultAuthenticationProviderService.js` | `src` | `documented` | 1/1 | Implements nAuth default authentication provider service business behavior and extension logic. |  |
 | `gFramework/nAuth/src/service/identity/defaultAPIKeyCredentialService.js` | `src` | `documented` | 5/5 | Converts high-entropy API keys into keyed digests so usable credentials are never persisted. |  |
-| `gFramework/nAuth/src/service/identity/defaultIdentityGovernanceService.js` | `src` | `partially-documented` | 0/3 | Supplies layered identity governance decisions for trusted framework operations and administrative access checks. | add @override; add JSDoc for 3 exported method(s) |
+| `gFramework/nAuth/src/service/identity/defaultIdentityGovernanceService.js` | `src` | `partially-documented` | 3/3 | Supplies layered identity governance decisions for trusted framework operations and administrative access checks. | add @override |
 | `gFramework/nAuth/src/service/identity/defaultPrincipalSecurityStampService.js` | `src` | `documented` | 7/7 | Maintains tenant-scoped principal security stamps in the auth cache. Production deployments should use a shared auth-cache engine. |  |
 | `gFramework/nAuth/src/service/identity/defaultServiceTokenService.js` | `src` | `documented` | 2/2 | Issues tenant-scoped internal service tokens and registers their current security stamp before the token becomes available to other modules. This makes service identity changes enforceable across modular nodes when the auth cache is distributed. |  |
-| `gFramework/nAuth/src/utils/authSecurity.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nAuth/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nAuth/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nAuth/src/utils/authSecurity.js` | `src` | `documented` | 0/0 | Provides shared nAuth utility exports for auth security. |  |
+| `gFramework/nAuth/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nAuth utility exports for status definitions. |  |
+| `gFramework/nAuth/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nAuth utility exports for utils. |  |
 | `gFramework/nAuth/test/authSecurityContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nAuth/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gFramework/nAuth/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nAuth/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nAuth test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nAuth/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nAuth test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nAuth/test/integration/README.md` | `test` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nAuth/test/integration/authP2IdentityIsolationContract.test.js` | `test` | `documented` | 0/0 | Proves tenant-scoped human and service security stamps, API-key lifecycle policy, least-privilege scopes, and credential-free audit records. |  |
 | `gFramework/nAuth/test/integration/authP2ModularAuthorizationContract.test.js` | `test` | `documented` | 0/0 | Proves bounded internal service tokens survive a process boundary while tenant, permission, bootstrap-header, and rotation contracts remain enforced. |  |

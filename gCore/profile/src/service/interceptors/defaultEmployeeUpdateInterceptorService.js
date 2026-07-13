@@ -9,13 +9,34 @@
 
  */
 
+/**
+ * @module gCore/profile/src/service/interceptors/defaultEmployeeUpdateInterceptorService
+ * @description Implements profile default employee update interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+    /**
+     * Executes employee pre update behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @returns {*} Method result.
+     */
     employeePreUpdate: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.returnModified = request.options.returnModified || true;
             resolve(true);
         });
     },
+    /**
+     * Executes employee pre remove behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @returns {*} Method result.
+     */
     employeePreRemove: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.returnModified = request.options.returnModified || true;

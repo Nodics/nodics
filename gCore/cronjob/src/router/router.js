@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cronjob/router/router
+ * @description Secured cronjob route contracts for creating, updating, running, starting, stopping, removing, pausing, and resuming jobs.
+ * @layer router
+ * @owner cronjob
+ * @override Project modules may add or override cronjob routes through later router fragments.
+ */
 module.exports = {
     cronjob: {
         createJob: {

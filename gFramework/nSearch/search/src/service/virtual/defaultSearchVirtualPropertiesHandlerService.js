@@ -11,7 +11,28 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nSearch/search/src/service/virtual/defaultSearchVirtualPropertiesHandlerService
+ * @description Implements nSearch default search virtual properties handler service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+
+    /**
+
+     * Executes populate virtual properties behavior.
+
+     *
+
+     * @param {*} virtualProperties Method input.
+
+     * @param {*} documents Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     populateVirtualProperties: function (virtualProperties, documents) {
         if (documents instanceof Array) {
@@ -22,12 +43,35 @@ module.exports = {
             this.populateProperties(virtualProperties, documents);
         }
     },
+    /**
+     * Executes populate properties behavior.
+     *
+     * @param {*} virtualProperties Method input.
+     * @param {*} document Method input.
+     * @returns {*} Method result.
+     */
     populateProperties: function (virtualProperties, document) {
         let _self = this;
         _.each(virtualProperties, (method, property) => {
             _self.populateProperty(property, method, document);
         });
     },
+
+    /**
+
+     * Executes populate property behavior.
+
+     *
+
+     * @param {*} property Method input.
+
+     * @param {*} method Method input.
+
+     * @param {*} document Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     populateProperty: function (property, method, document) {
         let _self = this;
@@ -42,6 +86,22 @@ module.exports = {
             this.populate(property, method, document);
         }
     },
+
+    /**
+
+     * Executes populate behavior.
+
+     *
+
+     * @param {*} property Method input.
+
+     * @param {*} method Method input.
+
+     * @param {*} document Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     populate: function (property, method, document) {
         let serviceName = method.substring(0, method.lastIndexOf('.'));

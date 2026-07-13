@@ -9,9 +9,13 @@
 
  */
 
-/*
-   Change this file name as per test case name. This just a sample file
-*/
+/**
+ * @module nems/test/common/commonTest
+ * @description Provides a common NEMS test scaffold showing how shared test suites can be registered with the Nodics test pool.
+ * @layer test
+ * @owner nems
+ * @override Project modules may replace this scaffold with concrete NEMS event-processing tests.
+ */
 const Chai = require('chai');
 const expect = Chai.expect;
 

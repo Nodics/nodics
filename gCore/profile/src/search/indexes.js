@@ -9,6 +9,13 @@
 
 */
 
+/**
+ * @module gCore/profile/src/search/indexes
+ * @description Documents profile indexes module behavior.
+ * @layer search
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     profile: {
         // enterprise: {

@@ -11,6 +11,13 @@
 
 const redis = require("redis");
 
+/**
+ * @module gFramework/nCache/redisCache/src/service/engine/defaultRedisCacheEngineService
+ * @description Implements nCache default redis cache engine service business behavior and extension logic.
+ * @layer service
+ * @owner nCache
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -33,6 +40,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Initializes cache behavior for the module runtime.
+
+     *
+
+     * @param {*} redisCacheConfig Method input.
+
+     * @param {*} moduleName Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     initCache: function (redisCacheConfig, moduleName) {
         let _self = this;
@@ -78,6 +99,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes schema behavior.
+
+     *
+
+     * @param {*} localCacheConfig Method input.
+
+     * @param {*} moduleName Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     schema: function (localCacheConfig, moduleName) {
         let moduleObject = NODICS.getModule(moduleName);
         if (moduleObject && !UTILS.isBlank(moduleObject.rawSchema)) {
@@ -90,6 +125,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes router behavior.
+
+     *
+
+     * @param {*} localCacheConfig Method input.
+
+     * @param {*} moduleName Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     router: function (localCacheConfig, moduleName) {
         if (UTILS.isRouterEnabled(moduleName)) {
             return this.initCache(localCacheConfig, moduleName);
@@ -100,6 +149,18 @@ module.exports = {
             });
         }
     },
+
+    /**
+
+     * Updates events information.
+
+     *
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     registerEvents: function (options) {
         let moduleObject = NODICS.getModule(options.moduleName);

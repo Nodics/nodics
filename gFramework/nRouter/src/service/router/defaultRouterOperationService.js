@@ -15,8 +15,7 @@ const _ = require('lodash');
 /**
  * @module router/service/router/DefaultRouterOperationService
  * @description Bridges effective Nodics router definitions to Express operations.
- * It binds HTTP methods, delegates incoming requests to the request handler service,
- * and keeps the runtime API-only when web modules are present but not part of the server profile.
+ * It binds HTTP methods and delegates incoming requests to the request handler service.
  * @layer service
  * @owner nRouter
  * @override Project modules may override this service to customize HTTP method binding,
@@ -54,22 +53,6 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
-    },
-
-    /**
-     * Skips web registration for API-only Nodics runtime.
-     *
-     * @param {Object} moduleRouter Express router for the module.
-     * @param {Object} moduleObject Runtime module metadata and Express objects.
-     * @returns {void}
-     * @sideEffects Logs a warning when a web-enabled module is detected in backend-only runtime.
-     */
-    registerWeb: function (moduleRouter, moduleObject) {
-        if (UTILS.isWebEnabled(moduleObject.metaData.name)) {
-            SERVICE.DefaultRouterService.LOG.warn(
-                'Web module registration is disabled. Nodics runtime is backend/API-only: ' + moduleObject.metaData.name
-            );
-        }
     },
 
     /**

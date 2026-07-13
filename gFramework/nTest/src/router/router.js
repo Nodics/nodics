@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nTest/router/router
+ * @description Reserved route definition contribution for test execution APIs.
+ * @layer router
+ * @owner nTest
+ * @override Project modules may add later routes for governed test execution.
+ */
 module.exports = {
 
 };

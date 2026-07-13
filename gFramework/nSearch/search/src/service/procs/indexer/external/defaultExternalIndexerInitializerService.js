@@ -12,6 +12,13 @@ const _ = require('lodash');
 const fse = require('fs-extra');
 const util = require('util');
 
+/**
+ * @module gFramework/nSearch/search/src/service/procs/indexer/external/defaultExternalIndexerInitializerService
+ * @description Implements nSearch default external indexer initializer service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -35,6 +42,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating external indexer request');
         if (!request.source && !request.source.dataPath) {
@@ -45,6 +68,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Runs pre-processing logic for pare header.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     prepareHeader: function (request, response, process) {
         this.LOG.debug('Building options for internal indexer');
         request.header = {
@@ -75,6 +106,22 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+
+     * Runs pre-processing logic for pare input path.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     prepareInputPath: function (request, response, process) {
         this.LOG.debug('Preparing input data path');
         request.inputPath = {
@@ -86,6 +133,22 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+
+     * Runs pre-processing logic for pare output path.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     prepareOutputPath: function (request, response, process) {
         this.LOG.debug('Preparing output file path');
         request.outputPath = {
@@ -96,6 +159,22 @@ module.exports = {
         };
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Executes flush output folder behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     flushOutputFolder: function (request, response, process) {
         if (request.header.options.finalizeData) {
@@ -109,6 +188,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Retrieves data file list information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     loadDataFileList: function (request, response, process) {
         this.LOG.debug('Loading list of files from Path to be imported: ' + request.inputPath.dataPath);
@@ -132,6 +227,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Retrieves file type information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     resolveFileType: function (request, response, process) {
         this.LOG.debug('Resolving file type');
         if (request.header && request.header.dataFiles && !UTILS.isBlank(request.header.dataFiles)) {
@@ -151,6 +262,22 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+
+     * Processes process behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     triggerProcess: function (request, response, process) {
         this.LOG.debug('Starting process to read index data');
         let indexerConfig = request.header.local.indexerConfig;
@@ -166,6 +293,22 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+
+    /**
+
+     * Executes import finalize data behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     importFinalizeData: function (request, response, process) {
         try {

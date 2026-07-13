@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module kickoff/kickoffEnvs/kickoffLocal/kickoffLocalServer/kickoffLocalNode1/src/service/defaultSampleService
+ * @description Implements kickoffEnvs default sample service business behavior and extension logic.
+ * @layer service
+ * @owner kickoffEnvs
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 

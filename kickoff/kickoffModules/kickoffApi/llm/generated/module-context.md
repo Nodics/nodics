@@ -59,9 +59,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
+| Documented | 10 |
 | Partially documented | 2 |
-| Undocumented | 10 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -84,20 +84,20 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `kickoff/kickoffModules/kickoffApi/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `kickoff/kickoffModules/kickoffApi/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `kickoff/kickoffModules/kickoffApi/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `kickoff/kickoffModules/kickoffApi/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `kickoff/kickoffModules/kickoffApi/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `kickoff/kickoffModules/kickoffApi/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default kickoffModules configuration used during module startup and layering. |  |
+| `kickoff/kickoffModules/kickoffApi/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default kickoffModules configuration used during module startup and layering. |  |
+| `kickoff/kickoffModules/kickoffApi/config/properties.js` | `config` | `documented` | 0/0 | Defines default kickoffModules configuration used during module startup and layering. |  |
 | `kickoff/kickoffModules/kickoffApi/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `kickoff/kickoffModules/kickoffApi/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `kickoff/kickoffModules/kickoffApi/nodics.js` | `module` | `documented` | 2/2 | Registers the kickoffModules module lifecycle hooks and module-level startup behavior. |  |
 | `kickoff/kickoffModules/kickoffApi/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `kickoff/kickoffModules/kickoffApi/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `kickoff/kickoffModules/kickoffApi/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `kickoff/kickoffModules/kickoffApi/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `kickoff/kickoffModules/kickoffApi/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `kickoff/kickoffModules/kickoffApi/src/service/defaultSampleService.js` | `src` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `kickoff/kickoffModules/kickoffApi/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `kickoff/kickoffModules/kickoffApi/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `kickoff/kickoffModules/kickoffApi/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `kickoff/kickoffModules/kickoffApi/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines kickoffModules pipeline wiring and execution contracts. |  |
+| `kickoff/kickoffModules/kickoffApi/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines kickoffModules route registration and HTTP exposure metadata. |  |
+| `kickoff/kickoffModules/kickoffApi/src/router/router.js` | `src` | `documented` | 0/0 | Defines kickoffModules route registration and HTTP exposure metadata. |  |
+| `kickoff/kickoffModules/kickoffApi/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines kickoffModules schema metadata, model contracts, and generated capability settings. |  |
+| `kickoff/kickoffModules/kickoffApi/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements kickoffModules default sample service business behavior and extension logic. |  |
+| `kickoff/kickoffModules/kickoffApi/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared kickoffModules utility exports for utils. |  |
+| `kickoff/kickoffModules/kickoffApi/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines kickoffModules test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `kickoff/kickoffModules/kickoffApi/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines kickoffModules test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

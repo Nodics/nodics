@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module dataProcessor/config/properties
+ * @description Reserved property contribution for DEAP data processing behavior.
+ * @layer config
+ * @owner dataProcessor
+ * @override Project DEAP modules may provide later properties for data processing behavior.
+ */
 module.exports = {
 
 };

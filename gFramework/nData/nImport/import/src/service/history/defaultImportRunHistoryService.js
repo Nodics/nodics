@@ -317,11 +317,37 @@ module.exports = {
         return error;
     },
 
+    /**
+
+     * Executes warn behavior.
+
+     *
+
+     * @param {*} message Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     warn: function (message) {
         if (this.LOG && typeof this.LOG.warn === 'function') {
             this.LOG.warn(message);
         }
     },
+
+    /**
+
+     * Executes error behavior.
+
+     *
+
+     * @param {*} message Method input.
+
+     * @param {*} error Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     error: function (message, error) {
         if (this.LOG && typeof this.LOG.error === 'function') {

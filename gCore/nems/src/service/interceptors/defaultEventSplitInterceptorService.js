@@ -11,8 +11,22 @@
 
 const _ = require('lodash');
 
+/**
+ * @module nems/service/interceptors/DefaultEventSplitInterceptorService
+ * @description Expands saved NEMS events into concrete targets and dispatches synchronous events immediately after persistence.
+ * @layer service
+ * @owner nems
+ * @override Project modules may override this interceptor to customize event target expansion or synchronous dispatch behavior.
+ */
 module.exports = {
 
+    /**
+     * Expands an event model into concrete target entries before save.
+     *
+     * @param {Object} request Save request containing the event model.
+     * @param {Object} response Pipeline response context.
+     * @returns {Promise<boolean>} Resolves when target expansion completes.
+     */
     eventSplitPreSave: function (request, response) {
         return new Promise((resolve, reject) => {
             try {
@@ -98,12 +112,26 @@ module.exports = {
         });
     },
 
+    /**
+     * Reserved post-save hook for event split processing.
+     *
+     * @param {Object} request Save request context.
+     * @param {Object} response Save response context.
+     * @returns {Promise<boolean>} Resolves without changing the response.
+     */
     eventSplitPostSave: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
     },
 
+    /**
+     * Processes a single saved synchronous event immediately.
+     *
+     * @param {Object} request Save request context.
+     * @param {Object} response Save response containing the saved event.
+     * @returns {Promise<boolean>} Resolves after synchronous dispatch, or immediately for non-sync events.
+     */
     handleSyncEvent: function (request, response) {
         return new Promise((resolve, reject) => {
             if (response.success && response.success.result && response.success.result.type === ENUMS.EventType.SYNC.key) {
@@ -118,6 +146,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Filters a saved event list for synchronous events and processes them immediately.
+     *
+     * @param {Object} request Save request context.
+     * @param {Object} response Save response containing saved events.
+     * @returns {Promise<boolean>} Resolves after synchronous dispatch, or immediately when no sync events exist.
+     */
     handleSyncEvents: function (request, response) {
         return new Promise((resolve, reject) => {
             let events = response.success;

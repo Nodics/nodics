@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/profile/config/prescripts
+ * @description Defines default profile configuration used during module startup and layering.
+ * @layer config
+ * @owner profile
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };

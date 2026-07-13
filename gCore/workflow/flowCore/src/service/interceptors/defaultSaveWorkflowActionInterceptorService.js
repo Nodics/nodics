@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/workflow/flowCore/src/service/interceptors/defaultSaveWorkflowActionInterceptorService
+ * @description Implements workflow default save workflow action interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -31,6 +38,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Processes pre save action behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handlePreSaveAction: function (request, response) {
         return new Promise((resolve, reject) => {

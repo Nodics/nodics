@@ -10,6 +10,13 @@
  */
 
 const _ = require('lodash');
+/**
+ * @module gOptional/kyc/kycCore/src/service/email/defaultEmailKycValidatePipelineService
+ * @description Implements kyc default email kyc validate pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner kyc
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +39,14 @@ module.exports = {
             resolve(true);
         });
     },
+    /**
+     * Validates request rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating email KYC validation request');
         if (!request.refId || !request.opsType || !request.otp || !request.otp.key || !request.otp.ops || !request.otp.value) {
@@ -40,6 +55,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Builds kyc query data.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     buildKycQuery: function (request, response, process) {
         this.LOG.debug('Building email KYC model retrive query');
         request.kycInput = {
@@ -60,6 +83,14 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    /**
+     * Retrieves kyc mode information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     loadKycMode: function (request, response, process) {
         this.LOG.debug('Loading email KYC model');
         request.kycService.get({
@@ -78,6 +109,14 @@ module.exports = {
             process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_KYC_00000'));
         });
     },
+    /**
+     * Validates mobile kyc rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateMobileKyc: function (request, response, process) {
         this.LOG.debug('Initializing email KYC validation process');
         SERVICE.DefaultOtpService.validateOtp({
@@ -105,6 +144,14 @@ module.exports = {
             process.nextSuccess(request, response);
         });
     },
+    /**
+     * Updates mobile kyc workflow information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     updateMobileKycWorkflow: function (request, response, process) {
         this.LOG.debug('Updating email KYC workflow about validation');
         let responseMapping = CONFIG.get('kyc').responseMapping[response.otpResult.code];
@@ -147,6 +194,14 @@ module.exports = {
             // });
         }
     },
+    /**
+     * Builds mobile kyc model data.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     buildMobileKycModel: function (request, response, process) {
         this.LOG.debug('Constructing Kyc model after operations');
         let kycModel = response.kycModel;
@@ -164,6 +219,14 @@ module.exports = {
         });
         process.nextSuccess(request, response);
     },
+    /**
+     * Updates mobile kyc model information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     updateMobileKycModel: function (request, response, process) {
         this.LOG.debug('Updating mobile KYC model after validation attempt');
         request.kycService.save({

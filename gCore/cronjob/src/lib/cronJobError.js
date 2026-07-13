@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cronjob/lib/CronJobError
+ * @description Cronjob-specific Nodics error class using the configured cronjob default error code.
+ * @layer lib
+ * @owner cronjob
+ * @override Project modules may subclass or replace cronjob errors when error taxonomy changes.
+ */
 module.exports = class CronJobError extends CLASSES.NodicsError {
     constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').CronJobError) {
         super(error, message, defaultCode);

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gComm/config/postscripts
+ * @description Defines default gComm configuration used during module startup and layering.
+ * @layer config
+ * @owner gComm
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };

@@ -9,13 +9,41 @@
 
  */
 
+/**
+ * @module gCore/profile/src/service/interceptors/defaultEmployeeGetInterceptorService
+ * @description Implements profile default employee get interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+    /**
+     * Retrieves employee recursive information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @returns {*} Method result.
+     */
     getEmployeeRecursive: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.recursive = request.options.recursive || true;
             resolve(true);
         });
     },
+
+    /**
+
+     * Retrieves all user group codes information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getAllUserGroupCodes: function (request, response) {
         return new Promise((resolve, reject) => {

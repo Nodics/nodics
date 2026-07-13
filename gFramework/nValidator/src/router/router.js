@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nValidator/src/router/router
+ * @description Defines nValidator route registration and HTTP exposure metadata.
+ * @layer router
+ * @owner nValidator
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

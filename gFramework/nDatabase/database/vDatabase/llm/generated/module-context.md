@@ -61,9 +61,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 5 |
-| Partially documented | 1 |
-| Undocumented | 7 |
+| Documented | 11 |
+| Partially documented | 2 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -86,21 +86,21 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nDatabase/database/vDatabase/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/database/vDatabase/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nDatabase/database/vDatabase/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nDatabase/database/vDatabase/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nDatabase/database/vDatabase/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDatabase/database/vDatabase/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nDatabase configuration used during module startup and layering. |  |
+| `gFramework/nDatabase/database/vDatabase/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nDatabase configuration used during module startup and layering. |  |
+| `gFramework/nDatabase/database/vDatabase/config/properties.js` | `config` | `documented` | 0/0 | Defines default nDatabase configuration used during module startup and layering. |  |
 | `gFramework/nDatabase/database/vDatabase/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nDatabase/database/vDatabase/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDatabase/database/vDatabase/nodics.js` | `module` | `documented` | 2/2 | Registers the nDatabase module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nDatabase/database/vDatabase/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/database/vDatabase/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Versioned schema interceptor registry. It attaches version id initialization to generated save operations for version-aware database models. |  |
 | `gFramework/nDatabase/database/vDatabase/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Versioned database pipeline extension slot. |  |
 | `gFramework/nDatabase/database/vDatabase/src/router/appConfig.js` | `src` | `documented` | 0/0 | Versioned database router app configuration extension slot. |  |
 | `gFramework/nDatabase/database/vDatabase/src/router/router.js` | `src` | `documented` | 0/0 | Versioned database route definition extension slot. |  |
-| `gFramework/nDatabase/database/vDatabase/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDatabase/database/vDatabase/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nDatabase schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nDatabase/database/vDatabase/src/service/interceptors/defaultVersionIdHandlerInterceptorService.js` | `src` | `documented` | 3/3 | Versioned database interceptor that initializes the `versionId` field for generated version-aware schemas. |  |
-| `gFramework/nDatabase/database/vDatabase/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nDatabase/database/vDatabase/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gFramework/nDatabase/database/vDatabase/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nDatabase/database/vDatabase/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nDatabase utility exports for utils. |  |
+| `gFramework/nDatabase/database/vDatabase/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nDatabase test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nDatabase/database/vDatabase/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nDatabase test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

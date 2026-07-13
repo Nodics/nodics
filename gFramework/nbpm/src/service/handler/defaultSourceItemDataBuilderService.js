@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nbpm/src/service/handler/defaultSourceItemDataBuilderService
+ * @description Implements nbpm default source item data builder service business behavior and extension logic.
+ * @layer service
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Builds items data.
+
+     *
+
+     * @param {*} schemaModel Method input.
+
+     * @param {*} models Method input.
+
+     * @param {*} workflow Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     buildItems: function (schemaModel, models, workflow) {
         let items = [];
         models.forEach(model => {
@@ -51,6 +74,22 @@ module.exports = {
 
         return items;
     },
+
+    /**
+
+     * Executes fatch data behavior.
+
+     *
+
+     * @param {*} model Method input.
+
+     * @param {*} properties Method input.
+
+     * @param {*} itemData Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     fatchData: function (model, properties = [], itemData = {}) {
         if (properties.length > 0) {

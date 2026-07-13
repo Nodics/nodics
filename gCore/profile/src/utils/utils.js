@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/profile/src/utils/utils
+ * @description Provides shared profile utility exports for utils.
+ * @layer utils
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

@@ -15,6 +15,13 @@
 const Chai = require('chai');
 const expect = Chai.expect;
 
+/**
+ * @module gOptional/kyc/kycApi/test/common/commonTest
+ * @description Defines kyc test fixtures or suites for module behavior validation.
+ * @layer test
+ * @owner kyc
+ * @override Projects may add focused tests beside this file while preserving the module contract under test.
+ */
 module.exports = {
     /*
         sampleTestSuite: {

@@ -9,7 +9,26 @@
 
  */
 
+/**
+ * @module gCore/profile/src/service/employee/defaultEmployeeService
+ * @description Implements profile default employee service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+
+    /**
+
+     * Retrieves by login id information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     findByLoginId: function (request) {
         return new Promise((resolve, reject) => {
@@ -33,6 +52,18 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Retrieves by apikey information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     findByAPIKey: function (request) {
         return new Promise((resolve, reject) => {

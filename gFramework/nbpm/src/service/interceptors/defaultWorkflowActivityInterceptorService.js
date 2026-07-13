@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nbpm/src/service/interceptors/defaultWorkflowActivityInterceptorService
+ * @description Implements nbpm default workflow activity interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -33,6 +40,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Updates workflow code information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     createWorkflowCode: function (request, response) {
         return new Promise((resolve, reject) => {

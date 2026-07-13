@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nbpm/src/service/interceptors/defaultSaveWorkflow2SchemaInterceptorService
+ * @description Implements nbpm default save workflow2 schema interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,12 +41,40 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes return modified items behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     returnModifiedItems: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.returnModified = request.options.returnModified || true;
             resolve(true);
         });
     },
+
+    /**
+
+     * Updates workflow code information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     createWorkflowCode: function (request, response) {
         return new Promise((resolve, reject) => {
@@ -58,6 +93,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Processes pre save module assignment behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handlePreSaveModuleAssignment: function (request, response) {
         return new Promise((resolve, reject) => {
@@ -83,6 +132,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Processes pre save assigned default events behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handlePreSaveAssignedDefaultEvents: function (request, response) {
         return new Promise((resolve, reject) => {

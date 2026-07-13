@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nPipeline/utils/utils
+ * @description Reserved utility extension point for shared pipeline helper functions.
+ * @layer utils
+ * @owner nPipeline
+ * @override Project modules may add or replace pipeline utility helpers in later module layers.
+ */
 module.exports = {
 
 };

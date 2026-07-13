@@ -9,9 +9,22 @@
 
  */
 
+/**
+ * @module cronjob/service/test/DefaultTestCronJobService
+ * @description Sample cronjob target service used to validate scheduler execution and stop flows.
+ * @layer service
+ * @owner cronjob
+ * @override Project modules should provide concrete job target services for real scheduled work.
+ */
 module.exports = {
     //Created this class to test if cronJob run process works fine
 
+    /**
+     * Sample job execution target that resolves with a cronjob success status.
+     *
+     * @param {Object} input Job input containing the runtime job definition.
+     * @returns {Promise<Object>} Success status payload.
+     */
     runJob: function (input) {
         return new Promise((resolve, reject) => {
             var today = new Date();
@@ -23,6 +36,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Sample job stop target that resolves with a cronjob success status.
+     *
+     * @param {Object} input Job input containing the runtime job definition.
+     * @returns {Promise<Object>} Success status payload.
+     */
     stopJob: function (input) {
         return new Promise((resolve, reject) => {
             var today = new Date();

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nPipeline/utils/statusDefinitions
+ * @description Status and error definitions for pipeline execution and pipeline-definition validation.
+ * @layer data
+ * @owner nPipeline
+ * @override Project modules may contribute additional pipeline status definitions or localized messages through later modules.
+ */
 module.exports = {
 
     SUC_PIPE_00000: {

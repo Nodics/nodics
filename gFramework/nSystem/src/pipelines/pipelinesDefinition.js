@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSystem/src/pipelines/pipelinesDefinition
+ * @description Defines nSystem pipeline wiring and execution contracts.
+ * @layer pipelines
+ * @owner nSystem
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

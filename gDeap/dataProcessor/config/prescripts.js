@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module dataProcessor/config/prescripts
+ * @description Reserved pre-start script contribution for DEAP data processing.
+ * @layer config
+ * @owner dataProcessor
+ * @override Project DEAP modules may add later pre-scripts for customer-specific processing setup.
+ */
 module.exports = {
 
 };

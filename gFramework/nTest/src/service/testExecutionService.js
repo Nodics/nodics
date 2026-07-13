@@ -31,11 +31,19 @@ const Mocha = require('mocha');
 const Chai = require('chai');
 const Test = Mocha.Test;
 
+/**
+ * @module nTest/service/TestExecutionService
+ * @description Executes Nodics unit-test and n-test pools by translating layered test definitions into Mocha suites.
+ * @layer service
+ * @owner nTest
+ * @override Project modules may override this service to customize test execution, suite construction, or reporting.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the test execution service during service loading.
+     *
+     * @param {Object} options Loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -44,9 +52,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the test execution service after service loading.
+     *
+     * @param {Object} options Loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -54,6 +63,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Runs unit tests and optionally reports completion through a callback.
+     *
+     * @param {Object} input Test execution input; currently reserved for tenant and enterprise context.
+     * @param {Function} [callback] Optional Node-style callback.
+     * @returns {Promise<boolean>|void} Promise when no callback is supplied.
+     */
     runUTest: function (input, callback) {
         let _self = this;
         if (callback) {
@@ -69,6 +85,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Runs Nodics integration tests and optionally reports completion through a callback.
+     *
+     * @param {Object} input Test execution input; currently reserved for tenant and enterprise context.
+     * @param {Function} [callback] Optional Node-style callback.
+     * @returns {Promise<boolean>|void} Promise when no callback is supplied.
+     */
     runNTest: function (input, callback) {
         let _self = this;
         if (callback) {
@@ -84,6 +107,12 @@ module.exports = {
         }
     },
 
+    /**
+     * Executes the configured unit-test pool using Mocha.
+     *
+     * @returns {Promise<boolean>} Resolves after unit tests finish; rejects when tests are disabled or unavailable.
+     * @sideEffects Temporarily switches the active channel to `test` and restores `master` after execution.
+     */
     executeUTest: function () {
         return new Promise((resolve, reject) => {
             let testConfig = CONFIG.get('test');
@@ -119,6 +148,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Executes the configured Nodics test pool using Mocha.
+     *
+     * @returns {Promise<boolean>} Resolves after n-tests finish; rejects when tests are disabled or unavailable.
+     * @sideEffects Marks n-test execution as running while the suite is active.
+     */
     executeNTest: function () {
         return new Promise((resolve, reject) => {
             let testConfig = CONFIG.get('test');
@@ -151,6 +186,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Creates top-level Mocha suites from a Nodics test suite pool.
+     *
+     * @param {Object} masterSuite Parent Mocha suite that receives generated child suites.
+     * @param {Object} testSuites Nodics test pool containing named suite definitions.
+     * @returns {void}
+     */
     createSuites: function (masterSuite, testSuites) {
         let _self = this;
         _.each(testSuites.suites, (testSuite, suiteName) => {
@@ -164,6 +206,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Creates grouped Mocha suites inside a top-level Nodics test suite.
+     *
+     * @param {string} suiteName Parent suite name.
+     * @param {Object} testSuite Nodics suite definition containing groups and options.
+     * @param {Object} baseSuite Parent Mocha suite.
+     * @returns {void}
+     */
     createTestGroup: function (suiteName, testSuite, baseSuite) { //one top suite
         let _self = this;
         _.each(testSuite, (testGroup, groupName) => {
@@ -175,6 +225,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Creates Mocha test cases inside a Nodics test group.
+     *
+     * @param {string} groupName Test group name.
+     * @param {Object} testGroup Nodics test group containing test case definitions.
+     * @param {Object} testSuite Mocha suite receiving tests.
+     * @returns {void}
+     */
     createTestCase: function (groupName, testGroup, testSuite) {
         let _self = this;
         _.each(testGroup, (testCase, testName) => {
@@ -184,6 +242,15 @@ module.exports = {
         });
     },
 
+    /**
+     * Creates a Mocha suite from Nodics suite options and attaches hooks.
+     *
+     * @param {Object} mocha Mocha instance used to create the suite.
+     * @param {string} suiteName Logical suite name.
+     * @param {Object} testSuite Nodics suite definition containing options and hooks.
+     * @param {Object} [baseSuite] Optional parent suite.
+     * @returns {Object} Created Mocha suite.
+     */
     createSuite: function (mocha, suiteName, testSuite, baseSuite) {
         let suite = Mocha.Suite.create(mocha.suite, testSuite.options.description);
         if (testSuite.options.timeout) {
@@ -207,6 +274,14 @@ module.exports = {
         return suite;
     },
 
+    /**
+     * Adds a Mocha test to a suite from a Nodics test-case definition.
+     *
+     * @param {string} testName Logical test name.
+     * @param {Object} testCase Nodics test case containing description and test function.
+     * @param {Object} suite Mocha suite receiving the test.
+     * @returns {void}
+     */
     createTest: function (testName, testCase, suite) {
         suite.addTest(new Test(testCase.description, testCase.test));
     }

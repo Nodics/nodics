@@ -13,19 +13,44 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
 
+/**
+ * @module nTest/service/generator/DefaultSchemaTestGeneratorService
+ * @description Generates schema, API, scenario, CRUD, and access-policy test artifacts from effective schema and router contracts.
+ * @layer service
+ * @owner nTest
+ * @override Project modules may override this generator to customize generated test templates while keeping source definitions authoritative.
+ */
 module.exports = {
+    /**
+     * Initializes the schema test generator during service loading.
+     *
+     * @param {Object} options Loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
+     */
     init: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
     },
 
+    /**
+     * Finalizes the schema test generator after service loading.
+     *
+     * @param {Object} options Loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
+     */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
     },
 
+    /**
+     * Removes generated tests for a module.
+     *
+     * @param {Object} moduleObject Runtime module object whose `test/gen` folder should be removed.
+     * @returns {Promise<boolean>} Resolves after generated tests are removed or skipped.
+     */
     cleanGeneratedTests: function (moduleObject) {
         return new Promise((resolve, reject) => {
             try {
@@ -40,6 +65,11 @@ module.exports = {
         });
     },
 
+    /**
+     * Generates tests for every module in the effective raw schema map.
+     *
+     * @returns {Promise<Array<boolean>>} Resolves after all module generation tasks complete.
+     */
     buildGeneratedTests: function () {
         return new Promise((resolve, reject) => {
             try {
@@ -62,6 +92,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Generates all schema-derived test artifacts for one module.
+     *
+     * @param {string} moduleName Runtime module name.
+     * @param {Object} moduleSchemas Raw schema definitions owned by the module.
+     * @returns {Promise<boolean>} Resolves after module test generation completes or is skipped.
+     */
     buildModuleGeneratedTests: function (moduleName, moduleSchemas) {
         return new Promise((resolve, reject) => {
             try {
@@ -120,6 +157,11 @@ module.exports = {
         });
     },
 
+    /**
+     * Returns the effective raw schema registry used as test generation source of truth.
+     *
+     * @returns {Object} Raw schema map grouped by module.
+     */
     getEffectiveRawSchema: function () {
         if (SERVICE.DefaultDatabaseConfigurationService &&
             typeof SERVICE.DefaultDatabaseConfigurationService.getRawSchema === 'function') {
@@ -128,6 +170,13 @@ module.exports = {
         return {};
     },
 
+    /**
+     * Resolves default schema inheritance into module schemas before fixture generation.
+     *
+     * @param {string} moduleName Runtime module name.
+     * @param {Object} moduleSchemas Module-owned schema definitions.
+     * @returns {Object} Resolved schema definitions keyed by schema name.
+     */
     resolveModuleSchemasForGeneration: function (moduleName, moduleSchemas) {
         let rawSchema = this.getEffectiveRawSchema();
         let schemaMap = _.merge(_.merge({}, rawSchema.default || {}), moduleSchemas || {});
@@ -138,6 +187,17 @@ module.exports = {
         return resolvedSchemas;
     },
 
+    /**
+     * Resolves one schema, including super-schema inheritance and circular-reference detection.
+     *
+     * @param {string} moduleName Runtime module name for diagnostics.
+     * @param {string} schemaName Schema name to resolve.
+     * @param {Object} schemaMap Combined default and module schema map.
+     * @param {Object} resolvedSchemas Memoized resolved schema map.
+     * @param {string[]} stack Current inheritance stack used to detect cycles.
+     * @returns {Object} Resolved schema object.
+     * @throws {Error} When a super schema is missing or circular.
+     */
     resolveSchemaForGeneration: function (moduleName, schemaName, schemaMap, resolvedSchemas, stack) {
         if (resolvedSchemas[schemaName]) {
             return resolvedSchemas[schemaName];
@@ -173,6 +233,12 @@ module.exports = {
         return resolvedSchemas[schemaName];
     },
 
+    /**
+     * Writes the generated schema contract test file for one schema.
+     *
+     * @param {Object} options Generation options containing module, schema, and output directory details.
+     * @returns {void}
+     */
     writeSchemaContractTest: function (options) {
         let fileName = path.join(
             options.generatedSchemaDir,
@@ -181,6 +247,12 @@ module.exports = {
         fs.writeFileSync(fileName, this.createSchemaContractTestContent(options), 'utf8');
     },
 
+    /**
+     * Writes the generated API contract test file for an API-eligible schema.
+     *
+     * @param {Object} options Generation options containing module and schema details.
+     * @returns {void}
+     */
     writeSchemaApiContractTest: function (options) {
         if (!this.isApiTestEligible(options.schemaObject)) {
             return;
@@ -197,6 +269,12 @@ module.exports = {
         fs.writeFileSync(fileName, this.createSchemaApiContractTestContent(options), 'utf8');
     },
 
+    /**
+     * Writes generated non-destructive API scenario tests for an API-eligible schema.
+     *
+     * @param {Object} options Generation options containing module and schema details.
+     * @returns {void}
+     */
     writeSchemaApiScenarioTest: function (options) {
         if (!this.isApiTestEligible(options.schemaObject)) {
             return;
@@ -213,6 +291,12 @@ module.exports = {
         fs.writeFileSync(fileName, this.createSchemaApiScenarioTestContent(options), 'utf8');
     },
 
+    /**
+     * Writes generated destructive CRUD scenario tests for an API-eligible schema.
+     *
+     * @param {Object} options Generation options containing module and schema details.
+     * @returns {void}
+     */
     writeSchemaCrudScenarioTest: function (options) {
         if (!this.isApiTestEligible(options.schemaObject)) {
             return;
@@ -229,6 +313,12 @@ module.exports = {
         fs.writeFileSync(fileName, this.createSchemaCrudScenarioTestContent(options), 'utf8');
     },
 
+    /**
+     * Creates JavaScript source for a generated schema contract test.
+     *
+     * @param {Object} options Generation options containing module, schema, and effective schema details.
+     * @returns {string} JavaScript test source.
+     */
     createSchemaContractTestContent: function (options) {
         let expected = {
             moduleName: options.moduleName,
@@ -253,6 +343,12 @@ module.exports = {
             'console.log(`Generated schema contract validated: ${expected.moduleName}.${expected.schemaName}`);\n';
     },
 
+    /**
+     * Creates JavaScript source for a generated API route contract test.
+     *
+     * @param {Object} options Generation options containing module and schema details.
+     * @returns {string} JavaScript test source.
+     */
     createSchemaApiContractTestContent: function (options) {
         let alias = ((options.schemaObject.router && options.schemaObject.router.alias) || options.schemaName).toLowerCase();
         let controller = 'Default' + options.schemaName.toUpperCaseEachWord() + 'Controller';
@@ -286,6 +382,12 @@ module.exports = {
             'console.log(`Generated API contract validated: ${expected.moduleName}.${expected.schemaName} (${expected.routes.length} routes)`);\n';
     },
 
+    /**
+     * Creates JavaScript source for generated non-destructive API scenario tests.
+     *
+     * @param {Object} options Generation options containing module and schema details.
+     * @returns {string} JavaScript test source.
+     */
     createSchemaApiScenarioTestContent: function (options) {
         let alias = ((options.schemaObject.router && options.schemaObject.router.alias) || options.schemaName).toLowerCase();
         let controller = 'Default' + options.schemaName.toUpperCaseEachWord() + 'Controller';
@@ -326,6 +428,12 @@ module.exports = {
             'console.log(`Generated API scenarios validated: ${expected.moduleName}.${expected.schemaName} (${expected.scenarios.length} scenarios)`);\n';
     },
 
+    /**
+     * Creates JavaScript source for generated destructive CRUD and access-policy scenario tests.
+     *
+     * @param {Object} options Generation options containing module, schema, and effective schema details.
+     * @returns {string} JavaScript test source.
+     */
     createSchemaCrudScenarioTestContent: function (options) {
         let alias = ((options.schemaObject.router && options.schemaObject.router.alias) || options.schemaName).toLowerCase();
         let controller = 'Default' + options.schemaName.toUpperCaseEachWord() + 'Controller';
@@ -406,6 +514,13 @@ module.exports = {
             'console.log(`Generated destructive CRUD scenarios validated: ${expected.moduleName}.${expected.schemaName} (${expected.scenarios.length} scenarios)`);\n';
     },
 
+    /**
+     * Builds expected API route metadata from default schema router templates.
+     *
+     * @param {string} alias Schema route alias.
+     * @param {string} controller Generated controller service name.
+     * @returns {Object[]} Expected route definitions for the schema.
+     */
     createExpectedApiRoutes: function (alias, controller) {
         let defaultRouters = this.getDefaultSchemaRouters();
         let routes = [];
@@ -435,6 +550,13 @@ module.exports = {
         return routes;
     },
 
+    /**
+     * Builds non-destructive API scenarios from generated route metadata.
+     *
+     * @param {string} alias Schema route alias.
+     * @param {string} controller Generated controller service name.
+     * @returns {Object[]} Scenario definitions for GET/POST read-style routes.
+     */
     createNonDestructiveApiScenarios: function (alias, controller) {
         return this.createExpectedApiRoutes(alias, controller)
             .filter(route => this.isNonDestructiveRoute(route))
@@ -448,6 +570,14 @@ module.exports = {
             });
     },
 
+    /**
+     * Builds destructive CRUD mutation scenarios from generated route metadata.
+     *
+     * @param {string} alias Schema route alias.
+     * @param {string} controller Generated controller service name.
+     * @param {Object} schemaObject Effective schema used to build fixtures.
+     * @returns {Object[]} Scenario definitions for save, update, and remove routes.
+     */
     createDestructiveCrudScenarios: function (alias, controller, schemaObject) {
         let mutationRoutes = this.createExpectedApiRoutes(alias, controller)
             .filter(route => this.isDestructiveCrudRoute(route));
@@ -466,6 +596,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Builds an ordered CRUD lifecycle scenario using create, read, update, delete, and verify steps.
+     *
+     * @param {string} alias Schema route alias.
+     * @param {string} controller Generated controller service name.
+     * @param {Object} schemaObject Effective schema used to build fixtures.
+     * @returns {Object[]} Ordered lifecycle step definitions.
+     */
     createDestructiveCrudLifecycle: function (alias, controller, schemaObject) {
         let routes = this.createExpectedApiRoutes(alias, controller);
         let createModel = this.createCrudModelFixture(alias, schemaObject, 'create');
@@ -489,6 +627,16 @@ module.exports = {
         ].filter(step => !!step);
     },
 
+    /**
+     * Builds generated access-policy scenarios for CRUD route behavior.
+     *
+     * @param {string} moduleName Runtime module name.
+     * @param {string} schemaName Schema name.
+     * @param {string} alias Schema route alias.
+     * @param {string} controller Generated controller service name.
+     * @param {Object} schemaObject Effective schema used to choose protected properties.
+     * @returns {Object[]} Access-policy scenario definitions.
+     */
     createCrudAccessPolicyScenarios: function (moduleName, schemaName, alias, controller, schemaObject) {
         let routes = this.createExpectedApiRoutes(alias, controller);
         let createModel = this.createCrudModelFixture(alias, schemaObject, 'create');
@@ -525,6 +673,20 @@ module.exports = {
         ].filter(scenario => !!scenario);
     },
 
+    /**
+     * Builds one access-policy scenario for a CRUD route.
+     *
+     * @param {string} moduleName Runtime module name.
+     * @param {string} schemaName Schema name.
+     * @param {string} name Scenario name.
+     * @param {string} policyAction Access-policy action being validated.
+     * @param {Object} route Route metadata for the scenario.
+     * @param {Object} createModel Create fixture.
+     * @param {Object} updateModel Update fixture.
+     * @param {string} propertyName Protected property or `*` for schema-level policy.
+     * @param {Object} expected Expected enforcement outcome.
+     * @returns {Object|null} Scenario definition, or null when the route is unavailable.
+     */
     createCrudAccessPolicyScenario: function (moduleName, schemaName, name, policyAction, route, createModel, updateModel, propertyName, expected) {
         if (!route) {
             return null;
@@ -546,6 +708,15 @@ module.exports = {
         };
     },
 
+    /**
+     * Builds the request payload used by a generated access-policy scenario.
+     *
+     * @param {Object} route Route metadata for the scenario.
+     * @param {Object} createModel Create fixture.
+     * @param {Object} updateModel Update fixture.
+     * @param {string} propertyName Protected property or `*`.
+     * @returns {Object} Request definition with headers, params, query, and body.
+     */
     createAccessPolicyScenarioRequest: function (route, createModel, updateModel, propertyName) {
         let request = this.createCrudLifecycleRequest(route, createModel, updateModel);
         if (propertyName && propertyName !== '*' && route.operation === 'save') {
@@ -558,6 +729,17 @@ module.exports = {
         return request;
     },
 
+    /**
+     * Builds one ordered CRUD lifecycle step.
+     *
+     * @param {string} name Step name.
+     * @param {Object} route Route metadata for the step.
+     * @param {Object} createModel Create fixture.
+     * @param {Object} updateModel Update fixture.
+     * @param {boolean} optional Whether the step may be skipped by a runner.
+     * @param {boolean} expectMissing Whether the expected result is absence.
+     * @returns {Object|null} Lifecycle step definition, or null when the route is unavailable.
+     */
     createCrudLifecycleStep: function (name, route, createModel, updateModel, optional, expectMissing) {
         if (!route) {
             return null;
@@ -573,6 +755,14 @@ module.exports = {
         };
     },
 
+    /**
+     * Builds request data for a CRUD lifecycle step.
+     *
+     * @param {Object} route Route metadata for the step.
+     * @param {Object} createModel Create fixture.
+     * @param {Object} updateModel Update fixture.
+     * @returns {Object} Request definition with headers, params, query, and body.
+     */
     createCrudLifecycleRequest: function (route, createModel, updateModel) {
         if (['put', 'patch', 'delete'].includes(route.method)) {
             return this.createCrudScenarioRequest(route, createModel, updateModel);
@@ -591,26 +781,59 @@ module.exports = {
         };
     },
 
+    /**
+     * Finds a route by operation and HTTP method.
+     *
+     * @param {Object[]} routes Route metadata list.
+     * @param {string} operation Nodics operation name.
+     * @param {string} method Lowercase HTTP method.
+     * @returns {Object|undefined} Matching route definition.
+     */
     findRoute: function (routes, operation, method) {
         return (routes || []).find(route => route.operation === operation && route.method === method);
     },
 
+    /**
+     * Finds a route by generated router name.
+     *
+     * @param {Object[]} routes Route metadata list.
+     * @param {string} routerName Router name.
+     * @returns {Object|undefined} Matching route definition.
+     */
     findRouteByRouterName: function (routes, routerName) {
         return (routes || []).find(route => route.routerName === routerName);
     },
 
+    /**
+     * Determines whether a route mutates data and belongs in CRUD scenario generation.
+     *
+     * @param {Object} route Route metadata.
+     * @returns {boolean} True for save, update, and remove mutation routes.
+     */
     isDestructiveCrudRoute: function (route) {
         return route &&
             ['put', 'patch', 'delete'].includes(route.method) &&
             ['save', 'saveAll', 'update', 'remove', 'removeById', 'removeByCode'].includes(route.operation);
     },
 
+    /**
+     * Determines whether a route is safe for non-destructive API scenario generation.
+     *
+     * @param {Object} route Route metadata.
+     * @returns {boolean} True for read-style GET/POST routes.
+     */
     isNonDestructiveRoute: function (route) {
         return route &&
             ['get', 'post'].includes(route.method) &&
             !['save', 'saveAll', 'update', 'remove', 'removeById', 'removeByCode', 'doSave', 'doBulk', 'doRemove', 'doRemoveIndex'].includes(route.operation);
     },
 
+    /**
+     * Builds request data for a non-destructive API scenario.
+     *
+     * @param {Object} route Route metadata.
+     * @returns {Object} Request definition with headers, params, query, and body.
+     */
     createScenarioRequest: function (route) {
         return {
             headers: {
@@ -626,6 +849,14 @@ module.exports = {
         };
     },
 
+    /**
+     * Builds request data for a destructive CRUD scenario.
+     *
+     * @param {Object} route Route metadata.
+     * @param {Object} createModel Create fixture.
+     * @param {Object} updateModel Update fixture.
+     * @returns {Object} Request definition with headers, params, query, and body.
+     */
     createCrudScenarioRequest: function (route, createModel, updateModel) {
         return {
             headers: {
@@ -639,6 +870,13 @@ module.exports = {
         };
     },
 
+    /**
+     * Builds route params for CRUD routes from route-key placeholders.
+     *
+     * @param {string} routeKey Route key containing optional `:param` segments.
+     * @param {Object} createModel Create fixture used for code params.
+     * @returns {Object} Route params object.
+     */
     createCrudRouteParams: function (routeKey, createModel) {
         let params = {};
         String(routeKey).split('/').forEach(part => {
@@ -653,6 +891,14 @@ module.exports = {
         return params;
     },
 
+    /**
+     * Builds request body data for a CRUD mutation route.
+     *
+     * @param {Object} route Route metadata.
+     * @param {Object} createModel Create fixture.
+     * @param {Object} updateModel Update fixture.
+     * @returns {Object|Object[]} Request body payload.
+     */
     createCrudScenarioBody: function (route, createModel, updateModel) {
         if (route.operation === 'save') {
             return createModel;
@@ -700,6 +946,12 @@ module.exports = {
         return {};
     },
 
+    /**
+     * Builds generic route params from route-key placeholders.
+     *
+     * @param {string} routeKey Route key containing optional `:param` segments.
+     * @returns {Object} Route params object.
+     */
     createRouteParams: function (routeKey) {
         let params = {};
         String(routeKey).split('/').forEach(part => {
@@ -710,6 +962,12 @@ module.exports = {
         return params;
     },
 
+    /**
+     * Builds POST request bodies for non-destructive generated API scenarios.
+     *
+     * @param {Object} route Route metadata.
+     * @returns {Object} Request body payload.
+     */
     createPostScenarioBody: function (route) {
         let body = {
             options: {},
@@ -733,6 +991,14 @@ module.exports = {
         return body;
     },
 
+    /**
+     * Builds a create or update fixture model from schema property definitions.
+     *
+     * @param {string} alias Schema route alias.
+     * @param {Object} schemaObject Effective schema definition.
+     * @param {string} phase Fixture phase, usually `create` or `update`.
+     * @returns {Object} Fixture model.
+     */
     createCrudModelFixture: function (alias, schemaObject, phase) {
         let code = 'ntest_' + alias + '_<runId>';
         let model = {
@@ -761,6 +1027,13 @@ module.exports = {
         return model;
     },
 
+    /**
+     * Checks whether a nested fixture property already has a value.
+     *
+     * @param {Object} model Fixture model.
+     * @param {string} propertyPath Dot-separated property path.
+     * @returns {boolean} True when the property exists.
+     */
     hasFixturePropertyValue: function (model, propertyPath) {
         let parts = String(propertyPath).split('.');
         let current = model;
@@ -773,6 +1046,14 @@ module.exports = {
         return true;
     },
 
+    /**
+     * Sets a nested fixture property value, creating objects along the path.
+     *
+     * @param {Object} model Fixture model to mutate.
+     * @param {string} propertyPath Dot-separated property path.
+     * @param {*} value Value to assign.
+     * @returns {void}
+     */
     setFixturePropertyValue: function (model, propertyPath, value) {
         let parts = String(propertyPath).split('.');
         let current = model;
@@ -788,6 +1069,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Selects a representative schema property for generated access-policy scenarios.
+     *
+     * @param {Object} schemaObject Effective schema definition.
+     * @returns {string} Property name, or a placeholder when no schema properties exist.
+     */
     getAccessPolicyFixtureProperty: function (schemaObject) {
         let definition = schemaObject.definition || {};
         if (definition.description) {
@@ -800,6 +1087,16 @@ module.exports = {
         return properties.length > 0 ? properties[0] : '<policyControlledProperty>';
     },
 
+    /**
+     * Creates a fixture value for a required schema property.
+     *
+     * @param {string} propertyName Schema property name.
+     * @param {Object} propertyObject Schema property definition.
+     * @param {string} phase Fixture phase, usually `create` or `update`.
+     * @param {Object} schemaObject Effective schema definition.
+     * @param {string} alias Schema route alias.
+     * @returns {*} Fixture value.
+     */
     createPropertyFixtureValue: function (propertyName, propertyObject, phase, schemaObject, alias) {
         if (Array.isArray(propertyObject.enum) && propertyObject.enum.length > 0) {
             return propertyObject.enum[0];
@@ -830,6 +1127,15 @@ module.exports = {
         return 'ntest_' + propertyName + '_<runId>';
     },
 
+    /**
+     * Creates a fixture value for a referenced schema property.
+     *
+     * @param {string} propertyName Schema property name.
+     * @param {Object} refObject Reference schema metadata.
+     * @param {string} phase Fixture phase, usually `create` or `update`.
+     * @param {string} alias Schema route alias.
+     * @returns {Object|Array} Reference fixture value.
+     */
     createReferenceFixtureValue: function (propertyName, refObject, phase, alias) {
         if (refObject.type === 'many') {
             if (propertyName === 'userGroups') {
@@ -850,21 +1156,44 @@ module.exports = {
         return nestedModel;
     },
 
+    /**
+     * Loads default schema router templates used by generated API tests.
+     *
+     * @returns {Object} Default schema router definitions.
+     */
     getDefaultSchemaRouters: function () {
         let routers = SERVICE.DefaultFilesLoaderService.loadRouterFiles('/src/router/router.js');
         return routers.default || {};
     },
 
+    /**
+     * Determines whether a schema should receive generated API tests.
+     *
+     * @param {Object} schemaObject Schema definition.
+     * @returns {boolean} True when both service and router are enabled.
+     */
     isApiTestEligible: function (schemaObject) {
         return !!(schemaObject &&
             schemaObject.service && schemaObject.service.enabled &&
             schemaObject.router && schemaObject.router.enabled);
     },
 
+    /**
+     * Converts a schema name or value into a generated-test file-safe name.
+     *
+     * @param {*} value Value to sanitize.
+     * @returns {string} File-safe name.
+     */
     toFileSafeName: function (value) {
         return String(value).replace(/[^a-zA-Z0-9_$-]/g, '_');
     },
 
+    /**
+     * Returns the filesystem path for a runtime module object.
+     *
+     * @param {Object} moduleObject Runtime module object.
+     * @returns {string|null} Module path or null when unavailable.
+     */
     getModulePath: function (moduleObject) {
         return moduleObject ? moduleObject.path || moduleObject.modulePath : null;
     }

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cronjob/utils/enums
+ * @description Cronjob enum definitions for lifecycle state, trigger status, and scheduling behavior.
+ * @layer utility
+ * @owner cronjob
+ * @override Project modules may add later enum fragments only when cronjob state handling supports them.
+ */
 module.exports = {
     CronJobState: {
         _options: {

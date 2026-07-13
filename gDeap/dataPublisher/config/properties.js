@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module dataPublisher/config/properties
+ * @description Reserved property contribution for DEAP data publishing behavior.
+ * @layer config
+ * @owner dataPublisher
+ * @override Project DEAP modules may provide later properties for data publishing behavior.
+ */
 module.exports = {
 
 };

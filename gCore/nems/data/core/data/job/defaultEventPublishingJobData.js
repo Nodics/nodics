@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nems/data/core/data/job/defaultEventPublishingJobData
+ * @description Core initializer data for the cronjob that periodically processes asynchronous NEMS events.
+ * @layer data
+ * @owner nems
+ * @override Project modules may contribute later job data for custom event publishing schedules.
+ */
 module.exports = {
     record0: {
         code: "publishEvents",

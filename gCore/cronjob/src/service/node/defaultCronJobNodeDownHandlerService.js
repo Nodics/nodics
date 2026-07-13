@@ -11,11 +11,19 @@
 
 const _ = require('lodash');
 
+/**
+ * @module cronjob/service/node/DefaultCronJobNodeDownHandlerService
+ * @description Handles cronjob responsibility takeover when a remote node goes down.
+ * @layer service
+ * @owner cronjob
+ * @override Project modules may override this handler to customize failover ownership and restart behavior.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the node-down handler during service loading.
+     *
+     * @param {Object} options Loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -24,9 +32,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the node-down handler after service loading.
+     *
+     * @param {Object} options Loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -34,6 +43,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Validates node-down pipeline input before responsibility takeover.
+     *
+     * @param {Object} request Pipeline request containing module name and remote node.
+     * @param {Object} response Pipeline response.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     */
     validateRequest: function (request, response, process) {
         if (!request.moduleName) {
             process.error(request, response, new CLASSES.NodicsError('ERR_JOB_00003', 'Invalid moduleName'));
@@ -42,6 +59,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Starts jobs previously assigned to a down remote node on the current node.
+     *
+     * @param {Object} request Pipeline request containing module and remote node details.
+     * @param {Object} response Pipeline response receiving success data.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     */
     handleResponsibilities: function (request, response, process) {
         this.startTenantSpecificJobs(request.moduleName, request.remoteNode, NODICS.getActiveTenants()).then(success => {
             response.success = success;
@@ -51,6 +76,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Loads eligible jobs for a remote node and starts temporary local scheduler ownership.
+     *
+     * @param {string} moduleName Module whose node map owns the remote node.
+     * @param {string} remoteNode Remote node identifier that went down.
+     * @param {string[]} tenants Tenants to scan for jobs.
+     * @returns {Promise<Object>} Creation and start results.
+     */
     startTenantSpecificJobs: function (moduleName, remoteNode, tenants) {
         let _self = this;
         return new Promise((resolve, reject) => {

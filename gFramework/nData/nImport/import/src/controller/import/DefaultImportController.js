@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nData/nImport/import/src/controller/import/DefaultImportController
+ * @description Exposes request handlers for nData default import controller operations.
+ * @layer controller
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +39,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes import init data behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     importInitData: function (request, callback) {
         if (!UTILS.isBlank(request.httpRequest.body)) {
             request.modules = request.httpRequest.body.modules || [];
@@ -48,6 +69,20 @@ module.exports = {
             return FACADE.DefaultImportFacade.importInitData(request);
         }
     },
+
+    /**
+
+     * Executes import core data behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     importCoreData: function (request, callback) {
         if (!UTILS.isBlank(request.httpRequest.body)) {
@@ -66,6 +101,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes import sample data behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     importSampleData: function (request, callback) {
         if (!UTILS.isBlank(request.httpRequest.body)) {
             request.modules = request.httpRequest.body.modules || [];
@@ -82,6 +131,20 @@ module.exports = {
             return FACADE.DefaultImportFacade.importSampleData(request);
         }
     },
+
+    /**
+
+     * Executes import local data behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     importLocalData: function (request, callback) {
         if (!UTILS.isBlank(request.httpRequest.body) && !UTILS.isBlank(request.httpRequest.body.inputPath)) {

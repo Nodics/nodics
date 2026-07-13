@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cronjob/event/listeners
+ * @description Event listener registrations for refreshing cronjob interceptor and validator runtime caches.
+ * @layer event
+ * @owner cronjob
+ * @override Project modules may add later listeners for cronjob configuration events.
+ */
 module.exports = {
     common: {
         jobInterceptorUpdatedListener: {

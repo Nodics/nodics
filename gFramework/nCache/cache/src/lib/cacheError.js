@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nCache/cache/src/lib/cacheError
+ * @description Provides reusable nCache library primitives for cache error.
+ * @layer lib
+ * @owner nCache
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = class CacheError extends CLASSES.NodicsError {
     constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').CacheError) {
         super(error, message, defaultCode);

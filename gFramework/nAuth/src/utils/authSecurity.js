@@ -90,6 +90,13 @@ function buildPayload(options) {
     return payload;
 }
 
+/**
+ * @module gFramework/nAuth/src/utils/authSecurity
+ * @description Provides shared nAuth utility exports for auth security.
+ * @layer utils
+ * @owner nAuth
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     buildPayload,
     getJwtSecret,

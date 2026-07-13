@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nValidator/src/utils/enums
+ * @description Provides shared nValidator utility exports for enums.
+ * @layer utils
+ * @owner nValidator
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     ValidatorType: {
         _options: {

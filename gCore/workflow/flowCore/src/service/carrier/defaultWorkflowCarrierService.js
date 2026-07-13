@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gCore/workflow/flowCore/src/service/carrier/defaultWorkflowCarrierService
+ * @description Implements workflow default workflow carrier service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -33,6 +40,12 @@ module.exports = {
             resolve(true);
         });
     },
+    /**
+     * Validates carrier available rules.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     isCarrierAvailable: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -58,6 +71,12 @@ module.exports = {
     },
     // Carrier could be de-activated
     // Carrier could reach to retry limit
+    /**
+     * Retrieves workflow carrier information.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     getWorkflowCarrier: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {

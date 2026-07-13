@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nPublish/utils/utils
+ * @description Reserved utility contribution for publish/version promotion helpers.
+ * @layer utility
+ * @owner nPublish
+ * @override Project modules may add later publishing utilities.
+ */
 module.exports = {
 
 };

@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nData/dataCore/src/service/config/defaultDataConfigurationService
+ * @description Implements nData default data configuration service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     importInterceptors: {},
     exportInterceptors: {},
@@ -40,9 +47,33 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates import interceptors information.
+
+     *
+
+     * @param {*} interceptors Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     setImportInterceptors: function (interceptors) {
         this.importInterceptors = interceptors;
     },
+
+    /**
+
+     * Retrieves import interceptors information.
+
+     *
+
+     * @param {*} entityName Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getImportInterceptors: function (entityName) {
         if (!this.importInterceptors[entityName]) {
@@ -51,10 +82,34 @@ module.exports = {
         return this.importInterceptors[entityName];
     },
 
+    /**
+
+     * Updates export interceptors information.
+
+     *
+
+     * @param {*} interceptors Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     setExportInterceptors: function (interceptors) {
         this.exportInterceptors = interceptors;
 
     },
+
+    /**
+
+     * Retrieves export interceptors information.
+
+     *
+
+     * @param {*} entityName Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getExportInterceptors: function (entityName) {
         if (!this.exportInterceptors[entityName]) {
@@ -62,6 +117,18 @@ module.exports = {
         }
         return this.exportInterceptors[entityName];
     },
+
+    /**
+
+     * Executes refresh import interceptors behavior.
+
+     *
+
+     * @param {*} entities Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     refreshImportInterceptors: function (entities) {
         if (this.importInterceptors && !UTILS.isBlank(this.importInterceptors) && entities && entities.length > 0) {
@@ -79,6 +146,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Processes import interceptor updated behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     handleImportInterceptorUpdated: function (request, callback) {
         try {
             this.refreshImportInterceptors(request.event.data);
@@ -87,6 +168,18 @@ module.exports = {
             callback(new CLASSES.NodicsError(error, null, 'ERR_EVNT_00000'));
         }
     },
+
+    /**
+
+     * Executes refresh export interceptors behavior.
+
+     *
+
+     * @param {*} entities Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     refreshExportInterceptors: function (entities) {
         if (this.exportInterceptors && !UTILS.isBlank(this.exportInterceptors) && entities && entities.length > 0) {
@@ -104,6 +197,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Processes export interceptor updated behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     handleExportInterceptorUpdated: function (request, callback) {
         try {
             this.refreshExportInterceptors(request.event.data);
@@ -114,9 +221,41 @@ module.exports = {
     },
 
 
+    /**
+
+
+     * Updates import validators information.
+
+
+     *
+
+
+     * @param {*} validators Method input.
+
+
+     * @returns {*} Method result.
+
+
+     */
+
+
     setImportValidators: function (validators) {
         this.importValidators = validators;
     },
+
+    /**
+
+     * Retrieves import validators information.
+
+     *
+
+     * @param {*} tenant Method input.
+
+     * @param {*} entityName Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getImportValidators: function (tenant, entityName) {
         if (!this.importValidators[tenant] || !this.importValidators[tenant][entityName]) {
@@ -125,6 +264,20 @@ module.exports = {
         }
         return this.importValidators[tenant][entityName];
     },
+
+    /**
+
+     * Executes refresh import validators behavior.
+
+     *
+
+     * @param {*} tenant Method input.
+
+     * @param {*} entities Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     refreshImportValidators: function (tenant, entities) {
         if (this.importValidators[tenant] && !UTILS.isBlank(this.importValidators[tenant]) && entities && entities.length > 0) {
@@ -142,6 +295,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Processes import validator updated behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     handleImportValidatorUpdated: function (request, callback) {
         try {
             this.refreshImportValidators(request.tenant, request.event.data);
@@ -151,9 +318,35 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Updates export validators information.
+
+     *
+
+     * @param {*} validators Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     setExportValidators: function (validators) {
         this.exportValidators = validators;
     },
+
+    /**
+
+     * Retrieves export validators information.
+
+     *
+
+     * @param {*} tenant Method input.
+
+     * @param {*} entityName Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getExportValidators: function (tenant, entityName) {
         if (!this.exportValidators[tenant] || !this.exportValidators[tenant][entityName]) {
@@ -162,6 +355,20 @@ module.exports = {
         }
         return this.exportValidators[tenant][entityName];
     },
+
+    /**
+
+     * Executes refresh export validators behavior.
+
+     *
+
+     * @param {*} tenant Method input.
+
+     * @param {*} entities Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     refreshExportValidators: function (tenant, entities) {
         if (this.exportValidators[tenant] && !UTILS.isBlank(this.exportValidators[tenant]) && entities && entities.length > 0) {
@@ -178,6 +385,20 @@ module.exports = {
             });
         }
     },
+
+    /**
+
+     * Processes export validator updated behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleExportValidatorUpdated: function (request, callback) {
         try {

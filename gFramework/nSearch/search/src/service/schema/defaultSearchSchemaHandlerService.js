@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nSearch/search/src/service/schema/defaultSearchSchemaHandlerService
+ * @description Implements nSearch default search schema handler service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +41,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Runs pre-processing logic for pare search schema.
+
+     *
+
+     * @param {*} tenants Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     prepareSearchSchema: function (tenants = NODICS.getActiveTenants()) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -52,6 +71,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves search schema from schema information.
+
+     *
+
+     * @param {*} tenants Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     loadSearchSchemaFromSchema: function (tenants = NODICS.getActiveTenants()) {
         let _self = this;
         try {
@@ -64,6 +95,20 @@ module.exports = {
             throw error;
         }
     },
+
+    /**
+
+     * Retrieves search schema for module information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} tntCode Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     loadSearchSchemaForModule: function (moduleName, tntCode) {
         let _self = this;
@@ -79,6 +124,22 @@ module.exports = {
             throw new CLASSES.SearchError(error, 'While collecting properties from module: ' + moduleName);
         }
     },
+
+    /**
+
+     * Runs pre-processing logic for pare from schema.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} schemaName Method input.
+
+     * @param {*} tntCode Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     prepareFromSchema: function (moduleName, schemaName, tntCode) {
         let moduleObject = NODICS.getModule(moduleName);
@@ -109,6 +170,18 @@ module.exports = {
             }
         }
     },
+
+    /**
+
+     * Retrieves search schema information.
+
+     *
+
+     * @param {*} tenants Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     loadSearchSchema: function (tenants = NODICS.getActiveTenants()) {
         let _self = this;
@@ -145,6 +218,18 @@ module.exports = {
             throw new CLASSES.SearchError(error, 'Failed while loading search schema from schema definitions');
         }
     },
+
+    /**
+
+     * Retrieves search schema from database information.
+
+     *
+
+     * @param {*} tenants Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     loadSearchSchemaFromDatabase: function (tenants = NODICS.getActiveTenants()) {
         let _self = this;
@@ -187,6 +272,16 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Executes extract schema options behavior.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
 
     extractSchemaOptions: function () {
         let searchSchemas = SERVICE.DefaultSearchConfigurationService.getAllRawSearchSchema();

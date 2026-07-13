@@ -16,6 +16,13 @@
 const Chai = require('chai');
 const expect = Chai.expect;
 
+/**
+ * @module gFramework/nSystem/test/env-local/envTest
+ * @description Defines nSystem test fixtures or suites for module behavior validation.
+ * @layer test
+ * @owner nSystem
+ * @override Projects may add focused tests beside this file while preserving the module contract under test.
+ */
 module.exports = {
     /*
         sampleTestSuite: {

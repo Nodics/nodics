@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nSearch/search/src/service/config/defaultSearchConfigurationService
+ * @description Implements nSearch default search configuration service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     searchEngines: {},
@@ -41,6 +48,16 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves search active modules information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     getSearchActiveModules: function () {
         let modules = NODICS.getModules();
         let dbModules = [];
@@ -52,9 +69,35 @@ module.exports = {
         return dbModules;
     },
 
+    /**
+
+     * Retrieves raw search model definition information.
+
+     *
+
+     * @param {*} engine Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getRawSearchModelDefinition: function (engine) {
         return this.rawSearchModel[engine];
     },
+
+    /**
+
+     * Updates raw search model definition information.
+
+     *
+
+     * @param {*} engine Method input.
+
+     * @param {*} definition Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     addRawSearchModelDefinition: function (engine, definition) {
         this.rawSearchModel[engine] = definition;
@@ -83,9 +126,35 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Retrieves search engines information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     getSearchEngines: function () {
         return this.searchEngines;
     },
+
+    /**
+
+     * Updates tenant search engine information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} tenant Method input.
+
+     * @param {*} searchEngine Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     addTenantSearchEngine: function (moduleName, tenant, searchEngine) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
@@ -98,12 +167,40 @@ module.exports = {
         this.searchEngines[moduleName][tenant] = searchEngine;
     },
 
+    /**
+
+     * Removes or clears tenant search engine information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} tenant Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     removeTenantSearchEngine: function (moduleName, tenant) {
         if (this.searchEngines[moduleName] && this.searchEngines[moduleName][tenant]) {
             delete this.searchEngines[moduleName][tenant];
         }
         return true;
     },
+
+    /**
+
+     * Retrieves tenant search engine information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} tenant Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getTenantSearchEngine: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
@@ -115,6 +212,22 @@ module.exports = {
             return searchEngine ? searchEngine[tenant] : null;
         }
     },
+
+    /**
+
+     * Updates tenant raw search schema information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} tenant Method input.
+
+     * @param {*} definition Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     addTenantRawSearchSchema: function (moduleName, tenant, definition) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
@@ -132,9 +245,37 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Retrieves all raw search schema information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} tenant Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getAllRawSearchSchema: function (moduleName, tenant) {
         return this.searchSchema;
     },
+
+    /**
+
+     * Retrieves raw search schema information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} tenant Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getRawSearchSchema: function (moduleName, tenant) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
@@ -148,6 +289,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Retrieves tenant raw search schema information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} tenant Method input.
+
+     * @param {*} typeName Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getTenantRawSearchSchema: function (moduleName, tenant, typeName) {
         if (!moduleName && !NODICS.isModuleActive(moduleName)) {
             throw new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid module name: ' + moduleName);
@@ -160,6 +317,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Removes or clears tenant raw search schema information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} tenant Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     removeTenantRawSearchSchema: function (moduleName, tenant) {
         if (this.searchSchema[moduleName] && this.searchSchema[moduleName][tenant]) {
             delete this.searchSchema[moduleName][tenant];
@@ -167,9 +338,33 @@ module.exports = {
         return true;
     },
 
+    /**
+
+     * Updates search interceptors information.
+
+     *
+
+     * @param {*} interceptors Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     setSearchInterceptors: function (interceptors) {
         this.interceptors = interceptors;
     },
+
+    /**
+
+     * Retrieves search interceptors information.
+
+     *
+
+     * @param {*} indexName Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getSearchInterceptors: function (indexName) {
         if (!this.interceptors[indexName]) {
@@ -177,6 +372,18 @@ module.exports = {
         }
         return this.interceptors[indexName];
     },
+
+    /**
+
+     * Executes refresh search interceptors behavior.
+
+     *
+
+     * @param {*} indexes Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     refreshSearchInterceptors: function (indexes) {
         if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant]) && indexes && indexes.length > 0) {
@@ -194,6 +401,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Processes search interceptor updated behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     handleSearchInterceptorUpdated: function (request, callback) {
         try {
             this.refreshSearchInterceptors(request.event.data);
@@ -203,9 +424,35 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Updates search validators information.
+
+     *
+
+     * @param {*} validators Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     setSearchValidators: function (validators) {
         this.validators = validators;
     },
+
+    /**
+
+     * Retrieves search validators information.
+
+     *
+
+     * @param {*} tenant Method input.
+
+     * @param {*} indexName Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getSearchValidators: function (tenant, indexName) {
         if (!this.validators[tenant] || !this.validators[tenant][indexName]) {
@@ -214,6 +461,20 @@ module.exports = {
         }
         return this.validators[tenant][indexName];
     },
+
+    /**
+
+     * Executes refresh search validators behavior.
+
+     *
+
+     * @param {*} tenant Method input.
+
+     * @param {*} indexes Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     refreshSearchValidators: function (tenant, indexes) {
         if (this.validators[tenant] && !UTILS.isBlank(this.validators[tenant]) && indexes && indexes.length > 0) {
@@ -230,6 +491,20 @@ module.exports = {
             });
         }
     },
+
+    /**
+
+     * Processes search validator updated behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleSearchValidatorUpdated: function (request, callback) {
         try {

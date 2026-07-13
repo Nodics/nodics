@@ -12,6 +12,13 @@
 const _ = require('lodash');
 const util = require('util');
 
+/**
+ * @module gFramework/nSearch/elastic/src/service/schema/defaultElasticSearchSchemaHandlerService
+ * @description Implements nSearch default elastic search schema handler service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +41,24 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Runs pre-processing logic for pare from schema.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} schemaName Method input.
+
+     * @param {*} isSubSchema Method input.
+
+     * @param {*} processed Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     prepareFromSchema: function (moduleName, schemaName, isSubSchema, processed = []) {
         let _self = this;
@@ -83,6 +108,26 @@ module.exports = {
         return searchSchema;
     },
 
+    /**
+
+     * Runs pre-processing logic for pare from definitions.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} tntCode Method input.
+
+     * @param {*} source Method input.
+
+     * @param {*} target Method input.
+
+     * @param {*} typeName Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     prepareFromDefinitions: function (moduleName, tntCode, source, target, typeName) {
         let _self = this;
         try {
@@ -92,6 +137,26 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Retrieves search schema from database information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} tntCode Method input.
+
+     * @param {*} source Method input.
+
+     * @param {*} target Method input.
+
+     * @param {*} typeName Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     loadSearchSchemaFromDatabase: function (moduleName, tntCode, source, target, typeName) {
         let _self = this;
         try {
@@ -100,6 +165,26 @@ module.exports = {
             throw new CLASSES.SearchError(error, 'Failed while loading search schema from schema definitions from database');
         }
     },
+
+    /**
+
+     * Executes merge index meta data behavior.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} tntCode Method input.
+
+     * @param {*} source Method input.
+
+     * @param {*} target Method input.
+
+     * @param {*} typeName Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     mergeIndexMetaData: function (moduleName, tntCode, source, target, typeName) {
         let searchConfig = CONFIG.get('search', tntCode);
@@ -121,6 +206,18 @@ module.exports = {
         }
         return _.merge(_.merge({}, target), source);
     },
+
+    /**
+
+     * Runs pre-processing logic for pare type schema.
+
+     *
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     prepareTypeSchema: function (options) {
         return new Promise((resolve, reject) => {

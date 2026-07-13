@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module kickoff/kickoffEnvs/kickoffLocal/kickoffLocalServer/kickoffLocalNode0/src/interceptors/interceptors
+ * @description Registers kickoffEnvs interceptor wiring for pipeline extension points.
+ * @layer interceptors
+ * @owner kickoffEnvs
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gMrkty/config/postscripts
+ * @description Defines default gMrkty configuration used during module startup and layering.
+ * @layer config
+ * @owner gMrkty
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };

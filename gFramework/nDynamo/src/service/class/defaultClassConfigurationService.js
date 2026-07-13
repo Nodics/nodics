@@ -12,6 +12,13 @@
 const _ = require('lodash');
 const RequireFromString = require('require-from-string');
 
+/**
+ * @module gFramework/nDynamo/src/service/class/defaultClassConfigurationService
+ * @description Implements nDynamo default class configuration service business behavior and extension logic.
+ * @layer service
+ * @owner nDynamo
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -36,6 +43,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves class information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getClass: function (request) {
         return new Promise((resolve, reject) => {
             let className = request.className;
@@ -56,6 +75,18 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Retrieves snapshot information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getSnapshot: function (request) {
         return new Promise((resolve, reject) => {
@@ -88,6 +119,24 @@ module.exports = {
     },
 
 
+    /**
+
+
+     * Updates class information.
+
+
+     *
+
+
+     * @param {*} request Method input.
+
+
+     * @returns {*} Method result.
+
+
+     */
+
+
     updateClass: function (request) {
         return new Promise((resolve, reject) => {
             let className = request.className;
@@ -111,6 +160,20 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Executes finalize class behavior.
+
+     *
+
+     * @param {*} className Method input.
+
+     * @param {*} body Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     finalizeClass: function (className, body) {
         let byteBody = null;
@@ -145,6 +208,18 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Executes class update event handler behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     classUpdateEventHandler: function (request) {
         return new Promise((resolve, reject) => {
@@ -187,6 +262,16 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves persisted classes information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     loadPersistedClasses: function () {
         return new Promise((resolve, reject) => {
             if (typeof this.get !== 'function') {
@@ -219,6 +304,18 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Processes class behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     executeClass: function (request) {
         return new Promise((resolve, reject) => {

@@ -9,6 +9,13 @@
 
 */
 
+/**
+ * @module gFramework/nSearch/search/src/search/indexes
+ * @description Documents nSearch indexes module behavior.
+ * @layer search
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     profile: {
 

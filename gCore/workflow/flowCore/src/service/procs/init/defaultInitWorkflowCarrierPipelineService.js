@@ -9,6 +9,13 @@
 
  */
 const _ = require('lodash');
+/**
+ * @module gCore/workflow/flowCore/src/service/procs/init/defaultInitWorkflowCarrierPipelineService
+ * @description Implements workflow default init workflow carrier pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -32,6 +39,14 @@ module.exports = {
             resolve(true);
         });
     },
+    /**
+     * Validates request rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to init item with workflow');
         if (!request.tenant || !request.authData) {
@@ -42,6 +57,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Runs pre-processing logic for pare response.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     prepareResponse: function (request, response, process) {
         this.LOG.debug('Preparing response for action execution');
         if (!response.success) {
@@ -51,6 +74,14 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    /**
+     * Builds workflow carrier data.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     buildWorkflowCarrier: function (request, response, process) {
         request.workflowCarrier = SERVICE.DefaultWorkflowCarrierService.buildWorkflowCarrier({
             tenant: request.tenant,
@@ -61,6 +92,14 @@ module.exports = {
         response.success.messages.push('Carrier: ' + (request.workflowCarrier.code || request.workflowCarrier._id) + ' created for workflow: ' + request.workflowCode + ' @: ' + new Date());
         process.nextSuccess(request, response);
     },
+    /**
+     * Validates workflow carrier rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateWorkflowCarrier: function (request, response, process) {
         this.LOG.debug('Validating workflow carrier if available');
         SERVICE.DefaultWorkflowCarrierService.isCarrierAvailable({
@@ -78,6 +117,14 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    /**
+     * Retrieves workflow head information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     loadWorkflowHead: function (request, response, process) {
         SERVICE.DefaultWorkflowActionService.getWorkflowHead(request.workflowCode, request.tenant).then(workflowHead => {
             request.workflowHead = request.workflowAction = workflowHead;
@@ -87,6 +134,14 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    /**
+     * Updates carrier information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     updateCarrier: function (request, response, process) {
         this.LOG.debug('Updating workflow item');
         let workflowCarrier = request.workflowCarrier;
@@ -100,6 +155,14 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+    /**
+     * Updates active item information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     saveActiveItem: function (request, response, process) {
         this.LOG.debug('Creating active workflow item');
         SERVICE.DefaultWorkflowCarrierService.save({
@@ -117,6 +180,14 @@ module.exports = {
             process.error(request, response, new CLASSES.WorkflowError(error, 'Invalid request, workflowCode can not be null or empty'));
         });
     },
+    /**
+     * Executes release workflow behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     releaseWorkflow: function (request, response, process) {
         this.LOG.debug('Preparing carrier status for carrier assignmnet');
         if (request.releaseCarrier && request.workflowCarrier.currentState.state != ENUMS.WorkflowCarrierState.RELEASED.key) {

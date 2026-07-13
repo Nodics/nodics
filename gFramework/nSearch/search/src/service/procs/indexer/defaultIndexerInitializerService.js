@@ -10,6 +10,13 @@
  */
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nSearch/search/src/service/procs/indexer/defaultIndexerInitializerService
+ * @description Implements nSearch default indexer initializer service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -33,6 +40,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating indexer request');
         if (request.indexerConfig.state === ENUMS.IndexerState.RUNNING.key) {
@@ -45,6 +68,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Executes change indexer state behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     changeIndexerState: function (request, response, process) {
         this.LOG.debug('Changing state of current indexer: ' + request.indexerConfig.code);
@@ -61,6 +100,22 @@ module.exports = {
             process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00014'));
         });
     },
+
+    /**
+
+     * Builds options data.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     buildOptions: function (request, response, process) {
         this.LOG.debug('Building options for indexer');
@@ -124,6 +179,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Processes index behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     triggerIndex: function (request, response, process) {
         this.LOG.debug('Triggering index process');
         if (request.indexerConfig.schema && !UTILS.isBlank(request.indexerConfig.schema)) {
@@ -136,6 +207,22 @@ module.exports = {
             process.error(request, response, new CLASSES.SearchError('ERR_SRCH_00000', 'Invalid type value in indexer: ' + request.indexerConfig.type));
         }
     },
+
+    /**
+
+     * Executes success handler behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     successHandler: function (request, response, process) {
         this.LOG.debug('Updating indexer successfully completed state');
@@ -153,6 +240,22 @@ module.exports = {
             process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00000'));
         });
     },
+
+    /**
+
+     * Executes error handler behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     errorHandler: function (request, response, process) {
         this.LOG.debug('Updating indexer completed with error state');

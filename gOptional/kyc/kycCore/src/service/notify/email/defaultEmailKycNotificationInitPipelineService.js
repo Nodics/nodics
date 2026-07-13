@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gOptional/kyc/kycCore/src/service/notify/email/defaultEmailKycNotificationInitPipelineService
+ * @description Implements kyc default email kyc notification init pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner kyc
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -32,6 +39,14 @@ module.exports = {
             resolve(true);
         });
     },
+    /**
+     * Validates request rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to init email kyc notification');
         if (!request.tenant || !request.authData) {

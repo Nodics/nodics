@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/workflow/flowCore/config/properties
+ * @description Defines default workflow configuration used during module startup and layering.
+ * @layer config
+ * @owner workflow
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
     workflow: {
         defaultSplitEndChannel: 'defaultSplitEndChannel'

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nData/dataCore/src/lib/cronJobError
+ * @description Provides reusable nData library primitives for cron job error.
+ * @layer lib
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = class DataError extends CLASSES.NodicsError {
     constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').DataError) {
         super(error, message, defaultCode);

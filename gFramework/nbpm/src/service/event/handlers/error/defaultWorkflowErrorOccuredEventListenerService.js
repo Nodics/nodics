@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nbpm/src/service/event/handlers/error/defaultWorkflowErrorOccuredEventListenerService
+ * @description Implements nbpm default workflow error occured event listener service business behavior and extension logic.
+ * @layer service
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -34,6 +41,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Processes workflow error occured event behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleWorkflowErrorOccuredEvent: function (request, callback) {
         try {

@@ -11,6 +11,13 @@
 
 const fs = require('fs');
 
+/**
+ * @module gFramework/nSystem/src/service/file/defaultFileService
+ * @description Implements nSystem default file service business behavior and extension logic.
+ * @layer service
+ * @owner nSystem
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves file content information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getFileContent: function (request) {
         return new Promise((resolve, reject) => {
             if (!request.type) {
@@ -56,6 +75,18 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Executes download file behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     downloadFile: function (request) {
         return new Promise((resolve, reject) => {

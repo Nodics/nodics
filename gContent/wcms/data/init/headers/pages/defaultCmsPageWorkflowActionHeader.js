@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module wcms/data/init/headers/pages/defaultCmsPageWorkflowActionHeader
+ * @description Import header for saving default CMS page workflow action records.
+ * @layer data
+ * @owner wcms
+ * @override Project modules may add later headers when page workflow action import behavior changes.
+ */
 module.exports = {
     workflow: {
         defaultCmsPageWorkflowAction: {

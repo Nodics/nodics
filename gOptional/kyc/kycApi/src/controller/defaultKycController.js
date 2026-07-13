@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gOptional/kyc/kycApi/src/controller/defaultKycController
+ * @description Exposes request handlers for kyc default kyc controller operations.
+ * @layer controller
+ * @owner kyc
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +41,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Initializes mobile kyc behavior for the module runtime.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     initMobileKyc: function (request, callback) {
         request = _.merge(request || {}, request.httpRequest.body);
         if (callback) {
@@ -46,6 +67,13 @@ module.exports = {
             return FACADE.DefaultKycFacade.initMobileKyc(request);
         }
     },
+    /**
+     * Validates mobile kyc rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} callback Method input.
+     * @returns {*} Method result.
+     */
     validateMobileKyc: function (request, callback) {
         request = _.merge(request || {}, request.httpRequest.body);
         if (callback) {
@@ -58,6 +86,13 @@ module.exports = {
             return FACADE.DefaultKycFacade.validateMobileKyc(request);
         }
     },
+    /**
+     * Initializes email kyc behavior for the module runtime.
+     *
+     * @param {*} request Method input.
+     * @param {*} callback Method input.
+     * @returns {*} Method result.
+     */
     initEmailKyc: function (request, callback) {
         request = _.merge(request || {}, request.httpRequest.body);
         if (callback) {

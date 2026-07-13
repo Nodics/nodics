@@ -67,9 +67,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 1 |
-| Undocumented | 18 |
+| Documented | 17 |
+| Partially documented | 2 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -92,27 +92,27 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gCore/nems/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/nems/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/nems/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/nems/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/nems/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/nems/data/core/data/job/defaultEventPublishingJobData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/nems/data/core/headers/job/defaultEventPublishingJobHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/nems/config/postscripts.js` | `config` | `documented` | 0/0 | Reserved post-start script contribution for Nodics event management startup follow-up. |  |
+| `gCore/nems/config/prescripts.js` | `config` | `documented` | 0/0 | Reserved pre-start script contribution for Nodics event management startup prerequisites. |  |
+| `gCore/nems/config/properties.js` | `config` | `documented` | 0/0 | NEMS properties for event fetch/reset behavior, publish node selection, and module naming. |  |
+| `gCore/nems/data/core/data/job/defaultEventPublishingJobData.js` | `data` | `documented` | 0/0 | Core initializer data for the cronjob that periodically processes asynchronous NEMS events. |  |
+| `gCore/nems/data/core/headers/job/defaultEventPublishingJobHeader.js` | `data` | `documented` | 0/0 | Import header for saving the default asynchronous event publishing cronjob. |  |
 | `gCore/nems/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/nems/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/nems/nodics.js` | `module` | `documented` | 2/2 | NEMS module lifecycle entrypoint for event persistence, splitting, processing, and dispatch. |  |
 | `gCore/nems/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/nems/src/controller/defaultEventHandlerController.js` | `src` | `undocumented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gCore/nems/src/facade/defaultEventHandlerFacade.js` | `src` | `undocumented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gCore/nems/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/nems/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/nems/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/nems/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/nems/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/nems/src/service/event/defaultEventHandlerService.js` | `src` | `undocumented` | 0/10 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 10 exported method(s) |
-| `gCore/nems/src/service/interceptors/defaultEventSplitInterceptorService.js` | `src` | `undocumented` | 0/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gCore/nems/src/utils/enums.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/nems/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/nems/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gCore/nems/test/env/local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gCore/nems/src/controller/defaultEventHandlerController.js` | `src` | `documented` | 2/2 | Adapts secured event processing and reset API requests into NEMS facade calls. |  |
+| `gCore/nems/src/facade/defaultEventHandlerFacade.js` | `src` | `documented` | 2/2 | Facade boundary that delegates event processing and reset commands to the NEMS service. |  |
+| `gCore/nems/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Schema interceptor registrations that split saved events into concrete targets and process synchronous events immediately. |  |
+| `gCore/nems/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Reserved pipeline definition contribution point for event processing workflows. |  |
+| `gCore/nems/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved application router configuration contribution for NEMS APIs. |  |
+| `gCore/nems/src/router/router.js` | `src` | `documented` | 0/0 | Secured NEMS route contracts for processing and resetting persisted events. |  |
+| `gCore/nems/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Event and event-log schema definitions used to persist, process, retry, and archive NEMS events. |  |
+| `gCore/nems/src/service/event/defaultEventHandlerService.js` | `src` | `documented` | 10/10 | Processes persisted NEMS events by claiming eligible records, dispatching targets, logging successes, and retaining retryable errors. |  |
+| `gCore/nems/src/service/interceptors/defaultEventSplitInterceptorService.js` | `src` | `documented` | 4/4 | Expands saved NEMS events into concrete targets and dispatches synchronous events immediately after persistence. |  |
+| `gCore/nems/src/utils/enums.js` | `src` | `documented` | 0/0 | Event state and event type enum definitions used by NEMS processing and dispatch. |  |
+| `gCore/nems/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility contribution point for NEMS event helper functions. |  |
+| `gCore/nems/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Provides a common NEMS test scaffold showing how shared test suites can be registered with the Nodics test pool. | add JSDoc for 7 exported method(s) |
+| `gCore/nems/test/env/local/envTest.js` | `test` | `partially-documented` | 0/7 | Provides a local-environment NEMS test scaffold for environment-specific event-processing test suites. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

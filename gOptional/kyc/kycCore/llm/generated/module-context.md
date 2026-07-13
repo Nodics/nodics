@@ -63,9 +63,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 11 |
-| Undocumented | 18 |
+| Documented | 27 |
+| Partially documented | 2 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -88,37 +88,37 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gOptional/kyc/kycCore/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gOptional/kyc/kycCore/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gOptional/kyc/kycCore/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycCore/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycCore/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycCore/data/init/data/mobile/mobileNumberKycWorkflowActionData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycCore/data/init/data/mobile/mobileNumberKycWorkflowChannelData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycCore/data/init/data/mobile/mobileNumberKycWorkflowHeadData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycCore/data/init/headers/mobile/mobileNumberKycWorkflowActionHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycCore/data/init/headers/mobile/mobileNumberKycWorkflowChannelHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycCore/data/init/headers/mobile/mobileNumberKycWorkflowHeadHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gOptional/kyc/kycCore/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default kyc configuration used during module startup and layering. |  |
+| `gOptional/kyc/kycCore/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default kyc configuration used during module startup and layering. |  |
+| `gOptional/kyc/kycCore/config/properties.js` | `config` | `documented` | 0/0 | Defines default kyc configuration used during module startup and layering. |  |
+| `gOptional/kyc/kycCore/data/init/data/mobile/mobileNumberKycWorkflowActionData.js` | `data` | `documented` | 0/0 | Provides kyc initializer or sample data consumed by the import layer. |  |
+| `gOptional/kyc/kycCore/data/init/data/mobile/mobileNumberKycWorkflowChannelData.js` | `data` | `documented` | 0/0 | Provides kyc initializer or sample data consumed by the import layer. |  |
+| `gOptional/kyc/kycCore/data/init/data/mobile/mobileNumberKycWorkflowHeadData.js` | `data` | `documented` | 0/0 | Provides kyc initializer or sample data consumed by the import layer. |  |
+| `gOptional/kyc/kycCore/data/init/headers/mobile/mobileNumberKycWorkflowActionHeader.js` | `data` | `documented` | 0/0 | Provides kyc initializer or sample data consumed by the import layer. |  |
+| `gOptional/kyc/kycCore/data/init/headers/mobile/mobileNumberKycWorkflowChannelHeader.js` | `data` | `documented` | 0/0 | Provides kyc initializer or sample data consumed by the import layer. |  |
+| `gOptional/kyc/kycCore/data/init/headers/mobile/mobileNumberKycWorkflowHeadHeader.js` | `data` | `documented` | 0/0 | Provides kyc initializer or sample data consumed by the import layer. |  |
 | `gOptional/kyc/kycCore/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gOptional/kyc/kycCore/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gOptional/kyc/kycCore/nodics.js` | `module` | `documented` | 2/2 | Registers the kyc module lifecycle hooks and module-level startup behavior. |  |
 | `gOptional/kyc/kycCore/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gOptional/kyc/kycCore/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycCore/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycCore/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycCore/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycCore/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycCore/src/service/defaultKycService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gOptional/kyc/kycCore/src/service/email/defaultEmailKycInitPipelineService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gOptional/kyc/kycCore/src/service/email/defaultEmailKycValidatePipelineService.js` | `src` | `partially-documented` | 2/9 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gOptional/kyc/kycCore/src/service/email/defaultEmailKycWorkflowService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gOptional/kyc/kycCore/src/service/mobile/defaultMobileKycInitPipelineService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gOptional/kyc/kycCore/src/service/mobile/defaultMobileKycValidatePipelineService.js` | `src` | `partially-documented` | 2/9 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gOptional/kyc/kycCore/src/service/mobile/defaultMobileNumberKycWorkflowService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gOptional/kyc/kycCore/src/service/notify/defaultKycNotificationInitPipelineService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gOptional/kyc/kycCore/src/service/notify/email/defaultEmailKycNotificationInitPipelineService.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gOptional/kyc/kycCore/src/service/notify/mobile/defaultMobileKycNotificationInitPipelineService.js` | `src` | `partially-documented` | 2/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 1 exported method(s) |
-| `gOptional/kyc/kycCore/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycCore/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycCore/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gOptional/kyc/kycCore/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gOptional/kyc/kycCore/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers kyc interceptor wiring for pipeline extension points. |  |
+| `gOptional/kyc/kycCore/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines kyc pipeline wiring and execution contracts. |  |
+| `gOptional/kyc/kycCore/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines kyc route registration and HTTP exposure metadata. |  |
+| `gOptional/kyc/kycCore/src/router/router.js` | `src` | `documented` | 0/0 | Defines kyc route registration and HTTP exposure metadata. |  |
+| `gOptional/kyc/kycCore/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines kyc schema metadata, model contracts, and generated capability settings. |  |
+| `gOptional/kyc/kycCore/src/service/defaultKycService.js` | `src` | `documented` | 6/6 | Implements kyc default kyc service business behavior and extension logic. |  |
+| `gOptional/kyc/kycCore/src/service/email/defaultEmailKycInitPipelineService.js` | `src` | `documented` | 7/7 | Implements kyc default email kyc init pipeline service business behavior and extension logic. |  |
+| `gOptional/kyc/kycCore/src/service/email/defaultEmailKycValidatePipelineService.js` | `src` | `documented` | 9/9 | Implements kyc default email kyc validate pipeline service business behavior and extension logic. |  |
+| `gOptional/kyc/kycCore/src/service/email/defaultEmailKycWorkflowService.js` | `src` | `documented` | 6/6 | Implements kyc default email kyc workflow service business behavior and extension logic. |  |
+| `gOptional/kyc/kycCore/src/service/mobile/defaultMobileKycInitPipelineService.js` | `src` | `documented` | 7/7 | Implements kyc default mobile kyc init pipeline service business behavior and extension logic. |  |
+| `gOptional/kyc/kycCore/src/service/mobile/defaultMobileKycValidatePipelineService.js` | `src` | `documented` | 9/9 | Implements kyc default mobile kyc validate pipeline service business behavior and extension logic. |  |
+| `gOptional/kyc/kycCore/src/service/mobile/defaultMobileNumberKycWorkflowService.js` | `src` | `documented` | 6/6 | Implements kyc default mobile number kyc workflow service business behavior and extension logic. |  |
+| `gOptional/kyc/kycCore/src/service/notify/defaultKycNotificationInitPipelineService.js` | `src` | `documented` | 7/7 | Implements kyc default kyc notification init pipeline service business behavior and extension logic. |  |
+| `gOptional/kyc/kycCore/src/service/notify/email/defaultEmailKycNotificationInitPipelineService.js` | `src` | `documented` | 3/3 | Implements kyc default email kyc notification init pipeline service business behavior and extension logic. |  |
+| `gOptional/kyc/kycCore/src/service/notify/mobile/defaultMobileKycNotificationInitPipelineService.js` | `src` | `documented` | 3/3 | Implements kyc default mobile kyc notification init pipeline service business behavior and extension logic. |  |
+| `gOptional/kyc/kycCore/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared kyc utility exports for status definitions. |  |
+| `gOptional/kyc/kycCore/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared kyc utility exports for utils. |  |
+| `gOptional/kyc/kycCore/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines kyc test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gOptional/kyc/kycCore/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines kyc test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

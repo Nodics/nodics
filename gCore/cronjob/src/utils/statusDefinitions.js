@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cronjob/utils/statusDefinitions
+ * @description Cronjob success and error status definitions used by lifecycle APIs and scheduler services.
+ * @layer utility
+ * @owner cronjob
+ * @override Project modules may add later status definitions for custom cronjob behavior.
+ */
 module.exports = {
     SUC_JOB_00000: {
         code: '200',

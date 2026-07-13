@@ -10,7 +10,26 @@
  */
 const _ = require('lodash');
 
+/**
+ * @module gCore/profile/src/service/authentication/defaultInternalAuthenticationProviderService
+ * @description Implements profile default internal authentication provider service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+
+    /**
+
+     * Retrieves internal auth token information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getInternalAuthToken: function (request) {
         return new Promise((resolve, reject) => {

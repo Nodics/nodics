@@ -12,6 +12,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gCore/profile/src/service/authentication/defaultAuthenticationService
+ * @description Implements profile default authentication service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     // invalidateEnterpriseAuthToken: function (enterprise, isRemoved) {

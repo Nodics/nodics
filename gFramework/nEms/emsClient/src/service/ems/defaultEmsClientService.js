@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nEms/emsClient/src/service/ems/defaultEmsClientService
+ * @description Implements nEms default ems client service business behavior and extension logic.
+ * @layer service
+ * @owner nEms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -33,6 +40,18 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Processes  behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     publish: function (request) {
         return new Promise((resolve, reject) => {
@@ -84,6 +103,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates consumers information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     registerConsumers: function (request) {
         return new Promise((resolve, reject) => {
             if (UTILS.isBlank(request.consumers)) {
@@ -120,6 +151,12 @@ module.exports = {
             }
         });
     },
+    /**
+     * Executes close consumers behavior.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     closeConsumers: function (request) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -138,6 +175,18 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Updates publishers information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     registerPublishers: function (request) {
         let _self = this;
@@ -176,6 +225,18 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Executes close publishers behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     closePublishers: function (request) {
         let _self = this;

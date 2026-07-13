@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module wcms/data/init/data/components/defaultCmsComponentWorkflowHeadData
+ * @description Seed workflow head action data that starts CMS component approval processing.
+ * @layer data
+ * @owner wcms
+ * @override Project modules may replace component approval flow heads through later initializer data.
+ */
 module.exports = {
 
     record1: {

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nDefault/schemas/schemas
+ * @description Reserved schema contribution for the default framework baseline.
+ * @layer schema
+ * @owner nDefault
+ * @override Later modules provide concrete schemas through layered schema fragments.
+ */
 module.exports = {
 
 };

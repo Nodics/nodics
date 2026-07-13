@@ -15,6 +15,13 @@
 const Chai = require('chai');
 const expect = Chai.expect;
 
+/**
+ * @module gFramework/nData/nExport/jsonExport/test/common/commonTest
+ * @description Defines nData test fixtures or suites for module behavior validation.
+ * @layer test
+ * @owner nData
+ * @override Projects may add focused tests beside this file while preserving the module contract under test.
+ */
 module.exports = {
     /*
         sampleTestSuite: {

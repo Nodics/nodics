@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nService/utils/statusDefinitions
+ * @description Shared tenant/service operation status and error definitions.
+ * @layer data
+ * @owner nService
+ * @override Project modules may contribute additional service status definitions or localized messages through later modules.
+ */
 module.exports = {
 
     SUC_TNT_00000: {

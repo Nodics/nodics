@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/workflow/flowCore/src/service/procs/evaluate/defaultEvaluateChannelsPipelineService
+ * @description Implements workflow default evaluate channels pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -50,6 +57,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Retrieves action response information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     loadActionResponse: function (request, response, process) {
         if (!request.actionResponse) {
             SERVICE.DefaultWorkflowActionResponseService.getActionResponse(request).then(actionResponse => {
@@ -62,6 +77,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Validates operation rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateOperation: function (request, response, process) {
         let workflowCarrier = request.workflowCarrier;
         if (workflowCarrier.activeHead !== request.workflowHead.code) {
@@ -74,6 +97,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Executes evaluate channels behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     evaluateChannels: function (request, response, process) {
         this.LOG.debug('Starting channel evaluation process');
         SERVICE.DefaultWorkflowChannelService.getQalifiedChannels({
@@ -95,6 +126,14 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    /**
+     * Validates channels rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateChannels: function (request, response, process) {
         let qualifiedChannels = response.success.qualifiedChannels;
         let targets = [];

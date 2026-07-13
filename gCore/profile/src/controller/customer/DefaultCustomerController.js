@@ -10,17 +10,50 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gCore/profile/src/controller/customer/DefaultCustomerController
+ * @description Exposes request handlers for profile default customer controller operations.
+ * @layer controller
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+    /**
+     * Initializes  behavior for the module runtime.
+     *
+     * @param {*} options Method input.
+     * @returns {*} Method result.
+     */
     init: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
     },
+    /**
+     * Runs post-initialization behavior after the module runtime is available.
+     *
+     * @param {*} options Method input.
+     * @returns {*} Method result.
+     */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
     },
+
+    /**
+
+     * Validates customer exist rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     isCustomerExist: function (request, callback) {
         request = _.merge(request, request.httpRequest.body || {});
@@ -34,6 +67,20 @@ module.exports = {
             return FACADE.DefaultCustomerFacade.isCustomerExist(request);
         }
     },
+
+    /**
+
+     * Executes sign up behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     signUp: function (request, callback) {
         request.model = request.httpRequest.body;

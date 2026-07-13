@@ -10,6 +10,13 @@
  */
 const _ = require('lodash');
 
+/**
+ * @module gCore/workflow/flowCore/src/service/procs/release/defaultWorkflowCarrierReleasePipelineService
+ * @description Implements workflow default workflow carrier release pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -34,6 +41,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to release workflow carrier');
         if (!request.tenant) {
@@ -44,6 +67,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Executes release carrier behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     releaseCarrier: function (request, response, process) {
         if (request.workflowCarrier.currentState.state === ENUMS.WorkflowCarrierState.INIT.key) {
             let carrierState = {
@@ -60,6 +91,14 @@ module.exports = {
             process.stop(request, response);
         }
     },
+    /**
+     * Updates carrier information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     updateCarrier: function (request, response, process) {
         this.LOG.debug('Creating active workflow item');
         SERVICE.DefaultWorkflowCarrierService.save({
@@ -77,6 +116,14 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+    /**
+     * Processes action behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     executeAction: function (request, response, process) {
         if (!SERVICE.DefaultWorkflowUtilsService.isProcessingAllowed(request.workflowCarrier)) {
             response.success.messages.push('Action: ' + request.workflowAction.code + ' processing not allowed @: ' + new Date());

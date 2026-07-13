@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nNms/src/facade/defaultNodeManagerFacade
+ * @description Coordinates facade-level delegation for nNms default node manager facade operations.
+ * @layer facade
+ * @owner nNms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -33,13 +40,49 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Processes node activated behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     handleNodeActivated: function (request) {
         return SERVICE.DefaultNodeManagerService.handleNodeActivated(request);
     },
 
+    /**
+
+     * Executes request responsibility behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     requestResponsibility: function (request) {
         return SERVICE.DefaultNodeManagerService.requestResponsibility(request);
     },
+
+    /**
+
+     * Executes stop health check behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     stopHealthCheck: function (request) {
         return SERVICE.DefaultNodeManagerService.stopHealthCheck(request);

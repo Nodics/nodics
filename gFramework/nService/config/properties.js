@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nService/config/properties
+ * @description Reserved nService property contribution for shared service runtime defaults.
+ * @layer config
+ * @owner nService
+ * @override Project modules may provide later property contributions for service behavior and diagnostics.
+ */
 module.exports = {
 
 };

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nValidator/src/event/listeners
+ * @description Documents nValidator listeners module behavior.
+ * @layer event
+ * @owner nValidator
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     common: {
         validatorAddedListener: {

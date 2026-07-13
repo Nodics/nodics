@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nToken/src/interceptors/interceptors
+ * @description Registers nToken interceptor wiring for pipeline extension points.
+ * @layer interceptors
+ * @owner nToken
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     tokenPreGet: {
         type: 'schema',

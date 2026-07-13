@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/profile/src/service/customer/defaultCustomerRegistrationService
+ * @description Implements profile default customer registration service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -31,6 +38,22 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating customer registration request');
@@ -55,6 +78,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Validates if customer exist rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateIfCustomerExist: function (request, response, process) {
         this.LOG.debug('Validating if customer exist');
         request.defaultCustomerService.isCustomerExist({
@@ -66,6 +97,14 @@ module.exports = {
             process.nextSuccess(request, response);
         });
     },
+    /**
+     * Validates confirm password rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateConfirmPassword: function (request, response, process) {
         this.LOG.debug('Validating confirmed password');
         let model = request.model;
@@ -76,6 +115,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Updates customer information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     createCustomer: function (request, response, process) {
         request.defaultCustomerService.save(request).then(success => {
             response.success = success;

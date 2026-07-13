@@ -14,6 +14,13 @@ const fs = require('fs');
 var sizeof = require('object-sizeof');
 
 
+/**
+ * @module gFramework/nData/nImport/csvImport/src/service/processor/defaultTenantImportInterceptorService
+ * @description Implements nData default tenant import interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -36,6 +43,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Executes convert active value to boolean behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     convertActiveValueToBoolean: function (request, response) {
         return new Promise((resolve, reject) => {

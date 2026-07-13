@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/quizer/config/prescripts
+ * @description Defines default quizer configuration used during module startup and layering.
+ * @layer config
+ * @owner quizer
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };

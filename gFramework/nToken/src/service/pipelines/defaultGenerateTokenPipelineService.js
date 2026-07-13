@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nToken/src/service/pipelines/defaultGenerateTokenPipelineService
+ * @description Implements nToken default generate token pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner nToken
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,10 +41,34 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating Token generation request');
         process.nextSuccess(request, response);
     },
+    /**
+     * Validates mandate values rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     validateMandateValues: function (request, response, process) {
         this.LOG.debug('Validating Token generation mandate values');
         if (!request.model.key || !request.model.ops) {
@@ -46,12 +77,28 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Builds query data.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     buildQuery: function (request, response, process) {
         this.LOG.debug('Building Token generation query');
         let tokenConfig = CONFIG.get('token').TOKEN;
         request.model.limit = (request.model.limit === undefined) ? tokenConfig.attemptLimit : request.model.limit
         process.nextSuccess(request, response);
     },
+    /**
+     * Validates existing token rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     checkExistingToken: function (request, response, process) {
         this.LOG.debug('Fatching existing Token');
         request.tokenService.get(_.merge(_.merge({}, request), {
@@ -89,6 +136,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes generate new token behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     generateNewToken: function (request, response, process) {
         this.LOG.debug('Generating new Token');
         request.tokenService.save(_.merge({}, request)).then(result => {
@@ -102,6 +165,22 @@ module.exports = {
             process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_TKN_00000'));
         });
     },
+
+    /**
+
+     * Executes fatch new token behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     fatchNewToken: function (request, response, process) {
         this.LOG.debug('Fatching new Token');

@@ -9,7 +9,28 @@
 
  */
 
+/**
+ * @module gCore/profile/src/controller/tenant/defaultTenantController
+ * @description Exposes request handlers for profile default tenant controller operations.
+ * @layer controller
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+
+    /**
+
+     * Retrieves tenants information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getTenants: function (request, callback) {
         if (callback) {

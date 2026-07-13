@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nPublish/config/properties
+ * @description Reserved property contribution for publish/version promotion behavior.
+ * @layer config
+ * @owner nPublish
+ * @override Project modules may provide later properties for customer publishing behavior.
+ */
 module.exports = {
 
 };

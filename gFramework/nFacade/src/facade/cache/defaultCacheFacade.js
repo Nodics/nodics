@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nFacade/src/facade/cache/defaultCacheFacade
+ * @description Coordinates facade-level delegation for nFacade default cache facade operations.
+ * @layer facade
+ * @owner nFacade
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -41,9 +48,33 @@ module.exports = {
         return SERVICE.DefaultCacheService.flushCache(request);
     },
 
+    /**
+
+     * Updates router cache configuration information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     updateRouterCacheConfiguration: function (request) {
         return SERVICE.DefaultCacheService.updateRouterCacheConfiguration(request);
     },
+
+    /**
+
+     * Updates schema cache configuration information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     updateSchemaCacheConfiguration: function (request) {
         return SERVICE.DefaultCacheService.updateSchemaCacheConfiguration(request);

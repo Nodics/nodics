@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nDynamo/src/service/interceptors/defaultClassConfigurationSaveInterceptorService
+ * @description Implements nDynamo default class configuration save interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner nDynamo
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -34,6 +41,13 @@ module.exports = {
             resolve(true);
         });
     },
+    /**
+     * Validates if module active rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @returns {*} Method result.
+     */
     checkIfModuleActive: function (request, response) {
         return new Promise((resolve, reject) => {
             let moduleName = request.model.moduleName;
@@ -44,6 +58,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Removes or clears body information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     removeBody: function (request, response) {
         return new Promise((resolve, reject) => {

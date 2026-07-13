@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/profile/src/utils/statusDefinitions
+ * @description Provides shared profile utility exports for status definitions.
+ * @layer utils
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     SUC_PRFL_00000: {
         code: '200',

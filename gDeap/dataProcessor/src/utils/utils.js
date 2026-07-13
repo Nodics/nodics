@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module dataProcessor/utils/utils
+ * @description Reserved utility contribution for DEAP data processing helpers.
+ * @layer utility
+ * @owner dataProcessor
+ * @override Project DEAP modules may add later processing utilities.
+ */
 module.exports = {
 
 };

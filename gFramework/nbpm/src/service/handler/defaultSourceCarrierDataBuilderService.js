@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nbpm/src/service/handler/defaultSourceCarrierDataBuilderService
+ * @description Implements nbpm default source carrier data builder service business behavior and extension logic.
+ * @layer service
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -34,6 +41,22 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Builds carrier data.
+
+     *
+
+     * @param {*} schemaDef Method input.
+
+     * @param {*} model Method input.
+
+     * @param {*} workflow Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     buildCarrier: function (schemaDef, model, workflow) {
         let sourceBuilder = workflow.sourceBuilder;

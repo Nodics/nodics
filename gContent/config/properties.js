@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gContent/config/properties
+ * @description Defines default gContent configuration used during module startup and layering.
+ * @layer config
+ * @owner gContent
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };

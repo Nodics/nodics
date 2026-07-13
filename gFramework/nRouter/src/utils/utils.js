@@ -10,8 +10,23 @@
  */
 const fs = require('fs');
 
+/**
+ * @module nRouter/utils/utils
+ * @description Router utility helpers for route/model cache eligibility decisions.
+ * @layer utils
+ * @owner nRouter
+ * @override Project modules may provide additional router utilities through later module layers; cache policy should remain configurable.
+ */
 module.exports = {
 
+    /**
+     * Determines whether an API route result is eligible for route-level caching.
+     *
+     * @param {Object|Array} result Controller or handler result.
+     * @param {Object} router Effective router definition.
+     * @param {Object} [router.cache] Route cache configuration.
+     * @returns {boolean} True when the result is non-empty and route cache is enabled.
+     */
     isApiCashable: function (result, router) {
         if (result &&
             result instanceof Array &&
@@ -30,6 +45,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Determines whether a model result is eligible for schema/model-level caching.
+     *
+     * @param {Object|Array} result Model query result.
+     * @param {Object} model Effective schema model metadata.
+     * @param {Object} [model.cache] Model cache configuration.
+     * @returns {boolean} True when the result is non-empty and model cache is enabled.
+     */
     isItemCashable: function (result, model) {
         if (result &&
             result instanceof Array &&

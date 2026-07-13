@@ -12,6 +12,13 @@
 /*
    Change this file name as per test case name. This just a sample file
 */
+/**
+ * @module vService/test/common/commonTest
+ * @description Common sample test scaffold for versioned service module tests.
+ * @layer test
+ * @owner vService
+ * @override Project modules may replace this scaffold with concrete versioned service contract tests.
+ */
 const Chai = require('chai');
 const expect = Chai.expect;
 

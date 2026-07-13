@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module vService/config/properties
+ * @description Reserved property contribution for versioned service behavior.
+ * @layer config
+ * @owner vService
+ * @override Project modules may provide later property contributions for staged, versioned, or publish-aware service behavior.
+ */
 module.exports = {
 
 };

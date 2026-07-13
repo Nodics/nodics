@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nbpm/src/service/workflow/defaultWorkflowService
+ * @description Implements nbpm default workflow service business behavior and extension logic.
+ * @layer service
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     dbs: {},
     interceptors: {},
@@ -37,6 +44,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Runs pre-processing logic for pare url.
+
+     *
+
+     * @param {*} definition Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     prepareURL: function (definition) {
         let connectionType = 'abstract';
         let nodeId = CONFIG.get('nodeId');
@@ -57,6 +76,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Processes to workflow behavior.
+
+     *
+
+     * @param {*} itemDetails Method input.
+
+     * @param {*} tenant Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     publishToWorkflow: function (itemDetails, tenant) {
         return new Promise((resolve, reject) => {

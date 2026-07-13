@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSearch/search/src/service/common
+ * @description Implements nSearch common business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +39,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves search model information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getSearchModel: function (request) {
         let moduleName = request.moduleName || 'mdulnm';
         request.schemaModel = NODICS.getModels(moduleName, request.tenant).mdlnm;
@@ -44,6 +63,18 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes do refresh behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     doRefresh: function (request) {
         try {
             request.searchModel = this.getSearchModel(request);
@@ -52,6 +83,18 @@ module.exports = {
             return Promise.reject(new CLASSES.SearchError(error));
         }
     },
+
+    /**
+
+     * Executes do check health behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     doCheckHealth: function (request) {
         try {
@@ -62,6 +105,18 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes do exists behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     doExists: function (request) {
         try {
             request.searchModel = this.getSearchModel(request);
@@ -70,6 +125,18 @@ module.exports = {
             return Promise.reject(new CLASSES.SearchError(error));
         }
     },
+
+    /**
+
+     * Executes do get behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     doGet: function (request) {
         try {
@@ -80,6 +147,18 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes do search behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     doSearch: function (request) {
         try {
             request.searchModel = this.getSearchModel(request);
@@ -88,6 +167,18 @@ module.exports = {
             return Promise.reject(new CLASSES.SearchError(error));
         }
     },
+
+    /**
+
+     * Executes do save behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     doSave: function (request) {
         try {
@@ -99,6 +190,24 @@ module.exports = {
     },
 
 
+    /**
+
+
+     * Executes do bulk behavior.
+
+
+     *
+
+
+     * @param {*} request Method input.
+
+
+     * @returns {*} Method result.
+
+
+     */
+
+
     doBulk: function (request) {
         try {
             request.searchModel = this.getSearchModel(request);
@@ -107,6 +216,18 @@ module.exports = {
             return Promise.reject(new CLASSES.SearchError(error));
         }
     },
+
+    /**
+
+     * Executes do remove behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     doRemove: function (request) {
         try {
@@ -117,6 +238,18 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes do remove by query behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     doRemoveByQuery: function (request) {
         try {
             request.searchModel = this.getSearchModel(request);
@@ -125,6 +258,18 @@ module.exports = {
             return Promise.reject(new CLASSES.SearchError(error));
         }
     },
+
+    /**
+
+     * Executes do get schema behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     doGetSchema: function (request) {
         try {
@@ -135,6 +280,18 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes do update schema behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     doUpdateSchema: function (request) {
         try {
             request.searchModel = this.getSearchModel(request);
@@ -144,6 +301,18 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes do remove index behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     doRemoveIndex: function (request) {
         try {
             request.searchModel = this.getSearchModel(request);
@@ -152,6 +321,18 @@ module.exports = {
             return Promise.reject(new CLASSES.SearchError(error));
         }
     },
+
+    /**
+
+     * Executes do indexing behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     doIndexing: function (request) {
         try {

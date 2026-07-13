@@ -9,13 +9,34 @@
 
  */
 
+/**
+ * @module gCore/profile/src/service/interceptors/defaultCustomerUpdateInterceptorService
+ * @description Implements profile default customer update interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+    /**
+     * Executes customer pre update behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @returns {*} Method result.
+     */
     customerPreUpdate: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.returnModified = request.options.returnModified || true;
             resolve(true);
         });
     },
+    /**
+     * Executes customer pre remove behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @returns {*} Method result.
+     */
     customerPreRemove: function (request, response) {
         return new Promise((resolve, reject) => {
             request.options.returnModified = request.options.returnModified || true;

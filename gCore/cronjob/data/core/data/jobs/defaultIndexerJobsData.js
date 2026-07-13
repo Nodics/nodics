@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cronjob/data/core/data/jobs/defaultIndexerJobsData
+ * @description Core initializer data for default cronjob records related to indexing.
+ * @layer data
+ * @owner cronjob
+ * @override Project modules may contribute later job data for customer-specific scheduled work.
+ */
 module.exports = {
     record1: {
         code: "jobLogFullIndexerJob",

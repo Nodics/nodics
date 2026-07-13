@@ -13,6 +13,13 @@ const excelProcess = require('excel-as-json2');
 const fs = require('fs');
 const util = require('util');
 
+/**
+ * @module gFramework/nData/nImport/excelImport/src/service/init/defaultExcelFileDataProcessService
+ * @description Implements nData default excel file data process service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -36,6 +43,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to process Excel file');
         if (!request.files || request.files.length <= 0) {
@@ -46,6 +69,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Processes data chunk behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     processDataChunk: function (request, response, process) {
         this.LOG.debug('Starting processing data chunks');
         this.handleFiles(request, response, [].concat(request.files), 0).then(success => {
@@ -54,6 +85,24 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+
+    /**
+
+     * Processes files behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} files Method input.
+
+     * @param {*} index Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleFiles: function (request, response, files, index) {
         let _self = this;

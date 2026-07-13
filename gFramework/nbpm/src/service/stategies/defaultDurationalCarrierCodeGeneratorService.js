@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nbpm/src/service/stategies/defaultDurationalCarrierCodeGeneratorService
+ * @description Implements nbpm default durational carrier code generator service business behavior and extension logic.
+ * @layer service
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -34,6 +41,18 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Executes generate carrier code behavior.
+
+     *
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     generateCarrierCode: function (options) {
         let timeProps = [(new Date()).getFullYear(), (new Date()).getMonth(), (new Date()).getDate(), (new Date()).getHours(), (new Date()).getMinutes(), (new Date()).getSeconds()];

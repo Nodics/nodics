@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gMrkty/cres/data/init/headers/workflows/reviewWorkflowActionHeader
+ * @description Provides cres initializer or sample data consumed by the import layer.
+ * @layer data
+ * @owner cres
+ * @override Projects may override or extend this initializer data through layered import data rather than editing out-of-the-box framework records.
+ */
 module.exports = {
     workflow: {
         reviewWorkflowAction: {

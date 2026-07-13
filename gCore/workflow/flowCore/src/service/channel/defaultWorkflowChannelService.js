@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/workflow/flowCore/src/service/channel/defaultWorkflowChannelService
+ * @description Implements workflow default workflow channel service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -32,6 +39,12 @@ module.exports = {
             resolve(true);
         });
     },
+    /**
+     * Retrieves qalified channels information.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     getQalifiedChannels: function (request) {
         return new Promise((resolve, reject) => {
             let workflowAction = request.workflowAction;
@@ -46,6 +59,14 @@ module.exports = {
             });
         });
     },
+    /**
+     * Executes evaluate channels behavior.
+     *
+     * @param {*} rawChannels Method input.
+     * @param {*} request Method input.
+     * @param {*} qualifiedChannels Method input.
+     * @returns {*} Method result.
+     */
     evaluateChannels: function (rawChannels, request, qualifiedChannels = []) {
         return new Promise((resolve, reject) => {
             if (rawChannels && rawChannels.length > 0) {
@@ -75,6 +96,12 @@ module.exports = {
             }
         });
     },
+    /**
+     * Retrieves channels information.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     getChannels: function (request) {
         return new Promise((resolve, reject) => {
             if (request.channels && request.channels.length > 0) {

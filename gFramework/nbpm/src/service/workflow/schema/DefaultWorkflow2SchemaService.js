@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nbpm/src/service/workflow/schema/DefaultWorkflow2SchemaService
+ * @description Implements nbpm default workflow2 schema service business behavior and extension logic.
+ * @layer service
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,15 +42,53 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Removes or clears  information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     remove: function (request) {
         return Promise.reject(new CLASSES.WorkflowError('ERR_WF_00002', 'Please use save operation with value active: false'));
     },
+    /**
+     * Removes or clears by id information.
+     *
+     * @param {*} ids Method input.
+     * @param {*} tenant Method input.
+     * @returns {*} Method result.
+     */
     removeById: function (ids, tenant) {
         return Promise.reject(new CLASSES.WorkflowError('ERR_WF_00002', 'Please use save operation with value active: false'));
     },
+    /**
+     * Removes or clears by code information.
+     *
+     * @param {*} codes Method input.
+     * @param {*} tenant Method input.
+     * @returns {*} Method result.
+     */
     removeByCode: function (codes, tenant) {
         return Promise.reject(new CLASSES.WorkflowError('ERR_WF_00002', 'Please use save operation with value active: false'));
     },
+
+    /**
+
+     * Executes workflow2 schema update event handler behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     workflow2SchemaUpdateEventHandler: function (request) {
         return new Promise((resolve, reject) => {
@@ -98,6 +143,16 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Builds workflow2 schema associations data.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
 
     buildWorkflow2SchemaAssociations: function () {
         return new Promise((resolve, reject) => {

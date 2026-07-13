@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module dataProcessor/router/appConfig
+ * @description Reserved application router configuration contribution for DEAP data processor APIs.
+ * @layer router
+ * @owner dataProcessor
+ * @override Project DEAP modules may add later app-level route configuration.
+ */
 module.exports = {
 
 };

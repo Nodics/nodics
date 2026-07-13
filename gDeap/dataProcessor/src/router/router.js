@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module dataProcessor/router/router
+ * @description Reserved route definition contribution for DEAP data processor APIs.
+ * @layer router
+ * @owner dataProcessor
+ * @override Project DEAP modules may add later processing routes.
+ */
 module.exports = {
 
 };

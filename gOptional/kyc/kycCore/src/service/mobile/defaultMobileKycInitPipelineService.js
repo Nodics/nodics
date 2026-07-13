@@ -10,6 +10,13 @@
  */
 
 const _ = require('lodash');
+/**
+ * @module gOptional/kyc/kycCore/src/service/mobile/defaultMobileKycInitPipelineService
+ * @description Implements kyc default mobile kyc init pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner kyc
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -33,6 +40,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating mobile KYC init request');
         if (!request.refId) {
@@ -43,6 +66,14 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Builds kyc carrier model data.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     buildKycCarrierModel: function (request, response, process) {
         this.LOG.debug('Creating KYC Carrier model for mobile validation');
         request.carrierInput = {
@@ -68,6 +99,14 @@ module.exports = {
         process.nextSuccess(request, response);
 
     },
+    /**
+     * Initializes mobile kyc behavior for the module runtime.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     initMobileKyc: function (request, response, process) {
         this.LOG.debug('Initializing mobile KYC process');
         if (NODICS.isModuleActive('workflow')) {
@@ -92,6 +131,14 @@ module.exports = {
             // });
         }
     },
+    /**
+     * Builds kyc model data.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     buildKycModel: function (request, response, process) {
         this.LOG.debug('Creating KYC model for mobile validation');
         request.model = {
@@ -109,6 +156,14 @@ module.exports = {
         process.nextSuccess(request, response);
 
     },
+    /**
+     * Updates kyc model information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     updateKycModel: function (request, response, process) {
         this.LOG.debug('Updating KYC model after operation');
         request.kycService.save(request).then(success => {

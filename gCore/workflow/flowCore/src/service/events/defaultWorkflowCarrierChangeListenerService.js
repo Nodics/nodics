@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/workflow/flowCore/src/service/events/defaultWorkflowCarrierChangeListenerService
+ * @description Implements workflow default workflow carrier change listener service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -31,6 +38,27 @@ module.exports = {
             resolve(true);
         });
     },
+
+
+    /**
+
+
+     * Processes item change event behavior.
+
+
+     *
+
+
+     * @param {*} request Method input.
+
+
+     * @param {*} callback Method input.
+
+
+     * @returns {*} Method result.
+
+
+     */
 
 
     handleItemChangeEvent: function (request, callback) {

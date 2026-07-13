@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nData/nImport/import/src/service/defaultDataImportInitializerService
+ * @description Implements nData default data import initializer service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -34,6 +41,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.data.headers) {
@@ -46,6 +69,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Processes data headers behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     processDataHeaders: function (request, response, process) {
         this.LOG.debug('Starting data import process');
@@ -66,6 +105,22 @@ module.exports = {
             process.error(request, response, new CLASSES.DataImportError(error));
         }
     },
+
+    /**
+
+     * Processes headers behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     processHeaders: function (request, response, options) {
         let _self = this;
@@ -117,6 +172,22 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Processes error end behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');

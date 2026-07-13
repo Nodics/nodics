@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nData/dataCore/src/service/proc/finalizer/defaultDataFinalizerService
+ * @description Implements nData default data finalizer service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +39,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         if (!request.inputPath) {
             process.error(request, response, new CLASSES.DataError('ERR_DATA_00003', 'Invalid source path object'));
@@ -40,9 +63,41 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Runs pre-processing logic for pare file type.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     prepareFileType: function (request, response, process) {
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Executes redirect to file type process behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     redirectToFileTypeProcess: function (request, response, process) {
         let fileTypeProcess = CONFIG.get('data').fileTypeProcess;
@@ -58,6 +113,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Processes sucess end behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     handleSucessEnd: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
         if (request.inputPath.importType !== 'system') {
@@ -70,6 +141,22 @@ module.exports = {
         }
         SERVICE.DefaultPipelineService.handleSucessEnd(request, response, process);
     },
+
+    /**
+
+     * Processes error end behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleErrorEnd: function (request, response, process) {
         this.LOG.error('Request has been processed and got errors');

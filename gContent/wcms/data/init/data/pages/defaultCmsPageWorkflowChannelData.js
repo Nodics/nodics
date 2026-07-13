@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module wcms/data/init/data/pages/defaultCmsPageWorkflowChannelData
+ * @description Seed workflow channel data routing successful CMS page approval flow execution.
+ * @layer data
+ * @owner wcms
+ * @override Project modules may contribute additional page workflow channels through later initializer data.
+ */
 module.exports = {
 
     record0: {

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nToken/src/pipelines/pipelinesDefinition
+ * @description Defines nToken pipeline wiring and execution contracts.
+ * @layer pipelines
+ * @owner nToken
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     generateTokenPipeline: {
         startNode: "validateRequest",

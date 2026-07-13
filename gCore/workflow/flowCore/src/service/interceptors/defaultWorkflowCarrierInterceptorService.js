@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/workflow/flowCore/src/service/interceptors/defaultWorkflowCarrierInterceptorService
+ * @description Implements workflow default workflow carrier interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -31,6 +38,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Retrieves workflow carrier states information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     loadWorkflowCarrierStates: function (request, response) {
         return new Promise((resolve, reject) => {

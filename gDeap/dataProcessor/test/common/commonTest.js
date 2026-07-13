@@ -12,6 +12,13 @@
 /*
    Change this file name as per test case name. This just a sample file
 */
+/**
+ * @module dataProcessor/test/common/commonTest
+ * @description Common sample test scaffold for DEAP data processor contracts.
+ * @layer test
+ * @owner dataProcessor
+ * @override Project DEAP modules may replace this scaffold with concrete processing tests.
+ */
 const Chai = require('chai');
 const expect = Chai.expect;
 

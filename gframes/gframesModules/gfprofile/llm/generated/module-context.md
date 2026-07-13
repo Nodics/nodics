@@ -61,9 +61,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 1 |
-| Undocumented | 13 |
+| Documented | 12 |
+| Partially documented | 2 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -86,22 +86,22 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gframes/gframesModules/gfprofile/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gframes/gframesModules/gfprofile/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gframes/gframesModules/gfprofile/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfprofile/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfprofile/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfprofile/data/init/data/user/defaultGrayFranesCustomerData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfprofile/data/init/headers/user/defaultGrayFramesUsersHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gframes/gframesModules/gfprofile/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default gframesModules configuration used during module startup and layering. |  |
+| `gframes/gframesModules/gfprofile/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default gframesModules configuration used during module startup and layering. |  |
+| `gframes/gframesModules/gfprofile/config/properties.js` | `config` | `documented` | 0/0 | Defines default gframesModules configuration used during module startup and layering. |  |
+| `gframes/gframesModules/gfprofile/data/init/data/user/defaultGrayFranesCustomerData.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
+| `gframes/gframesModules/gfprofile/data/init/headers/user/defaultGrayFramesUsersHeader.js` | `data` | `documented` | 0/0 | Provides gframesModules initializer or sample data consumed by the import layer. |  |
 | `gframes/gframesModules/gfprofile/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gframes/gframesModules/gfprofile/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gframes/gframesModules/gfprofile/nodics.js` | `module` | `documented` | 2/2 | Registers the gframesModules module lifecycle hooks and module-level startup behavior. |  |
 | `gframes/gframesModules/gfprofile/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gframes/gframesModules/gfprofile/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfprofile/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfprofile/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfprofile/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfprofile/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfprofile/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gframes/gframesModules/gfprofile/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gframes/gframesModules/gfprofile/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gframes/gframesModules/gfprofile/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers gframesModules interceptor wiring for pipeline extension points. |  |
+| `gframes/gframesModules/gfprofile/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines gframesModules pipeline wiring and execution contracts. |  |
+| `gframes/gframesModules/gfprofile/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines gframesModules route registration and HTTP exposure metadata. |  |
+| `gframes/gframesModules/gfprofile/src/router/router.js` | `src` | `documented` | 0/0 | Defines gframesModules route registration and HTTP exposure metadata. |  |
+| `gframes/gframesModules/gfprofile/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines gframesModules schema metadata, model contracts, and generated capability settings. |  |
+| `gframes/gframesModules/gfprofile/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared gframesModules utility exports for utils. |  |
+| `gframes/gframesModules/gfprofile/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines gframesModules test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gframes/gframesModules/gfprofile/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines gframesModules test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

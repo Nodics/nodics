@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module dataPublisher/config/prescripts
+ * @description Reserved pre-start script contribution for DEAP data publishing.
+ * @layer config
+ * @owner dataPublisher
+ * @override Project DEAP modules may add later pre-scripts for customer-specific publishing setup.
+ */
 module.exports = {
 
 };

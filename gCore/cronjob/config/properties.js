@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cronjob/config/properties
+ * @description Cronjob runtime properties for node responsibility handlers, startup activation, retry timing, and default error codes.
+ * @layer config
+ * @owner cronjob
+ * @override Project, environment, server, or node layers may override cronjob scheduling behavior without changing framework defaults.
+ */
 module.exports = {
 
     nodePingableModules: {

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gOptional/kyc/kycCore/config/postscripts
+ * @description Defines default kyc configuration used during module startup and layering.
+ * @layer config
+ * @owner kyc
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };

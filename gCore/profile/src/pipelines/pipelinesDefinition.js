@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/profile/src/pipelines/pipelinesDefinition
+ * @description Defines profile pipeline wiring and execution contracts.
+ * @layer pipelines
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     customerRegistrationHandlerPipeline: {
         startNode: "validateRequest",

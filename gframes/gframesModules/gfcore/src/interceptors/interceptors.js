@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gframes/gframesModules/gfcore/src/interceptors/interceptors
+ * @description Registers gframesModules interceptor wiring for pipeline extension points.
+ * @layer interceptors
+ * @owner gframesModules
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

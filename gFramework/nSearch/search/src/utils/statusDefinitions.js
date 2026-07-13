@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSearch/search/src/utils/statusDefinitions
+ * @description Provides shared nSearch utility exports for status definitions.
+ * @layer utils
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     SUC_SRCH_00000: {

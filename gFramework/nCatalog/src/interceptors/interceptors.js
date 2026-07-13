@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nCatalog/src/interceptors/interceptors
+ * @description Registers nCatalog interceptor wiring for pipeline extension points.
+ * @layer interceptors
+ * @owner nCatalog
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     // loadCatalogSubCatalogs: {
     //     type: 'schema',

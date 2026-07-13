@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nDynamo/src/service/interceptors/defaultRouterConfigurationSaveInterceptorService
+ * @description Implements nDynamo default router configuration save interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner nDynamo
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -32,6 +39,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Validates if module active for router rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     checkIfModuleActiveForRouter: function (request, response) {
         return new Promise((resolve, reject) => {

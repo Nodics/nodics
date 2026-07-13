@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module dataPublisher/router/appConfig
+ * @description Reserved application router configuration contribution for DEAP data publisher APIs.
+ * @layer router
+ * @owner dataPublisher
+ * @override Project DEAP modules may add later app-level route configuration.
+ */
 module.exports = {
 
 };

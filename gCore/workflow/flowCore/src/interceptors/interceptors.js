@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/workflow/flowCore/src/interceptors/interceptors
+ * @description Registers workflow interceptor wiring for pipeline extension points.
+ * @layer interceptors
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     preSaveWorkflowAction: {
         type: 'schema',

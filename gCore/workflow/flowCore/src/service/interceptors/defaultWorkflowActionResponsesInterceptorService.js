@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/workflow/flowCore/src/service/interceptors/defaultWorkflowActionResponsesInterceptorService
+ * @description Implements workflow default workflow action responses interceptor service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -31,6 +38,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Retrieves action response for workflow carrier information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     loadActionResponseForWorkflowCarrier: function (request, response) {
         let _self = this;
@@ -67,6 +88,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves action response ids information.
+
+     *
+
+     * @param {*} itemModels Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     getActionResponseIds: function (itemModels) {
         let actionResponseIds = [];
         if (itemModels && itemModels.length > 0) {
@@ -80,6 +113,20 @@ module.exports = {
         }
         return actionResponseIds;
     },
+
+    /**
+
+     * Executes assign response data behavior.
+
+     *
+
+     * @param {*} itemModels Method input.
+
+     * @param {*} responseItems Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     assignResponseData: function (itemModels, responseItems) {
         let _self = this;
@@ -98,6 +145,20 @@ module.exports = {
             });
         }
     },
+
+    /**
+
+     * Retrieves action response information.
+
+     *
+
+     * @param {*} responseId Method input.
+
+     * @param {*} responseItems Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getActionResponse: function (responseId, responseItems) {
         for (let count = 0; count < responseItems.length; count++) {

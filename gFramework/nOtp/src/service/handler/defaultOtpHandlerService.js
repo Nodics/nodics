@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nOtp/src/service/handler/defaultOtpHandlerService
+ * @description Implements nOtp default otp handler service business behavior and extension logic.
+ * @layer service
+ * @owner nOtp
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +39,18 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes generate token behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     generateToken: function (request) {
         let _self = this;
         try {
@@ -43,6 +62,12 @@ module.exports = {
             throw new CLASSES.NodicsError(error, 'While generating OTP', 'ERR_OTP_00000');
         }
     },
+    /**
+     * Executes generate expiry behavior.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     generateExpiry: function (request) {
         let _self = this;
         try {

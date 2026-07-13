@@ -1,3 +1,10 @@
+/**
+ * @module gFramework/nData/nImport/import/test/systemImportDiagnosticsValidationOnly.test
+ * @description Validates system import diagnostics behavior when data import runs in validation-only mode.
+ * @layer test
+ * @owner nData
+ * @override Projects may add focused diagnostics fixtures beside this test while preserving validation-only import behavior.
+ */
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
@@ -5,6 +12,11 @@ const path = require('path');
 
 global.UTILS = {
     isArray: Array.isArray,
+    /**
+     * Generates unique code data.
+     *
+     * @returns {*} Method result.
+     */
     generateUniqueCode: function () {
         return 'test_run';
     }
@@ -19,6 +31,12 @@ global.CLASSES = {
     }
 };
 global.CONFIG = {
+    /**
+     * Retrieves  information.
+     *
+     * @param {*} key Method input.
+     * @returns {*} Method result.
+     */
     get: function (key) {
         if (key === 'data') {
             return {
@@ -32,9 +50,20 @@ global.CONFIG = {
     }
 };
 global.NODICS = {
+    /**
+     * Retrieves server path information.
+     *
+     * @returns {*} Method result.
+     */
     getServerPath: function () {
         return os.tmpdir();
     },
+    /**
+     * Retrieves module information.
+     *
+     * @param {*} moduleName Method input.
+     * @returns {*} Method result.
+     */
     getModule: function (moduleName) {
         if (moduleName === 'sampleModule') {
             return {
@@ -45,6 +74,12 @@ global.NODICS = {
         }
         return undefined;
     },
+    /**
+     * Executes is module active behavior.
+     *
+     * @param {*} moduleName Method input.
+     * @returns {*} Method result.
+     */
     isModuleActive: function (moduleName) {
         return moduleName === 'sampleModule';
     }
@@ -56,6 +91,11 @@ const diagnostics = require('../src/service/diagnostics/defaultImportDiagnostics
 function createService() {
     return Object.assign({}, initializer, {
         LOG: {
+            /**
+             * Records debug output for the test fixture.
+             *
+             * @returns {*} Method result.
+             */
             debug: function () {}
         }
     });
@@ -64,17 +104,38 @@ function createService() {
 function invoke(service, methodName, request) {
     return new Promise((resolve, reject) => {
         service[methodName](request, {}, {
+            /**
+             * Processes success behavior.
+             *
+             * @returns {*} Method result.
+             */
             nextSuccess: function () {
                 resolve({
                     type: 'next'
                 });
             },
+            /**
+             * Processes  behavior.
+             *
+             * @param {*} _request Method input.
+             * @param {*} _response Method input.
+             * @param {*} success Method input.
+             * @returns {*} Method result.
+             */
             stop: function (_request, _response, success) {
                 resolve({
                     type: 'stop',
                     success: success
                 });
             },
+            /**
+             * Records error output for the test fixture.
+             *
+             * @param {*} _request Method input.
+             * @param {*} _response Method input.
+             * @param {*} error Method input.
+             * @returns {*} Method result.
+             */
             error: function (_request, _response, error) {
                 reject(error);
             }
@@ -114,11 +175,21 @@ function invoke(service, methodName, request) {
 
     global.SERVICE = {
         DefaultImportUtilityService: {
+            /**
+             * Retrieves system data headers information.
+             *
+             * @returns {*} Method result.
+             */
             getSystemDataHeaders: function () {
                 return Promise.resolve({
                     sampleHeader: [headerFile]
                 });
             },
+            /**
+             * Retrieves system data files information.
+             *
+             * @returns {*} Method result.
+             */
             getSystemDataFiles: function () {
                 return Promise.resolve({
                     sampleData_js: [dataFile]
@@ -127,6 +198,11 @@ function invoke(service, methodName, request) {
         },
         DefaultImportDiagnosticsService: diagnostics,
         DefaultSampleSchemaService: {
+            /**
+             * Updates all information.
+             *
+             * @returns {*} Method result.
+             */
             saveAll: function () {}
         }
     };

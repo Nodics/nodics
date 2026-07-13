@@ -9,8 +9,22 @@
 
  */
 
+/**
+ * @module cronjob/service/event/DefaultEventHandlerJobService
+ * @description Cronjob job implementation that triggers NEMS event processing and records job outcome.
+ * @layer service
+ * @owner cronjob
+ * @override Project modules may override this service to customize event-processing job behavior.
+ */
 module.exports = {
 
+    /**
+     * Runs the event handler job and logs success or failure.
+     *
+     * @param {Object} definition Cronjob definition.
+     * @param {Object} cronJob Runtime cron job instance.
+     * @returns {void}
+     */
     runJob: function (definition, cronJob) {
         let _self = this;
         this.triggerEventHandlerJob(definition, cronJob).then(response => {
@@ -20,6 +34,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Prepares an internal request URL for NEMS event processing.
+     *
+     * @param {Object} definition Cronjob definition containing tenant and optional target node.
+     * @returns {Object} Module request descriptor.
+     */
     prepareURL: function (definition) {
         let connectionType = 'abstract';
         let nodeId = CONFIG.get('nodeId');
@@ -41,6 +61,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Triggers event processing and updates job state/logs based on the result.
+     *
+     * @param {Object} definition Cronjob definition.
+     * @param {Object} cronJob Runtime cron job instance.
+     * @returns {Promise<Object>} Success response after outcome is recorded.
+     */
     triggerEventHandlerJob: function (definition, cronJob) {
         let _self = this;
         return new Promise((resolve, reject) => {
@@ -79,6 +106,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Saves job execution log when the job definition enables result logging.
+     *
+     * @param {Object} definition Cronjob definition.
+     * @param {*} log Execution result or error payload.
+     * @returns {void}
+     */
     updateJobLog: function (definition, log) {
         let _self = this;
         if (definition.logResult) {
@@ -96,6 +130,12 @@ module.exports = {
         }
     },
 
+    /**
+     * Saves the latest result and state for the job definition.
+     *
+     * @param {Object} definition Cronjob definition with updated state fields.
+     * @returns {void}
+     */
     updateJob: function (definition) {
         let _self = this;
         SERVICE.DefaultCronJobService.save({

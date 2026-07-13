@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/profile/data/init/data/enterprise/defaultEnterpriseData
+ * @description Provides profile initializer or sample data consumed by the import layer.
+ * @layer data
+ * @owner profile
+ * @override Projects may override or extend this initializer data through layered import data rather than editing out-of-the-box framework records.
+ */
 module.exports = {
     record0: {
         code: 'default',

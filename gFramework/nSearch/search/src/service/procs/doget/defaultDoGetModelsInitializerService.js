@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSearch/search/src/service/procs/doget/defaultDoGetModelsInitializerService
+ * @description Implements nSearch default do get models initializer service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +39,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating do get request');
         if (!request.searchModel) {
@@ -43,10 +66,42 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Builds options data.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     buildOptions: function (request, response, process) {
         this.LOG.debug('Building query options');
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Executes lookup cache behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     lookupCache: function (request, response, process) {
         let searchModel = request.searchModel;
@@ -82,6 +137,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes apply pre interceptors behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre do get model interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
@@ -96,6 +167,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Executes apply pre validators behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     applyPreValidators: function (request, response, process) {
         this.LOG.debug('Applying pre do get validators');
@@ -112,6 +199,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Processes query behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing get query');
         request.searchModel.doGet(request).then(result => {
@@ -126,6 +229,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes populate virtual properties behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     populateVirtualProperties: function (request, response, process) {
         this.LOG.debug('Populating virtual properties');
         let virtualProperties = SERVICE.DefaultSearchConfigurationService.getTenantRawSearchSchema(request.moduleName, request.tenant, request.indexName).virtualProperties;
@@ -136,6 +255,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Executes apply post validators behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     applyPostValidators: function (request, response, process) {
         this.LOG.debug('Applying pre do get validators');
@@ -152,6 +287,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes apply post interceptors behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post do get interceptors');
         let indexName = request.indexName || request.searchModel.indexName;
@@ -166,6 +317,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Updates cache information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     updateCache: function (request, response, process) {
         this.LOG.debug('Updating cache for new Items');

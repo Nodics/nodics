@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module vService/config/prescripts
+ * @description Reserved pre-start script contribution for versioned service initialization work.
+ * @layer config
+ * @owner vService
+ * @override Project modules may add later pre-scripts for versioned-service startup preparation.
+ */
 module.exports = {
 
 };

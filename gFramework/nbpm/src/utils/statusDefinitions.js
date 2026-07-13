@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nbpm/src/utils/statusDefinitions
+ * @description Provides shared nbpm utility exports for status definitions.
+ * @layer utils
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     SUC_WF_00000: {
         code: '200',

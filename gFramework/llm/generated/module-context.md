@@ -48,9 +48,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 1 |
+| Documented | 4 |
 | Partially documented | 0 |
-| Undocumented | 3 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -71,9 +71,9 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default gFramework configuration used during module startup and layering. |  |
+| `gFramework/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default gFramework configuration used during module startup and layering. |  |
+| `gFramework/config/properties.js` | `config` | `documented` | 0/0 | Defines default gFramework configuration used during module startup and layering. |  |
 | `gFramework/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nodics.js` | `module` | `documented` | 13/13 | Coordinates Nodics runtime initialization, layered mandatory bootstrap hooks, server startup, generators, clean, and build lifecycles for the active module hierarchy. |  |
 | `gFramework/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

@@ -56,9 +56,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 19 |
-| Partially documented | 1 |
-| Undocumented | 7 |
+| Documented | 25 |
+| Partially documented | 0 |
+| Undocumented | 2 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -79,11 +79,11 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nService/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nService/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nService/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nService/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nService/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/config/postscripts.js` | `config` | `documented` | 0/0 | Reserved post-start script contribution for service-layer initialization after core services are available. |  |
+| `gFramework/nService/config/prescripts.js` | `config` | `documented` | 0/0 | Reserved pre-start script contribution for service-layer initialization work. |  |
+| `gFramework/nService/config/properties.js` | `config` | `documented` | 0/0 | Reserved nService property contribution for shared service runtime defaults. |  |
 | `gFramework/nService/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nService/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/nodics.js` | `module` | `documented` | 2/2 | nService module lifecycle entrypoint used by the Nodics module loader. |  |
 | `gFramework/nService/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nService/src/lib/moduleConfiguration.js` | `src` | `documented` | 0/0 | Runtime topology descriptor for one module in a distributed Nodics deployment. It stores module-level request options, server endpoint, abstract server endpoint, node endpoints, and server-running state. |  |
 | `gFramework/nService/src/lib/modulesConfigurationContainer.js` | `src` | `documented` | 0/0 | Runtime container for module topology configuration loaded from layered `server` properties. It builds `ModuleConfiguration` objects used for internal module communication and distributed node routing. |  |
@@ -103,8 +103,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nService/src/service/profile/defaultEnterpriseProviderService.js` | `src` | `documented` | 4/4 | Resolves enterprise records for incoming requests. When profile is local it reads generated enterprise services directly; when profile is remote it calls the profile module API using the default internal auth token. |  |
 | `gFramework/nService/src/service/status/defaultStatusService.js` | `src` | `documented` | 5/5 | Loads and serves Nodics status/error definitions from active module hierarchy. It validates each status definition and provides runtime lookup for consistent error and success response messages. |  |
 | `gFramework/nService/src/service/tenant/defaultTenantHandlerService.js` | `src` | `documented` | 3/3 | Deactivates tenants from the runtime node by removing tenant registry entries, stopping tenant cron jobs, dropping tenant database handles, removing generated models, and cleaning search runtime state. |  |
-| `gFramework/nService/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nService/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Shared tenant/service operation status and error definitions. |  |
+| `gFramework/nService/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for shared service-layer helper functions. |  |
 | `gFramework/nService/test/authTokenInvalidationService.test.js` | `test` | `documented` | 0/0 | Verifies auth cache invalidation callbacks produce sanitized observability without logging token material or cache keys. |  |
 | `gFramework/nService/test/moduleRequestHeaderNormalization.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nService/test/statusDefinitionCatalog.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

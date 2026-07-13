@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nPublish/router/appConfig
+ * @description Reserved application router configuration contribution for publish APIs.
+ * @layer router
+ * @owner nPublish
+ * @override Project modules may add later app-level route configuration for publishing.
+ */
 module.exports = {
 
 };

@@ -11,6 +11,13 @@
 
 const requireFromString = require('require-from-string');
 
+/**
+ * @module gFramework/nDynamo/src/controller/class/defaultClassConfigurationController
+ * @description Exposes request handlers for nDynamo default class configuration controller operations.
+ * @layer controller
+ * @owner nDynamo
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -36,6 +43,27 @@ module.exports = {
     },
 
 
+    /**
+
+
+     * Retrieves class information.
+
+
+     *
+
+
+     * @param {*} request Method input.
+
+
+     * @param {*} callback Method input.
+
+
+     * @returns {*} Method result.
+
+
+     */
+
+
     getClass: function (request, callback) {
         request.className = request.httpRequest.params.className;
         if (callback) {
@@ -48,6 +76,20 @@ module.exports = {
             return FACADE.DefaultClassConfigurationFacade.getClass(request);
         }
     },
+
+    /**
+
+     * Retrieves snapshot information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getSnapshot: function (request, callback) {
         request.className = request.httpRequest.params.className;
@@ -63,6 +105,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Updates class information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     updateClass: function (request, callback) {
         request.className = request.httpRequest.params.className;
         request.type = request.httpRequest.params.type;
@@ -77,6 +133,27 @@ module.exports = {
             return FACADE.DefaultClassConfigurationFacade.updateClass(request);
         }
     },
+
+
+    /**
+
+
+     * Processes class behavior.
+
+
+     *
+
+
+     * @param {*} request Method input.
+
+
+     * @param {*} callback Method input.
+
+
+     * @returns {*} Method result.
+
+
+     */
 
 
     executeClass: function (request, callback) {

@@ -9,7 +9,20 @@
 
  */
 
+/**
+ * @module gCore/profile/src/service/customer/defaultCustomerService
+ * @description Implements profile default customer service business behavior and extension logic.
+ * @layer service
+ * @owner profile
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+    /**
+     * Retrieves by login id information.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     findByLoginId: function (request) {
         return new Promise((resolve, reject) => {
             this.get({
@@ -32,6 +45,12 @@ module.exports = {
             });
         });
     },
+    /**
+     * Validates customer exist rules.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     isCustomerExist: function (request) {
         return new Promise((resolve, reject) => {
             this.get({
@@ -58,6 +77,12 @@ module.exports = {
             });
         });
     },
+    /**
+     * Executes sign up behavior.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
     signUp: function (request) {
         let _self = this;
         request.defaultCustomerService = _self;

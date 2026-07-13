@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nData/nImport/jsonImport/config/properties
+ * @description Defines default nData configuration used during module startup and layering.
+ * @layer config
+ * @owner nData
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
     data: {
         fileTypeProcess: {

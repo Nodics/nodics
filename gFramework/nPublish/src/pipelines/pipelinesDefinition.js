@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nPublish/pipelines/pipelinesDefinition
+ * @description Reserved pipeline definition contribution for publishing and version promotion flows.
+ * @layer pipeline
+ * @owner nPublish
+ * @override Project modules may add later pipelines for custom publish workflows.
+ */
 module.exports = {
 
 };

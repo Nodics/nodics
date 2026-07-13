@@ -11,8 +11,22 @@
 
 const _ = require('lodash');
 
+/**
+ * @module cronjob/controller/DefaultCronJobController
+ * @description Adapts secured cronjob API requests into facade calls for job lifecycle operations.
+ * @layer controller
+ * @owner cronjob
+ * @override Project modules may override this controller to add request policy or custom job lifecycle endpoints.
+ */
 module.exports = {
 
+    /**
+     * Creates one or more active jobs in the in-memory scheduler pool.
+     *
+     * @param {Object} request Nodics request context with HTTP params/body and tenant.
+     * @param {Function} [callback] Optional Node-style callback.
+     * @returns {Promise<Object>|void} Promise when no callback is supplied.
+     */
     createJob: function (request, callback) {
         request = _.merge(request || {}, request.httpRequest.body);
         request.options = request.options || {};
@@ -45,6 +59,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Refreshes one or more jobs in the scheduler pool from persisted job definitions.
+     *
+     * @param {Object} request Nodics request context with HTTP params/body and tenant.
+     * @param {Function} [callback] Optional Node-style callback.
+     * @returns {Promise<Object>|void} Promise when no callback is supplied.
+     */
     updateJob: function (request, callback) {
         request = _.merge(request || {}, request.httpRequest.body);
         request.options = request.options || {};
@@ -78,6 +99,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Runs a job once immediately without relying on its normal schedule.
+     *
+     * @param {Object} request Nodics request context containing `jobCode` route params.
+     * @param {Function} [callback] Optional Node-style callback.
+     * @returns {Promise<Object>|void} Promise when no callback is supplied.
+     */
     runJob: function (request, callback) {
         if (request.httpRequest.params.jobCode) {
             request.query = {
@@ -105,6 +133,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Starts one or more jobs already present in the scheduler pool.
+     *
+     * @param {Object} request Nodics request context containing a `jobCode` param or body array.
+     * @param {Function} [callback] Optional Node-style callback.
+     * @returns {Promise<Object>|void} Promise when no callback is supplied.
+     */
     startJob: function (request, callback) {
         request.jobCodes = [];
         if (request.httpRequest.params.jobCode) {
@@ -133,6 +168,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Stops one or more active jobs in the scheduler pool.
+     *
+     * @param {Object} request Nodics request context containing a `jobCode` param or body array.
+     * @param {Function} [callback] Optional Node-style callback.
+     * @returns {Promise<Object>|void} Promise when no callback is supplied.
+     */
     stopJob: function (request, callback) {
         request.jobCodes = [];
         if (request.httpRequest.params.jobCode) {
@@ -161,6 +203,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Stops and removes one or more jobs from the scheduler pool.
+     *
+     * @param {Object} request Nodics request context containing a `jobCode` param or body array.
+     * @param {Function} [callback] Optional Node-style callback.
+     * @returns {Promise<Object>|void} Promise when no callback is supplied.
+     */
     removeJob: function (request, callback) {
         request.jobCodes = [];
         if (request.httpRequest.params.jobCode) {
@@ -189,6 +238,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Pauses one or more active jobs without removing them from the scheduler pool.
+     *
+     * @param {Object} request Nodics request context containing a `jobCode` param or body array.
+     * @param {Function} [callback] Optional Node-style callback.
+     * @returns {Promise<Object>|void} Promise when no callback is supplied.
+     */
     pauseJob: function (request, callback) {
         request.jobCodes = [];
         if (request.httpRequest.params.jobCode) {
@@ -217,6 +273,13 @@ module.exports = {
         }
     },
 
+    /**
+     * Resumes one or more paused jobs in the scheduler pool.
+     *
+     * @param {Object} request Nodics request context containing a `jobCode` param or body array.
+     * @param {Function} [callback] Optional Node-style callback.
+     * @returns {Promise<Object>|void} Promise when no callback is supplied.
+     */
     resumeJob: function (request, callback) {
         request.jobCodes = [];
         if (request.httpRequest.params.jobCode) {

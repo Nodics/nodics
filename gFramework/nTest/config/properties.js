@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nTest/config/properties
+ * @description Default test execution settings for unit tests, Nodics tests, and layered test discovery.
+ * @layer config
+ * @owner nTest
+ * @override Project, environment, server, or node layers may override test activation and discovery paths.
+ */
 module.exports = {
     test: {
         enabled: false,

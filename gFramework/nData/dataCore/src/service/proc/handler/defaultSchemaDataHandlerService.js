@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nData/dataCore/src/service/proc/handler/defaultSchemaDataHandlerService
+ * @description Implements nData default schema data handler service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,6 +39,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to process schema data handler');
         if (!request.models) {
@@ -40,6 +63,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Executes apply processors behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     applyProcessors: function (request, response, process) {
         this.LOG.debug('Applying schema processors in models');
@@ -59,6 +98,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes apply interceptors behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     applyInterceptors: function (request, response, process) {
         this.LOG.debug('Applying interceptors in models');
         let schemaName = request.header.options.schemaName;
@@ -74,6 +129,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes apply validators behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     applyValidators: function (request, response, process) {
         this.LOG.debug('Applying validators in models');
         let schemaName = request.header.options.schemaName;
@@ -88,6 +159,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Processes schema pipeline behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     executeSchemaPipeline: function (request, response, process) {
         this.LOG.debug('Checking target process to handle request');
@@ -105,6 +192,22 @@ module.exports = {
             process.error(request, response, new CLASSES.DataImportError(error, 'Failed executing data filter pileline', 'ERR_DATA_00000'));
         });
     },
+
+    /**
+
+     * Processes data behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     processData: function (request, response, process) {
         let _self = this;
@@ -140,6 +243,20 @@ module.exports = {
             process.error(request, response, new CLASSES.DataImportError(error, 'No data to finalize or process', 'ERR_IMP_00007'));
         }
     },
+
+    /**
+
+     * Processes models behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     processModels: function (request, options) {
         let _self = this;

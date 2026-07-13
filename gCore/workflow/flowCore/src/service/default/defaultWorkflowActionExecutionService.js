@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gCore/workflow/flowCore/src/service/default/defaultWorkflowActionExecutionService
+ * @description Implements workflow default workflow action execution service business behavior and extension logic.
+ * @layer service
+ * @owner workflow
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -32,6 +39,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Executes perform head operation behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     performHeadOperation: function (request, response) {
         return new Promise((resolve, reject) => {

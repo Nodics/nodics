@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nEvent/src/facade/defaultEventFacade
+ * @description Coordinates facade-level delegation for nEvent default event facade operations.
+ * @layer facade
+ * @owner nEvent
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,9 +39,33 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Processes event behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     handleEvent: function (request) {
         return SERVICE.DefaultEventService.handleEvent(request);
     },
+
+    /**
+
+     * Processes  behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     publish: function (request) {
         return SERVICE.DefaultEventService.publish(request);

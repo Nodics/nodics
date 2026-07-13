@@ -11,6 +11,13 @@
 
 const fse = require('fs-extra');
 
+/**
+ * @module gFramework/nData/dataCore/src/service/writer/defaultDataWriterService
+ * @description Implements nData default data writer service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -33,6 +40,24 @@ module.exports = {
             resolve(true);
         });
     },
+
+
+    /**
+
+
+     * Executes write to file behavior.
+
+
+     *
+
+
+     * @param {*} options Method input.
+
+
+     * @returns {*} Method result.
+
+
+     */
 
 
     writeToFile: function (options) {

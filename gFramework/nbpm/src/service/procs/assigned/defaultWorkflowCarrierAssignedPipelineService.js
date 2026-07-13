@@ -9,6 +9,13 @@
 
  */
 const _ = require('lodash');
+/**
+ * @module gFramework/nbpm/src/service/procs/assigned/defaultWorkflowCarrierAssignedPipelineService
+ * @description Implements nbpm default workflow carrier assigned pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -32,10 +39,34 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating input for workflow item assigned process');
         process.nextSuccess(request, response);
     },
+    /**
+     * Runs pre-processing logic for pare models.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     prepareModels: function (request, response, process) {
         this.LOG.debug('Preparing model to update schema item');
         let carrierData = request.data.carrier;
@@ -67,6 +98,14 @@ module.exports = {
             process.error(request, response, new CLASSES.WorkflowError('Invalid item sourceDetail, could not find operation type'));
         }
     },
+    /**
+     * Updates schema items information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     updateSchemaItems: function (request, response, process) {
         this.LOG.debug('Updating schema item for assigned item');
         try {
@@ -83,6 +122,14 @@ module.exports = {
             process.error(request, response, new CLASSES.WorkflowError(error, 'while updating schema item'));
         }
     },
+    /**
+     * Updates search items information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     updateSearchItems: function (request, response, process) {
         this.LOG.debug('Updating search item for assigned item');
         process.error(request, response, new CLASSES.WorkflowError('Not yet implemented this functionality updateSearchItem: DefaultWorkflowCarrierAssignedPipelineService'));

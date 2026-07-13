@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nCache/hazelcastCache/config/prescripts
+ * @description Defines default nCache configuration used during module startup and layering.
+ * @layer config
+ * @owner nCache
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };

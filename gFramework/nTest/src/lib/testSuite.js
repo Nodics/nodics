@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nTest/lib/testSuite
+ * @description Lightweight in-memory holder for a Nodics test suite, its index, and child suites.
+ * @layer lib
+ * @owner nTest
+ * @override Project modules may replace this class when test suite state requires additional metadata.
+ */
 module.exports = function() {
     let _childSuites = {};
     let _testSuite = {};

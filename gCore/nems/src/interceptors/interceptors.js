@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nems/interceptors/interceptors
+ * @description Schema interceptor registrations that split saved events into concrete targets and process synchronous events immediately.
+ * @layer interceptor
+ * @owner nems
+ * @override Project modules may add later event interceptors through layered interceptor fragments.
+ */
 module.exports = {
     eventSplitPreSave: {
         type: 'schema',

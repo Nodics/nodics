@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSearch/search/src/lib/searchEngine
+ * @description Provides reusable nSearch library primitives for search engine.
+ * @layer lib
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = function () {
     let _active = false;
     let _options = {};

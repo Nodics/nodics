@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nData/nExport/excelExport/src/schemas/schemas
+ * @description Defines nData schema metadata, model contracts, and generated capability settings.
+ * @layer schemas
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

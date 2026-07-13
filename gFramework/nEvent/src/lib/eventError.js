@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nEvent/src/lib/eventError
+ * @description Provides reusable nEvent library primitives for event error.
+ * @layer lib
+ * @owner nEvent
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = class EventError extends CLASSES.NodicsError {
     constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').EventError) {
         super(error, message, defaultCode);

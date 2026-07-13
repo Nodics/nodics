@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nems/schemas/schemas
+ * @description Event and event-log schema definitions used to persist, process, retry, and archive NEMS events.
+ * @layer schema
+ * @owner nems
+ * @override Project modules may extend event schemas through later schema fragments.
+ */
 module.exports = {
     nems: {
         event: {

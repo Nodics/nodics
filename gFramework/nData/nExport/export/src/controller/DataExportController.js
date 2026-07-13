@@ -9,7 +9,28 @@
 
  */
 
+/**
+ * @module gFramework/nData/nExport/export/src/controller/DataExportController
+ * @description Exposes request handlers for nData data export controller operations.
+ * @layer controller
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+
+    /**
+
+     * Executes export behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     export: function (request, callback) {
         if (request.httpRequest) {

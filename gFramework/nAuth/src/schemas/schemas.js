@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nAuth/src/schemas/schemas
+ * @description Defines nAuth schema metadata, model contracts, and generated capability settings.
+ * @layer schemas
+ * @owner nAuth
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

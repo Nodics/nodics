@@ -13,6 +13,13 @@ const _ = require('lodash');
 const fse = require('fs-extra');
 const util = require('util');
 
+/**
+ * @module gFramework/nData/nImport/import/src/service/local/defaultLocalDataImportInitializerService
+ * @description Implements nData default local data import initializer service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -36,6 +43,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.inputPath.rootPath) {
@@ -45,6 +68,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Runs pre-processing logic for pare input path.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     prepareInputPath: function (request, response, process) {
         this.LOG.debug('Preparing input data path');
@@ -60,6 +99,22 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+
+     * Runs pre-processing logic for pare output path.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     prepareOutputPath: function (request, response, process) {
         this.LOG.debug('Preparing output data path');
         request.outputPath = request.outputPath || {};
@@ -74,6 +129,22 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+
+     * Executes flush output folder behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     flushOutputFolder: function (request, response, process) {
         this.LOG.debug('Cleaning output directory : ' + request.outputPath.dataPath);
         fse.remove(request.outputPath.dataPath).then(() => {
@@ -82,6 +153,22 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+
+    /**
+
+     * Retrieves header file list information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     loadHeaderFileList: function (request, response, process) {
         this.LOG.debug('Loading list of headers from Path to be imported: ' + request.inputPath.headerPath);
@@ -92,6 +179,22 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+
+    /**
+
+     * Builds header instances data.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     buildHeaderInstances: function (request, response, process) {
         this.LOG.debug('Generating header instances from header files');
@@ -134,6 +237,22 @@ module.exports = {
 
     },
 
+    /**
+
+     * Retrieves data file list information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     loadDataFileList: function (request, response, process) {
         this.LOG.debug('Loading list of files from Path to be imported');
         if (request.data.headers && Object.keys(request.data.headers).length > 0) {
@@ -159,6 +278,22 @@ module.exports = {
             });
         }
     },
+
+    /**
+
+     * Retrieves file type information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     resolveFileType: function (request, response, process) {
         this.LOG.debug('Resolving file type');

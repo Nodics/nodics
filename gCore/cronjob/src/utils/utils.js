@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cronjob/utils/utils
+ * @description Reserved cronjob utility contribution point for scheduler helper functions.
+ * @layer utility
+ * @owner cronjob
+ * @override Project modules may add cronjob utilities through later utility fragments.
+ */
 module.exports = {
 
 };

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cronjob/lib/classes
+ * @description Class registrations for cronjob runtime wrappers, containers, and cronjob-specific errors.
+ * @layer lib
+ * @owner cronjob
+ * @override Project modules may add later class registrations for custom cronjob runtime types.
+ */
 module.exports = {
 
 };

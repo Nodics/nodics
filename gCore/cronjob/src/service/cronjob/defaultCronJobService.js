@@ -10,10 +10,22 @@
  */
 const _ = require('lodash');
 
+/**
+ * @module cronjob/service/cronjob/DefaultCronJobService
+ * @description Coordinates persisted cronjob definitions with the in-memory scheduler container across tenants.
+ * @layer service
+ * @owner cronjob
+ * @override Project modules may override this service to customize job eligibility, tenant traversal, or lifecycle orchestration.
+ */
 module.exports = {
 
     cronJobContainer: new CLASSES.CronJobContainer(),
 
+    /**
+     * Returns the process-local cronjob container.
+     *
+     * @returns {Object} Cronjob container instance.
+     */
     getCronJobContainer: function () {
         return this.cronJobContainer;
     },
@@ -50,6 +62,14 @@ module.exports = {
     //     });
     // },
 
+    /**
+     * Loads jobs for each tenant recursively and annotates jobs with their tenant.
+     *
+     * @param {Object} options Search options and query used to load persisted jobs.
+     * @param {string[]} tenants Tenant codes to scan.
+     * @param {Object[]} jobs Accumulator for loaded jobs.
+     * @returns {Promise<Object[]>} Jobs found across tenants.
+     */
     getTenantsJobs: function (options, tenants = NODICS.getActiveTenants(), jobs = []) {
         return new Promise((resolve, reject) => {
             if (tenants && tenants.length > 0) {
@@ -79,6 +99,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Creates scheduler instances for all eligible jobs across active tenants.
+     *
+     * @param {string[]} tenants Tenant codes to scan.
+     * @returns {Promise<Object>} Aggregate creation result.
+     */
     createAllJobs: function (tenants = NODICS.getActiveTenants()) {
         return new Promise((resolve, reject) => {
             this.getTenantsJobs({
@@ -108,6 +134,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Creates scheduler instances for persisted jobs matching the request query.
+     *
+     * @param {Object} request Cronjob lifecycle request containing tenant and query.
+     * @returns {Promise<Object>} Aggregate creation result.
+     */
     createJob: function (request) {
         return new Promise((resolve, reject) => {
             this.getTenantsJobs({
@@ -138,6 +170,12 @@ module.exports = {
 
     },
 
+    /**
+     * Refreshes scheduler instances from persisted jobs matching the request query.
+     *
+     * @param {Object} request Cronjob lifecycle request containing tenant and query.
+     * @returns {Promise<Object>} Aggregate update result.
+     */
     updateJob: function (request) {
         return new Promise((resolve, reject) => {
             this.getTenantsJobs({
@@ -167,6 +205,12 @@ module.exports = {
         });
     },
 
+    /**
+     * Runs persisted jobs matching the request query once immediately.
+     *
+     * @param {Object} request Cronjob lifecycle request containing tenant and query.
+     * @returns {Promise<Object>} Aggregate run result.
+     */
     runJob: function (request) {
         return new Promise((resolve, reject) => {
             this.getTenantsJobs({
@@ -196,26 +240,63 @@ module.exports = {
         });
     },
 
+    /**
+     * Starts jobs already present in the tenant scheduler pool.
+     *
+     * @param {Object} request Cronjob lifecycle request containing tenant and job codes.
+     * @returns {Promise<Object>} Aggregate start result.
+     */
     startJob: function (request) {
         return this.cronJobContainer.startJobs(request.tenant, request.jobCodes);
     },
 
+    /**
+     * Stops jobs already present in the tenant scheduler pool.
+     *
+     * @param {Object} request Cronjob lifecycle request containing tenant and job codes.
+     * @returns {Promise<Object>} Aggregate stop result.
+     */
     stopJob: function (request) {
         return this.cronJobContainer.stopJobs(request.tenant, request.jobCodes);
     },
 
+    /**
+     * Removes jobs from the tenant scheduler pool.
+     *
+     * @param {Object} request Cronjob lifecycle request containing tenant and job codes.
+     * @returns {Promise<Object>} Aggregate removal result.
+     */
     removeJob: function (request) {
         return this.cronJobContainer.removeJobs(request.tenant, request.jobCodes);
     },
 
+    /**
+     * Pauses jobs already present in the tenant scheduler pool.
+     *
+     * @param {Object} request Cronjob lifecycle request containing tenant and job codes.
+     * @returns {Promise<Object>} Aggregate pause result.
+     */
     pauseJob: function (request) {
         return this.cronJobContainer.pauseJobs(request.tenant, request.jobCodes);
     },
 
+    /**
+     * Resumes jobs already present in the tenant scheduler pool.
+     *
+     * @param {Object} request Cronjob lifecycle request containing tenant and job codes.
+     * @returns {Promise<Object>} Aggregate resume result.
+     */
     resumeJob: function (request) {
         return this.cronJobContainer.resumeJobs(request.tenant, request.jobCodes);
     },
 
+    /**
+     * Starts all eligible jobs once the server has reached the started state.
+     *
+     * @param {Object} [_self] Optional service instance for retry callbacks.
+     * @returns {void}
+     * @sideEffects Polls server state, creates eligible jobs, and starts all jobs when enabled.
+     */
     startOnStartup: function (_self) {
         _self = _self || this;
         if (CONFIG.get('cronjob').runOnStartup) {

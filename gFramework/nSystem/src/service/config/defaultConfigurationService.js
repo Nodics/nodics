@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nSystem/src/service/config/defaultConfigurationService
+ * @description Implements nSystem default configuration service business behavior and extension logic.
+ * @layer service
+ * @owner nSystem
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -34,6 +41,18 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Executes change config behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     changeConfig: function (request) {
         return new Promise((resolve, reject) => {
@@ -144,10 +163,34 @@ module.exports = {
         return Promise.resolve({ tenant: tenant, restored: true });
     },
 
+    /**
+
+     * Executes record property configuration audit behavior.
+
+     *
+
+     * @param {*} entry Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     recordPropertyConfigurationAudit: function (entry) {
         let service = SERVICE.DefaultRuntimeConfigurationAuditService;
         return service && typeof service.recordActivation === 'function' ? service.recordActivation(entry) : Promise.resolve(true);
     },
+
+    /**
+
+     * Retrieves runtime actor information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     resolveRuntimeActor: function (request) {
         let authData = request && (request.authData || request.autData) || {};
@@ -375,6 +418,18 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Processes configuration change event behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleConfigurationChangeEvent: function (request) {
         return new Promise((resolve, reject) => {

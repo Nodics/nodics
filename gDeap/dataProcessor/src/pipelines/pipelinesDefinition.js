@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module dataProcessor/pipelines/pipelinesDefinition
+ * @description Reserved pipeline definition contribution for DEAP data processing flows.
+ * @layer pipeline
+ * @owner dataProcessor
+ * @override Project DEAP modules may add later processing pipelines.
+ */
 module.exports = {
 
 };

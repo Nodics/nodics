@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module dataPublisher/router/router
+ * @description Reserved route definition contribution for DEAP data publisher APIs.
+ * @layer router
+ * @owner dataPublisher
+ * @override Project DEAP modules may add later publishing routes.
+ */
 module.exports = {
 
 };

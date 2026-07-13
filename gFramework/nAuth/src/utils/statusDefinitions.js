@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nAuth/src/utils/statusDefinitions
+ * @description Provides shared nAuth utility exports for status definitions.
+ * @layer utils
+ * @owner nAuth
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     SUC_AUTH_00000: {
         code: '200',

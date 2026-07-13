@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module dataPublisher/schemas/schemas
+ * @description Reserved schema contribution for DEAP data publishing models.
+ * @layer schema
+ * @owner dataPublisher
+ * @override Project DEAP modules may add later publishing schemas.
+ */
 module.exports = {
 
 };

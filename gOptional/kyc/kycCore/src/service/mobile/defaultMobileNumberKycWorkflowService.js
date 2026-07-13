@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gOptional/kyc/kycCore/src/service/mobile/defaultMobileNumberKycWorkflowService
+ * @description Implements kyc default mobile number kyc workflow service business behavior and extension logic.
+ * @layer service
+ * @owner kyc
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes perform head operation behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     performHeadOperation: function (request, response) {
         return new Promise((resolve, reject) => {
             resolve({
@@ -45,6 +66,20 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Initializes mobile otp behavior for the module runtime.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     initMobileOTP: function (request, response) {
         return new Promise((resolve, reject) => {
@@ -80,6 +115,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Executes notify mobile otp behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     notifyMobileOTP: function (request, response) {
         return new Promise((resolve, reject) => {
             let otpModel = request.workflowCarrier.items[0];
@@ -106,6 +155,20 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Updates otpvalidated information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     updateOTPValidated: function (request, response) {
         return new Promise((resolve, reject) => {

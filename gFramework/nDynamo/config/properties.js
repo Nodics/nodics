@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nDynamo/config/properties
+ * @description Defines default nDynamo configuration used during module startup and layering.
+ * @layer config
+ * @owner nDynamo
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
     schemaAccessPolicy: {
         policyTenant: 'default'

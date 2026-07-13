@@ -65,9 +65,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 4 |
-| Undocumented | 11 |
+| Documented | 13 |
+| Partially documented | 2 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -90,23 +90,23 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gOptional/kyc/kycApi/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gOptional/kyc/kycApi/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gOptional/kyc/kycApi/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycApi/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycApi/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gOptional/kyc/kycApi/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default kyc configuration used during module startup and layering. |  |
+| `gOptional/kyc/kycApi/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default kyc configuration used during module startup and layering. |  |
+| `gOptional/kyc/kycApi/config/properties.js` | `config` | `documented` | 0/0 | Defines default kyc configuration used during module startup and layering. |  |
 | `gOptional/kyc/kycApi/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gOptional/kyc/kycApi/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gOptional/kyc/kycApi/nodics.js` | `module` | `documented` | 2/2 | Registers the kyc module lifecycle hooks and module-level startup behavior. |  |
 | `gOptional/kyc/kycApi/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gOptional/kyc/kycApi/src/controller/defaultKycController.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gOptional/kyc/kycApi/src/facade/defaultKycFacade.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gOptional/kyc/kycApi/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycApi/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycApi/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycApi/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycApi/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycApi/src/service/defaultSampleService.js` | `src` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycApi/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gOptional/kyc/kycApi/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gOptional/kyc/kycApi/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gOptional/kyc/kycApi/src/controller/defaultKycController.js` | `src` | `documented` | 5/5 | Exposes request handlers for kyc default kyc controller operations. |  |
+| `gOptional/kyc/kycApi/src/facade/defaultKycFacade.js` | `src` | `documented` | 5/5 | Coordinates facade-level delegation for kyc default kyc facade operations. |  |
+| `gOptional/kyc/kycApi/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers kyc interceptor wiring for pipeline extension points. |  |
+| `gOptional/kyc/kycApi/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines kyc pipeline wiring and execution contracts. |  |
+| `gOptional/kyc/kycApi/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines kyc route registration and HTTP exposure metadata. |  |
+| `gOptional/kyc/kycApi/src/router/router.js` | `src` | `documented` | 0/0 | Defines kyc route registration and HTTP exposure metadata. |  |
+| `gOptional/kyc/kycApi/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines kyc schema metadata, model contracts, and generated capability settings. |  |
+| `gOptional/kyc/kycApi/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements kyc default sample service business behavior and extension logic. |  |
+| `gOptional/kyc/kycApi/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared kyc utility exports for utils. |  |
+| `gOptional/kyc/kycApi/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines kyc test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gOptional/kyc/kycApi/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines kyc test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

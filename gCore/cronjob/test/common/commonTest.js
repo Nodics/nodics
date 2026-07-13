@@ -12,6 +12,13 @@
 /*
    Change this file name as per test case name. This just a sample file
 */
+/**
+ * @module cronjob/test/common/commonTest
+ * @description Common sample test scaffold for cronjob module contracts.
+ * @layer test
+ * @owner cronjob
+ * @override Project modules may replace this scaffold with concrete cronjob contract tests.
+ */
 const Chai = require('chai');
 const expect = Chai.expect;
 

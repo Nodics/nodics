@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nNms/src/service/config/defaultNodeConfigurationService
+ * @description Implements nNms default node configuration service business behavior and extension logic.
+ * @layer service
+ * @owner nNms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -33,6 +40,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates node active rules.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} nodeId Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     isNodeActive: function (moduleName, nodeId) {
         let moduleObject = NODICS.getModule(moduleName);
         if (!moduleObject) {
@@ -43,6 +64,20 @@ module.exports = {
             return false;
         }
     },
+
+    /**
+
+     * Updates node active information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} nodeId Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     updateNodeActive: function (moduleName, nodeId) {
         let moduleObject = NODICS.getModule(moduleName);
@@ -65,6 +100,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Updates node in active information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} nodeId Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     updateNodeInActive: function (moduleName, nodeId) {
         let moduleObject = NODICS.getModule(moduleName);
         if (!moduleObject) {
@@ -85,6 +134,20 @@ module.exports = {
             }
         }
     },
+
+    /**
+
+     * Executes grant node responsibility behavior.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @param {*} nodeId Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     grantNodeResponsibility: function (moduleName, nodeId) {
         let moduleObject = NODICS.getModule(moduleName);

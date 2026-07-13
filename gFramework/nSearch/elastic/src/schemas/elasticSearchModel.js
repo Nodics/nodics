@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nSearch/elastic/src/schemas/elasticSearchModel
+ * @description Defines nSearch schema metadata, model contracts, and generated capability settings.
+ * @layer schemas
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /*
         Default object which available in this class
@@ -21,6 +28,18 @@ module.exports = {
         - indexDef: indexDef
     */
     default: {
+
+        /**
+
+         * Executes define default do create index behavior.
+
+         *
+
+         * @param {*} searchModel Method input.
+
+         * @returns {*} Method result.
+
+         */
 
         defineDefaultDoCreateIndex: function (searchModel) { //Required pipeline to process this request
             searchModel.doCreateIndex = function (input) {
@@ -47,6 +66,18 @@ module.exports = {
                 });
             };
         },
+
+        /**
+
+         * Executes define default do refresh behavior.
+
+         *
+
+         * @param {*} searchModel Method input.
+
+         * @returns {*} Method result.
+
+         */
 
         defineDefaultDoRefresh: function (searchModel) { //Required pipeline to process this request
             searchModel.doRefresh = function (input) {
@@ -75,6 +106,18 @@ module.exports = {
             };
         },
 
+        /**
+
+         * Executes define default do check health behavior.
+
+         *
+
+         * @param {*} searchModel Method input.
+
+         * @returns {*} Method result.
+
+         */
+
         defineDefaultDoCheckHealth: function (searchModel) {
             searchModel.doCheckHealth = function (input) {
                 let _self = this;
@@ -100,6 +143,18 @@ module.exports = {
                 });
             };
         },
+
+        /**
+
+         * Executes define default do exists behavior.
+
+         *
+
+         * @param {*} searchModel Method input.
+
+         * @returns {*} Method result.
+
+         */
 
         defineDefaultDoExists: function (searchModel) {
             searchModel.doExists = function (input) {
@@ -131,6 +186,12 @@ module.exports = {
                 });
             };
         },
+        /**
+         * Executes define default do get behavior.
+         *
+         * @param {*} searchModel Method input.
+         * @returns {*} Method result.
+         */
         defineDefaultDoGet: function (searchModel) {
             searchModel.doGet = function (input) { //Required pipeline to process this request
                 let _self = this;
@@ -159,6 +220,18 @@ module.exports = {
                 });
             };
         },
+
+        /**
+
+         * Executes define default do search behavior.
+
+         *
+
+         * @param {*} searchModel Method input.
+
+         * @returns {*} Method result.
+
+         */
 
         defineDefaultDoSearch: function (searchModel) { //Required pipeline to process this request
             searchModel.doSearch = function (input) {
@@ -195,6 +268,18 @@ module.exports = {
             };
         },
 
+        /**
+
+         * Executes define default do save behavior.
+
+         *
+
+         * @param {*} searchModel Method input.
+
+         * @returns {*} Method result.
+
+         */
+
         defineDefaultDoSave: function (searchModel) {
             searchModel.doSave = function (input) {
                 let _self = this;
@@ -227,6 +312,18 @@ module.exports = {
             };
         },
 
+        /**
+
+         * Executes define default do bulk behavior.
+
+         *
+
+         * @param {*} searchModel Method input.
+
+         * @returns {*} Method result.
+
+         */
+
         defineDefaultDoBulk: function (searchModel) { //Required pipeline to process this request
             searchModel.doBulk = function (input) {
                 let _self = this;
@@ -252,6 +349,18 @@ module.exports = {
             };
         },
 
+        /**
+
+         * Executes define default do update behavior.
+
+         *
+
+         * @param {*} searchModel Method input.
+
+         * @returns {*} Method result.
+
+         */
+
         defineDefaultDoUpdate: function (searchModel) {
             searchModel.doUpdate = function (input) {
                 let _self = this;
@@ -276,6 +385,18 @@ module.exports = {
                 });
             };
         },
+
+        /**
+
+         * Executes define default do remove behavior.
+
+         *
+
+         * @param {*} searchModel Method input.
+
+         * @returns {*} Method result.
+
+         */
 
         defineDefaultDoRemove: function (searchModel) { //Required pipeline to process this request
             searchModel.doRemove = function (input) {
@@ -304,6 +425,18 @@ module.exports = {
                 });
             };
         },
+
+        /**
+
+         * Executes define default do remove by query behavior.
+
+         *
+
+         * @param {*} searchModel Method input.
+
+         * @returns {*} Method result.
+
+         */
 
         defineDefaultDoRemoveByQuery: function (searchModel) { //Required pipeline to process this request
             searchModel.doRemoveByQuery = function (input) {
@@ -335,6 +468,18 @@ module.exports = {
             };
         },
 
+        /**
+
+         * Executes define default get schema behavior.
+
+         *
+
+         * @param {*} searchModel Method input.
+
+         * @returns {*} Method result.
+
+         */
+
         defineDefaultGetSchema: function (searchModel) {  //Required pipeline to process this request
             searchModel.doGetSchema = function (input) {
                 let _self = this;
@@ -359,6 +504,18 @@ module.exports = {
                 });
             };
         },
+
+        /**
+
+         * Executes define default update schema behavior.
+
+         *
+
+         * @param {*} searchModel Method input.
+
+         * @returns {*} Method result.
+
+         */
 
         defineDefaultUpdateSchema: function (searchModel) { //Required pipeline to process this request
             searchModel.doUpdateSchema = function (input) {
@@ -385,6 +542,18 @@ module.exports = {
                 });
             };
         },
+
+        /**
+
+         * Executes define default remove index behavior.
+
+         *
+
+         * @param {*} searchModel Method input.
+
+         * @returns {*} Method result.
+
+         */
 
         defineDefaultRemoveIndex: function (searchModel) {
             searchModel.doRemoveIndex = function (input) {

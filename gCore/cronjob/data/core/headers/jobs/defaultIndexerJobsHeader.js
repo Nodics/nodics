@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cronjob/data/core/headers/jobs/defaultIndexerJobsHeader
+ * @description Import header for saving default cronjob records related to indexing.
+ * @layer data
+ * @owner cronjob
+ * @override Project modules may add later headers for customer-specific scheduled job data.
+ */
 module.exports = {
     cronjob: {
         indexerJob: {

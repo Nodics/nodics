@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nData/nExport/export/src/service/DataExportService
+ * @description Implements nData data export service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module wcms/config/prescripts
+ * @description Reserved WCMS pre-start script contribution for content module startup prerequisites.
+ * @layer config
+ * @owner wcms
+ * @override Project content modules may add later pre-scripts for customer-specific CMS setup.
+ */
 module.exports = {
 
 };

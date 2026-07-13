@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module env
+ * @description Provides root-level Nodics configuration or runtime bootstrap exports.
+ * @layer root
+ * @owner env
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     defaultOptions: {
         defaultServer: 'kickoffLocalServer',

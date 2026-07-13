@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nSearch/search/nodics
+ * @description Registers the nSearch module lifecycle hooks and module-level startup behavior.
+ * @layer module
+ * @owner nSearch
+ * @override Projects may override lifecycle behavior through later active modules instead of modifying this module directly.
+ */
 module.exports = {
 
     /**

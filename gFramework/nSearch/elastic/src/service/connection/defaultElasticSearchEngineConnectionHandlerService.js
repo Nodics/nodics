@@ -12,6 +12,13 @@
 const _ = require('lodash');
 let elasticsearch = require('@elastic/elasticsearch');
 
+/**
+ * @module gFramework/nSearch/elastic/src/service/connection/defaultElasticSearchEngineConnectionHandlerService
+ * @description Implements nSearch default elastic search engine connection handler service business behavior and extension logic.
+ * @layer service
+ * @owner nSearch
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -37,11 +44,33 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves raw search model definition information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     loadRawSearchModelDefinition: function () {
         let modelDefinition = {};
         SERVICE.DefaultFilesLoaderService.loadFiles('/src/schemas/elasticSearchModel.js', modelDefinition);
         SERVICE.DefaultSearchConfigurationService.addRawSearchModelDefinition('elastic', modelDefinition);
     },
+
+    /**
+
+     * Updates search connection information.
+
+     *
+
+     * @param {*} searchOptions Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     createSearchConnection: function (searchOptions) {
         let _self = this;
@@ -73,6 +102,20 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Retrieves indexes information.
+
+     *
+
+     * @param {*} searchEngine Method input.
+
+     * @param {*} indexName Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getIndexes: function (searchEngine, indexName) {
         let _self = this;

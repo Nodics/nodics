@@ -61,9 +61,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 4 |
-| Undocumented | 15 |
+| Documented | 17 |
+| Partially documented | 2 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -86,27 +86,27 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nToken/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nToken/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nToken/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nToken/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nToken/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nToken/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nToken configuration used during module startup and layering. |  |
+| `gFramework/nToken/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nToken configuration used during module startup and layering. |  |
+| `gFramework/nToken/config/properties.js` | `config` | `documented` | 0/0 | Defines default nToken configuration used during module startup and layering. |  |
 | `gFramework/nToken/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nToken/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nToken/nodics.js` | `module` | `documented` | 2/2 | Registers the nToken module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nToken/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nToken/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nToken/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nToken/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nToken/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nToken/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nToken/src/service/DefaultTokenService.js` | `src` | `undocumented` | 0/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gFramework/nToken/src/service/handler/defaultTokenHandlerService.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gFramework/nToken/src/service/interceptor/defaultTokenValidityCheckInterceptorService.js` | `src` | `undocumented` | 0/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gFramework/nToken/src/service/pipelines/defaultGenerateTokenPipelineService.js` | `src` | `partially-documented` | 2/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
-| `gFramework/nToken/src/service/pipelines/defaultValidateTokenPipelineService.js` | `src` | `partially-documented` | 2/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
-| `gFramework/nToken/src/utils/enums.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nToken/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nToken/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nToken/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gFramework/nToken/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nToken/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers nToken interceptor wiring for pipeline extension points. |  |
+| `gFramework/nToken/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nToken pipeline wiring and execution contracts. |  |
+| `gFramework/nToken/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nToken route registration and HTTP exposure metadata. |  |
+| `gFramework/nToken/src/router/router.js` | `src` | `documented` | 0/0 | Defines nToken route registration and HTTP exposure metadata. |  |
+| `gFramework/nToken/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nToken schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nToken/src/service/DefaultTokenService.js` | `src` | `documented` | 4/4 | Implements nToken default token service business behavior and extension logic. |  |
+| `gFramework/nToken/src/service/handler/defaultTokenHandlerService.js` | `src` | `documented` | 4/4 | Implements nToken default token handler service business behavior and extension logic. |  |
+| `gFramework/nToken/src/service/interceptor/defaultTokenValidityCheckInterceptorService.js` | `src` | `documented` | 3/3 | Implements nToken default token validity check interceptor service business behavior and extension logic. |  |
+| `gFramework/nToken/src/service/pipelines/defaultGenerateTokenPipelineService.js` | `src` | `documented` | 8/8 | Implements nToken default generate token pipeline service business behavior and extension logic. |  |
+| `gFramework/nToken/src/service/pipelines/defaultValidateTokenPipelineService.js` | `src` | `documented` | 8/8 | Implements nToken default validate token pipeline service business behavior and extension logic. |  |
+| `gFramework/nToken/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared nToken utility exports for enums. |  |
+| `gFramework/nToken/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nToken utility exports for status definitions. |  |
+| `gFramework/nToken/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nToken utility exports for utils. |  |
+| `gFramework/nToken/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nToken test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nToken/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nToken test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

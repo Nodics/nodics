@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nDynamo/src/facade/router/defaultRouterConfigurationFacade
+ * @description Coordinates facade-level delegation for nDynamo default router configuration facade operations.
+ * @layer facade
+ * @owner nDynamo
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -33,13 +40,49 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates router information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     addRouter: function (request) {
         return SERVICE.DefaultRouterConfigurationService.addRouter(request);
     },
 
+    /**
+
+     * Updates router information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     updateRouter: function (request) {
         return SERVICE.DefaultRouterConfigurationService.updateRouter(request);
     },
+
+    /**
+
+     * Removes or clears router information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     removeRouter: function (request) {
         return SERVICE.DefaultRouterConfigurationService.removeRouter(request);

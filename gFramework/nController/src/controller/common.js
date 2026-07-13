@@ -12,6 +12,13 @@
 const _ = require('lodash');
 const ObjectId = require('mongodb').ObjectId;
 
+/**
+ * @module gFramework/nController/src/controller/common
+ * @description Exposes request handlers for nController common operations.
+ * @layer controller
+ * @owner nController
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,20 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Retrieves  information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     get: function (request, callback) {
         request.options = request.options || {};
@@ -66,6 +87,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Removes or clears  information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     remove: function (request, callback) {
         request = _.merge(request, request.httpRequest.body || {});
         if (callback) {
@@ -78,6 +113,20 @@ module.exports = {
             return FACADE.dsdName.remove(request);
         }
     },
+
+    /**
+
+     * Removes or clears by id information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     removeById: function (request, callback) {
         request.ids = [];
@@ -97,6 +146,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Removes or clears by code information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     removeByCode: function (request, callback) {
         request.codes = [];
         if (request.httpRequest.params.code) {
@@ -115,6 +178,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Updates  information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     save: function (request, callback) {
         request.model = request.httpRequest.body;
         if (callback) {
@@ -128,6 +205,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Updates all information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     saveAll: function (request, callback) {
         request.models = request.httpRequest.body;
         if (callback) {
@@ -140,6 +231,20 @@ module.exports = {
             return FACADE.dsdName.saveAll(request);
         }
     },
+
+    /**
+
+     * Updates  information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     update: function (request, callback) {
         request = _.merge(request, request.httpRequest.body || {});

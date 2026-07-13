@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nData/nImport/import/src/lib/dataImportError
+ * @description Provides reusable nData library primitives for data import error.
+ * @layer lib
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = class DataImportError extends CLASSES.NodicsError {
     constructor(error, message, defaultCode = CONFIG.get('defaultErrorCodes').DataImportError) {
         super(error, message, defaultCode);

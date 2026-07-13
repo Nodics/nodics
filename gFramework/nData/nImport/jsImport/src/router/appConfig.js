@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nData/nImport/jsImport/src/router/appConfig
+ * @description Defines nData route registration and HTTP exposure metadata.
+ * @layer router
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
 };

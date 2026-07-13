@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nDynamo/src/service/pipeline/defaultSchemaUpdatedPipelineService
+ * @description Implements nDynamo default schema updated pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner nDynamo
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates schema rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateSchema: function (request, response, process) {
         this.LOG.debug('Validating schema update request');
         if (!request.schemaCode) {
@@ -43,6 +66,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Retrieves schema information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     retrieveSchema: function (request, response, process) {
         this.LOG.debug('Fatching updated schema object : ' + request.schemaName);
@@ -63,6 +102,22 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+
+    /**
+
+     * Executes redirect request behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     redirectRequest: function (request, response, process) {
         this.LOG.debug('Validating request for schema : ' + request.runtimeSchema.code);

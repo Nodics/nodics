@@ -12,6 +12,13 @@
 const _ = require('lodash');
 var util = require('util');
 
+/**
+ * @module gFramework/nbpm/src/service/event/defaultWorkflowEventService
+ * @description Implements nbpm default workflow event service business behavior and extension logic.
+ * @layer service
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -36,9 +43,41 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Updates event name information.
+
+     *
+
+     * @param {*} preFix Method input.
+
+     * @param {*} workflowCode Method input.
+
+     * @param {*} postFix Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     createEventName: function (preFix, workflowCode, postFix) {
         return preFix + workflowCode.toUpperCaseFirstChar() + postFix.toUpperCaseFirstChar();
     },
+
+    /**
+
+     * Processes workflow event behavior.
+
+     *
+
+     * @param {*} event Method input.
+
+     * @param {*} schemaDef Method input.
+
+     * @param {*} models Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     publishWorkflowEvent: function (event, schemaDef, models) {
         return new Promise((resolve, reject) => {

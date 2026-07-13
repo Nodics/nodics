@@ -60,9 +60,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 6 |
-| Partially documented | 1 |
-| Undocumented | 8 |
+| Documented | 13 |
+| Partially documented | 2 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -85,23 +85,23 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nDatabase/mongodb/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/mongodb/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nDatabase/mongodb/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nDatabase/mongodb/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nDatabase/mongodb/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDatabase/mongodb/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nDatabase configuration used during module startup and layering. |  |
+| `gFramework/nDatabase/mongodb/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nDatabase configuration used during module startup and layering. |  |
+| `gFramework/nDatabase/mongodb/config/properties.js` | `config` | `documented` | 0/0 | Defines default nDatabase configuration used during module startup and layering. |  |
 | `gFramework/nDatabase/mongodb/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nDatabase/mongodb/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDatabase/mongodb/nodics.js` | `module` | `documented` | 2/2 | Registers the nDatabase module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nDatabase/mongodb/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/mongodb/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | MongoDB adapter pipeline extension slot. The generic database module owns core CRUD pipelines; MongoDB-specific projects may add adapter pipelines here. |  |
 | `gFramework/nDatabase/mongodb/src/router/appConfig.js` | `src` | `documented` | 0/0 | MongoDB adapter router app configuration extension slot. |  |
 | `gFramework/nDatabase/mongodb/src/router/router.js` | `src` | `documented` | 0/0 | MongoDB adapter route definition extension slot. |  |
-| `gFramework/nDatabase/mongodb/src/schemas/model.js` | `src` | `undocumented` | 0/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gFramework/nDatabase/mongodb/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDatabase/mongodb/src/schemas/model.js` | `src` | `documented` | 4/4 | Defines nDatabase schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nDatabase/mongodb/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nDatabase schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nDatabase/mongodb/src/service/connection/defaultMongodbDatabaseConnectionHandlerService.js` | `src` | `documented` | 6/6 | MongoDB implementation of the Nodics database connection handler contract. It creates Mongo clients, discovers collections, detects initial data requirements, reads runtime schema configuration, and closes clients. |  |
 | `gFramework/nDatabase/mongodb/src/service/model/defaultMongodbDatabaseModelHandlerService.js` | `src` | `documented` | 12/12 | MongoDB implementation of the Nodics database model handler contract. It converts effective schemas into MongoDB jsonSchema validators, collection options, indexes, collection wrappers, and ObjectId values. |  |
 | `gFramework/nDatabase/mongodb/src/service/schema/defaultMongodbDatabaseSchemaHandlerService.js` | `src` | `documented` | 2/2 | MongoDB schema handler placeholder for database-specific schema behavior. The generic database schema handler owns effective schema merging; this adapter exists so MongoDB-specific schema behavior can be layered later. |  |
-| `gFramework/nDatabase/mongodb/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nDatabase/mongodb/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gFramework/nDatabase/mongodb/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nDatabase/mongodb/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nDatabase utility exports for utils. |  |
+| `gFramework/nDatabase/mongodb/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nDatabase test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nDatabase/mongodb/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nDatabase test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

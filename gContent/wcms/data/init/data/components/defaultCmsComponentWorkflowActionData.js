@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module wcms/data/init/data/components/defaultCmsComponentWorkflowActionData
+ * @description Seed workflow action data for manual CMS component review decisions.
+ * @layer data
+ * @owner wcms
+ * @override Project modules may override or extend component workflow actions through later initializer data.
+ */
 module.exports = {
     record1: {
         code: "reviewCmsComponentAction",

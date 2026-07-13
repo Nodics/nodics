@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nDynamo/src/utils/enums
+ * @description Provides shared nDynamo utility exports for enums.
+ * @layer utils
+ * @owner nDynamo
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     ClassType: {
         _options: {

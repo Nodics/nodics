@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nNms/src/controller/defaultNodeManagerController
+ * @description Exposes request handlers for nNms default node manager controller operations.
+ * @layer controller
+ * @owner nNms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -35,6 +42,20 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Processes node activated behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     handleNodeActivated: function (request, callback) {
         if (request.httpRequest.params.nodeId) {
             request.nodeId = request.httpRequest.params.nodeId;
@@ -52,6 +73,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes request responsibility behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     requestResponsibility: function (request, callback) {
         if (request.httpRequest.params.nodeId) {
             request.nodeId = request.httpRequest.params.nodeId;
@@ -68,6 +103,20 @@ module.exports = {
             return FACADE.DefaultNodeManagerFacade.requestResponsibility(request);
         }
     },
+
+    /**
+
+     * Executes stop health check behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     stopHealthCheck: function (request, callback) {
         if (callback) {

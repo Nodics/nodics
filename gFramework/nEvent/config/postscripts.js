@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nEvent/config/postscripts
+ * @description Defines default nEvent configuration used during module startup and layering.
+ * @layer config
+ * @owner nEvent
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };

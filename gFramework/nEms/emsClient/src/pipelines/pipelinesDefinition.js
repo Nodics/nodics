@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nEms/emsClient/src/pipelines/pipelinesDefinition
+ * @description Defines nEms pipeline wiring and execution contracts.
+ * @layer pipelines
+ * @owner nEms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     processConsumedMessagePipeline: {

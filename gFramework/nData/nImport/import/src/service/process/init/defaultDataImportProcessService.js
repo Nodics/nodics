@@ -12,6 +12,13 @@
 const util = require('util');
 const clearRequire = require('clear-module');
 
+/**
+ * @module gFramework/nData/nImport/import/src/service/process/init/defaultDataImportProcessService
+ * @description Implements nData default data import process service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -35,6 +42,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.inputPath) {
@@ -43,6 +66,22 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+
+    /**
+
+     * Runs pre-processing logic for pare input path.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     prepareInputPath: function (request, response, process) {
         this.LOG.debug('Preparing data import input path');
@@ -59,6 +98,22 @@ module.exports = {
         request.inputPath = path;
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Retrieves data files information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     loadDataFiles: function (request, response, process) {
         this.LOG.debug('Loading list of files from Path to be imported');
@@ -79,6 +134,22 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+
+    /**
+
+     * Processes data files behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     processDataFiles: function (request, response, process) {
         this.LOG.debug('Starting data import process');
@@ -105,6 +176,22 @@ module.exports = {
             process.error(request, response, new CLASSES.DataImportError(error));
         }
     },
+
+    /**
+
+     * Processes files behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} options Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     processFiles: function (request, response, options) {
         let _self = this;
@@ -158,6 +245,26 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Processes next file behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} options Method input.
+
+     * @param {*} resolve Method input.
+
+     * @param {*} reject Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     processNextFile: function (request, response, options, resolve, reject) {
         if (options.pendingFiles && options.pendingFiles.length <= 0) {
             if (SERVICE.DefaultImportUtilityService.isImportPending(request.dataFiles)) {
@@ -173,6 +280,22 @@ module.exports = {
             reject(error);
         });
     },
+
+    /**
+
+     * Processes error end behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     handleErrorEnd: function (request, response, process) {
         let _self = this;

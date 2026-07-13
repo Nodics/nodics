@@ -11,7 +11,21 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nEms/emsClient/src/controller/defaultEmsClientController
+ * @description Exposes request handlers for nEms default ems client controller operations.
+ * @layer controller
+ * @owner nEms
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
+    /**
+     * Processes  behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} callback Method input.
+     * @returns {*} Method result.
+     */
     publish: function (request, callback) {
         request.payloads = request.httpRequest.body || {};
         if (callback) {
@@ -24,6 +38,20 @@ module.exports = {
             return FACADE.DefaultEmsClientFacade.publish(request);
         }
     },
+
+    /**
+
+     * Updates consumers information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     registerConsumers: function (request, callback) {
         if (request.httpRequest.params.consumer) {
@@ -42,6 +70,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Updates publishers information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     registerPublishers: function (request, callback) {
         if (request.httpRequest.params.publisher) {
             request.publishers = [request.httpRequest.params.publisher];
@@ -59,6 +101,20 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes close consumers behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     closeConsumers: function (request, callback) {
         if (request.httpRequest.params.consumer) {
             request.consumers = [request.httpRequest.params.consumer];
@@ -75,6 +131,20 @@ module.exports = {
             return FACADE.DefaultEmsClientFacade.closeConsumers(request);
         }
     },
+
+    /**
+
+     * Executes close publishers behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} callback Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     closePublishers: function (request, callback) {
         if (request.httpRequest.params.publisher) {

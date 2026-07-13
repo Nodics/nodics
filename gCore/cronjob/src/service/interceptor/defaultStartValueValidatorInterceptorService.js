@@ -9,7 +9,21 @@
 
  */
 
+/**
+ * @module cronjob/service/interceptor/DefaultStartValueValidatorInterceptorService
+ * @description Normalizes cronjob start and end values into Date instances before persistence.
+ * @layer service
+ * @owner cronjob
+ * @override Project modules may override this interceptor to add stricter schedule date validation.
+ */
 module.exports = {
+    /**
+     * Converts missing or string start/end schedule values into Date objects.
+     *
+     * @param {Object} request Interceptor request containing `model`.
+     * @param {Object} response Interceptor response context.
+     * @returns {Promise<boolean>} Resolves when date normalization succeeds.
+     */
     convertToDate: function (request, response) {
         return new Promise((resolve, reject) => {
             try {

@@ -12,6 +12,13 @@
 const _ = require('lodash');
 const fse = require('fs-extra');
 
+/**
+ * @module gFramework/nData/nImport/import/src/service/system/defaultSystemDataImportInitializerService
+ * @description Implements nData default system data import initializer service business behavior and extension logic.
+ * @layer service
+ * @owner nData
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -35,6 +42,22 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Validates request rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request');
         if (!request.modules || !UTILS.isArray(request.modules) || request.modules.length <= 0) {
@@ -47,14 +70,46 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Executes generate run id behavior.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     generateRunId: function () {
         let uniqueCode = (UTILS.generateUniqueCode && typeof UTILS.generateUniqueCode === 'function') ? UTILS.generateUniqueCode() : Date.now() + '_' + Math.floor(Math.random() * 100000);
         return 'import_' + uniqueCode;
     },
 
+    /**
+
+     * Retrieves default tenant information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     getDefaultTenant: function () {
         return (typeof CONFIG !== 'undefined' && CONFIG.get && CONFIG.get('defaultTenant')) || 'default';
     },
+
+    /**
+
+     * Initializes import run behavior for the module runtime.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     initImportRun: function (request) {
         request.importRun = request.importRun || {
@@ -95,6 +150,20 @@ module.exports = {
         };
     },
 
+    /**
+
+     * Executes finish import run behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} status Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     finishImportRun: function (request, status) {
         if (SERVICE.DefaultImportDiagnosticsService && typeof SERVICE.DefaultImportDiagnosticsService.finalizeRun === 'function') {
             SERVICE.DefaultImportDiagnosticsService.finalizeRun(request, status);
@@ -105,6 +174,24 @@ module.exports = {
             request.importRun.finishedAt = new Date().toISOString();
         }
     },
+
+    /**
+
+     * Updates duplicate header information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} headerName Method input.
+
+     * @param {*} owningModule Method input.
+
+     * @param {*} headerFileName Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     addDuplicateHeader: function (request, headerName, owningModule, headerFileName) {
         if (request.importRun) {
@@ -117,6 +204,22 @@ module.exports = {
         }
     },
 
+    /**
+
+     * Runs pre-processing logic for pare input path.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     prepareInputPath: function (request, response, process) {
         this.LOG.debug('Preparing input data path');
         request.inputPath = {
@@ -125,6 +228,22 @@ module.exports = {
         };
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Runs pre-processing logic for pare output path.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     prepareOutputPath: function (request, response, process) {
         this.LOG.debug('Preparing output data path');
@@ -138,6 +257,22 @@ module.exports = {
         process.nextSuccess(request, response);
     },
 
+    /**
+
+     * Executes flush output folder behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     flushOutputFolder: function (request, response, process) {
         this.LOG.debug('Cleaning output directory : ' + request.outputPath.dataPath);
         fse.remove(request.outputPath.dataPath).then(() => {
@@ -146,6 +281,18 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+
+    /**
+
+     * Retrieves sub modules information.
+
+     *
+
+     * @param {*} moduleName Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     getSubModules: function (moduleName) {
         let modules = [moduleName];
@@ -157,6 +304,14 @@ module.exports = {
         }
         return modules;
     },
+    /**
+     * Retrieves header file list information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
     loadHeaderFileList: function (request, response, process) {
         this.LOG.debug('Loading list of header files from modules to be imported');
         if (request.options && request.options.recursive) {
@@ -179,6 +334,30 @@ module.exports = {
     },
 
 
+    /**
+
+
+     * Retrieves data file list information.
+
+
+     *
+
+
+     * @param {*} request Method input.
+
+
+     * @param {*} response Method input.
+
+
+     * @param {*} process Method input.
+
+
+     * @returns {*} Method result.
+
+
+     */
+
+
     loadDataFileList: function (request, response, process) {
         this.LOG.debug('Loading list of data files from modules to be imported');
         SERVICE.DefaultImportUtilityService.getSystemDataFiles(request.modules, request.inputPath.dataType).then(success => {
@@ -192,6 +371,22 @@ module.exports = {
             process.error(request, response, error);
         });
     },
+
+    /**
+
+     * Retrieves file type information.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     resolveFileType: function (request, response, process) {
         this.LOG.debug('Resolving file type');
@@ -207,6 +402,22 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Builds header instances data.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     buildHeaderInstances: function (request, response, process) {
         this.LOG.debug('Generating header instances from header files');
@@ -263,6 +474,18 @@ module.exports = {
         }
         process.nextSuccess(request, response);
     },
+
+    /**
+
+     * Validates prepared import rules.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     validatePreparedImport: function (request) {
         let errors = [];
@@ -336,6 +559,22 @@ module.exports = {
         request.importRun.summary.validationErrors = errors.length;
         return errors;
     },
+
+    /**
+
+     * Executes assign data files to header behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @param {*} process Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     assignDataFilesToHeader: function (request, response, process) {
         this.LOG.debug('Associating data files with corresponding headers');

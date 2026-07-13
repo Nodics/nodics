@@ -11,6 +11,13 @@
 
 const _ = require('lodash');
 
+/**
+ * @module gFramework/nValidator/src/service/validator/defaultValidatorService
+ * @description Implements nValidator default validator service business behavior and extension logic.
+ * @layer service
+ * @owner nValidator
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -33,6 +40,27 @@ module.exports = {
             resolve(true);
         });
     },
+
+
+    /**
+
+
+     * Retrieves tenant validators information.
+
+
+     *
+
+
+     * @param {*} tenants Method input.
+
+
+     * @param {*} validators Method input.
+
+
+     * @returns {*} Method result.
+
+
+     */
 
 
     loadTenantValidators: function (tenants, validators = {}) {
@@ -59,6 +87,16 @@ module.exports = {
         });
     },
 
+    /**
+
+     * Retrieves validators information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
+
     loadValidators: function () {
         return new Promise((resolve, reject) => {
             try {
@@ -78,6 +116,18 @@ module.exports = {
             }
         });
     },
+
+    /**
+
+     * Retrieves raw validators information.
+
+     *
+
+     * @param {*} validatorItems Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     loadRawValidators: function (validatorItems) {
         let validators = {};
@@ -115,6 +165,18 @@ module.exports = {
         ));
     },
 
+    /**
+
+     * Processes validator change event behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
+
     handleValidatorChangeEvent: function (request) {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultPipelineService.start('validatorUpdatedPipeline', {
@@ -130,6 +192,22 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Processes validators behavior.
+
+     *
+
+     * @param {*} validatorList Method input.
+
+     * @param {*} request Method input.
+
+     * @param {*} response Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     executeValidators: function (validatorList, request, response) {
         let _self = this;

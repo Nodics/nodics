@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nPipeline/config/properties
+ * @description Reserved nPipeline property contribution for pipeline runtime defaults.
+ * @layer config
+ * @owner nPipeline
+ * @override Project modules may provide later property contributions for pipeline execution policy and diagnostics.
+ */
 module.exports = {
 
 };

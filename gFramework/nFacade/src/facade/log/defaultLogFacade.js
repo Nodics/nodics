@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nFacade/src/facade/log/defaultLogFacade
+ * @description Coordinates facade-level delegation for nFacade default log facade operations.
+ * @layer facade
+ * @owner nFacade
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -31,6 +38,18 @@ module.exports = {
             resolve(true);
         });
     },
+
+    /**
+
+     * Executes change log level behavior.
+
+     *
+
+     * @param {*} request Method input.
+
+     * @returns {*} Method result.
+
+     */
 
     changeLogLevel: function (request) {
         return SERVICE.DefaultLogService.changeLogLevel(request);

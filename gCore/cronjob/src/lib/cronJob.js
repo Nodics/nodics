@@ -12,6 +12,13 @@
 
 const CronJob = require('cron').CronJob;
 
+/**
+ * @module cronjob/lib/CronJob
+ * @description Runtime wrapper around the `cron` package that controls one tenant-scoped scheduled job and its lifecycle pipelines.
+ * @layer lib
+ * @owner cronjob
+ * @override Project modules may replace this wrapper only when scheduler lifecycle semantics are intentionally changed.
+ */
 module.exports = function (definition, trigger, context, timeZone) {
     let _definition = definition;
     let _tenant = definition.tenant;
@@ -68,6 +75,11 @@ module.exports = function (definition, trigger, context, timeZone) {
         _self.LOG.info('###### Creating job: ' + _definition.code + ' tenant: ' + definition.tenant + ' with time schedule : ' + cronTime, ' at: ' + currentTime.getHours(), ':' + currentTime.getMinutes(), ':' + currentTime.getSeconds());
         _cronJob = new CronJob({
             cronTime: cronTime,
+            /**
+             * Handles each scheduler tick by validating state, running the trigger pipeline, and writing optional execution logs.
+             *
+             * @returns {void}
+             */
             onTick: function () {
                 try {
                     if (_active && !_paused && !_running) {
@@ -132,6 +144,11 @@ module.exports = function (definition, trigger, context, timeZone) {
                     _self.handleError(error);
                 }
             },
+            /**
+             * Handles scheduler completion by running the completion pipeline and marking the wrapper inactive.
+             *
+             * @returns {void}
+             */
             onComplete: function () {
                 try {
                     if (NODICS.getServerState() === 'started' && (CONFIG.get('nodeId') === _definition.runOnNode || CONFIG.get('nodeId') === definition.tempNode)) {

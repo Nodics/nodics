@@ -12,6 +12,13 @@
 /*
    Change this file name as per test case name. This just a sample file
 */
+/**
+ * @module wcms/test/common/commonTest
+ * @description Common sample test scaffold for WCMS content module contracts.
+ * @layer test
+ * @owner wcms
+ * @override Project content modules may replace this scaffold with concrete WCMS contract tests.
+ */
 const Chai = require('chai');
 const expect = Chai.expect;
 

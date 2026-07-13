@@ -63,9 +63,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 8 |
-| Undocumented | 16 |
+| Documented | 19 |
+| Partially documented | 2 |
+| Undocumented | 3 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -88,31 +88,31 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nEms/emsClient/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nEms/emsClient/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nEms/emsClient/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEms/emsClient/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEms/emsClient/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nEms configuration used during module startup and layering. |  |
+| `gFramework/nEms/emsClient/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nEms configuration used during module startup and layering. |  |
+| `gFramework/nEms/emsClient/config/properties.js` | `config` | `documented` | 0/0 | Defines default nEms configuration used during module startup and layering. |  |
 | `gFramework/nEms/emsClient/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nEms/emsClient/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/nodics.js` | `module` | `documented` | 2/2 | Registers the nEms module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nEms/emsClient/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nEms/emsClient/src/controller/defaultEmsClientController.js` | `src` | `undocumented` | 0/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gFramework/nEms/emsClient/src/facade/defaultEmsClientFacade.js` | `src` | `undocumented` | 0/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gFramework/nEms/emsClient/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEms/emsClient/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEms/emsClient/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEms/emsClient/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEms/emsClient/src/service/config/defaultEmsClientConfigurationService.js` | `src` | `partially-documented` | 2/13 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 11 exported method(s) |
-| `gFramework/nEms/emsClient/src/service/ems/defaultEmsClientService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gFramework/nEms/emsClient/src/service/handlers/defaultJSONMessageHandlerService.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gFramework/nEms/emsClient/src/service/handlers/defaultXMLMessageHandlerService.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gFramework/nEms/emsClient/src/service/node/defaultEmsNodeDownHandlerService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gFramework/nEms/emsClient/src/service/node/defaultEmsNodeUpHandlerService.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gFramework/nEms/emsClient/src/service/proc/defaultMessageProcessService.js` | `src` | `partially-documented` | 2/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gFramework/nEms/emsClient/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEms/emsClient/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/src/controller/defaultEmsClientController.js` | `src` | `documented` | 5/5 | Exposes request handlers for nEms default ems client controller operations. |  |
+| `gFramework/nEms/emsClient/src/facade/defaultEmsClientFacade.js` | `src` | `documented` | 5/5 | Coordinates facade-level delegation for nEms default ems client facade operations. |  |
+| `gFramework/nEms/emsClient/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nEms pipeline wiring and execution contracts. |  |
+| `gFramework/nEms/emsClient/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nEms route registration and HTTP exposure metadata. |  |
+| `gFramework/nEms/emsClient/src/router/router.js` | `src` | `documented` | 0/0 | Defines nEms route registration and HTTP exposure metadata. |  |
+| `gFramework/nEms/emsClient/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nEms schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nEms/emsClient/src/service/config/defaultEmsClientConfigurationService.js` | `src` | `documented` | 13/13 | Implements nEms default ems client configuration service business behavior and extension logic. |  |
+| `gFramework/nEms/emsClient/src/service/ems/defaultEmsClientService.js` | `src` | `documented` | 7/7 | Implements nEms default ems client service business behavior and extension logic. |  |
+| `gFramework/nEms/emsClient/src/service/handlers/defaultJSONMessageHandlerService.js` | `src` | `documented` | 4/4 | Implements nEms default jsonmessage handler service business behavior and extension logic. |  |
+| `gFramework/nEms/emsClient/src/service/handlers/defaultXMLMessageHandlerService.js` | `src` | `documented` | 4/4 | Implements nEms default xmlmessage handler service business behavior and extension logic. |  |
+| `gFramework/nEms/emsClient/src/service/node/defaultEmsNodeDownHandlerService.js` | `src` | `documented` | 6/6 | Implements nEms default ems node down handler service business behavior and extension logic. |  |
+| `gFramework/nEms/emsClient/src/service/node/defaultEmsNodeUpHandlerService.js` | `src` | `documented` | 4/4 | Implements nEms default ems node up handler service business behavior and extension logic. |  |
+| `gFramework/nEms/emsClient/src/service/proc/defaultMessageProcessService.js` | `src` | `documented` | 6/6 | Implements nEms default message process service business behavior and extension logic. |  |
+| `gFramework/nEms/emsClient/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nEms utility exports for status definitions. |  |
+| `gFramework/nEms/emsClient/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nEms utility exports for utils. |  |
 | `gFramework/nEms/emsClient/test/activeEmsPublisher.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEms/emsClient/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nEms/emsClient/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nEms test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nEms/emsClient/test/emsClientRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nEms/emsClient/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nEms/emsClient/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nEms test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nEms/emsClient/test/messageTenantResolution.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 
 ## Extension Contract

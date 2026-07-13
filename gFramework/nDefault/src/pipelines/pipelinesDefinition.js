@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module nDefault/pipelines/pipelinesDefinition
+ * @description Reserved pipeline definition contribution for the default framework baseline.
+ * @layer pipeline
+ * @owner nDefault
+ * @override Later modules provide concrete pipelines without modifying the default scaffold.
+ */
 module.exports = {
 
 };

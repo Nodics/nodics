@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nbpm/src/interceptors/interceptors
+ * @description Registers nbpm interceptor wiring for pipeline extension points.
+ * @layer interceptors
+ * @owner nbpm
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
     preRemoveReturnModified: {
         type: 'schema',

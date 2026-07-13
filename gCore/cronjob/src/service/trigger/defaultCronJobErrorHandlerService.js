@@ -9,11 +9,19 @@
 
  */
 
+/**
+ * @module cronjob/service/trigger/DefaultCronJobErrorHandlerService
+ * @description Pipeline service for validating, governing, persisting, and publishing cronjob error transitions.
+ * @layer service
+ * @owner cronjob
+ * @override Project modules may override this handler to customize error transition governance.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the cronjob error handler during service loading.
+     *
+     * @param {Object} options Loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -22,9 +30,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes the cronjob error handler after service loading.
+     *
+     * @param {Object} options Loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -32,6 +41,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Validates that error pipeline input contains job and definition objects.
+     *
+     * @param {Object} request Pipeline request.
+     * @param {Object} response Pipeline response.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     */
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating job error request');
         if (!request.job) {
@@ -43,6 +60,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Applies configured error interceptors for the job.
+     *
+     * @param {Object} request Pipeline request.
+     * @param {Object} response Pipeline response.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     */
     applyInterceptors: function (request, response, process) {
         let jobDefinition = request.definition;
         let interceptors = SERVICE.DefaultCronJobConfigurationService.getJobInterceptors(jobDefinition.code);
@@ -61,6 +86,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Applies configured error validators for the job.
+     *
+     * @param {Object} request Pipeline request.
+     * @param {Object} response Pipeline response.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     */
     applyValidators: function (request, response, process) {
         let jobDefinition = request.definition;
         let validators = SERVICE.DefaultCronJobConfigurationService.getJobValidators(request.tenant, jobDefinition.code);
@@ -79,6 +112,14 @@ module.exports = {
         }
     },
 
+    /**
+     * Persists the ERROR status for a failed job.
+     *
+     * @param {Object} request Pipeline request.
+     * @param {Object} response Pipeline response.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     */
     stateChangeError: function (request, response, process) {
         this.LOG.debug('Changing job state to error');
         let jobDefinition = request.definition;
@@ -104,6 +145,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Publishes a configured job-error event.
+     *
+     * @param {Object} request Pipeline request.
+     * @param {Object} response Pipeline response.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     */
     triggerEvent: function (request, response, process) {
         try {
             let jobDefinition = request.definition;

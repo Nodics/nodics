@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gOptional/kyc/kycCore/src/service/notify/docs/defaultDocumentKycNotificationInitPipelineService
+ * @description Implements KYC document notification initialization validation for workflow notification pipelines.
+ * @layer service
+ * @owner kyc
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
 module.exports = {
 
     /**
@@ -33,6 +40,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Validates the tenant and authentication context required to initialize document KYC notification.
+     *
+     * @param {Object} request Pipeline request context.
+     * @param {Object} response Pipeline response context.
+     * @param {Object} process Pipeline process callbacks.
+     * @returns {void}
+     */
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating request to init document kyc notification');
         if (!request.tenant || !request.authData) {

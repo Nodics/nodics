@@ -63,9 +63,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
+| Documented | 15 |
 | Partially documented | 2 |
-| Undocumented | 15 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -88,25 +88,25 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nCatalog/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nCatalog/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nCatalog/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCatalog/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCatalog/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCatalog/data/init/data/catalog/defaultCatalogData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCatalog/data/init/headers/catalog/defaultCatalogHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCatalog/data/sample/data/samples/defaultSamplesCatalogData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCatalog/data/sample/headers/samples/defaultSamplesCatalogHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCatalog/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nCatalog configuration used during module startup and layering. |  |
+| `gFramework/nCatalog/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nCatalog configuration used during module startup and layering. |  |
+| `gFramework/nCatalog/config/properties.js` | `config` | `documented` | 0/0 | Defines default nCatalog configuration used during module startup and layering. |  |
+| `gFramework/nCatalog/data/init/data/catalog/defaultCatalogData.js` | `data` | `documented` | 0/0 | Provides nCatalog initializer or sample data consumed by the import layer. |  |
+| `gFramework/nCatalog/data/init/headers/catalog/defaultCatalogHeader.js` | `data` | `documented` | 0/0 | Provides nCatalog initializer or sample data consumed by the import layer. |  |
+| `gFramework/nCatalog/data/sample/data/samples/defaultSamplesCatalogData.js` | `data` | `documented` | 0/0 | Provides nCatalog initializer or sample data consumed by the import layer. |  |
+| `gFramework/nCatalog/data/sample/headers/samples/defaultSamplesCatalogHeader.js` | `data` | `documented` | 0/0 | Provides nCatalog initializer or sample data consumed by the import layer. |  |
 | `gFramework/nCatalog/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nCatalog/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nCatalog/nodics.js` | `module` | `documented` | 2/2 | Registers the nCatalog module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nCatalog/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nCatalog/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCatalog/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCatalog/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCatalog/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCatalog/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCatalog/src/service/interceptors/defaultSubCatalogsResolveInterceptorService.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gFramework/nCatalog/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nCatalog/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gFramework/nCatalog/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gFramework/nCatalog/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers nCatalog interceptor wiring for pipeline extension points. |  |
+| `gFramework/nCatalog/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nCatalog pipeline wiring and execution contracts. |  |
+| `gFramework/nCatalog/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nCatalog route registration and HTTP exposure metadata. |  |
+| `gFramework/nCatalog/src/router/router.js` | `src` | `documented` | 0/0 | Defines nCatalog route registration and HTTP exposure metadata. |  |
+| `gFramework/nCatalog/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nCatalog schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nCatalog/src/service/interceptors/defaultSubCatalogsResolveInterceptorService.js` | `src` | `documented` | 4/4 | Implements nCatalog default sub catalogs resolve interceptor service business behavior and extension logic. |  |
+| `gFramework/nCatalog/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nCatalog utility exports for utils. |  |
+| `gFramework/nCatalog/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nCatalog test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nCatalog/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nCatalog test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

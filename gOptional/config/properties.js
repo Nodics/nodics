@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gOptional/config/properties
+ * @description Defines default gOptional configuration used during module startup and layering.
+ * @layer config
+ * @owner gOptional
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };

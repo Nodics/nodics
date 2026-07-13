@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gframes/gframesModules/gfcms/data/core/headers/components/grayFramesHomePageCmsComponentsDataHeader
+ * @description Provides gframesModules initializer or sample data consumed by the import layer.
+ * @layer data
+ * @owner gframesModules
+ * @override Projects may override or extend this initializer data through layered import data rather than editing out-of-the-box framework records.
+ */
 module.exports = {
     cms: {
         grayFramesHomePageCmsComponentsData: {

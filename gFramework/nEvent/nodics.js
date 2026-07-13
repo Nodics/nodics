@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module gFramework/nEvent/nodics
+ * @description Registers the nEvent module lifecycle hooks and module-level startup behavior.
+ * @layer module
+ * @owner nEvent
+ * @override Projects may override lifecycle behavior through later active modules instead of modifying this module directly.
+ */
 module.exports = {
     /**
      * This function is used to initiate module loading process. If there is any functionalities, required to be executed on module loading. 
@@ -39,6 +46,16 @@ module.exports = {
             });
         });
     },
+
+    /**
+
+     * Retrieves listeners information.
+
+     *
+
+     * @returns {*} Method result.
+
+     */
 
     loadListeners: function () {
         listeners.register();

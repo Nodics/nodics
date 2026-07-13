@@ -5,6 +5,13 @@
     standard Nodics module folder shape and is not loaded during normal startup.
  */
 
+/**
+ * @module gSetup/config/properties
+ * @description Defines default gSetup configuration used during module startup and layering.
+ * @layer config
+ * @owner gSetup
+ * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
+ */
 module.exports = {
 
 };
