@@ -48,21 +48,22 @@ execution efficiency; it does not weaken validation of project code.
 Load detailed files only when their subject is affected:
 
 1. `contracts/nodics-principles.md`
-2. `contracts/module-structure-contract.md`
-3. `contracts/documentation-impact-contract.md`
-4. `contracts/testing-and-release-contract.md`
-5. `contracts/customer-project-mode-contract.md`
-6. `nodics-principles.md`
-7. `modular-architecture.md`
-8. `module-catalog.md`
-9. `artifact-definition-and-change-guide.md`
-10. `schema-and-generation.md`
-11. `testing-playbook.md`
-12. `standards/module-standard.md`
-13. `standards/code-documentation-standard.md`
-14. `feature-process.md`
-15. `prompts/base-nodics-assistant-prompt.md`
-16. `prompts/enterprise-architecture-quality-prompt.md`
+2. `contracts/developer-implementation-contract.md`
+3. `contracts/module-structure-contract.md`
+4. `contracts/documentation-impact-contract.md`
+5. `contracts/testing-and-release-contract.md`
+6. `contracts/customer-project-mode-contract.md`
+7. `nodics-principles.md`
+8. `modular-architecture.md`
+9. `module-catalog.md`
+10. `artifact-definition-and-change-guide.md`
+11. `schema-and-generation.md`
+12. `testing-playbook.md`
+13. `standards/module-standard.md`
+14. `standards/code-documentation-standard.md`
+15. `feature-process.md`
+16. `prompts/base-nodics-assistant-prompt.md`
+17. `prompts/enterprise-architecture-quality-prompt.md`
 
 Load `change-gate-contract.md` only at commit, merge/release, periodic-audit, or
 explicit comprehensive-review time. Canonical rules should be referenced rather

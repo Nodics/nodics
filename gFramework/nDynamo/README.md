@@ -45,6 +45,16 @@ type compatibility, tenant scoping, immutable approval intent, traceability, and
 rollback semantics. Add a new configuration type to the existing lifecycle; do
 not create a parallel activation channel.
 
+## Dynamic Property Governance
+
+Governed dynamic properties belong to `nDynamo` through the
+`propertyConfiguration` lifecycle, not to ad hoc database or property mutation
+paths.
+
+Runtime property changes must use preview, approval, activation, audit, and
+rollback services. Externally reachable code must not mutate tenant properties
+directly.
+
 ## Tests
 
 Run `npm run test:runtime-overrides` for focused governance coverage. The full

@@ -13,3 +13,13 @@ without editing the coordinator. Reconcilers are expected
 to preserve existing customizations, avoid secret generation, provide audit
 traceability for mutations, and fail startup when a mandatory contract cannot be
 restored safely.
+
+## Documentation Contract
+
+Framework guidance is organized around the owning capability modules, including
+`nConfig`, `nCommon`, `nDatabase`, generated DAO/service/facade/controller/router
+layers, request handling, cache, messaging, logging, testing, events, and cron
+jobs.
+
+Module-specific details belong in each owning module README. Use this group
+README only for cross-framework coordination and capability boundaries.

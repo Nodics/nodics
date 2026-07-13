@@ -43,3 +43,15 @@ reachable path.
 
 System route and behavior contracts live under `test/`. Runtime governance
 behavior is covered by nDynamo's `test:runtime-overrides` suite.
+
+## Logging And Diagnostics
+
+Logging is a platform capability with console, file, and provider-backed logger
+configuration plus runtime log-level control. Logging and diagnostics guidance
+belongs here only when it is system/control-plane behavior; provider-specific
+logging adapters should remain behind their owning modules or project
+overrides.
+
+Diagnostics and logs must be sanitized. Never expose passwords, tokens, API
+keys, cache keys, private keys, credentials, or secrets in logs, audit output,
+or operational responses.

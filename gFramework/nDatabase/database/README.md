@@ -30,3 +30,27 @@ Test databases remain conditional on the active test configuration. Production
 configuration and credentials must be contributed by project, environment,
 server, node, external, or governed runtime layers rather than hardcoded into
 framework services.
+
+## Provider Adapter Checklist
+
+Use this checklist when adding a new database adapter such as Oracle:
+
+- define the provider module and metadata so Nodics can load it as an active
+  module;
+- contribute layered `database` configuration for `databaseType`,
+  `connectionHandler`, URI, database name, credentials, pool options, and
+  provider-specific options;
+- implement the connection handler and model/query adapter behind the generic
+  database service contract;
+- keep generated DAO/model CRUD behavior provider-neutral;
+- preserve tenant/module keying for registered connections and models;
+- preserve schema read/write access policy, interceptors, middleware,
+  validators, diagnostics, and error codes;
+- add contract tests for valid configuration, invalid configuration, tenant
+  isolation, module isolation, query behavior, and override behavior;
+- document any provider limitations, required external libraries, live-test
+  requirements, and secret-management expectations.
+
+If this checklist cannot be satisfied without editing generic DAO or generated
+CRUD call sites, the framework is missing an extension point. Add that extension
+point deliberately rather than wiring a provider shortcut into the core path.

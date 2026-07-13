@@ -45,6 +45,11 @@ An organization building `AmazonEcom` should be able to extend `catalog.catalog`
 
 This contract applies to every modification and every new source file. A change is not complete merely because its default implementation works.
 
+Use `contracts/developer-implementation-contract.md` when deciding where a
+feature belongs, which extension point should own it, and how human developers
+or AI tools should guide implementation without bypassing Nodics module,
+generated-layer, tenant, or runtime-governance contracts.
+
 1. Follow established Nodics module, loader, registry, schema, service, facade, controller, router, pipeline, interceptor, validator, data, configuration, and runtime-governance patterns. Do not introduce a parallel mechanism when an existing extension mechanism owns the capability.
 2. Resolve implementation choices from the effective active module hierarchy, configuration, tenant/request context, schema definitions, and governed runtime state. Do not embed customer, project, environment, server, node, tenant, group, role, or deployment assumptions in framework code.
 3. Preserve the hierarchy from framework defaults through project, environment, server, and node contributions. A later-loaded customer project module must be able to extend, replace, or govern applicable schemas, services, facades, controllers, routers, pipelines, interceptors, validators, data, tests, configuration, and runtime policy without modifying out-of-the-box Nodics code.

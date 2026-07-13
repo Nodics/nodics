@@ -76,3 +76,14 @@ Projects can replace the service list, override the reconciler in a later module
 layer, extend `identityGovernance.migration.groupTargets`, or disable automatic
 group reconciliation. Missing service principals or credentials are not
 silently recreated; those remain fail-closed governed recovery operations.
+
+## Identity Capability Boundary
+
+Profile guidance covers people, NAAM-style identity management,
+authentication-facing data, authorization data, default auth token behavior,
+and password management while preserving the split between `gCore/profile`
+identity data and `gFramework/nAuth` security/token infrastructure.
+
+Profile owns people, groups, credentials, tenants, enterprises, and persisted
+identity state. `nAuth` owns framework security primitives, JWT/API-key
+contracts, service tokens, cache requirements, and strict auth activation.
