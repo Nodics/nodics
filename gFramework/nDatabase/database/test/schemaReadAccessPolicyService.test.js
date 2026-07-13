@@ -1,6 +1,11 @@
 const assert = require('assert');
 
 global.SERVICE = {};
+global.CONFIG = {
+    get: function (key) {
+        if (key === 'cache') return { enabled: true };
+    }
+};
 global.CLASSES = {
     NodicsError: class NodicsError extends Error {
         constructor(error, message, code) {

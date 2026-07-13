@@ -150,6 +150,10 @@ global.NODICS = {
     getServerPath: function () {
         return layers[3].path;
     },
+    /** @returns {string[]} Active tenant fixtures used by tenant-wide configuration changes. */
+    getActiveTenants: function () {
+        return ['tenantA', 'tenantB'];
+    },
     /** @returns {void} Ignores logger registration in the isolated contract. */
     addLogger: function () {}
 };
@@ -308,6 +312,17 @@ function assertLayeredArtifact(artifact, expectedLayer) {
         assert.strictEqual(CONFIG.get('hierarchyContract').implementationLayer, 'node');
         assert.strictEqual(CONFIG.get('hierarchyContract', 'tenantA').implementationLayer, 'tenant-runtime');
         assert.strictEqual(CONFIG.get('hierarchyContract', 'tenantA').tenantRuntime, true);
+        CONFIG.setProperties(_.merge({}, properties), 'tenantB');
+        CONFIG.changeTenantProperties({
+            hierarchyContract: {
+                implementationLayer: 'all-tenant-runtime',
+                tenantWideRuntime: true
+            }
+        });
+        assert.strictEqual(CONFIG.get('hierarchyContract').implementationLayer, 'node');
+        assert.strictEqual(CONFIG.get('hierarchyContract', 'tenantA').implementationLayer, 'all-tenant-runtime');
+        assert.strictEqual(CONFIG.get('hierarchyContract', 'tenantB').implementationLayer, 'all-tenant-runtime');
+        assert.strictEqual(CONFIG.get('hierarchyContract', 'tenantB').tenantWideRuntime, true);
 
         await loadArtifacts();
         assertLayeredArtifact(SERVICE.defaultHierarchyProbeService, 'node');

@@ -68,7 +68,7 @@ module.exports = {
      * @sideEffects Writes merged post-scripts to `NODICS`.
      */
     loadPostScript: function () {
-        this.LOG.info("Starting pre-script execution process");
+        this.LOG.info("Starting Post Scripts loader process");
         NODICS.setPostScripts(fileLoader.loadFiles('/config/postscripts.js'));
     },
 

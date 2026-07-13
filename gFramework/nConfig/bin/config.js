@@ -22,6 +22,13 @@ const _ = require('lodash');
 module.exports = function () {
     let _tntProperties = {};
 
+    this.getConfiguredTenantCodes = function () {
+        if (typeof NODICS !== 'undefined' && NODICS && typeof NODICS.getActiveTenants === 'function') {
+            return NODICS.getActiveTenants();
+        }
+        return Object.keys(_tntProperties).filter(tenant => tenant !== 'default');
+    };
+
     this.setProperties = function (properties, tenant) {
         if (tenant) {
             _tntProperties[tenant] = properties;
@@ -40,7 +47,7 @@ module.exports = function () {
     this.get = function (key, tenant) {
         let tntProperties = this.getProperties(tenant);
         if (!tntProperties) {
-            this.LOG.error("System could't find any properties for current Tanent : ", tenant ? tenant : NODICS.getActiveTanent());
+            this.LOG.error("System could not find any properties for current tenant: ", tenant || this.getConfiguredTenantCodes());
             return null;
         }
         return tntProperties[key];
@@ -48,10 +55,10 @@ module.exports = function () {
 
     this.changeTenantProperties = function (config, tenant) {
         if (tenant) {
-            _tntProperties[tenant] = _.merge(_tntProperties[tenant], config);
+            _tntProperties[tenant] = _.merge(_tntProperties[tenant] || {}, config);
         } else {
-            NODICS.getActiveTanent().forEach(tenant => {
-                _tntProperties[tenant] = _.merge(_tntProperties[tenant], config);
+            this.getConfiguredTenantCodes().forEach(tenant => {
+                _tntProperties[tenant] = _.merge(_tntProperties[tenant] || {}, config);
             });
         }
 

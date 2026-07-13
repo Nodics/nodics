@@ -37,6 +37,18 @@ module.exports = {
         return ordered;
     },
 
+    /** Builds a bounded query for only the configured mandatory groups. */
+    buildMandatoryGroupLookup: function (targets) {
+        const codes = Object.keys(targets || {});
+        return {
+            query: codes.length > 0 ? { code: { $in: codes } } : { code: { $in: [] } },
+            searchOptions: {
+                pageSize: Math.max(codes.length, 1),
+                pageNumber: 1
+            }
+        };
+    },
+
     /**
      * Creates only missing configured groups and records the resulting startup change.
      *
@@ -49,7 +61,8 @@ module.exports = {
             return Promise.resolve({ status: 'DISABLED', createdGroups: [] });
         }
         const targets = policy.groupTargets || {};
-        return SERVICE.DefaultUserGroupService.get(this.systemRequest(request, { query: {} })).then(response => {
+        const lookup = this.buildMandatoryGroupLookup(targets);
+        return SERVICE.DefaultUserGroupService.get(this.systemRequest(request, lookup)).then(response => {
             const existingCodes = new Set((response.result || []).map(group => group.code));
             const creationOrder = this.orderMissingGroups(targets, existingCodes);
             const models = creationOrder.map(code => Object.assign({ code: code, name: code, active: true }, targets[code]));
