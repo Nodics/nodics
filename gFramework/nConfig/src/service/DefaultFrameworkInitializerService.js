@@ -930,11 +930,11 @@ module.exports = {
      * @sideEffects Requires file and merges exports into `CONFIG.properties`.
      */
     loadConfiguration: function (filePath) {
-        let config = CONFIG.getProperties();
+        let config = CONFIG.getProperties() || {};
         if (fs.existsSync(filePath)) {
             this.LOG.debug('Loading configuration file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
             var propertyFile = require(filePath);
-            config = _.merge(config, propertyFile);
+            CONFIG.setProperties(_.merge(config, propertyFile));
         }
     },
 
@@ -953,11 +953,8 @@ module.exports = {
             files.forEach(function (filePath) {
                 if (fs.existsSync(filePath)) {
                     _self.LOG.debug('Loading configuration file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
-                    let props = CONFIG.getProperties();
-                    if (tntCode) {
-                        props = CONFIG.getProperties(tntCode);
-                    }
-                    _.merge(props, require(filePath));
+                    let props = tntCode ? CONFIG.getProperties(tntCode) || {} : CONFIG.getProperties() || {};
+                    CONFIG.setProperties(_.merge(props, require(filePath)), tntCode);
                 } else {
                     _self.LOG.warn('System cant find configuration at : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
                 }

@@ -270,6 +270,22 @@ function assertLayeredArtifact(artifact, expectedLayer) {
         assert.strictEqual(properties.hierarchyContract.capabilityContract, 'stable');
         assert.strictEqual(properties.hierarchyContract.implementationLayer, 'node');
         layers.forEach(layer => assert.strictEqual(properties.hierarchyContract[layer.role], true));
+        const externalPropertiesPath = path.join(fixtureRoot, 'external-properties.js');
+        writeContribution({ path: fixtureRoot }, 'external-properties.js', {
+            hierarchyContract: {
+                externalLayer: true
+            },
+            externalOnly: {
+                loaded: true
+            }
+        });
+        initializer.loadExternalProperties([externalPropertiesPath]);
+        assert.strictEqual(CONFIG.get('hierarchyContract').externalLayer, true);
+        assert.strictEqual(CONFIG.get('externalOnly').loaded, true);
+        initializer.loadExternalProperties([externalPropertiesPath], 'tenantExternal');
+        assert.strictEqual(CONFIG.get('hierarchyContract', 'tenantExternal').externalLayer, true);
+        assert.strictEqual(CONFIG.get('externalOnly', 'tenantExternal').loaded, true);
+        assert.strictEqual(CONFIG.get('externalOnly').loaded, true);
 
         const data = fileLoader.loadFiles('/data/hierarchy/data.js', {});
         const tests = fileLoader.loadFiles('/test/hierarchy/contribution.js', {});
