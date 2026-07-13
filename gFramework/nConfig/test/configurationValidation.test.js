@@ -68,6 +68,12 @@ initializeConfiguration('kickoffLocalServer', 'kickoffLocalNode0');
 assert.strictEqual(NODICS.getNodeName(), 'kickoffLocalNode0');
 assert(NODICS.isModuleActive('kickoffLocalNode0'), 'selected node module should be active');
 assert.strictEqual(NODICS.getActiveModules().filter(moduleName => moduleName === 'kickoffLocalNode0').length, 1);
+assert.deepStrictEqual(initService.getSelectedRuntimeModuleNames(), [
+    'kickoffEnvs',
+    'kickoffLocal',
+    'kickoffLocalServer',
+    'kickoffLocalNode0'
+]);
 let nodeServerProperties = initService.loadServerProperties();
 let nodeConfiguredModules = nodeServerProperties.activeModules.modules.slice();
 let configuredWithNode = initService.getConfiguredActiveModuleNames(nodeServerProperties);
@@ -148,3 +154,25 @@ assert.throws(() => {
         index: '100.1'
     }, 'server root to server');
 }, /index order is invalid/);
+
+let originalGetEnvironmentName = NODICS.getEnvironmentName;
+let originalGetRawModule = NODICS.getRawModule;
+NODICS.getEnvironmentName = function () {
+    return 'detachedRuntimeGroup';
+};
+NODICS.getRawModule = function (moduleName) {
+    if (moduleName === 'detachedRuntimeGroup') {
+        return {
+            name: 'detachedRuntimeGroup',
+            index: '100.0',
+            parent: 'application',
+            metaData: { name: 'detachedRuntimeGroup', nodics: { kind: 'group' } }
+        };
+    }
+    return originalGetRawModule.call(NODICS, moduleName);
+};
+assert.throws(() => {
+    initService.validateSelectedRuntimeHierarchy();
+}, /must be a child of environment group detachedRuntimeGroup/);
+NODICS.getEnvironmentName = originalGetEnvironmentName;
+NODICS.getRawModule = originalGetRawModule;

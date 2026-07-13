@@ -262,6 +262,9 @@ function assertLayeredArtifact(artifact, expectedLayer) {
         const originalGetRawModule = NODICS.getRawModule;
         const originalGetEnvironmentName = NODICS.getEnvironmentName;
         const originalGetEnvironmentPath = NODICS.getEnvironmentPath;
+        const originalGetServerRootName = NODICS.getServerRootName;
+        const originalGetServerName = NODICS.getServerName;
+        const originalGetNodeName = NODICS.getNodeName;
         const boundaryModules = {
             rootApplication: { name: 'rootApplication', path: path.join(fixtureRoot, 'rootApplication') },
             runtimeScope: { name: 'runtimeScope', path: path.join(fixtureRoot, 'rootApplication/runtimeScope'), parent: 'rootApplication' },
@@ -278,6 +281,19 @@ function assertLayeredArtifact(artifact, expectedLayer) {
         NODICS.getEnvironmentPath = function () {
             return boundaryModules.runtimeScope.path;
         };
+        NODICS.getServerRootName = function () {
+            return 'deploySlice';
+        };
+        NODICS.getServerName = function () {
+            return 'apiWorker';
+        };
+        NODICS.getNodeName = function () {
+            return 'blueInstance';
+        };
+        assert.deepStrictEqual(
+            initializer.getSelectedRuntimeModuleNames(),
+            ['runtimeScope', 'deploySlice', 'apiWorker', 'blueInstance']
+        );
         assert.deepStrictEqual(
             initializer.resolveModuleHierarchy('blueInstance'),
             ['blueInstance', 'apiWorker', 'deploySlice']
@@ -289,6 +305,9 @@ function assertLayeredArtifact(artifact, expectedLayer) {
         NODICS.getRawModule = originalGetRawModule;
         NODICS.getEnvironmentName = originalGetEnvironmentName;
         NODICS.getEnvironmentPath = originalGetEnvironmentPath;
+        NODICS.getServerRootName = originalGetServerRootName;
+        NODICS.getServerName = originalGetServerName;
+        NODICS.getNodeName = originalGetNodeName;
         assert.deepStrictEqual(
             initializer.sortModules(layers.map(layer => layer.index)),
             layers.map(layer => layer.index)

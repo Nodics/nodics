@@ -43,6 +43,13 @@ The runtime hierarchy is metadata-driven:
 - each runnable server under an environment is a `nodics.kind: "server"` package.
 - each runnable node under a server is a `nodics.kind: "node"` package.
 
+The selected runtime sequence is environment group -> environment/server-root
+-> server -> optional node. Nodics validates parent relationships for the whole
+chain and validates concrete environment/server/node index ordering. Environment
+group containers may use grouping indexes, so their role is validated by kind
+and parent relationship rather than by concrete runtime load order. Names may be
+human-friendly, but they do not define the role.
+
 Every selected environment group, environment, server, and node must provide `config/properties.js`. The startup initializer validates these files, validates parent/child relationships, and validates index order before loading runtime services.
 
 Do not introduce alternate metadata names for the same concept. Nodics module classification belongs in `package.json.nodics.kind`; runtime flags belong in `package.json.nodics.runtime`; ownership belongs in `package.json.nodics.owns`.

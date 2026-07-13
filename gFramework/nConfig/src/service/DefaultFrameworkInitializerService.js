@@ -269,6 +269,23 @@ module.exports = {
     },
 
     /**
+     * Returns the selected runtime topology sequence in parent-to-child order.
+     *
+     * The sequence is derived from startup selection and parent relationships:
+     * environment group -> environment/server-root -> server -> optional node.
+     *
+     * @returns {string[]} Selected runtime module names.
+     */
+    getSelectedRuntimeModuleNames: function () {
+        return [
+            NODICS.getEnvironmentName(),
+            NODICS.getServerRootName(),
+            NODICS.getServerName(),
+            NODICS.getNodeName()
+        ].filter(Boolean);
+    },
+
+    /**
      * Resolves active modules from gFramework, configured groups/modules, selected node, parents, and dependencies.
      *
      * @returns {string[]} Active module names that should participate in startup.
@@ -605,15 +622,23 @@ module.exports = {
      * @throws Invalid configuration error when selected runtime modules are unknown, inactive, incorrectly parented, or mis-indexed.
      */
     validateSelectedRuntimeHierarchy: function () {
+        let environmentName = NODICS.getEnvironmentName();
         let serverName = NODICS.getServerName();
         let serverRootName = NODICS.getServerRootName();
+        let environmentModule = NODICS.getRawModule(environmentName);
         let serverModule = NODICS.getRawModule(serverName);
         let serverRootModule = NODICS.getRawModule(serverRootName);
+        if (!environmentModule) {
+            this.failConfiguration('selected environment group module is not valid: ' + environmentName);
+        }
         if (!serverModule) {
             this.failConfiguration('selected server module is not valid: ' + serverName);
         }
         if (!serverRootModule) {
             this.failConfiguration('selected server root module is not valid for server ' + serverName + ': ' + serverRootName);
+        }
+        if (serverRootModule.parent !== environmentName) {
+            this.failConfiguration('selected server root ' + serverRootName + ' must be a child of environment group ' + environmentName);
         }
         if (serverModule.parent !== serverRootName) {
             this.failConfiguration('selected server ' + serverName + ' must be a child of server root ' + serverRootName);

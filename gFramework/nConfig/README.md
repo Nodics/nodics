@@ -66,6 +66,20 @@ Configuration precedence for the selected runtime is:
 3. selected server configuration;
 4. selected node configuration, when a node is selected.
 
+The selected runtime sequence is always:
+
+1. environment group;
+2. selected environment/server-root;
+3. selected server;
+4. selected node, when a node is selected.
+
+`nConfig` validates that each child points to the previous layer through raw
+module parent metadata. Concrete runtime layers from environment/server-root to
+server to node must also sort in parent-to-child index order. Environment group
+containers may use grouping indexes and are validated by parent relationship and
+kind rather than concrete runtime load order. This sequence is independent of
+package names.
+
 Active modules are resolved from the framework group, configured active groups
 and modules, the selected node, parent modules, and required modules. They are
 then loaded by deterministic dotted `index` order.
