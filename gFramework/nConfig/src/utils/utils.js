@@ -278,7 +278,11 @@ module.exports = {
     },
 
     /**
-     * Resolves a module and its parent hierarchy recursively.
+     * Resolves a discovered module and its full parent hierarchy recursively.
+     *
+     * This utility is for raw package discovery and diagnostics. Active runtime
+     * module expansion uses `DefaultFrameworkInitializerService.resolveModuleHierarchy`
+     * because selected environment boundaries must be respected during startup.
      * @param {string} moduleName Module to resolve.
      * @param {Object<string,Object>} modulesList Discovered modules.
      * @returns {string[]} Module followed by parent module names.

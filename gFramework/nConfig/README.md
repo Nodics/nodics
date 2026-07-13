@@ -70,6 +70,10 @@ Active modules are resolved from the framework group, configured active groups
 and modules, the selected node, parent modules, and required modules. They are
 then loaded by deterministic dotted `index` order.
 
+Raw package discovery may report a full parent chain for diagnostics. Active
+runtime expansion intentionally stops at the selected environment boundary so
+project/application containers are not activated as capability modules.
+
 Do not write framework logic that depends on names ending in `Env`, `Server`,
 `Node`, or any project-specific prefix. Use `package.json.nodics.kind`, parent
 relationships, runtime flags, configured active modules, and module indexes.

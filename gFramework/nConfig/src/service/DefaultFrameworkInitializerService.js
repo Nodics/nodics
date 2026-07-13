@@ -717,10 +717,15 @@ module.exports = {
     },
 
     /**
-     * Resolves parent hierarchy for a module while respecting environment boundary modules.
+     * Resolves active-runtime parent hierarchy for a module while respecting
+     * selected environment boundary modules.
+     *
+     * This differs from the discovery utility resolver: active runtime expansion
+     * stops before the selected environment group/application boundary so startup
+     * does not accidentally activate project containers as capability modules.
      *
      * @param {string} moduleName Module to resolve.
-     * @returns {string[]} Parent hierarchy module names.
+     * @returns {string[]} Module and parent hierarchy names inside the selected runtime boundary.
      * @sideEffects Caches `parentModules` on raw module metadata.
      */
     resolveModuleHierarchy: function (moduleName) {

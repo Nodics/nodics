@@ -146,6 +146,14 @@ global.NODICS = {
     getRawModule: function (moduleName) {
         return discoveredModules[moduleName];
     },
+    /** @returns {string} Selected environment group fixture name used by active runtime hierarchy resolution. */
+    getEnvironmentName: function () {
+        return 'sampleProject';
+    },
+    /** @returns {string} Selected environment group fixture path used by active runtime hierarchy resolution. */
+    getEnvironmentPath: function () {
+        return layers[1].path;
+    },
     /** @returns {string} Selected server fixture path used by logger ownership. */
     getServerPath: function () {
         return layers[3].path;
@@ -222,6 +230,36 @@ function assertLayeredArtifact(artifact, expectedLayer) {
             configUtils.resolveModuleHierarchy('sampleNode', discoveredModules),
             ['sampleNode', 'sampleServer', 'sampleEnvironment', 'sampleProject']
         );
+        const originalGetRawModule = NODICS.getRawModule;
+        const originalGetEnvironmentName = NODICS.getEnvironmentName;
+        const originalGetEnvironmentPath = NODICS.getEnvironmentPath;
+        const boundaryModules = {
+            rootApplication: { name: 'rootApplication', path: path.join(fixtureRoot, 'rootApplication') },
+            environmentGroup: { name: 'environmentGroup', path: path.join(fixtureRoot, 'rootApplication/environments'), parent: 'rootApplication' },
+            runtimeEnvironment: { name: 'runtimeEnvironment', path: path.join(fixtureRoot, 'rootApplication/environments/runtimeEnvironment'), parent: 'environmentGroup' },
+            runtimeServer: { name: 'runtimeServer', path: path.join(fixtureRoot, 'rootApplication/environments/runtimeEnvironment/runtimeServer'), parent: 'runtimeEnvironment' },
+            runtimeNode: { name: 'runtimeNode', path: path.join(fixtureRoot, 'rootApplication/environments/runtimeEnvironment/runtimeServer/runtimeNode'), parent: 'runtimeServer' }
+        };
+        NODICS.getRawModule = function (moduleName) {
+            return boundaryModules[moduleName];
+        };
+        NODICS.getEnvironmentName = function () {
+            return 'environmentGroup';
+        };
+        NODICS.getEnvironmentPath = function () {
+            return boundaryModules.environmentGroup.path;
+        };
+        assert.deepStrictEqual(
+            initializer.resolveModuleHierarchy('runtimeNode'),
+            ['runtimeNode', 'runtimeServer', 'runtimeEnvironment']
+        );
+        assert.deepStrictEqual(
+            initializer.resolveModuleHiererchy('runtimeNode'),
+            ['runtimeNode', 'runtimeServer', 'runtimeEnvironment']
+        );
+        NODICS.getRawModule = originalGetRawModule;
+        NODICS.getEnvironmentName = originalGetEnvironmentName;
+        NODICS.getEnvironmentPath = originalGetEnvironmentPath;
         assert.deepStrictEqual(
             initializer.sortModules(layers.map(layer => layer.index)),
             layers.map(layer => layer.index)
