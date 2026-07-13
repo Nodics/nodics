@@ -26,6 +26,7 @@ yarn-error.log*
 *.sln
 
 # Nodics specific exclution files and folders
+/docs/
 **/logs/**
 **/temp/**
 **/dist/**
