@@ -22,6 +22,18 @@ Environment, server, and node are different concepts:
 - Server: an application composition inside an environment.
 - Node: a runtime process under a server.
 
+Use the layers for different decisions:
+
+- Environment modules hold deployment-wide defaults such as environment module
+  groups, shared endpoint defaults, feature toggles, diagnostics posture, and
+  topology test declarations.
+- Server modules hold one runnable process composition, including local
+  `activeModules`, the process `server.default` endpoint, and remote
+  `server.<module>` endpoints the process must call.
+- Node modules hold instance-specific overrides below a selected server, such
+  as node identity, node coordinates, scheduler/consumer ownership, diagnostics,
+  and capacity choices.
+
 When no server name is provided, the current default may use `kickoffLocalServer`, but framework logic should not hardcode this outside default startup configuration.
 
 The runtime hierarchy is metadata-driven:

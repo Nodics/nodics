@@ -80,6 +80,28 @@ activate the module locally. For example, a modular workflow server may define
 `server.profile` so it can call the profile process without loading the profile
 module into the workflow process.
 
+## Environment, Server, And Node Responsibilities
+
+Environment modules own deployment-scope defaults for one runtime environment.
+They are the right place for environment-wide module groups, endpoint defaults,
+data/search/cache toggles, diagnostics posture, and topology test declarations
+that apply to every server in that environment.
+
+Server modules own one runnable process composition. They select the local
+modules for that process through `activeModules`, define `server.default`
+coordinates for the process itself, and may define `server.<module>` endpoint
+coordinates for remote modules the process must call.
+
+Node modules own instance-specific overrides under a selected server. They are
+for per-node coordinates, worker identity, node-local scheduling, publisher or
+consumer ownership, diagnostics, and capacity choices. A node module must remain
+a child of the selected server and should not redefine the whole server
+composition when a smaller node override is enough.
+
+These responsibilities are based on `package.json.nodics.kind` and parent
+relationships. A module does not become an environment, server, or node because
+its name contains those words.
+
 Raw package discovery may report a full parent chain for diagnostics. Active
 runtime expansion intentionally stops at the selected environment boundary so
 project/application containers are not activated as capability modules.

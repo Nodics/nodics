@@ -60,6 +60,34 @@ function createSchemaLayerMarker(role) {
     return marker;
 }
 
+function createRuntimeResponsibility(layer) {
+    if (layer.role === 'environment') {
+        return {
+            environment: {
+                deploymentScope: 'selected-environment-defaults',
+                ownerKind: layer.kind
+            }
+        };
+    }
+    if (layer.role === 'server') {
+        return {
+            server: {
+                processComposition: 'selected-server-runtime',
+                ownerKind: layer.kind
+            }
+        };
+    }
+    if (layer.role === 'node') {
+        return {
+            node: {
+                instanceOverride: 'selected-node-runtime',
+                ownerKind: layer.kind
+            }
+        };
+    }
+    return {};
+}
+
 layers.forEach(layer => {
     writeJson(path.join(layer.path, 'package.json'), {
         name: layer.name,
@@ -78,7 +106,8 @@ layers.forEach(layer => {
         hierarchyContract: Object.assign({
             capabilityContract: 'stable',
             implementationLayer: layer.role
-        }, createLayerMarker(layer.role))
+        }, createLayerMarker(layer.role)),
+        runtimeResponsibilities: createRuntimeResponsibility(layer)
     });
     writeContribution(layer, 'config/prescripts.js', {});
     writeContribution(layer, 'config/postscripts.js', {});
@@ -235,27 +264,27 @@ function assertLayeredArtifact(artifact, expectedLayer) {
         const originalGetEnvironmentPath = NODICS.getEnvironmentPath;
         const boundaryModules = {
             rootApplication: { name: 'rootApplication', path: path.join(fixtureRoot, 'rootApplication') },
-            environmentGroup: { name: 'environmentGroup', path: path.join(fixtureRoot, 'rootApplication/environments'), parent: 'rootApplication' },
-            runtimeEnvironment: { name: 'runtimeEnvironment', path: path.join(fixtureRoot, 'rootApplication/environments/runtimeEnvironment'), parent: 'environmentGroup' },
-            runtimeServer: { name: 'runtimeServer', path: path.join(fixtureRoot, 'rootApplication/environments/runtimeEnvironment/runtimeServer'), parent: 'runtimeEnvironment' },
-            runtimeNode: { name: 'runtimeNode', path: path.join(fixtureRoot, 'rootApplication/environments/runtimeEnvironment/runtimeServer/runtimeNode'), parent: 'runtimeServer' }
+            runtimeScope: { name: 'runtimeScope', path: path.join(fixtureRoot, 'rootApplication/runtimeScope'), parent: 'rootApplication' },
+            deploySlice: { name: 'deploySlice', path: path.join(fixtureRoot, 'rootApplication/runtimeScope/deploySlice'), parent: 'runtimeScope' },
+            apiWorker: { name: 'apiWorker', path: path.join(fixtureRoot, 'rootApplication/runtimeScope/deploySlice/apiWorker'), parent: 'deploySlice' },
+            blueInstance: { name: 'blueInstance', path: path.join(fixtureRoot, 'rootApplication/runtimeScope/deploySlice/apiWorker/blueInstance'), parent: 'apiWorker' }
         };
         NODICS.getRawModule = function (moduleName) {
             return boundaryModules[moduleName];
         };
         NODICS.getEnvironmentName = function () {
-            return 'environmentGroup';
+            return 'runtimeScope';
         };
         NODICS.getEnvironmentPath = function () {
-            return boundaryModules.environmentGroup.path;
+            return boundaryModules.runtimeScope.path;
         };
         assert.deepStrictEqual(
-            initializer.resolveModuleHierarchy('runtimeNode'),
-            ['runtimeNode', 'runtimeServer', 'runtimeEnvironment']
+            initializer.resolveModuleHierarchy('blueInstance'),
+            ['blueInstance', 'apiWorker', 'deploySlice']
         );
         assert.deepStrictEqual(
-            initializer.resolveModuleHiererchy('runtimeNode'),
-            ['runtimeNode', 'runtimeServer', 'runtimeEnvironment']
+            initializer.resolveModuleHiererchy('blueInstance'),
+            ['blueInstance', 'apiWorker', 'deploySlice']
         );
         NODICS.getRawModule = originalGetRawModule;
         NODICS.getEnvironmentName = originalGetEnvironmentName;
@@ -270,6 +299,12 @@ function assertLayeredArtifact(artifact, expectedLayer) {
         assert.strictEqual(properties.hierarchyContract.capabilityContract, 'stable');
         assert.strictEqual(properties.hierarchyContract.implementationLayer, 'node');
         layers.forEach(layer => assert.strictEqual(properties.hierarchyContract[layer.role], true));
+        assert.strictEqual(properties.runtimeResponsibilities.environment.deploymentScope, 'selected-environment-defaults');
+        assert.strictEqual(properties.runtimeResponsibilities.environment.ownerKind, 'environment');
+        assert.strictEqual(properties.runtimeResponsibilities.server.processComposition, 'selected-server-runtime');
+        assert.strictEqual(properties.runtimeResponsibilities.server.ownerKind, 'server');
+        assert.strictEqual(properties.runtimeResponsibilities.node.instanceOverride, 'selected-node-runtime');
+        assert.strictEqual(properties.runtimeResponsibilities.node.ownerKind, 'node');
         const externalPropertiesPath = path.join(fixtureRoot, 'external-properties.js');
         writeContribution({ path: fixtureRoot }, 'external-properties.js', {
             hierarchyContract: {
