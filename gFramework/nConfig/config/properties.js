@@ -24,8 +24,8 @@ module.exports = {
     errorExitCode: 1,
 
     /*
-        If system is running is multi cluster node, this property value needs to be configured. 
-        Two different system can't run with same node id.
+        If the system is running as multiple cluster nodes, this property must be configured.
+        Two different systems cannot run with the same node id.
     */
     nodeId: 'node0',
 
@@ -35,20 +35,20 @@ module.exports = {
     systemId: 0,
 
     /*
-        These values are used as system values, so can't be used as veriable or class name
+        These values are used as system values, so they cannot be used as variable or class names.
     */
     illegalUsernames: [
         'nodics', 'administrator', 'password', 'admin', 'user', 'unknown', 'anonymous', 'null', 'undefined', 'api'
     ],
 
     /*
-        - Incase you want some of the properties needs to be loaded from outside of config directory.
-        - System will look this file from root of Nodics HOME
-        - In this case path will be NODICS_HOME/externalProps.js
+        - Use this when some properties need to be loaded from outside the config directory.
+        - The system looks for this file from the root of Nodics HOME.
+        - In this case, the path will be NODICS_HOME/externalProps.js.
         externalPropertyFile: [
             'externalProps.js'
         ]
-        - File format of external file will be :
+        - External file format:
         module.exports = {
             externalProperty: [
                 'nodics'

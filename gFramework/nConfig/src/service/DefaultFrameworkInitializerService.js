@@ -101,7 +101,7 @@ module.exports = {
         }
         this.LOG.info('LOG_PATH      : ' + NODICS.getServerPath() + '/temp/logs');
         this.LOG.info('---------------------------------------------------------------------------\n');
-        this.LOG.info('###   Sequence in which modules has been loaded (Top to Bottom)   ###\n');
+        this.LOG.info('###   Sequence in which modules have been loaded (Top to Bottom)   ###\n');
         let counter = 1;
         let activeModules = [];
         let maxLength = 30;
@@ -137,10 +137,10 @@ module.exports = {
         global.TEST = {
             nTestPool: {
                 data: {
-                    //All the test cases, those needs to be executed in secific environment.
+                    // Test cases that must execute in a specific environment.
                 },
                 suites: {
-                    //Best usecase could be testing all created pages     
+                    // Best use case could be testing all created pages.
                 }
             },
             uTestPool: {
@@ -834,7 +834,7 @@ module.exports = {
         let _self = this;
         let rawModule = NODICS.getRawModule(moduleName);
         if (!rawModule || !rawModule.metaData) {
-            console.error('Invalid module name1 : ', moduleName);
+            console.error('Invalid module name: ', moduleName);
             process.exit(1);
         } else {
             if (rawModule.metaData.requiredModules && rawModule.metaData.requiredModules.length > 0) {
@@ -901,7 +901,7 @@ module.exports = {
                         path: moduleObject.path,
                     };
                 } else {
-                    throw new Error('Module with index: ' + moduleObject.index + ' already exist ' + moduleIndex[moduleObject.index].name);
+                    throw new Error('Module with index: ' + moduleObject.index + ' already exists: ' + moduleIndex[moduleObject.index].name);
                 }
             }
         });
@@ -1008,7 +1008,7 @@ module.exports = {
                     let props = tntCode ? CONFIG.getProperties(tntCode) || {} : CONFIG.getProperties() || {};
                     CONFIG.setProperties(_.merge(props, require(filePath)), tntCode);
                 } else {
-                    _self.LOG.warn('System cant find configuration at : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
+                    _self.LOG.warn('System cannot find configuration at : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
                 }
             });
         }

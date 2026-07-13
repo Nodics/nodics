@@ -131,9 +131,9 @@ module.exports = {
                     initService.loadModuleIndex();
                     initService.printInfo();
                     initService.LOG.info('Starting Utils loader process');
-                    initService.LOG.info('Loading modules meta data');
+                    initService.LOG.info('Loading module metadata');
                     initService.loadModulesMetaData();
-                    initService.LOG.info('Loading modules common configurations');
+                    initService.LOG.info('Loading common module configurations');
                     initService.loadConfigurations();
                     initService.loadExternalProperties();
                     initService.validateResolvedConfiguration();
