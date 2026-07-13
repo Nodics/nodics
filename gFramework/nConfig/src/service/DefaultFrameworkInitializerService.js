@@ -242,6 +242,33 @@ module.exports = {
     },
 
     /**
+     * Returns module endpoint names declared under `server.*` configuration.
+     *
+     * Endpoint coordinates describe where a module can be reached. They do not
+     * activate that module locally; local activation remains owned by `activeModules`.
+     *
+     * @param {Object} serverProperties Merged selected-runtime properties.
+     * @returns {string[]} Configured module endpoint names, excluding framework control keys.
+     */
+    getConfiguredServerEndpointNames: function (serverProperties) {
+        return Object.keys(serverProperties.server || {}).filter(moduleName => {
+            return moduleName !== 'default' && moduleName !== 'options';
+        });
+    },
+
+    /**
+     * Returns configured endpoint names for modules that are not active in this process.
+     *
+     * @param {Object} serverProperties Merged selected-runtime properties.
+     * @returns {string[]} Remote module endpoint names.
+     */
+    getConfiguredRemoteModuleNames: function (serverProperties) {
+        return this.getConfiguredServerEndpointNames(serverProperties).filter(moduleName => {
+            return !NODICS.isModuleActive(moduleName);
+        });
+    },
+
+    /**
      * Resolves active modules from gFramework, configured groups/modules, selected node, parents, and dependencies.
      *
      * @returns {string[]} Active module names that should participate in startup.
@@ -692,7 +719,7 @@ module.exports = {
     validateModularProfileConfiguration: function (serverProperties) {
         let profileModuleName = props.profileModuleName || 'profile';
         if (!NODICS.isModuleActive(profileModuleName)) {
-            if (!serverProperties.server || !serverProperties.server[profileModuleName]) {
+            if (!this.getConfiguredRemoteModuleNames(serverProperties).includes(profileModuleName)) {
                 this.failConfiguration('server.' + profileModuleName + ' must be defined when profile module is not active locally');
             }
             this.validateServerDefinition(profileModuleName, serverProperties.server[profileModuleName]);

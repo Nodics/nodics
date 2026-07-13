@@ -70,6 +70,16 @@ Active modules are resolved from the framework group, configured active groups
 and modules, the selected node, parent modules, and required modules. They are
 then loaded by deterministic dotted `index` order.
 
+`activeModules` is the local process activation contract. It decides which
+modules are loaded in the current runtime and may contribute configuration,
+schemas, routers, services, pipelines, data, tests, and lifecycle behavior.
+
+`server.*` entries are endpoint coordinates. They describe where a local or
+remote module can be reached by HTTP/node communication, but they must not
+activate the module locally. For example, a modular workflow server may define
+`server.profile` so it can call the profile process without loading the profile
+module into the workflow process.
+
 Raw package discovery may report a full parent chain for diagnostics. Active
 runtime expansion intentionally stops at the selected environment boundary so
 project/application containers are not activated as capability modules.

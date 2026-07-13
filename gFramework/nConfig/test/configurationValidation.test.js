@@ -91,6 +91,13 @@ initService.validateRuntimeTopologyConfiguration(serverProperties);
 let loadOrder = initService.getConfigurationLoadOrder();
 assert(loadOrder.includes('active module /config/properties.js files in module index order'));
 
+initializeConfiguration('kickoffLocalWorkflowServer');
+assert(!NODICS.isModuleActive('profile'), 'workflow server should use profile remotely instead of activating it locally');
+serverProperties = CONFIG.getProperties();
+assert(initService.getConfiguredServerEndpointNames(serverProperties).includes('profile'));
+assert(initService.getConfiguredRemoteModuleNames(serverProperties).includes('profile'));
+assert(!NODICS.getActiveModules().includes('profile'), 'server.profile endpoint coordinates must not activate profile locally');
+
 assert.throws(() => {
     initService.validateModuleKind('profile', 'server', 'test module kind validation');
 }, /must have nodics.kind server/);

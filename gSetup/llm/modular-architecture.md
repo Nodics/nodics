@@ -42,6 +42,13 @@ Nodics supports both:
 - consolidated runtime: one server runs many modules together.
 - modular runtime: modules run as separate applications/processes and communicate through APIs/events.
 
+Keep local activation separate from endpoint coordinates. `activeModules.groups`
+and `activeModules.modules` decide which modules run inside the current process.
+`server.*` entries describe how to reach local or remote module endpoints and
+must not be treated as local activation. In modular runtime, a server may define
+`server.profile`, `server.nems`, or another module endpoint so it can call that
+remote process without loading that module locally.
+
 Testing should cover both styles when behavior depends on module communication.
 
 Topology smoke tests should be configured from the active project/environment, not hardcoded in framework code. The local reference topology uses `test.runtimeTopology` to declare the consolidated server, modular servers, and communication checks. A project such as an eCommerce implementation should define its own topology in its own environment module.
