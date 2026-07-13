@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/interceptors/interceptors
+ * @description Schema interceptor registrations for CMS component details, renderer enrichment, and content relationship normalization.
+ * @layer interceptor
+ * @owner cms
+ * @override Project modules may add, reorder, disable, or replace CMS interceptor registrations through later module contributions.
+ */
 module.exports = {
     // loadComponentSubComponents: {
     //     type: 'schema',

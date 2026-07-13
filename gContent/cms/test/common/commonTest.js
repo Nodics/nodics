@@ -15,6 +15,13 @@
 const Chai = require('chai');
 const expect = Chai.expect;
 
+/**
+ * @module cms/test/common/commonTest
+ * @description Reserved common CMS test contribution showing the module-owned test-suite shape for shared CMS behavior.
+ * @layer test
+ * @owner cms
+ * @override Project modules should add real CMS tests in their own module test folders instead of modifying this placeholder.
+ */
 module.exports = {
     /*
         sampleTestSuite: {

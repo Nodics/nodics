@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module order/schemas/schemas
+ * @description Order schema contribution defining order, order status, payment status, shipping status, and reason models.
+ * @layer schema
+ * @owner order
+ * @override Project modules may extend or govern order schemas through layered schema fragments without modifying this definition.
+ */
 module.exports = {
 
     order: {

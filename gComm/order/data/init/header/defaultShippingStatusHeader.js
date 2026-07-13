@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module order/data/init/header/defaultShippingStatusHeader
+ * @description Initial-data import header for default shipping status records.
+ * @layer data
+ * @owner order
+ * @override Project modules may supply later initializer headers or data rows to add or replace shipping statuses.
+ */
 module.exports = {
     order: {
         shippingStatus: {

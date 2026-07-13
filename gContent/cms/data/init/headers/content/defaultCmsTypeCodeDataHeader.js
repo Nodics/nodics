@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/data/init/headers/content/defaultCmsTypeCodeDataHeader
+ * @description Initial-data import header for default CMS type-code records.
+ * @layer data
+ * @owner cms
+ * @override Project modules may supply later headers to change CMS type-code import behavior.
+ */
 module.exports = {
     cms: {
         defaultCmsTypeCodeData: {

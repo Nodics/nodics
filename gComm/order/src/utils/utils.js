@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module order/utils/utils
+ * @description Reserved utility extension point for order-specific helper functions.
+ * @layer utils
+ * @owner order
+ * @override Project modules may add or replace order utility helpers when shared order behavior is needed outside services.
+ */
 module.exports = {
 
 };

@@ -45,6 +45,27 @@
             "scope": "runtime",
             "module": "nService",
             "description": "nService tenant, enterprise, auth, authorization, module communication, status, topology, and versioned service override contracts must remain fully documented."
+        },
+        {
+            "name": "cart complete commerce contract",
+            "scope": "all",
+            "module": "cart",
+            "includeTests": true,
+            "description": "All cart module lifecycle, configuration, schema, router, interceptor, pipeline, service, utility, data, and test contracts must remain fully documented."
+        },
+        {
+            "name": "order complete commerce contract",
+            "scope": "all",
+            "module": "order",
+            "includeTests": true,
+            "description": "All order module lifecycle, configuration, initializer data, schema, router, interceptor, pipeline, service, utility, and test contracts must remain fully documented."
+        },
+        {
+            "name": "cms complete content contract",
+            "scope": "all",
+            "module": "cms",
+            "includeTests": true,
+            "description": "All CMS module lifecycle, configuration, initializer data, sample data, schema, router, interceptor, service, utility, and test contracts must remain fully documented."
         }
     ],
     "reportOnlyGates": [

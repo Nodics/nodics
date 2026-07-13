@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/data/sample/headers/typeCodes/sampleTypeCode2RendererDataHeader
+ * @description Sample import header for CMS type-code renderer mapping demo data.
+ * @layer data
+ * @owner cms
+ * @override Project modules should provide their own sample import headers when loading project-specific renderer mappings.
+ */
 module.exports = {
     cms: {
         sampleTypeCode2RendererData: {

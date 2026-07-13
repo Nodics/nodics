@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module order/data/init/data/defaultShippingStatusData
+ * @description Default shipping lifecycle status records loaded by the order initial-data importer.
+ * @layer data
+ * @owner order
+ * @override Project modules may provide later data contributions to add, replace, or deactivate shipping statuses.
+ */
 module.exports = {
     record1: {
         code: "CREATED",

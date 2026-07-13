@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module order/data/init/header/defaultPaymentStatusHeader
+ * @description Initial-data import header for default payment status records.
+ * @layer data
+ * @owner order
+ * @override Project modules may supply later initializer headers or data rows to add or replace payment statuses.
+ */
 module.exports = {
     order: {
         paymentStatus: {

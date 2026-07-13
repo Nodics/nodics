@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/data/sample/headers/typeCodes/sampleTypeCodeDataHeader
+ * @description Sample import header for CMS type-code demo data.
+ * @layer data
+ * @owner cms
+ * @override Project modules should provide their own sample import headers when loading project-specific CMS type codes.
+ */
 module.exports = {
     cms: {
         sampleTypeCodeData: {

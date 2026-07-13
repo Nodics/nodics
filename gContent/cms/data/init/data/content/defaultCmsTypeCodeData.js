@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/data/init/data/content/defaultCmsTypeCodeData
+ * @description Default CMS type-code records used to classify pages and components.
+ * @layer data
+ * @owner cms
+ * @override Project modules may provide later type-code data contributions for project-specific content types.
+ */
 module.exports = {
     record0: {
         code: 'headerComponentType',

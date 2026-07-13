@@ -15,6 +15,13 @@
 const Chai = require('chai');
 const expect = Chai.expect;
 
+/**
+ * @module cart/test/common/commonTest
+ * @description Reserved common cart test contribution showing the module-owned test-suite shape for shared cart behavior.
+ * @layer test
+ * @owner cart
+ * @override Project modules should add real cart tests in their own module test folders instead of modifying this placeholder.
+ */
 module.exports = {
     /*
         sampleTestSuite: {

@@ -7,7 +7,9 @@
  */
 const assert = require('assert');
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
+const documentationCoverage = require('../src/quality/checkDocumentationCoverage');
 
 const rootPath = path.resolve(__dirname, '../../..');
 const scriptsPath = path.join(rootPath, 'scripts');
@@ -30,6 +32,34 @@ assert(!fs.existsSync(path.join(rootPath, 'docs', 'documentation-governance.json
     'Documentation governance must not live in disposable docs');
 assert(fs.existsSync(path.join(rootPath, 'gFramework', 'nTooling', 'config', 'documentation-governance.json')),
     'Documentation governance must be owned by nTooling');
+
+const coverageFixture = fs.mkdtempSync(path.join(os.tmpdir(), 'nodics-doc-boundary-'));
+try {
+    fs.mkdirSync(path.join(coverageFixture, 'docs'), { recursive: true });
+    fs.mkdirSync(path.join(coverageFixture, 'sample', 'src', 'service'), { recursive: true });
+    fs.writeFileSync(
+        path.join(coverageFixture, 'docs', 'copiedReference.js'),
+        'module.exports = { undocumented: function () {} };\n',
+        'utf8'
+    );
+    fs.writeFileSync(
+        path.join(coverageFixture, 'sample', 'src', 'service', 'sampleService.js'),
+        '/** commentedExample: { test: function () {} } */\nmodule.exports = {\n    undocumented: function () {}\n};\n',
+        'utf8'
+    );
+    const report = documentationCoverage.collectCoverage(documentationCoverage.createOptions([
+        '--home=' + coverageFixture,
+        '--scope=all'
+    ]));
+    assert.deepStrictEqual(report.filesMissingModuleDocs, [
+        path.join('sample', 'src', 'service', 'sampleService.js')
+    ], 'Root docs reference files must not be included in source documentation coverage');
+    assert.deepStrictEqual(report.methodsMissingDocs, [
+        path.join('sample', 'src', 'service', 'sampleService.js') + '#undocumented'
+    ], 'Documentation coverage must ignore function examples inside comments');
+} finally {
+    fs.rmSync(coverageFixture, { recursive: true, force: true });
+}
 
 const toolingPackage = JSON.parse(fs.readFileSync(
     path.join(rootPath, 'gFramework', 'nTooling', 'package.json'),

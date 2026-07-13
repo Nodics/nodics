@@ -9,11 +9,20 @@
 
  */
 
+/**
+ * @module cms/service/interceptors/DefaultSubComponentsResolveInterceptorService
+ * @description CMS post-load interceptor service that resolves active child components for loaded CMS component models.
+ * @layer interceptor
+ * @owner cms
+ * @override Project modules may replace this interceptor to customize recursive content expansion or component filtering.
+ * @property {Object} SERVICE.DefaultCmsComponentService Loads CMS child components by parent component code.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes CMS sub-component resolver handlers during service registration.
+     *
+     * @param {Object} options Module loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when handler initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -22,9 +31,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes CMS sub-component resolver startup after module artifacts are registered.
+     *
+     * @param {Object} options Module loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -32,6 +42,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Resolves child components for every loaded CMS component in a post-get response.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} response Schema post-get response containing result models.
+     * @returns {Promise<boolean>} Resolves after child components are loaded.
+     * @throws Wraps resolver errors in a Nodics error.
+     */
     loadSubComponents: function (request, response) {
         return new Promise((resolve, reject) => {
             this.fatchSubComponent(request, response.success.result).then(success => {
@@ -42,6 +60,15 @@ module.exports = {
         });
     },
 
+    /**
+     * Recursively loads active child components for each supplied CMS component model.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Array<Object>} models CMS component models to enrich.
+     * @param {number} [counter=0] Current recursive index.
+     * @returns {Promise<boolean>} Resolves after all component lookups complete.
+     * @sideEffects Mutates `model.subComponents` when active child components are found.
+     */
     fatchSubComponent: function (request, models, counter = 0) {
         return new Promise((resolve, reject) => {
             if (models && counter < models.length) {

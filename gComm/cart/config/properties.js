@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cart/config/properties
+ * @description Reserved cart property contribution for module-level configuration defaults.
+ * @layer config
+ * @owner cart
+ * @override Project modules may provide later property contributions for cart-specific behavior, validation, and integration settings.
+ */
 module.exports = {
 
 };

@@ -1,0 +1,34 @@
+{
+  "contextVersion": 3,
+  "moduleName": "kycSchema",
+  "path": "gOptional/kyc/kycSchema",
+  "kind": "capability",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "500.50.3",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer kycSchema"
+  },
+  "sourceFiles": 7,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "ownedFiles": 17,
+  "sourceFingerprint": "af69103f6e78ef446bffb5d763f6576a52c6e61e59cbe86368b633fa5120c2ee",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 1,
+    "undocumented": 12,
+    "inventory-only": 4
+  },
+  "schemaGroups": {
+    "kyc": [
+      "kyc"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

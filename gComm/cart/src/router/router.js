@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cart/router/router
+ * @description Secured HTTP route definitions for cart creation and cart lookup by reference code, generated code, or token.
+ * @layer router
+ * @owner cart
+ * @override Project modules may add, remove, or replace cart routes through governed router hierarchy contributions.
+ */
 module.exports = {
     cart: {
         cartOperations: {

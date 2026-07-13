@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module order/config/prescripts
+ * @description Reserved pre-start script contribution for order module initialization work.
+ * @layer config
+ * @owner order
+ * @override Project modules may add later pre-scripts when order startup requires project-specific preparation.
+ */
 module.exports = {
 
 };

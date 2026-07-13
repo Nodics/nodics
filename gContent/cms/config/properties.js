@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/config/properties
+ * @description Reserved CMS property contribution for module-level content configuration defaults.
+ * @layer config
+ * @owner cms
+ * @override Project modules may provide later property contributions for CMS rendering, data, and integration settings.
+ */
 module.exports = {
 
 };

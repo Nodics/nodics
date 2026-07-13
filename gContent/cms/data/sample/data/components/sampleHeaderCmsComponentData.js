@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/data/sample/data/components/sampleHeaderCmsComponentData
+ * @description Sample header CMS component records used for demo or development data loading.
+ * @layer data
+ * @owner cms
+ * @override Project modules should provide their own header component samples rather than changing shared CMS samples.
+ */
 module.exports = {
     record0: {
         code: 'samplePageHeaderComponent',

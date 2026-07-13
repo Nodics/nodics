@@ -63,9 +63,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 4 |
-| Undocumented | 35 |
+| Documented | 37 |
+| Partially documented | 2 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -88,47 +88,47 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gContent/cms/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gContent/cms/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gContent/cms/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/init/data/content/defaultCmsSiteData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/init/data/content/defaultCmsTypeCodeData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/init/data/user/defaultCmsEmployeeData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/init/data/user/defaultCmsUserGroupsData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/init/headers/content/defaultCmsSiteDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/init/headers/content/defaultCmsTypeCodeDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/init/headers/user/defaultCmsEmployeeDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/init/headers/user/defaultCmsUserGroupsDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/sample/data/components/sampleCmsComponentData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/sample/data/components/sampleFooterCmsComponentData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/sample/data/components/sampleHeaderCmsComponentData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/sample/data/components/sampleMainCmsComponentData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/sample/data/pages/sampleCmsPageData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/sample/data/sites/sampleCmsSiteData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/sample/data/typeCodes/sampleTypeCode2RendererData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/sample/data/typeCodes/sampleTypeCodeData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/sample/headers/components/sampleCmsComponentDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/sample/headers/components/sampleFooterCmsComponentDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/sample/headers/components/sampleHeaderCmsComponentDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/sample/headers/components/sampleMainCmsComponentDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/sample/headers/pages/sampleCmsPageDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/sample/headers/sites/sampleCmsSiteDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/sample/headers/typeCodes/sampleTypeCode2RendererDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/data/sample/headers/typeCodes/sampleTypeCodeDataHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gContent/cms/config/postscripts.js` | `config` | `documented` | 0/0 | Reserved post-start script contribution for CMS module initialization work after core artifacts are available. |  |
+| `gContent/cms/config/prescripts.js` | `config` | `documented` | 0/0 | Reserved pre-start script contribution for CMS module initialization work. |  |
+| `gContent/cms/config/properties.js` | `config` | `documented` | 0/0 | Reserved CMS property contribution for module-level content configuration defaults. |  |
+| `gContent/cms/data/init/data/content/defaultCmsSiteData.js` | `data` | `documented` | 0/0 | Default CMS site records loaded by the CMS initial-data importer. |  |
+| `gContent/cms/data/init/data/content/defaultCmsTypeCodeData.js` | `data` | `documented` | 0/0 | Default CMS type-code records used to classify pages and components. |  |
+| `gContent/cms/data/init/data/user/defaultCmsEmployeeData.js` | `data` | `documented` | 0/0 | Default CMS employee records loaded by the CMS initial-data importer. |  |
+| `gContent/cms/data/init/data/user/defaultCmsUserGroupsData.js` | `data` | `documented` | 0/0 | Default CMS user-group records loaded by the CMS initial-data importer. |  |
+| `gContent/cms/data/init/headers/content/defaultCmsSiteDataHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default CMS site records. |  |
+| `gContent/cms/data/init/headers/content/defaultCmsTypeCodeDataHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default CMS type-code records. |  |
+| `gContent/cms/data/init/headers/user/defaultCmsEmployeeDataHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default CMS employee records. |  |
+| `gContent/cms/data/init/headers/user/defaultCmsUserGroupsDataHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default CMS user-group records. |  |
+| `gContent/cms/data/sample/data/components/sampleCmsComponentData.js` | `data` | `documented` | 0/0 | Sample CMS component records used for demo or development data loading. |  |
+| `gContent/cms/data/sample/data/components/sampleFooterCmsComponentData.js` | `data` | `documented` | 0/0 | Sample footer CMS component records used for demo or development data loading. |  |
+| `gContent/cms/data/sample/data/components/sampleHeaderCmsComponentData.js` | `data` | `documented` | 0/0 | Sample header CMS component records used for demo or development data loading. |  |
+| `gContent/cms/data/sample/data/components/sampleMainCmsComponentData.js` | `data` | `documented` | 0/0 | Sample main-area CMS component records used for demo or development data loading. |  |
+| `gContent/cms/data/sample/data/pages/sampleCmsPageData.js` | `data` | `documented` | 0/0 | Sample CMS page records used for demo or development data loading. |  |
+| `gContent/cms/data/sample/data/sites/sampleCmsSiteData.js` | `data` | `documented` | 0/0 | Sample CMS site records used for demo or development data loading. |  |
+| `gContent/cms/data/sample/data/typeCodes/sampleTypeCode2RendererData.js` | `data` | `documented` | 0/0 | Sample CMS type-code to renderer mapping records used for demo or development data loading. |  |
+| `gContent/cms/data/sample/data/typeCodes/sampleTypeCodeData.js` | `data` | `documented` | 0/0 | Sample CMS type-code records used for demo or development data loading. |  |
+| `gContent/cms/data/sample/headers/components/sampleCmsComponentDataHeader.js` | `data` | `documented` | 0/0 | Sample import header for CMS component demo data. |  |
+| `gContent/cms/data/sample/headers/components/sampleFooterCmsComponentDataHeader.js` | `data` | `documented` | 0/0 | Sample import header for footer CMS component demo data. |  |
+| `gContent/cms/data/sample/headers/components/sampleHeaderCmsComponentDataHeader.js` | `data` | `documented` | 0/0 | Sample import header for header CMS component demo data. |  |
+| `gContent/cms/data/sample/headers/components/sampleMainCmsComponentDataHeader.js` | `data` | `documented` | 0/0 | Sample import header for main-area CMS component demo data. |  |
+| `gContent/cms/data/sample/headers/pages/sampleCmsPageDataHeader.js` | `data` | `documented` | 0/0 | Sample import header for CMS page demo data. |  |
+| `gContent/cms/data/sample/headers/sites/sampleCmsSiteDataHeader.js` | `data` | `documented` | 0/0 | Sample import header for CMS site demo data. |  |
+| `gContent/cms/data/sample/headers/typeCodes/sampleTypeCode2RendererDataHeader.js` | `data` | `documented` | 0/0 | Sample import header for CMS type-code renderer mapping demo data. |  |
+| `gContent/cms/data/sample/headers/typeCodes/sampleTypeCodeDataHeader.js` | `data` | `documented` | 0/0 | Sample import header for CMS type-code demo data. |  |
 | `gContent/cms/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gContent/cms/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gContent/cms/nodics.js` | `module` | `documented` | 2/2 | CMS module lifecycle entrypoint used by the Nodics module loader. |  |
 | `gContent/cms/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gContent/cms/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/src/service/interceptors/defaultCmsComponentDetailInterceptorService.js` | `src` | `partially-documented` | 2/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gContent/cms/src/service/interceptors/defaultItemRendererInterceptorService.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gContent/cms/src/service/interceptors/defaultSubComponentsResolveInterceptorService.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gContent/cms/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gContent/cms/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gContent/cms/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gContent/cms/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Schema interceptor registrations for CMS component details, renderer enrichment, and content relationship normalization. |  |
+| `gContent/cms/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Reserved CMS pipeline contribution for content-management workflows. |  |
+| `gContent/cms/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved CMS router application configuration contribution. |  |
+| `gContent/cms/src/router/router.js` | `src` | `documented` | 0/0 | Reserved CMS route contribution for custom CMS APIs beyond generated schema routes. |  |
+| `gContent/cms/src/schemas/schemas.js` | `src` | `documented` | 0/0 | CMS schema contribution defining type codes, renderer mappings, sites, pages, components, and component-detail relationships. |  |
+| `gContent/cms/src/service/interceptors/defaultCmsComponentDetailInterceptorService.js` | `src` | `documented` | 5/5 | CMS interceptor service that generates component-detail codes and normalizes page/component relationship sources before save. |  |
+| `gContent/cms/src/service/interceptors/defaultItemRendererInterceptorService.js` | `src` | `documented` | 4/4 | CMS post-load interceptor service that enriches pages and components with renderer names from type-code mappings. |  |
+| `gContent/cms/src/service/interceptors/defaultSubComponentsResolveInterceptorService.js` | `src` | `documented` | 4/4 | CMS post-load interceptor service that resolves active child components for loaded CMS component models. |  |
+| `gContent/cms/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for CMS-specific helper functions. |  |
+| `gContent/cms/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Reserved common CMS test contribution showing the module-owned test-suite shape for shared CMS behavior. | add JSDoc for 7 exported method(s) |
+| `gContent/cms/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Reserved local-environment CMS test contribution showing how environment-specific test suites can be attached. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

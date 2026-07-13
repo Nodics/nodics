@@ -63,9 +63,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
+| Documented | 23 |
 | Partially documented | 2 |
-| Undocumented | 23 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -88,33 +88,33 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gComm/order/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/order/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/order/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/data/init/data/defaultOrderStatusData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/data/init/data/defaultOrderStatusResonData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/data/init/data/defaultPaymentStatusData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/data/init/data/defaultShippingStatusData.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/data/init/header/defaultOrderStatusHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/data/init/header/defaultOrderStatusResonHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/data/init/header/defaultPaymentStatusHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/data/init/header/defaultShippingStatusHeader.js` | `data` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gComm/order/config/postscripts.js` | `config` | `documented` | 0/0 | Reserved post-start script contribution for order module initialization work after core artifacts are available. |  |
+| `gComm/order/config/prescripts.js` | `config` | `documented` | 0/0 | Reserved pre-start script contribution for order module initialization work. |  |
+| `gComm/order/config/properties.js` | `config` | `documented` | 0/0 | Reserved order property contribution for module-level configuration defaults. |  |
+| `gComm/order/data/init/data/defaultOrderStatusData.js` | `data` | `documented` | 0/0 | Default order lifecycle status records loaded by the order initial-data importer. |  |
+| `gComm/order/data/init/data/defaultOrderStatusResonData.js` | `data` | `documented` | 0/0 | Default reason records for order, payment, and shipment lifecycle status changes. |  |
+| `gComm/order/data/init/data/defaultPaymentStatusData.js` | `data` | `documented` | 0/0 | Default payment lifecycle status records loaded by the order initial-data importer. |  |
+| `gComm/order/data/init/data/defaultShippingStatusData.js` | `data` | `documented` | 0/0 | Default shipping lifecycle status records loaded by the order initial-data importer. |  |
+| `gComm/order/data/init/header/defaultOrderStatusHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default order status records. |  |
+| `gComm/order/data/init/header/defaultOrderStatusResonHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default order, payment, and shipment reason records. |  |
+| `gComm/order/data/init/header/defaultPaymentStatusHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default payment status records. |  |
+| `gComm/order/data/init/header/defaultShippingStatusHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default shipping status records. |  |
 | `gComm/order/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/order/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gComm/order/nodics.js` | `module` | `documented` | 2/2 | Order module lifecycle entrypoint used by the Nodics module loader. |  |
 | `gComm/order/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/order/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/src/service/interceptor/defaultOrderCodeGeneratorInterceptorService.js` | `src` | `undocumented` | 0/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gComm/order/src/service/order/DefaultOrderService.js` | `src` | `undocumented` | 0/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gComm/order/src/service/pipeline/defaultCreateOrderPipelineService.js` | `src` | `partially-documented` | 2/12 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 10 exported method(s) |
-| `gComm/order/src/utils/enums.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/order/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gComm/order/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gComm/order/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Schema interceptor registrations for order save lifecycle hooks. |  |
+| `gComm/order/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Pipeline definition for order creation validation, persistence, and terminal handling. |  |
+| `gComm/order/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved order router application configuration contribution. |  |
+| `gComm/order/src/router/router.js` | `src` | `documented` | 0/0 | Reserved order route contribution for custom order APIs beyond generated schema routes. |  |
+| `gComm/order/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Order schema contribution defining order, order status, payment status, shipping status, and reason models. |  |
+| `gComm/order/src/service/interceptor/defaultOrderCodeGeneratorInterceptorService.js` | `src` | `documented` | 3/3 | Order pre-save interceptor service that derives missing enterprise ownership from the request context. |  |
+| `gComm/order/src/service/order/DefaultOrderService.js` | `src` | `documented` | 3/3 | Order service implementation that prepares tenant-aware order persistence context and starts the create-order pipeline. |  |
+| `gComm/order/src/service/pipeline/defaultCreateOrderPipelineService.js` | `src` | `documented` | 12/12 | Pipeline node service for order creation validation, associated data checks, persistence, and terminal handling. |  |
+| `gComm/order/src/utils/enums.js` | `src` | `documented` | 0/0 | Order enum definitions, including reason categories for order, payment, and shipment lifecycle reasons. |  |
+| `gComm/order/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Reserved order status and error-code definitions used by services, pipelines, and API responses. |  |
+| `gComm/order/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for order-specific helper functions. |  |
+| `gComm/order/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Reserved common order test contribution showing the module-owned test-suite shape for shared order behavior. | add JSDoc for 7 exported method(s) |
+| `gComm/order/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Reserved local-environment order test contribution showing how environment-specific test suites can be attached. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

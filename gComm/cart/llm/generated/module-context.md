@@ -65,9 +65,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 4 |
-| Undocumented | 18 |
+| Documented | 20 |
+| Partially documented | 2 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -90,30 +90,30 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gComm/cart/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/cart/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/cart/config/postscripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/cart/config/prescripts.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/cart/config/properties.js` | `config` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gComm/cart/config/postscripts.js` | `config` | `documented` | 0/0 | Reserved post-start script contribution for cart module initialization work after core artifacts are available. |  |
+| `gComm/cart/config/prescripts.js` | `config` | `documented` | 0/0 | Reserved pre-start script contribution for cart module initialization work. |  |
+| `gComm/cart/config/properties.js` | `config` | `documented` | 0/0 | Reserved cart property contribution for module-level configuration defaults. |  |
 | `gComm/cart/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/cart/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gComm/cart/nodics.js` | `module` | `documented` | 2/2 | Cart module lifecycle entrypoint used by the Nodics module loader. |  |
 | `gComm/cart/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/cart/src/controller/defaultCartController.js` | `src` | `undocumented` | 0/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 6 exported method(s) |
-| `gComm/cart/src/facade/DefaultCartFacade.js` | `src` | `undocumented` | 0/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gComm/cart/src/interceptors/interceptors.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/cart/src/pipelines/pipelinesDefinition.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/cart/src/router/appConfig.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/cart/src/router/router.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/cart/src/schemas/schemas.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/cart/src/service/cart/DefaultCartService.js` | `src` | `undocumented` | 0/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 4 exported method(s) |
-| `gComm/cart/src/service/handler/defaultOrderSchemaValueHandlerService.js` | `src` | `partially-documented` | 2/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
-| `gComm/cart/src/service/interceptor/defaultCartCodeGeneratorInterceptorService.js` | `src` | `undocumented` | 0/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gComm/cart/src/service/interceptor/defaultCartSchemaInterceptorService.js` | `src` | `undocumented` | 0/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gComm/cart/src/service/interceptor/defaultCartTokenDetailInterceptorService.js` | `src` | `undocumented` | 0/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 3 exported method(s) |
-| `gComm/cart/src/service/pipeline/defaultCreateCartPipelineService.js` | `src` | `partially-documented` | 2/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 5 exported method(s) |
-| `gComm/cart/src/service/pipeline/defaultValidateCartPipelineService.js` | `src` | `partially-documented` | 2/9 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gComm/cart/src/utils/statusDefinitions.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/cart/src/utils/utils.js` | `src` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gComm/cart/test/common/commonTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
-| `gComm/cart/test/env-local/envTest.js` | `test` | `undocumented` | 0/7 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 7 exported method(s) |
+| `gComm/cart/src/controller/defaultCartController.js` | `src` | `documented` | 6/6 | HTTP-facing cart controller that maps secured cart routes to cart facade operations. |  |
+| `gComm/cart/src/facade/DefaultCartFacade.js` | `src` | `documented` | 4/4 | Facade boundary for cart operations, keeping controllers independent from cart service implementation details. |  |
+| `gComm/cart/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Schema interceptor registrations for cart save and load lifecycle hooks. |  |
+| `gComm/cart/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Pipeline definitions for cart validation and cart creation orchestration. |  |
+| `gComm/cart/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved cart router application configuration contribution. |  |
+| `gComm/cart/src/router/router.js` | `src` | `documented` | 0/0 | Secured HTTP route definitions for cart creation and cart lookup by reference code, generated code, or token. |  |
+| `gComm/cart/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Cart schema contribution defining abstract cart ownership fields and the concrete persisted cart model. |  |
+| `gComm/cart/src/service/cart/DefaultCartService.js` | `src` | `documented` | 4/4 | Cart service implementation that prepares cart persistence context, starts the create-cart pipeline, and wraps cart read errors. |  |
+| `gComm/cart/src/service/handler/defaultOrderSchemaValueHandlerService.js` | `src` | `documented` | 4/4 | Helper service for order/cart token value generation and expiry calculation. |  |
+| `gComm/cart/src/service/interceptor/defaultCartCodeGeneratorInterceptorService.js` | `src` | `documented` | 3/3 | Cart pre-save interceptor service that creates the persisted cart code when callers provide only an enterprise and reference code. |  |
+| `gComm/cart/src/service/interceptor/defaultCartSchemaInterceptorService.js` | `src` | `documented` | 3/3 | Cart pre-save interceptor service that derives missing enterprise ownership from authenticated request metadata. |  |
+| `gComm/cart/src/service/interceptor/defaultCartTokenDetailInterceptorService.js` | `src` | `documented` | 3/3 | Cart post-load interceptor that expands a stored token value into token reference details and expiry state. |  |
+| `gComm/cart/src/service/pipeline/defaultCreateCartPipelineService.js` | `src` | `documented` | 7/7 | Pipeline node service for create-cart orchestration, including request validation, nested cart validation, persistence, and terminal handling. |  |
+| `gComm/cart/src/service/pipeline/defaultValidateCartPipelineService.js` | `src` | `documented` | 9/9 | Pipeline node service for validating cart payload structure, generated token readiness, related items, consignments, payments, and final cart state. |  |
+| `gComm/cart/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Cart status and error-code definitions used by services, pipelines, and API responses. |  |
+| `gComm/cart/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for cart-specific helper functions. |  |
+| `gComm/cart/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Reserved common cart test contribution showing the module-owned test-suite shape for shared cart behavior. | add JSDoc for 7 exported method(s) |
+| `gComm/cart/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Reserved local-environment cart test contribution showing how environment-specific test suites can be attached. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
 

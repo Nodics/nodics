@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cart/interceptors/interceptors
+ * @description Schema interceptor registrations for cart save and load lifecycle hooks.
+ * @layer interceptor
+ * @owner cart
+ * @override Project modules may add, reorder, disable, or replace cart interceptor registrations through later module contributions.
+ */
 module.exports = {
     cartPreSaveEntCode: {
         type: 'schema',

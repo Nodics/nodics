@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cart/pipelines/pipelinesDefinition
+ * @description Pipeline definitions for cart validation and cart creation orchestration.
+ * @layer pipeline
+ * @owner cart
+ * @override Project modules may override pipeline nodes, handlers, or flow order to add customer-specific cart validation and persistence behavior.
+ */
 module.exports = {
 
     cartValidatorPipeline: {

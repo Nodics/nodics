@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/data/sample/data/components/sampleFooterCmsComponentData
+ * @description Sample footer CMS component records used for demo or development data loading.
+ * @layer data
+ * @owner cms
+ * @override Project modules should provide their own footer component samples rather than changing shared CMS samples.
+ */
 module.exports = {
     record0: {
         code: 'samplePageFooterComponent',

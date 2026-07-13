@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module order/pipelines/pipelinesDefinition
+ * @description Pipeline definition for order creation validation, persistence, and terminal handling.
+ * @layer pipeline
+ * @owner order
+ * @override Project modules may override pipeline nodes, handlers, or flow order to add customer-specific order lifecycle behavior.
+ */
 module.exports = {
     createOrderPipeline: {
         startNode: "validateRequest",

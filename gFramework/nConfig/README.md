@@ -20,6 +20,10 @@ module metadata and layered configuration, not hardcoded project names.
 - coordinating pre-start and post-start script definitions where applicable;
 - exposing effective configuration through governed framework services.
 
+`nCommon` is not the hierarchy owner. It contributes shared runtime primitives,
+status definitions, processors, interceptors, and utilities after `nConfig` has
+prepared the runtime hierarchy and effective configuration.
+
 ## Layered Configuration
 
 Each active module may contribute configuration. Later modules may override
@@ -32,6 +36,13 @@ configuration.
 
 Do not add a new configuration loader when an existing `nConfig` loader,
 resolver, or runtime governance service owns the behavior.
+
+Plain layered configuration and governed artifacts use different composition
+contracts. `config/properties.js`, script maps, utility maps, and many named
+service/facade/controller/pipeline contributions use ordinary layered merge by
+active module order. Schemas, routers, and their runtime persisted
+contributions use governed merge helpers with override metadata, removals,
+warnings, and traceability. Do not replace these with one generic merge rule.
 
 ## Metadata Contract
 

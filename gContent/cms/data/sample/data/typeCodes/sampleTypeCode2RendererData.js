@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/data/sample/data/typeCodes/sampleTypeCode2RendererData
+ * @description Sample CMS type-code to renderer mapping records used for demo or development data loading.
+ * @layer data
+ * @owner cms
+ * @override Project modules should provide their own renderer mapping samples rather than changing shared CMS samples.
+ */
 module.exports = {
     record0: {
         code: 'sampleHomePageType',

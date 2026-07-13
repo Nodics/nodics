@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module order/config/postscripts
+ * @description Reserved post-start script contribution for order module initialization work after core artifacts are available.
+ * @layer config
+ * @owner order
+ * @override Project modules may add later post-scripts when order startup requires project-specific follow-up work.
+ */
 module.exports = {
 
 };

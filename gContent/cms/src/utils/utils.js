@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/utils/utils
+ * @description Reserved utility extension point for CMS-specific helper functions.
+ * @layer utils
+ * @owner cms
+ * @override Project modules may add or replace CMS utility helpers when shared content behavior is needed outside services.
+ */
 module.exports = {
 
 };

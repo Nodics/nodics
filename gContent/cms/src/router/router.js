@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/router/router
+ * @description Reserved CMS route contribution for custom CMS APIs beyond generated schema routes.
+ * @layer router
+ * @owner cms
+ * @override Project modules may add, remove, or replace CMS routes through governed router hierarchy contributions.
+ */
 module.exports = {
 
 };

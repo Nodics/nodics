@@ -73,6 +73,22 @@ customHierarchyFixtures.forEach(fixture => {
         'Metadata normalization kind must be project-neutral for ' + fixture.relativePath);
 });
 
+const nPrefixedCapability = {
+    name: 'nInventory',
+    relativePath: 'gFramework/nInventory',
+    path: rootPathForFixture('gFramework/nInventory'),
+    packageJson: {
+        name: 'nInventory',
+        nodics: {
+            kind: 'capability'
+        }
+    }
+};
+assert.strictEqual(getModuleKind(nPrefixedCapability), 'capability',
+    'Generated context kind must not infer group behavior from an n-prefixed name');
+assert.strictEqual(inferKind(nPrefixedCapability), 'capability',
+    'Metadata normalization kind must not infer group behavior from an n-prefixed name');
+
 const runtimeBootstrapSource = fs.readFileSync(path.join(__dirname, '../../nConfig/bin/nodics.js'), 'utf8');
 assert(!runtimeBootstrapSource.includes("options.defaultServer || 'kickoffLocalServer'"),
     'Framework bootstrap must not hardcode the kickoff project server');

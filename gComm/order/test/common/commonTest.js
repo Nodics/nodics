@@ -15,6 +15,13 @@
 const Chai = require('chai');
 const expect = Chai.expect;
 
+/**
+ * @module order/test/common/commonTest
+ * @description Reserved common order test contribution showing the module-owned test-suite shape for shared order behavior.
+ * @layer test
+ * @owner order
+ * @override Project modules should add real order tests in their own module test folders instead of modifying this placeholder.
+ */
 module.exports = {
     /*
         sampleTestSuite: {

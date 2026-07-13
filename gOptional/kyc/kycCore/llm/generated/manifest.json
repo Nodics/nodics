@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "kycCore",
+  "path": "gOptional/kyc/kycCore",
+  "kind": "capability",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "500.50.5",
+    "version": "0.0.1",
+    "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer kycCore"
+  },
+  "sourceFiles": 17,
+  "testFiles": 2,
+  "dataFiles": 6,
+  "ownedFiles": 33,
+  "sourceFingerprint": "6ef13552625b28f0a16a46bca8f89fa1eb37418dd5b8e320dcf94672b264051e",
+  "documentation": {
+    "documented": 0,
+    "partially-documented": 11,
+    "undocumented": 18,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

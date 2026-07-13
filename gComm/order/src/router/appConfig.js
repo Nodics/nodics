@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module order/router/appConfig
+ * @description Reserved order router application configuration contribution.
+ * @layer router
+ * @owner order
+ * @override Project modules may contribute order-specific router application settings from a later module layer.
+ */
 module.exports = {
 
 };

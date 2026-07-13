@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/config/prescripts
+ * @description Reserved pre-start script contribution for CMS module initialization work.
+ * @layer config
+ * @owner cms
+ * @override Project modules may add later pre-scripts when CMS startup requires project-specific preparation.
+ */
 module.exports = {
 
 };

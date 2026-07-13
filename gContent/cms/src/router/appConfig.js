@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/router/appConfig
+ * @description Reserved CMS router application configuration contribution.
+ * @layer router
+ * @owner cms
+ * @override Project modules may contribute CMS-specific router application settings from a later module layer.
+ */
 module.exports = {
 
 };

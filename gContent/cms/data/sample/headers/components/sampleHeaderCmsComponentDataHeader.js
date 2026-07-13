@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/data/sample/headers/components/sampleHeaderCmsComponentDataHeader
+ * @description Sample import header for header CMS component demo data.
+ * @layer data
+ * @owner cms
+ * @override Project modules should provide their own sample import headers when loading project-specific header components.
+ */
 module.exports = {
     cms: {
         sampleHeaderCmsComponentData: {

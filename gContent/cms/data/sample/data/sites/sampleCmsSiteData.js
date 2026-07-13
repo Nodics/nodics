@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/data/sample/data/sites/sampleCmsSiteData
+ * @description Sample CMS site records used for demo or development data loading.
+ * @layer data
+ * @owner cms
+ * @override Project modules should provide their own site samples rather than changing shared CMS samples.
+ */
 module.exports = {
     record0: {
         code: 'sampleContentCmsSite',

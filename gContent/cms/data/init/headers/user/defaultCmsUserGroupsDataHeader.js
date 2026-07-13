@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/data/init/headers/user/defaultCmsUserGroupsDataHeader
+ * @description Initial-data import header for default CMS user-group records.
+ * @layer data
+ * @owner cms
+ * @override Project modules may supply later headers to change CMS user-group import behavior.
+ */
 module.exports = {
     profile: {
         defaultCmsUserGroups: {

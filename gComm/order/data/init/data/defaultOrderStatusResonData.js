@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module order/data/init/data/defaultOrderStatusResonData
+ * @description Default reason records for order, payment, and shipment lifecycle status changes.
+ * @layer data
+ * @owner order
+ * @override Project modules may provide later data contributions to add, replace, or deactivate status reasons.
+ */
 module.exports = {
     record1: {
         active: true,

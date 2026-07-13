@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module order/interceptors/interceptors
+ * @description Schema interceptor registrations for order save lifecycle hooks.
+ * @layer interceptor
+ * @owner order
+ * @override Project modules may add, reorder, disable, or replace order interceptor registrations through later module contributions.
+ */
 module.exports = {
     orderPreSaveEntCode: {
         type: 'schema',

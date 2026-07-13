@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module order/utils/enums
+ * @description Order enum definitions, including reason categories for order, payment, and shipment lifecycle reasons.
+ * @layer data
+ * @owner order
+ * @override Project modules may contribute additional enum definitions or override enum metadata through later module contributions.
+ */
 module.exports = {
     ReasonType: {
         _options: {

@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/data/init/data/user/defaultCmsUserGroupsData
+ * @description Default CMS user-group records loaded by the CMS initial-data importer.
+ * @layer data
+ * @owner cms
+ * @override Project modules may provide later CMS user-group data contributions for project-specific access models.
+ */
 module.exports = {
     record0: {
         code: 'contentManagerGroup',

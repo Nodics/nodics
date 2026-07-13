@@ -49,21 +49,25 @@ Load detailed files only when their subject is affected:
 
 1. `contracts/nodics-principles.md`
 2. `contracts/developer-implementation-contract.md`
-3. `contracts/module-structure-contract.md`
-4. `contracts/documentation-impact-contract.md`
-5. `contracts/testing-and-release-contract.md`
-6. `contracts/customer-project-mode-contract.md`
-7. `nodics-principles.md`
-8. `modular-architecture.md`
-9. `module-catalog.md`
-10. `artifact-definition-and-change-guide.md`
-11. `schema-and-generation.md`
-12. `testing-playbook.md`
-13. `standards/module-standard.md`
-14. `standards/code-documentation-standard.md`
-15. `feature-process.md`
-16. `prompts/base-nodics-assistant-prompt.md`
-17. `prompts/enterprise-architecture-quality-prompt.md`
+3. `contracts/human-maintainability-contract.md`
+4. `contracts/nodics-expert-decision-contract.md`
+5. `contracts/module-structure-contract.md`
+6. `contracts/documentation-impact-contract.md`
+7. `contracts/testing-and-release-contract.md`
+8. `contracts/customer-project-mode-contract.md`
+9. `nodics-principles.md`
+10. `modular-architecture.md`
+11. `module-catalog.md`
+12. `artifact-definition-and-change-guide.md`
+13. `schema-and-generation.md`
+14. `tenant-model-and-runtime-isolation.md`
+15. `versioned-data-and-publish-lifecycle.md`
+16. `testing-playbook.md`
+17. `standards/module-standard.md`
+18. `standards/code-documentation-standard.md`
+19. `feature-process.md`
+20. `prompts/base-nodics-assistant-prompt.md`
+21. `prompts/enterprise-architecture-quality-prompt.md`
 
 Load `change-gate-contract.md` only at commit, merge/release, periodic-audit, or
 explicit comprehensive-review time. Canonical rules should be referenced rather

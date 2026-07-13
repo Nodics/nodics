@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/data/init/headers/content/defaultCmsSiteDataHeader
+ * @description Initial-data import header for default CMS site records.
+ * @layer data
+ * @owner cms
+ * @override Project modules may supply later headers to change CMS site import behavior.
+ */
 module.exports = {
     cms: {
         defaultCmsSiteData: {

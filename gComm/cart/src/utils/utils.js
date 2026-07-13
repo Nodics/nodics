@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cart/utils/utils
+ * @description Reserved utility extension point for cart-specific helper functions.
+ * @layer utils
+ * @owner cart
+ * @override Project modules may add or replace cart utility helpers when shared cart behavior is needed outside services.
+ */
 module.exports = {
 
 };

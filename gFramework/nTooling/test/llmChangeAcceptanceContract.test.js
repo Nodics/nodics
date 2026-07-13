@@ -25,6 +25,7 @@ function requireClauses(relativePath, clauses) {
 requireClauses('gSetup/llm/nodics-principles.md', [
     '## Change Acceptance Contract',
     'every modification and every new source file',
+    'Every new source file must include file-level documentation',
     'later-loaded customer project module',
     'without modifying out-of-the-box Nodics code',
     'override/customization test',
@@ -37,9 +38,27 @@ requireClauses('gSetup/llm/prompts/base-nodics-assistant-prompt.md', [
     'immutable and already qualified',
     'unless the developer explicitly requests it',
     'Change Acceptance Contract',
+    'Human Maintainability Contract',
+    'Nodics Expert LLM Decision Contract',
+    'Every new source file must include file-level documentation',
     'every new or changed extension point',
     'override/customization test',
     'A change is not complete'
+]);
+
+requireClauses('gSetup/llm/contracts/human-maintainability-contract.md', [
+    '# Human Maintainability Contract',
+    'understandable, diagnosable, safely changeable, and',
+    'reviewable by developers who did not create it',
+    'AI-generated code has no special exemption'
+]);
+
+requireClauses('gSetup/llm/contracts/nodics-expert-decision-contract.md', [
+    '# Nodics Expert LLM Decision Contract',
+    'classify the change',
+    'correct Nodics layer',
+    'artifact should own the behavior',
+    'Expected AI Output Before Coding'
 ]);
 
 requireClauses('gSetup/llm/prompts/enterprise-architecture-quality-prompt.md', [
@@ -80,6 +99,8 @@ requireClauses('gSetup/llm/daily-change-checklist.md', [
     '**Override:**',
     '**Impact:**',
     '**Proof:**',
+    'classify the artifact owner before coding',
+    'understandable, diagnosable, safely changeable, and reviewable',
     'Evidence may be reused while the relevant files remain unchanged'
 ]);
 

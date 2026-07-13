@@ -16,6 +16,13 @@
 const Chai = require('chai');
 const expect = Chai.expect;
 
+/**
+ * @module order/test/env-local/envTest
+ * @description Reserved local-environment order test contribution showing how environment-specific test suites can be attached.
+ * @layer test
+ * @owner order
+ * @override Project modules should add environment-specific order tests in their own module test folders instead of modifying this placeholder.
+ */
 module.exports = {
     /*
         sampleTestSuite: {

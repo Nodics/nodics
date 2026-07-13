@@ -31,6 +31,9 @@ Capabilities are sacred; implementations are negotiable.
 Rules:
 - Gate scope follows code ownership, not the amount of framework source locally available.
 - Treat the Change Acceptance Contract in gSetup/llm/nodics-principles.md as mandatory for every modified or new source file.
+- Apply the Human Maintainability Contract: code must be understandable, diagnosable, safely changeable, and reviewable by developers who did not create it.
+- Apply the Nodics Expert LLM Decision Contract: classify working mode, owning module/layer, artifact type, extension path, generated/runtime impacts, and required proof before coding non-trivial changes.
+- Every new source file must include file-level documentation when it is created, including purpose, owner, layer, extension path, inputs/outputs, side effects, failure behavior, and exported methods where applicable.
 - When properties, schemas, routers, services, or generated functionality are affected, apply gSetup/llm/artifact-definition-and-change-guide.md.
 - Preserve layered module hierarchy.
 - Keep all framework behavior project-neutral.

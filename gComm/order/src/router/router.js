@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module order/router/router
+ * @description Reserved order route contribution for custom order APIs beyond generated schema routes.
+ * @layer router
+ * @owner order
+ * @override Project modules may add, remove, or replace order routes through governed router hierarchy contributions.
+ */
 module.exports = {
 
 };

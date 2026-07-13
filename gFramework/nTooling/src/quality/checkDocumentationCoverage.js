@@ -65,20 +65,27 @@ const contractLayers = new Set([
     'router'
 ]);
 
-function walk(dir, files, includeTests, includeGenerated) {
+function isExcludedDirectory(fullPath, entryName, rootDir, includeGenerated) {
+    if (path.relative(rootDir, fullPath) === 'docs') {
+        return true;
+    }
+    return excludedDirs.has(entryName) && !(includeGenerated && entryName === 'gen');
+}
+
+function walk(dir, files, includeTests, includeGenerated, rootDir) {
     fs.readdirSync(dir, { withFileTypes: true }).forEach(entry => {
         if (entry.name.startsWith('.')) {
             return;
         }
         const fullPath = path.join(dir, entry.name);
         if (entry.isDirectory()) {
-            if (excludedDirs.has(entry.name) && !(includeGenerated && entry.name === 'gen')) {
+            if (isExcludedDirectory(fullPath, entry.name, rootDir, includeGenerated)) {
                 return;
             }
             if (!includeTests && entry.name === 'test') {
                 return;
             }
-            walk(fullPath, files, includeTests, includeGenerated);
+            walk(fullPath, files, includeTests, includeGenerated, rootDir);
             return;
         }
         if (entry.isFile() && entry.name.endsWith('.js')) {
@@ -198,6 +205,11 @@ function hasGeneratedDocumentation(content) {
         header.includes('@override');
 }
 
+function maskComments(content) {
+    return content.replace(/\/\*[\s\S]*?\*\//g, match => ' '.repeat(match.length))
+        .replace(/\/\/[^\n\r]*/g, match => ' '.repeat(match.length));
+}
+
 function findExportedMethods(content) {
     const methods = [];
     const exportIndex = content.indexOf('module.exports');
@@ -205,9 +217,10 @@ function findExportedMethods(content) {
         return methods;
     }
 
+    const scanContent = maskComments(content);
     const methodPattern = /(?:^|\n)(\s*)([A-Za-z_$][\w$]*)\s*:\s*(?:async\s+)?function\s*\(/g;
     let match;
-    while ((match = methodPattern.exec(content)) !== null) {
+    while ((match = methodPattern.exec(scanContent)) !== null) {
         methods.push({
             name: match[2],
             index: match.index + match[0].indexOf(match[2])
@@ -248,7 +261,7 @@ function createOptions(args) {
 
 function collectCoverage(options) {
     const files = [];
-    walk(options.rootDir, files, options.includeTests, options.includeGenerated);
+    walk(options.rootDir, files, options.includeTests, options.includeGenerated, options.rootDir);
 
     const report = {
         scope: options.scope,

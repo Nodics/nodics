@@ -6,7 +6,7 @@ Nodics source documentation must describe the platform contract, not only the lo
 
 ### 1. File Or Module Level
 
-Every module-owned JavaScript file should have a file-level JSDoc block. Files that export a Nodics artifact should place it before `module.exports`.
+Every module-owned JavaScript file must have a file-level JSDoc block. New source files must include this documentation when they are created; a file is not complete if its purpose, owner, layer, extension path, inputs/outputs, side effects, failure behavior, and exported methods are undocumented. Files that export a Nodics artifact should place the block before `module.exports`.
 
 Required details:
 
@@ -226,6 +226,8 @@ npm run llm:validate
 ```
 
 Each module's `llm/generated/module-context.md` inventories all owned files and marks documentation as `documented`, `partially-documented`, or `undocumented`. These statuses never indicate that the file or runtime capability is absent. This inventory does not replace JSDoc review and must not generate fictional descriptions for undocumented code.
+
+Root `docs/` is excluded from source documentation coverage. It may contain local reference material, migration notes, extracted legacy content, or planning files; those files are not framework source and must not distort module documentation coverage. Permanent module documentation belongs under the owning module or under `gSetup/llm` when it is a cross-cutting developer/AI contract.
 
 Use scoped checks during rollout:
 

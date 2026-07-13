@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/data/sample/data/components/sampleCmsComponentData
+ * @description Sample CMS component records used for demo or development data loading.
+ * @layer data
+ * @owner cms
+ * @override Project modules should provide their own sample component data rather than changing shared CMS samples.
+ */
 module.exports = {
 
 };

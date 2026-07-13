@@ -20,14 +20,21 @@ layered customization contract.
 `package.json.name` is the canonical runtime module identifier. It must be a
 unique alphanumeric JavaScript-style name beginning with a letter.
 
-The physical folder should either match that identifier or, for framework
-capabilities, use the `n` namespace prefix such as `nRouter` for runtime module
-`router`. Template packages are exempt because their identities contain
-generation placeholders.
+For new modules, the physical folder should match `package.json.name` unless a
+framework-owned compatibility convention explicitly requires an `n` namespace
+folder such as `nRouter` for runtime module `router`. Template packages are
+exempt because their identities contain generation placeholders.
+
+The `n` prefix is a naming convention, not a runtime classifier. Some `n*`
+packages are capability groups, while others are ordinary capabilities or web
+modules. Module kind must always come from `package.json.nodics.kind`, and
+runtime flags must come from `package.json.nodics.runtime`.
 
 Never rename an established runtime identifier merely to match a folder. Such a
 change requires an explicit compatibility migration for active-module lists,
 dependencies, persisted configuration, routes, tests, and generated artifacts.
+Historical directory/package mismatches should be documented and migrated
+deliberately rather than corrected mechanically.
 
 The repository-standard human entrypoint is upper-case `README.md`. The
 repository-standard AI/developer behavior contract is upper-case `AGENTS.md`.

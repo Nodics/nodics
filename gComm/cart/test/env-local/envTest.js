@@ -16,6 +16,13 @@
 const Chai = require('chai');
 const expect = Chai.expect;
 
+/**
+ * @module cart/test/env-local/envTest
+ * @description Reserved local-environment cart test contribution showing how environment-specific test suites can be attached.
+ * @layer test
+ * @owner cart
+ * @override Project modules should add environment-specific cart tests in their own module test folders instead of modifying this placeholder.
+ */
 module.exports = {
     /*
         sampleTestSuite: {

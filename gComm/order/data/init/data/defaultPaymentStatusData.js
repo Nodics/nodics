@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module order/data/init/data/defaultPaymentStatusData
+ * @description Default payment lifecycle status records loaded by the order initial-data importer.
+ * @layer data
+ * @owner order
+ * @override Project modules may provide later data contributions to add, replace, or deactivate payment statuses.
+ */
 module.exports = {
     record1: {
         code: "CREATED",

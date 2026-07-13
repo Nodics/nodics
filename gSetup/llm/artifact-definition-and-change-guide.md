@@ -44,6 +44,13 @@ The configuration initializer loads active modules in index order and deep-merge
 their exports. A later module may redefine one key or nested key while inheriting
 the remaining defaults.
 
+Do not treat every layered artifact as a plain property merge. Ordinary
+configuration files, script maps, utility maps, and many named
+service/facade/controller/pipeline contributions use active-module merge order.
+Schemas, routers, and their runtime persisted contributions use governed merge
+helpers that preserve override metadata, removals, warnings, and traceability.
+Choose the artifact-specific composition contract before writing code.
+
 Property requirements:
 
 - document owner, type, default, validation, sensitivity, and restart/runtime behavior

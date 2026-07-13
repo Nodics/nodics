@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/data/sample/data/typeCodes/sampleTypeCodeData
+ * @description Sample CMS type-code records used for demo or development data loading.
+ * @layer data
+ * @owner cms
+ * @override Project modules should provide their own type-code samples rather than changing shared CMS samples.
+ */
 module.exports = {
     record0: {
         code: 'sampleHomePageType',

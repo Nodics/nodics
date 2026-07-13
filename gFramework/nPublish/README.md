@@ -5,3 +5,9 @@
 Use this module for publish capability behavior that is not specific to one provider or domain. Variant modules such as `vDatabase` or `vMongodb` should contain variant wiring, not duplicated publish infrastructure.
 
 Publishing behavior must remain source-of-truth driven, auditable, rollback-aware, and safe for layered overrides across environment, server, node, tenant, and customer layers.
+
+Versioned persistence is currently provided through variant modules such as
+`vDatabase`, `vMongodb`, and `vService`. The broader business lifecycle for
+staged data, validation, approval, publish activation, online visibility, and
+rollback must be defined as a governed publish contract before a project treats
+it as complete runtime behavior.

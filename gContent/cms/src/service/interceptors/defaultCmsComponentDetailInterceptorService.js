@@ -9,11 +9,19 @@
 
  */
 
+/**
+ * @module cms/service/interceptors/DefaultCmsComponentDetailInterceptorService
+ * @description CMS interceptor service that generates component-detail codes and normalizes page/component relationship sources before save.
+ * @layer interceptor
+ * @owner cms
+ * @override Project modules may replace this interceptor to customize component-detail identity or source assignment rules.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes CMS component-detail interceptor handlers during service registration.
+     *
+     * @param {Object} options Module loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when handler initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -22,9 +30,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes CMS component-detail interceptor startup after module artifacts are registered.
+     *
+     * @param {Object} options Module loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -32,6 +41,15 @@ module.exports = {
         });
     },
 
+    /**
+     * Generates a component-detail code from source and target when no code is supplied.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} request.model CMS component-detail model being saved.
+     * @param {Object} response Interceptor response context.
+     * @returns {Promise<boolean>} Resolves after detail code normalization.
+     * @sideEffects Mutates `request.model.code`.
+     */
     generateCmsComponentDetailCode: function (request, response) {
         return new Promise((resolve, reject) => {
             if (!request.model.code) request.model.code = request.model.source + '2' + request.model.target.toUpperCaseFirstChar();
@@ -39,6 +57,15 @@ module.exports = {
         });
     },
 
+    /**
+     * Sets missing component-detail source values from the parent CMS page code.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} request.model CMS page model being saved.
+     * @param {Object} response Interceptor response context.
+     * @returns {Promise<boolean>} Resolves after page component details are normalized.
+     * @sideEffects Mutates entries in `request.model.cmsComponents`.
+     */
     setCompDetailSourceForPage: function (request, response) {
         return new Promise((resolve, reject) => {
             let model = request.model;
@@ -51,6 +78,15 @@ module.exports = {
         });
     },
 
+    /**
+     * Sets missing component-detail source values from the parent CMS component code.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} request.model CMS component model being saved.
+     * @param {Object} response Interceptor response context.
+     * @returns {Promise<boolean>} Resolves after sub-component details are normalized.
+     * @sideEffects Mutates entries in `request.model.subComponents`.
+     */
     setCompDetailSourceForComp: function (request, response) {
         return new Promise((resolve, reject) => {
             let model = request.model;

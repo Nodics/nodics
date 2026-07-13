@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cart/schemas/schemas
+ * @description Cart schema contribution defining abstract cart ownership fields and the concrete persisted cart model.
+ * @layer schema
+ * @owner cart
+ * @override Project modules may extend or govern the cart schema through layered schema fragments without modifying this definition.
+ */
 module.exports = {
     default: {
         abstractCart: {

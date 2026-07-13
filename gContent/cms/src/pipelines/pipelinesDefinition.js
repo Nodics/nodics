@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/pipelines/pipelinesDefinition
+ * @description Reserved CMS pipeline contribution for content-management workflows.
+ * @layer pipeline
+ * @owner cms
+ * @override Project modules may add CMS pipelines for content validation, approval, rendering, or publication workflows.
+ */
 module.exports = {
 
 };

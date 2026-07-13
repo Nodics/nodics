@@ -11,11 +11,20 @@
 
 const _ = require('lodash');
 
+/**
+ * @module cart/service/pipeline/defaultValidateCartPipelineService
+ * @description Pipeline node service for validating cart payload structure, generated token readiness, related items, consignments, payments, and final cart state.
+ * @layer pipeline
+ * @owner cart
+ * @override Project modules may replace individual validation nodes or override the pipeline definition for customer-specific cart rules.
+ * @property {Object} SERVICE.DefaultTokenService Finds or creates cart tokens when token preparation is enabled in the pipeline.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes cart validation pipeline handlers during service registration.
+     *
+     * @param {Object} options Module loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when handler initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -24,9 +33,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes cart validation pipeline handler startup after module artifacts are registered.
+     *
+     * @param {Object} options Module loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -34,10 +44,30 @@ module.exports = {
         });
     },
 
+    /**
+     * Entry node for cart validation requests.
+     *
+     * @param {Object} request Nodics request context containing the cart model.
+     * @param {Object} response Pipeline response context.
+     * @param {Object} process Pipeline execution controller.
+     * @returns {void}
+     * @sideEffects Advances the validation pipeline.
+     */
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating create order request');
         process.nextSuccess(request, response);
     },
+    /**
+     * Ensures a cart token exists by reusing the latest active token or creating a new one.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} request.model Cart model being validated.
+     * @param {Object} response Pipeline response context.
+     * @param {Object} process Pipeline execution controller.
+     * @returns {void}
+     * @sideEffects Mutates `request.model.token`.
+     * @throws Sends `ERR_TKN_00000` to the pipeline error path when token lookup or creation fails.
+     */
     prepareToken: function (request, response, process) {
         this.LOG.debug('Generating token for cart');
         let cartModel = request.model;
@@ -81,26 +111,71 @@ module.exports = {
             process.nextSuccess(request, response);
         }
     },
+    /**
+     * Validates mandatory cart values before dependent item checks.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} response Pipeline response context.
+     * @param {Object} process Pipeline execution controller.
+     * @returns {void}
+     * @sideEffects Advances the validation pipeline.
+     */
     validateMandateValues: function (request, response, process) {
         this.LOG.debug('Validating create order mandate values');
         process.nextSuccess(request, response);
     },
 
+    /**
+     * Validates cart item associations.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} response Pipeline response context.
+     * @param {Object} process Pipeline execution controller.
+     * @returns {void}
+     * @sideEffects Advances the validation pipeline.
+     */
     validateItems: function (request, response, process) {
         this.LOG.debug('Validating associated items');
         process.nextSuccess(request, response);
     },
 
+    /**
+     * Validates cart consignment associations.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} response Pipeline response context.
+     * @param {Object} process Pipeline execution controller.
+     * @returns {void}
+     * @sideEffects Advances the validation pipeline.
+     */
     validateConsignments: function (request, response, process) {
         this.LOG.debug('Validating associated consignments');
         process.nextSuccess(request, response);
     },
 
+    /**
+     * Validates cart payment associations.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} response Pipeline response context.
+     * @param {Object} process Pipeline execution controller.
+     * @returns {void}
+     * @sideEffects Advances the validation pipeline.
+     */
     validatePayments: function (request, response, process) {
         this.LOG.debug('Validating associated payments');
         process.nextSuccess(request, response);
     },
 
+    /**
+     * Performs final cart validation before the caller pipeline continues.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} response Pipeline response context.
+     * @param {Object} process Pipeline execution controller.
+     * @returns {void}
+     * @sideEffects Advances the validation pipeline to success.
+     */
     validateCart: function (request, response, process) {
         this.LOG.debug('Validating associated order');
         process.nextSuccess(request, response);

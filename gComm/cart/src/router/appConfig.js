@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cart/router/appConfig
+ * @description Reserved cart router application configuration contribution.
+ * @layer router
+ * @owner cart
+ * @override Project modules may contribute cart-specific router application settings from a later module layer.
+ */
 module.exports = {
 
 };

@@ -9,11 +9,21 @@
 
  */
 
+/**
+ * @module cart/service/handler/defaultOrderSchemaValueHandlerService
+ * @description Helper service for order/cart token value generation and expiry calculation.
+ * @layer service
+ * @owner cart
+ * @override Project modules may replace this handler to use a different token entropy, expiry policy, or external token provider.
+ * @property {Object} CONFIG token.ORDER supplies token validity duration in minutes.
+ * @property {Object} UTILS Provides hash generation.
+ */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Initializes the token value handler during service registration.
+     *
+     * @param {Object} options Module loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when handler initialization is complete.
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -22,9 +32,10 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
+     * Finalizes token value handler startup after module artifacts are registered.
+     *
+     * @param {Object} options Module loader options supplied during startup.
+     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {
@@ -32,6 +43,13 @@ module.exports = {
         });
     },
 
+    /**
+     * Generates a deterministic hash token from the supplied request payload.
+     *
+     * @param {Object} request Request or model payload used as the token source.
+     * @returns {string} Generated token value.
+     * @throws Wraps hash-generation errors in `ERR_TKN_00000`.
+     */
     generateToken: function (request) {
         let _self = this;
         try {
@@ -42,6 +60,13 @@ module.exports = {
             throw new CLASSES.NodicsError(error, 'While generating Order Token', 'ERR_TKN_00000');
         }
     },
+    /**
+     * Calculates token expiry from `token.ORDER.validUpTo` configuration.
+     *
+     * @param {Object} request Request context; currently used only for signature consistency.
+     * @returns {Date} Expiry timestamp.
+     * @throws Wraps configuration or date-calculation errors in `ERR_TKN_00000`.
+     */
     generateExpiry: function (request) {
         let _self = this;
         try {

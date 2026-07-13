@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/data/init/headers/user/defaultCmsEmployeeDataHeader
+ * @description Initial-data import header for default CMS employee records.
+ * @layer data
+ * @owner cms
+ * @override Project modules may supply later headers to change CMS employee import behavior.
+ */
 module.exports = {
     profile: {
         defaultCmsEmployee: {

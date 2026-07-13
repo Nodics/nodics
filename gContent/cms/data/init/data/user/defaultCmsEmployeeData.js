@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/data/init/data/user/defaultCmsEmployeeData
+ * @description Default CMS employee records loaded by the CMS initial-data importer.
+ * @layer data
+ * @owner cms
+ * @override Project modules may provide later CMS employee data contributions for project-specific users.
+ */
 module.exports = {
     record0: {
         code: 'contentManager',

@@ -8,6 +8,11 @@ class/process holders. Keep it focused: shared helpers belong here only when
 they are framework-wide, stable, and not owned more clearly by a specific
 capability module.
 
+`nCommon` does not own startup hierarchy resolution or configuration loading.
+Those responsibilities belong to `nConfig`. `nCommon` contributes shared
+runtime primitives after `nConfig` has prepared the active module hierarchy and
+effective layered configuration.
+
 ## Ownership
 
 `nCommon` may own:

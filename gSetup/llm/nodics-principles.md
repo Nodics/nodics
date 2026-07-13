@@ -56,7 +56,8 @@ generated-layer, tenant, or runtime-governance contracts.
 4. Put defaults behind layered configuration or replaceable services. An implementation-specific default must not become an unchangeable platform capability contract.
 5. Derive generated artifacts from effective layered source definitions. Build must recreate them and clean must remove them safely; generated output is never the source of truth.
 6. Add test coverage with the implementation. Include positive, negative, security/access-control, tenant-context, traceability, and backward-compatibility coverage as applicable. Every new or changed extension point must include an override/customization test proving a later-loaded module can change the behavior without editing core. Cross-module behavior must cover consolidated and modular deployment where applicable.
-7. Update module and LLM documentation when ownership, configuration, dependencies, extension points, runtime behavior, or operational contracts change.
+7. Every new source file must include file-level documentation when it is created. Document purpose, owner, layer, extension path, inputs/outputs, side effects, failure behavior, and exported methods before the file is considered complete.
+8. Update module and LLM documentation when ownership, configuration, dependencies, extension points, runtime behavior, or operational contracts change.
 
 Code review must reject a change whose customization path is absent, undocumented, or untested. Capabilities are sacred; the default implementation remains negotiable through the hierarchy.
 

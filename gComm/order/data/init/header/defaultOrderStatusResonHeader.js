@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module order/data/init/header/defaultOrderStatusResonHeader
+ * @description Initial-data import header for default order, payment, and shipment reason records.
+ * @layer data
+ * @owner order
+ * @override Project modules may supply later initializer headers or data rows to add or replace status reasons.
+ */
 module.exports = {
     order: {
         orderStatusReasons: {

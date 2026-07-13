@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cart/config/prescripts
+ * @description Reserved pre-start script contribution for cart module initialization work.
+ * @layer config
+ * @owner cart
+ * @override Project modules may add later pre-scripts when cart startup requires project-specific preparation.
+ */
 module.exports = {
 
 };

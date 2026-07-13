@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module cms/schemas/schemas
+ * @description CMS schema contribution defining type codes, renderer mappings, sites, pages, components, and component-detail relationships.
+ * @layer schema
+ * @owner cms
+ * @override Project modules may extend or govern CMS schemas through layered schema fragments without modifying this definition.
+ */
 module.exports = {
     cms: {
         cmsTypeCode: {

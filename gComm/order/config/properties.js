@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module order/config/properties
+ * @description Reserved order property contribution for module-level configuration defaults.
+ * @layer config
+ * @owner order
+ * @override Project modules may provide later property contributions for order lifecycle, validation, and integration settings.
+ */
 module.exports = {
 
 };
