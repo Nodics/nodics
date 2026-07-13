@@ -40,3 +40,14 @@ driven and avoids hardcoded names such as `local` or `production`.
 - Guarded live CRUD/access-policy tests require an explicit dedicated test
   tenant and destructive-test opt-in variables.
 - Test reports are generated under the selected server module.
+
+## Test Model
+
+Nodics separates U-Test and N-Test concepts and supports suite options plus
+startup/API-triggered execution. Preserve that developer-facing distinction when
+writing module guidance, while keeping current behavior governed by the layered
+discovery and generated-context contracts above.
+
+Every feature that adds or changes an extension point should include a test
+showing that a later-loaded module can override or customize the behavior
+without editing out-of-the-box Nodics code.

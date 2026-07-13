@@ -37,6 +37,20 @@ Public mutation routes require `runtimeConfigAdminUserGroup` plus `cache.flush`,
 
 Projects may override channel mappings, engine selection, capabilities, handlers, invalidation transport, and permissions through normal hierarchy layers. Overrides must preserve tenant isolation, capability honesty, response envelopes, diagnostics, and fail-closed security behavior.
 
+## Cache Adapter Checklist
+
+When adding a cache engine:
+
+- keep router/API-response, DAO/schema-item, and search cache call sites
+  provider-neutral;
+- add provider behavior through an adapter module or later project module;
+- declare `contractVersion`, handlers, and truthful capabilities;
+- configure activation and channel mapping through layered `cache` properties;
+- preserve tenant partitioning, principal isolation, TTL semantics,
+  serialization, invalidation, diagnostics, and fail-closed startup behavior;
+- add adapter validation, live-provider qualification where practical, and
+  override tests.
+
 ## Diagnostics
 
 `DefaultCacheService` records lightweight process-local diagnostics for all cache operations that pass through the orchestration layer. Metrics are grouped by module, tenant, channel, and operation, and track hit, miss, success, error, latency total, max latency, last result, and last error code.

@@ -333,7 +333,8 @@ function addRoute(paths, route) {
         const equivalent = comparable(existing) === comparable(incoming) &&
             JSON.stringify(existingMetadata.accessGroups || []) === JSON.stringify(incomingMetadata.accessGroups || []) &&
             existingMetadata.permission === incomingMetadata.permission &&
-            JSON.stringify(existingMetadata.permissions || []) === JSON.stringify(incomingMetadata.permissions || []);
+            JSON.stringify(existingMetadata.permissions || []) === JSON.stringify(incomingMetadata.permissions || []) &&
+            JSON.stringify(existingMetadata.permissionConfig || []) === JSON.stringify(incomingMetadata.permissionConfig || []);
         if (equivalent) {
             existingMetadata.duplicateDeclarations = existingMetadata.duplicateDeclarations || [];
             existingMetadata.duplicateDeclarations.push({
@@ -380,6 +381,7 @@ function prepareDefaultRoute(options) {
         active: definition.active,
         permission: definition.permission,
         permissions: definition.permissions || [],
+        permissionConfig: definition.permissionConfig || [],
         routerAlias: schemaObject.router && schemaObject.router.alias
     };
     return definition;
@@ -414,6 +416,7 @@ function prepareConfiguredRoute(options) {
         active: definition.active,
         permission: definition.permission,
         permissions: definition.permissions || [],
+        permissionConfig: definition.permissionConfig || [],
         responseHandler: definition.responseHandler
     };
     return definition;

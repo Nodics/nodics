@@ -14,6 +14,13 @@ global.CONFIG = {
         if (key === 'routeActionAuthorization') {
             return routeActionAuthorization;
         }
+        if (key === 'authSecurity') {
+            return {
+                internalToken: {
+                    routePermission: 'auth.internal.token.read'
+                }
+            };
+        }
         return undefined;
     }
 };
@@ -109,6 +116,35 @@ let groupGranted = executeCheckAccess(createRequest({
     permissions: []
 }));
 assert.strictEqual(groupGranted.success, true, 'Group-derived permission should allow matching route action');
+
+let configuredPermissionGranted = executeCheckAccess({
+    authData: {
+        entCode: 'defaultEnterprise',
+        tenant: 'default',
+        userGroups: ['serviceAccountUserGroup'],
+        permissions: ['auth.internal.token.read']
+    },
+    router: {
+        accessGroups: ['serviceAccountUserGroup'],
+        permissionConfig: 'authSecurity.internalToken.routePermission'
+    }
+});
+assert.strictEqual(configuredPermissionGranted.success, true, 'Configured route permission should resolve from layered properties');
+
+let configuredPermissionDenied = executeCheckAccess({
+    authData: {
+        entCode: 'defaultEnterprise',
+        tenant: 'default',
+        userGroups: ['serviceAccountUserGroup'],
+        permissions: []
+    },
+    router: {
+        accessGroups: ['serviceAccountUserGroup'],
+        permissionConfig: 'authSecurity.internalToken.routePermission'
+    }
+});
+assert.strictEqual(configuredPermissionDenied.success, false, 'Configured route permission should deny missing grants');
+assert.strictEqual(configuredPermissionDenied.error.code, 'ERR_AUTH_00003');
 
 let accessGroupDenied = executeCheckAccess(createRequest({
     userGroups: ['runtimeApproverGroup'],

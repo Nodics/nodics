@@ -15,6 +15,7 @@ module.exports = {
             getInternalAuthToken: {
                 secured: true,
                 accessGroups: ['userGroup'],
+                permissionConfig: 'authSecurity.internalToken.routePermission',
                 key: '/auth/token/:tntCode',
                 method: 'GET',
                 controller: 'DefaultInternalAuthenticationProviderController',
@@ -68,31 +69,31 @@ module.exports = {
 
         authenticate: {
             authenticateEmployee: {
-                secured: true,
+                secured: false,
                 accessGroups: ['userGroup'],
                 key: '/employee/authenticate',
                 method: 'POST',
                 handler: 'DefaultAuthenticationProviderController',
                 operation: 'authenticateEmployee',
                 help: {
-                    requestType: 'secured',
+                    requestType: 'pre-authentication',
                     message: 'Send loginId and password in the JSON body; x-enterprise-code is the enterprise header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/profile/authenticate',
+                    url: 'http://host:port/nodics/profile/employee/authenticate',
                 }
             },
             authenticateCustomer: {
-                secured: true,
+                secured: false,
                 accessGroups: ['userGroup'],
                 key: '/customer/authenticate',
                 method: 'POST',
                 handler: 'DefaultAuthenticationProviderController',
                 operation: 'authenticateCustomer',
                 help: {
-                    requestType: 'secured',
+                    requestType: 'pre-authentication',
                     message: 'Send loginId and password in the JSON body; x-enterprise-code is the enterprise header',
                     method: 'POST',
-                    url: 'http://host:port/nodics/profile/authenticate',
+                    url: 'http://host:port/nodics/profile/customer/authenticate',
                 }
             },
             refreshToken: {

@@ -1,1 +1,7 @@
-This is a sample readme file for your kickoffLocalProfileServer module
+# kickoffDevProfileServer
+
+`kickoffDevProfileServer` is the development profile server module for the `kickoff` application.
+
+Use this module for dev-scoped profile server activation and runtime topology. Profile capability behavior belongs in the active profile modules.
+
+Server configuration should preserve privacy, access control, tenant context, and layered overrides.

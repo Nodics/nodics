@@ -64,10 +64,12 @@ async function run() {
     await assert.rejects(redisService.consume({ key: 'unsupported', channel: channel({ get: function () {} }, 'redis') }), /atomic GETDEL/);
 
     const stampService = require('../../src/service/identity/defaultPrincipalSecurityStampService');
-    function stampConfig(engineName, engineDefinition, fallback) {
+    function stampConfig(engineName, engineDefinition, fallback, overrides) {
+        overrides = overrides || {};
         global.CONFIG = { get: key => key === 'authSecurity' ? { securityStamp: { enabled: true, failClosed: true, allowMissingStamp: false } } : key === 'cache' ? {
-            profile: { channels: { auth: { engine: engineName, fallback: fallback } } },
-            default: { engines: { [engineName]: engineDefinition } }
+            enabled: overrides.cacheEnabled,
+            profile: { channels: { auth: Object.assign({ engine: engineName, fallback: fallback }, overrides.channel || {}) } },
+            default: { engines: { [engineName]: Object.assign({}, engineDefinition, overrides.engine || {}) } }
         } : undefined };
     }
     stampConfig('local', { distributed: false, atomicConsume: true }, false);
@@ -76,6 +78,12 @@ async function run() {
     await assert.rejects(stampService.validateConfiguration(), /distributed auth cache/);
     stampConfig('redis', { distributed: true, atomicConsume: true }, true);
     await assert.rejects(stampService.validateConfiguration(), /fallback disabled/);
+    stampConfig('redis', { distributed: true, atomicConsume: true }, false, { cacheEnabled: false });
+    await assert.rejects(stampService.validateConfiguration(), /enabled distributed auth cache/);
+    stampConfig('redis', { distributed: true, atomicConsume: true }, false, { channel: { enabled: false } });
+    await assert.rejects(stampService.validateConfiguration(), /enabled distributed auth cache/);
+    stampConfig('redis', { distributed: true, atomicConsume: true }, false, { engine: { enabled: false } });
+    await assert.rejects(stampService.validateConfiguration(), /enabled distributed auth cache/);
     stampConfig('redis', { distributed: true, atomicConsume: true }, false);
     await stampService.validateConfiguration();
 

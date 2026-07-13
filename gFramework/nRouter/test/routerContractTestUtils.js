@@ -28,7 +28,7 @@ function assertRoute(routes, expected) {
     const target = `${expected.method} ${expected.key}`;
     assert(route, `Expected route contract for ${target}`);
 
-    ['controller', 'handler', 'operation', 'secured', 'permission'].forEach((field) => {
+    ['controller', 'handler', 'operation', 'secured', 'permission', 'permissionConfig'].forEach((field) => {
         if (Object.prototype.hasOwnProperty.call(expected, field)) {
             assert.strictEqual(route[field], expected[field], `Expected ${target} ${field}`);
         }

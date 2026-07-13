@@ -4,6 +4,7 @@
 
 ## Hand-Authored Tests
 
+- `gFramework/nService/test/authTokenInvalidationService.test.js`
 - `gFramework/nService/test/moduleRequestHeaderNormalization.test.js`
 - `gFramework/nService/test/statusDefinitionCatalog.test.js`
 

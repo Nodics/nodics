@@ -14,12 +14,12 @@
     "description": "Generate services for all defined items"
   },
   "sourceFiles": 78,
-  "testFiles": 2,
+  "testFiles": 3,
   "dataFiles": 0,
-  "ownedFiles": 30,
-  "sourceFingerprint": "0e6b57c7789a9d9e221e204e6b8e3a2bd2bda6bd1a1683e3265ff281a5dcc903",
+  "ownedFiles": 31,
+  "sourceFingerprint": "67807cf1a2a5e5ab3156ecfb525e9668caed72d3aa06533e0763edecf121a48e",
   "documentation": {
-    "documented": 18,
+    "documented": 19,
     "partially-documented": 1,
     "undocumented": 7,
     "inventory-only": 4

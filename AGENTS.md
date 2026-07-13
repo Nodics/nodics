@@ -22,6 +22,10 @@ layered module hierarchy without modifying out-of-the-box Nodics code.
   framework behavior.
 - Behavior must come from active modules, layered configuration, tenant context,
   schema definitions, routers, services, pipelines, data, and runtime governance.
+- Security, access, routing, cache, audit, validation, and governance values
+  that a project may reasonably change must be configurable through layered
+  `properties.js` or runtime governance. Do not hardcode such values in source
+  code when a property-backed resolver can preserve the capability contract.
 - Generated artifacts must be regenerated from source definitions; do not treat
   generated files as hand-maintained source of truth.
 - Security, access control, validation, audit, rollback, diagnostics, and tests

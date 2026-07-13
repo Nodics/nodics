@@ -53,6 +53,7 @@ module.exports = {
             allowMissingStamp: false
         },
         internalToken: {
+            routePermission: 'auth.internal.token.read',
             crossTenantPermissions: ['auth.internal.token.read.anyTenant'],
             crossTenantGroups: []
         },
