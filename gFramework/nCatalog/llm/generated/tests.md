@@ -4,6 +4,7 @@
 
 ## Hand-Authored Tests
 
+- `gFramework/nCatalog/test/catalogCapabilityContract.test.js`
 - `gFramework/nCatalog/test/common/commonTest.js`
 - `gFramework/nCatalog/test/env-local/envTest.js`
 

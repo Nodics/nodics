@@ -14,12 +14,12 @@
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to nValidator"
   },
   "sourceFiles": 14,
-  "testFiles": 6,
+  "testFiles": 7,
   "dataFiles": 2,
-  "ownedFiles": 26,
-  "sourceFingerprint": "d9e9481e91ddeef281cecb6cf87ca937482291913d3782f3edf8a96dfcdde102",
+  "ownedFiles": 27,
+  "sourceFingerprint": "651a183a9f0acb3981d44adbca975f5315cad1a89603f46ae07b1b062e1a7fd9",
   "documentation": {
-    "documented": 20,
+    "documented": 21,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

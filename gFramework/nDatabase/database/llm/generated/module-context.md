@@ -33,9 +33,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 35 |
-| Test files | 6 |
+| Test files | 7 |
 | Data files | 0 |
-| All module-owned files | 49 |
+| All module-owned files | 50 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -68,7 +68,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 39 |
+| Documented | 40 |
 | Partially documented | 3 |
 | Undocumented | 3 |
 | Inventory only | 4 |
@@ -137,6 +137,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDatabase/database/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nDatabase test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nDatabase/database/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nDatabase test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nDatabase/database/test/schemaIndexControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDatabase/database/test/schemaIndexServiceContract.test.js` | `test` | `documented` | 0/0 | Verifies schema index maintenance fans out across active tenants, master/test channels, modules, and schema-scoped model lookups. |  |
 | `gFramework/nDatabase/database/test/schemaReadAccessPolicyService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/database/test/schemaWriteAccessPolicyService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/database/test/tenantDatabaseConfigurationValidation.test.js` | `test` | `documented` | 0/0 | Proves fail-fast tenant/module database configuration validation, registry isolation, and later-layer module connection overrides. |  |

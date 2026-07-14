@@ -6,6 +6,7 @@
 
 - `gFramework/nOtp/test/common/commonTest.js`
 - `gFramework/nOtp/test/env-local/envTest.js`
+- `gFramework/nOtp/test/otpCapabilityContract.test.js`
 
 ## Generated Tests
 

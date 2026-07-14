@@ -32,9 +32,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 11 |
-| Test files | 2 |
+| Test files | 3 |
 | Data files | 0 |
-| All module-owned files | 21 |
+| All module-owned files | 22 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -65,7 +65,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 15 |
+| Documented | 16 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -109,6 +109,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nOtp/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nOtp utility exports for utils. |  |
 | `gFramework/nOtp/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nOtp test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nOtp/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nOtp test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nOtp/test/otpCapabilityContract.test.js` | `test` | `documented` | 0/0 | Verifies nOtp secured route metadata, controller body mapping, OTP/token service delegation, and OTP generation/expiry configuration handling. |  |
 
 ## Extension Contract
 

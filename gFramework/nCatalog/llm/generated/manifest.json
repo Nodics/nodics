@@ -14,12 +14,12 @@
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to catalog"
   },
   "sourceFiles": 7,
-  "testFiles": 6,
+  "testFiles": 7,
   "dataFiles": 4,
-  "ownedFiles": 21,
-  "sourceFingerprint": "2baf44ffdb03cfea4a75b504a3bc4c70af34580851bcb601b46dc983acd8ae11",
+  "ownedFiles": 22,
+  "sourceFingerprint": "7ea24d5ab921558be7f2f1dbbb3d1d69e88daf4baf8fa18dfb3d8072d8ccdef2",
   "documentation": {
-    "documented": 15,
+    "documented": 16,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

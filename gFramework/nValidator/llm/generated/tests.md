@@ -6,6 +6,7 @@
 
 - `gFramework/nValidator/test/common/commonTest.js`
 - `gFramework/nValidator/test/env-local/envTest.js`
+- `gFramework/nValidator/test/validatorServiceContract.test.js`
 
 ## Generated Tests
 

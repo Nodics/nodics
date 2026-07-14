@@ -32,9 +32,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 14 |
-| Test files | 6 |
+| Test files | 7 |
 | Data files | 2 |
-| All module-owned files | 26 |
+| All module-owned files | 27 |
 | Local schema definitions | 1 |
 
 ## Ownership And Dependencies
@@ -65,7 +65,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 20 |
+| Documented | 21 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -114,6 +114,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nValidator/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nValidator utility exports for utils. |  |
 | `gFramework/nValidator/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nValidator test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nValidator/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nValidator test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nValidator/test/validatorServiceContract.test.js` | `test` | `documented` | 0/0 | Verifies persisted validator loading, tenant/item/trigger ordering, handler and script execution, and validator change-event refresh dispatch. |  |
 
 ## Extension Contract
 

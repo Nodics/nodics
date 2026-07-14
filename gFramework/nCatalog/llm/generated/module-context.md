@@ -31,9 +31,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 7 |
-| Test files | 6 |
+| Test files | 7 |
 | Data files | 4 |
-| All module-owned files | 21 |
+| All module-owned files | 22 |
 | Local schema definitions | 1 |
 
 ## Ownership And Dependencies
@@ -63,7 +63,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 15 |
+| Documented | 16 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -105,6 +105,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCatalog/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nCatalog schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nCatalog/src/service/interceptors/defaultSubCatalogsResolveInterceptorService.js` | `src` | `documented` | 4/4 | Implements nCatalog default sub catalogs resolve interceptor service business behavior and extension logic. |  |
 | `gFramework/nCatalog/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nCatalog utility exports for utils. |  |
+| `gFramework/nCatalog/test/catalogCapabilityContract.test.js` | `test` | `documented` | 0/0 | Verifies nCatalog schema metadata, import catalog data, sample hierarchy, and sub-catalog resolver behavior. |  |
 | `gFramework/nCatalog/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nCatalog test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nCatalog/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nCatalog test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
