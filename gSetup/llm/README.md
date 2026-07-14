@@ -107,6 +107,8 @@ without modifying out-of-the-box Nodics code.
 - Required process for adding new functionality.
 - Artifact-specific definition, layering, lifecycle, and change-impact rules.
 - Token-efficient daily, commit, merge/release, and periodic audit gates.
+- Repeatable `npm run ai:principle-audit` checks for milestone design-principle
+  drift before broader manual or release verification.
 - AI prompts, enterprise review expectations, and decision memory for future sessions.
 - Workflow-specific prompts for review, refactor, testing, schema changes, and
   runtime governance.
@@ -135,6 +137,9 @@ without modifying out-of-the-box Nodics code.
   through a resolver such as router `permissionConfig`.
 - Do not remove existing capabilities just because they are complex.
 - Do not provide generic architecture or testing advice without mapping it to Nodics modules, layers, tenants, generated artifacts, runtime governance, and override paths.
+- Use `npm run ai:principle-audit` at periodic platform-audit milestones to
+  confirm the core principle, governance, prompt, command, generated-context,
+  and report-location contracts still line up before broader release gates.
 
 ## Context Quality Contract
 

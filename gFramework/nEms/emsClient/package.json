@@ -1,7 +1,7 @@
 {
     "name": "emsClient",
     "index": "1.18.0",
-    "description": "Nodics applicaion module. It will hold all configuration and emsClient point to start nodics",
+    "description": "Event/message client capability for publishing, consuming, processing, tenant-aware message routing, failed-message persistence, and provider-backed EMS communication.",
     "homepage": "http://www.nodics.com/",
     "keywords": [
         "emsClient"

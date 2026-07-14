@@ -10,7 +10,7 @@ The platform should support product, commerce, content, workflow, eventing, data
 
 Capabilities are sacred; implementations are negotiable.
 
-Modernization may replace old libraries, improve security, refactor legacy code, add validation, add tests, and improve diagnostics. It must not remove enterprise platform capabilities because they are complex.
+Modernization may replace outdated libraries, improve security, refactor existing code, add validation, add tests, and improve diagnostics. It must not remove enterprise platform capabilities because they are complex.
 
 ## Architecture Rules
 

@@ -11,13 +11,13 @@
   "package": {
     "index": "5.25",
     "version": "0.0.1",
-    "description": "Module cronJob, handle schedulled execution process"
+    "description": "Scheduler capability for cron job definitions, lifecycle operations, logs, node ownership, temporary failover ownership, and event-driven execution."
   },
   "sourceFiles": 33,
   "testFiles": 15,
   "dataFiles": 4,
   "ownedFiles": 52,
-  "sourceFingerprint": "fb748e1906bf12aff2e98c1de79a66180f18199aaf0172c82817a1e6cb9504c7",
+  "sourceFingerprint": "ca94ed3338b0252b670e504e7fc4d3889b083c395324f57b9a74295937ad242f",
   "documentation": {
     "documented": 46,
     "partially-documented": 2,

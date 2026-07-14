@@ -12,7 +12,7 @@
 | Runtime | `none` |
 | Index | `1.17.5.0` |
 | Version | `0.0.1` |
-| Description | Nodics applicaion module. This module hold all configuration and business logic related to import |
+| Description | Governed data import engine for init, core, sample, local, remote, diagnostics, run history, checksums, duplicate protection, retry metadata, rollback hooks, and access-policy-aware import. |
 
 ## Module-Owned Folders
 

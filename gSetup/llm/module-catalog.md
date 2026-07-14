@@ -22,21 +22,21 @@ This file gives AI agents and developers a first-pass map of important Nodics mo
 | `nCatalog` | Framework-level catalog capability foundation. |
 | `nToken` | Token schema/capability support. |
 | `nData` | Data import/export family root. |
-| `nImport` | Import engine, formats, import diagnostics, import run history, import access policy checks. |
+| `nImport` | Governed import engine for init/core/sample/local/remote data, validation-only runs, diagnostics, run history, checksums, duplicate protection, retry metadata, rollback hooks, and import access policy checks. |
 | `nExport` | Export engine and export access policy checks. |
 | `nEms` | Event/message service clients including ActiveMQ/Kafka modules. |
-| `nTest` | Nodics test framework and generated test support. |
+| `nTest` | Layered test discovery, generated schema/API tests, guarded live tests, suite reporting, topology-aware evidence, and selected-server report ownership. |
 | `nSystem` | System APIs, configuration APIs, OpenAPI contract exposure, file/log/test endpoints. |
-| `nDynamo` | Runtime configuration, schema/router/class/pipeline overrides, activation/audit/rollback governance. |
+| `nDynamo` | Runtime control-plane governance for schema, router, class, pipeline, tenant properties, schema access policies, activation requests, previews, audit, cleanup, and rollback. |
 
 ## Core Business Modules
 
 | Module | Responsibility |
 | --- | --- |
-| `profile` | Enterprise, tenant, user, customer, employee, user group, permission-related profile data. Often required before other business modules. |
+| `profile` | Enterprise, tenant, user, customer, employee, user group, permission, authentication, API-key, and mandatory identity bootstrap contracts. Often required before other business modules. |
 | `nems` | Core event management capability. |
-| `cronjob` | Cron job definitions, logs, and execution support. |
-| `workflow` | Workflow schema/core/API capability. |
+| `cronjob` | Cron job definitions, lifecycle operations, logs, node ownership, temporary failover ownership, and event-driven execution. |
+| `workflow` | Workflow schema/core/API capability for carriers, actions, channels, event continuation, split/retry behavior, and lifecycle integration. |
 | `quizer` | Quiz-related capability group. |
 
 ## Commerce And Content Modules

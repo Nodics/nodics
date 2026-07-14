@@ -12,7 +12,7 @@
 | Runtime | `router` |
 | Index | `5.15` |
 | Version | `0.0.1` |
-| Description | Nodics applicaion module. It will hold all profile realted information |
+| Description | Identity and profile module for enterprises, tenants, users, customers, employees, user groups, permissions, authentication boundaries, API keys, and mandatory identity bootstrap. |
 
 ## Module-Owned Folders
 

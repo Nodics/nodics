@@ -175,7 +175,7 @@ persisted so business users can inspect and revert prior versions.
 ## Module Generation
 
 Custom project, environment, server, and node modules must be generated from
-Nodics contracts, not copied from retired framework templates. The legacy
+Nodics contracts, not copied from retired framework templates. The
 `nCommon/templates` scaffold path is intentionally removed until guarded
 contract-driven tooling exists.
 

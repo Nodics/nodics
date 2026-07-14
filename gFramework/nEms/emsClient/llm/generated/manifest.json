@@ -11,13 +11,13 @@
   "package": {
     "index": "1.18.0",
     "version": "0.0.1",
-    "description": "Nodics applicaion module. It will hold all configuration and emsClient point to start nodics"
+    "description": "Event/message client capability for publishing, consuming, processing, tenant-aware message routing, failed-message persistence, and provider-backed EMS communication."
   },
   "sourceFiles": 15,
   "testFiles": 11,
   "dataFiles": 0,
   "ownedFiles": 30,
-  "sourceFingerprint": "c014d53adea21491ac57f6914a4b35e285484ddcee1680ec5bf779ba7cba740b",
+  "sourceFingerprint": "7228716781ad18c7bdd0e68f1f05eadfdcc4c9e3b4f5325304e89fc85c460e70",
   "documentation": {
     "documented": 24,
     "partially-documented": 2,

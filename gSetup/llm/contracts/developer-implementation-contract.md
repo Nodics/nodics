@@ -120,7 +120,7 @@ must be confirmed from owned source files, active module metadata, layered
 configuration, schema definitions, route contracts, service contracts, tests,
 and runtime governance files.
 
-Do not infer current behavior from secondary notes or older documentation.
+Do not infer current behavior from secondary notes or captured documentation.
 Current runtime behavior must come from source-of-truth artifacts and tests.
 
 ## Generated Layer Rule
@@ -198,7 +198,7 @@ generated output.
 
 ## Reference Material Use
 
-Use older notes and extracted documentation only as recovery material for
+Use captured notes and extracted documentation only as recovery material for
 developer-facing concepts and documentation structure:
 
 - Getting Started

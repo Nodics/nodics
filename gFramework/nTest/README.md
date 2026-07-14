@@ -39,7 +39,9 @@ driven and avoids hardcoded names such as `local` or `production`.
 - `npm run test:generated` validates generated schema and API contracts.
 - Guarded live CRUD/access-policy tests require an explicit dedicated test
   tenant and destructive-test opt-in variables.
-- Test reports are generated under the selected server module.
+- Test reports are generated under the selected server module, normally under
+  `generated/test-reports`. Repository root `temp` and `tmp` folders must not
+  own generated reports or runtime output.
 
 ## Test Model
 

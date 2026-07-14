@@ -1,7 +1,7 @@
 {
     "name": "cronjob",
     "index": "5.25",
-    "description": "Module cronJob, handle schedulled execution process",
+    "description": "Scheduler capability for cron job definitions, lifecycle operations, logs, node ownership, temporary failover ownership, and event-driven execution.",
     "homepage": "http://www.nodics.com/",
     "keywords": [
         "Nodics"

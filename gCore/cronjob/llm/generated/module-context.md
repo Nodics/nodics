@@ -12,7 +12,7 @@
 | Runtime | `router` |
 | Index | `5.25` |
 | Version | `0.0.1` |
-| Description | Module cronJob, handle schedulled execution process |
+| Description | Scheduler capability for cron job definitions, lifecycle operations, logs, node ownership, temporary failover ownership, and event-driven execution. |
 
 ## Module-Owned Folders
 

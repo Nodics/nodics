@@ -12,7 +12,7 @@
 | Runtime | `none` |
 | Index | `1.19` |
 | Version | `0.0.1` |
-| Description | Generate test scripts for all generated layers for application |
+| Description | Nodics testing module for layered test discovery, schema/API generated tests, guarded live tests, suite reporting, topology-aware evidence, and report ownership. |
 
 ## Module-Owned Folders
 

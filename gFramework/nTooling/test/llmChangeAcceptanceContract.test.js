@@ -178,11 +178,22 @@ requireClauses('gSetup/llm/change-gate-contract.md', [
     'may not silently select a weaker category'
 ]);
 
+requireClauses('gFramework/nTooling/src/quality/runDesignPrincipleAudit.js', [
+    '@module nTooling/quality/RunDesignPrincipleAudit',
+    'capabilities are sacred, implementations are negotiable',
+    'Periodic Platform Audit',
+    'Do not add a parallel activation channel',
+    'active server/node generated-report location'
+]);
+
 requireClauses('gSetup/llm/module-generation-guide.md', [
     '# Module Generation Guide',
     'Do not revive or copy `nCommon/templates`',
     'Runtime kind comes from `package.json.nodics.kind`',
     '`activeModules` decides what runs in the current process',
+    'Before generating or changing a customer project that contains multiple',
+    'propose the loading hierarchy first and get explicit developer approval',
+    'local to the process and which behavior is reached through',
     'Do not copy a whole framework service, router, schema, or module',
     'regenerate module LLM context'
 ]);
@@ -213,6 +224,7 @@ requireClauses('gSetup/llm/README.md', [
     'prompts/testing-prompt.md',
     'prompts/schema-change-prompt.md',
     'prompts/runtime-governance-prompt.md',
+    'ai:principle-audit',
     'module-generation-guide.md',
     'contracts/integration-governance-contract.md'
 ]);

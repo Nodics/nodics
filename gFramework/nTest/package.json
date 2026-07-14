@@ -1,7 +1,7 @@
 {
     "name": "nTest",
     "index": "1.19",
-    "description": "Generate test scripts for all generated layers for application",
+    "description": "Nodics testing module for layered test discovery, schema/API generated tests, guarded live tests, suite reporting, topology-aware evidence, and report ownership.",
     "homepage": "http://www.nodics.com/",
     "keywords": [
         "Nodics",

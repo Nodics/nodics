@@ -1,7 +1,7 @@
 {
     "name": "dynamo",
     "index": "1.80",
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to dynamo",
+    "description": "Runtime control-plane module for schema, router, class, pipeline, property, schema-access policy, activation, audit, rollback, and governance behavior.",
     "homepage": "http://www.nodics.com/",
     "keywords": [
         "dynamo"

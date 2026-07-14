@@ -12,7 +12,7 @@
 | Runtime | `router` |
 | Index | `1.18.0` |
 | Version | `0.0.1` |
-| Description | Nodics applicaion module. It will hold all configuration and emsClient point to start nodics |
+| Description | Event/message client capability for publishing, consuming, processing, tenant-aware message routing, failed-message persistence, and provider-backed EMS communication. |
 
 ## Module-Owned Folders
 

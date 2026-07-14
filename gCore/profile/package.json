@@ -1,7 +1,7 @@
 {
     "name": "profile",
     "index": "5.15",
-    "description": "Nodics applicaion module. It will hold all profile realted information",
+    "description": "Identity and profile module for enterprises, tenants, users, customers, employees, user groups, permissions, authentication boundaries, API keys, and mandatory identity bootstrap.",
     "homepage": "http://www.nodics.com/",
     "keywords": [
         "profile"

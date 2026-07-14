@@ -6,7 +6,7 @@
         "flowCore",
         "flowApi"
     ],
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to workflow",
+    "description": "Workflow capability group that composes schema, core engine, and API modules for carriers, actions, channels, event continuation, split/retry behavior, and lifecycle integration.",
     "homepage": "http://www.nodics.com/",
     "keywords": [
         "server",

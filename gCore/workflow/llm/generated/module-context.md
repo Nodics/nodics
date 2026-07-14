@@ -12,7 +12,7 @@
 | Runtime | `router` |
 | Index | `5.30.99` |
 | Version | `0.0.1` |
-| Description | Nodics applicaion module. This module hold all configuration and business logic related to workflow |
+| Description | Workflow capability group that composes schema, core engine, and API modules for carriers, actions, channels, event continuation, split/retry behavior, and lifecycle integration. |
 
 ## Module-Owned Folders
 

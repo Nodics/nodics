@@ -52,6 +52,17 @@ const modules = [{
     packageJson: rootPackage
 }].concat(scanModules());
 
+const modernizedDescriptions = {
+    'gCore/profile': ['Identity and profile module', 'tenants', 'authentication'],
+    'gCore/cronjob': ['Scheduler capability', 'node ownership', 'event-driven execution'],
+    'gCore/workflow': ['Workflow capability group', 'event continuation', 'split/retry'],
+    'gFramework/nData/nImport/import': ['Governed data import engine', 'diagnostics', 'rollback hooks'],
+    'gFramework/nDynamo': ['Runtime control-plane module', 'activation', 'rollback'],
+    'gFramework/nEms/emsClient': ['Event/message client capability', 'tenant-aware', 'EMS communication'],
+    'gFramework/nTest': ['Nodics testing module', 'suite reporting', 'report ownership'],
+    'gFramework/nTooling': ['Non-runtime Nodics development', 'quality', 'command tooling']
+};
+
 assert(modules.length > 0, 'No Nodics packages were discovered');
 
 modules.forEach(module => {
@@ -92,6 +103,16 @@ modules.forEach(module => {
 
     if (['environment', 'server', 'node'].includes(nodics.kind)) {
         assert(nodics.owns.includes('configuration') || nodics.owns.includes('llm'), 'environment/server/node packages must document configuration/topology ownership: ' + module.relativePath);
+    }
+
+    if (modernizedDescriptions[module.relativePath]) {
+        assert(meta.description, 'Modernized package must keep a module-level description: ' + module.relativePath);
+        assert(!/Nodics applicaion module|This module hold all configuration/i.test(meta.description),
+            'Modernized package must not use generic placeholder description: ' + module.relativePath);
+        modernizedDescriptions[module.relativePath].forEach(fragment => {
+            assert(meta.description.includes(fragment),
+                'Modernized package description for ' + module.relativePath + ' must include `' + fragment + '`');
+        });
     }
 });
 

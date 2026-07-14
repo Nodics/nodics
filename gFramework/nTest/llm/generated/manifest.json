@@ -11,13 +11,13 @@
   "package": {
     "index": "1.19",
     "version": "0.0.1",
-    "description": "Generate test scripts for all generated layers for application"
+    "description": "Nodics testing module for layered test discovery, schema/API generated tests, guarded live tests, suite reporting, topology-aware evidence, and report ownership."
   },
   "sourceFiles": 17,
   "testFiles": 6,
   "dataFiles": 0,
   "ownedFiles": 32,
-  "sourceFingerprint": "937185d1a04563ab16ba6c2633c0ca39f37dad213bddfc3f6b670c46dfaa93ff",
+  "sourceFingerprint": "323883eaacc73429fcb8ec308cd30e3092e49be5e72fe1e4fbb1b56e947df251",
   "documentation": {
     "documented": 25,
     "partially-documented": 0,

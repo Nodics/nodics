@@ -12,7 +12,7 @@
 | Runtime | `router` |
 | Index | `1.80` |
 | Version | `0.0.1` |
-| Description | Nodics applicaion module. This module hold all configuration and business logic related to dynamo |
+| Description | Runtime control-plane module for schema, router, class, pipeline, property, schema-access policy, activation, audit, rollback, and governance behavior. |
 
 ## Module-Owned Folders
 

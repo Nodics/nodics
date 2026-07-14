@@ -11,13 +11,13 @@
   "package": {
     "index": "1.80",
     "version": "0.0.1",
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to dynamo"
+    "description": "Runtime control-plane module for schema, router, class, pipeline, property, schema-access policy, activation, audit, rollback, and governance behavior."
   },
   "sourceFiles": 34,
   "testFiles": 41,
   "dataFiles": 0,
   "ownedFiles": 65,
-  "sourceFingerprint": "9eb8fdd9d12dd52fd5c7cb24f66e0029f111f32a99900b2c78ad0003c41913a3",
+  "sourceFingerprint": "733d1696bdeca6b4f84c51d76a4d254f6edeac64e86a0d7ed13fe4e4bd583b44",
   "documentation": {
     "documented": 42,
     "partially-documented": 3,

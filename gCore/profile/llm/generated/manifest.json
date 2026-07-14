@@ -11,13 +11,13 @@
   "package": {
     "index": "5.15",
     "version": "0.0.1",
-    "description": "Nodics applicaion module. It will hold all profile realted information"
+    "description": "Identity and profile module for enterprises, tenants, users, customers, employees, user groups, permissions, authentication boundaries, API keys, and mandatory identity bootstrap."
   },
   "sourceFiles": 48,
   "testFiles": 46,
   "dataFiles": 17,
   "ownedFiles": 87,
-  "sourceFingerprint": "8125219cfada255d35d36d707c4815f7a207bab41aad7ae0cd130a762218a050",
+  "sourceFingerprint": "c0b66aca37a6d0d148e090c0c92d87b8f444b1438f241057c6dc7bfa12d58491",
   "documentation": {
     "documented": 72,
     "partially-documented": 1,

@@ -17,8 +17,17 @@
  * @override New test output formats should add parser scenarios while preserving existing report fields.
  */
 const assert = require('assert');
+const fs = require('fs');
 const path = require('path');
 const { parseOutput, createReport, parseArgs, resolveServerReportDir } = require('../src/tooling/runTestSuiteWithReport');
+
+['temp', 'tmp'].forEach(directoryName => {
+    assert.strictEqual(
+        fs.existsSync(path.join(process.cwd(), directoryName)),
+        false,
+        'Repository root `' + directoryName + '` must not own generated test reports or runtime output'
+    );
+});
 
 let serverReportDir = resolveServerReportDir('kickoffLocalServer');
 assert.strictEqual(serverReportDir, path.join(

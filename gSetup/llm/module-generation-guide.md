@@ -1,7 +1,7 @@
 # Module Generation Guide
 
 This guide tells AI tools and developers how to create project, environment,
-server, and node modules without copying old framework templates or editing
+server, and node modules without copying retired framework templates or editing
 out-of-the-box Nodics code.
 
 Module generation is a contract-driven activity. The source of truth is the
@@ -11,7 +11,7 @@ definitions.
 
 ## Non-Negotiable Rules
 
-- Do not revive or copy `nCommon/templates`; the legacy template folder is
+- Do not revive or copy `nCommon/templates`; the retired template folder is
   intentionally retired.
 - Do not create hidden scaffolding conventions that bypass Nodics metadata,
   loaders, configuration hierarchy, schema/router governance, or generated
@@ -110,6 +110,28 @@ Keep local activation separate from remote endpoint coordinates.
 coordinates describe how to call local or remote module endpoints and must not
 be treated as activation.
 
+## Hierarchy Proposal And Approval
+
+Before generating or changing a customer project that contains multiple customer modules, environment modules, server modules, or node modules, propose the loading hierarchy first and get explicit developer approval before writing module files.
+
+The proposal must name:
+
+- the project or customer module group that owns the composition.
+- each capability module and why it is active.
+- each environment module and the deployment-wide overrides it owns.
+- each server module and the process composition it runs.
+- each node module and the instance-specific overrides it contributes.
+- parent/child relationships, index/order values, and activation references.
+- which behavior is local to the process and which behavior is reached through
+  remote server coordinates.
+- the tests that will prove hierarchy loading, override precedence, and
+  consolidated or modular runtime behavior.
+
+Do not generate module files first and ask the developer to infer the hierarchy
+afterward. The hierarchy is part of the contract because it decides ownership,
+configuration precedence, tenant/runtime behavior, generated artifacts, and the
+verification boundary.
+
 ## Layered Override Boundary
 
 When generating a custom module, decide whether it contributes a new capability
@@ -174,6 +196,8 @@ context reports source-derived facts; it must not invent missing design intent.
 A generated custom module is complete only when:
 
 - metadata classifies the module and its parent/ownership relationships.
+- any multi-module project hierarchy was proposed and approved before files
+  were generated or changed.
 - active-module registration is explicit and tested.
 - configuration and override paths are documented.
 - source definitions, generated artifacts, and runtime behavior are aligned.

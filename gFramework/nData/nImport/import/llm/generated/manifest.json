@@ -11,13 +11,13 @@
   "package": {
     "index": "1.17.5.0",
     "version": "0.0.1",
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to import"
+    "description": "Governed data import engine for init, core, sample, local, remote, diagnostics, run history, checksums, duplicate protection, retry metadata, rollback hooks, and access-policy-aware import."
   },
   "sourceFiles": 29,
   "testFiles": 27,
   "dataFiles": 0,
   "ownedFiles": 60,
-  "sourceFingerprint": "0a51e5f2e13733e4f3ed8b9f6df3c96910e4cd1cd1a239f3ee96293c3c18e041",
+  "sourceFingerprint": "613439d294b18804508674253e6597d6089c0319369ea1153594157b3328a517",
   "documentation": {
     "documented": 43,
     "partially-documented": 2,

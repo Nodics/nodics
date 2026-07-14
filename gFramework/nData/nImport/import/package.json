@@ -1,7 +1,7 @@
 {
     "name": "import",
     "index": "1.17.5.0",
-    "description": "Nodics applicaion module. This module hold all configuration and business logic related to import",
+    "description": "Governed data import engine for init, core, sample, local, remote, diagnostics, run history, checksums, duplicate protection, retry metadata, rollback hooks, and access-policy-aware import.",
     "homepage": "http://www.nodics.com/",
     "keywords": [
         "import"

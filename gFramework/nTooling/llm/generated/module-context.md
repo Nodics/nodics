@@ -24,10 +24,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 13 |
-| Test files | 8 |
+| Source files | 14 |
+| Test files | 9 |
 | Data files | 0 |
-| All module-owned files | 32 |
+| All module-owned files | 34 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -52,7 +52,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 27 |
+| Documented | 29 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 5 |
@@ -94,10 +94,12 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/src/debug/nodicsDebug.js` | `src` | `documented` | 0/0 | Launches Nodics start, build, or clean lifecycle methods under the Node inspector while preserving project arguments and exit status. |  |
 | `gFramework/nTooling/src/quality/checkCopyrightHeaders.js` | `src` | `documented` | 0/0 | Validates and normalizes the standard Nodics copyright header for JavaScript source and generated artifacts. |  |
 | `gFramework/nTooling/src/quality/checkDocumentationCoverage.js` | `src` | `documented` | 0/0 | Collects project-scoped source documentation coverage by module, layer, contract scope, test inclusion, and generated-artifact policy. |  |
+| `gFramework/nTooling/src/quality/runDesignPrincipleAudit.js` | `src` | `documented` | 0/0 | Runs a repeatable static audit over Nodics principle, governance, LLM, command, generated-context, and report-location contracts so periodic platform reviews can detect drift before broader manual or test-suite review. |  |
 | `gFramework/nTooling/src/quality/runDocumentationGates.js` | `src` | `documented` | 0/0 | Applies project-overridable documentation governance configuration to enforced and report-only coverage gates. |  |
 | `gFramework/nTooling/src/quality/validateAiGovernance.js` | `src` | `documented` | 0/0 | Validates portable AI-agent governance files, canonical module guidance, README casing, tool bridge files, and generated-context entrypoints across a Nodics workspace. |  |
 | `gFramework/nTooling/src/service/defaultToolingCommandService.js` | `src` | `documented` | 0/0 | Discovers non-runtime tooling command contributions from module-shaped packages, orders them by Nodics module index, applies explicit handler override governance, and executes commands against a selected project home. |  |
 | `gFramework/nTooling/test/copyrightHeaderGovernance.test.js` | `test` | `documented` | 0/0 | Validates Nodics copyright header detection and normalization. |  |
+| `gFramework/nTooling/test/fullTestSuiteCoverageContract.test.js` | `test` | `documented` | 0/0 | Guards the full Nodics test command surface so import, workflow, cron, NEMS, tenant, and distributed-communication coverage remains wired into executable package gates instead of living only as documentation. |  |
 | `gFramework/nTooling/test/llmChangeAcceptanceContract.test.js` | `test` | `documented` | 0/0 | Prevents the mandatory Nodics hierarchy, customization, and test-coverage contract from disappearing from canonical LLM guidance. |  |
 | `gFramework/nTooling/test/moduleLlmContext.test.js` | `test` | `documented` | 0/0 | Validates tool-neutral module context structure, generated inventories, source fingerprints, schema summaries, and documentation status contracts. |  |
 | `gFramework/nTooling/test/moduleMetadata.test.js` | `test` | `documented` | 0/0 | Validates canonical Nodics package kinds, runtime flags, loader eligibility, ownership, and topology metadata across the target project. |  |
