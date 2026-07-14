@@ -97,7 +97,7 @@ module.exports = {
         let workflowCarrier = request.workflowCarrier;
         request.carrierUpdated = false;
         if (request.event) {
-            workflowCarrier.event = requst.event || workflowCarrier.event;
+            workflowCarrier.event = request.event || workflowCarrier.event;
             request.carrierUpdated = true;
         }
         if (request.items && request.items.length > 0) {

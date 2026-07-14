@@ -42,6 +42,17 @@ module.exports = {
             resolve(true);
         });
     },
+    /**
+     * Creates the workflow event name used for module-targeted internal event publication.
+     *
+     * @param {*} preFix Method input.
+     * @param {*} workflowCode Method input.
+     * @param {*} postFix Method input.
+     * @returns {*} Method result.
+     */
+    createEventName: function (preFix, workflowCode, postFix) {
+        return preFix + workflowCode.toUpperCaseFirstChar() + postFix.toUpperCaseFirstChar();
+    },
 
     /**
 

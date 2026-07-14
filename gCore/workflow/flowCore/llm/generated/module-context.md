@@ -32,9 +32,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 39 |
-| Test files | 3 |
+| Test files | 7 |
 | Data files | 32 |
-| All module-owned files | 82 |
+| All module-owned files | 86 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -65,7 +65,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 75 |
+| Documented | 79 |
 | Partially documented | 2 |
 | Undocumented | 1 |
 | Inventory only | 4 |
@@ -145,7 +145,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/workflow/flowCore/src/service/default/defaultSuccessActionHandlerService.js` | `src` | `documented` | 3/3 | Implements workflow default success action handler service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/default/defaultWorkflowActionExecutionService.js` | `src` | `documented` | 3/3 | Implements workflow default workflow action execution service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/events/defaultWorkflowCarrierChangeListenerService.js` | `src` | `documented` | 3/3 | Implements workflow default workflow carrier change listener service business behavior and extension logic. |  |
-| `gCore/workflow/flowCore/src/service/events/defaultWorkflowEventService.js` | `src` | `documented` | 5/5 | Implements workflow default workflow event service business behavior and extension logic. |  |
+| `gCore/workflow/flowCore/src/service/events/defaultWorkflowEventService.js` | `src` | `documented` | 6/6 | Implements workflow default workflow event service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/handler/error/defaultWorkflowErrorActionService.js` | `src` | `documented` | 3/3 | Implements workflow default workflow error action service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/handler/sample/defaultSampleAutoWorkflowService.js` | `src` | `documented` | 7/7 | Implements workflow default sample auto workflow service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/handler/success/defaultWorkflowSuccessActionService.js` | `src` | `documented` | 3/3 | Implements workflow default workflow success action service business behavior and extension logic. |  |
@@ -165,11 +165,15 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/workflow/flowCore/src/service/procs/release/defaultWorkflowCarrierReleasePipelineService.js` | `src` | `documented` | 6/6 | Implements workflow default workflow carrier release pipeline service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/procs/update/defaultWorkflowCarrierUpdatePipelineService.js` | `src` | `documented` | 6/6 | Implements workflow default workflow carrier update pipeline service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/utils/defaultWorkflowUtilsService.js` | `src` | `documented` | 4/4 | Implements workflow default workflow utils service business behavior and extension logic. |  |
-| `gCore/workflow/flowCore/src/service/workflow/defaultWorkflowService.js` | `src` | `documented` | 7/7 | Implements workflow default workflow service business behavior and extension logic. |  |
+| `gCore/workflow/flowCore/src/service/workflow/defaultWorkflowService.js` | `src` | `documented` | 8/8 | Implements workflow default workflow service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared workflow utility exports for utils. |  |
 | `gCore/workflow/flowCore/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines workflow test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gCore/workflow/flowCore/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines workflow test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gCore/workflow/flowCore/test/workflowActionPerformEngineContract.test.js` | `test` | `documented` | 0/0 | Validates deterministic workflow action engine behavior for state transitions, action responses, channel splitting, carrier persistence, and channel traversal. |  |
+| `gCore/workflow/flowCore/test/workflowEngineCorrectnessContract.test.js` | `test` | `documented` | 0/0 | Validates low-level workflow engine correctness for script channel qualification, carrier event updates, and internal workflow event naming. |  |
+| `gCore/workflow/flowCore/test/workflowEventContinuationContract.test.js` | `test` | `documented` | 0/0 | Validates workflow event continuation by bridging initiation events to carrier initialization and listener callback aggregation. |  |
 | `gCore/workflow/flowCore/test/workflowServicePipelineContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/workflow/flowCore/test/workflowSplitAndRetryContract.test.js` | `test` | `documented` | 0/0 | Validates workflow split channel request preparation and carrier retry/error guard behavior. |  |
 
 ## Extension Contract
 

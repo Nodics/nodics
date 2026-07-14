@@ -231,30 +231,36 @@ module.exports = {
 
 
 
-    // handleItemChangeEvent: function (request) {
-    //     return new Promise((resolve, reject) => {
-    //         let event = request.event;
-    //         let data = event.data;
-    //         let allPromises = [];
-    //         data.forEach(carrier => {
-    //             allPromises.push(this.initCarrierItem(_.merge({
-    //                 authData: request.authData,
-    //                 tenant: event.tenant || carrier.tenant || request.tenant
-    //             }, carrier)));
-    //         });
-    //         if (allPromises.length > 0) {
-    //             SERVICE.DefaultNodicsPromiseService.all(allPromises).then(success => {
-    //                 resolve({
-    //                     result: success.success,
-    //                     errors: success.errors
-    //                 });
-    //             }).catch(error => {
-    //                 reject(error);
-    //             });
-    //         } else {
-    //             resolve({});
-    //         }
-    //     });
-    // },
+    /**
+     * Handles workflow initiation events published by schema/workflow association logic.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
+    handleItemChangeEvent: function (request) {
+        return new Promise((resolve, reject) => {
+            let event = request.event || {};
+            let data = event.data || [];
+            let allPromises = [];
+            data.forEach(carrier => {
+                allPromises.push(this.initCarrier(_.merge({
+                    authData: request.authData,
+                    tenant: event.tenant || carrier.tenant || request.tenant
+                }, carrier)));
+            });
+            if (allPromises.length > 0) {
+                SERVICE.DefaultNodicsPromiseService.all(allPromises).then(success => {
+                    resolve({
+                        result: success.success,
+                        errors: success.errors
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve({});
+            }
+        });
+    },
 
 };

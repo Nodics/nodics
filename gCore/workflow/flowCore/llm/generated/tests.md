@@ -6,7 +6,11 @@
 
 - `gCore/workflow/flowCore/test/common/commonTest.js`
 - `gCore/workflow/flowCore/test/env-local/envTest.js`
+- `gCore/workflow/flowCore/test/workflowActionPerformEngineContract.test.js`
+- `gCore/workflow/flowCore/test/workflowEngineCorrectnessContract.test.js`
+- `gCore/workflow/flowCore/test/workflowEventContinuationContract.test.js`
 - `gCore/workflow/flowCore/test/workflowServicePipelineContract.test.js`
+- `gCore/workflow/flowCore/test/workflowSplitAndRetryContract.test.js`
 
 ## Generated Tests
 

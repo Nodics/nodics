@@ -127,7 +127,6 @@ module.exports = {
     executeScript: function (request, response, process) {
         if (request.channel.qualifier.script) {
             try {
-                let request = request;
                 let result = eval(request.channel.qualifier.script);
                 process.stop(request, response, result);
             } catch (error) {
