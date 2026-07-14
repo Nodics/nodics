@@ -57,3 +57,16 @@ No public remote-import route is advertised by the framework yet.
 Generated/finalized files and reports are owned by the selected server module.
 Validation-only mode can inspect headers, files, target schemas/services, and
 processors without persistence.
+
+## Import Governance
+
+Import governance is recorded through the existing import run diagnostics and
+history path. Each run may carry an aggregate checksum, deterministic
+fingerprint, retry metadata, duplicate-run lookup result, and rollback hook
+evidence. Duplicate protection skips history persistence only when a completed
+or validated run with the same fingerprint already exists.
+
+Retry metadata is advisory. The framework records attempt/max-attempt state so
+project or provider-specific orchestration can decide whether to reschedule the
+same import. Rollback hooks run only for failed finalization and are reported on
+`importRun.rollback`; they do not create a second import execution path.

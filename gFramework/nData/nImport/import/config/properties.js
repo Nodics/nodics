@@ -23,6 +23,16 @@ module.exports = {
         importDataConvertEncoding: 'utf8',
         readBufferSize: 1024,
         headerBatchSize: 0,
+        importGovernance: {
+            duplicateProtection: true,
+            duplicateStatuses: ['COMPLETED', 'VALIDATED'],
+            retry: {
+                maxAttempts: 0
+            },
+            rollback: {
+                enabled: true
+            }
+        },
         remoteImport: {
             enabled: false,
             defaultTransport: null,

@@ -35,9 +35,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 48 |
-| Test files | 45 |
+| Test files | 46 |
 | Data files | 17 |
-| All module-owned files | 86 |
+| All module-owned files | 87 |
 | Local schema definitions | 11 |
 
 ## Ownership And Dependencies
@@ -71,7 +71,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 71 |
+| Documented | 72 |
 | Partially documented | 1 |
 | Undocumented | 8 |
 | Inventory only | 6 |
@@ -176,6 +176,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/test/initRequiredFlag.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/mandatoryIdentityBootstrapService.test.js` | `test` | `documented` | 0/0 | Verifies idempotent, audited creation of missing configured identity groups and non-secret reconciliation of configured service principals without overwriting tenant secrets. |  |
 | `gCore/profile/test/profileAuthenticationRouteSecurity.test.js` | `test` | `documented` | 0/0 | Verifies username/password login uses the pre-authentication enterprise-resolution pipeline while module-to-module internal token retrieval remains a secured service capability. |  |
+| `gCore/profile/test/profileAuthenticationServiceContract.test.js` | `test` | `documented` | 0/0 | Verifies profile password authentication, failed-login state updates, customer/employee lookup boundaries, refresh-token creation, security-stamp registration, audit events, and API-key authentication. |  |
 | `gCore/profile/test/profileControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileInitRequiredDetection.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

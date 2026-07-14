@@ -14,7 +14,8 @@ const crypto = require('crypto');
 /**
  * @module dynamo/service/audit/DefaultRuntimeConfigurationActivationRequestService
  * @description Manages runtime configuration activation request lifecycle:
- * request, approve, reject, and activate approved schema, router, and property changes.
+ * request, approve, reject, and activate approved schema, router, property,
+ * and schema access-policy changes.
  * @layer service
  * @owner dynamo
  * @override Project modules may override this service to integrate enterprise
@@ -274,7 +275,86 @@ module.exports = {
                 activationRequest.preview
             );
         }
+        if (activationRequest.configurationType === 'schemaAccessPolicy') {
+            return this.activateSchemaAccessPolicyConfiguration(request, activationRequest, activationContext);
+        }
         return Promise.reject(new CLASSES.NodicsError('ERR_SYS_00002', 'Activation request is not supported for configuration type: ' + activationRequest.configurationType));
+    },
+
+    /**
+     * Activates a governed schema/property access policy through the generated model service.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} activationRequest Approved activation request.
+     * @param {Object} activationContext Runtime activation context.
+     * @returns {Promise<Object>} Activation result.
+     */
+    activateSchemaAccessPolicyConfiguration: function (request, activationRequest, activationContext) {
+        return new Promise((resolve, reject) => {
+            let policyService = SERVICE.DefaultSchemaAccessPolicyService;
+            if (!policyService || typeof policyService.save !== 'function') {
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Schema access policy service is not available for activation request'));
+                return;
+            }
+            if (!activationRequest.configuration ||
+                activationRequest.configurationDigest !== this.createConfigurationDigest(activationRequest.configuration)) {
+                reject(new CLASSES.NodicsError('ERR_SYS_00002', 'Approved schema access policy payload failed integrity validation'));
+                return;
+            }
+            policyService.save({
+                tenant: activationContext.tenant,
+                authData: activationContext.authData,
+                autData: activationContext.autData,
+                model: activationRequest.configuration
+            }).then(saveResult => {
+                return this.recordSchemaAccessPolicyActivation(activationContext, activationRequest, 'SUCCESS').then(auditResult => {
+                    resolve({
+                        saveResult: saveResult,
+                        auditResult: auditResult
+                    });
+                });
+            }).catch(error => {
+                this.recordSchemaAccessPolicyActivation(activationContext, activationRequest, 'FAILED', error).then(() => {
+                    reject(error);
+                });
+            });
+        });
+    },
+
+    /**
+     * Records schema access-policy activation audit after governed save.
+     *
+     * @param {Object} activationContext Runtime activation context.
+     * @param {Object} activationRequest Approved activation request.
+     * @param {string} status Activation status.
+     * @param {Error} [error] Activation error.
+     * @returns {Promise<Object>} Audit result.
+     */
+    recordSchemaAccessPolicyActivation: function (activationContext, activationRequest, status, error) {
+        let auditService = SERVICE.DefaultRuntimeConfigurationAuditService;
+        if (!auditService || typeof auditService.recordActivation !== 'function') {
+            return Promise.resolve(true);
+        }
+        let preview = activationRequest.preview || {};
+        return auditService.recordActivation({
+            configurationType: activationRequest.configurationType,
+            configurationCode: activationRequest.configurationCode,
+            moduleName: activationRequest.moduleName,
+            action: 'activate',
+            status: status,
+            tenant: activationContext.tenant,
+            requestedBy: activationRequest.requestedBy,
+            approvedBy: activationRequest.approvedBy,
+            approvalStatus: activationRequest.approvalStatus,
+            approvalReason: activationRequest.approvalReason,
+            riskLevel: activationRequest.riskLevel,
+            activationRequestCode: activationRequest.code,
+            correlationId: activationContext.correlationId,
+            previousSnapshot: preview.previousSnapshot,
+            nextSnapshot: preview.nextSnapshot,
+            warnings: preview.warnings,
+            error: error
+        });
     },
 
     /**
@@ -341,7 +421,7 @@ module.exports = {
             status: 'REQUESTED',
             correlationId: request.correlationId
         };
-        if (payload.configurationType === 'propertyConfiguration') {
+        if (payload.configurationType === 'propertyConfiguration' || payload.configurationType === 'schemaAccessPolicy') {
             model.configuration = payload.configuration;
             model.configurationDigest = this.createConfigurationDigest(payload.configuration);
         }

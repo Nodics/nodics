@@ -35,6 +35,16 @@ global.SERVICE = {
             };
         }
     },
+    DefaultAuthenticationProviderService: {
+        rotateRefreshToken: function (request) {
+            calls.push({ operation: 'rotateRefreshToken', request });
+            return Promise.resolve({ authToken: 'rotated-access-token', refreshToken: 'rotated-refresh-token' });
+        },
+        revokeSession: function (request) {
+            calls.push({ operation: 'revokeSession', request });
+            return Promise.resolve(true);
+        }
+    },
     DefaultAuthorizationProviderService: {
         authorizeToken: function (request) {
             calls.push({ operation: 'authorizeToken', request });
@@ -158,6 +168,29 @@ const authorizationController = require('../src/controller/authorization/default
     assert.strictEqual(customerAuthRequest.password, 'secret');
     assert.strictEqual(customerAuthRequest.source, 'web');
 
+    let refreshTokenRequest = {
+        httpRequest: httpRequest({}, {
+            refreshToken: 'refresh-token'
+        })
+    };
+    let refreshTokenResponse = await authController.refreshToken(refreshTokenRequest);
+    assert.strictEqual(refreshTokenRequest.refreshToken, 'refresh-token');
+    assert.strictEqual(refreshTokenResponse.code, 'SUC_AUTH_00000');
+    assert.strictEqual(refreshTokenResponse.result.authToken, 'rotated-access-token');
+
+    let logoutRequest = {
+        authData: {
+            jti: 'access-token-id'
+        },
+        httpRequest: httpRequest({}, {
+            refreshToken: 'refresh-token'
+        })
+    };
+    let logoutResponse = await authController.logout(logoutRequest);
+    assert.strictEqual(logoutRequest.refreshToken, 'refresh-token');
+    assert.strictEqual(logoutResponse.code, 'SUC_AUTH_00000');
+    assert.strictEqual(logoutResponse.result, true);
+
     let internalTokenRequest = {
         httpRequest: httpRequest({}, {}, {
             tntCode: 'electronicsTenant'
@@ -232,6 +265,8 @@ const authorizationController = require('../src/controller/authorization/default
     assert.deepStrictEqual(calls.map(call => call.operation), [
         'authenticateEmployee',
         'authenticateCustomer',
+        'rotateRefreshToken',
+        'revokeSession',
         'getInternalAuthToken',
         'getEnterprise',
         'getTenants',

@@ -67,6 +67,26 @@ module.exports = {
                     required: false,
                     description: 'Correlation id from the triggering request or event'
                 },
+                checksum: {
+                    type: 'string',
+                    required: false,
+                    description: 'Aggregate checksum derived from imported data files when available'
+                },
+                fingerprint: {
+                    type: 'string',
+                    required: false,
+                    description: 'Deterministic run fingerprint used for duplicate-import detection'
+                },
+                retry: {
+                    type: 'object',
+                    required: false,
+                    description: 'Retry metadata for governed import retry decisions'
+                },
+                rollback: {
+                    type: 'object',
+                    required: false,
+                    description: 'Rollback hook status and results for failed import runs'
+                },
                 startedAt: {
                     type: 'string',
                     required: false,

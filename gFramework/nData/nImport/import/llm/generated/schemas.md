@@ -6,20 +6,24 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
-| `importRun` | `base` | yes | yes | yes | no | no | no | `default` | 17 |
+| `importRun` | `base` | yes | yes | yes | no | no | no | `default` | 21 |
 
 ### `import.importRun`
 
+- `checksum` `string` optional: Aggregate checksum derived from imported data files when available
 - `correlationId` `string` optional: Correlation id from the triggering request or event
 - `dataFiles` `object` optional: Discovered, matched, and unmatched import data files
 - `dataType` `string` optional: Import data type such as init, core, sample, local, or remote
 - `durationMs` `int` optional: Import run duration in milliseconds
 - `failureCount` `int` optional: Number of recorded import failures
 - `failures` `array` optional: Normalized import failures with context
+- `fingerprint` `string` optional: Deterministic run fingerprint used for duplicate-import detection
 - `finishedAt` `string` optional: Import run finish timestamp
 - `headers` `array` optional: Import headers discovered for this run
 - `modules` `array` optional: Modules requested for the import run
 - `requestedBy` `string` optional: User or process that started the import run
+- `retry` `object` optional: Retry metadata for governed import retry decisions
+- `rollback` `object` optional: Rollback hook status and results for failed import runs
 - `runId` `string` required: Unique import run identifier
 - `startedAt` `string` optional: Import run start timestamp
 - `status` `string` required: Current import run status

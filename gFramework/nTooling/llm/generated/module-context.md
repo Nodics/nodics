@@ -25,9 +25,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 13 |
-| Test files | 7 |
+| Test files | 8 |
 | Data files | 0 |
-| All module-owned files | 31 |
+| All module-owned files | 32 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -52,7 +52,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 26 |
+| Documented | 27 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 5 |
@@ -102,6 +102,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/test/moduleLlmContext.test.js` | `test` | `documented` | 0/0 | Validates tool-neutral module context structure, generated inventories, source fingerprints, schema summaries, and documentation status contracts. |  |
 | `gFramework/nTooling/test/moduleMetadata.test.js` | `test` | `documented` | 0/0 | Validates canonical Nodics package kinds, runtime flags, loader eligibility, ownership, and topology metadata across the target project. |  |
 | `gFramework/nTooling/test/moduleStructure.test.js` | `test` | `documented` | 0/0 | Enforces mandatory configuration files, canonical README naming, safe runtime identifiers, and explicit framework-folder naming across all Nodics modules. |  |
+| `gFramework/nTooling/test/projectPostmanCoverageOwnership.test.js` | `test` | `documented` | 0/0 | Enforces that reference Postman coverage for domain and project APIs remains owned by the active module that defines the capability. |  |
 | `gFramework/nTooling/test/repositoryToolingBoundary.test.js` | `test` | `documented` | 0/0 | Prevents executable tooling from returning to the root scripts folder or depending on temporary docs configuration. |  |
 | `gFramework/nTooling/test/toolingCommandOverride.test.js` | `test` | `documented` | 0/0 | Verifies numeric command contribution ordering, explicit handler replacement, override traceability, and project-home tooling discovery. |  |
 

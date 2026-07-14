@@ -11,9 +11,9 @@
 
 /**
  * @module dynamo/service/audit/DefaultRuntimeConfigurationRollbackService
- * @description Restores runtime schema, router, and tenant-property configurations from
- * activation history without bypassing the normal generated service and
- * activation pipelines.
+ * @description Restores runtime schema, router, tenant-property, and schema
+ * access-policy configurations from activation history without bypassing the
+ * normal generated service and activation pipelines.
  * @layer service
  * @owner dynamo
  * @override Project modules may override this service to add approval gates,
@@ -153,6 +153,9 @@ module.exports = {
         if (activationLog.configurationType === 'propertyConfiguration') {
             return this.restorePropertyConfiguration(request, snapshot);
         }
+        if (activationLog.configurationType === 'schemaAccessPolicy') {
+            return this.restoreSchemaAccessPolicyConfiguration(request, activationLog, snapshot);
+        }
         return Promise.reject(new CLASSES.NodicsError('ERR_SYS_00002', 'Rollback is not supported for configuration type: ' + activationLog.configurationType));
     },
 
@@ -236,6 +239,37 @@ module.exports = {
                         saveResult: saveResult,
                         activationResult: activationResult
                     });
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    },
+
+    /**
+     * Restores a schema/property access policy through the generated policy service.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} activationLog Activation log model.
+     * @param {Object} snapshot Policy snapshot to restore.
+     * @returns {Promise<Object>} Restoration result.
+     */
+    restoreSchemaAccessPolicyConfiguration: function (request, activationLog, snapshot) {
+        return new Promise((resolve, reject) => {
+            let policyService = SERVICE.DefaultSchemaAccessPolicyService;
+            if (!policyService || typeof policyService.save !== 'function') {
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Schema access policy service is not available for rollback'));
+                return;
+            }
+            let rollbackModel = this.prepareRollbackModel(snapshot, activationLog);
+            policyService.save({
+                tenant: this.getRollbackTenant(request),
+                authData: request.authData,
+                autData: request.autData,
+                model: rollbackModel
+            }).then(saveResult => {
+                resolve({
+                    saveResult: saveResult
                 });
             }).catch(error => {
                 reject(error);

@@ -14,7 +14,8 @@ const _ = require('lodash');
 /**
  * @module dynamo/service/audit/DefaultRuntimeConfigurationPreviewService
  * @description Computes non-destructive previews for runtime schema, router,
- * and tenant-property configuration activations before they are activated.
+ * tenant-property, and schema access-policy configuration activations before
+ * they are activated.
  * @layer service
  * @owner dynamo
  * @override Project modules may override this service to enrich impact analysis,
@@ -79,6 +80,21 @@ module.exports = {
                 return;
             }
             if (payload.configuration) {
+                if (configurationType === 'schemaAccessPolicy') {
+                    this.loadExistingSchemaAccessPolicy(request, payload).then(previousConfiguration => {
+                        resolve({
+                            configurationType: configurationType,
+                            configurationCode: payload.configurationCode || payload.configuration.code,
+                            moduleName: payload.moduleName || payload.configuration.moduleName,
+                            tenant: this.getPreviewTenant(request),
+                            configuration: payload.configuration,
+                            previousConfiguration: previousConfiguration
+                        });
+                    }).catch(error => {
+                        reject(error);
+                    });
+                    return;
+                }
                 resolve({
                     configurationType: configurationType,
                     configurationCode: payload.configurationCode || payload.configuration.code,
@@ -153,7 +169,93 @@ module.exports = {
         if (descriptor.configurationType === 'propertyConfiguration') {
             return this.createPropertyPreview(descriptor);
         }
+        if (descriptor.configurationType === 'schemaAccessPolicy') {
+            return this.createSchemaAccessPolicyPreview(descriptor);
+        }
         throw new CLASSES.NodicsError('ERR_SYS_00002', 'Preview is not supported for configuration type: ' + descriptor.configurationType);
+    },
+
+    /**
+     * Creates a schema/property access-policy preview from captured policy state.
+     *
+     * @param {Object} descriptor Runtime schema access policy descriptor.
+     * @returns {Object} Schema access policy preview.
+     */
+    createSchemaAccessPolicyPreview: function (descriptor) {
+        let configuration = descriptor.configuration;
+        this.validateSchemaAccessPolicy(configuration);
+        let previousSnapshot = descriptor.previousConfiguration;
+        let nextSnapshot = this.normalizeSchemaAccessPolicy(configuration);
+        return this.createPreviewResponse({
+            configurationType: descriptor.configurationType,
+            configurationCode: descriptor.configurationCode || nextSnapshot.code,
+            moduleName: descriptor.moduleName || nextSnapshot.moduleName,
+            tenant: descriptor.tenant || CONFIG.get('defaultTenant') || 'default',
+            previousSnapshot: previousSnapshot,
+            nextSnapshot: nextSnapshot,
+            warnings: this.collectSchemaAccessPolicyWarnings(previousSnapshot, nextSnapshot),
+            affectedArtifacts: this.collectSchemaAccessPolicyAffectedArtifacts(nextSnapshot)
+        });
+    },
+
+    /**
+     * Validates a proposed schema access policy through the shared contract service.
+     *
+     * @param {Object} configuration Proposed schema access policy.
+     * @returns {void}
+     */
+    validateSchemaAccessPolicy: function (configuration) {
+        let contractService = SERVICE.DefaultSchemaAccessPolicyContractService;
+        if (!contractService || typeof contractService.validatePolicy !== 'function') {
+            throw new CLASSES.NodicsError('ERR_SYS_00001', 'Schema access policy contract service is not available');
+        }
+        let validation = contractService.validatePolicy(configuration || {});
+        if (!validation.valid) {
+            throw new CLASSES.NodicsError('ERR_SYS_00002', 'Schema access policy configuration is invalid');
+        }
+    },
+
+    /**
+     * Normalizes a schema access policy through the shared contract service.
+     *
+     * @param {Object} configuration Proposed schema access policy.
+     * @returns {Object} Normalized policy.
+     */
+    normalizeSchemaAccessPolicy: function (configuration) {
+        let validation = SERVICE.DefaultSchemaAccessPolicyContractService.validatePolicy(configuration || {});
+        return validation.policy;
+    },
+
+    /**
+     * Loads the current schema access policy when a direct configuration payload is previewed.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} payload Preview request payload.
+     * @returns {Promise<Object|undefined>} Current policy snapshot.
+     */
+    loadExistingSchemaAccessPolicy: function (request, payload) {
+        return new Promise((resolve, reject) => {
+            let configurationCode = payload.configurationCode || (payload.configuration && payload.configuration.code);
+            if (!configurationCode) {
+                resolve(undefined);
+                return;
+            }
+            let service = this.getRuntimeConfigurationService('schemaAccessPolicy');
+            if (!service || typeof service.get !== 'function') {
+                resolve(undefined);
+                return;
+            }
+            service.get({
+                tenant: this.getPreviewTenant(request),
+                query: {
+                    code: configurationCode
+                }
+            }).then(success => {
+                resolve(success.result && success.result.length > 0 ? success.result[0] : undefined);
+            }).catch(error => {
+                reject(error);
+            });
+        });
     },
 
     /**
@@ -454,6 +556,31 @@ module.exports = {
     },
 
     /**
+     * Collects schema access-policy preview warnings.
+     *
+     * @param {Object} previousSnapshot Current policy.
+     * @param {Object} nextSnapshot Proposed policy.
+     * @returns {string[]} Warning messages.
+     */
+    collectSchemaAccessPolicyWarnings: function (previousSnapshot, nextSnapshot) {
+        let warnings = [];
+        if (!previousSnapshot) {
+            return warnings;
+        }
+        ['effect', 'status', 'moduleName', 'schemaName', 'propertyName'].forEach(propertyName => {
+            if (!_.isEqual(previousSnapshot[propertyName], nextSnapshot[propertyName])) {
+                warnings.push('schema access policy ' + propertyName + ' will change');
+            }
+        });
+        ['actions', 'userGroups', 'appliesToTenants'].forEach(propertyName => {
+            if (!_.isEqual(previousSnapshot[propertyName] || [], nextSnapshot[propertyName] || [])) {
+                warnings.push('schema access policy ' + propertyName + ' will change');
+            }
+        });
+        return warnings;
+    },
+
+    /**
      * Collects schema-generated artifacts that may be affected by activation.
      *
      * @param {string} schemaCode Schema code.
@@ -505,6 +632,22 @@ module.exports = {
     },
 
     /**
+     * Collects artifacts affected by schema access-policy activation.
+     *
+     * @param {Object} policy Effective policy.
+     * @returns {Object[]} Affected artifact descriptors.
+     */
+    collectSchemaAccessPolicyAffectedArtifacts: function (policy) {
+        return [{
+            type: 'schemaAccessPolicy',
+            code: policy && policy.code,
+            moduleName: policy && policy.moduleName,
+            schemaName: policy && policy.schemaName,
+            propertyName: policy && policy.propertyName
+        }];
+    },
+
+    /**
      * Determines if the preview contains destructive or potentially breaking changes.
      *
      * @param {Object} previousSnapshot Current snapshot.
@@ -552,6 +695,9 @@ module.exports = {
         }
         if (configurationType === 'routerConfiguration') {
             return SERVICE.DefaultRouterConfigurationService;
+        }
+        if (configurationType === 'schemaAccessPolicy') {
+            return SERVICE.DefaultSchemaAccessPolicyService;
         }
         return undefined;
     },

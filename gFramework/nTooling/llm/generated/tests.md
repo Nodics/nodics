@@ -9,6 +9,7 @@
 - `gFramework/nTooling/test/moduleLlmContext.test.js`
 - `gFramework/nTooling/test/moduleMetadata.test.js`
 - `gFramework/nTooling/test/moduleStructure.test.js`
+- `gFramework/nTooling/test/projectPostmanCoverageOwnership.test.js`
 - `gFramework/nTooling/test/repositoryToolingBoundary.test.js`
 - `gFramework/nTooling/test/toolingCommandOverride.test.js`
 

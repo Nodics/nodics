@@ -155,9 +155,58 @@ module.exports = {
         summary.totalRecordsHandled = (summary.recordsSucceeded || 0) + (summary.recordsFailed || 0) + (summary.recordsSkipped || 0);
         summary.totalFilesDiscovered = summary.dataFilesDiscovered || (importRun.dataFiles.discovered || []).length;
         summary.totalHeaders = (summary.enabledHeaders || 0) + (summary.disabledHeaders || 0);
+        this.executeRollbackHooks(request, importRun.status);
         this.recordRunHistory(request);
 
         return importRun;
+    },
+
+    /**
+     * Executes configured rollback hooks for failed import runs.
+     *
+     * @param {Object} request Import request context.
+     * @param {string} status Final run status.
+     * @returns {undefined} Rollback hooks are best-effort and reflected on importRun.rollback.
+     */
+    executeRollbackHooks: function (request, status) {
+        if (!request.importRun || status !== 'FAILED') {
+            return;
+        }
+        let hooks = request.rollbackHooks || [];
+        request.importRun.rollback = request.importRun.rollback || {
+            enabled: hooks.length > 0,
+            hookCount: hooks.length
+        };
+        if (hooks.length === 0) {
+            request.importRun.rollback.status = 'NOT_CONFIGURED';
+            return;
+        }
+        request.importRun.rollback.status = 'STARTED';
+        request.importRun.rollback.results = [];
+        hooks.forEach(hook => {
+            try {
+                let result;
+                if (typeof hook === 'function') {
+                    result = hook(request);
+                } else if (typeof hook === 'string') {
+                    result = typeof UTILS !== 'undefined' && UTILS.executeFunction ? UTILS.executeFunction(hook, request) : undefined;
+                } else if (hook && typeof hook.execute === 'function') {
+                    result = hook.execute(request);
+                }
+                request.importRun.rollback.results.push({
+                    hook: hook.name || hook.code || hook.handler || hook.toString(),
+                    status: 'COMPLETED',
+                    result: result
+                });
+            } catch (error) {
+                request.importRun.rollback.results.push({
+                    hook: hook.name || hook.code || hook.handler || hook.toString(),
+                    status: 'FAILED',
+                    error: this.normalizeError(error)
+                });
+            }
+        });
+        request.importRun.rollback.status = request.importRun.rollback.results.some(result => result.status === 'FAILED') ? 'FAILED' : 'COMPLETED';
     },
 
     /**

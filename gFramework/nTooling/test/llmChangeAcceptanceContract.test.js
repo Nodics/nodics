@@ -79,6 +79,55 @@ requireClauses('gSetup/llm/prompts/enterprise-architecture-quality-prompt.md', [
     'Reject the change as incomplete'
 ]);
 
+requireClauses('gSetup/llm/prompts/README.md', [
+    '# Nodics Workflow Prompts',
+    'review-prompt.md',
+    'refactor-prompt.md',
+    'testing-prompt.md',
+    'schema-change-prompt.md',
+    'runtime-governance-prompt.md'
+]);
+
+requireClauses('gSetup/llm/prompts/review-prompt.md', [
+    '# Nodics Review Prompt',
+    'Prioritize findings before summaries',
+    'violated contract or expected behavior',
+    'customization paths',
+    'generated files are regenerated from source definitions'
+]);
+
+requireClauses('gSetup/llm/prompts/refactor-prompt.md', [
+    '# Nodics Refactor Prompt',
+    'without changing platform capability',
+    'do not create a second loader',
+    'source-of-truth artifact',
+    'override/customization proof'
+]);
+
+requireClauses('gSetup/llm/prompts/testing-prompt.md', [
+    '# Nodics Testing Prompt',
+    'distributed runtime',
+    'later-loaded project modules can override behavior',
+    'deterministic contract tests',
+    'separate live'
+]);
+
+requireClauses('gSetup/llm/prompts/schema-change-prompt.md', [
+    '# Nodics Schema Change Prompt',
+    'source schema definitions are authoritative',
+    'generated artifacts are outputs',
+    'later-loaded modules may extend or override',
+    'preview, approval, activation'
+]);
+
+requireClauses('gSetup/llm/prompts/runtime-governance-prompt.md', [
+    '# Nodics Runtime Governance Prompt',
+    'preview before mutation',
+    'activation through the owning service',
+    'rollback through the owning service',
+    'Do not add a parallel activation channel'
+]);
+
 requireClauses('gSetup/llm/feature-process.md', [
     'override/customization behavior for every new or changed extension point',
     '## 9. Definition Of Done',
@@ -159,6 +208,11 @@ requireClauses('gSetup/llm/README.md', [
     'framework-wide quality gates',
     'project-owned modules and their effective configuration',
     'when the developer explicitly requests it',
+    'prompts/review-prompt.md',
+    'prompts/refactor-prompt.md',
+    'prompts/testing-prompt.md',
+    'prompts/schema-change-prompt.md',
+    'prompts/runtime-governance-prompt.md',
     'module-generation-guide.md',
     'contracts/integration-governance-contract.md'
 ]);

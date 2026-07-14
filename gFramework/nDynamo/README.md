@@ -11,18 +11,24 @@ The shared runtime lifecycle supports these configuration types:
 - `schemaConfiguration`
 - `routerConfiguration`
 - `propertyConfiguration`
+- `schemaAccessPolicy`
 
 Preview identifies changed paths, affected artifacts, warnings, and destructive
 risk without changing runtime state. Activation requests capture that preview,
-the requester, reason, correlation identifier, and approval state. Property
-requests additionally store a canonical SHA-256 digest so the approved patch
-cannot be substituted before activation.
+the requester, reason, correlation identifier, and approval state. Property and
+schema access-policy requests additionally store a canonical SHA-256 digest so
+the approved patch cannot be substituted before activation.
 
 Approval and activation enforce configured separation-of-duties rules. Successful
 and failed activation attempts are audited. Rollback restores the previous
 snapshot through the owning service instead of bypassing its runtime contract.
 Property snapshots contain only changed values and absent paths, preventing
 unrelated tenant configuration from being overwritten.
+
+Schema access-policy changes use the same preview, approval, activation, audit,
+and rollback lifecycle. Developers and AI tools must treat the generated
+`schemaAccessPolicy` model as the persisted policy record and the runtime
+governance services as the mutation contract for control-plane changes.
 
 Generic CRUD routers for activation requests and activation logs are disabled.
 Their model services remain internal dependencies of the dedicated,

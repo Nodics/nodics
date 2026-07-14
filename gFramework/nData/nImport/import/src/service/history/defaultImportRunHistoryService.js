@@ -10,6 +10,7 @@
  */
 
 const _ = require('lodash');
+const crypto = require('crypto');
 
 /**
  * @module import/service/history/DefaultImportRunHistoryService
@@ -69,17 +70,33 @@ module.exports = {
                 });
                 return;
             }
-            importRunService.save({
-                tenant: importRun.tenant || this.getDefaultTenant(),
-                model: importRun
-            }).then(success => {
-                resolve(success);
-            }).catch(error => {
-                this.error('Import run history persistence failed', error);
-                resolve({
-                    skipped: true,
-                    error: error,
-                    entry: importRun
+            this.findDuplicateRun(importRun, importRunService).then(duplicate => {
+                if (duplicate) {
+                    resolve({
+                        skipped: true,
+                        reason: 'DUPLICATE_IMPORT_RUN',
+                        duplicate: {
+                            runId: duplicate.runId,
+                            code: duplicate.code,
+                            status: duplicate.status,
+                            fingerprint: duplicate.fingerprint
+                        },
+                        entry: importRun
+                    });
+                    return;
+                }
+                importRunService.save({
+                    tenant: importRun.tenant || this.getDefaultTenant(),
+                    model: importRun
+                }).then(success => {
+                    resolve(success);
+                }).catch(error => {
+                    this.error('Import run history persistence failed', error);
+                    resolve({
+                        skipped: true,
+                        error: error,
+                        entry: importRun
+                    });
                 });
             });
         });
@@ -162,7 +179,131 @@ module.exports = {
         importRun.modules = importRun.modules || request.modules || [];
         importRun.requestedBy = importRun.requestedBy || this.resolveRequestedBy(request);
         importRun.correlationId = importRun.correlationId || this.resolveCorrelationId(request);
+        importRun.checksum = importRun.checksum || this.createImportRunChecksum(importRun);
+        importRun.fingerprint = importRun.fingerprint || this.createImportRunFingerprint(importRun);
+        importRun.retry = this.prepareRetryMetadata(request, importRun);
+        importRun.rollback = importRun.rollback || this.prepareRollbackMetadata(request);
         return importRun;
+    },
+
+    /**
+     * Finds an already-completed run with the same deterministic fingerprint.
+     *
+     * @param {Object} importRun Import run record.
+     * @param {Object} importRunService Generated import run service.
+     * @returns {Promise<Object|undefined>} Matching duplicate run when found.
+     */
+    findDuplicateRun: function (importRun, importRunService) {
+        let governance = this.getImportGovernanceConfig();
+        if (governance.duplicateProtection === false || !importRun.fingerprint || !importRunService || typeof importRunService.get !== 'function') {
+            return Promise.resolve(undefined);
+        }
+        return importRunService.get({
+            tenant: importRun.tenant || this.getDefaultTenant(),
+            query: {
+                fingerprint: importRun.fingerprint,
+                status: {
+                    $in: governance.duplicateStatuses || ['COMPLETED', 'VALIDATED']
+                }
+            },
+            searchOptions: {
+                limit: 1
+            }
+        }).then(result => {
+            let matches = result && result.result || [];
+            let duplicate = matches.find(match => match.runId !== importRun.runId && match.fingerprint === importRun.fingerprint);
+            return duplicate;
+        }).catch(error => {
+            this.warn('Import duplicate-run lookup skipped; history query failed');
+            this.error('Import duplicate-run lookup failed', error);
+            return undefined;
+        });
+    },
+
+    /**
+     * Creates a stable import run checksum from discovered file checksums when available.
+     *
+     * @param {Object} importRun Import run record.
+     * @returns {string|undefined} SHA-256 checksum.
+     */
+    createImportRunChecksum: function (importRun) {
+        let fileEntries = importRun && importRun.dataFiles && importRun.dataFiles.discovered || [];
+        let checksums = fileEntries.map(entry => {
+            if (typeof entry === 'string') return undefined;
+            return entry.checksum || entry.sha256 || entry.hash;
+        }).filter(Boolean).sort();
+        if (checksums.length === 0) {
+            return undefined;
+        }
+        return this.sha256(checksums.join('|'));
+    },
+
+    /**
+     * Creates a deterministic fingerprint used for duplicate import detection.
+     *
+     * @param {Object} importRun Import run record.
+     * @returns {string} SHA-256 fingerprint.
+     */
+    createImportRunFingerprint: function (importRun) {
+        return this.sha256(JSON.stringify({
+            tenant: importRun.tenant,
+            dataType: importRun.dataType,
+            modules: (importRun.modules || []).slice().sort(),
+            checksum: importRun.checksum,
+            source: importRun.sourceName || importRun.remoteSource,
+            validationOnly: !!importRun.validationOnly
+        }));
+    },
+
+    /**
+     * Resolves retry metadata for the run without performing retries itself.
+     *
+     * @param {Object} request Import request context.
+     * @param {Object} importRun Import run record.
+     * @returns {Object} Retry metadata.
+     */
+    prepareRetryMetadata: function (request, importRun) {
+        let governance = this.getImportGovernanceConfig();
+        let retry = _.merge({}, governance.retry || {}, request.retry || {}, importRun.retry || {});
+        retry.attempt = Number(retry.attempt || request.retryAttempt || importRun.retryAttempt || 0);
+        retry.maxAttempts = Number(retry.maxAttempts || retry.max || 0);
+        retry.retryable = retry.maxAttempts > 0 && retry.attempt < retry.maxAttempts;
+        return retry;
+    },
+
+    /**
+     * Captures rollback metadata for run history.
+     *
+     * @param {Object} request Import request context.
+     * @returns {Object} Rollback metadata.
+     */
+    prepareRollbackMetadata: function (request) {
+        let hooks = request.rollbackHooks || [];
+        return {
+            enabled: hooks.length > 0,
+            hookCount: hooks.length,
+            status: hooks.length > 0 ? 'PENDING' : 'NOT_CONFIGURED'
+        };
+    },
+
+    /**
+     * Returns import governance configuration.
+     *
+     * @returns {Object} Governance configuration.
+     */
+    getImportGovernanceConfig: function () {
+        let data = typeof CONFIG !== 'undefined' && CONFIG.get ? CONFIG.get('data') || {} : {};
+        return data.importGovernance || {};
+    },
+
+    /**
+     * Creates a SHA-256 digest.
+     *
+     * @param {string} value Value to hash.
+     * @returns {string} Hex digest.
+     */
+    sha256: function (value) {
+        return crypto.createHash('sha256').update(String(value)).digest('hex');
     },
 
     /**

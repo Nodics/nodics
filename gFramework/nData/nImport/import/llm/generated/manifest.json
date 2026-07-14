@@ -14,12 +14,12 @@
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to import"
   },
   "sourceFiles": 29,
-  "testFiles": 26,
+  "testFiles": 27,
   "dataFiles": 0,
-  "ownedFiles": 59,
-  "sourceFingerprint": "d935b2333d655c7425c5c5a1a933104803d9b14a2542675548ae3f0e87447111",
+  "ownedFiles": 60,
+  "sourceFingerprint": "0a51e5f2e13733e4f3ed8b9f6df3c96910e4cd1cd1a239f3ee96293c3c18e041",
   "documentation": {
-    "documented": 42,
+    "documented": 43,
     "partially-documented": 2,
     "undocumented": 11,
     "inventory-only": 4

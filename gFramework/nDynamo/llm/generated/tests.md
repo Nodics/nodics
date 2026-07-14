@@ -24,6 +24,7 @@
 - `gFramework/nDynamo/test/runtimeRouterConfigurationService.test.js`
 - `gFramework/nDynamo/test/runtimeSchemaPipelineContract.test.js`
 - `gFramework/nDynamo/test/schemaAccessPolicyContractService.test.js`
+- `gFramework/nDynamo/test/schemaAccessPolicyGovernanceLifecycle.test.js`
 - `gFramework/nDynamo/test/schemaAccessPolicyResolverService.test.js`
 
 ## Generated Tests

@@ -12,6 +12,7 @@
 - `gFramework/nData/nImport/import/test/importDuplicateHeaderDiagnostics.test.js`
 - `gFramework/nData/nImport/import/test/importExportAccessPolicy.test.js`
 - `gFramework/nData/nImport/import/test/importFailureTraceability.test.js`
+- `gFramework/nData/nImport/import/test/importGovernanceLifecycleContract.test.js`
 - `gFramework/nData/nImport/import/test/importLifecycleContract.test.js`
 - `gFramework/nData/nImport/import/test/importRunHistoryControllerRoute.test.js`
 - `gFramework/nData/nImport/import/test/importRunHistoryService.test.js`

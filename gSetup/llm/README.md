@@ -69,7 +69,13 @@ Load detailed files only when their subject is affected:
 20. `feature-process.md`
 21. `prompts/base-nodics-assistant-prompt.md`
 22. `prompts/enterprise-architecture-quality-prompt.md`
-23. `module-generation-guide.md`
+23. `prompts/README.md`
+24. `prompts/review-prompt.md`
+25. `prompts/refactor-prompt.md`
+26. `prompts/testing-prompt.md`
+27. `prompts/schema-change-prompt.md`
+28. `prompts/runtime-governance-prompt.md`
+29. `module-generation-guide.md`
 
 Load `change-gate-contract.md` only at commit, merge/release, periodic-audit, or
 explicit comprehensive-review time. Canonical rules should be referenced rather
@@ -102,6 +108,8 @@ without modifying out-of-the-box Nodics code.
 - Artifact-specific definition, layering, lifecycle, and change-impact rules.
 - Token-efficient daily, commit, merge/release, and periodic audit gates.
 - AI prompts, enterprise review expectations, and decision memory for future sessions.
+- Workflow-specific prompts for review, refactor, testing, schema changes, and
+  runtime governance.
 - Portable AI-agent contracts, tool bridge files, and `npm run ai:validate`
   governance checks.
 - Contract-driven guidance for creating project, environment, server, and node

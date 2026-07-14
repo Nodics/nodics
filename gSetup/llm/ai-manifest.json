@@ -9,6 +9,7 @@
     "generatedAiContextDirectory": "llm/generated",
     "globalAiGuidance": "gSetup/llm/README.md",
     "contractsDirectory": "gSetup/llm/contracts",
+    "promptsDirectory": "gSetup/llm/prompts",
     "toolBridges": [
         "CLAUDE.md",
         "CONVENTIONS.md",

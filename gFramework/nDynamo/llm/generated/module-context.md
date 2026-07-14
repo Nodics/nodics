@@ -33,9 +33,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 34 |
-| Test files | 40 |
+| Test files | 41 |
 | Data files | 0 |
-| All module-owned files | 64 |
+| All module-owned files | 65 |
 | Local schema definitions | 7 |
 
 ## Ownership And Dependencies
@@ -69,7 +69,7 @@
 | --- | ---: |
 | Documented | 42 |
 | Partially documented | 3 |
-| Undocumented | 15 |
+| Undocumented | 16 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -112,12 +112,12 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/src/service/access/defaultSchemaAccessPolicyContractService.js` | `src` | `documented` | 14/14 | Defines and validates the runtime schema/property access policy contract used by the Nodics control plane. This service owns the common action/effect vocabulary only; read/write/import/export enforcement is added by later generated CRUD and data-processing layers. |  |
 | `gFramework/nDynamo/src/service/access/defaultSchemaAccessPolicyResolverService.js` | `src` | `documented` | 24/24 | Resolves effective runtime schema/property access policy decisions for a tenant, module, schema, property, action, and user-group context. This service computes decisions only; generated CRUD, import/export, and admin UI layers consume the decision in later enforcement slices. |  |
 | `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationActivationPolicyService.js` | `src` | `documented` | 9/9 | Applies approval governance before runtime schema and router configurations are activated. |  |
-| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationActivationRequestService.js` | `src` | `documented` | 27/27 | Manages runtime configuration activation request lifecycle: request, approve, reject, and activate approved schema, router, and property changes. |  |
+| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationActivationRequestService.js` | `src` | `documented` | 29/29 | Manages runtime configuration activation request lifecycle: request, approve, reject, and activate approved schema, router, property, and schema access-policy changes. |  |
 | `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationAuditService.js` | `src` | `documented` | 11/11 | Records runtime configuration activation attempts for schema, router, class, and pipeline control-plane changes without making activation dependent on audit persistence availability. |  |
 | `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationGovernanceCleanupService.js` | `src` | `documented` | 32/32 | Previews and applies retention cleanup for runtime configuration activation requests and activation audit logs through generated model services. |  |
 | `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationGovernanceSummaryService.js` | `src` | `documented` | 23/23 | Builds a read-only runtime governance summary for the admin control plane from activation requests and activation audit logs. |  |
-| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationPreviewService.js` | `src` | `documented` | 26/26 | Computes non-destructive previews for runtime schema, router, and tenant-property configuration activations before they are activated. |  |
-| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationRollbackService.js` | `src` | `documented` | 13/13 | Restores runtime schema, router, and tenant-property configurations from activation history without bypassing the normal generated service and activation pipelines. |  |
+| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationPreviewService.js` | `src` | `documented` | 32/32 | Computes non-destructive previews for runtime schema, router, tenant-property, and schema access-policy configuration activations before they are activated. |  |
+| `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationRollbackService.js` | `src` | `documented` | 14/14 | Restores runtime schema, router, tenant-property, and schema access-policy configurations from activation history without bypassing the normal generated service and activation pipelines. |  |
 | `gFramework/nDynamo/src/service/class/defaultClassConfigurationService.js` | `src` | `documented` | 9/9 | Implements nDynamo default class configuration service business behavior and extension logic. |  |
 | `gFramework/nDynamo/src/service/event/defaultClassConfigurationChangeListenerService.js` | `src` | `documented` | 3/3 | Implements nDynamo default class configuration change listener service business behavior and extension logic. |  |
 | `gFramework/nDynamo/src/service/event/defaultRouterConfigurationChangeListenerService.js` | `src` | `documented` | 3/3 | Implements nDynamo default router configuration change listener service business behavior and extension logic. |  |
@@ -153,6 +153,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/test/runtimeRouterConfigurationService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/test/runtimeSchemaPipelineContract.test.js` | `test` | `documented` | 0/0 | Verifies runtime schema activation is pipeline-driven, tenant-aware, policy-checked, and audited for both successful and failed activation attempts. |  |
 | `gFramework/nDynamo/test/schemaAccessPolicyContractService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/schemaAccessPolicyGovernanceLifecycle.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/test/schemaAccessPolicyResolverService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 
 ## Extension Contract
