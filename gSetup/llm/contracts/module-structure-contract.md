@@ -37,3 +37,9 @@ guidance through the hierarchy.
 Customer/project modules follow the same shape. Customer customization must be
 implemented in project modules and layered overrides, not by editing Nodics
 framework modules.
+
+New project, environment, server, and node modules must follow
+`gSetup/llm/module-generation-guide.md`. Generation must be driven by module
+metadata, active-module registration, layered configuration, source
+definitions, tests, documentation, and regenerated artifacts. Do not revive or
+copy `nCommon/templates`; the legacy template folder is intentionally retired.

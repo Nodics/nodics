@@ -14,6 +14,8 @@ Use these files for rules that are more specific than root `AGENTS.md` and the m
 - `nodics-expert-decision-contract.md`: AI decision rules for choosing the
   correct Nodics layer, artifact, extension point, and proof before coding.
 - `module-structure-contract.md`: standard module, docs, and LLM folder shape.
+- `integration-governance-contract.md`: ownership, configuration, security,
+  testing, and MCP exposure rules for external/provider integrations.
 - `documentation-impact-contract.md`: documentation updates required by behavior
   and contract changes.
 - `testing-and-release-contract.md`: testing and release expectations.

@@ -87,6 +87,9 @@ When adding a new implementation behind an existing capability, such as an
 Oracle database adapter for `nDatabase`, a Solr adapter for `nSearch`, a new
 cache engine for `nCache`, or a new messaging provider for `nEms`, implement it
 as a provider module or project module before changing framework call sites.
+Apply `integration-governance-contract.md` for ownership, provider selection,
+connection/secrets, data flow, tenant/environment/server/node overrides,
+security, diagnostics, tests, and MCP exposure boundaries.
 
 Provider guidance must identify:
 

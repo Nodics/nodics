@@ -8,7 +8,7 @@ This file gives AI agents and developers a first-pass map of important Nodics mo
 | --- | --- |
 | `nDefault` | Base/default schema and foundational generated behavior. |
 | `nConfig` | Startup, module hierarchy, configuration loading, clean/build, generated artifact governance. |
-| `nCommon` | Shared errors, utilities, processors, promise helpers, files, scaffolding support. |
+| `nCommon` | Shared errors, utilities, processors, promise helpers, and file helpers. Legacy copied scaffolding is retired until contract-driven generation is implemented. |
 | `nDatabase` | Schema processing, model generation, database connection, DAO/generic CRUD behavior. |
 | `nService` | Tenant, enterprise, status catalog, service calls, module communication, topology helpers. |
 | `nPipeline` | Pipeline definition, execution, and runtime pipeline behavior. |

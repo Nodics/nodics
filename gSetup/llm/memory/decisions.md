@@ -132,3 +132,68 @@ Recent implementation:
 - Tests validate persistence, query filters, diagnostics delegation, schema visibility, controller mapping, route contracts, clean/build, generated tests, and basic suite.
 
 This enables admin/control-plane visibility into import run id, status, data type, tenant, modules, duration, file/header counts, records handled, failures, and validation errors.
+
+## Configuration Hierarchy
+
+Configuration hierarchy is metadata-driven. Environment, server, and node roles
+come from `package.json.nodics.kind`, parent relationships, and index ordering,
+not from names, suffixes, folder depth, or project examples. Names may be
+human-friendly, but behavior must be selected by metadata and layered
+configuration.
+
+`activeModules.groups` and `activeModules.modules` decide which modules run in
+the current process. `server.*` entries describe local or remote endpoint
+coordinates and must not be treated as local activation. Framework code must not
+hardcode sample project names such as `kickoff`.
+
+## Tenant Model And Runtime Isolation
+
+Nodics may keep multiple tenants active in one runtime, but tenant-sensitive
+behavior must resolve tenant context explicitly from request, enterprise, token,
+active-tenant registry, runtime governance, import header, or job definition.
+Startup and bootstrap may use `defaultTenant`; request processing should use the
+resolved active tenant and avoid silent fallback when tenant context should have
+been present.
+
+Tenant boundaries apply to persistence, configuration, cache keys, search
+indexes, jobs, events, auth stamps, audit, diagnostics, import/export, and
+runtime governance. Cross-tenant behavior requires an explicit governed
+permission or contract.
+
+## Versioned Data And Publish Lifecycle
+
+Versioned data is the foundation for staged, validated, approved, published, and
+rollback-capable business data. `vDatabase` owns the provider-neutral versioned
+schema contract, `vMongodb` owns MongoDB-specific versioned persistence, and
+`vService` routes generated save/update behavior for versioned schema models.
+
+Projects should mark publishable schemas as versioned through source schema
+metadata and then add governed preview, approval, publish, visibility, rollback,
+tenant-isolation, and audit contracts. Published and publishable data must stay
+persisted so business users can inspect and revert prior versions.
+
+## Module Generation
+
+Custom project, environment, server, and node modules must be generated from
+Nodics contracts, not copied from retired framework templates. The legacy
+`nCommon/templates` scaffold path is intentionally removed until guarded
+contract-driven tooling exists.
+
+New modules must declare metadata first, including runtime kind, ownership,
+parent relationships, index order, active-module registration, layered
+configuration, source definitions, generated artifact lifecycle, tests,
+README/AGENTS/docs, and regenerated LLM context. Do not copy whole framework
+modules or services to change one decision; contribute the smallest later-layer
+override and prove it with a customization test.
+
+## Modular Identity Bootstrap
+
+Internal module-to-module token access remains secured. Human login routes may
+be pre-authentication, but internal token routes require configured route
+permissions and a service principal with the necessary grants.
+
+Mandatory identity bootstrap may reconcile safe non-secret service-principal
+metadata and missing mandatory groups on startup. It must not rotate, generate,
+or overwrite credential values. Bootstrap must be idempotent across repeated
+starts, tolerate populated reference shapes from model reads, and record audit
+only when it actually reconciles state.

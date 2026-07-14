@@ -129,12 +129,38 @@ requireClauses('gSetup/llm/change-gate-contract.md', [
     'may not silently select a weaker category'
 ]);
 
+requireClauses('gSetup/llm/module-generation-guide.md', [
+    '# Module Generation Guide',
+    'Do not revive or copy `nCommon/templates`',
+    'Runtime kind comes from `package.json.nodics.kind`',
+    '`activeModules` decides what runs in the current process',
+    'Do not copy a whole framework service, router, schema, or module',
+    'regenerate module LLM context'
+]);
+
+requireClauses('gSetup/llm/contracts/integration-governance-contract.md', [
+    '# Integration Governance Contract',
+    'Capability Owner Rule',
+    'Provider Selection Rule',
+    'Connection And Secret Configuration',
+    'Abstraction Boundary Rule',
+    'Tenant, Environment, Server, And Node Overrides',
+    'MCP Exposure Boundary',
+    'hidden source of architecture'
+]);
+
+requireClauses('gSetup/llm/contracts/developer-implementation-contract.md', [
+    'Apply `integration-governance-contract.md`'
+]);
+
 requireClauses('gSetup/llm/README.md', [
     '**Framework-maintainer mode:**',
     '**Application-developer mode:**',
     'framework-wide quality gates',
     'project-owned modules and their effective configuration',
-    'when the developer explicitly requests it'
+    'when the developer explicitly requests it',
+    'module-generation-guide.md',
+    'contracts/integration-governance-contract.md'
 ]);
 
 console.log('Nodics LLM change acceptance contract validated');

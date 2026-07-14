@@ -52,22 +52,24 @@ Load detailed files only when their subject is affected:
 3. `contracts/human-maintainability-contract.md`
 4. `contracts/nodics-expert-decision-contract.md`
 5. `contracts/module-structure-contract.md`
-6. `contracts/documentation-impact-contract.md`
-7. `contracts/testing-and-release-contract.md`
-8. `contracts/customer-project-mode-contract.md`
-9. `nodics-principles.md`
-10. `modular-architecture.md`
-11. `module-catalog.md`
-12. `artifact-definition-and-change-guide.md`
-13. `schema-and-generation.md`
-14. `tenant-model-and-runtime-isolation.md`
-15. `versioned-data-and-publish-lifecycle.md`
-16. `testing-playbook.md`
-17. `standards/module-standard.md`
-18. `standards/code-documentation-standard.md`
-19. `feature-process.md`
-20. `prompts/base-nodics-assistant-prompt.md`
-21. `prompts/enterprise-architecture-quality-prompt.md`
+6. `contracts/integration-governance-contract.md`
+7. `contracts/documentation-impact-contract.md`
+8. `contracts/testing-and-release-contract.md`
+9. `contracts/customer-project-mode-contract.md`
+10. `nodics-principles.md`
+11. `modular-architecture.md`
+12. `module-catalog.md`
+13. `artifact-definition-and-change-guide.md`
+14. `schema-and-generation.md`
+15. `tenant-model-and-runtime-isolation.md`
+16. `versioned-data-and-publish-lifecycle.md`
+17. `testing-playbook.md`
+18. `standards/module-standard.md`
+19. `standards/code-documentation-standard.md`
+20. `feature-process.md`
+21. `prompts/base-nodics-assistant-prompt.md`
+22. `prompts/enterprise-architecture-quality-prompt.md`
+23. `module-generation-guide.md`
 
 Load `change-gate-contract.md` only at commit, merge/release, periodic-audit, or
 explicit comprehensive-review time. Canonical rules should be referenced rather
@@ -102,6 +104,10 @@ without modifying out-of-the-box Nodics code.
 - AI prompts, enterprise review expectations, and decision memory for future sessions.
 - Portable AI-agent contracts, tool bridge files, and `npm run ai:validate`
   governance checks.
+- Contract-driven guidance for creating project, environment, server, and node
+  modules without reviving copied template scaffolds.
+- Governance for external/provider integrations and future MCP exposure
+  boundaries.
 
 ## Important Boundaries
 
