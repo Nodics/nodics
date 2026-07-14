@@ -14,6 +14,14 @@ const path = require('path');
 
 const config = require('../../../nConfig');
 
+/**
+ * @module gFramework/nEms/emsClient/test/activeEmsPublisher.test
+ * @description Runs a guarded EMS publisher smoke test against the active local server configuration and configured provider.
+ * @layer test
+ * @owner nEms
+ * @override Provider modules may add live EMS checks for their own adapters while preserving this active publisher smoke contract.
+ */
+
 const ROOT = path.resolve(__dirname, '../../../..');
 const DEFAULT_SERVER = process.env.NODICS_EMS_TEST_SERVER || process.env.SERVER || 'kickoffLocalServer';
 

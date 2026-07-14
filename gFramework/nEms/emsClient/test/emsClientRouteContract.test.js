@@ -12,6 +12,14 @@
 const { assertRouteContracts } = require('../../../nRouter/test/routerContractTestUtils');
 const routerConfig = require('../src/router/router');
 
+/**
+ * @module gFramework/nEms/emsClient/test/emsClientRouteContract.test
+ * @description Validates EMS client route metadata for publish, register, and close operations.
+ * @layer test
+ * @owner nEms
+ * @override Project modules may add route contracts for custom EMS endpoints while preserving this base client route surface.
+ */
+
 const emsController = 'DefaultEmsClientController';
 const expectedRoutes = [
     { key: '/publish', method: 'POST', controller: emsController, operation: 'publish', secured: true },

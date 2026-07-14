@@ -31,9 +31,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 15 |
-| Test files | 9 |
+| Test files | 11 |
 | Data files | 0 |
-| All module-owned files | 28 |
+| All module-owned files | 30 |
 | Local schema definitions | 1 |
 
 ## Ownership And Dependencies
@@ -63,9 +63,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 19 |
+| Documented | 24 |
 | Partially documented | 2 |
-| Undocumented | 3 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -109,11 +109,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nEms/emsClient/src/service/proc/defaultMessageProcessService.js` | `src` | `documented` | 6/6 | Implements nEms default message process service business behavior and extension logic. |  |
 | `gFramework/nEms/emsClient/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nEms utility exports for status definitions. |  |
 | `gFramework/nEms/emsClient/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nEms utility exports for utils. |  |
-| `gFramework/nEms/emsClient/test/activeEmsPublisher.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/test/activeEmsPublisher.test.js` | `test` | `documented` | 0/0 | Runs a guarded EMS publisher smoke test against the active local server configuration and configured provider. |  |
 | `gFramework/nEms/emsClient/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nEms test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
-| `gFramework/nEms/emsClient/test/emsClientRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/test/emsClientRouteContract.test.js` | `test` | `documented` | 0/0 | Validates EMS client route metadata for publish, register, and close operations. |  |
+| `gFramework/nEms/emsClient/test/emsClientServiceContract.test.js` | `test` | `documented` | 0/0 | Validates deterministic EMS client publish, register, close, and invalid request behavior without requiring a live broker. |  |
+| `gFramework/nEms/emsClient/test/emsMessageProcessContract.test.js` | `test` | `documented` | 0/0 | Validates consumed EMS message translation, tenant validation, and local versus remote event dispatch behavior. |  |
 | `gFramework/nEms/emsClient/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nEms test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
-| `gFramework/nEms/emsClient/test/messageTenantResolution.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nEms/emsClient/test/messageTenantResolution.test.js` | `test` | `documented` | 0/0 | Validates tenant resolution rules for consumed EMS messages, including header, restricted, fallback, and failure paths. |  |
 
 ## Extension Contract
 

@@ -11,6 +11,14 @@
 
 const assert = require('assert');
 
+/**
+ * @module gFramework/nEms/emsClient/test/messageTenantResolution.test
+ * @description Validates tenant resolution rules for consumed EMS messages, including header, restricted, fallback, and failure paths.
+ * @layer test
+ * @owner nEms
+ * @override Project modules may add tenant policy scenarios for custom queues while preserving this default message tenant contract.
+ */
+
 global.CONFIG = {
     get: function (key) {
         if (key === 'defaultTenant') return 'default';

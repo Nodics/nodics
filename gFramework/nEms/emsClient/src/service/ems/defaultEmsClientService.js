@@ -210,7 +210,7 @@ module.exports = {
                     let publisherList = Object.keys(publishers);
                     SERVICE.DefaultEmsClientConfigurationService.configurePublisher(publisherList, publishers).then(success => {
                         if (!(request.publishers instanceof Array)) {
-                            _.merge(CONFIG.get('emsClient').punlishers, request.publishers);
+                            _.merge(CONFIG.get('emsClient').publishers, request.publishers);
                         }
                         resolve({
                             code: 'SUC_EMS_00000',

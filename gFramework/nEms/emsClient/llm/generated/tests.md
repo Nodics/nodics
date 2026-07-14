@@ -7,6 +7,8 @@
 - `gFramework/nEms/emsClient/test/activeEmsPublisher.test.js`
 - `gFramework/nEms/emsClient/test/common/commonTest.js`
 - `gFramework/nEms/emsClient/test/emsClientRouteContract.test.js`
+- `gFramework/nEms/emsClient/test/emsClientServiceContract.test.js`
+- `gFramework/nEms/emsClient/test/emsMessageProcessContract.test.js`
 - `gFramework/nEms/emsClient/test/env-local/envTest.js`
 - `gFramework/nEms/emsClient/test/messageTenantResolution.test.js`
 
