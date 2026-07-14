@@ -184,6 +184,13 @@ tenant context, and governance before any code or runtime change is made.
 MCP tools must not write hidden configuration, create untracked provider state,
 or mutate runtime behavior outside Nodics governance.
 
+The first supported Nodics MCP surface is read-only governance context exposed
+through the nTooling `mcp:governance` command. It may report workspace summary,
+module discovery, nearest `AGENTS.md`, generated module context, and
+change-impact guidance. It must not persist decisions, mutate source, mutate
+runtime configuration, regenerate artifacts, change data, call providers, or
+replace Nodics validation and active-module resolution.
+
 ## Completion Checklist
 
 An integration is complete only when:

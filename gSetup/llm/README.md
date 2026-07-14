@@ -109,6 +109,11 @@ without modifying out-of-the-box Nodics code.
 - Token-efficient daily, commit, merge/release, and periodic audit gates.
 - Repeatable `npm run ai:principle-audit` checks for milestone design-principle
   drift before broader manual or release verification.
+- Read-only `npm run mcp:governance` context for future MCP adapters. It may
+  expose workspace summary, module discovery, nearest `AGENTS.md`, generated
+  module context, and change-impact guidance, but it must not store or mutate
+  architecture, configuration, runtime state, generated artifacts, data, or
+  external systems.
 - AI prompts, enterprise review expectations, and decision memory for future sessions.
 - Workflow-specific prompts for review, refactor, testing, schema changes, and
   runtime governance.
@@ -140,6 +145,9 @@ without modifying out-of-the-box Nodics code.
 - Use `npm run ai:principle-audit` at periodic platform-audit milestones to
   confirm the core principle, governance, prompt, command, generated-context,
   and report-location contracts still line up before broader release gates.
+- Use `npm run mcp:governance -- --path=<path> --change=<path>` when a future
+  MCP/client needs read-only Nodics context. Treat the output as navigation and
+  guidance over existing source-of-truth contracts, not as a new authority.
 
 ## Context Quality Contract
 

@@ -206,7 +206,9 @@ requireClauses('gSetup/llm/contracts/integration-governance-contract.md', [
     'Abstraction Boundary Rule',
     'Tenant, Environment, Server, And Node Overrides',
     'MCP Exposure Boundary',
-    'hidden source of architecture'
+    'hidden source of architecture',
+    'nTooling `mcp:governance` command',
+    'It must not persist decisions, mutate source'
 ]);
 
 requireClauses('gSetup/llm/contracts/developer-implementation-contract.md', [
@@ -225,6 +227,7 @@ requireClauses('gSetup/llm/README.md', [
     'prompts/schema-change-prompt.md',
     'prompts/runtime-governance-prompt.md',
     'ai:principle-audit',
+    'mcp:governance',
     'module-generation-guide.md',
     'contracts/integration-governance-contract.md'
 ]);

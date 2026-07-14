@@ -56,6 +56,10 @@ module.exports = {
             handler: 'src/command/nodeScriptCommand.js',
             script: 'test/moduleMetadata.test.js'
         },
+        'mcp:governance': {
+            description: 'Print read-only Nodics governance context for future MCP adapters.',
+            handler: 'src/command/mcpGovernanceCommand.js'
+        },
         'debug:clean': {
             description: 'Run Nodics clean under the debugger and break on startup.',
             handler: 'src/command/nodeScriptCommand.js',
