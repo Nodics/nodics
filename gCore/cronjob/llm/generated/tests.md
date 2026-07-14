@@ -6,7 +6,9 @@
 
 - `gCore/cronjob/test/common/commonTest.js`
 - `gCore/cronjob/test/cronJobControllerRequestMapping.test.js`
+- `gCore/cronjob/test/cronJobEventHandlerContract.test.js`
 - `gCore/cronjob/test/cronJobRouteContract.test.js`
+- `gCore/cronjob/test/cronJobRuntimeContainerContract.test.js`
 - `gCore/cronjob/test/cronJobServiceLifecycleContract.test.js`
 - `gCore/cronjob/test/env/local/envTest.js`
 

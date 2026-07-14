@@ -11,6 +11,14 @@
 
 const assert = require('assert');
 
+/**
+ * @module gCore/cronjob/test/cronJobServiceLifecycleContract.test
+ * @description Validates cronjob service delegation to the runtime container for create, update, run, start, stop, remove, pause, and resume operations.
+ * @layer test
+ * @owner cronjob
+ * @override Project modules may add service lifecycle tests for custom scheduler behavior while preserving this base service-container contract.
+ */
+
 const containerCalls = [];
 
 function CronJobContainerStub() {

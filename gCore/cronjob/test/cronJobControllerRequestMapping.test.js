@@ -11,6 +11,14 @@
 
 const assert = require('assert');
 
+/**
+ * @module gCore/cronjob/test/cronJobControllerRequestMapping.test
+ * @description Validates cronjob controller request mapping for query-based and job-code-based lifecycle operations.
+ * @layer test
+ * @owner cronjob
+ * @override Project modules may add controller mapping tests for custom cronjob endpoints while preserving this base route behavior.
+ */
+
 const calls = [];
 
 global.UTILS = {

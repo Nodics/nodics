@@ -12,6 +12,14 @@
 const { assertRouteContracts } = require('../../../gFramework/nRouter/test/routerContractTestUtils');
 const routerConfig = require('../src/router/router');
 
+/**
+ * @module gCore/cronjob/test/cronJobRouteContract.test
+ * @description Validates cronjob route metadata for create, update, run, start, stop, remove, pause, and resume operations.
+ * @layer test
+ * @owner cronjob
+ * @override Project modules may add route contracts for custom scheduler endpoints while preserving this base lifecycle route surface.
+ */
+
 const cronJobController = 'DefaultCronJobController';
 const expectedRoutes = [
     { key: '/job/create', method: 'GET', controller: cronJobController, operation: 'createJob', secured: true },

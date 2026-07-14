@@ -14,14 +14,14 @@
     "description": "Module cronJob, handle schedulled execution process"
   },
   "sourceFiles": 33,
-  "testFiles": 13,
+  "testFiles": 15,
   "dataFiles": 4,
-  "ownedFiles": 50,
-  "sourceFingerprint": "b02a2280b7d78fb8f362b31c4d7df50849bc431a8b2f316441885a815d374b2d",
+  "ownedFiles": 52,
+  "sourceFingerprint": "fb748e1906bf12aff2e98c1de79a66180f18199aaf0172c82817a1e6cb9504c7",
   "documentation": {
-    "documented": 41,
+    "documented": 46,
     "partially-documented": 2,
-    "undocumented": 3,
+    "undocumented": 0,
     "inventory-only": 4
   },
   "schemaGroups": {

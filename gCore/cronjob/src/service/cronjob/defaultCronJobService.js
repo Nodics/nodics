@@ -108,15 +108,16 @@ module.exports = {
      */
     createAllJobs: function (tenants = NODICS.getActiveTenants()) {
         return new Promise((resolve, reject) => {
+            const activeTenants = tenants.slice();
             this.getTenantsJobs({
                 searchOptions: {
                     noLimit: true,
                     projection: { _id: 0 }
                 },
                 query: SERVICE.DefaultCronJobConfigurationService.getDefaultQuery()
-            }, tenants).then(jobs => {
+            }, activeTenants.slice()).then(jobs => {
                 this.cronJobContainer.createJobs({
-                    tenant: request.tenant,
+                    tenants: activeTenants,
                     definitions: jobs
                 }).then(success => {
                     let code = 'SUC_JOB_00000';

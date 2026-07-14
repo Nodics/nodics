@@ -34,9 +34,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 33 |
-| Test files | 13 |
+| Test files | 15 |
 | Data files | 4 |
-| All module-owned files | 50 |
+| All module-owned files | 52 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -69,9 +69,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 41 |
+| Documented | 46 |
 | Partially documented | 2 |
-| Undocumented | 3 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -138,9 +138,11 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/cronjob/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Cronjob success and error status definitions used by lifecycle APIs and scheduler services. |  |
 | `gCore/cronjob/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved cronjob utility contribution point for scheduler helper functions. |  |
 | `gCore/cronjob/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Common sample test scaffold for cronjob module contracts. | add JSDoc for 7 exported method(s) |
-| `gCore/cronjob/test/cronJobControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/test/cronJobRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/cronjob/test/cronJobServiceLifecycleContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/cronjob/test/cronJobControllerRequestMapping.test.js` | `test` | `documented` | 0/0 | Validates cronjob controller request mapping for query-based and job-code-based lifecycle operations. |  |
+| `gCore/cronjob/test/cronJobEventHandlerContract.test.js` | `test` | `documented` | 0/0 | Validates cronjob event-handler jobs build internal NEMS requests, update execution state, and persist optional job logs. |  |
+| `gCore/cronjob/test/cronJobRouteContract.test.js` | `test` | `documented` | 0/0 | Validates cronjob route metadata for create, update, run, start, stop, remove, pause, and resume operations. |  |
+| `gCore/cronjob/test/cronJobRuntimeContainerContract.test.js` | `test` | `documented` | 0/0 | Validates cronjob all-job startup, node ownership, temporary failover ownership, and runtime container lifecycle behavior. |  |
+| `gCore/cronjob/test/cronJobServiceLifecycleContract.test.js` | `test` | `documented` | 0/0 | Validates cronjob service delegation to the runtime container for create, update, run, start, stop, remove, pause, and resume operations. |  |
 | `gCore/cronjob/test/env/local/envTest.js` | `test` | `partially-documented` | 0/7 | Local-environment sample test scaffold for cronjob module behavior. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract
