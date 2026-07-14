@@ -186,7 +186,6 @@
         "node-cache": "^5.1.2",
         "node-fetch": "^2.6.7",
         "object-sizeof": "^1.6.3",
-        "recursive-copy": "^2.0.14",
         "redis": "^4.0.4",
         "require-from-string": "^2.0.2",
         "should": "^13.2.3",

@@ -68,10 +68,16 @@ module.exports = {
     validate: function (request) {
         let updates = this.normalizeModels(request.model);
         let queryCode = request.query && request.query.code;
+        let governance = CONFIG.get('identityGovernance') || {};
         return SERVICE.DefaultUserGroupService.get({
             tenant: request.tenant,
             authData: SERVICE.DefaultIdentityGovernanceService.getSystemAuthData(),
-            options: { recursive: false }, query: {}
+            options: { recursive: false },
+            query: {},
+            searchOptions: {
+                pageSize: governance.groupValidationPageSize || 10000,
+                pageNumber: 1
+            }
         }).then(result => {
             let existingGroups = result && result.result || [];
             let models = updates.map(update => {

@@ -13,7 +13,7 @@ const assert = require('assert');
 
 /**
  * @module profile/test/mandatoryIdentityBootstrapService
- * @description Verifies idempotent, audited creation of missing configured identity groups without overwriting existing tenant customizations.
+ * @description Verifies idempotent, audited creation of missing configured identity groups and non-secret reconciliation of configured service principals without overwriting tenant secrets.
  * @layer test
  * @owner profile
  * @override Projects may extend group targets and bootstrap services through layered configuration.
@@ -23,9 +23,21 @@ const groups = [
     { code: 'userGroup', active: true, parentGroups: [] },
     { code: 'adminGroup', active: true, parentGroups: ['customParent'] }
 ];
+const employees = [
+    { code: 'apiAdmin', loginId: 'apiAdmin', active: true, apiKey: 'existing-api-key', userGroups: ['employeeUserGroup'] }
+];
 const saved = [];
+const employeeUpdates = [];
 const audits = [];
 
+global.CLASSES = {
+    NodicsError: class NodicsError extends Error {
+        constructor(code, message) {
+            super(message || code);
+            this.code = code;
+        }
+    }
+};
 global.CONFIG = {
     /** Returns layered identity-governance test configuration. */
     get: function (key) {
@@ -40,7 +52,12 @@ global.CONFIG = {
                     userGroup: { parentGroups: [] },
                     adminGroup: { parentGroups: ['userGroup'] },
                     serviceAccountUserGroup: { parentGroups: ['userGroup'], permissions: ['auth.internal.token.read'] }
-                }
+                },
+                servicePrincipalCodes: ['apiAdmin'],
+                servicePrincipalScopes: {
+                    apiAdmin: ['auth.internal.token.read', 'auth.internal.token.read.anyTenant']
+                },
+                serviceGroup: 'serviceAccountUserGroup'
             }
         };
     }
@@ -63,12 +80,38 @@ global.SERVICE = {
             let skip = pageSize * Math.max(pageNumber - 1, 0);
             return Promise.resolve({ result: result.slice(skip, skip + pageSize) });
         },
-        /** Saves missing group fixtures as one hierarchy-aware batch. */
-        saveAll: function (request) {
-            const models = [].concat(request.models || []);
-            saved.push(...models);
-            groups.push(...models);
-            return Promise.resolve({ result: request.models });
+        /** Saves one missing group fixture through the code-scoped upsert contract. */
+        save: function (request) {
+            assert.deepStrictEqual(request.query, { code: request.model.code });
+            saved.push(request.model);
+            let existing = groups.find(group => group.code === request.model.code);
+            if (existing) {
+                Object.assign(existing, request.model);
+            } else {
+                groups.push(request.model);
+            }
+            return Promise.resolve({ result: request.model });
+        }
+    },
+    DefaultEmployeeService: {
+        /** Returns configured service-principal fixtures. */
+        get: function (request) {
+            let result = employees.slice();
+            let codes = request.query && request.query.code && request.query.code.$in;
+            if (Array.isArray(codes)) {
+                result = result.filter(employee => codes.includes(employee.code));
+            }
+            return Promise.resolve({ result: result });
+        },
+        /** Applies only non-secret service-principal metadata updates. */
+        update: function (request) {
+            employeeUpdates.push(request);
+            employees.forEach(employee => {
+                if (employee.code === request.query.code) {
+                    Object.assign(employee, request.model);
+                }
+            });
+            return Promise.resolve({ result: request.model });
         }
     },
     DefaultIdentityMigrationAuditService: {
@@ -86,17 +129,29 @@ const service = require('../src/service/identity/defaultMandatoryIdentityBootstr
     const first = await service.reconcile({ tenant: 'default', correlationId: 'bootstrap-test' });
     assert.deepStrictEqual(first, {
         status: 'RECONCILED',
-        createdGroups: ['parentServiceGroup', 'childServiceGroup', 'serviceAccountUserGroup']
+        createdGroups: ['parentServiceGroup', 'childServiceGroup', 'serviceAccountUserGroup'],
+        reconciledServicePrincipals: ['apiAdmin']
     });
     assert.strictEqual(saved.length, 3);
     assert(saved.findIndex(group => group.code === 'parentServiceGroup') < saved.findIndex(group => group.code === 'childServiceGroup'));
     assert.strictEqual(groups.find(group => group.code === 'adminGroup').parentGroups[0], 'customParent');
+    assert.strictEqual(employeeUpdates.length, 1);
+    assert.strictEqual(employeeUpdates[0].model.principalType, 'service');
+    assert.deepStrictEqual(employeeUpdates[0].model.userGroups, ['serviceAccountUserGroup']);
+    assert.deepStrictEqual(employeeUpdates[0].model.apiKeyScopes, ['auth.internal.token.read', 'auth.internal.token.read.anyTenant']);
+    assert.strictEqual(employeeUpdates[0].model.identityMigrationVersion, 2);
+    assert.strictEqual(employeeUpdates[0].model.apiKeyStatus, 'active');
+    assert.strictEqual(employeeUpdates[0].model.apiKey, undefined);
+    assert.strictEqual(employees[0].apiKey, 'existing-api-key');
     assert.strictEqual(audits.length, 1);
     assert.deepStrictEqual(audits[0].result.createdGroups, ['parentServiceGroup', 'childServiceGroup', 'serviceAccountUserGroup']);
+    assert.deepStrictEqual(audits[0].result.reconciledServicePrincipals, ['apiAdmin']);
 
+    employees[0].userGroups = [{ code: 'serviceAccountUserGroup' }];
     const second = await service.reconcile({ tenant: 'default' });
-    assert.deepStrictEqual(second, { status: 'NO_CHANGES', createdGroups: [] });
+    assert.deepStrictEqual(second, { status: 'NO_CHANGES', createdGroups: [], reconciledServicePrincipals: [] });
     assert.strictEqual(saved.length, 3);
+    assert.strictEqual(employeeUpdates.length, 1);
     assert.strictEqual(audits.length, 1);
 
     groups.unshift(
@@ -113,8 +168,9 @@ const service = require('../src/service/identity/defaultMandatoryIdentityBootstr
         { code: 'unrelatedGroup10' }
     );
     const third = await service.reconcile({ tenant: 'default' });
-    assert.deepStrictEqual(third, { status: 'NO_CHANGES', createdGroups: [] });
+    assert.deepStrictEqual(third, { status: 'NO_CHANGES', createdGroups: [], reconciledServicePrincipals: [] });
     assert.strictEqual(saved.length, 3);
+    assert.strictEqual(employeeUpdates.length, 1);
     assert.strictEqual(groups.filter(group => group.code === 'serviceAccountUserGroup').length, 1);
     assert.strictEqual(audits.length, 1);
 

@@ -94,6 +94,7 @@ module.exports = {
     identityGovernance: {
         administrativeGroups: ['adminGroup', 'runtimeConfigAdminUserGroup', 'serviceAccountUserGroup'],
         systemAccessGroups: ['serviceAccountUserGroup'],
+        groupValidationPageSize: 10000,
         customerRegistration: {
             group: 'customerUserGroup',
             active: true

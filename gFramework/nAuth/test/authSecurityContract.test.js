@@ -231,6 +231,7 @@ const profileProviderSource = read('gCore/profile/src/service/authentication/def
 const apiKeyInterceptorSource = read('gCore/profile/src/service/interceptors/defaultAPIKeyInterceptorService.js');
 const employeeServiceSource = read('gCore/profile/src/service/employee/defaultEmployeeService.js');
 const auditService = require('../src/service/audit/defaultAuthAuditService');
+const routerProperties = require('../../nRouter/config/properties');
 assert.ok(!coreProperties.includes("jwtSecretKey: 'nodics'"));
 assert.ok(!coreProperties.includes("apiKey: '944515ac"));
 assert.ok(!authProviderSource.includes("|| 'nodics'"));
@@ -245,6 +246,11 @@ assert.ok(profileProviderSource.includes('revokeSession'));
 assert.ok(apiKeyInterceptorSource.includes('Server-generated API-key rotation is disabled'));
 assert.ok(employeeServiceSource.includes('apiKeyExpiresAt'));
 assert.ok(employeeServiceSource.includes("status !== 'active'"));
+assert.deepStrictEqual(
+    routerProperties.routeActionAuthorization.groupPermissions.serviceAccountUserGroup,
+    ['auth.internal.token.read', 'auth.internal.token.read.anyTenant'],
+    'Service account group must satisfy secured internal-token route permission in modular startup'
+);
 global.CONFIG = configuration({ nodeId: 'node-test' });
 const sanitizedAudit = auditService.sanitize({
     eventType: 'password.authentication',

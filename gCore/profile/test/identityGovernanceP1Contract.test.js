@@ -178,23 +178,28 @@ async function validateStableAndTransitiveStamping() {
 async function validateEffectivePartialUpdates() {
     const principalGovernance = require('../src/service/identity/defaultPrincipalGovernanceService');
     const groupGovernance = require('../src/service/group/defaultUserGroupGovernanceService');
+    let groupLookupRequest;
     global.SERVICE = {
         DefaultIdentityGovernanceService: { getSystemAuthData: () => ({ isSystem: true }) },
         DefaultEmployeeService: {
             get: () => Promise.resolve({ result: [{ code: 'service-a', principalType: 'service', userGroups: ['serviceAccountUserGroup'] }] })
         },
         DefaultUserGroupService: {
-            get: () => Promise.resolve({ result: [
-                { code: 'parent', active: true, parentGroups: [] },
-                { code: 'child', active: true, parentGroups: ['parent'], permissions: [] },
-                { code: 'serviceAccountUserGroup', active: true, parentGroups: [] }
-            ] })
+            get: request => {
+                groupLookupRequest = request;
+                return Promise.resolve({ result: [
+                    { code: 'parent', active: true, parentGroups: [] },
+                    { code: 'child', active: true, parentGroups: ['parent'], permissions: [] },
+                    { code: 'serviceAccountUserGroup', active: true, parentGroups: [] }
+                ] });
+            }
         }
     };
     await assert.rejects(principalGovernance.validate({
         tenant: 'default', schemaModel: { schemaName: 'employee' }, query: { code: 'service-a' }, model: { $set: { principalType: 'human' } }
     }), /Only service principals/);
     await groupGovernance.validate({ tenant: 'default', query: { code: 'child' }, model: { $set: { permissions: [] } } });
+    assert.deepStrictEqual(groupLookupRequest.searchOptions, { pageSize: 10000, pageNumber: 1 }, 'Group graph validation must not rely on default CRUD pagination');
 }
 
 async function validateMigration() {

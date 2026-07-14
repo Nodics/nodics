@@ -46,6 +46,7 @@ global.CLASSES = {
 };
 
 const service = require('../src/service/request/defaultSecuredRequestPipelineService');
+service.LOG = { debug: function () {} };
 
 function executeCheckAccess(request) {
     let state = {
@@ -156,6 +157,46 @@ let configuredPermissionDenied = executeCheckAccess({
 });
 assert.strictEqual(configuredPermissionDenied.success, false, 'Configured route permission should deny missing grants');
 assert.strictEqual(configuredPermissionDenied.error.code, 'ERR_AUTH_00003');
+
+let capturedAuthorizedRequest;
+global.UTILS = {
+    getUserGroupCodes: function (groups) {
+        return groups.map(group => group.code);
+    },
+    getUserGroupPermissions: function (groups) {
+        return groups.reduce((permissions, group) => permissions.concat(group.permissions || []), []);
+    }
+};
+global.SERVICE = {
+    DefaultAuthorizationProviderService: {
+        authorizeAPIKey: function () {
+            return {
+                then: function (resolve) {
+                    resolve({
+                        enterprise: { code: 'defaultEnterprise', tenant: { code: 'default' } },
+                        person: {
+                            userGroups: [{ code: 'serviceAccountUserGroup', permissions: ['auth.internal.token.read'] }],
+                            apiKeyScopes: []
+                        }
+                    });
+                    return { catch: function () {} };
+                }
+            };
+        }
+    }
+};
+service.authorizeAPIKey({ apiKey: 'bootstrap-key' }, {}, {
+    nextSuccess: function (request) {
+        capturedAuthorizedRequest = request;
+    },
+    error: function (request, response, error) {
+        throw error;
+    }
+});
+assert.deepStrictEqual(capturedAuthorizedRequest.authData.permissions, ['auth.internal.token.read'],
+    'API-key authorization should preserve group-derived permissions when apiKeyScopes is an empty array');
+assert.deepStrictEqual(capturedAuthorizedRequest.authData.apiKeyScopes, [],
+    'API-key scopes should remain separately visible for diagnostics and policy checks');
 
 let accessGroupDenied = executeCheckAccess(createRequest({
     userGroups: ['runtimeApproverGroup'],

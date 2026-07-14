@@ -86,6 +86,8 @@ assert(adminEmployee.userGroups.includes('adminGroup'));
 assert(apiAdminEmployee.userGroups.includes('serviceAccountUserGroup'));
 assert(!apiAdminEmployee.userGroups.includes('runtimeConfigAdminUserGroup'));
 assert.strictEqual(apiAdminEmployee.principalType, 'service');
+assert.strictEqual(apiAdminEmployee.apiKeyStatus, 'active');
+assert.strictEqual(apiAdminEmployee.identityMigrationVersion, 1);
 
 let baseUserGroup = Object.values(userGroupsData).find(group => group.code === 'userGroup');
 let adminGroup = Object.values(userGroupsData).find(group => group.code === 'adminGroup');

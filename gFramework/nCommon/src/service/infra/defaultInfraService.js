@@ -9,19 +9,16 @@
 
  */
 
-const copy = require('recursive-copy');
-
 /**
  * @module common/service/infra/DefaultInfraService
- * @description Scaffolding service for generating Nodics applications, module groups,
- * backend modules, and UI module templates. It copies nCommon templates and replaces
- * placeholder names/indexes from CLI arguments.
+ * @description Infrastructure service boundary for Nodics application and module
+ * generation. The legacy nCommon template-copy generator is intentionally retired
+ * until custom project scaffolding is reintroduced through explicit tooling
+ * contracts and LLM/developer guidance.
  * @layer service
  * @owner nCommon
- * @override Project modules may override this service to customize application factory
- * templates, naming rules, or generated project structure.
- *
- * @property {Object} copy recursive-copy dependency used to copy template folders.
+ * @override Project modules may override this service to customize application
+ * factory generation, naming rules, or generated project structure.
  */
 module.exports = {
 
@@ -50,205 +47,85 @@ module.exports = {
     },
 
     /**
-     * Generates a full Nodics application skeleton.
+     * Rejects use of retired template-copy generation with replacement guidance.
      *
-     * @returns {Promise<boolean>} Resolves after application generation is started.
+     * @param {string} commandName Generator command that was requested.
+     * @returns {Promise<boolean>} Never resolves successfully because legacy templates are removed.
+     * @sideEffects Logs replacement guidance and terminates CLI execution with exit code 1.
+     */
+    rejectRetiredTemplateGenerator: function (commandName) {
+        return new Promise((resolve, reject) => {
+            const message = [
+                'Nodics legacy template generation is retired.',
+                'Command: ' + commandName + '.',
+                'The old nCommon/templates scaffold folder has been removed so custom project modules,',
+                'environment modules, server modules, and node modules can be generated later from',
+                'explicit Nodics contracts instead of copied placeholder folders.',
+                'Track the replacement through the LLM/developer module-generation backlog before',
+                're-enabling this command.'
+            ].join(' ');
+            this.LOG.error(message);
+            process.exit(1);
+        });
+    },
+
+    /**
+     * Rejects the retired full application generator.
+     *
+     * @returns {Promise<boolean>} Never resolves successfully because legacy templates are removed.
      */
     generateApp: function () {
-        return new Promise((resolve, reject) => {
-            let command = this.parseCommand();
-            this.initAppGen(command).then(success => {
-                resolve(success);
-            }).then(error => {
-                resolve(error);
-            });
-        });
+        return this.rejectRetiredTemplateGenerator('generate:app');
     },
 
     /**
-     * Generates standard application groups, environments, servers, and baseline modules.
+     * Rejects the retired application bootstrap generator.
      *
-     * @param {Object} command Parsed CLI command.
-     * @returns {Promise<boolean>} Resolves after generation commands complete.
+     * @param {Object} command Parsed legacy command details.
+     * @returns {Promise<boolean>} Never resolves successfully because legacy templates are removed.
      */
     initAppGen: function (command) {
-        return new Promise((resolve, reject) => {
-            let appDetail = {
-                name: command.name,
-                index: command.index + ".99",
-                path: command.path,
-                commonPath: command.commonPath
-            };
-            this.generateTarget(appDetail, 'group');
-            let modulesDetail = {
-                name: command.name + 'Modules',
-                index: command.index + ".1.99",
-                path: command.path + '/' + appDetail.name,
-                commonPath: command.commonPath
-            };
-            this.generateTarget(modulesDetail, 'group');
-
-            let modules = [{
-                name: command.name + 'Core',
-                index: command.index + ".1.1",
-                path: modulesDetail.path + '/' + modulesDetail.name,
-                commonPath: command.commonPath
-            }, {
-                name: command.name + 'Int',
-                index: command.index + ".1.10",
-                path: modulesDetail.path + '/' + modulesDetail.name,
-                commonPath: command.commonPath
-            }, {
-                name: command.name + 'Api',
-                index: command.index + ".1.15",
-                path: modulesDetail.path + '/' + modulesDetail.name,
-                commonPath: command.commonPath
-            }];
-            modules.forEach(detail => {
-                this.generateTarget(detail, 'module');
-            });
-
-            let envsDetail = {
-                name: command.name + 'Envs',
-                index: command.index + ".10.99",
-                path: command.path + '/' + appDetail.name,
-                commonPath: command.commonPath
-            };
-            this.generateTarget(envsDetail, 'group');
-
-            let envLocal = {
-                name: command.name + 'Local',
-                index: envsDetail.index + ".1",
-                path: envsDetail.path + '/' + envsDetail.name,
-                commonPath: command.commonPath
-            };
-            this.generateTarget(envLocal, 'group');
-
-            let serverLocal = {
-                name: command.name + 'LocalServer',
-                index: envLocal.index + ".1",
-                path: envLocal.path + '/' + envLocal.name,
-                commonPath: command.commonPath
-            };
-            this.generateTarget(serverLocal, 'module');
-
-            let envDev = {
-                name: command.name + 'Dev',
-                index: envsDetail.index + ".10",
-                path: envsDetail.path + '/' + envsDetail.name,
-                commonPath: command.commonPath
-            };
-            this.generateTarget(envDev, 'group');
-            let serverDev = {
-                name: command.name + 'DevServer',
-                index: envDev.index + ".1",
-                path: envDev.path + '/' + envDev.name,
-                commonPath: command.commonPath
-            };
-            this.generateTarget(serverDev, 'module');
-
-            let envQA = {
-                name: command.name + 'QA',
-                index: envsDetail.index + ".15",
-                path: envsDetail.path + '/' + envsDetail.name,
-                commonPath: command.commonPath
-            };
-            this.generateTarget(envQA, 'group');
-            let serverQA = {
-                name: command.name + 'QAServer',
-                index: envQA.index + ".1",
-                path: envQA.path + '/' + envQA.name,
-                commonPath: command.commonPath
-            };
-            this.generateTarget(serverQA, 'module');
-
-            let preProd = {
-                name: command.name + 'PreProd',
-                index: envsDetail.index + ".20",
-                path: envsDetail.path + '/' + envsDetail.name,
-                commonPath: command.commonPath
-            };
-            this.generateTarget(preProd, 'group');
-            let serverPreProd = {
-                name: command.name + 'PreProdServer',
-                index: preProd.index + ".1",
-                path: preProd.path + '/' + preProd.name,
-                commonPath: command.commonPath
-            };
-            this.generateTarget(serverPreProd, 'module');
-
-            let prod = {
-                name: command.name + 'Prod',
-                index: envsDetail.index + ".25",
-                path: envsDetail.path + '/' + envsDetail.name,
-                commonPath: command.commonPath
-            };
-            this.generateTarget(prod, 'group');
-            let serverProd = {
-                name: command.name + 'ProdServer',
-                index: prod.index + ".1",
-                path: prod.path + '/' + prod.name,
-                commonPath: command.commonPath
-            };
-            this.generateTarget(serverProd, 'module');
-            resolve(true);
-        });
+        return this.rejectRetiredTemplateGenerator('generate:app');
     },
 
     /**
-     * Generates a module group from CLI arguments.
+     * Rejects the retired module-group generator.
      *
-     * @returns {Promise<boolean>} Resolves after group generation starts.
+     * @returns {Promise<boolean>} Never resolves successfully because legacy templates are removed.
      */
     generateModuleGroup: function () {
-        return new Promise((resolve, reject) => {
-            let command = this.parseCommand();
-            this.generateTarget(command, 'group');
-            resolve(true);
-        });
+        return this.rejectRetiredTemplateGenerator('generate:group');
     },
 
     /**
-     * Generates a backend module from CLI arguments.
+     * Rejects the retired backend module generator.
      *
-     * @returns {Promise<boolean>} Resolves after module generation starts.
+     * @returns {Promise<boolean>} Never resolves successfully because legacy templates are removed.
      */
     generateModule: function () {
-        return new Promise((resolve, reject) => {
-            let command = this.parseCommand();
-            this.generateTarget(command, 'module');
-            resolve(true);
-        });
+        return this.rejectRetiredTemplateGenerator('generate:module');
     },
 
     /**
-     * Generates a React module from CLI arguments.
+     * Rejects the retired React module generator.
      *
-     * @returns {Promise<boolean>} Resolves after React module generation starts.
+     * @returns {Promise<boolean>} Never resolves successfully because legacy templates are removed.
      */
     generateReactModule: function () {
-        return new Promise((resolve, reject) => {
-            let command = this.parseCommand();
-            this.generateTarget(command, 'moduleReact');
-            resolve(true);
-        });
+        return this.rejectRetiredTemplateGenerator('generate:module:react');
     },
 
     /**
-     * Generates a Vue module from CLI arguments.
+     * Rejects the retired Vue module generator.
      *
-     * @returns {Promise<boolean>} Resolves after Vue module generation starts.
+     * @returns {Promise<boolean>} Never resolves successfully because legacy templates are removed.
      */
     generateVueModule: function () {
-        return new Promise((resolve, reject) => {
-            let command = this.parseCommand();
-            this.generateTarget(command, 'moduleVue');
-            resolve(true);
-        });
+        return this.rejectRetiredTemplateGenerator('generate:module:vue');
     },
 
     /**
-     * Prints module generation help to stdout.
+     * Prints retired generator help to stdout.
      *
      * @returns {void}
      */
@@ -256,18 +133,14 @@ module.exports = {
         console.log('');
         console.log('');
         console.log('------------------------------------------------------------------------------------------');
-        console.log('Folowing command can be used to generate APP, Group or module : ');
+        console.log('Legacy template generation is retired until contract-driven project scaffolding is implemented.');
         console.log('');
-        console.log('==> $ npm run commandName [N=moduleName/NAME=moduleName]');
+        console.log('==> Disabled commands: app, group, module, module:react, module:vue');
         console.log('{');
-        console.log(' - commandName: command name could be one of app, module or help');
-        console.log('      [app]     - if you want to generate application for your custom application');
-        console.log('      [group]   - if you want to generate group module for your custom application');
-        console.log('      [module]  - if you want to generate module for your custom application');
-        console.log('      [module:react]  - if you want to generate module for your custom application');
-        console.log('      [module:vue]  - if you want to generate module for your custom application');
-        console.log(' - N or NAME: name of the module or application, based on command provided');
-        console.log(' This app, group or module will be generated under custom folder in NODICS root directory');
+        console.log(' - Replacement: generate custom project structures from explicit Nodics contracts,');
+        console.log('   metadata, active-module registration, layered configuration, tests, and docs.');
+        console.log(' - Backlog: LLM/developer guidance will define custom project module, environment,');
+        console.log('   server, and node generation before these commands are re-enabled.');
         console.log('}');
         console.log('------------------------------------------------------------------------------------------');
         console.log('');
@@ -275,9 +148,9 @@ module.exports = {
     },
 
     /**
-     * Parses module generation CLI arguments.
+     * Parses retired module generation CLI arguments for compatibility with old callers.
      *
-     * @returns {Object} Parsed command with name, path, index, and template path.
+     * @returns {Object} Parsed command with name, path, index, and no template path.
      * @sideEffects Exits process when required arguments are missing.
      */
     parseCommand: function () {
@@ -309,7 +182,7 @@ module.exports = {
             this.moduleGenHelp();
             process.exit(1);
         }
-        this.LOG.debug('Generating folder: ' + name + ', at: ' + path);
+        this.LOG.debug('Retired generation command parsed for folder: ' + name + ', at: ' + path);
         let moduleObject = NODICS.getIndexedModules().get(path);
         if (!moduleObject) {
             this.LOG.warn('Could not found module by given index, So generating at root level');
@@ -319,68 +192,20 @@ module.exports = {
             name: name,
             path: moduleObject.path,
             index: index,
-            commonPath: NODICS.getRawModule('nCommon').path + '/templates'
+            commonPath: undefined
         };
     },
 
     /**
-     * Copies a scaffold template and replaces placeholders in copied files.
+     * Rejects direct template-copy generation because legacy template folders are removed.
      *
-     * @param {Object} command Parsed command.
-     * @param {string} templateName Template folder name.
+     * @param {Object} command Parsed legacy command.
+     * @param {string} templateName Template folder name requested by an old caller.
      * @returns {void}
-     * @sideEffects Creates files/directories and exits when target directory already exists.
+     * @sideEffects Logs an error and exits process with code 1.
      */
     generateTarget: function (command, templateName) {
-        let sourcePath = command.commonPath + '/' + templateName;
-        let destPath = command.path + '/' + command.name;
-        let appName = command.name;
-        if (fs.existsSync(destPath)) {
-            this.LOG.error('Module directory already exist');
-            process.exit(0);
-        }
-        var options = {
-            overwrite: true,
-            expand: true,
-            dot: true,
-            junk: true,
-            filter: (file) => {
-                return true;
-            },
-            rename: (filePath) => {
-                return filePath;
-            },
-            transform: (src, dest, stats) => { }
-        };
-
-        copy(sourcePath, destPath, options).on(copy.events.COPY_FILE_START, function (copyOperation) {
-        }).on(copy.events.COPY_FILE_COMPLETE, function (copyOperation) {
-            fs.readFile(copyOperation.dest, 'utf8', (error, content) => {
-                if (error) {
-                    console.log('Got error in file : ' + copyOperation.dest + ' --- ' + error);
-                    return;
-                }
-                content = content.replace(/customApplication/g, appName);
-                if (command.index) {
-                    content = content.replace('$index', command.index);
-                }
-                fs.writeFile(copyOperation.dest,
-                    content.replace('customApplication', appName),
-                    'utf8',
-                    function (err) {
-                        if (err) return console.log(err);
-                    });
-            });
-        }).on(copy.events.ERROR, function (error, copyOperation) {
-            console.error('Unable to copy ' + copyOperation.dest);
-        }).then(function (results) {
-            console.log('------------------------------------------------------------------------------------');
-            console.log('Module has been generated at : ' + destPath + ' - ' + results.length + ' file(s) copied');
-            console.log("Please visit package.json file and update index value, before executing");
-            console.log('------------------------------------------------------------------------------------');
-
-        }).catch(function (error) {
-            return console.error('Copy failed: ', error);
-        });
+        this.LOG.error('Legacy template folder `' + templateName + '` is retired; generation must use the future contract-driven scaffolding flow.');
+        process.exit(1);
     }
 };

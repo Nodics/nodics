@@ -89,14 +89,16 @@ module.exports = {
         if (request.apiKey) {
             this.LOG.debug('Authorizing API key credential');
             SERVICE.DefaultAuthorizationProviderService.authorizeAPIKey(request).then(success => {
+                let apiKeyScopes = success.person.apiKeyScopes || [];
+                let groupPermissions = success.person.userGroupPermissions || UTILS.getUserGroupPermissions(success.person.userGroups);
                 request.authData = {
                     enterprise: success.enterprise,
                     tenant: success.enterprise.tenant.code,
                     entCode: success.enterprise.code,
                     person: success.person,
                     userGroups: success.person.userGroupCodes || UTILS.getUserGroupCodes(success.person.userGroups),
-                    permissions: success.person.apiKeyScopes || success.person.userGroupPermissions || UTILS.getUserGroupPermissions(success.person.userGroups),
-                    apiKeyScopes: success.person.apiKeyScopes || []
+                    permissions: Array.from(new Set([].concat(apiKeyScopes).concat(groupPermissions || []).filter(Boolean))),
+                    apiKeyScopes: apiKeyScopes
                 };
                 request.tenant = success.enterprise.tenant.code;
                 process.nextSuccess(request, response);

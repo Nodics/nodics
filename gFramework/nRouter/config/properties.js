@@ -41,7 +41,9 @@ module.exports = {
         enabled: true,
         strict: true,
         superPermissions: ['*', 'runtime.config.*'],
-        groupPermissions: {}
+        groupPermissions: {
+            serviceAccountUserGroup: ['auth.internal.token.read', 'auth.internal.token.read.anyTenant']
+        }
     },
     server: {
         options: {
