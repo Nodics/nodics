@@ -32,9 +32,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 39 |
-| Test files | 7 |
+| Test files | 8 |
 | Data files | 32 |
-| All module-owned files | 86 |
+| All module-owned files | 87 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -65,7 +65,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 79 |
+| Documented | 80 |
 | Partially documented | 2 |
 | Undocumented | 1 |
 | Inventory only | 4 |
@@ -172,6 +172,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/workflow/flowCore/test/workflowActionPerformEngineContract.test.js` | `test` | `documented` | 0/0 | Validates deterministic workflow action engine behavior for state transitions, action responses, channel splitting, carrier persistence, and channel traversal. |  |
 | `gCore/workflow/flowCore/test/workflowEngineCorrectnessContract.test.js` | `test` | `documented` | 0/0 | Validates low-level workflow engine correctness for script channel qualification, carrier event updates, and internal workflow event naming. |  |
 | `gCore/workflow/flowCore/test/workflowEventContinuationContract.test.js` | `test` | `documented` | 0/0 | Validates workflow event continuation by bridging initiation events to carrier initialization and listener callback aggregation. |  |
+| `gCore/workflow/flowCore/test/workflowSampleFlowCatalogContract.test.js` | `test` | `documented` | 0/0 | Verifies the module-owned auto, manual, mixed, and multi workflow sample catalogs form valid action/channel graphs for documentation, demos, and full workflow coverage. |  |
 | `gCore/workflow/flowCore/test/workflowServicePipelineContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/workflow/flowCore/test/workflowSplitAndRetryContract.test.js` | `test` | `documented` | 0/0 | Validates workflow split channel request preparation and carrier retry/error guard behavior. |  |
 

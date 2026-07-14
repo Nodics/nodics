@@ -9,6 +9,7 @@
 - `gCore/workflow/flowCore/test/workflowActionPerformEngineContract.test.js`
 - `gCore/workflow/flowCore/test/workflowEngineCorrectnessContract.test.js`
 - `gCore/workflow/flowCore/test/workflowEventContinuationContract.test.js`
+- `gCore/workflow/flowCore/test/workflowSampleFlowCatalogContract.test.js`
 - `gCore/workflow/flowCore/test/workflowServicePipelineContract.test.js`
 - `gCore/workflow/flowCore/test/workflowSplitAndRetryContract.test.js`
 
