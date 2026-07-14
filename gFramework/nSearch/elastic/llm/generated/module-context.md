@@ -29,9 +29,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 8 |
-| Test files | 2 |
+| Test files | 4 |
 | Data files | 0 |
-| All module-owned files | 18 |
+| All module-owned files | 20 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 12 |
+| Documented | 14 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -99,6 +99,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSearch/elastic/src/service/schema/defaultElasticSearchSchemaHandlerService.js` | `src` | `documented` | 7/7 | Implements nSearch default elastic search schema handler service business behavior and extension logic. |  |
 | `gFramework/nSearch/elastic/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nSearch utility exports for utils. |  |
 | `gFramework/nSearch/elastic/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nSearch test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nSearch/elastic/test/elasticConnectionHandlerContract.test.js` | `test` | `documented` | 0/0 | Verifies the Elastic connection handler registers provider model definitions and reads cluster index metadata through the configured engine connection. |  |
+| `gFramework/nSearch/elastic/test/elasticSearchModelOperationContract.test.js` | `test` | `documented` | 0/0 | Verifies the Elastic search model implementation maps Nodics search operations to the expected engine client APIs and normalized query payloads. |  |
 | `gFramework/nSearch/elastic/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nSearch test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract

@@ -5,6 +5,8 @@
 ## Hand-Authored Tests
 
 - `gFramework/nSearch/elastic/test/common/commonTest.js`
+- `gFramework/nSearch/elastic/test/elasticConnectionHandlerContract.test.js`
+- `gFramework/nSearch/elastic/test/elasticSearchModelOperationContract.test.js`
 - `gFramework/nSearch/elastic/test/env-local/envTest.js`
 
 ## Generated Tests
