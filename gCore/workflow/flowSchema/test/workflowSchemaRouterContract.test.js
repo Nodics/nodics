@@ -64,6 +64,23 @@ generatedCrudSchemas.forEach((schemaName) => {
     assert.strictEqual(schemas[schemaName].router && schemas[schemaName].router.enabled, true, `${schemaName} should generate CRUD/API routes`);
 });
 
+[
+    'initCarrier',
+    'releaseCarrier',
+    'updateCarrier',
+    'performAction',
+    'retryCarrier',
+    'recoverCarrier',
+    'resetErrorCarrier',
+    'pauseCarrier',
+    'blockCarrier',
+    'resumeCarrier'
+].forEach((operation) => {
+    generatedCrudSchemas.forEach((schemaName) => {
+        assert.notStrictEqual(schemas[schemaName].router.operation, operation, `${schemaName} generated CRUD route must not own workflow orchestration operation ${operation}`);
+    });
+});
+
 assert.strictEqual(schemas.workflow.model, false, 'workflow base schema should not generate a model');
 assert.strictEqual(schemas.workflow.router.enabled, false, 'workflow base schema should not generate CRUD/API routes');
 assert.strictEqual(schemas.workflowCarrier.refSchema.items.schemaName, 'workflowItem', 'workflowCarrier should own workflowItem references');

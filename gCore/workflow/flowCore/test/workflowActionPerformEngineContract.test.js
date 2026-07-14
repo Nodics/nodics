@@ -247,6 +247,20 @@ async function runAsyncStep(stepName, request, response) {
     workflowActionEngine.validateOperation(request, response, process);
     assert(process.errorValue, 'paused carrier should not be processed');
 
+    request = createRequest({
+        workflowCarrier: Object.assign(createRequest().workflowCarrier, {
+            currentState: {
+                state: 'BLOCKED',
+                action: 'approve',
+                description: 'blocked',
+                time: new Date()
+            }
+        })
+    });
+    process = createProcess();
+    workflowActionEngine.validateOperation(request, response, process);
+    assert(process.errorValue, 'blocked carrier should not be processed');
+
     request = createRequest();
     response = createResponse();
     process = createProcess();

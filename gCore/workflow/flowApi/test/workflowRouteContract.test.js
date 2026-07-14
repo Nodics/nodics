@@ -9,7 +9,8 @@
 
  */
 
-const { assertRouteContracts } = require('../../../../gFramework/nRouter/test/routerContractTestUtils');
+const assert = require('assert');
+const { assertRouteContracts, flattenRoutes } = require('../../../../gFramework/nRouter/test/routerContractTestUtils');
 const routerConfig = require('../src/router/router');
 
 const workflowController = 'DefaultWorkflowController';
@@ -21,4 +22,15 @@ const expectedRoutes = [
 ];
 
 assertRouteContracts(routerConfig, expectedRoutes);
+const routes = flattenRoutes(routerConfig);
+[
+    '/carrier/block/:carrierCode',
+    '/carrier/pause/:carrierCode',
+    '/carrier/resume/:carrierCode',
+    '/carrier/retry/:carrierCode',
+    '/carrier/recover/:carrierCode',
+    '/carrier/reset-error/:carrierCode'
+].forEach((reservedRoute) => {
+    assert(!routes.some((route) => route.key === reservedRoute), `${reservedRoute} must remain outside the public core workflow API until governed lifecycle contracts exist`);
+});
 console.log(`Workflow route contract validated: ${expectedRoutes.length} routes`);

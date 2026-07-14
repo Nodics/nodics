@@ -14,12 +14,12 @@
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to bpm"
   },
   "sourceFiles": 45,
-  "testFiles": 3,
+  "testFiles": 4,
   "dataFiles": 0,
-  "ownedFiles": 56,
-  "sourceFingerprint": "777878da22e93c05de7c0f6081fd3fd469dfd74d81a89269941b3e9e322a7b08",
+  "ownedFiles": 57,
+  "sourceFingerprint": "93377f92a8612cd133065617e825a8667ead401669811ed34fe17daaf33b84fc",
   "documentation": {
-    "documented": 49,
+    "documented": 50,
     "partially-documented": 2,
     "undocumented": 1,
     "inventory-only": 4

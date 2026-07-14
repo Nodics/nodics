@@ -7,6 +7,7 @@
 - `gFramework/nbpm/test/common/commonTest.js`
 - `gFramework/nbpm/test/env-local/envTest.js`
 - `gFramework/nbpm/test/removeWorkflowProcessBehavior.test.js`
+- `gFramework/nbpm/test/workflowLifecyclePipelineContract.test.js`
 
 ## Generated Tests
 

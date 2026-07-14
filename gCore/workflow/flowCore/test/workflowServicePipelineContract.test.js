@@ -58,6 +58,10 @@ async function assertPipelineDispatch(operation, expectedPipeline, expectedWrapp
     await assertPipelineDispatch('performAction', 'performWorkflowActionPipeline', true);
     await assertPipelineDispatch('nextAction', 'nextWorkflowActionPipeline', false);
 
+    ['retryCarrier', 'recoverCarrier', 'resetErrorCarrier', 'pauseCarrier', 'blockCarrier', 'resumeCarrier'].forEach((operation) => {
+        assert.strictEqual(workflowService[operation], undefined, `${operation} must not be exposed by DefaultWorkflowService until governed lifecycle contracts exist`);
+    });
+
     console.log('Workflow service pipeline contract validated: 5 operations');
 })().catch((error) => {
     console.error(error);
