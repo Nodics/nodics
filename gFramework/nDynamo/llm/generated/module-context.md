@@ -33,9 +33,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 34 |
-| Test files | 38 |
+| Test files | 40 |
 | Data files | 0 |
-| All module-owned files | 62 |
+| All module-owned files | 64 |
 | Local schema definitions | 7 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 40 |
+| Documented | 42 |
 | Partially documented | 3 |
 | Undocumented | 15 |
 | Inventory only | 4 |
@@ -137,6 +137,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/test/classConfigurationServiceContract.test.js` | `test` | `documented` | 8/8 | Validates persisted and runtime class configuration behavior for dynamic Nodics service classes. |  |
 | `gFramework/nDynamo/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nDynamo test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nDynamo/test/dynamoRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/dynamoRuntimeAdminSurfaceContract.test.js` | `test` | `documented` | 0/0 | Verifies nDynamo exposes only the intended runtime administration API surfaces and keeps activation request/log governance records internal to services. |  |
 | `gFramework/nDynamo/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nDynamo test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nDynamo/test/routerConfigurationGovernance.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/test/runtimeConfigurationActivationAudit.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
@@ -150,6 +151,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/test/runtimeConfigurationRollbackService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/test/runtimePropertyConfigurationGovernance.test.js` | `test` | `partially-documented` | 0/0 | Proves tenant properties use the shared preview, approval, integrity, audit, activation, and rollback lifecycle. | add @override |
 | `gFramework/nDynamo/test/runtimeRouterConfigurationService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/runtimeSchemaPipelineContract.test.js` | `test` | `documented` | 0/0 | Verifies runtime schema activation is pipeline-driven, tenant-aware, policy-checked, and audited for both successful and failed activation attempts. |  |
 | `gFramework/nDynamo/test/schemaAccessPolicyContractService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/test/schemaAccessPolicyResolverService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 

@@ -8,6 +8,7 @@
 - `gFramework/nDynamo/test/classConfigurationServiceContract.test.js`
 - `gFramework/nDynamo/test/common/commonTest.js`
 - `gFramework/nDynamo/test/dynamoRouteContract.test.js`
+- `gFramework/nDynamo/test/dynamoRuntimeAdminSurfaceContract.test.js`
 - `gFramework/nDynamo/test/env-local/envTest.js`
 - `gFramework/nDynamo/test/routerConfigurationGovernance.test.js`
 - `gFramework/nDynamo/test/runtimeConfigurationActivationAudit.test.js`
@@ -21,6 +22,7 @@
 - `gFramework/nDynamo/test/runtimeConfigurationRollbackService.test.js`
 - `gFramework/nDynamo/test/runtimePropertyConfigurationGovernance.test.js`
 - `gFramework/nDynamo/test/runtimeRouterConfigurationService.test.js`
+- `gFramework/nDynamo/test/runtimeSchemaPipelineContract.test.js`
 - `gFramework/nDynamo/test/schemaAccessPolicyContractService.test.js`
 - `gFramework/nDynamo/test/schemaAccessPolicyResolverService.test.js`
 

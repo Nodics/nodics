@@ -14,12 +14,12 @@
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to dynamo"
   },
   "sourceFiles": 34,
-  "testFiles": 38,
+  "testFiles": 40,
   "dataFiles": 0,
-  "ownedFiles": 62,
-  "sourceFingerprint": "b638ecc9a5bfb29fb8dbb2e7b8a3f719608ff34c8eb1728946afd8cc64707de9",
+  "ownedFiles": 64,
+  "sourceFingerprint": "febc2f120f250e2b13d8c2a3f7696da4b2a670698637cf2fbcd539b2f55bf480",
   "documentation": {
-    "documented": 40,
+    "documented": 42,
     "partially-documented": 3,
     "undocumented": 15,
     "inventory-only": 4
