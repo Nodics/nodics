@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "startioQA",
+  "path": "startio/envs/startioQA",
+  "kind": "group",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "3001.30",
+    "version": "0.0.1",
+    "description": "Startio module for startioQA"
+  },
+  "sourceFiles": 0,
+  "testFiles": 0,
+  "dataFiles": 0,
+  "ownedFiles": 8,
+  "sourceFingerprint": "b026ee7722e63aeb8a32fd52b6b0451f06c1e34e175391621bb96b203ed00481",
+  "documentation": {
+    "documented": 4,
+    "partially-documented": 0,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

@@ -30,5 +30,14 @@ module.exports = {
             'private[-_]?key',
             'credential'
         ]
+    },
+    tooling: {
+        commands: {
+            'governance:report': {
+                description: 'Generate effective runtime configuration governance and override reports.',
+                handler: '@nTooling/node-script',
+                script: 'src/service/tooling/defaultGovernanceReportGeneratorService.js'
+            }
+        }
     }
 };

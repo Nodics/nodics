@@ -21,7 +21,7 @@ const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const copyrightHeaders = require('../src/quality/checkCopyrightHeaders');
+const copyrightHeaders = require('../src/service/quality/defaultCopyrightHeaderQualityService');
 
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'nodics-copyright-'));
 const plainFile = path.join(tempRoot, 'plain.js');

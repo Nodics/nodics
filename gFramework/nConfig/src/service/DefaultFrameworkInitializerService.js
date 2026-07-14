@@ -446,7 +446,7 @@ module.exports = {
      */
     validateSelectedRuntimeKinds: function () {
         this.validateModuleKind(NODICS.getEnvironmentName(), 'group', 'selected environment group');
-        this.validateModuleKind(NODICS.getServerRootName(), 'environment', 'selected environment');
+        this.validateModuleKind(NODICS.getServerRootName(), ['group', 'environment'], 'selected environment');
         this.validateModuleKind(NODICS.getServerName(), 'server', 'selected server');
         if (NODICS.getNodeName()) {
             this.validateModuleKind(NODICS.getNodeName(), 'node', 'selected node');
@@ -523,7 +523,7 @@ module.exports = {
             seenServers[serverName] = true;
             this.validateModuleKind(serverName, 'server', 'test.runtimeTopology.modularServers');
             let serverModule = NODICS.getRawModule(serverName);
-            this.validateModuleKind(serverModule.parent, 'environment', 'test.runtimeTopology.modularServers parent');
+            this.validateModuleKind(serverModule.parent, ['group', 'environment'], 'test.runtimeTopology.modularServers parent');
             let propertiesFile = serverModule.path + '/config/properties.js';
             if (!fs.existsSync(propertiesFile)) {
                 this.failConfiguration('test.runtimeTopology server must provide config/properties.js: ' + serverName);

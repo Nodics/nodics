@@ -26,7 +26,8 @@ Before writing code, identify which artifact should own the behavior:
 
 - `package.json.nodics` for module kind, runtime flags, ownership, and loader
   eligibility;
-- `config/properties.js` for configurable values and policy defaults;
+- `config/properties.js` for configurable values, policy defaults, tooling
+  command declarations, discovery rules, and governance gate data;
 - status definitions for stable reason/status/error catalogs;
 - schemas for data shape, persistence/generation metadata, access metadata,
   cache/search metadata, and generated CRUD behavior;
@@ -40,6 +41,12 @@ Before writing code, identify which artifact should own the behavior:
 - generated artifacts only through their source definitions and build process;
 - tests for default, negative, tenant/security, and later-layer override proof;
 - README/docs/LLM guidance for human and AI understanding.
+
+Do not create a parallel configuration artifact when a namespaced
+`config/properties.js` subtree can own the data. Files such as
+`config/tooling.js`, standalone governance JSON, command registries, or
+quality-gate config files require a documented loader/generator/source-artifact
+reason; convenience is not enough.
 
 ## Third Decision: Extension Path
 

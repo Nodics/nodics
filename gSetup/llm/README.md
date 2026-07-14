@@ -114,6 +114,9 @@ without modifying out-of-the-box Nodics code.
   module context, and change-impact guidance, but it must not store or mutate
   architecture, configuration, runtime state, generated artifacts, data, or
   external systems.
+- Staged MCP commands for validation, runtime explanation, and guarded
+  mutation planning: `npm run mcp:validate`, `npm run mcp:runtime-context`, and
+  `npm run mcp:mutation-plan`.
 - AI prompts, enterprise review expectations, and decision memory for future sessions.
 - Workflow-specific prompts for review, refactor, testing, schema changes, and
   runtime governance.
@@ -129,7 +132,7 @@ without modifying out-of-the-box Nodics code.
 - In application-developer mode, treat released Nodics code as immutable and
   already qualified. Apply these contracts to project-owned code and overrides,
   not to a new repository-wide framework audit, unless explicitly requested.
-- Do not hardcode project names such as `kickoff` in framework behavior.
+- Do not hardcode sample, customer, or project-specific names in framework behavior.
 - Do not place generated files under `gSetup/llm`.
 - Keep source-derived module LLM files under each module's `llm/generated` folder.
 - Do not make AI guidance specific to one AI vendor.
@@ -148,6 +151,16 @@ without modifying out-of-the-box Nodics code.
 - Use `npm run mcp:governance -- --path=<path> --change=<path>` when a future
   MCP/client needs read-only Nodics context. Treat the output as navigation and
   guidance over existing source-of-truth contracts, not as a new authority.
+- Use MCP validation/runtime/mutation-plan commands only as wrappers over
+  Nodics-owned commands, source files, metadata, and approval contracts. MCP
+  must not invent validation categories, runtime hierarchy, module ownership,
+  or mutation permission.
+- For customer projects, customize MCP behavior through later module
+  `config/properties.js` contributions under `tooling.commands` that keep built-in nTooling handler aliases
+  and through same-name service files under `src/service/mcp`. A customer module can override `createPlan` by contributing
+  `src/service/mcp/defaultMcpMutationGuardService.js` with only that function.
+  Do not edit Nodics framework MCP files when a customer module can own the
+  behavior.
 
 ## Context Quality Contract
 

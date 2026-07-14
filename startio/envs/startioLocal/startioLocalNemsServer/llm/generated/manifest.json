@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "startioLocalNemsServer",
+  "path": "startio/envs/startioLocal/startioLocalNemsServer",
+  "kind": "server",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "3001.13",
+    "version": "0.0.1",
+    "description": "Startio module for startioLocalNemsServer"
+  },
+  "sourceFiles": 6,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "a25ad9b8e6c4c4560dc2ce276085aabac9593e7504ab3536c10f342645a453ca",
+  "documentation": {
+    "documented": 10,
+    "partially-documented": 2,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

@@ -39,7 +39,7 @@ global.UTILS = {
 
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'nodics-generated-schema-test-'));
 const profileModulePath = path.join(tempRoot, 'profile');
-const projectModulePath = path.join(tempRoot, 'kickoffLocal');
+const projectModulePath = path.join(tempRoot, 'projectLocal');
 fs.mkdirSync(profileModulePath, { recursive: true });
 fs.mkdirSync(projectModulePath, { recursive: true });
 
@@ -54,12 +54,12 @@ global.NODICS = {
                 }
             };
         }
-        if (moduleName === 'kickoffLocal') {
+        if (moduleName === 'projectLocal') {
             return {
                 path: projectModulePath,
                 metaData: {
-                    name: 'kickoffLocal',
-                    prefix: 'kickoffLocal'
+                    name: 'projectLocal',
+                    prefix: 'projectLocal'
                 }
             };
         }

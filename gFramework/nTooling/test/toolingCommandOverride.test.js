@@ -21,10 +21,20 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
+const toolingProperties = require('../config/properties');
 const toolingCommandService = require('../src/service/defaultToolingCommandService');
 
 assert(toolingCommandService.compareModuleIndex('1.9', '1.10') < 0,
     'Dotted module indexes must be compared numerically');
+
+assert(toolingProperties.tooling.discovery.ignoredDirectories.includes('node_modules'),
+    'Tooling discovery exclusions must be owned by config/properties.js');
+assert.strictEqual(toolingCommandService.shouldVisitDirectory({
+    name: 'node_modules'
+}), false, 'Tooling command discovery must apply configured ignored directories');
+assert.strictEqual(toolingCommandService.shouldVisitDirectory({
+    name: 'customerModule'
+}), true, 'Tooling command discovery must keep normal module directories traversable');
 
 const registry = {};
 toolingCommandService.mergeCommand(registry, 'sample', {
@@ -64,6 +74,7 @@ assert.strictEqual(registry.sample.xNodics.overrideTrace.length, 2);
 const projectHome = fs.mkdtempSync(path.join(os.tmpdir(), 'nodics-tooling-'));
 const projectModule = path.join(projectHome, 'projectTooling');
 fs.mkdirSync(path.join(projectModule, 'config'), { recursive: true });
+fs.mkdirSync(path.join(projectModule, 'src', 'service', 'mcp'), { recursive: true });
 fs.writeFileSync(path.join(projectModule, 'package.json'), JSON.stringify({
     name: 'projectTooling',
     index: '1000.0',
@@ -71,19 +82,30 @@ fs.writeFileSync(path.join(projectModule, 'package.json'), JSON.stringify({
         kind: 'tooling',
         runtimeModule: false,
         loadableByNodicsModuleLoader: false,
-        tooling: {
-            commands: 'config/tooling.js'
+        entrypoints: {
+            properties: 'config/properties.js'
         }
     }
 }), 'utf8');
 fs.writeFileSync(path.join(projectModule, 'nodics.js'), 'module.exports = {};\n', 'utf8');
-fs.writeFileSync(path.join(projectModule, 'config', 'tooling.js'), [
-    'module.exports = { commands: {',
+fs.writeFileSync(path.join(projectModule, 'config', 'properties.js'), [
+    'module.exports = { tooling: { commands: {',
     '  "quality:docs": {',
     '    handler: "src/projectQuality.js",',
     '    $override: { mode: "replace" }',
+    '  },',
+    '  "mcp:validate": {',
+    '    customerValidationProfile: "strict-local"',
     '  }',
-    '} };',
+    '} } };',
+    ''
+].join('\n'), 'utf8');
+fs.writeFileSync(path.join(projectModule, 'src', 'service', 'mcp', 'defaultMcpMutationGuardService.js'), [
+    'module.exports = {',
+    '  createPlan: function () {',
+    '    return { contract: "customer mutation plan", executableByDefault: false };',
+    '  }',
+    '};',
     ''
 ].join('\n'), 'utf8');
 
@@ -98,6 +120,17 @@ try {
     assert.strictEqual(projectRegistry['quality:docs'].sourceModule, 'projectTooling');
     assert.strictEqual(projectRegistry['quality:docs'].handler, 'src/projectQuality.js');
     assert.strictEqual(projectRegistry['quality:docs'].xNodics.overrideTrace.length, 2);
+    const mergedMutationService = toolingCommandService.loadMergedService(projectHome, 'defaultMcpMutationGuardService');
+    assert.strictEqual(mergedMutationService.createPlan().contract, 'customer mutation plan',
+        'Project modules must override only createPlan through standard src/service merge');
+    assert.strictEqual(typeof mergedMutationService.getActionCatalog, 'function',
+        'Project service merge must preserve default MCP mutation service methods');
+    assert.strictEqual(projectRegistry['mcp:validate'].sourceModule, 'projectTooling');
+    assert.strictEqual(projectRegistry['mcp:validate'].handler, '@nTooling/mcp-validate',
+        'Project modules must be able to merge MCP command metadata without replacing the handler');
+    assert.strictEqual(projectRegistry['mcp:validate'].service, 'defaultMcpValidationService',
+        'Inherited MCP services must remain standard service names after project metadata merges');
+    assert.strictEqual(projectRegistry['mcp:validate'].customerValidationProfile, 'strict-local');
 } finally {
     fs.rmSync(projectHome, { recursive: true, force: true });
 }

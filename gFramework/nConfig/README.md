@@ -139,8 +139,8 @@ relationships, runtime flags, configured active modules, and module indexes.
 
 Projects customize configuration by contributing later modules with their own
 `config/properties.js`, metadata, scripts, tests, and documentation. Framework
-code must not hardcode `kickoff`, customer projects, environment names, server
-names, node names, tenant names, or deployment assumptions.
+code must not hardcode sample projects, customer projects, environment names,
+server names, node names, tenant names, or deployment assumptions.
 
 When adding configuration behavior, document:
 

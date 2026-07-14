@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "startioPreProdServer",
+  "path": "startio/envs/startioPreProd/startioPreProdServer",
+  "kind": "server",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "3001.41",
+    "version": "0.0.1",
+    "description": "Startio module for startioPreProdServer"
+  },
+  "sourceFiles": 6,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "8f4bcb2cffae067795a6b3c40ff6e95acb710212bcd1c734d04513ef1c787dfa",
+  "documentation": {
+    "documented": 10,
+    "partially-documented": 2,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

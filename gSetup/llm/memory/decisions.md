@@ -144,7 +144,7 @@ configuration.
 `activeModules.groups` and `activeModules.modules` decide which modules run in
 the current process. `server.*` entries describe local or remote endpoint
 coordinates and must not be treated as local activation. Framework code must not
-hardcode sample project names such as `kickoff`.
+hardcode sample, customer, or project-specific module names.
 
 ## Tenant Model And Runtime Isolation
 

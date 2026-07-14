@@ -254,7 +254,7 @@ This keeps documentation governance compatible with Nodics layering. Core Nodics
 Documentation enforcement is controlled by:
 
 ```bash
-gFramework/nTooling/config/documentation-governance.json
+gFramework/nTooling/config/properties.js#tooling.documentationGovernance
 ```
 
 Run governed checks with:

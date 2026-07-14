@@ -74,8 +74,11 @@ module.exports = function () {
     };
 
     this.initEnvironment = function (options) {
-        _serverName = options.defaultServer || null;
-        _nodeName = null;
+        _serverName = process.env.S || process.env.SERVER || options.defaultServer || null;
+        _nodeName = process.env.NODICS_NODE || process.env.N || null;
+        if (!_nodeName && process.env.NODE && process.env.NODE.indexOf('/') === -1 && process.env.NODE.indexOf('\\') === -1) {
+            _nodeName = process.env.NODE;
+        }
         process.argv.forEach(element => {
             if (element.startsWith('S=')) {
                 _serverName = element.replace('S=', '');

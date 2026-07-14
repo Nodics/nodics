@@ -23,7 +23,7 @@ const path = require('path');
 const {
     rootPath,
     scanModules
-} = require('../src/context/moduleLlmContextUtils');
+} = require('../src/service/context/defaultModuleLlmContextUtilsService');
 
 const validKinds = new Set([
     'application',
@@ -31,6 +31,7 @@ const validKinds = new Set([
     'environment',
     'group',
     'node',
+    'project',
     'publish',
     'server',
     'setup',
@@ -103,6 +104,14 @@ modules.forEach(module => {
 
     if (['environment', 'server', 'node'].includes(nodics.kind)) {
         assert(nodics.owns.includes('configuration') || nodics.owns.includes('llm'), 'environment/server/node packages must document configuration/topology ownership: ' + module.relativePath);
+    }
+
+    if (nodics.kind === 'project') {
+        assert(meta.groupName, 'project packages must define package.json groupName: ' + module.relativePath);
+        assert(fs.existsSync(path.join(module.path, 'modules')),
+            'project packages must contain standard modules/ directory: ' + module.relativePath);
+        assert(fs.existsSync(path.join(module.path, 'envs')),
+            'project packages must contain standard envs/ directory: ' + module.relativePath);
     }
 
     if (modernizedDescriptions[module.relativePath]) {

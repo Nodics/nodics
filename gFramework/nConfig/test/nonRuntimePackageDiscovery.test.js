@@ -26,8 +26,10 @@ const utils = require('../src/utils/utils');
 let root = fs.mkdtempSync(path.join(os.tmpdir(), 'nodics-non-runtime-'));
 let runtimeModule = path.join(root, 'runtimeModule');
 let setupPackage = path.join(root, 'gSetup');
+let docsPackage = path.join(root, 'docs', 'copiedReferenceModule');
 fs.mkdirSync(runtimeModule, { recursive: true });
 fs.mkdirSync(setupPackage, { recursive: true });
+fs.mkdirSync(docsPackage, { recursive: true });
 
 fs.writeFileSync(path.join(runtimeModule, 'package.json'), JSON.stringify({
     name: 'runtimeModule',
@@ -62,11 +64,27 @@ fs.writeFileSync(path.join(setupPackage, 'package.json'), JSON.stringify({
     main: 'nodics.js'
 }, null, 4));
 
+fs.writeFileSync(path.join(docsPackage, 'package.json'), JSON.stringify({
+    name: 'copiedReferenceModule',
+    index: '2.0',
+    nodics: {
+        kind: 'capability',
+        runtime: {
+            router: false,
+            publish: false,
+            web: false
+        },
+        owns: []
+    },
+    main: 'nodics.js'
+}, null, 4));
+
 let modulesList = {};
 utils.collectModulesList(root, modulesList);
 
 assert(modulesList.runtimeModule, 'runtime module should be discovered');
 assert.strictEqual(modulesList.gSetup, undefined, 'non-runtime setup package should not be discovered as a Nodics module');
+assert.strictEqual(modulesList.copiedReferenceModule, undefined, 'packages under docs must not be discovered as Nodics runtime modules');
 assert.strictEqual(utils.isRuntimeModule({ name: 'missingMetadata' }), false);
 assert.strictEqual(utils.isRuntimeModule({ name: 'normal', nodics: { kind: 'capability' } }), true);
 assert.strictEqual(utils.isRuntimeModule({ name: 'disabled', runtimeModule: false }), false);

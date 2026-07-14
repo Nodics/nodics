@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "startioLocalWorkflowServer",
+  "path": "startio/envs/startioLocal/startioLocalWorkflowServer",
+  "kind": "server",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "3001.17",
+    "version": "0.0.1",
+    "description": "Startio module for startioLocalWorkflowServer"
+  },
+  "sourceFiles": 7,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "ownedFiles": 17,
+  "sourceFingerprint": "137d67c1664b5de5c691c7f0572f1d2c9a7012df244e42101a557f587352445b",
+  "documentation": {
+    "documented": 11,
+    "partially-documented": 2,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

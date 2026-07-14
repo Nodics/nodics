@@ -13,10 +13,15 @@ const _ = require('lodash');
 
 /**
  * @module gFramework/nSearch/search/src/controller/common
- * @description Exposes request handlers for nSearch common operations.
- * @layer controller
+ * @description Template controller used by generated nSearch schema
+ * controllers. During generation, placeholders are replaced with the owning
+ * search controller, facade, schema, and request mapping identifiers.
+ * @layer template
  * @owner nSearch
- * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ * @sourceTemplate /src/controller/common.js
+ * @override This file is consumed by build generators and is not loaded into
+ * CONTROLLER directly. Project modules override generated `*Controller.js`
+ * artifacts or contribute same-name controller files through `src/controller/**`.
  */
 module.exports = {
     /**

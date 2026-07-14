@@ -18,8 +18,7 @@ layered module hierarchy without modifying out-of-the-box Nodics code.
 
 - Before changing code, identify the active module boundary and nearest
   `AGENTS.md`.
-- Do not hardcode project-specific behavior such as `kickoff` into reusable
-  framework behavior.
+- Do not hardcode project-specific behavior into reusable framework behavior.
 - Behavior must come from active modules, layered configuration, tenant context,
   schema definitions, routers, services, pipelines, data, and runtime governance.
 - Security, access, routing, cache, audit, validation, and governance values

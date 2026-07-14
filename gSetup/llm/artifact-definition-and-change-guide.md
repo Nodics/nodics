@@ -57,9 +57,16 @@ Property requirements:
 - prefer stable data over executable business logic
 - keep secrets in governed external or runtime sources
 - avoid customer/project assumptions in framework defaults
+- keep command declarations, discovery exclusions, governance gates, quality thresholds, and similar policy defaults in namespaced `config/properties.js` subtrees instead of creating parallel config files
 - place benchmark, diagnostic, timeout, size, threshold, and workload assumptions in layered properties when companies or projects may need different values
 - use a resolver or replaceable service when a value depends on substantial runtime logic
 - define and test array, `null`, deletion, and type-change semantics before relying on them
+
+Do not introduce a new config file just because a tool or quality service runs
+outside the application runtime. If direct `require()` of `properties.js` is
+unsafe because other properties depend on runtime globals, the tool should read
+only the required property subtree safely or delegate through a replaceable
+service. The source of truth remains `config/properties.js`.
 
 Ordinary properties are merged during startup/runtime loading. Clean/build is
 required only when effective property values participate in generated output.
@@ -132,6 +139,44 @@ Service requirements:
 
 Handwritten services are runtime-loaded source and must not be removed by clean.
 Schema-generated services are derived artifacts and must be recreated by build.
+
+## Loader-Managed Runtime Artifacts
+
+Nodics runtime loaders discover behavior by both directory and suffix:
+
+| Layer | Loader directory | Required suffix | Runtime registry |
+| --- | --- | --- | --- |
+| Service | `src/service/**` | `Service.js` | `SERVICE` |
+| Controller | `src/controller/**` | `Controller.js` | `CONTROLLER` |
+| Facade | `src/facade/**` | `Facade.js` | `FACADE` |
+| Pipeline definition | `src/pipelines/**` | `Definition.js` | `PIPELINE` |
+
+Files intended for these runtime registries must be inside the loader directory,
+must use the loader suffix, and must export mergeable object members. Use this
+shape unless there is a documented non-runtime reason:
+
+```js
+module.exports = {
+    targetFunction: function (options) {
+        return options;
+    }
+};
+```
+
+Do not place runtime behavior in folders such as `src/mcp`, `src/helpers`, or
+`src/lib` when the expected extension path is a service, controller, facade, or
+pipeline definition. Helper and library files may live outside loader-managed
+directories, but they are not runtime override points. Generator templates such
+as `common.js` must declare `@layer template` and `@sourceTemplate` so developers
+and AI tools do not mistake them for loader-managed runtime artifacts.
+
+Tooling modules should not create separate top-level source folders such as
+`src/command`, `src/context`, `src/debug`, or `src/quality`. Tooling adapters,
+context generators, debug launchers, and quality checks still belong under
+`src/service`, for example `src/service/command`, `src/service/context`,
+`src/service/debug`, and `src/service/quality`. They are documented as
+`@layer tooling`, use `*Service.js` filenames, and expose behavior through
+mergeable `module.exports` object members.
 
 ## Cache-Aware Changes
 

@@ -14,10 +14,12 @@
  * @description Template service used by generated schema services to delegate
  * common CRUD operations into the Nodics database pipelines. During generation,
  * placeholders are replaced with the owning module and model identifiers.
- * @layer service
+ * @layer template
  * @owner nService
- * @override Project modules normally override generated services rather than
- * this template. Changes here affect future generated CRUD service behavior.
+ * @sourceTemplate /src/service/common.js
+ * @override This file is consumed by build generators and is not loaded into
+ * SERVICE directly. Project modules override generated `*Service.js` artifacts
+ * or contribute same-name service files through `src/service/**`.
  *
  * @property {string} mdulnm Placeholder for generated module name.
  * @property {string} mdlnm Placeholder for generated model name.

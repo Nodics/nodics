@@ -82,7 +82,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nFacade/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nFacade/src/facade/apikey/defaultAPIKeyFacade.js` | `src` | `documented` | 3/3 | Coordinates facade-level delegation for nFacade default apikey facade operations. |  |
 | `gFramework/nFacade/src/facade/cache/defaultCacheFacade.js` | `src` | `documented` | 5/5 | Coordinates facade-level delegation for nFacade default cache facade operations. |  |
-| `gFramework/nFacade/src/facade/common.js` | `src` | `documented` | 11/11 | Coordinates facade-level delegation for nFacade common operations. |  |
+| `gFramework/nFacade/src/facade/common.js` | `src` | `documented` | 11/11 | Template facade used by generated schema facades. During generation, placeholders are replaced with the owning facade, service, and schema identifiers. |  |
 | `gFramework/nFacade/src/facade/interceptor/defaultInterceptorFacade.js` | `src` | `documented` | 1/1 | Coordinates facade-level delegation for nFacade default interceptor facade operations. |  |
 | `gFramework/nFacade/src/facade/log/defaultLogFacade.js` | `src` | `documented` | 3/3 | Coordinates facade-level delegation for nFacade default log facade operations. |  |
 | `gFramework/nFacade/src/facade/validator/defaultValidatorFacade.js` | `src` | `documented` | 1/1 | Coordinates facade-level delegation for nFacade default validator facade operations. |  |

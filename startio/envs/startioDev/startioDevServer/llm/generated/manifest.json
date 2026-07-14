@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "startioDevServer",
+  "path": "startio/envs/startioDev/startioDevServer",
+  "kind": "server",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "3001.21",
+    "version": "0.0.1",
+    "description": "Startio module for startioDevServer"
+  },
+  "sourceFiles": 6,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "ec46b7ab568f79adebdde4880439a777a954a5f4797442420918a0abf78a54db",
+  "documentation": {
+    "documented": 10,
+    "partially-documented": 2,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

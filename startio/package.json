@@ -1,0 +1,41 @@
+{
+    "name": "startio",
+    "index": "3000.99",
+    "description": "Nodics compliant sample project for end-to-end framework validation.",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "project",
+        "environment",
+        "server",
+        "node",
+        "startio"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {},
+    "nodics": {
+        "kind": "project",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "composition",
+            "configuration",
+            "test",
+            "llm"
+        ],
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        },
+        "description": "Compliant project module used to validate Nodics project, environment, server, and node generation contracts."
+    },
+    "groupName": "nodicsSamples"
+}

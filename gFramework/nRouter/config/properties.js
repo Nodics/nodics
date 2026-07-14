@@ -45,6 +45,15 @@ module.exports = {
             serviceAccountUserGroup: ['auth.internal.token.read', 'auth.internal.token.read.anyTenant']
         }
     },
+    tooling: {
+        commands: {
+            'docs:openapi': {
+                description: 'Generate OpenAPI from effective router and schema contracts.',
+                handler: '@nTooling/node-script',
+                script: 'src/service/tooling/defaultOpenapiContractGeneratorService.js'
+            }
+        }
+    },
     server: {
         options: {
             contextRoot: 'nodics'

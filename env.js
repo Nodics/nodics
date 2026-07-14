@@ -18,10 +18,6 @@
  */
 module.exports = {
     defaultOptions: {
-        defaultServer: 'kickoffLocalServer',
-        //defaultServer: 'gframesLocalServer',
-        // appRoots: {
-        //     gframes: '/Users/himkar/apps/HimProjects/nodicsapps/gframes'
-        // }
+        defaultServer: 'startioLocalServer'
     }
 };

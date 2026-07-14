@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "startioLocalProfileServer",
+  "path": "startio/envs/startioLocal/startioLocalProfileServer",
+  "kind": "server",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "3001.12",
+    "version": "0.0.1",
+    "description": "Startio module for startioLocalProfileServer"
+  },
+  "sourceFiles": 6,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "25c6b70d23181fb7363200162688432db05daf594caacb6e3a5ce231b26fbf11",
+  "documentation": {
+    "documented": 10,
+    "partially-documented": 2,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

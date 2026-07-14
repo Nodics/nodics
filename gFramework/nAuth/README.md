@@ -54,8 +54,8 @@ Security-stamp validation is enabled by `authSecurity.securityStamp`. It is
 fail-closed by default and compares every human, customer, and internal service
 token with the current tenant-scoped principal stamp. Internal tokens must be
 issued through `DefaultServiceTokenService`, which registers the service stamp
-before publishing the bounded JWT. The kickoff-local layer permits missing
-stamps only as an explicit development/backward-compatibility exception.
+before publishing the bounded JWT. Local development layers may permit missing
+stamps only as explicit development/backward-compatibility exceptions.
 Strict deployments must configure the `profile.auth` cache channel with a
 distributed engine whose metadata declares atomic consume support, must keep
 the global cache subsystem, auth channel, and selected engine enabled, and must

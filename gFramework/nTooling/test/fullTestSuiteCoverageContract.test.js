@@ -113,8 +113,8 @@ requireScriptIncludes('test:ems', [
     'gCore/cronjob/test/cronJobEventHandlerContract.test.js',
     'gFramework/nEms/emsClient/test/messageTenantResolution.test.js',
     'gFramework/nEms/emsClient/test/emsMessageProcessContract.test.js',
-    'kickoff/test/topology/kickoffLocalRuntimeTopology.test.js',
-    'kickoff/test/topology/runtimeContractProbe.js'
+    'startio/envs/startioLocal/test/topology/startioLocalRuntimeTopology.test.js',
+    'startio/envs/startioLocal/test/topology/runtimeContractProbe.js'
 ].forEach(requireFile);
 
 console.log('Full test suite coverage contract validated');

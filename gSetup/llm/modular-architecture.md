@@ -9,10 +9,10 @@ The hierarchy commonly includes:
 - `gFramework`: platform foundation modules.
 - `gCore`: core business capabilities such as profile, cronjob, workflow, and NEMS.
 - `gComm`, `gContent`, `gDeap`, `gMrkty`: domain capability groups.
-- application modules such as `kickoff`: example/test application modules.
+- application modules such as `startio`: example/test application modules.
 - environment/server/node modules under the application: runtime topology and deployment-specific configuration.
 
-`kickoff` is only a sample/test application. Framework code must not depend on it.
+`startio` is the repository-owned sample/test application. Framework code must not depend on project-specific names.
 
 ## Environment, Server, And Node
 
@@ -34,23 +34,23 @@ Use the layers for different decisions:
   as node identity, node coordinates, scheduler/consumer ownership, diagnostics,
   and capacity choices.
 
-When no server name is provided, the current default may use `kickoffLocalServer`, but framework logic should not hardcode this outside default startup configuration.
+When no server name is provided, the current default may use `startioLocalServer`, but framework logic should not hardcode this outside default startup configuration.
 
 The runtime hierarchy is metadata-driven:
 
-- the environment container such as `kickoffEnvs` is a `nodics.kind: "group"` package.
-- each concrete environment such as `kickoffLocal` is a `nodics.kind: "environment"` package.
+- the environment container such as `envs` is a `nodics.kind: "group"` package.
+- each concrete environment such as `startioLocal` is a `nodics.kind: "group"` package because it contains server modules.
 - each runnable server under an environment is a `nodics.kind: "server"` package.
 - each runnable node under a server is a `nodics.kind: "node"` package.
 
-The selected runtime sequence is environment group -> environment/server-root
+The selected runtime sequence is environment container -> concrete environment group
 -> server -> optional node. Nodics validates parent relationships for the whole
 chain and validates concrete environment/server/node index ordering. Environment
 group containers may use grouping indexes, so their role is validated by kind
 and parent relationship rather than by concrete runtime load order. Names may be
 human-friendly, but they do not define the role.
 
-Every selected environment group, environment, server, and node must provide `config/properties.js`. The startup initializer validates these files, validates parent/child relationships, and validates index order before loading runtime services.
+Every selected environment container, concrete environment group, server, and node must provide `config/properties.js`. The startup initializer validates these files, validates parent/child relationships, and validates index order before loading runtime services.
 
 Do not introduce alternate metadata names for the same concept. Nodics module classification belongs in `package.json.nodics.kind`; runtime flags belong in `package.json.nodics.runtime`; ownership belongs in `package.json.nodics.owns`.
 

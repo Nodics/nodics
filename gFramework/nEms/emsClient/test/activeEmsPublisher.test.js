@@ -23,7 +23,7 @@ const config = require('../../../nConfig');
  */
 
 const ROOT = path.resolve(__dirname, '../../../..');
-const DEFAULT_SERVER = process.env.NODICS_EMS_TEST_SERVER || process.env.SERVER || 'kickoffLocalServer';
+const DEFAULT_SERVER = process.env.NODICS_EMS_TEST_SERVER || process.env.SERVER || 'startioLocalServer';
 
 function getEnabledPublisher() {
     let clients = CONFIG.get('emsClient').clients || {};

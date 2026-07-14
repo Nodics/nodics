@@ -1,0 +1,37 @@
+{
+    "name": "startioQA",
+    "index": "3001.30",
+    "description": "Startio module for startioQA",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "server",
+        "environment",
+        "startioQA"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {},
+    "nodics": {
+        "kind": "group",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "composition",
+            "configuration",
+            "llm"
+        ],
+        "description": "Environment group module that contains server modules for one deployment environment.",
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        }
+    }
+}

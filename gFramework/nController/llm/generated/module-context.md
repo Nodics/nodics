@@ -83,7 +83,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nController/nodics.js` | `module` | `documented` | 3/3 | Registers the nController module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nController/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nController/src/controller/cache/defaultCacheController.js` | `src` | `documented` | 5/5 | Exposes request handlers for nController default cache controller operations. |  |
-| `gFramework/nController/src/controller/common.js` | `src` | `documented` | 9/9 | Exposes request handlers for nController common operations. |  |
+| `gFramework/nController/src/controller/common.js` | `src` | `documented` | 9/9 | Template controller used by generated schema controllers. During generation, placeholders are replaced with the owning controller, facade, schema, and request mapping identifiers. |  |
 | `gFramework/nController/src/controller/interceptor/defaultInterceptorController.js` | `src` | `documented` | 1/1 | Exposes request handlers for nController default interceptor controller operations. |  |
 | `gFramework/nController/src/controller/log/defaultLogController.js` | `src` | `documented` | 3/3 | Exposes request handlers for nController default log controller operations. |  |
 | `gFramework/nController/src/controller/ping/defaultPingMeController.js` | `src` | `documented` | 3/3 | Exposes request handlers for nController default ping me controller operations. |  |

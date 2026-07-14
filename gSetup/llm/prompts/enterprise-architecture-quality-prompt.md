@@ -89,7 +89,7 @@ Testing must reflect Nodics as both a consolidated modular platform and a distri
 - external dependency tests only when the dependency-owning module is active
 
 Avoid:
-- hardcoding `kickoff`, `kickoffLocalServer`, or any project-specific module except documented defaults
+- hardcoding project-specific modules or servers except documented defaults
 - bypassing framework loaders
 - duplicating parallel loaders when a generic loader can be reused safely
 - leaving unused compatibility code without governance or migration path

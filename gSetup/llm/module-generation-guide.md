@@ -1,8 +1,15 @@
 # Module Generation Guide
 
-This guide tells AI tools and developers how to create project, environment,
-server, and node modules without copying retired framework templates or editing
-out-of-the-box Nodics code.
+This guide tells AI tools and developers how to create new Nodics modules
+without copying retired framework templates or editing out-of-the-box Nodics
+code.
+
+The standard folder/file structure for a generated capability module or pure
+group module is defined in `standards/module-standard.md` under "Standard
+Structure For Generated Modules And Group Modules". Project, environment,
+server, and node module generation uses the same source-of-truth principles but
+requires additional topology and activation rules that should be discussed and
+defined separately before implementation.
 
 Module generation is a contract-driven activity. The source of truth is the
 module metadata, active-module hierarchy, layered configuration, source
@@ -16,8 +23,8 @@ definitions.
 - Do not create hidden scaffolding conventions that bypass Nodics metadata,
   loaders, configuration hierarchy, schema/router governance, or generated
   artifact lifecycle.
-- Do not infer module kind from names, suffixes, folder depth, or examples such
-  as `kickoff`. Runtime kind comes from `package.json.nodics.kind`.
+- Do not infer module kind from names, suffixes, folder depth, or sample
+  project examples. Runtime kind comes from `package.json.nodics.kind`.
 - Do not edit released framework modules for customer behavior in
   application-developer mode. Put custom behavior in project-owned modules and
   layered overrides.
@@ -30,10 +37,9 @@ Before creating files, classify the module by purpose:
 
 | Kind | Purpose | Typical ownership |
 | --- | --- | --- |
-| `group` | Container that owns and orders child modules. | Framework capability group, project group, environment group. |
+| `group` | Container that owns and orders child modules. Concrete environments are also group modules because they contain server modules. | Framework capability group, project group, environment group. |
 | `capability` | Reusable business or platform capability. | Framework module or project module. |
 | `project` | Customer/application composition root when the project owns behavior. | Customer or application repository. |
-| `environment` | Deployment-wide configuration for local, dev, QA, UAT, prod, or similar context. | Project environment layer. |
 | `server` | One runnable process composition inside an environment. | Project runtime topology layer. |
 | `node` | Instance-specific process override below a server. | Deployment/node layer. |
 
@@ -43,8 +49,8 @@ parallel naming rule.
 
 ## Required Files
 
-Every generated module-shaped package must include the standard discoverable
-surface:
+Every generated capability module or pure group module must include the
+standard discoverable surface:
 
 ```text
 module/
@@ -67,10 +73,84 @@ module/
     generated/
 ```
 
-Add `src/`, `data/`, and `test/` only when the module owns runtime behavior,
-source definitions, import/export data, or tests. Empty extension files are
+For capability modules, generate `src/` when the module owns source
+definitions or implementation. Generate standard blank definition files such as
+`src/event/listeners.js`, `src/pipelines/pipelinesDefinition.js`,
+`src/schemas/schemas.js`, `src/search/indexes.js`, and
+`src/interceptors/interceptors.js` as `module.exports = {}` when the extension
+point is intentionally present but no definitions exist yet.
+
+For pure group modules, `src/` and `test/` are not mandatory unless the group
+owns executable behavior, source definitions, or tests. Add `data/` only when
+the module owns import/export or initializer data. Empty extension files are
 allowed only when they are intentional layered extension points and document why
 they are empty.
+
+Concrete modules may own importable data using `data/init`, `data/core`, and
+`data/sample`. `data/init` is startup/bootstrap data loaded only when
+initialization is required, while `data/core` and `data/sample` are imported
+intentionally through nData import APIs. Do not generate empty `data/`
+directories for project roots or pure group modules.
+
+## Custom Project Structure
+
+Applications built on top of Nodics must use this project-level structure. A
+project is also a module boundary, but it owns customer/application composition,
+project modules, and deployment environments rather than a single reusable
+framework capability.
+
+```text
+project/                        Project module boundary and ownership root.
+  package.json                  Canonical project metadata, dependency metadata, runtime flags, ownership declaration, and `groupName` for grouping company projects.
+  nodics.js                     Project lifecycle entrypoint used by Nodics startup and module loading.
+  AGENTS.md                     AI/developer behavior contract for working inside this project.
+  README.md                     Human-readable project guide covering purpose, owned modules, configuration, and extension paths.
+  config/                       Layered project configuration and startup extension directory.
+    properties.js               Standard owner for configurable values, policy defaults, tooling commands, discovery rules, and governance data.
+    prescripts.js               Pre-startup extension declarations executed before the project's normal startup behavior.
+    postscripts.js              Post-startup extension declarations executed after the project's normal startup behavior.
+  docs/                         Permanent project documentation that is part of the application, not temporary project notes.
+  llm/                          AI-facing guidance, contracts, examples, and generated context for this project.
+    README.md                   Project-specific AI guidance entrypoint.
+    contracts/                  Maintained AI/developer contracts that define project-specific rules.
+    examples/                   Maintained examples showing correct customization and extension patterns.
+    generated/                  Generated project context derived from source and regenerated by tooling.
+  modules/                      Project-owned group modules or individual capability modules required by this project.
+  envs/                         Environment modules such as local, dev, UAT, pre-prod, and prod.
+```
+
+When `package.json` belongs to a project, it must include a project grouping
+property named `groupName`. `groupName` groups company projects and must not be
+inferred from folder names.
+
+Project module generation stops at `modules/` and `envs/` until the project
+topology is agreed. Environment, server, and node structure must be discussed
+and generated from topology-specific rules before writing those module files.
+Project root tests should be limited to project composition contracts. Runtime
+topology tests, server startup tests, node tests, and environment-owned init data
+catalog tests belong under the environment, server, or node module that owns the
+behavior or records.
+
+## Blank Object File Template
+
+Generated blank definition files must include the standard Nodics copyright
+header and export an empty object:
+
+```js
+/*
+    Nodics - Enterprice Micro-Services Management Framework
+
+    Copyright (c) 2017 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the
+    terms of the license agreement you entered into with Nodics.
+
+ */
+module.exports = {
+
+};
+```
 
 ## Metadata Contract
 
@@ -81,8 +161,9 @@ compatibility convention requires otherwise.
 
 `package.json.nodics` must declare:
 
-- `kind`: the module role such as `group`, `capability`, `project`,
-  `environment`, `server`, or `node`.
+- `kind`: the module role such as `group`, `capability`, `project`, `server`,
+  or `node`. Concrete environment modules use `group` because they contain
+  server modules.
 - `runtime`: whether this package participates in runtime startup.
 - `owns`: the schemas, routers, services, configuration, data, tests, topology,
   or generated artifacts owned by the module.
@@ -99,8 +180,8 @@ Project modules become effective only through the active module hierarchy:
 
 - group modules declare their contained modules through metadata and standard
   module discovery.
-- environment modules define deployment-wide defaults and may activate groups
-  or modules.
+- environment modules are `group` modules that define deployment-wide defaults
+  and contain server modules.
 - server modules define the current process composition with
   `activeModules.groups` and `activeModules.modules`.
 - node modules override only instance-specific behavior below a selected server.
@@ -112,13 +193,13 @@ be treated as activation.
 
 ## Hierarchy Proposal And Approval
 
-Before generating or changing a customer project that contains multiple customer modules, environment modules, server modules, or node modules, propose the loading hierarchy first and get explicit developer approval before writing module files.
+Before generating or changing a customer project that contains multiple customer modules, environment group modules, server modules, or node modules, propose the loading hierarchy first and get explicit developer approval before writing module files.
 
 The proposal must name:
 
 - the project or customer module group that owns the composition.
 - each capability module and why it is active.
-- each environment module and the deployment-wide overrides it owns.
+- each environment group module and the deployment-wide overrides it owns.
 - each server module and the process composition it runs.
 - each node module and the instance-specific overrides it contributes.
 - parent/child relationships, index/order values, and activation references.
@@ -141,13 +222,24 @@ or overrides an existing one:
 - Schemas: contribute schema definitions with governed schema override metadata.
 - Routers: contribute route definitions with governed router override metadata.
 - Services: contribute the smallest necessary method override under
-  `src/service/**`.
-- Pipelines, interceptors, validators, controllers, facades, data, and tests:
-  use the existing Nodics loaders and ownership conventions.
+  `src/service/**/*Service.js`.
+- Controllers: contribute controller methods under
+  `src/controller/**/*Controller.js`.
+- Facades: contribute facade methods under `src/facade/**/*Facade.js`.
+- Pipeline definitions: contribute definitions under
+  `src/pipelines/**/*Definition.js`.
+- Interceptors, validators, data, and tests: use the existing Nodics loaders and
+  ownership conventions.
 
 Do not copy a whole framework service, router, schema, or module just to change
 one decision. Use the smallest later-layer contribution that preserves the
 framework default and proves the customization path.
+
+Runtime services, controllers, facades, and pipeline-support modules must export
+mergeable object members using `module.exports = { methodName: function (...) {}
+}`. Do not create behavior in a custom folder or standalone export when the
+intent is a Nodics runtime override; that file will be outside the loader radar
+and customer projects will not be able to override it cleanly.
 
 ## Generated Artifacts
 

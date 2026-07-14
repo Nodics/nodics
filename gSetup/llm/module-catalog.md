@@ -61,11 +61,11 @@ This file gives AI agents and developers a first-pass map of important Nodics mo
 
 | Module | Responsibility |
 | --- | --- |
-| `kickoff` | Sample/test application project. It demonstrates application, environment, server, node, config, data, and tests. Do not hardcode it in framework logic. |
-| `kickoffModules` | Sample application module group. |
-| `kickoffEnvs` | Environment grouping folder, not a normal startup module. |
-| `kickoffLocal` | Local environment/server-root module. |
-| `kickoffLocalServer` | Default local consolidated server module. |
+| `startio` | Sample/test application project. It demonstrates application, environment, server, node, config, data, and tests. Do not hardcode it in framework logic. |
+| `modules` | Sample application module group under `startio`. |
+| `envs` | Environment grouping folder under `startio`, not a normal startup module. |
+| `startioLocal` | Local environment/server-root group module. |
+| `startioLocalServer` | Default local consolidated server module. |
 
 ## Module Documentation Rule
 

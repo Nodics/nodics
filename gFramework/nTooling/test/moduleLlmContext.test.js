@@ -24,7 +24,7 @@ const {
     collectModuleOwnedFiles,
     createFilesFingerprint,
     scanModules
-} = require('../src/context/moduleLlmContextUtils');
+} = require('../src/service/context/defaultModuleLlmContextUtilsService');
 
 const modules = scanModules();
 const globalContextPath = path.join(__dirname, '..', '..', '..', 'gSetup', 'llm', 'README.md');

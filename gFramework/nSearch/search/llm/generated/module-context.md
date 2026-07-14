@@ -98,10 +98,10 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSearch/search/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nSearch/search/nodics.js` | `module` | `documented` | 2/2 | Registers the nSearch module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nSearch/search/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nSearch/search/src/controller/common.js` | `src` | `documented` | 15/15 | Exposes request handlers for nSearch common operations. |  |
+| `gFramework/nSearch/search/src/controller/common.js` | `src` | `documented` | 15/15 | Template controller used by generated nSearch schema controllers. During generation, placeholders are replaced with the owning search controller, facade, schema, and request mapping identifiers. |  |
 | `gFramework/nSearch/search/src/controller/defaultSearchController.js` | `src` | `documented` | 2/2 | Exposes request handlers for nSearch default search controller operations. |  |
 | `gFramework/nSearch/search/src/event/listeners.js` | `src` | `documented` | 0/0 | Documents nSearch listeners module behavior. |  |
-| `gFramework/nSearch/search/src/facade/common.js` | `src` | `documented` | 15/15 | Coordinates facade-level delegation for nSearch common operations. |  |
+| `gFramework/nSearch/search/src/facade/common.js` | `src` | `documented` | 15/15 | Template facade used by generated nSearch schema facades. During generation, placeholders are replaced with the owning search facade, service, and schema identifiers. |  |
 | `gFramework/nSearch/search/src/facade/defaultSearchFacade.js` | `src` | `documented` | 2/2 | Coordinates facade-level delegation for nSearch default search facade operations. |  |
 | `gFramework/nSearch/search/src/lib/searchEngine.js` | `src` | `documented` | 0/0 | Provides reusable nSearch library primitives for search engine. |  |
 | `gFramework/nSearch/search/src/lib/searchError.js` | `src` | `documented` | 0/0 | Provides reusable nSearch library primitives for search error. |  |
@@ -111,7 +111,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSearch/search/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nSearch schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nSearch/search/src/search/indexes.js` | `src` | `documented` | 0/0 | Documents nSearch indexes module behavior. |  |
 | `gFramework/nSearch/search/src/service/cache/defaultCacheService.js` | `src` | `documented` | 1/1 | Implements nSearch default cache service business behavior and extension logic. |  |
-| `gFramework/nSearch/search/src/service/common.js` | `src` | `documented` | 16/16 | Implements nSearch common business behavior and extension logic. |  |
+| `gFramework/nSearch/search/src/service/common.js` | `src` | `documented` | 16/16 | Template service used by generated nSearch schema services. During generation, placeholders are replaced with the owning search service, schema, and index identifiers. |  |
 | `gFramework/nSearch/search/src/service/config/defaultSearchConfigurationService.js` | `src` | `documented` | 23/23 | Implements nSearch default search configuration service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/connection/defaultSearchEngineConnectionHandlerService.js` | `src` | `documented` | 6/6 | Implements nSearch default search engine connection handler service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/handlers/defaultSearchPropertiesValueHandlerService.js` | `src` | `documented` | 5/5 | Implements nSearch default search properties value handler service business behavior and extension logic. |  |

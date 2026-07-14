@@ -20,7 +20,7 @@ const assert = require('assert');
 const {
     collectTenantGuardFailures,
     getProtectedTenants
-} = require('../src/tooling/liveTestTenantGuard');
+} = require('../src/service/tooling/defaultLiveTestTenantGuardService');
 
 // @nodics-capability-behavior @nodics-area testing
 assert.deepStrictEqual(getProtectedTenants({}), ['default']);

@@ -203,7 +203,7 @@ module.exports = {
     subFolders: function (folder) {
         return fs.readdirSync(folder)
             .filter(subFolder => fs.statSync(path.join(folder, subFolder)).isDirectory())
-            .filter(subFolder => subFolder !== 'node_modules' && subFolder !== 'templates' && subFolder[0] !== '.')
+            .filter(subFolder => subFolder !== 'node_modules' && subFolder !== 'templates' && subFolder !== 'docs' && subFolder[0] !== '.')
             .map(subFolder => path.join(folder, subFolder));
     },
 

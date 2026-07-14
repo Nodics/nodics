@@ -22,7 +22,7 @@ const initService = require(path.join(repoRoot, 'gFramework/nConfig/src/service/
 
 function getDefaultServerName() {
     let env = require(path.join(repoRoot, 'env.js'));
-    return env.defaultOptions.defaultServer || 'kickoffLocalServer';
+    return env.defaultOptions.defaultServer || 'startioLocalServer';
 }
 
 function getDefaultServerActiveModules() {

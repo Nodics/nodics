@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "startioDevCronServer",
+  "path": "startio/envs/startioDev/startioDevCronServer",
+  "kind": "server",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "3001.24",
+    "version": "0.0.1",
+    "description": "Startio module for startioDevCronServer"
+  },
+  "sourceFiles": 6,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "e0a75df674418d74b550bfab875b6ff9c72893f33054d95d087ad984add087d8",
+  "documentation": {
+    "documented": 10,
+    "partially-documented": 2,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

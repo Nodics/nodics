@@ -52,7 +52,7 @@ Profile often needs to be available before modules that require tenant/enterpris
 
 Some tests are module-generic. Some are environment/server/node-specific.
 
-The test framework should load tests according to the active module hierarchy, environment, server, and node. Do not assume every project uses `kickoff`.
+The test framework should load tests according to the active module hierarchy, environment, server, and node. Do not assume every project uses the same sample application layout.
 
 Project modules may override or replace framework tests when their behavior intentionally differs.
 

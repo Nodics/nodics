@@ -13,8 +13,7 @@
         "loadableByNodicsModuleLoader": false,
         "entrypoints": {
             "cli": "bin/nodics-tool.js",
-            "commands": "config/tooling.js",
-            "documentationGovernance": "config/documentation-governance.json"
+            "properties": "config/properties.js"
         },
         "owns": [
             "tooling",

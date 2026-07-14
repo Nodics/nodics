@@ -81,6 +81,35 @@ Check these extension points before proposing framework edits:
 If none of these extension points can safely express the behavior, document the
 gap and treat the work as framework-maintainer mode.
 
+## Configuration Ownership Contract
+
+Module configuration belongs in `config/properties.js`. Developers and AI tools
+must not create parallel configuration files such as `config/tooling.js`,
+standalone governance JSON files, command registries, quality-gate files, or
+implementation-specific policy files when the value can be represented as a
+property subtree.
+
+Use clear property namespaces for specialized concerns, for example
+`tooling.commands`, `tooling.discovery`, and
+`tooling.documentationGovernance`. A separate file is allowed only when it is a
+true source artifact with its own loader contract, schema, generator, or
+external override purpose, and the owning module must document why
+`config/properties.js` is not the correct home.
+
+Non-runtime tooling must follow the same ownership rule. Tooling commands,
+quality gates, discovery exclusions, provider selection defaults, benchmark
+thresholds, diagnostics, and governance policy defaults are configuration
+unless they are executable service behavior. Executable behavior belongs in
+loader-visible services under `src/service`; configuration values belong in
+`config/properties.js`.
+
+When a tool needs to read a small property section from modules without loading
+the full Nodics runtime, it must still preserve property ownership. Do not
+invent a second configuration file just because direct `require()` would execute
+runtime-only expressions. Use a safe extractor, a replaceable service, or a
+documented runtime-independent property reader for the required property
+subtree.
+
 ## Provider Implementation Contract
 
 When adding a new implementation behind an existing capability, such as an
@@ -195,6 +224,14 @@ Good guidance names:
 Bad guidance jumps directly to editing arbitrary JavaScript files, hardcoding
 project names, bypassing loaders, bypassing tenant context, or patching
 generated output.
+
+When guidance asks for a service, controller, facade, or pipeline change, it
+must name the loader-managed path and suffix. Services use
+`src/service/**/*Service.js`, controllers use `src/controller/**/*Controller.js`,
+facades use `src/facade/**/*Facade.js`, and pipeline definitions use
+`src/pipelines/**/*Definition.js`. The recommended implementation must export
+mergeable object members so the same behavior can be overridden by a later
+module with the same artifact name.
 
 ## Reference Material Use
 

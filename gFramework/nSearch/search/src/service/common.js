@@ -11,10 +11,15 @@
 
 /**
  * @module gFramework/nSearch/search/src/service/common
- * @description Implements nSearch common business behavior and extension logic.
- * @layer service
+ * @description Template service used by generated nSearch schema services.
+ * During generation, placeholders are replaced with the owning search service,
+ * schema, and index identifiers.
+ * @layer template
  * @owner nSearch
- * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ * @sourceTemplate /src/service/common.js
+ * @override This file is consumed by build generators and is not loaded into
+ * SERVICE directly. Project modules override generated `*Service.js` artifacts
+ * or contribute same-name service files through `src/service/**`.
  */
 module.exports = {
     /**

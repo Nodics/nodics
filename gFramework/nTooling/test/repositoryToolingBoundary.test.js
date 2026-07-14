@@ -20,7 +20,7 @@ const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const documentationCoverage = require('../src/quality/checkDocumentationCoverage');
+const documentationCoverage = require('../src/service/quality/defaultDocumentationCoverageQualityService');
 
 const rootPath = path.resolve(__dirname, '../../..');
 const scriptsPath = path.join(rootPath, 'scripts');
@@ -41,8 +41,9 @@ Object.keys(packageJson.scripts || {}).forEach(scriptName => {
 
 assert(!fs.existsSync(path.join(rootPath, 'docs', 'documentation-governance.json')),
     'Documentation governance must not live in disposable docs');
-assert(fs.existsSync(path.join(rootPath, 'gFramework', 'nTooling', 'config', 'documentation-governance.json')),
-    'Documentation governance must be owned by nTooling');
+const toolingProperties = require('../config/properties');
+assert(toolingProperties.tooling.documentationGovernance.enforcedGates.length > 0,
+    'Documentation governance must be owned by nTooling properties');
 
 const coverageFixture = fs.mkdtempSync(path.join(os.tmpdir(), 'nodics-doc-boundary-'));
 try {

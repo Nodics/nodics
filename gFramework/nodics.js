@@ -268,19 +268,20 @@ module.exports = {
     /** Cleans generated artifacts for every active module through the standard clean lifecycle. */
     cleanAll: function () {
         let options = env.defaultOptions;
-        config.prepareClean(options).then(() => {
+        return config.prepareClean(options).then(() => {
             return config.initUtilities(options);
         }).then(() => {
             return config.cleanModules();
         }).catch(error => {
             console.error(error);
+            throw error;
         });
     },
 
     /** Recreates generated framework artifacts from active layered source definitions. */
     buildAll: function () {
         let options = env.defaultOptions;
-        config.prepareBuild(options).then(() => {
+        return config.prepareBuild(options).then(() => {
             return config.initUtilities(options);
         }).then(() => {
             return config.loadModules();
@@ -318,6 +319,7 @@ module.exports = {
             return config.buildModules();
         }).catch(error => {
             console.error(error);
+            throw error;
         });
     }
 };

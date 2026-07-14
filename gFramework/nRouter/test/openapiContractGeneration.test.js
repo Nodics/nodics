@@ -64,7 +64,7 @@ global.NODICS = {
     getActiveModules: function () { return ['sample']; }
 };
 
-const generator = require('../src/tooling/generateOpenapiContract');
+const generator = require('../src/service/tooling/defaultOpenapiContractGeneratorService');
 const authProperties = require('../../nAuth/config/properties');
 assert(authProperties.identityGovernance.permissionCatalog.includes('system.contract.openapi.view'));
 

@@ -136,7 +136,7 @@ module.exports = {
      */
 
     cleanAll: function () {
-        FRAMEWORK.cleanAll();
+        return FRAMEWORK.cleanAll();
     },
 
     /**
@@ -150,6 +150,6 @@ module.exports = {
      */
 
     buildAll: function () {
-        FRAMEWORK.buildAll();
+        return FRAMEWORK.buildAll();
     }
 };

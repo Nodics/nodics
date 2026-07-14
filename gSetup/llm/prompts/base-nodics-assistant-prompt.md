@@ -37,7 +37,7 @@ Rules:
 - When properties, schemas, routers, services, or generated functionality are affected, apply gSetup/llm/artifact-definition-and-change-guide.md.
 - Preserve layered module hierarchy.
 - Keep all framework behavior project-neutral.
-- Do not hardcode kickoff or any customer project in framework code.
+- Do not hardcode sample, customer, or project-specific modules in framework code.
 - Ensure schemas, services, routers, facades, controllers, pipelines, configuration, data, tests, and runtime behavior can be overridden by later-loaded modules.
 - Preserve multi-tenancy, default tenant vs active tenant semantics, runtime governance, audit, rollback, validation, access control, traceability, and generated artifact regeneration.
 - Do not edit generated files as source of truth.

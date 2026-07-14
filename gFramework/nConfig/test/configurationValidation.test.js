@@ -57,44 +57,44 @@ function initializeConfiguration(defaultServer, nodeName) {
 }
 
 let localServers = [
-    'kickoffLocalServer',
-    'kickoffLocalProfileServer',
-    'kickoffLocalCronServer',
-    'kickoffLocalDeapServer',
-    'kickoffLocalNemsServer',
-    'kickoffLocalCmsServer',
-    'kickoffLocalWorkflowServer'
+    'startioLocalServer',
+    'startioLocalProfileServer',
+    'startioLocalCronServer',
+    'startioLocalDeapServer',
+    'startioLocalNemsServer',
+    'startioLocalCmsServer',
+    'startioLocalWorkflowServer'
 ];
 
 localServers.forEach(serverName => {
     initializeConfiguration(serverName);
     assert.strictEqual(NODICS.getServerName(), serverName);
-    assert.strictEqual(NODICS.getEnvironmentName(), 'kickoffEnvs');
-    assert.strictEqual(NODICS.getServerRootName(), 'kickoffLocal');
+    assert.strictEqual(NODICS.getEnvironmentName(), 'envs');
+    assert.strictEqual(NODICS.getServerRootName(), 'startioLocal');
     assert(NODICS.isModuleActive('gFramework'), 'gFramework should always be active for ' + serverName);
     assert(NODICS.isModuleActive(serverName), serverName + ' module should be active');
 });
 
-initializeConfiguration('kickoffLocalServer', 'kickoffLocalNode0');
-assert.strictEqual(NODICS.getNodeName(), 'kickoffLocalNode0');
-assert(NODICS.isModuleActive('kickoffLocalNode0'), 'selected node module should be active');
-assert.strictEqual(NODICS.getActiveModules().filter(moduleName => moduleName === 'kickoffLocalNode0').length, 1);
+initializeConfiguration('startioLocalServer', 'startioLocalNode0');
+assert.strictEqual(NODICS.getNodeName(), 'startioLocalNode0');
+assert(NODICS.isModuleActive('startioLocalNode0'), 'selected node module should be active');
+assert.strictEqual(NODICS.getActiveModules().filter(moduleName => moduleName === 'startioLocalNode0').length, 1);
 assert.deepStrictEqual(initService.getSelectedRuntimeModuleNames(), [
-    'kickoffEnvs',
-    'kickoffLocal',
-    'kickoffLocalServer',
-    'kickoffLocalNode0'
+    'envs',
+    'startioLocal',
+    'startioLocalServer',
+    'startioLocalNode0'
 ]);
 let nodeServerProperties = initService.loadServerProperties();
 let nodeConfiguredModules = nodeServerProperties.activeModules.modules.slice();
 let configuredWithNode = initService.getConfiguredActiveModuleNames(nodeServerProperties);
-assert.strictEqual(configuredWithNode.filter(moduleName => moduleName === 'kickoffLocalNode0').length, 1);
+assert.strictEqual(configuredWithNode.filter(moduleName => moduleName === 'startioLocalNode0').length, 1);
 assert.deepStrictEqual(nodeServerProperties.activeModules.modules, nodeConfiguredModules);
 
-initializeConfiguration('kickoffLocalServer');
+initializeConfiguration('startioLocalServer');
 assert(NODICS.isModuleActive('profile'), 'consolidated local server should include profile');
 assert.strictEqual(NODICS.getRawModule(NODICS.getEnvironmentName()).metaData.nodics.kind, 'group');
-assert.strictEqual(NODICS.getRawModule(NODICS.getServerRootName()).metaData.nodics.kind, 'environment');
+assert.strictEqual(NODICS.getRawModule(NODICS.getServerRootName()).metaData.nodics.kind, 'group');
 assert.strictEqual(NODICS.getRawModule(NODICS.getServerName()).metaData.nodics.kind, 'server');
 initService.validateSelectedRuntimeKinds();
 initService.validateSelectedRuntimeConfigurationFiles();
@@ -108,7 +108,7 @@ initService.validateRuntimeTopologyConfiguration(serverProperties);
 let loadOrder = initService.getConfigurationLoadOrder();
 assert(loadOrder.includes('active module /config/properties.js files in module index order'));
 
-initializeConfiguration('kickoffLocalWorkflowServer');
+initializeConfiguration('startioLocalWorkflowServer');
 assert(!NODICS.isModuleActive('profile'), 'workflow server should use profile remotely instead of activating it locally');
 serverProperties = CONFIG.getProperties();
 assert(initService.getConfiguredServerEndpointNames(serverProperties).includes('profile'));
@@ -124,7 +124,7 @@ assert.throws(() => {
         test: {
             runtimeTopology: {
                 consolidatedServer: 'missingServer',
-                modularServers: ['kickoffLocalProfileServer']
+                modularServers: ['startioLocalProfileServer']
             }
         }
     });
@@ -134,8 +134,8 @@ assert.throws(() => {
     initService.validateRuntimeTopologyConfiguration({
         test: {
             runtimeTopology: {
-                consolidatedServer: 'kickoffLocalServer',
-                modularServers: ['kickoffLocalProfileServer', 'kickoffLocalProfileServer']
+                consolidatedServer: 'startioLocalServer',
+                modularServers: ['startioLocalProfileServer', 'startioLocalProfileServer']
             }
         }
     });

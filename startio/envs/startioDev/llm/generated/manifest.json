@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "startioDev",
+  "path": "startio/envs/startioDev",
+  "kind": "group",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "3001.20",
+    "version": "0.0.1",
+    "description": "Startio module for startioDev"
+  },
+  "sourceFiles": 0,
+  "testFiles": 0,
+  "dataFiles": 0,
+  "ownedFiles": 8,
+  "sourceFingerprint": "cc29ce2855e0056aba1779f2868dae2df289193b2e5b3a800426b2b779445727",
+  "documentation": {
+    "documented": 4,
+    "partially-documented": 0,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

@@ -11,10 +11,15 @@
 
 /**
  * @module gFramework/nSearch/search/src/facade/common
- * @description Coordinates facade-level delegation for nSearch common operations.
- * @layer facade
+ * @description Template facade used by generated nSearch schema facades.
+ * During generation, placeholders are replaced with the owning search facade,
+ * service, and schema identifiers.
+ * @layer template
  * @owner nSearch
- * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ * @sourceTemplate /src/facade/common.js
+ * @override This file is consumed by build generators and is not loaded into
+ * FACADE directly. Project modules override generated `*Facade.js` artifacts
+ * or contribute same-name facade files through `src/facade/**`.
  */
 module.exports = {
     /**

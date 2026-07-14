@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "startioProdServer",
+  "path": "startio/envs/startioProd/startioProdServer",
+  "kind": "server",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "3001.51",
+    "version": "0.0.1",
+    "description": "Startio module for startioProdServer"
+  },
+  "sourceFiles": 6,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "546163feab22eb3c1d82737a7bf90259aa21a00343e507afc9a1e25453565571",
+  "documentation": {
+    "documented": 10,
+    "partially-documented": 2,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

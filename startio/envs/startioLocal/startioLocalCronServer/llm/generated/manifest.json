@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "startioLocalCronServer",
+  "path": "startio/envs/startioLocal/startioLocalCronServer",
+  "kind": "server",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "3001.14",
+    "version": "0.0.1",
+    "description": "Startio module for startioLocalCronServer"
+  },
+  "sourceFiles": 6,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "ownedFiles": 16,
+  "sourceFingerprint": "62d9ebeb6e4a34b01e71dc5fd710d03f9c1753fc78aa939c599c6e253f7f13ba",
+  "documentation": {
+    "documented": 10,
+    "partially-documented": 2,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

@@ -37,6 +37,10 @@ requireClauses('gSetup/llm/nodics-principles.md', [
     '## Change Acceptance Contract',
     'every modification and every new source file',
     'Every new source file must include file-level documentation',
+    'tooling command declarations, discovery rules, and governance gate data in module-owned `config/properties.js`',
+    'Do not introduce parallel config files such as `config/tooling.js`',
+    'Keep runtime artifacts inside Nodics loader radar',
+    'Export runtime behavior as mergeable',
     'later-loaded customer project module',
     'without modifying out-of-the-box Nodics code',
     'override/customization test',
@@ -69,6 +73,8 @@ requireClauses('gSetup/llm/contracts/nodics-expert-decision-contract.md', [
     'classify the change',
     'correct Nodics layer',
     'artifact should own the behavior',
+    '`config/properties.js` for configurable values, policy defaults, tooling',
+    'Do not create a parallel configuration artifact',
     'Expected AI Output Before Coding'
 ]);
 
@@ -144,6 +150,8 @@ requireClauses('gSetup/llm/artifact-definition-and-change-guide.md', [
     '## Schemas',
     '## Routers',
     '## Services',
+    '## Loader-Managed Runtime Artifacts',
+    'Nodics runtime loaders discover behavior by both directory and suffix',
     '## Functionality Change-Impact Matrix',
     'mandatory, conditional, generated, runtime-merged, and unaffected',
     'later-layer customization works without core edits'
@@ -178,8 +186,8 @@ requireClauses('gSetup/llm/change-gate-contract.md', [
     'may not silently select a weaker category'
 ]);
 
-requireClauses('gFramework/nTooling/src/quality/runDesignPrincipleAudit.js', [
-    '@module nTooling/quality/RunDesignPrincipleAudit',
+requireClauses('gFramework/nTooling/src/service/quality/defaultDesignPrincipleAuditService.js', [
+    '@module nTooling/service/quality/defaultDesignPrincipleAuditService',
     'capabilities are sacred, implementations are negotiable',
     'Periodic Platform Audit',
     'Do not add a parallel activation channel',
@@ -188,6 +196,17 @@ requireClauses('gFramework/nTooling/src/quality/runDesignPrincipleAudit.js', [
 
 requireClauses('gSetup/llm/module-generation-guide.md', [
     '# Module Generation Guide',
+    'standard folder/file structure for a generated capability module or pure',
+    'group module is defined in `standards/module-standard.md`',
+    'server, and node module generation uses the same source-of-truth principles',
+    'requires additional topology and activation rules',
+    '## Custom Project Structure',
+    'Applications built on top of Nodics must use this project-level structure',
+    'modules/                      Project-owned group modules or individual capability modules required by this project',
+    'envs/                         Environment modules such as local, dev, UAT, pre-prod, and prod',
+    'property named `groupName`',
+    '## Blank Object File Template',
+    'module.exports = {',
     'Do not revive or copy `nCommon/templates`',
     'Runtime kind comes from `package.json.nodics.kind`',
     '`activeModules` decides what runs in the current process',
@@ -195,7 +214,19 @@ requireClauses('gSetup/llm/module-generation-guide.md', [
     'propose the loading hierarchy first and get explicit developer approval',
     'local to the process and which behavior is reached through',
     'Do not copy a whole framework service, router, schema, or module',
+    'outside the loader radar',
     'regenerate module LLM context'
+]);
+
+requireClauses('gSetup/llm/standards/module-standard.md', [
+    '## Standard Structure For Generated Modules And Group Modules',
+    'Use this structure when generating a new capability module or pure group module',
+    'Project, environment, server, and node module generation',
+    'topology-specific rules',
+    'src/                          Module-owned source definitions and implementation files; not mandatory for pure group modules',
+    'search/                     Search index contribution directory for module-owned index definitions',
+    'indexes.js                Search index definition registry',
+    'test/                         Module-owned tests proving default behavior and override/customization behavior; not mandatory for pure group modules'
 ]);
 
 requireClauses('gSetup/llm/contracts/integration-governance-contract.md', [
@@ -208,11 +239,50 @@ requireClauses('gSetup/llm/contracts/integration-governance-contract.md', [
     'MCP Exposure Boundary',
     'hidden source of architecture',
     'nTooling `mcp:governance` command',
-    'It must not persist decisions, mutate source'
+    'It must not persist decisions, mutate source',
+    '`mcp:validate` may run only approved Nodics validation commands',
+    '`mcp:runtime-context` may explain active-module hierarchy',
+    '`mcp:mutation-plan` may create guarded plans',
+    'keep the built-in nTooling handler alias',
+    'standard service merge path',
+    'export only `createPlan`'
 ]);
 
 requireClauses('gSetup/llm/contracts/developer-implementation-contract.md', [
-    'Apply `integration-governance-contract.md`'
+    '## Configuration Ownership Contract',
+    'Module configuration belongs in `config/properties.js`',
+    'must not create parallel configuration files such as `config/tooling.js`',
+    'standalone governance JSON files',
+    '`tooling.commands`, `tooling.discovery`, and',
+    '`tooling.documentationGovernance`',
+    'direct `require()` would execute',
+    'Use a safe extractor, a replaceable service, or a',
+    'Apply `integration-governance-contract.md`',
+    'loader-managed path and suffix',
+    'must export',
+    'mergeable object members'
+]);
+
+requireClauses('gSetup/llm/contracts/module-structure-contract.md', [
+    '## Loader-Radar Contract',
+    'services: `src/service/**/*Service.js`',
+    'controllers: `src/controller/**/*Controller.js`',
+    'facades: `src/facade/**/*Facade.js`',
+    'pipeline definitions: `src/pipelines/**/*Definition.js`',
+    '`module.exports = { methodName: function (...) {} }`',
+    'Tooling adapters, context generators, debug launchers, and quality checks live',
+    'under `src/service`',
+    '`src/service/command`',
+    '`src/service/context`',
+    '`src/service/debug`',
+    '`src/service/quality`',
+    '## Configuration Ownership Contract',
+    'Every module uses `config/properties.js` as the standard home',
+    '`tooling.commands`',
+    '`tooling.discovery`',
+    '`tooling.documentationGovernance`',
+    'Do not add sibling config files like `config/tooling.js`',
+    '`config/documentation-governance.json`'
 ]);
 
 requireClauses('gSetup/llm/README.md', [
@@ -228,6 +298,11 @@ requireClauses('gSetup/llm/README.md', [
     'prompts/runtime-governance-prompt.md',
     'ai:principle-audit',
     'mcp:governance',
+    'mcp:validate',
+    'mcp:runtime-context',
+    'mcp:mutation-plan',
+    'keep built-in nTooling handler aliases',
+    'same-name service files under `src/service/mcp`',
     'module-generation-guide.md',
     'contracts/integration-governance-contract.md'
 ]);

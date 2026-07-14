@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "startioLocalCmsServer",
+  "path": "startio/envs/startioLocal/startioLocalCmsServer",
+  "kind": "server",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "3001.16",
+    "version": "0.0.1",
+    "description": "Startio module for startioLocalCmsServer"
+  },
+  "sourceFiles": 7,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "ownedFiles": 17,
+  "sourceFingerprint": "2238ae3702686313792ad6112c9dca72bd75cea943c2fa0c1bdfc0c9075c0f35",
+  "documentation": {
+    "documented": 11,
+    "partially-documented": 2,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

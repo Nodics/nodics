@@ -35,7 +35,7 @@
 | Source files | 34 |
 | Test files | 41 |
 | Data files | 0 |
-| All module-owned files | 65 |
+| All module-owned files | 64 |
 | Local schema definitions | 7 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 42 |
+| Documented | 41 |
 | Partially documented | 3 |
 | Undocumented | 16 |
 | Inventory only | 4 |
@@ -95,7 +95,6 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default nDynamo configuration used during module startup and layering. |  |
 | `gFramework/nDynamo/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default nDynamo configuration used during module startup and layering. |  |
 | `gFramework/nDynamo/config/properties.js` | `config` | `documented` | 0/0 | Defines default nDynamo configuration used during module startup and layering. |  |
-| `gFramework/nDynamo/config/tooling.js` | `config` | `documented` | 0/0 | Contributes runtime configuration governance reporting to the non-runtime Nodics tooling registry. |  |
 | `gFramework/nDynamo/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDynamo/nodics.js` | `module` | `documented` | 2/2 | Registers the nDynamo module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nDynamo/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
@@ -130,7 +129,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/src/service/pipeline/defaultSchemaUpdatedPipelineService.js` | `src` | `documented` | 5/5 | Implements nDynamo default schema updated pipeline service business behavior and extension logic. |  |
 | `gFramework/nDynamo/src/service/router/defaultRouterConfigurationService.js` | `src` | `documented` | 12/12 | Implements nDynamo default router configuration service business behavior and extension logic. |  |
 | `gFramework/nDynamo/src/service/schema/defaultSchemaConfigurationService.js` | `src` | `documented` | 11/11 | Implements nDynamo default schema configuration service business behavior and extension logic. |  |
-| `gFramework/nDynamo/src/tooling/generateGovernanceReport.js` | `src` | `documented` | 0/0 | Generates a server-owned report of effective schema, router, artifact, generated-file, warning, and override traceability state. |  |
+| `gFramework/nDynamo/src/service/tooling/defaultGovernanceReportGeneratorService.js` | `src` | `documented` | 0/0 | Generates a server-owned report of effective schema, router, artifact, generated-file, warning, and override traceability state. |  |
 | `gFramework/nDynamo/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared nDynamo utility exports for enums. |  |
 | `gFramework/nDynamo/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nDynamo utility exports for utils. |  |
 | `gFramework/nDynamo/test/classConfigurationControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

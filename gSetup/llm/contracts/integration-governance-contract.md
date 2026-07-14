@@ -191,6 +191,27 @@ change-impact guidance. It must not persist decisions, mutate source, mutate
 runtime configuration, regenerate artifacts, change data, call providers, or
 replace Nodics validation and active-module resolution.
 
+The expanded MCP surface remains staged and governed:
+
+- `mcp:validate` may run only approved Nodics validation commands and return
+  structured results.
+- `mcp:runtime-context` may explain active-module hierarchy, artifact
+  ownership, and override paths from source files and metadata without
+  bootstrapping or mutating runtime configuration.
+- `mcp:mutation-plan` may create guarded plans for module skeletons,
+  documentation updates, generated artifacts, build, and clean actions, but it
+  does not execute writes by default and must require explicit developer
+  approval before any mutation-capable executor is trusted.
+
+Customer projects must extend MCP behavior through later module tooling
+contributions before editing Nodics framework files. The preferred path is to
+keep the built-in nTooling handler alias, such as
+`@nTooling/mcp-mutation-plan`, and override behavior through the standard service merge path. A customer module can add
+`src/service/mcp/defaultMcpMutationGuardService.js` and export only `createPlan`
+to replace that function while inheriting the rest of the framework service.
+Replacing an MCP handler is a larger change and must use
+`$override.mode: 'replace'`.
+
 ## Completion Checklist
 
 An integration is complete only when:

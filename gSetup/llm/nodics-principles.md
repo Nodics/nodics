@@ -20,10 +20,12 @@ Modernization may replace outdated libraries, improve security, refactor existin
 4. Put source definitions in modules; regenerate derived artifacts during build.
 5. Keep generated artifacts safely removable by clean.
 6. Use service/facade/controller/router boundaries consistently.
-7. Use schema-driven models, services, routers, APIs, tests, and documentation where possible.
-8. Preserve multi-tenancy and the difference between default tenant and active tenant.
-9. Preserve runtime configuration, audit, rollback, validation, and access-control governance.
-10. Add tests for both consolidated and modular deployment behavior when behavior crosses module/process boundaries.
+7. Keep runtime artifacts inside Nodics loader radar: services under `src/service/**/*Service.js`, controllers under `src/controller/**/*Controller.js`, facades under `src/facade/**/*Facade.js`, and pipeline definitions under `src/pipelines/**/*Definition.js`.
+8. Export runtime behavior as mergeable `module.exports = { methodName: function (...) {} }` objects so later modules can override the smallest necessary member.
+9. Use schema-driven models, services, routers, APIs, tests, and documentation where possible.
+10. Preserve multi-tenancy and the difference between default tenant and active tenant.
+11. Preserve runtime configuration, audit, rollback, validation, and access-control governance.
+12. Add tests for both consolidated and modular deployment behavior when behavior crosses module/process boundaries.
 
 ## Default Tenant And Active Tenant
 
@@ -54,10 +56,13 @@ generated-layer, tenant, or runtime-governance contracts.
 2. Resolve implementation choices from the effective active module hierarchy, configuration, tenant/request context, schema definitions, and governed runtime state. Do not embed customer, project, environment, server, node, tenant, group, role, or deployment assumptions in framework code.
 3. Preserve the hierarchy from framework defaults through project, environment, server, and node contributions. A later-loaded customer project module must be able to extend, replace, or govern applicable schemas, services, facades, controllers, routers, pipelines, interceptors, validators, data, tests, configuration, and runtime policy without modifying out-of-the-box Nodics code.
 4. Put defaults behind layered configuration or replaceable services. An implementation-specific default must not become an unchangeable platform capability contract.
-5. Derive generated artifacts from effective layered source definitions. Build must recreate them and clean must remove them safely; generated output is never the source of truth.
-6. Add test coverage with the implementation. Include positive, negative, security/access-control, tenant-context, traceability, and backward-compatibility coverage as applicable. Every new or changed extension point must include an override/customization test proving a later-loaded module can change the behavior without editing core. Cross-module behavior must cover consolidated and modular deployment where applicable.
-7. Every new source file must include file-level documentation when it is created. Document purpose, owner, layer, extension path, inputs/outputs, side effects, failure behavior, and exported methods before the file is considered complete.
-8. Update module and LLM documentation when ownership, configuration, dependencies, extension points, runtime behavior, or operational contracts change.
+5. Put configurable values, policy defaults, tooling command declarations, discovery rules, and governance gate data in module-owned `config/properties.js` under clear namespaces. Do not introduce parallel config files such as `config/tooling.js` or standalone governance JSON when a property subtree can own the data.
+6. Keep runtime files discoverable by their owning loader. A service, controller, facade, or pipeline definition outside the loader path or missing the loader suffix is not a valid extension point; move it to the correct layer, rename it, or document it as a generator template/source helper that is not runtime-loaded.
+7. Export services, controllers, facades, and pipeline-support behavior as mergeable object members. Do not hide overridable behavior in private closures, standalone exports, or non-standard folders when a later module must be able to replace one function.
+8. Derive generated artifacts from effective layered source definitions. Build must recreate them and clean must remove them safely; generated output is never the source of truth.
+9. Add test coverage with the implementation. Include positive, negative, security/access-control, tenant-context, traceability, and backward-compatibility coverage as applicable. Every new or changed extension point must include an override/customization test proving a later-loaded module can change the behavior without editing core. Cross-module behavior must cover consolidated and modular deployment where applicable.
+10. Every new source file must include file-level documentation when it is created. Document purpose, owner, layer, extension path, inputs/outputs, side effects, failure behavior, and exported methods before the file is considered complete.
+11. Update module and LLM documentation when ownership, configuration, dependencies, extension points, runtime behavior, or operational contracts change.
 
 Code review must reject a change whose customization path is absent, undocumented, or untested. Capabilities are sacred; the default implementation remains negotiable through the hierarchy.
 
