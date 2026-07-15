@@ -2,12 +2,16 @@
 
 Welcome to the Nodics documentation.
 
+Nodics is an enterprise application factory for building modular, governed, API-driven business platforms. It is designed for teams that need MVP speed, AI-assisted development, customization, tenant-aware behavior, runtime control, and long-term maintainability in the same framework.
+
 This documentation is written for two kinds of readers:
 
 - People who are new to Nodics and need step-by-step guidance.
 - Experienced developers who need exact extension points, configuration rules, and verification commands.
 
-Nodics is an enterprise application platform for building modular API-driven applications. It gives you a framework, runtime structure, generated APIs, layered configuration, tenant-aware behavior, scheduled jobs, import/export, messaging, caching, testing, and deployment patterns that can be extended by projects without changing framework source code.
+Nodics gives you a framework, runtime structure, generated APIs, layered configuration, tenant-aware behavior, scheduled jobs, import/export, search indexing, catalog and content capabilities, messaging, caching, testing, and deployment patterns that can be extended by projects without changing framework source code.
+
+It is also built for AI-assisted development. A developer can work through a command-line AI tool, an IDE assistant, or a conversational coding assistant and ask for business functionality in plain language. Nodics documentation and contracts then guide that work into the correct module, service, route, schema, configuration, test, and documentation path.
 
 ## How To Read This Documentation
 
