@@ -16,6 +16,16 @@ You need:
 
 If you are working inside a company project, confirm which branch and environment you should use before running startup commands.
 
+## Understand What You Are Starting
+
+Nodics can run as a consolidated application or as modular server processes.
+
+In a consolidated setup, one server loads many active modules together. This is useful for local development and simpler deployments.
+
+In a modular setup, different servers can run different capability sets. For example, identity, workflow, events, scheduled jobs, content, and data-processing capabilities can run in separate processes while still using the same platform contracts.
+
+Startup is controlled by project, environment, server, and optional node selection. The selected server decides which modules run locally through `activeModules`. Server endpoint coordinates describe how processes communicate with each other; they do not activate modules by themselves.
+
 ## Install Dependencies
 
 From the repository root:
@@ -75,6 +85,28 @@ During startup, Nodics loads:
 - Schemas, routes, services, events, pipelines, and startup data.
 
 If the server starts successfully, the logs will show the loaded modules and server ports.
+
+## Start A Specific Project Server
+
+When you are working on a project, start the server that belongs to that project/environment instead of relying on a framework default.
+
+Use the project startup command documented by the project. For the sample `startio` project, the local server command follows the normal npm startup style and passes the selected server through startup arguments.
+
+The important principle is:
+
+```text
+Always know which environment and server you are starting.
+```
+
+If the wrong server starts, the wrong active modules, ports, data, tenants, providers, or route set may be loaded.
+
+Startup also builds the effective runtime from layered definitions:
+
+- `package.json` and `package.json.nodics` identify module ownership and kind.
+- `config/properties.js` contributes configuration.
+- `config/prescripts.js` and `config/postscripts.js` contribute startup lifecycle hooks.
+- `src/schemas`, `src/router`, `src/service`, `src/facade`, `src/controller`, `src/pipelines`, `src/interceptors`, `src/event`, `src/search`, and `src/utils` contribute loader-visible behavior.
+- `data/init` contributes startup/bootstrap records where the owning module requires them.
 
 ## Start Nodics In Debug Mode
 
@@ -140,3 +172,14 @@ Check these areas in order:
 
 Use the logs carefully. Nodics startup logs are intentionally detailed because startup problems often come from configuration hierarchy, not from one line of code.
 
+## Good First Learning Path
+
+If you are new to Nodics, use this order:
+
+1. Start the application once.
+2. Read the loaded module list in the logs.
+3. Open the selected server `config/properties.js` and find `activeModules`.
+4. Pick one active module and read its `README.md`.
+5. Find that module's schemas, routes, services, and tests.
+6. Run a focused test for that capability.
+7. Change only a project or sample module first, not framework source.

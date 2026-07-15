@@ -2,7 +2,7 @@
 
 APIs are the main way external systems and clients interact with a Nodics application.
 
-An API should have a clear owner, route definition, permission rule, request contract, response contract, and test coverage.
+An API has a clear owner, route definition, permission rule, request contract, response contract, and test coverage.
 
 ## Start With The Use Case
 
@@ -20,7 +20,26 @@ Before creating a route, define:
 
 Routes belong to the module that owns the capability.
 
-Do not put unrelated APIs into a central controller just because it is easy to find. A route should be close to the schema, service, controller, tests, and documentation for the capability it exposes.
+Do not put unrelated APIs into a central controller just because it is easy to find. Keep each route close to the schema, service, controller, tests, and documentation for the capability it exposes.
+
+## Route Definitions
+
+Define API routes in the owning module's route registry. Current generated modules use `src/router/routers.js` for route definitions and `src/router/appConfig.js` for application router configuration.
+
+A route definition makes these decisions visible:
+
+- HTTP method.
+- URL and context root.
+- Controller and action.
+- Request type.
+- Permission configuration.
+- Authentication or pre-authentication behavior.
+- Tenant requirements.
+- Cache behavior if applicable.
+- Help and OpenAPI metadata.
+- Expected tests.
+
+Do not hide route behavior in controller code when route metadata owns it.
 
 ## Security First
 
@@ -48,6 +67,18 @@ A typical Nodics API flow is:
 8. Response status and body are resolved.
 9. Audit, diagnostics, or events are recorded when required.
 
+## Controller, Facade, Service, Data Flow
+
+Nodics APIs are layered APIs. Keep that separation:
+
+- Router decides how the HTTP request enters the capability.
+- Controller maps request and response concerns.
+- Facade coordinates capability or cross-module behavior.
+- Service owns business logic.
+- DAO/provider layer owns persistence behavior.
+
+Small APIs may call a service directly from a controller when no orchestration is needed, but the service still owns business rules. Do not put business logic directly into route definitions.
+
 ## Generated CRUD APIs
 
 Many APIs can be generated from schema and route definitions.
@@ -59,6 +90,8 @@ If generated behavior is wrong:
 - Regenerate tests.
 - Do not hand-edit generated API files as the source of truth.
 
+Treat generated CRUD APIs as real APIs. They need route metadata, permissions, tenant behavior, generated tests, and OpenAPI output. If a generated API is not available, change the source definition or route configuration instead of deleting generated files.
+
 ## API Documentation
 
 Nodics can generate OpenAPI documentation.
@@ -69,7 +102,7 @@ Run:
 npm run docs:openapi
 ```
 
-The OpenAPI output should reflect route definitions and permissions. If the generated documentation is wrong, fix the source route metadata.
+The OpenAPI output reflects route definitions and permissions. If the generated documentation is wrong, fix the source route metadata.
 
 ## Testing APIs
 
@@ -98,4 +131,3 @@ Avoid:
 - Returning inconsistent response shapes.
 - Editing generated route files manually.
 - Mixing human login and internal service access rules.
-

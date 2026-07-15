@@ -52,6 +52,17 @@ Consolidated mode means one server runs many capabilities together.
 
 Modular mode means capabilities run in separate server processes.
 
+Nodics supports both styles because different deployments need different runtime boundaries. Local development may prefer one process. Enterprise deployments may split identity, CMS, workflow, events, scheduled jobs, import/export, and data processing into separate processes.
+
+Before deployment, confirm:
+
+- which server owns each active module;
+- which modules run locally in each process;
+- which modules are reached through remote server coordinates;
+- which nodes are allowed to run scheduled jobs;
+- which providers are active for database, cache, search, and messaging;
+- where generated reports and diagnostics are written.
+
 Verify modular topology:
 
 ```bash
@@ -67,6 +78,8 @@ Check:
 - Tenant data is correctly isolated.
 - Imports target the correct tenant.
 - Runtime configuration can be audited and rolled back.
+
+Also confirm that versioned or publishable business data has a rollback path when the business process requires it. Published content, catalog data, workflow definitions, runtime configuration, and import runs do not depend on manual database repair as the normal recovery strategy.
 
 ## Verify Security
 
@@ -100,4 +113,5 @@ Avoid:
 - Sharing test infrastructure with production.
 - Disabling security to make deployment easier.
 - Making environment-specific changes in framework source.
-
+- Deploying with unclear active module ownership.
+- Mixing sample data with production initialization data.

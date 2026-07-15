@@ -17,9 +17,36 @@ configuration.
 - message routing and runtime diagnostics;
 - extension guidance for adding providers.
 
+## Producer And Consumer Flow
+
+Messaging is a producer/consumer system. That flow must stay provider-neutral until the selected adapter sends or receives the message.
+
+A producer defines:
+
+- owning module and operation;
+- event or message name;
+- payload shape;
+- tenant/request context;
+- target provider/channel/topic/queue from configuration;
+- retry and failure behavior;
+- diagnostics.
+
+A consumer defines:
+
+- provider subscription configuration;
+- handler service;
+- idempotency and duplicate behavior;
+- tenant context resolution;
+- error handling and retry/dead-letter policy;
+- tests for normal, invalid, and failure messages.
+
+Do not let provider-specific message clients leak into business services.
+Business services publish or consume through the EMS capability
+contract.
+
 ## Extension Contract
 
-Projects should add or replace messaging providers through later modules,
+Projects add or replace messaging providers through later modules,
 adapter services, and layered configuration. Do not hardcode provider URLs,
 credentials, queue names, topics, tenant mappings, or retry policy in framework
 code.
@@ -31,7 +58,7 @@ or failure handling, and tests for configured provider behavior where practical.
 
 New messaging providers must be added as provider modules or project modules
 behind the `nEms/emsClient` provider-neutral contract. For example, RabbitMQ,
-AWS SNS/SQS, Google Pub/Sub, or a customer broker should follow the adapter
+AWS SNS/SQS, Google Pub/Sub, or a customer broker follows the adapter
 shape used by `activemq` and `kafka`.
 
 The implementation path is:

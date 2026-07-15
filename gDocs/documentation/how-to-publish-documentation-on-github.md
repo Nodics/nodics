@@ -1,11 +1,11 @@
 # How To Publish Documentation On GitHub
 
-This guide explains how Nodics documentation should appear to people browsing the GitHub repository.
+This guide explains how Nodics documentation appears to people browsing the GitHub repository.
 
 The goal is simple:
 
 ```text
-Users should find clear documentation from GitHub without needing to understand internal repository history.
+Users find clear documentation from GitHub without needing to understand internal repository history.
 ```
 
 ## Recommended Approach
@@ -23,14 +23,14 @@ This keeps documentation changes reviewable with code while still giving users a
 
 The root README is the front door.
 
-It should help a new visitor answer:
+It helps a new visitor answer:
 
 - What is Nodics?
 - Why should I use it?
 - How do I start?
 - Where is the full documentation?
 
-It should not contain every feature, every setup detail, every module rule, or every internal implementation contract.
+It does not contain every feature, every setup detail, every module rule, or every internal implementation contract.
 
 Long README files become hard to scan. They also make it harder for new users to know where to begin.
 
@@ -62,7 +62,7 @@ At first, Nodics can publish simple Markdown pages. Later, it can use a document
 
 ## How GitHub Wiki Should Be Used
 
-GitHub Wiki can be useful, but it should not be the only source of truth.
+Use GitHub Wiki as an index or mirror, not as the source of truth.
 
 Recommended Wiki use:
 
@@ -78,7 +78,7 @@ Avoid using GitHub Wiki as the only maintained copy because it is a separate git
 Use content like this:
 
 ```markdown
-# Nodics Wiki
+# Nodics Documentation
 
 Welcome to Nodics documentation.
 
@@ -113,24 +113,24 @@ Use this flow when the repository is ready to publish:
 Use this rule:
 
 ```text
-If documentation explains current Nodics behavior, it must be maintained in the repository.
+If documentation explains Nodics behavior, maintain it in the repository.
 ```
 
-GitHub Wiki may display or link to documentation, but repository documentation should remain the controlled source.
+GitHub Wiki may display or link to documentation, but repository documentation remains the controlled source.
 
 ## What To Avoid
 
 Avoid:
 
-- Copying old wiki content directly without updating it.
+- Copying planning notes directly without turning them into current product documentation.
 - Keeping one version in `gDocs` and another different version in GitHub Wiki.
 - Putting AI-only implementation rules into public user documentation.
 - Making root README the full documentation site.
-- Publishing private reference material from root `docs`.
+- Publishing private planning material from root `docs`.
 
 ## Next Step
 
-The next practical step is to continue converting the old wiki reference into updated `gDocs` pages, one topic at a time. Start with high-value user tasks:
+The next practical step is to continue expanding `gDocs` one topic at a time. Start with high-value user tasks:
 
 - Set up Nodics.
 - Create an application module.
@@ -140,4 +140,3 @@ The next practical step is to continue converting the old wiki reference into up
 - Create scheduled jobs.
 - Configure users, tenants, and permissions.
 - Test and deploy changes.
-

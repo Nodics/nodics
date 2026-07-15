@@ -25,12 +25,13 @@ Start with the first two sections if you are new. Use the task guides when you a
 6. [How To Create APIs](development/how-to-create-apis.md)
 7. [How To Work With Data](data/how-to-work-with-data.md)
 8. [How To Create Scheduled Jobs](jobs/how-to-create-scheduled-jobs.md)
-9. [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md)
-10. [How To Test Nodics Changes](testing/how-to-test-nodics-changes.md)
-11. [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md)
-12. [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md)
-13. [How To Publish Documentation On GitHub](documentation/how-to-publish-documentation-on-github.md)
-14. [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md)
+9. [How Platform Capabilities Work](platform/how-platform-capabilities-work.md)
+10. [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md)
+11. [How To Test Nodics Changes](testing/how-to-test-nodics-changes.md)
+12. [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md)
+13. [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md)
+14. [How To Publish Documentation On GitHub](documentation/how-to-publish-documentation-on-github.md)
+15. [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md)
 
 ## Documentation Principles
 
@@ -55,3 +56,24 @@ This folder explains Nodics from the user and application-developer point of vie
 Module `README.md` files explain the details of one specific capability. For example, this documentation may say how scheduled jobs work in Nodics, while the scheduled-job module README explains the exact schemas, services, routes, and extension contracts owned by that module.
 
 AI-only and implementation-governance rules belong in `AGENTS.md` and `gSetup/llm`, not in public user documentation.
+
+## Where To Find The Right Guidance
+
+Use this map when you are not sure where to start.
+
+| Need | Read |
+| --- | --- |
+| Understand what Nodics is and why it exists | [What Nodics Is](overview/what-is-nodics.md) |
+| Install, build, and start the framework | [How To Set Up Nodics](getting-started/how-to-setup-nodics.md) |
+| Understand projects, modules, environments, servers, and nodes | [How Nodics Is Organized](architecture/how-nodics-is-organized.md) |
+| Add new application behavior | [How To Create Application Functionality](development/how-to-create-application-functionality.md) |
+| Add or change APIs | [How To Create APIs](development/how-to-create-apis.md) |
+| Work with schemas, import, export, and data providers | [How To Work With Data](data/how-to-work-with-data.md) |
+| Add scheduled jobs | [How To Create Scheduled Jobs](jobs/how-to-create-scheduled-jobs.md) |
+| Understand processes, cache, messaging, logging, and request handling | [How Platform Capabilities Work](platform/how-platform-capabilities-work.md) |
+| Understand users, tenants, permissions, and runtime isolation | [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md) |
+| Verify a change | [How To Test Nodics Changes](testing/how-to-test-nodics-changes.md) |
+| Run, debug, or deploy Nodics | [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md) and [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md) |
+| Maintain public and module documentation | [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md) |
+
+For module-specific details, read the owning module `README.md`. For implementation contracts used by AI tools and developers, read root `AGENTS.md` and `gSetup/llm`.

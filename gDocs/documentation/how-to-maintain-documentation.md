@@ -2,7 +2,7 @@
 
 Documentation is part of the Nodics product.
 
-It should help new users learn, help experienced developers move quickly, and help AI tools avoid unsafe implementation choices.
+It helps new users learn, helps experienced developers move quickly, and helps AI tools avoid unsafe implementation choices.
 
 ## Documentation Types
 
@@ -10,7 +10,7 @@ Nodics has several documentation types.
 
 **Root README**
 
-The root README is the public entry point. It should be short, friendly, and easy to scan.
+The root README is the public entry point. Keep it short, friendly, and easy to scan.
 
 **Public documentation**
 
@@ -22,11 +22,25 @@ Each module README explains the purpose, behavior, configuration, extension poin
 
 **AI and implementation contracts**
 
-`AGENTS.md` and `gSetup/llm` contain rules for AI tools and developers changing the codebase. These should not replace user-facing documentation.
+`AGENTS.md` and `gSetup/llm` contain rules for AI tools and developers changing the codebase. They guide implementation work and do not replace user-facing documentation.
 
 **Generated documentation**
 
-Generated API docs, generated LLM context, and generated reports should be regenerated from source definitions.
+Regenerate generated API docs, generated LLM context, and generated reports from source definitions.
+
+## Documentation Source Map
+
+Use the right documentation layer for the right audience.
+
+| Documentation | Audience | Purpose |
+| --- | --- | --- |
+| Root `README.md` | New visitors, evaluators, and developers | Explain what Nodics is, why it exists, and where to start. |
+| `gDocs` | Users, application developers, framework developers, and technical leads | Provide task-based guides such as setup, APIs, data, jobs, security, testing, and deployment. |
+| Module `README.md` files | Developers working inside one capability | Explain module purpose, owned schemas/routes/services/data/tests, configuration, extension paths, and verification. |
+| Module `docs/` folders | Developers needing deeper module detail | Hold permanent module documentation that belongs with the product. |
+| `AGENTS.md` | AI tools and developers changing code | Define local implementation behavior, ownership boundaries, and safety rules. |
+| `gSetup/llm` | AI tools, automation, and developers doing implementation work | Define cross-cutting contracts, prompts, standards, generated context rules, and structure guidance. |
+| Generated LLM context | AI tools and reviewers | Summarize source-derived module facts and documentation gaps after regeneration. |
 
 ## Writing Style
 
@@ -54,7 +68,7 @@ cronjob module internals
 
 ## Required Detail
 
-Every page should explain:
+Every page explains:
 
 - Purpose.
 - When to use it.
@@ -79,11 +93,11 @@ When code changes, ask:
 
 If yes, update the related docs in the same work.
 
-## Using The Old Wiki Reference
+## Using Planning Notes
 
-The old wiki reference is useful source material, but it should not be copied directly as final documentation.
+Planning notes and captured product notes preserve useful concepts and page structure. Final documentation states current Nodics behavior directly.
 
-For each old topic:
+For each topic:
 
 1. Preserve the useful concept.
 2. Verify the current implementation.
@@ -104,4 +118,3 @@ npm run llm:validate
 ```
 
 Use documentation review as part of feature review, not as a cleanup task after the feature is finished.
-

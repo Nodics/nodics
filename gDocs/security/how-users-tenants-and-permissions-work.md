@@ -29,7 +29,7 @@ When adding a feature, define the required permissions clearly. Do not rely on h
 
 Human login routes are pre-authentication because the user does not have a token yet.
 
-Only true login or credential initiation routes should be pre-authentication.
+Only true login or credential initiation routes are pre-authentication.
 
 After login, secured APIs must validate authentication, tenant context, and permissions.
 
@@ -37,7 +37,7 @@ After login, secured APIs must validate authentication, tenant context, and perm
 
 Internal module or service access is different from human login.
 
-Internal access should remain secured and should use the configured internal token or service-account permission model.
+Internal access remains secured and uses the configured internal token or service-account permission model.
 
 Do not make internal routes public just to make module-to-module calls easier.
 
@@ -87,4 +87,3 @@ Avoid:
 - Logging secrets.
 - Creating permissions without documentation.
 - Adding runtime mutation paths without audit and rollback.
-

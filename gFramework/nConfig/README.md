@@ -53,6 +53,67 @@ Do not introduce parallel metadata files or alternate names for the same
 concept. Module classification belongs to `nodics.kind`; runtime activation
 belongs to `nodics.runtime`; ownership belongs to `nodics.owns`.
 
+## Configuration Loading Process
+
+Configuration loading is one of the first framework jobs.
+That is still the right mental model: `nConfig` prepares the runtime before
+schema, router, service, data, and process behavior can be trusted.
+
+The current configuration process must:
+
+1. resolve startup arguments and selected topology;
+2. discover candidate packages without treating `docs/` as runtime source;
+3. validate `package.json` and `package.json.nodics` metadata;
+4. resolve active module groups and modules for the selected server/node;
+5. sort modules by deterministic `index` order;
+6. load layered `config/properties.js`;
+7. expose effective properties to downstream services;
+8. execute pre-start and post-start script declarations where applicable;
+9. preserve diagnostics that explain which module supplied an effective value.
+
+If startup behavior is wrong, fix the metadata, active-module configuration,
+properties, or loader contract that owns the problem. Do not add a second
+startup path for one project or server.
+
+## Properties Ownership
+
+`config/properties.js` is the standard home for configurable values. It may own
+runtime defaults, provider defaults, server coordinates, active module
+selection, command declarations, discovery rules, and governance data.
+
+When adding a property, document:
+
+- property path;
+- owning module;
+- default value;
+- valid override layers;
+- tenant/runtime governance behavior;
+- validation and failure behavior;
+- tests proving default and override resolution.
+
+Do not move configurable values to files such as `tooling.js`, standalone
+governance JSON, or custom registries when a property subtree can own them.
+
+## Pre And Post Startup Scripts
+
+`config/prescripts.js` and `config/postscripts.js` are startup extension
+points. They declare startup work that belongs before or after normal
+module startup behavior.
+
+Use startup scripts for controlled lifecycle hooks, not for hiding business
+logic. A script calls a loader-visible service when it needs real behavior, and
+that service has tests and documentation.
+
+Startup script changes must describe:
+
+- when the script runs;
+- which module owns it;
+- whether it is safe to run more than once;
+- tenant/default-tenant behavior;
+- failure behavior;
+- diagnostics;
+- tests or startup evidence.
+
 ## Runtime Hierarchy
 
 Nodics runtime hierarchy is metadata-driven. Directory names and naming suffixes
@@ -120,7 +181,7 @@ coordinates for remote modules the process must call.
 Node modules own instance-specific overrides under a selected server. They are
 for per-node coordinates, worker identity, node-local scheduling, publisher or
 consumer ownership, diagnostics, and capacity choices. A node module must remain
-a child of the selected server and should not redefine the whole server
+a child of the selected server and does not redefine the whole server
 composition when a smaller node override is enough.
 
 These responsibilities are based on `package.json.nodics.kind` and parent

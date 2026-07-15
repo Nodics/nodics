@@ -38,6 +38,49 @@ Schema changes must document:
 - API/router impact;
 - tests for default behavior and later-module overrides.
 
+## Schema Loader Process
+
+Schema loading is a multi-step process: collect definitions,
+merge them through the layered architecture, create runtime schema/model
+objects, and expose generated behavior. Nodics applies this through
+module-owned `src/schemas/schemas.js`, generated artifacts, and runtime
+validation.
+
+Schema loading must preserve:
+
+- active module order;
+- default/common schema contributions;
+- module-owned schema contributions;
+- governed override metadata where schema runtime governance is involved;
+- validators and interceptors;
+- tenant-aware model/database resolution;
+- generated tests and OpenAPI/API impact.
+
+If a later module changes a schema, that change must be explicit, documented,
+and tested. Do not rely on accidental merge order or hidden object mutation.
+
+## Model Middleware
+
+Model middleware extends generated persistence behavior without forcing every
+schema to hand-write persistence code.
+
+Use model middleware for reusable persistence hooks such as default query
+behavior, reference population, lifecycle handling, validation hooks, or
+provider-neutral transformations.
+
+When adding or changing middleware, document:
+
+- which generated model behavior it affects;
+- whether it runs before or after persistence;
+- input and output shape;
+- tenant/request context behavior;
+- failure behavior;
+- provider assumptions;
+- tests for default and override behavior.
+
+Middleware must not bypass schema access policy, tenant database resolution, or
+interceptor behavior.
+
 ## DAO And Generated CRUD
 
 `nDatabase` owns the platform data-access layer: generated model functions,
@@ -48,12 +91,23 @@ overrideable through services, validators, interceptors, middleware, and later
 module schema definitions. Do not bypass runtime access policy, cache policy,
 or tenant database resolution from direct persistence helpers.
 
+Treat generated CRUD as a capability contract. If a schema exposes
+retrieve, save, update, remove, or query behavior, that behavior needs
+validation, access control, diagnostics, generated tests, and documentation.
+Do not delete generated functions to change behavior; change source definitions
+or the generation contract.
+
 ## Nested Schema Guidance
 
 Use embedded schemas for data that belongs inside the parent aggregate. Use
 referential schemas only when the relationship must be independently persisted
 and queried. Referential designs need clear service ownership, validation, and
 tests because they create cross-model consistency concerns.
+
+Nested and referenced schema choices affect import/export format, generated
+API response shape, search indexing, update semantics, and rollback behavior.
+Capture those impacts in the owning module README when the schema is
+business-visible.
 
 ## Extension Contract
 

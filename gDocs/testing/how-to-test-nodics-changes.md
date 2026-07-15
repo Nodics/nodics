@@ -10,6 +10,10 @@ Use focused tests while developing.
 
 Use broader suites before committing or releasing.
 
+Nodics testing is layered in the same way as the framework. A module can own common tests, environment-specific tests, generated schema/API tests, provider tests, topology tests, and override/customization tests.
+
+The goal is not only to prove one function works. The goal is to prove the capability still works through the hierarchy.
+
 ## Common Commands
 
 Syntax check:
@@ -74,11 +78,20 @@ Test:
 - Generated API behavior if schemas or routes changed.
 - Documentation and generated context if source files changed.
 
+For extension points, also test:
+
+- default framework behavior;
+- later module override behavior;
+- configuration override behavior;
+- tenant-specific behavior when tenant context is involved;
+- consolidated runtime behavior;
+- modular process behavior when modules communicate across servers.
+
 ## Live Tests
 
 Some tests require live infrastructure such as Redis.
 
-Live tests should be explicit and guarded. They should not silently use shared developer, staging, or production data.
+Live tests are explicit and guarded. They do not silently use shared developer, staging, or production data.
 
 Example:
 
@@ -106,6 +119,8 @@ npm run llm:generate
 npm run llm:validate
 ```
 
+Generated LLM context is part of the verification story. It helps future AI tools and developers understand which files, tests, extension points, generated artifacts, and documentation belong to a module.
+
 ## What To Avoid
 
 Avoid:
@@ -115,4 +130,3 @@ Avoid:
 - Running live tests against unsafe data.
 - Editing generated tests manually as the source of truth.
 - Updating code without updating documentation.
-

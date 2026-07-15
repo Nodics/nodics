@@ -27,7 +27,7 @@ contract. `docs/` contains permanent module documentation. `llm/` contains
 AI-specific guidance, examples, contracts, and generated context.
 
 `docs/` is never a runtime module source. Raw module discovery must skip folders
-named `docs`, including root reference material and module documentation, even
+named `docs`, including root planning notes and module documentation, even
 when copied material under `docs/` contains `package.json` files.
 
 `data/` is optional and must be owned by the concrete module whose records are
@@ -104,6 +104,6 @@ exception must be documented in the owning module README and tests.
 New project, environment, server, and node modules must follow
 `gSetup/llm/module-generation-guide.md`. Generation must be driven by module
 metadata, active-module registration, layered configuration, source
-definitions, tests, documentation, and regenerated artifacts. Do not revive or
-copy `nCommon/templates`; the retired template folder is intentionally removed
-from active scaffolding.
+definitions, tests, documentation, and regenerated artifacts. Do not copy
+`nCommon/templates`; active scaffolding comes from maintained module-generation
+contracts.

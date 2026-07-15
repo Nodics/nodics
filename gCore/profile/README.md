@@ -41,9 +41,9 @@ service principals require credential rotation. Rotation is a separate
 permissioned operation that accepts a client-generated replacement key, so the
 caller retains the secret even if the response is interrupted. The key is
 converted to a keyed digest before persistence and never returned by the API.
-Legacy plaintext service keys are revoked during migration and are never
+Existing plaintext service keys are revoked during migration and are never
 restored by rollback. Rollback touches
-only the audited change set and deliberately keeps legacy human credentials
+only the audited change set and deliberately keeps existing human credentials
 revoked.
 
 ## Ownership and session invalidation
@@ -87,3 +87,64 @@ identity data and `gFramework/nAuth` security/token infrastructure.
 Profile owns people, groups, credentials, tenants, enterprises, and persisted
 identity state. `nAuth` owns framework security primitives, JWT/API-key
 contracts, service tokens, cache requirements, and strict auth activation.
+
+## NAAM-Style Identity Model
+
+NAAMS means Nodics authentication and authorization management.
+In the current framework, this capability is split cleanly:
+
+- `profile` owns persisted identity data and tenant/business identity models.
+- `nAuth` owns framework authentication primitives, token behavior, API-key
+  contracts, service-token handling, and auth cache requirements.
+
+Profile-owned identity data includes:
+
+- enterprise and tenant records;
+- users, customers, employees, and service principals;
+- addresses and contacts;
+- user groups and inherited permissions;
+- passwords and credential state;
+- API-key ownership metadata;
+- identity migration and bootstrap audit data.
+
+Do not add authentication token infrastructure to profile when it belongs to
+`nAuth`, and do not add persisted identity business data to `nAuth` when it
+belongs to profile.
+
+## Authentication And Password Management
+
+Human username/password login is pre-authentication behavior. It still needs
+enterprise and tenant context before credentials can be validated, but it does
+not require an existing bearer token.
+
+Module-to-module and service-account access are separate secured capabilities.
+They must use API keys, internal service tokens, route permissions, tenant
+scoping, auth-version invalidation, and strict cache requirements.
+
+Password and credential changes must:
+
+- validate the principal and tenant;
+- update auth-version or equivalent invalidation state;
+- invalidate affected sessions;
+- avoid exposing secrets in logs, responses, generated context, or audit
+  snapshots;
+- preserve rollback rules defined by identity governance.
+
+## Group And Permission Governance
+
+Groups are not just labels. They carry access contracts.
+
+When adding or changing groups, document:
+
+- parent group relationship;
+- inherited permissions;
+- active/inactive behavior;
+- tenant/customer scope;
+- generated API access;
+- bootstrap or migration behavior;
+- tests for parent validation, cycle prevention, and permission catalog
+  membership.
+
+Customer registration must not allow callers to assign privileged groups,
+permissions, API keys, or service-only state. Those changes require governed
+administrative or service flows.

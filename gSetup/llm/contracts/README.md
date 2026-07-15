@@ -6,7 +6,10 @@ Use these files for rules that are more specific than root `AGENTS.md` and the m
 
 ## Contract Index
 
-- `nodics-principles.md`: compact statement of platform invariants.
+- `nodics-principles.md`: canonical platform principles for layered
+  ownership, source-of-truth, extension-first implementation, loader-visible
+  behavior, configuration ownership, generated artifacts, security/governance,
+  and human/AI equality.
 - `developer-implementation-contract.md`: shared human-developer and AI-tool
   implementation rules for Nodics-native development.
 - `human-maintainability-contract.md`: maintainability rules for code that

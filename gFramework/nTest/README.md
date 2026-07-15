@@ -53,3 +53,41 @@ discovery and generated-context contracts above.
 Every feature that adds or changes an extension point should include a test
 showing that a later-loaded module can override or customize the behavior
 without editing out-of-the-box Nodics code.
+
+## Common And Environment-Specific Tests
+
+Nodics separates common tests from environment-specific tests through module ownership and layered discovery.
+
+Use common tests when the behavior should pass in every valid runtime:
+
+- schema contracts;
+- generated CRUD/API contracts;
+- service behavior;
+- route permission contracts;
+- utility behavior;
+- default and override behavior.
+
+Use environment, server, or node tests when the behavior depends on topology:
+
+- selected `activeModules`;
+- server ports and remote coordinates;
+- node ownership;
+- startup data;
+- provider selection;
+- modular process communication;
+- live infrastructure guarded by explicit opt-in.
+
+Do not hardcode environment names into generic tests. Put topology-specific
+tests under the environment/server/node module that owns that topology.
+
+## Generated Tests
+
+Generated tests are derived from source definitions. They can cover schema
+contracts, CRUD scenarios, API contracts, and API scenarios.
+
+If a generated test is wrong, fix the schema, route, generator, or test source
+definition. Do not hand-edit generated tests as the long-term source of truth.
+
+Generated tests should make framework behavior visible for both humans and AI
+tools: what schema exists, which APIs are exposed, which routes are secured,
+and which scenarios are expected to work.

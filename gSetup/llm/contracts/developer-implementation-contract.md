@@ -246,5 +246,5 @@ developer-facing concepts and documentation structure:
 - generated layers
 - customization/generalization patterns
 
-Before publishing or implementing from reference material, reconcile each topic
-with current source code and current contracts.
+Before publishing or implementing from planning notes, reconcile each topic with
+source code and active contracts.

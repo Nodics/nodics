@@ -30,7 +30,7 @@ The core rule is:
 Capabilities are stable. Implementations can change.
 ```
 
-For example, Nodics can provide a default database capability. A project can add a new database provider or change data access behavior through the module hierarchy, but it should not edit the original framework source just to serve one customer.
+For example, Nodics can provide a default database capability. A project can add a new database provider or change data access behavior through the module hierarchy, but it does not edit the original framework source just to serve one customer.
 
 This makes Nodics especially strong for customer-specific enterprise work. The framework provides stable capabilities, while projects negotiate the implementation through approved extension layers.
 
@@ -76,13 +76,13 @@ This lets developers interact with AI tools conversationally while still keeping
 
 Nodics is based on a few simple ideas.
 
-**Modules own capabilities.** A module should own the behavior, configuration, schemas, tests, and documentation for the feature it provides.
+**Modules own capabilities.** A module owns the behavior, configuration, schemas, tests, and documentation for the feature it provides.
 
-**Projects extend through layers.** A customer project should add or override behavior through project modules, environment modules, server modules, node modules, tenant configuration, runtime configuration, or data. It should not modify released framework code unless the work is explicitly framework maintenance.
+**Projects extend through layers.** A customer project adds or overrides behavior through project modules, environment modules, server modules, node modules, tenant configuration, runtime configuration, or data. It does not modify released framework code unless the work is explicitly framework maintenance.
 
 **Configuration is layered.** Defaults come from the framework. Projects, environments, servers, nodes, tenants, and runtime configuration can refine behavior later in the hierarchy.
 
-**Generated files come from source definitions.** Generated APIs, schemas, tests, OpenAPI output, and LLM context should be regenerated from the owning source. Do not hand-maintain generated output as the source of truth.
+**Generated files come from source definitions.** Regenerate generated APIs, schemas, tests, OpenAPI output, and LLM context from the owning source. Do not hand-maintain generated output as the source of truth.
 
 **Security is part of the contract.** Authentication, authorization, access control, validation, audit, rollback, diagnostics, and tests are not optional extras.
 
