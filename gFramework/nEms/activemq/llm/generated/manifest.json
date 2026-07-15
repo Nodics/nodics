@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to activemq"
   },
-  "sourceFiles": 6,
+  "sourceFiles": 9,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 16,
-  "sourceFingerprint": "0ada111f762d13d6a43ab994e402ef8f75fe28278779be2b92267209c766be8e",
+  "ownedFiles": 19,
+  "sourceFingerprint": "d63fc879566eca048a241f3bbd35cb3d4de063a8f7fcad8a9718ae33f0bb5b76",
   "documentation": {
-    "documented": 10,
+    "documented": 13,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

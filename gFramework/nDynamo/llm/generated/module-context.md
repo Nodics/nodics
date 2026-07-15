@@ -32,10 +32,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 34 |
+| Source files | 36 |
 | Test files | 41 |
 | Data files | 0 |
-| All module-owned files | 64 |
+| All module-owned files | 66 |
 | Local schema definitions | 7 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 41 |
+| Documented | 43 |
 | Partially documented | 3 |
 | Undocumented | 16 |
 | Inventory only | 4 |
@@ -82,7 +82,7 @@
 - `gFramework/nDynamo/config/prescripts.js`
 - `gFramework/nDynamo/config/postscripts.js`
 - `gFramework/nDynamo/src/schemas/schemas.js`
-- `gFramework/nDynamo/src/router/router.js`
+- `gFramework/nDynamo/src/router/routers.js`
 
 ## File Inventory
 
@@ -104,9 +104,9 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/src/facade/class/defaultClassConfigurationFacade.js` | `src` | `documented` | 6/6 | Coordinates facade-level delegation for nDynamo default class configuration facade operations. |  |
 | `gFramework/nDynamo/src/facade/router/defaultRouterConfigurationFacade.js` | `src` | `documented` | 5/5 | Coordinates facade-level delegation for nDynamo default router configuration facade operations. |  |
 | `gFramework/nDynamo/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers nDynamo interceptor wiring for pipeline extension points. |  |
-| `gFramework/nDynamo/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nDynamo pipeline wiring and execution contracts. |  |
+| `gFramework/nDynamo/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nDynamo pipeline wiring and execution contracts. |  |
 | `gFramework/nDynamo/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nDynamo route registration and HTTP exposure metadata. |  |
-| `gFramework/nDynamo/src/router/router.js` | `src` | `documented` | 0/0 | Defines nDynamo route registration and HTTP exposure metadata. |  |
+| `gFramework/nDynamo/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nDynamo route registration and HTTP exposure metadata. |  |
 | `gFramework/nDynamo/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nDynamo schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nDynamo/src/service/access/defaultSchemaAccessPolicyContractService.js` | `src` | `documented` | 14/14 | Defines and validates the runtime schema/property access policy contract used by the Nodics control plane. This service owns the common action/effect vocabulary only; read/write/import/export enforcement is added by later generated CRUD and data-processing layers. |  |
 | `gFramework/nDynamo/src/service/access/defaultSchemaAccessPolicyResolverService.js` | `src` | `documented` | 24/24 | Resolves effective runtime schema/property access policy decisions for a tenant, module, schema, property, action, and user-group context. This service computes decisions only; generated CRUD, import/export, and admin UI layers consume the decision in later enforcement slices. |  |
@@ -118,6 +118,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationPreviewService.js` | `src` | `documented` | 32/32 | Computes non-destructive previews for runtime schema, router, tenant-property, and schema access-policy configuration activations before they are activated. |  |
 | `gFramework/nDynamo/src/service/audit/defaultRuntimeConfigurationRollbackService.js` | `src` | `documented` | 14/14 | Restores runtime schema, router, tenant-property, and schema access-policy configurations from activation history without bypassing the normal generated service and activation pipelines. |  |
 | `gFramework/nDynamo/src/service/class/defaultClassConfigurationService.js` | `src` | `documented` | 9/9 | Implements nDynamo default class configuration service business behavior and extension logic. |  |
+| `gFramework/nDynamo/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements dynamo default sample service business behavior and extension logic. |  |
 | `gFramework/nDynamo/src/service/event/defaultClassConfigurationChangeListenerService.js` | `src` | `documented` | 3/3 | Implements nDynamo default class configuration change listener service business behavior and extension logic. |  |
 | `gFramework/nDynamo/src/service/event/defaultRouterConfigurationChangeListenerService.js` | `src` | `documented` | 3/3 | Implements nDynamo default router configuration change listener service business behavior and extension logic. |  |
 | `gFramework/nDynamo/src/service/event/defaultSchemaConfigurationChangeListenerService.js` | `src` | `documented` | 3/3 | Implements nDynamo default schema configuration change listener service business behavior and extension logic. |  |
@@ -131,6 +132,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/src/service/schema/defaultSchemaConfigurationService.js` | `src` | `documented` | 11/11 | Implements nDynamo default schema configuration service business behavior and extension logic. |  |
 | `gFramework/nDynamo/src/service/tooling/defaultGovernanceReportGeneratorService.js` | `src` | `documented` | 0/0 | Generates a server-owned report of effective schema, router, artifact, generated-file, warning, and override traceability state. |  |
 | `gFramework/nDynamo/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared nDynamo utility exports for enums. |  |
+| `gFramework/nDynamo/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared dynamo status and error definition exports. |  |
 | `gFramework/nDynamo/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nDynamo utility exports for utils. |  |
 | `gFramework/nDynamo/test/classConfigurationControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/test/classConfigurationServiceContract.test.js` | `test` | `documented` | 8/8 | Validates persisted and runtime class configuration behavior for dynamic Nodics service classes. |  |

@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Startio module for startioLocalNemsServer"
   },
-  "sourceFiles": 6,
+  "sourceFiles": 8,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 16,
-  "sourceFingerprint": "a25ad9b8e6c4c4560dc2ce276085aabac9593e7504ab3536c10f342645a453ca",
+  "ownedFiles": 18,
+  "sourceFingerprint": "c82d2e935e3dbe7238b448636691398b81cda79e106ea12042eb0fad6c1b48e8",
   "documentation": {
-    "documented": 10,
+    "documented": 12,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

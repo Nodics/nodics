@@ -30,10 +30,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 9 |
+| Source files | 12 |
 | Test files | 24 |
 | Data files | 24 |
-| All module-owned files | 43 |
+| All module-owned files | 46 |
 | Local schema definitions | 7 |
 
 ## Ownership And Dependencies
@@ -63,7 +63,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 37 |
+| Documented | 40 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -78,7 +78,7 @@
 - `gContent/cms/config/prescripts.js`
 - `gContent/cms/config/postscripts.js`
 - `gContent/cms/src/schemas/schemas.js`
-- `gContent/cms/src/router/router.js`
+- `gContent/cms/src/router/routers.js`
 
 ## File Inventory
 
@@ -119,13 +119,16 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gContent/cms/nodics.js` | `module` | `documented` | 2/2 | CMS module lifecycle entrypoint used by the Nodics module loader. |  |
 | `gContent/cms/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gContent/cms/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Schema interceptor registrations for CMS component details, renderer enrichment, and content relationship normalization. |  |
-| `gContent/cms/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Reserved CMS pipeline contribution for content-management workflows. |  |
+| `gContent/cms/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Reserved CMS pipeline contribution for content-management workflows. |  |
 | `gContent/cms/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved CMS router application configuration contribution. |  |
-| `gContent/cms/src/router/router.js` | `src` | `documented` | 0/0 | Reserved CMS route contribution for custom CMS APIs beyond generated schema routes. |  |
+| `gContent/cms/src/router/routers.js` | `src` | `documented` | 0/0 | Reserved CMS route contribution for custom CMS APIs beyond generated schema routes. |  |
 | `gContent/cms/src/schemas/schemas.js` | `src` | `documented` | 0/0 | CMS schema contribution defining type codes, renderer mappings, sites, pages, components, and component-detail relationships. |  |
+| `gContent/cms/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements cms default sample service business behavior and extension logic. |  |
 | `gContent/cms/src/service/interceptors/defaultCmsComponentDetailInterceptorService.js` | `src` | `documented` | 5/5 | CMS interceptor service that generates component-detail codes and normalizes page/component relationship sources before save. |  |
 | `gContent/cms/src/service/interceptors/defaultItemRendererInterceptorService.js` | `src` | `documented` | 4/4 | CMS post-load interceptor service that enriches pages and components with renderer names from type-code mappings. |  |
 | `gContent/cms/src/service/interceptors/defaultSubComponentsResolveInterceptorService.js` | `src` | `documented` | 4/4 | CMS post-load interceptor service that resolves active child components for loaded CMS component models. |  |
+| `gContent/cms/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared cms enum definition exports. |  |
+| `gContent/cms/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared cms status and error definition exports. |  |
 | `gContent/cms/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for CMS-specific helper functions. |  |
 | `gContent/cms/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Reserved common CMS test contribution showing the module-owned test-suite shape for shared CMS behavior. | add JSDoc for 7 exported method(s) |
 | `gContent/cms/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Reserved local-environment CMS test contribution showing how environment-specific test suites can be attached. | add JSDoc for 7 exported method(s) |

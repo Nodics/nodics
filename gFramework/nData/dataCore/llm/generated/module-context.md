@@ -29,10 +29,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 14 |
+| Source files | 16 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 24 |
+| All module-owned files | 26 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -61,7 +61,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 18 |
+| Documented | 20 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -76,7 +76,7 @@
 - `gFramework/nData/dataCore/config/prescripts.js`
 - `gFramework/nData/dataCore/config/postscripts.js`
 - `gFramework/nData/dataCore/src/schemas/schemas.js`
-- `gFramework/nData/dataCore/src/router/router.js`
+- `gFramework/nData/dataCore/src/router/routers.js`
 
 ## File Inventory
 
@@ -94,16 +94,18 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/dataCore/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nData/dataCore/src/event/listeners.js` | `src` | `documented` | 0/0 | Documents nData listeners module behavior. |  |
 | `gFramework/nData/dataCore/src/lib/cronJobError.js` | `src` | `documented` | 0/0 | Provides reusable nData library primitives for cron job error. |  |
-| `gFramework/nData/dataCore/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nData pipeline wiring and execution contracts. |  |
+| `gFramework/nData/dataCore/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nData pipeline wiring and execution contracts. |  |
 | `gFramework/nData/dataCore/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
-| `gFramework/nData/dataCore/src/router/router.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
+| `gFramework/nData/dataCore/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
 | `gFramework/nData/dataCore/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nData schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nData/dataCore/src/service/config/defaultDataConfigurationService.js` | `src` | `documented` | 18/18 | Implements nData default data configuration service business behavior and extension logic. |  |
+| `gFramework/nData/dataCore/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements dataCore default sample service business behavior and extension logic. |  |
 | `gFramework/nData/dataCore/src/service/proc/finalizer/defaultDataFinalizerService.js` | `src` | `documented` | 7/7 | Implements nData default data finalizer service business behavior and extension logic. |  |
 | `gFramework/nData/dataCore/src/service/proc/handler/defaultSchemaDataHandlerService.js` | `src` | `documented` | 9/9 | Implements nData default schema data handler service business behavior and extension logic. |  |
 | `gFramework/nData/dataCore/src/service/proc/process/defaultImportDataFilterProcessService.js` | `src` | `documented` | 3/3 | Implements nData default import data filter process service business behavior and extension logic. |  |
 | `gFramework/nData/dataCore/src/service/proc/writer/defaultFileWriterProcessService.js` | `src` | `documented` | 5/5 | Implements nData default file writer process service business behavior and extension logic. |  |
 | `gFramework/nData/dataCore/src/service/writer/defaultDataWriterService.js` | `src` | `documented` | 3/3 | Implements nData default data writer service business behavior and extension logic. |  |
+| `gFramework/nData/dataCore/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared dataCore enum definition exports. |  |
 | `gFramework/nData/dataCore/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nData utility exports for status definitions. |  |
 | `gFramework/nData/dataCore/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nData utility exports for utils. |  |
 | `gFramework/nData/dataCore/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nData test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

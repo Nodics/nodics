@@ -29,10 +29,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 13 |
+| Source files | 15 |
 | Test files | 9 |
 | Data files | 0 |
-| All module-owned files | 30 |
+| All module-owned files | 32 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -61,7 +61,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 24 |
+| Documented | 26 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -76,7 +76,7 @@
 - `gFramework/nCache/cache/config/prescripts.js`
 - `gFramework/nCache/cache/config/postscripts.js`
 - `gFramework/nCache/cache/src/schemas/schemas.js`
-- `gFramework/nCache/cache/src/router/router.js`
+- `gFramework/nCache/cache/src/router/routers.js`
 
 ## File Inventory
 
@@ -94,15 +94,17 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/cache/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nCache/cache/src/event/listeners.js` | `src` | `documented` | 0/0 | Registers layered cache configuration and peer-node invalidation event listeners. |  |
 | `gFramework/nCache/cache/src/lib/cacheError.js` | `src` | `documented` | 0/0 | Provides reusable nCache library primitives for cache error. |  |
-| `gFramework/nCache/cache/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nCache pipeline wiring and execution contracts. |  |
+| `gFramework/nCache/cache/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nCache pipeline wiring and execution contracts. |  |
 | `gFramework/nCache/cache/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
-| `gFramework/nCache/cache/src/router/router.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
+| `gFramework/nCache/cache/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
 | `gFramework/nCache/cache/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nCache schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nCache/cache/src/service/cache/defaultCacheService.js` | `src` | `documented` | 34/34 | Routes cache operations and runtime cache-configuration changes through the layered engine and event contracts. |  |
 | `gFramework/nCache/cache/src/service/config/defaultCacheConfigurationService.js` | `src` | `documented` | 15/15 | Builds layered cache engine/channel configuration and deterministic tenant- and principal-scoped cache keys. |  |
+| `gFramework/nCache/cache/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements cache default sample service business behavior and extension logic. |  |
 | `gFramework/nCache/cache/src/service/engine/defaultCacheEngineService.js` | `src` | `documented` | 15/15 | Builds cache channels from layered configuration and validates adapter capabilities before any connection or fallback is activated. |  |
 | `gFramework/nCache/cache/src/service/event/defaultCacheChangeListenerService.js` | `src` | `documented` | 4/4 | Adapts distributed cache configuration events into tenant-aware local service updates. |  |
 | `gFramework/nCache/cache/src/service/policy/defaultCachePolicyService.js` | `src` | `documented` | 18/18 | Centralizes router/API and DAO/schema cacheability decisions using layered properties while preserving legacy utility checks. |  |
+| `gFramework/nCache/cache/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared cache enum definition exports. |  |
 | `gFramework/nCache/cache/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Defines stable success, error, and governance reason codes for cache operations, misses, configuration validation, client availability, mutation-scope enforcement, and cacheability decisions. |  |
 | `gFramework/nCache/cache/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nCache utility exports for utils. |  |
 | `gFramework/nCache/cache/test/cacheAdapterContract.test.js` | `test` | `documented` | 0/0 | Verifies adapter capability metadata, TTL semantics, Local/Redis operation parity, and fail-closed Hazelcast activation. |  |

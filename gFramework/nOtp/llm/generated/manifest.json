@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to nOtp"
   },
-  "sourceFiles": 11,
+  "sourceFiles": 13,
   "testFiles": 3,
   "dataFiles": 0,
-  "ownedFiles": 22,
-  "sourceFingerprint": "ce26baefcd7467fb78e3ec5d5db48567927453e1041d07336bfcfa32681b42aa",
+  "ownedFiles": 24,
+  "sourceFingerprint": "a5fa92d566d0c1c259f0f56f34bf6908c533f682a38591e768fadcd0c74d948f",
   "documentation": {
-    "documented": 16,
+    "documented": 18,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

@@ -33,10 +33,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 33 |
+| Source files | 34 |
 | Test files | 15 |
 | Data files | 4 |
-| All module-owned files | 52 |
+| All module-owned files | 53 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -69,7 +69,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 46 |
+| Documented | 47 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -84,7 +84,7 @@
 - `gCore/cronjob/config/prescripts.js`
 - `gCore/cronjob/config/postscripts.js`
 - `gCore/cronjob/src/schemas/schemas.js`
-- `gCore/cronjob/src/router/router.js`
+- `gCore/cronjob/src/router/routers.js`
 
 ## File Inventory
 
@@ -112,12 +112,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/cronjob/src/lib/cronJob.js` | `src` | `documented` | 2/2 | Runtime wrapper around the `cron` package that controls one tenant-scoped scheduled job and its lifecycle pipelines. |  |
 | `gCore/cronjob/src/lib/cronJobContainer.js` | `src` | `documented` | 0/0 | Process-local tenant/job pool that creates, updates, runs, starts, stops, pauses, resumes, and removes cronjob wrappers. |  |
 | `gCore/cronjob/src/lib/cronJobError.js` | `src` | `documented` | 0/0 | Cronjob-specific Nodics error class using the configured cronjob default error code. |  |
-| `gCore/cronjob/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Cronjob lifecycle pipeline definitions for start, stop, pause, resume, run, complete, error, node up, and node down processing. |  |
+| `gCore/cronjob/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Cronjob lifecycle pipeline definitions for start, stop, pause, resume, run, complete, error, node up, and node down processing. |  |
 | `gCore/cronjob/src/router/appConfig.js` | `src` | `documented` | 7/7 | Reserved cronjob application router hooks for session, logging, cache, body parser, headers, error routes, and extras. |  |
-| `gCore/cronjob/src/router/router.js` | `src` | `documented` | 0/0 | Secured cronjob route contracts for creating, updating, running, starting, stopping, removing, pausing, and resuming jobs. |  |
+| `gCore/cronjob/src/router/routers.js` | `src` | `documented` | 0/0 | Secured cronjob route contracts for creating, updating, running, starting, stopping, removing, pausing, and resuming jobs. |  |
 | `gCore/cronjob/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Cronjob schema definitions for job records, triggers, logs, and node responsibility models. |  |
 | `gCore/cronjob/src/service/config/defaultCronJobConfigurationService.js` | `src` | `documented` | 11/11 | Caches cronjob interceptor and validator configuration and supplies the default active-job query. |  |
 | `gCore/cronjob/src/service/cronjob/defaultCronJobService.js` | `src` | `documented` | 12/12 | Coordinates persisted cronjob definitions with the in-memory scheduler container across tenants. |  |
+| `gCore/cronjob/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements cronjob default sample service business behavior and extension logic. |  |
 | `gCore/cronjob/src/service/event/defaultEventHandlerJobService.js` | `src` | `documented` | 5/5 | Cronjob job implementation that triggers NEMS event processing and records job outcome. |  |
 | `gCore/cronjob/src/service/handler/defaultJobHandlerService.js` | `src` | `documented` | 8/8 | Default logging hooks for cronjob lifecycle events. |  |
 | `gCore/cronjob/src/service/interceptor/defaultJobActivatorInterceptorService.js` | `src` | `documented` | 1/1 | Activates newly saved cronjob records by creating and starting them in the scheduler pool. |  |

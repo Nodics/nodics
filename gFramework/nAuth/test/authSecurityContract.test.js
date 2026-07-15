@@ -15,7 +15,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 
 const repositoryRoot = path.resolve(__dirname, '../../..');
-const authSecurity = require('../src/utils/authSecurity');
+const authSecurity = require('../src/service/security/defaultAuthSecurityService');
 
 function configuration(values) {
     return {
@@ -57,6 +57,9 @@ global.CLASSES = {
         }
     },
     CacheError: class CacheError extends Error {}
+};
+global.SERVICE = {
+    DefaultAuthSecurityService: authSecurity
 };
 
 const provider = require('../src/service/authentication/defaultAuthenticationProviderService');

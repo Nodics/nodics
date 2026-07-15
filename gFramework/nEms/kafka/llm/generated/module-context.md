@@ -28,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 6 |
+| Source files | 9 |
 | Test files | 3 |
 | Data files | 0 |
-| All module-owned files | 17 |
+| All module-owned files | 20 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 10 |
+| Documented | 13 |
 | Partially documented | 2 |
 | Undocumented | 1 |
 | Inventory only | 4 |
@@ -74,7 +74,7 @@
 - `gFramework/nEms/kafka/config/prescripts.js`
 - `gFramework/nEms/kafka/config/postscripts.js`
 - `gFramework/nEms/kafka/src/schemas/schemas.js`
-- `gFramework/nEms/kafka/src/router/router.js`
+- `gFramework/nEms/kafka/src/router/routers.js`
 
 ## File Inventory
 
@@ -90,11 +90,14 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nEms/kafka/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nEms/kafka/nodics.js` | `module` | `documented` | 2/2 | Registers the nEms module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nEms/kafka/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nEms/kafka/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nEms pipeline wiring and execution contracts. |  |
+| `gFramework/nEms/kafka/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nEms pipeline wiring and execution contracts. |  |
 | `gFramework/nEms/kafka/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nEms route registration and HTTP exposure metadata. |  |
-| `gFramework/nEms/kafka/src/router/router.js` | `src` | `documented` | 0/0 | Defines nEms route registration and HTTP exposure metadata. |  |
+| `gFramework/nEms/kafka/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nEms route registration and HTTP exposure metadata. |  |
 | `gFramework/nEms/kafka/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nEms schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nEms/kafka/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements kafka default sample service business behavior and extension logic. |  |
 | `gFramework/nEms/kafka/src/service/kafka/defaultKafkaClientService.js` | `src` | `documented` | 11/11 | Implements nEms default kafka client service business behavior and extension logic. |  |
+| `gFramework/nEms/kafka/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared kafka enum definition exports. |  |
+| `gFramework/nEms/kafka/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared kafka status and error definition exports. |  |
 | `gFramework/nEms/kafka/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nEms utility exports for utils. |  |
 | `gFramework/nEms/kafka/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nEms test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nEms/kafka/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nEms test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

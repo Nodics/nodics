@@ -42,7 +42,7 @@ global.FACADE = {
 };
 
 const controller = require('../src/controller/history/defaultImportRunHistoryController');
-const routerConfig = require('../src/router/router');
+const routerConfig = require('../src/router/routers');
 const schemas = require('../src/schemas/schemas');
 
 (async function () {

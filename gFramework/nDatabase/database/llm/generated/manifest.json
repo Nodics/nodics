@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to database"
   },
-  "sourceFiles": 35,
+  "sourceFiles": 37,
   "testFiles": 7,
   "dataFiles": 0,
-  "ownedFiles": 50,
-  "sourceFingerprint": "3872f3e4c1bcb50e8a8fbe59f07663ca72f0fafd805ad8a075149462bf0f694f",
+  "ownedFiles": 52,
+  "sourceFingerprint": "e3af3944f7a1540238ac7611853cb31ad2c8589230b1ee5207fa6cd0e7c39fd1",
   "documentation": {
-    "documented": 40,
+    "documented": 42,
     "partially-documented": 3,
     "undocumented": 3,
     "inventory-only": 4

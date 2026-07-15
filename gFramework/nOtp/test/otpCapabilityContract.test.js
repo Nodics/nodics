@@ -61,7 +61,7 @@ global.FACADE = {
     DefaultOtpFacade: require('../src/facade/DefaultOtpFacade')
 };
 
-const router = require('../src/router/router');
+const router = require('../src/router/routers');
 const controller = require('../src/controller/DefaultOtpController');
 const handler = require('../src/service/handler/defaultOtpHandlerService');
 handler.LOG = { debug: function () {} };

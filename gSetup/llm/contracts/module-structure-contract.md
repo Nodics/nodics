@@ -56,7 +56,21 @@ Runtime artifacts must live where the Nodics loader can discover and merge them:
 - services: `src/service/**/*Service.js`
 - controllers: `src/controller/**/*Controller.js`
 - facades: `src/facade/**/*Facade.js`
-- pipeline definitions: `src/pipelines/**/*Definition.js`
+- route registries: `src/router/routers.js`
+- pipeline definitions: `src/pipelines/pipelines.js`
+- utility registries: `src/utils/utils.js`, `src/utils/enums.js`, and
+  `src/utils/statusDefinitions.js`
+
+Every module that has `src/service/` must include
+`src/service/defaultSampleService.js` as the standard service scaffold. It must
+export mergeable `init` and `postInit` functions and use module-specific
+ownership documentation so generated modules have a visible service extension
+shape from the beginning.
+
+Every generated module that has `src/utils/` must include `utils.js`,
+`enums.js`, and `statusDefinitions.js`. These files are required even when they
+start empty, because they tell developers and AI tools where general helpers,
+enum definitions, and status/error contracts belong.
 
 These files must export mergeable objects, normally
 `module.exports = { methodName: function (...) {} }`, so later-loaded modules can

@@ -624,7 +624,7 @@ async function initialize(options, warnings) {
     }
     const rawSchema = await loadEffectiveSchemas(options, warnings);
     await SERVICE.DefaultRouterService.prepareModulesConfiguration();
-    const rawRouters = SERVICE.DefaultFilesLoaderService.loadRouterFiles('/src/router/router.js');
+    const rawRouters = SERVICE.DefaultFilesLoaderService.loadRouterFiles('/src/router/routers.js');
     SERVICE.DefaultRouterConfigurationService.setRawRouters(rawRouters);
     return {
         rawRouters: rawRouters,

@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. It will hold all elastic search related configurations"
   },
-  "sourceFiles": 8,
+  "sourceFiles": 11,
   "testFiles": 4,
   "dataFiles": 0,
-  "ownedFiles": 20,
-  "sourceFingerprint": "bb299c3d8c5a94839531e5702e0908a3069cce3a559265b3184ee7d58992b2cf",
+  "ownedFiles": 23,
+  "sourceFingerprint": "20faff4909143a791d38527d9877a680eeddad1c8013d680509ea224cec0b652",
   "documentation": {
-    "documented": 14,
+    "documented": 17,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

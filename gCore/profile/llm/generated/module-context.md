@@ -34,10 +34,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 48 |
+| Source files | 49 |
 | Test files | 46 |
 | Data files | 17 |
-| All module-owned files | 87 |
+| All module-owned files | 88 |
 | Local schema definitions | 11 |
 
 ## Ownership And Dependencies
@@ -71,7 +71,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 72 |
+| Documented | 73 |
 | Partially documented | 1 |
 | Undocumented | 8 |
 | Inventory only | 6 |
@@ -86,7 +86,7 @@
 - `gCore/profile/config/prescripts.js`
 - `gCore/profile/config/postscripts.js`
 - `gCore/profile/src/schemas/schemas.js`
-- `gCore/profile/src/router/router.js`
+- `gCore/profile/src/router/routers.js`
 
 ## File Inventory
 
@@ -131,9 +131,9 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/src/facade/authentication/defaultInternalAuthenticationProviderFacade.js` | `src` | `documented` | 1/1 | Coordinates facade-level delegation for profile default internal authentication provider facade operations. |  |
 | `gCore/profile/src/facade/customer/DefaultCustomerFacade.js` | `src` | `documented` | 4/4 | Coordinates facade-level delegation for profile default customer facade operations. |  |
 | `gCore/profile/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers profile interceptor wiring for pipeline extension points. |  |
-| `gCore/profile/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines profile pipeline wiring and execution contracts. |  |
+| `gCore/profile/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines profile pipeline wiring and execution contracts. |  |
 | `gCore/profile/src/router/appConfig.js` | `src` | `documented` | 7/7 | Defines profile route registration and HTTP exposure metadata. |  |
-| `gCore/profile/src/router/router.js` | `src` | `documented` | 0/0 | Defines profile route registration and HTTP exposure metadata. |  |
+| `gCore/profile/src/router/routers.js` | `src` | `documented` | 0/0 | Defines profile route registration and HTTP exposure metadata. |  |
 | `gCore/profile/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines profile schema metadata, model contracts, and generated capability settings. |  |
 | `gCore/profile/src/search/indexes.js` | `src` | `documented` | 0/0 | Documents profile indexes module behavior. |  |
 | `gCore/profile/src/service/authentication/defaultAuthenticationProviderService.js` | `src` | `documented` | 10/10 | Implements profile default authentication provider service business behavior and extension logic. |  |
@@ -142,6 +142,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/src/service/authorization/defaultAuthorizationProviderService.js` | `src` | `documented` | 0/0 | Implements profile default authorization provider service business behavior and extension logic. |  |
 | `gCore/profile/src/service/customer/defaultCustomerRegistrationService.js` | `src` | `documented` | 6/6 | Implements profile default customer registration service business behavior and extension logic. |  |
 | `gCore/profile/src/service/customer/defaultCustomerService.js` | `src` | `documented` | 3/3 | Implements profile default customer service business behavior and extension logic. |  |
+| `gCore/profile/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements profile default sample service business behavior and extension logic. |  |
 | `gCore/profile/src/service/employee/defaultEmployeeService.js` | `src` | `documented` | 2/2 | Implements profile default employee service business behavior and extension logic. |  |
 | `gCore/profile/src/service/enterprise/defaultEnterpriseService.js` | `src` | `documented` | 1/1 | Implements profile default enterprise service business behavior and extension logic. |  |
 | `gCore/profile/src/service/group/defaultUserGroupGovernanceService.js` | `src` | `documented` | 6/6 | Validates active user-group inheritance, permission catalog membership, and acyclic group graphs before persistence. |  |

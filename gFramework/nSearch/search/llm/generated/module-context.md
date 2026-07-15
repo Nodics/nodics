@@ -32,10 +32,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 42 |
+| Source files | 43 |
 | Test files | 20 |
 | Data files | 0 |
-| All module-owned files | 57 |
+| All module-owned files | 58 |
 | Local schema definitions | 4 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 47 |
+| Documented | 48 |
 | Partially documented | 2 |
 | Undocumented | 4 |
 | Inventory only | 4 |
@@ -82,7 +82,7 @@
 - `gFramework/nSearch/search/config/prescripts.js`
 - `gFramework/nSearch/search/config/postscripts.js`
 - `gFramework/nSearch/search/src/schemas/schemas.js`
-- `gFramework/nSearch/search/src/router/router.js`
+- `gFramework/nSearch/search/src/router/routers.js`
 
 ## File Inventory
 
@@ -105,15 +105,16 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSearch/search/src/facade/defaultSearchFacade.js` | `src` | `documented` | 2/2 | Coordinates facade-level delegation for nSearch default search facade operations. |  |
 | `gFramework/nSearch/search/src/lib/searchEngine.js` | `src` | `documented` | 0/0 | Provides reusable nSearch library primitives for search engine. |  |
 | `gFramework/nSearch/search/src/lib/searchError.js` | `src` | `documented` | 0/0 | Provides reusable nSearch library primitives for search error. |  |
-| `gFramework/nSearch/search/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nSearch pipeline wiring and execution contracts. |  |
+| `gFramework/nSearch/search/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nSearch pipeline wiring and execution contracts. |  |
 | `gFramework/nSearch/search/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nSearch route registration and HTTP exposure metadata. |  |
-| `gFramework/nSearch/search/src/router/router.js` | `src` | `documented` | 0/0 | Defines nSearch route registration and HTTP exposure metadata. |  |
+| `gFramework/nSearch/search/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nSearch route registration and HTTP exposure metadata. |  |
 | `gFramework/nSearch/search/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nSearch schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nSearch/search/src/search/indexes.js` | `src` | `documented` | 0/0 | Documents nSearch indexes module behavior. |  |
 | `gFramework/nSearch/search/src/service/cache/defaultCacheService.js` | `src` | `documented` | 1/1 | Implements nSearch default cache service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/common.js` | `src` | `documented` | 16/16 | Template service used by generated nSearch schema services. During generation, placeholders are replaced with the owning search service, schema, and index identifiers. |  |
 | `gFramework/nSearch/search/src/service/config/defaultSearchConfigurationService.js` | `src` | `documented` | 23/23 | Implements nSearch default search configuration service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/connection/defaultSearchEngineConnectionHandlerService.js` | `src` | `documented` | 6/6 | Implements nSearch default search engine connection handler service business behavior and extension logic. |  |
+| `gFramework/nSearch/search/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements search default sample service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/handlers/defaultSearchPropertiesValueHandlerService.js` | `src` | `documented` | 5/5 | Implements nSearch default search properties value handler service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/indexer/defaultIndexerService.js` | `src` | `documented` | 3/3 | Implements nSearch default indexer service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/model/defaultSearchModelHandlerService.js` | `src` | `documented` | 11/11 | Implements nSearch default search model handler service business behavior and extension logic. |  |

@@ -30,10 +30,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 45 |
+| Source files | 46 |
 | Test files | 4 |
 | Data files | 0 |
-| All module-owned files | 57 |
+| All module-owned files | 58 |
 | Local schema definitions | 1 |
 
 ## Ownership And Dependencies
@@ -63,7 +63,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 50 |
+| Documented | 51 |
 | Partially documented | 2 |
 | Undocumented | 1 |
 | Inventory only | 4 |
@@ -78,7 +78,7 @@
 - `gFramework/nbpm/config/prescripts.js`
 - `gFramework/nbpm/config/postscripts.js`
 - `gFramework/nbpm/src/schemas/schemas.js`
-- `gFramework/nbpm/src/router/router.js`
+- `gFramework/nbpm/src/router/routers.js`
 
 ## File Inventory
 
@@ -97,10 +97,11 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nbpm/src/event/listeners.js` | `src` | `documented` | 0/0 | Documents nbpm listeners module behavior. |  |
 | `gFramework/nbpm/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers nbpm interceptor wiring for pipeline extension points. |  |
 | `gFramework/nbpm/src/lib/workflowError.js` | `src` | `documented` | 0/0 | Provides reusable nbpm library primitives for workflow error. |  |
-| `gFramework/nbpm/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nbpm pipeline wiring and execution contracts. |  |
+| `gFramework/nbpm/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nbpm pipeline wiring and execution contracts. |  |
 | `gFramework/nbpm/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nbpm route registration and HTTP exposure metadata. |  |
-| `gFramework/nbpm/src/router/router.js` | `src` | `documented` | 0/0 | Defines nbpm route registration and HTTP exposure metadata. |  |
+| `gFramework/nbpm/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nbpm route registration and HTTP exposure metadata. |  |
 | `gFramework/nbpm/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nbpm schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nbpm/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements bpm default sample service business behavior and extension logic. |  |
 | `gFramework/nbpm/src/service/event/defaultWorkflowEventService.js` | `src` | `documented` | 4/4 | Implements nbpm default workflow event service business behavior and extension logic. |  |
 | `gFramework/nbpm/src/service/event/handlers/carrier/defaultWorkflowActionPerformedEventListenerService.js` | `src` | `documented` | 3/3 | Implements nbpm default workflow action performed event listener service business behavior and extension logic. |  |
 | `gFramework/nbpm/src/service/event/handlers/carrier/defaultWorkflowCarrierAssignedEventListenerService.js` | `src` | `documented` | 3/3 | Implements nbpm default workflow carrier assigned event listener service business behavior and extension logic. |  |

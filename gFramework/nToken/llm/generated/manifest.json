@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to nToken"
   },
-  "sourceFiles": 13,
+  "sourceFiles": 14,
   "testFiles": 3,
   "dataFiles": 0,
-  "ownedFiles": 23,
-  "sourceFingerprint": "debbca7baf5b6db4d2d035942e4a0cfcf43e7abeffab1c3aaf2cca900f7efcfd",
+  "ownedFiles": 24,
+  "sourceFingerprint": "b91c0b2384ed38ee6b33f44c049a259fa9b0ee1da6b1b9106546a0d52f9a955a",
   "documentation": {
-    "documented": 17,
+    "documented": 18,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

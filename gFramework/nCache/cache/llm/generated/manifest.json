@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to cache"
   },
-  "sourceFiles": 13,
+  "sourceFiles": 15,
   "testFiles": 9,
   "dataFiles": 0,
-  "ownedFiles": 30,
-  "sourceFingerprint": "567ebf23a3b5cf41970debf06f2cd42934004f65487ad020a7e703856d477b2d",
+  "ownedFiles": 32,
+  "sourceFingerprint": "2599913e26e84a678ea0e27a68a5a08e036ae48103dcd895fa02a5de1c3eebde",
   "documentation": {
-    "documented": 24,
+    "documented": 26,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

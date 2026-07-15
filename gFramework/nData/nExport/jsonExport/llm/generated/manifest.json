@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to jsonExport"
   },
-  "sourceFiles": 5,
+  "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 15,
-  "sourceFingerprint": "7eb999bd0d41b7cf1d8da564474de3cb3fb9679498f7a4c517bc7245a48a97d3",
+  "ownedFiles": 17,
+  "sourceFingerprint": "6690b226fa8eaf3130aaada609bb9a94f52eca09cfb04819195f82377aef8633",
   "documentation": {
-    "documented": 9,
+    "documented": 11,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

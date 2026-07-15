@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Generate Pipelines configurations"
   },
-  "sourceFiles": 9,
+  "sourceFiles": 11,
   "testFiles": 0,
   "dataFiles": 0,
-  "ownedFiles": 17,
-  "sourceFingerprint": "c735c3c58ba9b4a1f62c1c3622118b6fe5ce0428b902a385c262a03131b785c2",
+  "ownedFiles": 19,
+  "sourceFingerprint": "8b3454db98ebc070d2bce026d5deea7e593f83e8e61d89cbf1d3cadeaf036f65",
   "documentation": {
-    "documented": 13,
+    "documented": 15,
     "partially-documented": 0,
     "undocumented": 0,
     "inventory-only": 4

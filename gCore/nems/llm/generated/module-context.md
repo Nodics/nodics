@@ -32,10 +32,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 11 |
+| Source files | 13 |
 | Test files | 7 |
 | Data files | 2 |
-| All module-owned files | 23 |
+| All module-owned files | 25 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 17 |
+| Documented | 19 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -82,7 +82,7 @@
 - `gCore/nems/config/prescripts.js`
 - `gCore/nems/config/postscripts.js`
 - `gCore/nems/src/schemas/schemas.js`
-- `gCore/nems/src/router/router.js`
+- `gCore/nems/src/router/routers.js`
 
 ## File Inventory
 
@@ -103,13 +103,15 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/nems/src/controller/defaultEventHandlerController.js` | `src` | `documented` | 2/2 | Adapts secured event processing and reset API requests into NEMS facade calls. |  |
 | `gCore/nems/src/facade/defaultEventHandlerFacade.js` | `src` | `documented` | 2/2 | Facade boundary that delegates event processing and reset commands to the NEMS service. |  |
 | `gCore/nems/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Schema interceptor registrations that split saved events into concrete targets and process synchronous events immediately. |  |
-| `gCore/nems/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Reserved pipeline definition contribution point for event processing workflows. |  |
+| `gCore/nems/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Reserved pipeline definition contribution point for event processing workflows. |  |
 | `gCore/nems/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved application router configuration contribution for NEMS APIs. |  |
-| `gCore/nems/src/router/router.js` | `src` | `documented` | 0/0 | Secured NEMS route contracts for processing and resetting persisted events. |  |
+| `gCore/nems/src/router/routers.js` | `src` | `documented` | 0/0 | Secured NEMS route contracts for processing and resetting persisted events. |  |
 | `gCore/nems/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Event and event-log schema definitions used to persist, process, retry, and archive NEMS events. |  |
+| `gCore/nems/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements nems default sample service business behavior and extension logic. |  |
 | `gCore/nems/src/service/event/defaultEventHandlerService.js` | `src` | `documented` | 10/10 | Processes persisted NEMS events by claiming eligible records, dispatching targets, logging successes, and retaining retryable errors. |  |
 | `gCore/nems/src/service/interceptors/defaultEventSplitInterceptorService.js` | `src` | `documented` | 4/4 | Expands saved NEMS events into concrete targets and dispatches synchronous events immediately after persistence. |  |
 | `gCore/nems/src/utils/enums.js` | `src` | `documented` | 0/0 | Event state and event type enum definitions used by NEMS processing and dispatch. |  |
+| `gCore/nems/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nems status and error definition exports. |  |
 | `gCore/nems/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility contribution point for NEMS event helper functions. |  |
 | `gCore/nems/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Provides a common NEMS test scaffold showing how shared test suites can be registered with the Nodics test pool. | add JSDoc for 7 exported method(s) |
 | `gCore/nems/test/env/local/envTest.js` | `test` | `partially-documented` | 0/7 | Provides a local-environment NEMS test scaffold for environment-specific event-processing test suites. | add JSDoc for 7 exported method(s) |

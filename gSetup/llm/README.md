@@ -66,16 +66,17 @@ Load detailed files only when their subject is affected:
 17. `testing-playbook.md`
 18. `standards/module-standard.md`
 19. `standards/code-documentation-standard.md`
-20. `feature-process.md`
-21. `prompts/base-nodics-assistant-prompt.md`
-22. `prompts/enterprise-architecture-quality-prompt.md`
-23. `prompts/README.md`
-24. `prompts/review-prompt.md`
-25. `prompts/refactor-prompt.md`
-26. `prompts/testing-prompt.md`
-27. `prompts/schema-change-prompt.md`
-28. `prompts/runtime-governance-prompt.md`
-29. `module-generation-guide.md`
+20. `standards/nodics-structure-matrix.md`
+21. `feature-process.md`
+22. `prompts/base-nodics-assistant-prompt.md`
+23. `prompts/enterprise-architecture-quality-prompt.md`
+24. `prompts/README.md`
+25. `prompts/review-prompt.md`
+26. `prompts/refactor-prompt.md`
+27. `prompts/testing-prompt.md`
+28. `prompts/schema-change-prompt.md`
+29. `prompts/runtime-governance-prompt.md`
+30. `module-generation-guide.md`
 
 Load `change-gate-contract.md` only at commit, merge/release, periodic-audit, or
 explicit comprehensive-review time. Canonical rules should be referenced rather
@@ -124,6 +125,15 @@ without modifying out-of-the-box Nodics code.
   governance checks.
 - Contract-driven guidance for creating project, environment, server, and node
   modules without reviving copied template scaffolds.
+- Repeatable `npm run generate:*` aliases backed by `structure:generate` for
+  creating project, group, capability, provider, environment, server, and node
+  scaffolds from the structure matrix.
+- Approval-first `npm run structure:plan` workflow for proposing full project,
+  environment, server, node, module, provider, index, path, and `activeModules`
+  topology before writing files with `--apply`.
+- Repeatable `npm run structure:audit` checks for project, module,
+  environment, server, node, source-registry, metadata, and activation
+  structure compliance against `standards/nodics-structure-matrix.md`.
 - Governance for external/provider integrations and future MCP exposure
   boundaries.
 

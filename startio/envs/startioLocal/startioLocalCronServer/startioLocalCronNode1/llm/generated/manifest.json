@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Startio module for startioLocalCronNode1"
   },
-  "sourceFiles": 6,
+  "sourceFiles": 8,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 16,
-  "sourceFingerprint": "92f827594144939bef19597c225ac8539a58e480cfd42fde6a071f902d23094d",
+  "ownedFiles": 18,
+  "sourceFingerprint": "385fdd5a981d306e5cee6fffde96b449e4fe862b5f77c1b8640097d407af824a",
   "documentation": {
-    "documented": 10,
+    "documented": 12,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

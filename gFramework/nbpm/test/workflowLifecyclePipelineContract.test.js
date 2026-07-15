@@ -28,7 +28,7 @@ if (!String.prototype.toUpperCaseFirstChar) {
 }
 
 const defaultWorkflowConfig = require('../config/properties').defaultWorkflowConfig;
-const pipelines = require('../src/pipelines/pipelinesDefinition');
+const pipelines = require('../src/pipelines/pipelines');
 const workflow2SchemaInterceptor = require('../src/service/interceptors/defaultSaveWorkflow2SchemaInterceptorService');
 
 const pipelineCalls = [];

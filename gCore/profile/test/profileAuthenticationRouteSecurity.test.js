@@ -22,7 +22,7 @@
 const assert = require('assert');
 
 // @nodics-capability-behavior @nodics-area profile
-const router = require('../src/router/router').profile;
+const router = require('../src/router/routers').profile;
 
 assert.strictEqual(router.authenticate.authenticateEmployee.secured, false, 'Employee username/password login must be pre-authentication');
 assert.strictEqual(router.authenticate.authenticateCustomer.secured, false, 'Customer username/password login must be pre-authentication');

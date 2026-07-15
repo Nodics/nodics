@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to quizWorkflow"
   },
-  "sourceFiles": 7,
+  "sourceFiles": 9,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 17,
-  "sourceFingerprint": "fc46691911e09940cf5816a29b569a4ec9760944b4e0606b7b96c41779693ff0",
+  "ownedFiles": 19,
+  "sourceFingerprint": "e88a3d436244357c9763a98d019943de6b01e22b1d76959b2c34ee4309b7e087",
   "documentation": {
-    "documented": 11,
+    "documented": 13,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

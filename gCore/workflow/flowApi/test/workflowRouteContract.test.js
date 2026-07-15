@@ -11,7 +11,7 @@
 
 const assert = require('assert');
 const { assertRouteContracts, flattenRoutes } = require('../../../../gFramework/nRouter/test/routerContractTestUtils');
-const routerConfig = require('../src/router/router');
+const routerConfig = require('../src/router/routers');
 
 const workflowController = 'DefaultWorkflowController';
 const expectedRoutes = [

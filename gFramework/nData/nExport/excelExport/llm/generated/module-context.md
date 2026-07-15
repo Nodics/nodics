@@ -27,10 +27,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 5 |
+| Source files | 7 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 15 |
+| All module-owned files | 17 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -57,7 +57,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 9 |
+| Documented | 11 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -72,7 +72,7 @@
 - `gFramework/nData/nExport/excelExport/config/prescripts.js`
 - `gFramework/nData/nExport/excelExport/config/postscripts.js`
 - `gFramework/nData/nExport/excelExport/src/schemas/schemas.js`
-- `gFramework/nData/nExport/excelExport/src/router/router.js`
+- `gFramework/nData/nExport/excelExport/src/router/routers.js`
 
 ## File Inventory
 
@@ -88,10 +88,12 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/nExport/excelExport/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nData/nExport/excelExport/nodics.js` | `module` | `documented` | 2/2 | Registers the nData module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nData/nExport/excelExport/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nData/nExport/excelExport/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nData pipeline wiring and execution contracts. |  |
+| `gFramework/nData/nExport/excelExport/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nData pipeline wiring and execution contracts. |  |
 | `gFramework/nData/nExport/excelExport/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
-| `gFramework/nData/nExport/excelExport/src/router/router.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
+| `gFramework/nData/nExport/excelExport/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
 | `gFramework/nData/nExport/excelExport/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nData schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nData/nExport/excelExport/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared excelExport enum definition exports. |  |
+| `gFramework/nData/nExport/excelExport/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared excelExport status and error definition exports. |  |
 | `gFramework/nData/nExport/excelExport/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nData utility exports for utils. |  |
 | `gFramework/nData/nExport/excelExport/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nData test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nData/nExport/excelExport/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nData test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

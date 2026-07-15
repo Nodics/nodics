@@ -28,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 6 |
+| Source files | 8 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 16 |
+| All module-owned files | 18 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 10 |
+| Documented | 12 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -74,7 +74,7 @@
 - `gDeap/dataPublisher/config/prescripts.js`
 - `gDeap/dataPublisher/config/postscripts.js`
 - `gDeap/dataPublisher/src/schemas/schemas.js`
-- `gDeap/dataPublisher/src/router/router.js`
+- `gDeap/dataPublisher/src/router/routers.js`
 
 ## File Inventory
 
@@ -90,11 +90,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gDeap/dataPublisher/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gDeap/dataPublisher/nodics.js` | `module` | `documented` | 2/2 | DEAP data publisher module lifecycle entrypoint. |  |
 | `gDeap/dataPublisher/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gDeap/dataPublisher/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Reserved pipeline definition contribution for DEAP data publishing flows. |  |
+| `gDeap/dataPublisher/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Reserved pipeline definition contribution for DEAP data publishing flows. |  |
 | `gDeap/dataPublisher/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved application router configuration contribution for DEAP data publisher APIs. |  |
-| `gDeap/dataPublisher/src/router/router.js` | `src` | `documented` | 0/0 | Reserved route definition contribution for DEAP data publisher APIs. |  |
+| `gDeap/dataPublisher/src/router/routers.js` | `src` | `documented` | 0/0 | Reserved route definition contribution for DEAP data publisher APIs. |  |
 | `gDeap/dataPublisher/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Reserved schema contribution for DEAP data publishing models. |  |
-| `gDeap/dataPublisher/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Sample service scaffold for DEAP data publishing capabilities. |  |
+| `gDeap/dataPublisher/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements dataPublisher default sample service business behavior and extension logic. |  |
+| `gDeap/dataPublisher/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared dataPublisher enum definition exports. |  |
+| `gDeap/dataPublisher/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared dataPublisher status and error definition exports. |  |
 | `gDeap/dataPublisher/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility contribution for DEAP data publishing helpers. |  |
 | `gDeap/dataPublisher/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Common sample test scaffold for DEAP data publisher contracts. | add JSDoc for 7 exported method(s) |
 | `gDeap/dataPublisher/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Local-environment sample test scaffold for DEAP data publisher behavior. | add JSDoc for 7 exported method(s) |

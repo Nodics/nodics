@@ -11,7 +11,6 @@
 
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
-const authSecurity = require('../../utils/authSecurity');
 
 /**
  * @module gFramework/nAuth/src/service/authentication/defaultAuthenticationProviderService
@@ -30,9 +29,9 @@ module.exports = {
     generateAuthToken: function (options) {
         let token = null;
         try {
-            let jwtSignOptions = authSecurity.getSignOptions(CONFIG, options);
-            let payload = authSecurity.buildPayload(options);
-            token = jwt.sign(payload, authSecurity.getJwtSecret(CONFIG), jwtSignOptions);
+            let jwtSignOptions = SERVICE.DefaultAuthSecurityService.getSignOptions(CONFIG, options);
+            let payload = SERVICE.DefaultAuthSecurityService.buildPayload(options);
+            token = jwt.sign(payload, SERVICE.DefaultAuthSecurityService.getJwtSecret(CONFIG), jwtSignOptions);
         } catch (error) {
             throw new CLASSES.NodicsError(error, 'While generating auth token', 'ERR_AUTH_00000');
         }

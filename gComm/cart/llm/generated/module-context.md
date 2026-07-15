@@ -31,10 +31,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 16 |
+| Source files | 18 |
 | Test files | 6 |
 | Data files | 0 |
-| All module-owned files | 26 |
+| All module-owned files | 28 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -65,7 +65,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 20 |
+| Documented | 22 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -80,7 +80,7 @@
 - `gComm/cart/config/prescripts.js`
 - `gComm/cart/config/postscripts.js`
 - `gComm/cart/src/schemas/schemas.js`
-- `gComm/cart/src/router/router.js`
+- `gComm/cart/src/router/routers.js`
 
 ## File Inventory
 
@@ -99,17 +99,19 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/cart/src/controller/defaultCartController.js` | `src` | `documented` | 6/6 | HTTP-facing cart controller that maps secured cart routes to cart facade operations. |  |
 | `gComm/cart/src/facade/DefaultCartFacade.js` | `src` | `documented` | 4/4 | Facade boundary for cart operations, keeping controllers independent from cart service implementation details. |  |
 | `gComm/cart/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Schema interceptor registrations for cart save and load lifecycle hooks. |  |
-| `gComm/cart/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Pipeline definitions for cart validation and cart creation orchestration. |  |
+| `gComm/cart/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Pipeline definitions for cart validation and cart creation orchestration. |  |
 | `gComm/cart/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved cart router application configuration contribution. |  |
-| `gComm/cart/src/router/router.js` | `src` | `documented` | 0/0 | Secured HTTP route definitions for cart creation and cart lookup by reference code, generated code, or token. |  |
+| `gComm/cart/src/router/routers.js` | `src` | `documented` | 0/0 | Secured HTTP route definitions for cart creation and cart lookup by reference code, generated code, or token. |  |
 | `gComm/cart/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Cart schema contribution defining abstract cart ownership fields and the concrete persisted cart model. |  |
 | `gComm/cart/src/service/cart/DefaultCartService.js` | `src` | `documented` | 4/4 | Cart service implementation that prepares cart persistence context, starts the create-cart pipeline, and wraps cart read errors. |  |
+| `gComm/cart/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements cart default sample service business behavior and extension logic. |  |
 | `gComm/cart/src/service/handler/defaultOrderSchemaValueHandlerService.js` | `src` | `documented` | 4/4 | Helper service for order/cart token value generation and expiry calculation. |  |
 | `gComm/cart/src/service/interceptor/defaultCartCodeGeneratorInterceptorService.js` | `src` | `documented` | 3/3 | Cart pre-save interceptor service that creates the persisted cart code when callers provide only an enterprise and reference code. |  |
 | `gComm/cart/src/service/interceptor/defaultCartSchemaInterceptorService.js` | `src` | `documented` | 3/3 | Cart pre-save interceptor service that derives missing enterprise ownership from authenticated request metadata. |  |
 | `gComm/cart/src/service/interceptor/defaultCartTokenDetailInterceptorService.js` | `src` | `documented` | 3/3 | Cart post-load interceptor that expands a stored token value into token reference details and expiry state. |  |
 | `gComm/cart/src/service/pipeline/defaultCreateCartPipelineService.js` | `src` | `documented` | 7/7 | Pipeline node service for create-cart orchestration, including request validation, nested cart validation, persistence, and terminal handling. |  |
 | `gComm/cart/src/service/pipeline/defaultValidateCartPipelineService.js` | `src` | `documented` | 9/9 | Pipeline node service for validating cart payload structure, generated token readiness, related items, consignments, payments, and final cart state. |  |
+| `gComm/cart/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared cart enum definition exports. |  |
 | `gComm/cart/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Cart status and error-code definitions used by services, pipelines, and API responses. |  |
 | `gComm/cart/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for cart-specific helper functions. |  |
 | `gComm/cart/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Reserved common cart test contribution showing the module-owned test-suite shape for shared cart behavior. | add JSDoc for 7 exported method(s) |

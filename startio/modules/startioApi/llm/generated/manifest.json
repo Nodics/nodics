@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Startio module for startioApi"
   },
-  "sourceFiles": 6,
+  "sourceFiles": 8,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 16,
-  "sourceFingerprint": "6ce68ea450463494a4a7f2489769cc91edb4c7b5dfe3a9883748569d4f29ac17",
+  "ownedFiles": 18,
+  "sourceFingerprint": "a88c8b979178036f87547e85f5d77cc9adc68694fa07ea5bbe975977aba3f9ae",
   "documentation": {
-    "documented": 10,
+    "documented": 12,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

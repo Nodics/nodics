@@ -20,7 +20,7 @@ Modernization may replace outdated libraries, improve security, refactor existin
 4. Put source definitions in modules; regenerate derived artifacts during build.
 5. Keep generated artifacts safely removable by clean.
 6. Use service/facade/controller/router boundaries consistently.
-7. Keep runtime artifacts inside Nodics loader radar: services under `src/service/**/*Service.js`, controllers under `src/controller/**/*Controller.js`, facades under `src/facade/**/*Facade.js`, and pipeline definitions under `src/pipelines/**/*Definition.js`.
+7. Keep runtime artifacts inside Nodics loader radar: services under `src/service/**/*Service.js`, controllers under `src/controller/**/*Controller.js`, facades under `src/facade/**/*Facade.js`, and pipeline definitions in `src/pipelines/pipelines.js`.
 8. Export runtime behavior as mergeable `module.exports = { methodName: function (...) {} }` objects so later modules can override the smallest necessary member.
 9. Use schema-driven models, services, routers, APIs, tests, and documentation where possible.
 10. Preserve multi-tenancy and the difference between default tenant and active tenant.

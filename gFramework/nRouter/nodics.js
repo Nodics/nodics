@@ -42,7 +42,7 @@ module.exports = {
     postInit: function (options) {
         return new Promise((resolve, reject) => {
             SERVICE.DefaultRouterService.prepareModulesConfiguration().then(() => {
-                SERVICE.DefaultRouterConfigurationService.setRawRouters(SERVICE.DefaultFilesLoaderService.loadRouterFiles('/src/router/router.js'));
+                SERVICE.DefaultRouterConfigurationService.setRawRouters(SERVICE.DefaultFilesLoaderService.loadRouterFiles('/src/router/routers.js'));
             }).then(() => {
                 return SERVICE.DefaultRouterInitializerService.initializeRouters();
             }).then(() => {

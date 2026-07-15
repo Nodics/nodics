@@ -1173,9 +1173,9 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             _self.LOG.debug('  Loading all module process definitions');
-            let path = module.path + '/src/pipelines';
+            let pipelinePath = module.path + '/src/pipelines';
             try {
-                fileLoader.processFiles(path, "Definition.js", (file) => {
+                fileLoader.processFiles(pipelinePath, "Definition.js", (file) => {
                     let processName = UTILS.getFileNameWithoutExtension(file);
                     let artifact = require(file);
                     if (PIPELINE[processName]) {
@@ -1198,6 +1198,32 @@ module.exports = {
                         });
                     }
                 });
+                let registryPath = pipelinePath + '/pipelines.js';
+                if (fs.existsSync(registryPath)) {
+                    let pipelineRegistry = require(registryPath);
+                    Object.keys(pipelineRegistry).forEach(processName => {
+                        let artifact = pipelineRegistry[processName];
+                        if (PIPELINE[processName]) {
+                            PIPELINE[processName] = _.merge(PIPELINE[processName], artifact);
+                            fileLoader.recordArtifactContribution(PIPELINE[processName], {
+                                name: processName,
+                                layer: 'pipeline',
+                                sourceModule: module.name,
+                                action: 'override',
+                                filePath: registryPath
+                            });
+                        } else {
+                            PIPELINE[processName] = artifact;
+                            fileLoader.recordArtifactContribution(PIPELINE[processName], {
+                                name: processName,
+                                layer: 'pipeline',
+                                sourceModule: module.name,
+                                action: 'create',
+                                filePath: registryPath
+                            });
+                        }
+                    });
+                }
                 resolve(true);
             } catch (error) {
                 reject(error);

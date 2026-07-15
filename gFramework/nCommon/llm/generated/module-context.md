@@ -27,10 +27,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 13 |
+| Source files | 14 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 23 |
+| All module-owned files | 24 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -57,7 +57,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 19 |
+| Documented | 20 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -88,8 +88,9 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCommon/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nCommon/src/event/listeners.js` | `src` | `documented` | 0/0 | Event-listener definitions that refresh effective interceptor configuration after interceptor records are created or updated. |  |
 | `gFramework/nCommon/src/lib/nodicsError.js` | `src` | `documented` | 0/0 | Standard Nodics error type used across pipelines, services, controllers, generated APIs, imports, processors, and interceptors. It preserves response code, status code, metadata, nested causes, validation errors, trace id, contexts, and safe JSON serialization. |  |
-| `gFramework/nCommon/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Pipeline definition for runtime interceptor updates. It validates update payloads, loads changed interceptor definitions, merges them into effective runtime state, and publishes cleanup events. |  |
+| `gFramework/nCommon/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Pipeline definition for runtime interceptor updates. It validates update payloads, loads changed interceptor definitions, merges them into effective runtime state, and publishes cleanup events. |  |
 | `gFramework/nCommon/src/service/config/defaultInterceptorConfigurationService.js` | `src` | `documented` | 7/7 | Stores and prepares effective interceptor definitions by type, item, trigger, and index. It merges default and item-specific interceptors so dynamic behavior can be extended through layered module configuration. |  |
+| `gFramework/nCommon/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements nCommon default sample service business behavior and extension logic. |  |
 | `gFramework/nCommon/src/service/file/defaultFileHandlerService.js` | `src` | `documented` | 5/5 | Shared file movement helper for import/export and batch file workflows. It marks files as processing and moves completed files into destination folders with timestamped names. |  |
 | `gFramework/nCommon/src/service/infra/defaultInfraService.js` | `src` | `documented` | 12/12 | Infrastructure service boundary for Nodics application and module generation. The legacy nCommon template-copy generator is intentionally retired until custom project scaffolding is reintroduced through explicit tooling contracts and LLM/developer guidance. |  |
 | `gFramework/nCommon/src/service/interceptor/defaultInterceptorService.js` | `src` | `documented` | 3/3 | Loads, validates, merges, and executes Nodics interceptors. Interceptors are dynamic extension points for model, schema, and process behavior and are executed in configured trigger/index order. |  |

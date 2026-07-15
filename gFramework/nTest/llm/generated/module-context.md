@@ -28,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 17 |
+| Source files | 20 |
 | Test files | 6 |
 | Data files | 0 |
-| All module-owned files | 31 |
+| All module-owned files | 34 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 24 |
+| Documented | 27 |
 | Partially documented | 0 |
 | Undocumented | 3 |
 | Inventory only | 4 |
@@ -73,7 +73,7 @@
 - `gFramework/nTest/config/properties.js`
 - `gFramework/nTest/config/prescripts.js`
 - `gFramework/nTest/config/postscripts.js`
-- `gFramework/nTest/src/router/router.js`
+- `gFramework/nTest/src/router/routers.js`
 
 ## File Inventory
 
@@ -94,8 +94,9 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTest/src/lib/testSuite.js` | `src` | `documented` | 0/0 | Lightweight in-memory holder for a Nodics test suite, its index, and child suites. |  |
 | `gFramework/nTest/src/lib/testSuitePool.js` | `src` | `documented` | 0/0 | Lightweight in-memory pool of named Nodics test suites. |  |
 | `gFramework/nTest/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved application router configuration contribution for test execution APIs. |  |
-| `gFramework/nTest/src/router/router.js` | `src` | `documented` | 0/0 | Reserved route definition contribution for test execution APIs. |  |
+| `gFramework/nTest/src/router/routers.js` | `src` | `documented` | 0/0 | Reserved route definition contribution for test execution APIs. |  |
 | `gFramework/nTest/src/service/defaultLayeredTestConfigurationService.js` | `src` | `documented` | 11/11 | Discovers declarative UTest and NTest suites from active modules in deterministic module-index order and merges later project, environment, server, and node contributions without inferring behavior from module names. |  |
+| `gFramework/nTest/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements nTest default sample service business behavior and extension logic. |  |
 | `gFramework/nTest/src/service/generator/defaultSchemaTestGeneratorService.js` | `src` | `documented` | 45/45 | Generates schema, API, scenario, CRUD, and access-policy test artifacts from effective schema and router contracts. |  |
 | `gFramework/nTest/src/service/testExecutionService.js` | `src` | `documented` | 11/11 | Executes Nodics unit-test and n-test pools by translating layered test definitions into Mocha suites. |  |
 | `gFramework/nTest/src/service/tooling/defaultCapabilityBehaviorTestRunnerService.js` | `src` | `documented` | 0/0 | Discovers marker-based capability behavior tests across a target project and executes them with optional area filtering. |  |
@@ -105,6 +106,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTest/src/service/tooling/defaultLiveTestTenantGuardService.js` | `src` | `documented` | 0/0 | Guards live and destructive test execution from missing tenant selection or accidental use of protected tenants. |  |
 | `gFramework/nTest/src/service/tooling/defaultRouteContractTestRunnerService.js` | `src` | `documented` | 0/0 | Discovers and executes module-owned route contract tests throughout a target Nodics project. |  |
 | `gFramework/nTest/src/service/tooling/defaultTestSuiteReportRunnerService.js` | `src` | `documented` | 0/0 | Runs an arbitrary project test command, streams its output, extracts Nodics test metrics, and writes a structured report under the selected server module. |  |
+| `gFramework/nTest/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared nTest enum definition exports. |  |
+| `gFramework/nTest/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nTest status and error definition exports. |  |
 | `gFramework/nTest/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility contribution point for test execution and generated-test helper functions. |  |
 | `gFramework/nTest/test/layeredTestDiscovery.test.js` | `test` | `documented` | 2/2 | Proves deterministic test composition across arbitrarily named capability, project, environment, server, and node modules with override traceability and configurable additional paths. |  |
 | `gFramework/nTest/test/liveTestTenantGuard.test.js` | `test` | `documented` | 0/0 | Verifies default and configured protected-tenant resolution plus explicit live-test override behavior. |  |

@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to hazelcastCache"
   },
-  "sourceFiles": 7,
+  "sourceFiles": 10,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 17,
-  "sourceFingerprint": "579ecf6ca73be43f44e54fa08efdd01367e98e465c2133dc1bd72750c9679bf9",
+  "ownedFiles": 20,
+  "sourceFingerprint": "40594ab8adc78032b85e73ef0c062e691963a279402e1dfa7bd11bee1ab90f33",
   "documentation": {
-    "documented": 11,
+    "documented": 14,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

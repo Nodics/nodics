@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Startio module for startioPreProdServer"
   },
-  "sourceFiles": 6,
+  "sourceFiles": 8,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 16,
-  "sourceFingerprint": "8f4bcb2cffae067795a6b3c40ff6e95acb710212bcd1c734d04513ef1c787dfa",
+  "ownedFiles": 18,
+  "sourceFingerprint": "221fcd9d7397c58a0fed03a1adcfe30ee72c3bd4b4f15d8d3d817b91fdb0a06d",
   "documentation": {
-    "documented": 10,
+    "documented": 12,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to flowSchema"
   },
-  "sourceFiles": 7,
+  "sourceFiles": 9,
   "testFiles": 3,
   "dataFiles": 0,
-  "ownedFiles": 18,
-  "sourceFingerprint": "3d5927770da7334b5f47e459b89c4f02f9d83c11bdaf6d6e0e7af09ef896c3f0",
+  "ownedFiles": 20,
+  "sourceFingerprint": "19fd3664661ffdd0410ae02282530c16694c303533e7fd20efd053807858aa91",
   "documentation": {
-    "documented": 11,
+    "documented": 13,
     "partially-documented": 2,
     "undocumented": 1,
     "inventory-only": 4

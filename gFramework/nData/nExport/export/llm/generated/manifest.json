@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to export"
   },
-  "sourceFiles": 8,
+  "sourceFiles": 11,
   "testFiles": 3,
   "dataFiles": 0,
-  "ownedFiles": 19,
-  "sourceFingerprint": "a44b129692117854a9c368cd4cfe89bc644e95b694bbd0104fd1387c6b00e332",
+  "ownedFiles": 22,
+  "sourceFingerprint": "99fbea2d1985f5b5ad1ac78d41e6f168eb1ff6c5f12371d20d633a6085f18bb8",
   "documentation": {
-    "documented": 12,
+    "documented": 15,
     "partially-documented": 2,
     "undocumented": 1,
     "inventory-only": 4

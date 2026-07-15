@@ -29,10 +29,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 13 |
+| Source files | 14 |
 | Test files | 3 |
 | Data files | 0 |
-| All module-owned files | 23 |
+| All module-owned files | 24 |
 | Local schema definitions | 1 |
 
 ## Ownership And Dependencies
@@ -61,7 +61,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 17 |
+| Documented | 18 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -76,7 +76,7 @@
 - `gFramework/nToken/config/prescripts.js`
 - `gFramework/nToken/config/postscripts.js`
 - `gFramework/nToken/src/schemas/schemas.js`
-- `gFramework/nToken/src/router/router.js`
+- `gFramework/nToken/src/router/routers.js`
 
 ## File Inventory
 
@@ -93,11 +93,12 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nToken/nodics.js` | `module` | `documented` | 2/2 | Registers the nToken module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nToken/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nToken/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers nToken interceptor wiring for pipeline extension points. |  |
-| `gFramework/nToken/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nToken pipeline wiring and execution contracts. |  |
+| `gFramework/nToken/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nToken pipeline wiring and execution contracts. |  |
 | `gFramework/nToken/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nToken route registration and HTTP exposure metadata. |  |
-| `gFramework/nToken/src/router/router.js` | `src` | `documented` | 0/0 | Defines nToken route registration and HTTP exposure metadata. |  |
+| `gFramework/nToken/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nToken route registration and HTTP exposure metadata. |  |
 | `gFramework/nToken/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nToken schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nToken/src/service/DefaultTokenService.js` | `src` | `documented` | 4/4 | Implements nToken default token service business behavior and extension logic. |  |
+| `gFramework/nToken/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements token default sample service business behavior and extension logic. |  |
 | `gFramework/nToken/src/service/handler/defaultTokenHandlerService.js` | `src` | `documented` | 4/4 | Implements nToken default token handler service business behavior and extension logic. |  |
 | `gFramework/nToken/src/service/interceptor/defaultTokenValidityCheckInterceptorService.js` | `src` | `documented` | 3/3 | Implements nToken default token validity check interceptor service business behavior and extension logic. |  |
 | `gFramework/nToken/src/service/pipelines/defaultGenerateTokenPipelineService.js` | `src` | `documented` | 8/8 | Implements nToken default generate token pipeline service business behavior and extension logic. |  |

@@ -24,10 +24,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 22 |
-| Test files | 10 |
+| Source files | 26 |
+| Test files | 13 |
 | Data files | 0 |
-| All module-owned files | 41 |
+| All module-owned files | 48 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -37,6 +37,7 @@
 - `tooling`
 - `quality`
 - `configuration`
+- `service`
 - `test`
 - `llm`
 
@@ -52,7 +53,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 37 |
+| Documented | 44 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -94,7 +95,10 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/src/service/context/defaultModuleLlmContextUtilsService.js` | `src` | `documented` | 0/0 | Shared project-aware discovery, ownership, schema bootstrap, fingerprint, and generated-directory utilities used by Nodics context and metadata commands. |  |
 | `gFramework/nTooling/src/service/context/defaultNormalizeModuleMetadataService.js` | `src` | `documented` | 0/0 | Normalizes canonical package kind, runtime activation, loader eligibility, ownership, and topology descriptions across a target Nodics project. |  |
 | `gFramework/nTooling/src/service/debug/defaultNodicsDebugService.js` | `src` | `documented` | 3/3 | Launches Nodics start, build, or clean lifecycle methods under the Node inspector while preserving project arguments and exit status. |  |
+| `gFramework/nTooling/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements nTooling default sample service business behavior and extension logic. |  |
 | `gFramework/nTooling/src/service/defaultToolingCommandService.js` | `src` | `documented` | 20/20 | Discovers non-runtime tooling command contributions from module-shaped packages, orders them by Nodics module index, applies explicit handler override governance, and executes commands against a selected project home. |  |
+| `gFramework/nTooling/src/service/generation/defaultStructureGeneratorService.js` | `src` | `documented` | 5/5 | Generates contract-driven Nodics project, group, capability, environment, server, and node scaffolds from the canonical structure matrix. |  |
+| `gFramework/nTooling/src/service/generation/defaultTopologyPlanService.js` | `src` | `documented` | 6/6 | Creates approval-first Nodics project topology plans and optionally applies them through the structure generator. |  |
 | `gFramework/nTooling/src/service/mcp/defaultMcpGovernanceService.js` | `src` | `documented` | 13/13 | Builds the read-only governance payload that a future Nodics MCP adapter can expose without becoming a second source of architecture, configuration, or runtime truth. |  |
 | `gFramework/nTooling/src/service/mcp/defaultMcpMutationGuardService.js` | `src` | `documented` | 2/2 | Produces guarded mutation and generation plans for MCP clients so module scaffolding, docs, generated artifacts, build, and clean actions remain explicit and contract-driven. |  |
 | `gFramework/nTooling/src/service/mcp/defaultMcpRuntimeContextService.js` | `src` | `documented` | 4/4 | Explains Nodics runtime hierarchy, active-module declarations, artifact ownership, and override paths from source files without bootstrapping or redefining runtime configuration. |  |
@@ -104,6 +108,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/src/service/quality/defaultDesignPrincipleAuditService.js` | `src` | `documented` | 0/0 | Runs a repeatable static audit over Nodics principle, governance, LLM, command, generated-context, and report-location contracts so periodic platform reviews can detect drift before broader manual or test-suite review. |  |
 | `gFramework/nTooling/src/service/quality/defaultDocumentationCoverageQualityService.js` | `src` | `documented` | 0/0 | Collects project-scoped source documentation coverage by module, layer, contract scope, test inclusion, and generated-artifact policy. |  |
 | `gFramework/nTooling/src/service/quality/defaultDocumentationGatesQualityService.js` | `src` | `documented` | 0/0 | Applies project-overridable documentation governance configuration to enforced and report-only coverage gates. |  |
+| `gFramework/nTooling/src/service/quality/defaultStructureComplianceQualityService.js` | `src` | `documented` | 0/0 | Audits Nodics module, project, environment, server, and node structure against the canonical structure matrix without mutating source files. |  |
 | `gFramework/nTooling/test/copyrightHeaderGovernance.test.js` | `test` | `documented` | 0/0 | Validates Nodics copyright header detection and normalization. |  |
 | `gFramework/nTooling/test/fullTestSuiteCoverageContract.test.js` | `test` | `documented` | 0/0 | Guards the full Nodics test command surface so import, workflow, cron, NEMS, tenant, and distributed-communication coverage remains wired into executable package gates instead of living only as documentation. |  |
 | `gFramework/nTooling/test/llmChangeAcceptanceContract.test.js` | `test` | `documented` | 0/0 | Prevents the mandatory Nodics hierarchy, customization, and test-coverage contract from disappearing from canonical LLM guidance. |  |
@@ -113,7 +118,10 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/test/moduleStructure.test.js` | `test` | `documented` | 0/0 | Enforces mandatory configuration files, canonical README naming, safe runtime identifiers, and explicit framework-folder naming across all Nodics modules. |  |
 | `gFramework/nTooling/test/projectPostmanCoverageOwnership.test.js` | `test` | `documented` | 0/0 | Enforces that reference Postman coverage for domain and project APIs remains owned by the active module that defines the capability. |  |
 | `gFramework/nTooling/test/repositoryToolingBoundary.test.js` | `test` | `documented` | 0/0 | Prevents executable tooling from returning to the root scripts folder or depending on temporary docs configuration. |  |
+| `gFramework/nTooling/test/structureComplianceAudit.test.js` | `test` | `documented` | 0/0 | Verifies that the structure compliance audit reports Nodics structure-matrix gaps without mutating project files. |  |
+| `gFramework/nTooling/test/structureGeneratorAlignment.test.js` | `test` | `documented` | 0/0 | Verifies that contract-driven structure generation produces modules that pass the canonical structure compliance audit. |  |
 | `gFramework/nTooling/test/toolingCommandOverride.test.js` | `test` | `documented` | 0/0 | Verifies numeric command contribution ordering, explicit handler replacement, override traceability, and project-home tooling discovery. |  |
+| `gFramework/nTooling/test/topologyPlanWorkflow.test.js` | `test` | `documented` | 0/0 | Verifies approval-first topology planning and applied topology generation against the structure compliance audit. |  |
 
 ## Extension Contract
 

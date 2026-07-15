@@ -10,7 +10,6 @@
  */
 
 const jwt = require('jsonwebtoken');
-const authSecurity = require('../../../../nAuth/src/utils/authSecurity');
 
 /**
  * @module service/authorization/DefaultAuthorizationProviderService
@@ -61,8 +60,8 @@ module.exports = {
             let jwtVerifyOptions;
             let jwtSecret;
             try {
-                jwtVerifyOptions = authSecurity.getVerifyOptions(CONFIG);
-                jwtSecret = authSecurity.getJwtSecret(CONFIG);
+                jwtVerifyOptions = SERVICE.DefaultAuthSecurityService.getVerifyOptions(CONFIG);
+                jwtSecret = SERVICE.DefaultAuthSecurityService.getJwtSecret(CONFIG);
             } catch (error) {
                 reject(new CLASSES.NodicsError(error, null, 'ERR_AUTH_00001'));
                 return;
@@ -71,7 +70,7 @@ module.exports = {
                 if (error) {
                     reject(new CLASSES.NodicsError(error, null, 'ERR_AUTH_00001'));
                 } else {
-                    let security = authSecurity.getSecurityConfiguration(CONFIG);
+                    let security = SERVICE.DefaultAuthSecurityService.getSecurityConfiguration(CONFIG);
                     if (security.jwt.requireJti !== false && !payload.jti) {
                         reject(new CLASSES.NodicsError('ERR_AUTH_00001', 'Token identifier is required'));
                         return;

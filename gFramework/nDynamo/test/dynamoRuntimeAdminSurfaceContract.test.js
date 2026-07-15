@@ -28,7 +28,7 @@ global.ENUMS = {
     }
 };
 
-const routerConfig = require('../src/router/router');
+const routerConfig = require('../src/router/routers');
 const schemas = require('../src/schemas/schemas').dynamo;
 
 const classRoutes = routerConfig.dynamo.classOperations;

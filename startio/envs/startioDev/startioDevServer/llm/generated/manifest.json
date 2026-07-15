@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Startio module for startioDevServer"
   },
-  "sourceFiles": 6,
+  "sourceFiles": 8,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 16,
-  "sourceFingerprint": "ec46b7ab568f79adebdde4880439a777a954a5f4797442420918a0abf78a54db",
+  "ownedFiles": 18,
+  "sourceFingerprint": "a9d8b62e1c10da49a7c9700e8134ceb4cd73f6a0038f621d6fd30b6564989160",
   "documentation": {
-    "documented": 10,
+    "documented": 12,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

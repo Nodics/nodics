@@ -115,27 +115,39 @@ function collectArtifactSummary() {
     let layerDefinitions = [
         { layer: 'service', folder: 'src/service', suffix: 'Service.js' },
         { layer: 'facade', folder: 'src/facade', suffix: 'Facade.js' },
-        { layer: 'controller', folder: 'src/controller', suffix: 'Controller.js' },
-        { layer: 'pipeline', folder: 'src/pipelines', suffix: 'Definition.js' }
+        { layer: 'controller', folder: 'src/controller', suffix: 'Controller.js' }
     ];
     let artifacts = {};
+    function addArtifact(layer, name, moduleObject, filePath) {
+        let key = layer + ':' + name;
+        artifacts[key] = artifacts[key] || {
+            name: name,
+            layer: layer,
+            contributions: []
+        };
+        artifacts[key].contributions.push({
+            sourceModule: moduleObject.name,
+            file: toRelative(filePath)
+        });
+    }
     NODICS.getIndexedModules().forEach(moduleObject => {
         layerDefinitions.forEach(layerDefinition => {
             let directory = path.join(moduleObject.path, layerDefinition.folder);
             scanDirectory(directory, layerDefinition.suffix, filePath => {
                 let name = path.basename(filePath, '.js');
-                let key = layerDefinition.layer + ':' + name;
-                artifacts[key] = artifacts[key] || {
-                    name: name,
-                    layer: layerDefinition.layer,
-                    contributions: []
-                };
-                artifacts[key].contributions.push({
-                    sourceModule: moduleObject.name,
-                    file: toRelative(filePath)
-                });
+                addArtifact(layerDefinition.layer, name, moduleObject, filePath);
             });
         });
+        let pipelineDirectory = path.join(moduleObject.path, 'src/pipelines');
+        scanDirectory(pipelineDirectory, 'Definition.js', filePath => {
+            addArtifact('pipeline', path.basename(filePath, '.js'), moduleObject, filePath);
+        });
+        let pipelineRegistryPath = path.join(pipelineDirectory, 'pipelines.js');
+        if (fs.existsSync(pipelineRegistryPath)) {
+            Object.keys(require(pipelineRegistryPath)).forEach(name => {
+                addArtifact('pipeline', name, moduleObject, pipelineRegistryPath);
+            });
+        }
     });
     return Object.keys(artifacts).sort().map(key => {
         let artifact = artifacts[key];
@@ -172,7 +184,7 @@ async function initialize() {
 async function run() {
     await initialize();
     let rawSchema = SERVICE.DefaultFilesLoaderService.loadSchemaFiles('/src/schemas/schemas.js', null);
-    let rawRouters = SERVICE.DefaultFilesLoaderService.loadRouterFiles('/src/router/router.js');
+    let rawRouters = SERVICE.DefaultFilesLoaderService.loadRouterFiles('/src/router/routers.js');
     let schemas = collectSchemaSummary(rawSchema);
     let routes = collectRouterSummary(rawRouters);
     let artifacts = collectArtifactSummary();

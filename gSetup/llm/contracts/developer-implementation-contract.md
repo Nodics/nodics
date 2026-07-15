@@ -226,10 +226,10 @@ project names, bypassing loaders, bypassing tenant context, or patching
 generated output.
 
 When guidance asks for a service, controller, facade, or pipeline change, it
-must name the loader-managed path and suffix. Services use
+must name the loader-managed path and canonical file shape. Services use
 `src/service/**/*Service.js`, controllers use `src/controller/**/*Controller.js`,
 facades use `src/facade/**/*Facade.js`, and pipeline definitions use
-`src/pipelines/**/*Definition.js`. The recommended implementation must export
+`src/pipelines/pipelines.js`. The recommended implementation must export
 mergeable object members so the same behavior can be overridden by a later
 module with the same artifact name.
 

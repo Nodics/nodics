@@ -27,10 +27,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 5 |
+| Source files | 7 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 15 |
+| All module-owned files | 17 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -57,7 +57,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 9 |
+| Documented | 11 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -72,7 +72,7 @@
 - `gFramework/nDatabase/cassandradb/config/prescripts.js`
 - `gFramework/nDatabase/cassandradb/config/postscripts.js`
 - `gFramework/nDatabase/cassandradb/src/schemas/schemas.js`
-- `gFramework/nDatabase/cassandradb/src/router/router.js`
+- `gFramework/nDatabase/cassandradb/src/router/routers.js`
 
 ## File Inventory
 
@@ -88,10 +88,12 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDatabase/cassandradb/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/cassandradb/nodics.js` | `module` | `documented` | 2/2 | Registers the nDatabase module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nDatabase/cassandradb/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nDatabase/cassandradb/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Cassandra database adapter pipeline extension slot. The base adapter does not define custom pipelines, but layered modules can add Cassandra-specific database behavior here. |  |
+| `gFramework/nDatabase/cassandradb/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Cassandra database adapter pipeline extension slot. The base adapter does not define custom pipelines, but layered modules can add Cassandra-specific database behavior here. |  |
 | `gFramework/nDatabase/cassandradb/src/router/appConfig.js` | `src` | `documented` | 0/0 | Cassandra database adapter router app configuration extension slot. |  |
-| `gFramework/nDatabase/cassandradb/src/router/router.js` | `src` | `documented` | 0/0 | Cassandra database adapter route definition extension slot. |  |
+| `gFramework/nDatabase/cassandradb/src/router/routers.js` | `src` | `documented` | 0/0 | Cassandra database adapter route definition extension slot. |  |
 | `gFramework/nDatabase/cassandradb/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nDatabase schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nDatabase/cassandradb/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared cassandradb enum definition exports. |  |
+| `gFramework/nDatabase/cassandradb/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared cassandradb status and error definition exports. |  |
 | `gFramework/nDatabase/cassandradb/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nDatabase utility exports for utils. |  |
 | `gFramework/nDatabase/cassandradb/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nDatabase test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nDatabase/cassandradb/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nDatabase test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

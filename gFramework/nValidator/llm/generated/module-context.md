@@ -31,10 +31,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 14 |
+| Source files | 16 |
 | Test files | 7 |
 | Data files | 2 |
-| All module-owned files | 27 |
+| All module-owned files | 29 |
 | Local schema definitions | 1 |
 
 ## Ownership And Dependencies
@@ -65,7 +65,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 21 |
+| Documented | 23 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -80,7 +80,7 @@
 - `gFramework/nValidator/config/prescripts.js`
 - `gFramework/nValidator/config/postscripts.js`
 - `gFramework/nValidator/src/schemas/schemas.js`
-- `gFramework/nValidator/src/router/router.js`
+- `gFramework/nValidator/src/router/routers.js`
 
 ## File Inventory
 
@@ -100,17 +100,19 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nValidator/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nValidator/src/event/listeners.js` | `src` | `documented` | 0/0 | Documents nValidator listeners module behavior. |  |
 | `gFramework/nValidator/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers nValidator interceptor wiring for pipeline extension points. |  |
-| `gFramework/nValidator/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nValidator pipeline wiring and execution contracts. |  |
+| `gFramework/nValidator/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nValidator pipeline wiring and execution contracts. |  |
 | `gFramework/nValidator/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nValidator route registration and HTTP exposure metadata. |  |
-| `gFramework/nValidator/src/router/router.js` | `src` | `documented` | 0/0 | Defines nValidator route registration and HTTP exposure metadata. |  |
+| `gFramework/nValidator/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nValidator route registration and HTTP exposure metadata. |  |
 | `gFramework/nValidator/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nValidator schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nValidator/src/service/config/defaultValidatorConfigurationService.js` | `src` | `documented` | 8/8 | Implements nValidator default validator configuration service business behavior and extension logic. |  |
+| `gFramework/nValidator/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements validator default sample service business behavior and extension logic. |  |
 | `gFramework/nValidator/src/service/event/defaultValidatorChangeListenerService.js` | `src` | `documented` | 1/1 | Implements nValidator default validator change listener service business behavior and extension logic. |  |
 | `gFramework/nValidator/src/service/pipeline/defaultValidatorUpdatedPipelineService.js` | `src` | `documented` | 6/6 | Implements nValidator default validator updated pipeline service business behavior and extension logic. |  |
 | `gFramework/nValidator/src/service/validator/defaultSampleValidatorService.js` | `src` | `documented` | 4/4 | Implements nValidator default sample validator service business behavior and extension logic. |  |
 | `gFramework/nValidator/src/service/validator/defaultValidatorScriptExecutionService.js` | `src` | `documented` | 3/3 | Implements nValidator default validator script execution service business behavior and extension logic. |  |
 | `gFramework/nValidator/src/service/validator/defaultValidatorService.js` | `src` | `documented` | 7/7 | Implements nValidator default validator service business behavior and extension logic. |  |
 | `gFramework/nValidator/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared nValidator utility exports for enums. |  |
+| `gFramework/nValidator/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared validator status and error definition exports. |  |
 | `gFramework/nValidator/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nValidator utility exports for utils. |  |
 | `gFramework/nValidator/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nValidator test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nValidator/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nValidator test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

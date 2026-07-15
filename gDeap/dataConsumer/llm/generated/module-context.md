@@ -31,10 +31,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 10 |
+| Source files | 13 |
 | Test files | 10 |
 | Data files | 4 |
-| All module-owned files | 24 |
+| All module-owned files | 27 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -65,7 +65,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 18 |
+| Documented | 21 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -80,7 +80,7 @@
 - `gDeap/dataConsumer/config/prescripts.js`
 - `gDeap/dataConsumer/config/postscripts.js`
 - `gDeap/dataConsumer/src/schemas/schemas.js`
-- `gDeap/dataConsumer/src/router/router.js`
+- `gDeap/dataConsumer/src/router/routers.js`
 
 ## File Inventory
 
@@ -102,13 +102,16 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gDeap/dataConsumer/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gDeap/dataConsumer/src/event/listeners.js` | `src` | `documented` | 0/0 | Documents dataConsumer listeners module behavior. |  |
 | `gDeap/dataConsumer/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers dataConsumer interceptor wiring for pipeline extension points. |  |
-| `gDeap/dataConsumer/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines dataConsumer pipeline wiring and execution contracts. |  |
+| `gDeap/dataConsumer/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines dataConsumer pipeline wiring and execution contracts. |  |
 | `gDeap/dataConsumer/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines dataConsumer route registration and HTTP exposure metadata. |  |
-| `gDeap/dataConsumer/src/router/router.js` | `src` | `documented` | 0/0 | Defines dataConsumer route registration and HTTP exposure metadata. |  |
+| `gDeap/dataConsumer/src/router/routers.js` | `src` | `documented` | 0/0 | Defines dataConsumer route registration and HTTP exposure metadata. |  |
 | `gDeap/dataConsumer/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines dataConsumer schema metadata, model contracts, and generated capability settings. |  |
+| `gDeap/dataConsumer/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements dataConsumer default sample service business behavior and extension logic. |  |
 | `gDeap/dataConsumer/src/service/event/handlers/defaultExternalDataEventHandlerService.js` | `src` | `documented` | 3/3 | Implements dataConsumer default external data event handler service business behavior and extension logic. |  |
 | `gDeap/dataConsumer/src/service/event/handlers/defaultInternalDataEventHandlerService.js` | `src` | `documented` | 3/3 | Implements dataConsumer default internal data event handler service business behavior and extension logic. |  |
 | `gDeap/dataConsumer/src/service/proc/defaultInternalDataConsumeProcessService.js` | `src` | `documented` | 11/11 | Implements dataConsumer default internal data consume process service business behavior and extension logic. |  |
+| `gDeap/dataConsumer/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared dataConsumer enum definition exports. |  |
+| `gDeap/dataConsumer/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared dataConsumer status and error definition exports. |  |
 | `gDeap/dataConsumer/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared dataConsumer utility exports for utils. |  |
 | `gDeap/dataConsumer/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines dataConsumer test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gDeap/dataConsumer/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines dataConsumer test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Build OOTB controllers for Nodics"
   },
-  "sourceFiles": 65,
+  "sourceFiles": 67,
   "testFiles": 1,
   "dataFiles": 0,
-  "ownedFiles": 16,
-  "sourceFingerprint": "3d4eff61d207b7b94cc665f3002edfcb7d8fdebb32ce9712a7e660751ac00073",
+  "ownedFiles": 18,
+  "sourceFingerprint": "6e2651d9748648faffd7190e7d8dae94b083376bbfca7be27e014803537f510d",
   "documentation": {
-    "documented": 11,
+    "documented": 13,
     "partially-documented": 0,
     "undocumented": 1,
     "inventory-only": 4

@@ -28,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 6 |
+| Source files | 8 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 16 |
+| All module-owned files | 18 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 10 |
+| Documented | 12 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -74,7 +74,7 @@
 - `startio/modules/startioCore/config/prescripts.js`
 - `startio/modules/startioCore/config/postscripts.js`
 - `startio/modules/startioCore/src/schemas/schemas.js`
-- `startio/modules/startioCore/src/router/router.js`
+- `startio/modules/startioCore/src/router/routers.js`
 
 ## File Inventory
 
@@ -90,11 +90,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `startio/modules/startioCore/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `startio/modules/startioCore/nodics.js` | `module` | `documented` | 2/2 | Registers the modules module lifecycle hooks and module-level startup behavior. |  |
 | `startio/modules/startioCore/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `startio/modules/startioCore/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines modules pipeline wiring and execution contracts. |  |
+| `startio/modules/startioCore/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines modules pipeline wiring and execution contracts. |  |
 | `startio/modules/startioCore/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines modules route registration and HTTP exposure metadata. |  |
-| `startio/modules/startioCore/src/router/router.js` | `src` | `documented` | 0/0 | Defines modules route registration and HTTP exposure metadata. |  |
+| `startio/modules/startioCore/src/router/routers.js` | `src` | `documented` | 0/0 | Defines modules route registration and HTTP exposure metadata. |  |
 | `startio/modules/startioCore/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines modules schema metadata, model contracts, and generated capability settings. |  |
-| `startio/modules/startioCore/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements modules default sample service business behavior and extension logic. |  |
+| `startio/modules/startioCore/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements startioCore default sample service business behavior and extension logic. |  |
+| `startio/modules/startioCore/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared startioCore enum definition exports. |  |
+| `startio/modules/startioCore/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared startioCore status and error definition exports. |  |
 | `startio/modules/startioCore/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared modules utility exports for utils. |  |
 | `startio/modules/startioCore/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines modules test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `startio/modules/startioCore/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines modules test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

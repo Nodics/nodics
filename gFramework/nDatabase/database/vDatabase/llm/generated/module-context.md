@@ -29,10 +29,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 7 |
+| Source files | 10 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 17 |
+| All module-owned files | 20 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -61,7 +61,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 11 |
+| Documented | 14 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -76,7 +76,7 @@
 - `gFramework/nDatabase/database/vDatabase/config/prescripts.js`
 - `gFramework/nDatabase/database/vDatabase/config/postscripts.js`
 - `gFramework/nDatabase/database/vDatabase/src/schemas/schemas.js`
-- `gFramework/nDatabase/database/vDatabase/src/router/router.js`
+- `gFramework/nDatabase/database/vDatabase/src/router/routers.js`
 
 ## File Inventory
 
@@ -93,11 +93,14 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDatabase/database/vDatabase/nodics.js` | `module` | `documented` | 2/2 | Registers the nDatabase module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nDatabase/database/vDatabase/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/database/vDatabase/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Versioned schema interceptor registry. It attaches version id initialization to generated save operations for version-aware database models. |  |
-| `gFramework/nDatabase/database/vDatabase/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Versioned database pipeline extension slot. |  |
+| `gFramework/nDatabase/database/vDatabase/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Versioned database pipeline extension slot. |  |
 | `gFramework/nDatabase/database/vDatabase/src/router/appConfig.js` | `src` | `documented` | 0/0 | Versioned database router app configuration extension slot. |  |
-| `gFramework/nDatabase/database/vDatabase/src/router/router.js` | `src` | `documented` | 0/0 | Versioned database route definition extension slot. |  |
+| `gFramework/nDatabase/database/vDatabase/src/router/routers.js` | `src` | `documented` | 0/0 | Versioned database route definition extension slot. |  |
 | `gFramework/nDatabase/database/vDatabase/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nDatabase schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nDatabase/database/vDatabase/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements vDatabase default sample service business behavior and extension logic. |  |
 | `gFramework/nDatabase/database/vDatabase/src/service/interceptors/defaultVersionIdHandlerInterceptorService.js` | `src` | `documented` | 3/3 | Versioned database interceptor that initializes the `versionId` field for generated version-aware schemas. |  |
+| `gFramework/nDatabase/database/vDatabase/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared vDatabase enum definition exports. |  |
+| `gFramework/nDatabase/database/vDatabase/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared vDatabase status and error definition exports. |  |
 | `gFramework/nDatabase/database/vDatabase/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nDatabase utility exports for utils. |  |
 | `gFramework/nDatabase/database/vDatabase/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nDatabase test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nDatabase/database/vDatabase/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nDatabase test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer kycApi"
   },
-  "sourceFiles": 9,
+  "sourceFiles": 11,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 19,
-  "sourceFingerprint": "0090ff0ff46a7b7c734b95222763a74ee931b436885fe3eee9acf926d3beefdb",
+  "ownedFiles": 21,
+  "sourceFingerprint": "12da61c0ff96be2f8e5abd0e39011db35f39429260d308639b08bf18d56f0ee5",
   "documentation": {
-    "documented": 13,
+    "documented": 15,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

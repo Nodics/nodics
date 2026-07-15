@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to quiz"
   },
-  "sourceFiles": 7,
+  "sourceFiles": 9,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 17,
-  "sourceFingerprint": "fee554fbcd1ab69855f03d1b527f5815d2c80c09f7d46c8c911a403d75dc2b6a",
+  "ownedFiles": 19,
+  "sourceFingerprint": "5914ed2ce5cc15e7469550c07a44fb61e7a729f6dc4b29c5032a732470130583",
   "documentation": {
-    "documented": 11,
+    "documented": 13,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

@@ -25,10 +25,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 65 |
+| Source files | 67 |
 | Test files | 1 |
 | Data files | 0 |
-| All module-owned files | 16 |
+| All module-owned files | 18 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -53,7 +53,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 11 |
+| Documented | 13 |
 | Partially documented | 0 |
 | Undocumented | 1 |
 | Inventory only | 4 |
@@ -88,6 +88,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nController/src/controller/log/defaultLogController.js` | `src` | `documented` | 3/3 | Exposes request handlers for nController default log controller operations. |  |
 | `gFramework/nController/src/controller/ping/defaultPingMeController.js` | `src` | `documented` | 3/3 | Exposes request handlers for nController default ping me controller operations. |  |
 | `gFramework/nController/src/controller/validator/defaultValidatorController.js` | `src` | `documented` | 1/1 | Exposes request handlers for nController default validator controller operations. |  |
+| `gFramework/nController/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared nController enum definition exports. |  |
+| `gFramework/nController/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nController status and error definition exports. |  |
 | `gFramework/nController/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nController utility exports for utils. |  |
 | `gFramework/nController/test/logControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 

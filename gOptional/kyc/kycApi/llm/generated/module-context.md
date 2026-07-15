@@ -31,10 +31,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 9 |
+| Source files | 11 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 19 |
+| All module-owned files | 21 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -65,7 +65,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 13 |
+| Documented | 15 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -80,7 +80,7 @@
 - `gOptional/kyc/kycApi/config/prescripts.js`
 - `gOptional/kyc/kycApi/config/postscripts.js`
 - `gOptional/kyc/kycApi/src/schemas/schemas.js`
-- `gOptional/kyc/kycApi/src/router/router.js`
+- `gOptional/kyc/kycApi/src/router/routers.js`
 
 ## File Inventory
 
@@ -99,11 +99,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gOptional/kyc/kycApi/src/controller/defaultKycController.js` | `src` | `documented` | 5/5 | Exposes request handlers for kyc default kyc controller operations. |  |
 | `gOptional/kyc/kycApi/src/facade/defaultKycFacade.js` | `src` | `documented` | 5/5 | Coordinates facade-level delegation for kyc default kyc facade operations. |  |
 | `gOptional/kyc/kycApi/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers kyc interceptor wiring for pipeline extension points. |  |
-| `gOptional/kyc/kycApi/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines kyc pipeline wiring and execution contracts. |  |
+| `gOptional/kyc/kycApi/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines kyc pipeline wiring and execution contracts. |  |
 | `gOptional/kyc/kycApi/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines kyc route registration and HTTP exposure metadata. |  |
-| `gOptional/kyc/kycApi/src/router/router.js` | `src` | `documented` | 0/0 | Defines kyc route registration and HTTP exposure metadata. |  |
+| `gOptional/kyc/kycApi/src/router/routers.js` | `src` | `documented` | 0/0 | Defines kyc route registration and HTTP exposure metadata. |  |
 | `gOptional/kyc/kycApi/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines kyc schema metadata, model contracts, and generated capability settings. |  |
-| `gOptional/kyc/kycApi/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements kyc default sample service business behavior and extension logic. |  |
+| `gOptional/kyc/kycApi/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements kycApi default sample service business behavior and extension logic. |  |
+| `gOptional/kyc/kycApi/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared kycApi enum definition exports. |  |
+| `gOptional/kyc/kycApi/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared kycApi status and error definition exports. |  |
 | `gOptional/kyc/kycApi/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared kyc utility exports for utils. |  |
 | `gOptional/kyc/kycApi/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines kyc test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gOptional/kyc/kycApi/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines kyc test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

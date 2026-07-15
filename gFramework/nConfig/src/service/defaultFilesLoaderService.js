@@ -63,14 +63,32 @@ module.exports = {
         let _self = this;
         let mergedFile = frameworkFile || {};
         NODICS.getIndexedModules().forEach(function (value, key) {
-            var filePath = value.path + fileName;
-            if (fs.existsSync(filePath)) {
-                _self.LOG.debug('Loading file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
-                var commonPropertyFile = require(filePath);
-                mergedFile = _.merge(mergedFile, commonPropertyFile);
-            }
+            _self.getCompatibleFileNames(fileName).forEach(compatibleFileName => {
+                var filePath = value.path + compatibleFileName;
+                if (fs.existsSync(filePath)) {
+                    _self.LOG.debug('Loading file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
+                    var commonPropertyFile = require(filePath);
+                    mergedFile = _.merge(mergedFile, commonPropertyFile);
+                }
+            });
         });
         return mergedFile;
+    },
+
+    /**
+     * Resolves canonical and compatibility registry paths for generic file loading.
+     *
+     * @param {string} fileName Requested module-relative file path.
+     * @returns {string[]} File paths to load in precedence order.
+     */
+    getCompatibleFileNames: function (fileName) {
+        if (fileName === '/src/pipelines/pipelinesDefinition.js') {
+            return ['/src/pipelines/pipelinesDefinition.js', '/src/pipelines/pipelines.js'];
+        }
+        if (fileName === '/src/pipelines/pipelines.js') {
+            return ['/src/pipelines/pipelinesDefinition.js', '/src/pipelines/pipelines.js'];
+        }
+        return [fileName];
     },
 
     /**
@@ -444,7 +462,41 @@ module.exports = {
      * @returns {Object} Effective router registry.
      */
     loadRouterFiles: function (fileName, frameworkFile) {
-        return this.loadGovernedFiles(fileName, frameworkFile, this.getRouterGovernancePolicy());
+        let mergedRouters = frameworkFile || {};
+        let _self = this;
+        let policy = this.getRouterGovernancePolicy();
+        NODICS.getIndexedModules().forEach(function (value, key) {
+            _self.getRouterRegistryFileNames(fileName).forEach(routerFileName => {
+                let filePath = value.path + routerFileName;
+                if (fs.existsSync(filePath)) {
+                    _self.LOG.debug('Loading ' + policy.label + ' file from : ' + filePath.replace(NODICS.getNodicsHome(), '.'));
+                    mergedRouters = _self.mergeGovernedFile({
+                        mergedFile: mergedRouters,
+                        incomingFile: require(filePath),
+                        sourceModule: value.name,
+                        filePath: filePath,
+                        policy: policy
+                    });
+                }
+            });
+        });
+        return mergedRouters;
+    },
+
+    /**
+     * Resolves canonical and compatibility router registry paths.
+     *
+     * @param {string} fileName Requested router registry path.
+     * @returns {string[]} Router registry paths to load in precedence order.
+     */
+    getRouterRegistryFileNames: function (fileName) {
+        if (fileName === '/src/router/router.js') {
+            return ['/src/router/router.js', '/src/router/routers.js'];
+        }
+        if (fileName === '/src/router/routers.js') {
+            return ['/src/router/router.js', '/src/router/routers.js'];
+        }
+        return [fileName];
     },
 
     /**

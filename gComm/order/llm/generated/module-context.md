@@ -30,10 +30,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 11 |
+| Source files | 12 |
 | Test files | 16 |
 | Data files | 8 |
-| All module-owned files | 29 |
+| All module-owned files | 30 |
 | Local schema definitions | 5 |
 
 ## Ownership And Dependencies
@@ -63,7 +63,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 23 |
+| Documented | 24 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -78,7 +78,7 @@
 - `gComm/order/config/prescripts.js`
 - `gComm/order/config/postscripts.js`
 - `gComm/order/src/schemas/schemas.js`
-- `gComm/order/src/router/router.js`
+- `gComm/order/src/router/routers.js`
 
 ## File Inventory
 
@@ -103,10 +103,11 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/order/nodics.js` | `module` | `documented` | 2/2 | Order module lifecycle entrypoint used by the Nodics module loader. |  |
 | `gComm/order/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/order/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Schema interceptor registrations for order save lifecycle hooks. |  |
-| `gComm/order/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Pipeline definition for order creation validation, persistence, and terminal handling. |  |
+| `gComm/order/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Pipeline definition for order creation validation, persistence, and terminal handling. |  |
 | `gComm/order/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved order router application configuration contribution. |  |
-| `gComm/order/src/router/router.js` | `src` | `documented` | 0/0 | Reserved order route contribution for custom order APIs beyond generated schema routes. |  |
+| `gComm/order/src/router/routers.js` | `src` | `documented` | 0/0 | Reserved order route contribution for custom order APIs beyond generated schema routes. |  |
 | `gComm/order/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Order schema contribution defining order, order status, payment status, shipping status, and reason models. |  |
+| `gComm/order/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements order default sample service business behavior and extension logic. |  |
 | `gComm/order/src/service/interceptor/defaultOrderCodeGeneratorInterceptorService.js` | `src` | `documented` | 3/3 | Order pre-save interceptor service that derives missing enterprise ownership from the request context. |  |
 | `gComm/order/src/service/order/DefaultOrderService.js` | `src` | `documented` | 3/3 | Order service implementation that prepares tenant-aware order persistence context and starts the create-order pipeline. |  |
 | `gComm/order/src/service/pipeline/defaultCreateOrderPipelineService.js` | `src` | `documented` | 12/12 | Pipeline node service for order creation validation, associated data checks, persistence, and terminal handling. |  |

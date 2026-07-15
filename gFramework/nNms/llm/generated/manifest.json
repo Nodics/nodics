@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to nms"
   },
-  "sourceFiles": 14,
+  "sourceFiles": 16,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 24,
-  "sourceFingerprint": "c69a7306d6bc1cb08ab5d7ca380b53ea87ffd804634f3f5cf0a8f436fc3e4c15",
+  "ownedFiles": 26,
+  "sourceFingerprint": "3b6138f6394f663e9a8d6952deb78ea4c16e18e99103864d55c0da0af69429b0",
   "documentation": {
-    "documented": 18,
+    "documented": 20,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

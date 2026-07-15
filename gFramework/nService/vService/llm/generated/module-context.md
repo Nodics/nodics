@@ -28,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 10 |
+| Source files | 13 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 20 |
+| All module-owned files | 23 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 14 |
+| Documented | 17 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -74,7 +74,7 @@
 - `gFramework/nService/vService/config/prescripts.js`
 - `gFramework/nService/vService/config/postscripts.js`
 - `gFramework/nService/vService/src/schemas/schemas.js`
-- `gFramework/nService/vService/src/router/router.js`
+- `gFramework/nService/vService/src/router/routers.js`
 
 ## File Inventory
 
@@ -90,15 +90,18 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nService/vService/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nService/vService/nodics.js` | `module` | `documented` | 2/2 | Versioned service module lifecycle entrypoint used by the Nodics module loader. |  |
 | `gFramework/nService/vService/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nService/vService/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Versioned service pipeline extension slot. |  |
+| `gFramework/nService/vService/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Versioned service pipeline extension slot. |  |
 | `gFramework/nService/vService/src/router/appConfig.js` | `src` | `documented` | 0/0 | Versioned service router app configuration extension slot. |  |
-| `gFramework/nService/vService/src/router/router.js` | `src` | `documented` | 0/0 | Versioned service route definition extension slot. |  |
+| `gFramework/nService/vService/src/router/routers.js` | `src` | `documented` | 0/0 | Versioned service route definition extension slot. |  |
 | `gFramework/nService/vService/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Reserved schema contribution for versioned service capabilities. |  |
+| `gFramework/nService/vService/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements vService default sample service business behavior and extension logic. |  |
 | `gFramework/nService/vService/src/service/procs/get/defaultModelsGetInitializerService.js` | `src` | `documented` | 2/2 | Versioned service get pipeline extension slot. The base implementation currently inherits generic get behavior while preserving a layered override location for version-aware get processing. |  |
 | `gFramework/nService/vService/src/service/procs/remove/defaultModelsRemoveInitializerService.js` | `src` | `documented` | 2/2 | Versioned service remove pipeline extension slot. The base implementation currently inherits generic remove behavior while preserving a layered override location for version-aware removal processing. |  |
 | `gFramework/nService/vService/src/service/procs/save/defaultModelSaveInitializerService.js` | `src` | `documented` | 3/3 | Version-aware override for the single-model save pipeline step. It delegates to versioned persistence when the schema model is marked `versioned`, otherwise it preserves the default save behavior. |  |
 | `gFramework/nService/vService/src/service/procs/save/defaultModelsSaveInitializerService.js` | `src` | `documented` | 2/2 | Versioned service bulk-save pipeline extension slot. The base implementation currently inherits generic bulk-save behavior while preserving a layered override location for version-aware bulk save processing. |  |
 | `gFramework/nService/vService/src/service/procs/update/defaultModelsUpdateInitializerService.js` | `src` | `documented` | 3/3 | Version-aware override for the generated update pipeline execution step. It delegates to versioned update behavior when the schema model is marked `versioned`. |  |
+| `gFramework/nService/vService/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared vService enum definition exports. |  |
+| `gFramework/nService/vService/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared vService status and error definition exports. |  |
 | `gFramework/nService/vService/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for versioned service helper functions. |  |
 | `gFramework/nService/vService/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Common sample test scaffold for versioned service module tests. | add JSDoc for 7 exported method(s) |
 | `gFramework/nService/vService/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Local-environment sample test scaffold for versioned service module behavior. | add JSDoc for 7 exported method(s) |

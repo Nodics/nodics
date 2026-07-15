@@ -31,10 +31,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 11 |
+| Source files | 13 |
 | Test files | 3 |
 | Data files | 0 |
-| All module-owned files | 22 |
+| All module-owned files | 24 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -65,7 +65,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 16 |
+| Documented | 18 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -80,7 +80,7 @@
 - `gFramework/nOtp/config/prescripts.js`
 - `gFramework/nOtp/config/postscripts.js`
 - `gFramework/nOtp/src/schemas/schemas.js`
-- `gFramework/nOtp/src/router/router.js`
+- `gFramework/nOtp/src/router/routers.js`
 
 ## File Inventory
 
@@ -99,12 +99,14 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nOtp/src/controller/DefaultOtpController.js` | `src` | `documented` | 4/4 | Exposes request handlers for nOtp default otp controller operations. |  |
 | `gFramework/nOtp/src/facade/DefaultOtpFacade.js` | `src` | `documented` | 4/4 | Coordinates facade-level delegation for nOtp default otp facade operations. |  |
 | `gFramework/nOtp/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers nOtp interceptor wiring for pipeline extension points. |  |
-| `gFramework/nOtp/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nOtp pipeline wiring and execution contracts. |  |
+| `gFramework/nOtp/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nOtp pipeline wiring and execution contracts. |  |
 | `gFramework/nOtp/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nOtp route registration and HTTP exposure metadata. |  |
-| `gFramework/nOtp/src/router/router.js` | `src` | `documented` | 0/0 | Defines nOtp route registration and HTTP exposure metadata. |  |
+| `gFramework/nOtp/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nOtp route registration and HTTP exposure metadata. |  |
 | `gFramework/nOtp/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nOtp schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nOtp/src/service/DefaultOtpService.js` | `src` | `documented` | 4/4 | Implements nOtp default otp service business behavior and extension logic. |  |
+| `gFramework/nOtp/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements otp default sample service business behavior and extension logic. |  |
 | `gFramework/nOtp/src/service/handler/defaultOtpHandlerService.js` | `src` | `documented` | 4/4 | Implements nOtp default otp handler service business behavior and extension logic. |  |
+| `gFramework/nOtp/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared otp enum definition exports. |  |
 | `gFramework/nOtp/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nOtp utility exports for status definitions. |  |
 | `gFramework/nOtp/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nOtp utility exports for utils. |  |
 | `gFramework/nOtp/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nOtp test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

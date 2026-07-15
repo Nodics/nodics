@@ -28,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 6 |
+| Source files | 8 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 16 |
+| All module-owned files | 18 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -60,7 +60,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 10 |
+| Documented | 12 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -75,7 +75,7 @@
 - `startio/envs/startioLocal/startioLocalCronServer/config/prescripts.js`
 - `startio/envs/startioLocal/startioLocalCronServer/config/postscripts.js`
 - `startio/envs/startioLocal/startioLocalCronServer/src/schemas/schemas.js`
-- `startio/envs/startioLocal/startioLocalCronServer/src/router/router.js`
+- `startio/envs/startioLocal/startioLocalCronServer/src/router/routers.js`
 
 ## File Inventory
 
@@ -91,11 +91,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `startio/envs/startioLocal/startioLocalCronServer/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `startio/envs/startioLocal/startioLocalCronServer/nodics.js` | `module` | `documented` | 2/2 | Registers the envs module lifecycle hooks and module-level startup behavior. |  |
 | `startio/envs/startioLocal/startioLocalCronServer/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `startio/envs/startioLocal/startioLocalCronServer/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines envs pipeline wiring and execution contracts. |  |
+| `startio/envs/startioLocal/startioLocalCronServer/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines envs pipeline wiring and execution contracts. |  |
 | `startio/envs/startioLocal/startioLocalCronServer/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines envs route registration and HTTP exposure metadata. |  |
-| `startio/envs/startioLocal/startioLocalCronServer/src/router/router.js` | `src` | `documented` | 0/0 | Defines envs route registration and HTTP exposure metadata. |  |
+| `startio/envs/startioLocal/startioLocalCronServer/src/router/routers.js` | `src` | `documented` | 0/0 | Defines envs route registration and HTTP exposure metadata. |  |
 | `startio/envs/startioLocal/startioLocalCronServer/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines envs schema metadata, model contracts, and generated capability settings. |  |
-| `startio/envs/startioLocal/startioLocalCronServer/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements envs default sample service business behavior and extension logic. |  |
+| `startio/envs/startioLocal/startioLocalCronServer/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements startioLocalCronServer default sample service business behavior and extension logic. |  |
+| `startio/envs/startioLocal/startioLocalCronServer/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared startioLocalCronServer enum definition exports. |  |
+| `startio/envs/startioLocal/startioLocalCronServer/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared startioLocalCronServer status and error definition exports. |  |
 | `startio/envs/startioLocal/startioLocalCronServer/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared envs utility exports for utils. |  |
 | `startio/envs/startioLocal/startioLocalCronServer/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines envs test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `startio/envs/startioLocal/startioLocalCronServer/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines envs test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

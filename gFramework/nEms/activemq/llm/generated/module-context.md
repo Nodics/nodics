@@ -28,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 6 |
+| Source files | 9 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 16 |
+| All module-owned files | 19 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 10 |
+| Documented | 13 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -74,7 +74,7 @@
 - `gFramework/nEms/activemq/config/prescripts.js`
 - `gFramework/nEms/activemq/config/postscripts.js`
 - `gFramework/nEms/activemq/src/schemas/schemas.js`
-- `gFramework/nEms/activemq/src/router/router.js`
+- `gFramework/nEms/activemq/src/router/routers.js`
 
 ## File Inventory
 
@@ -90,11 +90,14 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nEms/activemq/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nEms/activemq/nodics.js` | `module` | `documented` | 2/2 | Registers the nEms module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nEms/activemq/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nEms/activemq/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nEms pipeline wiring and execution contracts. |  |
+| `gFramework/nEms/activemq/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nEms pipeline wiring and execution contracts. |  |
 | `gFramework/nEms/activemq/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nEms route registration and HTTP exposure metadata. |  |
-| `gFramework/nEms/activemq/src/router/router.js` | `src` | `documented` | 0/0 | Defines nEms route registration and HTTP exposure metadata. |  |
+| `gFramework/nEms/activemq/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nEms route registration and HTTP exposure metadata. |  |
 | `gFramework/nEms/activemq/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nEms schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nEms/activemq/src/service/activemq/defaultActivemqClientService.js` | `src` | `documented` | 10/10 | Implements nEms default activemq client service business behavior and extension logic. |  |
+| `gFramework/nEms/activemq/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements activemq default sample service business behavior and extension logic. |  |
+| `gFramework/nEms/activemq/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared activemq enum definition exports. |  |
+| `gFramework/nEms/activemq/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared activemq status and error definition exports. |  |
 | `gFramework/nEms/activemq/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nEms utility exports for utils. |  |
 | `gFramework/nEms/activemq/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nEms test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nEms/activemq/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nEms test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

@@ -69,7 +69,7 @@ function validate(request) {
     assert.deepStrictEqual(headerRequest, { modules: ['profile'], dataType: 'core' });
     assert(validRequest.data.headerFiles.trustedHeader_js[0].startsWith('/module/'));
 
-    const pipeline = require('../src/pipelines/pipelinesDefinition').remoteDataImportInitializerPipeline;
+    const pipeline = require('../src/pipelines/pipelines').remoteDataImportInitializerPipeline;
     const handlers = Object.values(pipeline.nodes).map(node => node.handler);
     assert(handlers.includes('DefaultSystemDataImportInitializerService.buildHeaderInstances'));
     assert(handlers.includes('DefaultLocalDataImportInitializerService.loadDataFileList'));

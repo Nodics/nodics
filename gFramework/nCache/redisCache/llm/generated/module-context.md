@@ -28,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 7 |
+| Source files | 10 |
 | Test files | 3 |
 | Data files | 0 |
-| All module-owned files | 18 |
+| All module-owned files | 21 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 12 |
+| Documented | 15 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -74,7 +74,7 @@
 - `gFramework/nCache/redisCache/config/prescripts.js`
 - `gFramework/nCache/redisCache/config/postscripts.js`
 - `gFramework/nCache/redisCache/src/schemas/schemas.js`
-- `gFramework/nCache/redisCache/src/router/router.js`
+- `gFramework/nCache/redisCache/src/router/routers.js`
 
 ## File Inventory
 
@@ -90,12 +90,15 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/redisCache/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nCache/redisCache/nodics.js` | `module` | `documented` | 2/2 | Registers the nCache module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nCache/redisCache/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nCache/redisCache/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nCache pipeline wiring and execution contracts. |  |
+| `gFramework/nCache/redisCache/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nCache pipeline wiring and execution contracts. |  |
 | `gFramework/nCache/redisCache/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
-| `gFramework/nCache/redisCache/src/router/router.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
+| `gFramework/nCache/redisCache/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
 | `gFramework/nCache/redisCache/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nCache schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nCache/redisCache/src/service/cache/defaultRedisCacheService.js` | `src` | `documented` | 10/10 | Implements the distributed cache adapter contract using Redis namespacing, TTL, atomic consume, and incremental invalidation. |  |
+| `gFramework/nCache/redisCache/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements redisCache default sample service business behavior and extension logic. |  |
 | `gFramework/nCache/redisCache/src/service/engine/defaultRedisCacheEngineService.js` | `src` | `documented` | 6/6 | Implements nCache default redis cache engine service business behavior and extension logic. |  |
+| `gFramework/nCache/redisCache/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared redisCache enum definition exports. |  |
+| `gFramework/nCache/redisCache/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared redisCache status and error definition exports. |  |
 | `gFramework/nCache/redisCache/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nCache utility exports for utils. |  |
 | `gFramework/nCache/redisCache/test/cacheRedisLive.test.js` | `test` | `documented` | 0/0 | Optionally verifies the complete Redis cache adapter contract against an explicitly supplied isolated Redis endpoint, or fails closed for release gates. |  |
 | `gFramework/nCache/redisCache/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nCache test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

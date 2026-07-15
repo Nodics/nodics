@@ -27,10 +27,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 9 |
+| Source files | 11 |
 | Test files | 0 |
 | Data files | 0 |
-| All module-owned files | 17 |
+| All module-owned files | 19 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -57,7 +57,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 13 |
+| Documented | 15 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -90,9 +90,11 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nPipeline/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Pipeline interceptor registry extension slot. The base pipeline module currently ships no active interceptors, but this file preserves the layered configuration location for pipeline persistence or governance hooks. |  |
 | `gFramework/nPipeline/src/lib/pipelineHead.js` | `src` | `documented` | 0/0 | Runtime pipeline executor for Nodics. A pipeline head builds node instances from the effective pipeline definition, tracks execution state, moves through success/error links, executes nested pipelines, and enriches errors with contextual metadata for database, search, event, and import flows. |  |
 | `gFramework/nPipeline/src/lib/pipelineNode.js` | `src` | `documented` | 0/0 | Runtime wrapper for one pipeline node definition. A node stores handler, type, success link, error link, and target routing metadata consumed by `PipelineHead`. |  |
-| `gFramework/nPipeline/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Base pipeline definitions shared by all Nodics runtime pipelines. `defaultPipeline` contributes standard success and error terminal nodes that are merged into concrete pipeline definitions at execution time. |  |
+| `gFramework/nPipeline/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Base pipeline definitions shared by all Nodics runtime pipelines. `defaultPipeline` contributes standard success and error terminal nodes that are merged into concrete pipeline definitions at execution time. |  |
+| `gFramework/nPipeline/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements pipeline default sample service business behavior and extension logic. |  |
 | `gFramework/nPipeline/src/service/event/defaultPipelineChangeListenerService.js` | `src` | `documented` | 2/2 | Event listener service for runtime pipeline change and removal events. It adapts event callbacks into `DefaultPipelineService` registry updates so behavior overrides can be applied without restarting every caller. |  |
 | `gFramework/nPipeline/src/service/pipeline/defaultPipelineService.js` | `src` | `documented` | 9/9 | Runtime service for loading, updating, removing, and executing Nodics pipelines. It merges static pipeline definitions from active module hierarchy with persisted pipeline models when available, then executes pipelines through `PipelineHead`. |  |
+| `gFramework/nPipeline/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared pipeline enum definition exports. |  |
 | `gFramework/nPipeline/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Status and error definitions for pipeline execution and pipeline-definition validation. |  |
 | `gFramework/nPipeline/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for shared pipeline helper functions. |  |
 

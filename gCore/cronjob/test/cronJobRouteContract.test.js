@@ -10,7 +10,7 @@
  */
 
 const { assertRouteContracts } = require('../../../gFramework/nRouter/test/routerContractTestUtils');
-const routerConfig = require('../src/router/router');
+const routerConfig = require('../src/router/routers');
 
 /**
  * @module gCore/cronjob/test/cronJobRouteContract.test

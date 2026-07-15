@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Scheduler capability for cron job definitions, lifecycle operations, logs, node ownership, temporary failover ownership, and event-driven execution."
   },
-  "sourceFiles": 33,
+  "sourceFiles": 34,
   "testFiles": 15,
   "dataFiles": 4,
-  "ownedFiles": 52,
-  "sourceFingerprint": "ca94ed3338b0252b670e504e7fc4d3889b083c395324f57b9a74295937ad242f",
+  "ownedFiles": 53,
+  "sourceFingerprint": "fe44800ff7ac074008612c2b870c329e94a25c381b7c6eb3334bb8e0412d07b5",
   "documentation": {
-    "documented": 46,
+    "documented": 47,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

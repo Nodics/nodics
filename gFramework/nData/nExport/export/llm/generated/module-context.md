@@ -30,10 +30,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 8 |
+| Source files | 11 |
 | Test files | 3 |
 | Data files | 0 |
-| All module-owned files | 19 |
+| All module-owned files | 22 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -63,7 +63,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 12 |
+| Documented | 15 |
 | Partially documented | 2 |
 | Undocumented | 1 |
 | Inventory only | 4 |
@@ -78,7 +78,7 @@
 - `gFramework/nData/nExport/export/config/prescripts.js`
 - `gFramework/nData/nExport/export/config/postscripts.js`
 - `gFramework/nData/nExport/export/src/schemas/schemas.js`
-- `gFramework/nData/nExport/export/src/router/router.js`
+- `gFramework/nData/nExport/export/src/router/routers.js`
 
 ## File Inventory
 
@@ -96,11 +96,14 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/nExport/export/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nData/nExport/export/src/controller/DataExportController.js` | `src` | `documented` | 1/1 | Exposes request handlers for nData data export controller operations. |  |
 | `gFramework/nData/nExport/export/src/facade/DataExportFacade.js` | `src` | `documented` | 1/1 | Coordinates facade-level delegation for nData data export facade operations. |  |
-| `gFramework/nData/nExport/export/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nData pipeline wiring and execution contracts. |  |
+| `gFramework/nData/nExport/export/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nData pipeline wiring and execution contracts. |  |
 | `gFramework/nData/nExport/export/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
-| `gFramework/nData/nExport/export/src/router/router.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
+| `gFramework/nData/nExport/export/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
 | `gFramework/nData/nExport/export/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nData schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nData/nExport/export/src/service/DataExportService.js` | `src` | `documented` | 4/4 | Implements nData data export service business behavior and extension logic. |  |
+| `gFramework/nData/nExport/export/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements export default sample service business behavior and extension logic. |  |
+| `gFramework/nData/nExport/export/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared export enum definition exports. |  |
+| `gFramework/nData/nExport/export/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared export status and error definition exports. |  |
 | `gFramework/nData/nExport/export/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nData utility exports for utils. |  |
 | `gFramework/nData/nExport/export/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nData test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nData/nExport/export/test/dataExportCapabilityBehavior.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

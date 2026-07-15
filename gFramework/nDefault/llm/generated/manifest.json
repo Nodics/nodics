@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to default"
   },
-  "sourceFiles": 5,
+  "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 15,
-  "sourceFingerprint": "ac28dd256c571753d8d554aa1e94a17514e467f733c248bddfdd768eda6360f8",
+  "ownedFiles": 17,
+  "sourceFingerprint": "27ac296bfc806acabdab904c181b2fb6d2b308693975109a80f59a6b1c3a7295",
   "documentation": {
-    "documented": 9,
+    "documented": 11,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

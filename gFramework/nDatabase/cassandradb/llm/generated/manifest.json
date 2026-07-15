@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to cassandradb"
   },
-  "sourceFiles": 5,
+  "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 15,
-  "sourceFingerprint": "57269cc35972bca46767e9418ab5fff822351614ed42fe2043dd1aa1ceeef643",
+  "ownedFiles": 17,
+  "sourceFingerprint": "d45cbf62b44c3188de70b28a608b231c5d95df69e0309a038ba3e93cdb4ad9c7",
   "documentation": {
-    "documented": 9,
+    "documented": 11,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

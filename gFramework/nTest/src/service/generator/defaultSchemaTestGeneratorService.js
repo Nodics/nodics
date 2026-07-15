@@ -1162,7 +1162,7 @@ module.exports = {
      * @returns {Object} Default schema router definitions.
      */
     getDefaultSchemaRouters: function () {
-        let routers = SERVICE.DefaultFilesLoaderService.loadRouterFiles('/src/router/router.js');
+        let routers = SERVICE.DefaultFilesLoaderService.loadRouterFiles('/src/router/routers.js');
         return routers.default || {};
     },
 

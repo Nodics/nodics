@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Build common functionalities for Nodics"
   },
-  "sourceFiles": 13,
+  "sourceFiles": 14,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 23,
-  "sourceFingerprint": "fac1b9d3ceb712fc02d3beb94612c99c4852c17055db6d9b3eb42549b8d89088",
+  "ownedFiles": 24,
+  "sourceFingerprint": "b6bb672f649271d82026761480abdee92e87de1886e5c70fa9f4ebd7168b4cea",
   "documentation": {
-    "documented": 19,
+    "documented": 20,
     "partially-documented": 0,
     "undocumented": 0,
     "inventory-only": 4

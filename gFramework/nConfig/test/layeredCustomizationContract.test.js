@@ -152,7 +152,7 @@ layers.forEach(layer => {
         routeContribution.method = 'POST';
         routeContribution.secured = true;
     }
-    writeContribution(layer, 'src/router/router.js', {
+    writeContribution(layer, 'src/router/routers.js', {
         hierarchy: {
             factory: {
                 execute: routeContribution
@@ -160,7 +160,9 @@ layers.forEach(layer => {
         }
     });
     writeContribution(layer, 'src/service/defaultHierarchyProbeService.js', createArtifact(layer.role));
-    writeContribution(layer, 'src/pipelines/hierarchyProbeDefinition.js', createArtifact(layer.role));
+    writeContribution(layer, 'src/pipelines/pipelines.js', {
+        hierarchyProbe: createArtifact(layer.role)
+    });
     writeContribution(layer, 'src/facade/defaultHierarchyProbeFacade.js', createArtifact(layer.role));
     writeContribution(layer, 'src/controller/defaultHierarchyProbeController.js', createArtifact(layer.role));
 });
@@ -362,7 +364,7 @@ function assertLayeredArtifact(artifact, expectedLayer) {
         });
 
         let schemas = fileLoader.loadSchemaFiles('/src/schemas/schemas.js', null);
-        let routers = fileLoader.loadRouterFiles('/src/router/router.js', null);
+        let routers = fileLoader.loadRouterFiles('/src/router/routers.js', null);
         assert.strictEqual(schemas.hierarchy.factoryItem.definition.capabilityCode.required, true);
         assert.strictEqual(schemas.hierarchy.factoryItem.model, true);
         assert.strictEqual(schemas.hierarchy.factoryItem.definition.implementationLayer.defaultValue, 'node');
@@ -445,7 +447,7 @@ function assertLayeredArtifact(artifact, expectedLayer) {
 
         await loadArtifacts();
         assertLayeredArtifact(SERVICE.defaultHierarchyProbeService, 'node');
-        assertLayeredArtifact(PIPELINE.hierarchyProbeDefinition, 'node');
+        assertLayeredArtifact(PIPELINE.hierarchyProbe, 'node');
         assertLayeredArtifact(FACADE.defaultHierarchyProbeFacade, 'node');
         assertLayeredArtifact(CONTROLLER.defaultHierarchyProbeController, 'node');
 

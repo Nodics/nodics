@@ -21,6 +21,22 @@ const _ = require('lodash');
 module.exports = {
     default: {
         /**
+         * Normalizes MongoDB getItems responses for versioned model operations.
+         *
+         * @param {*} response getItems response or direct item array.
+         * @returns {Object[]} Matched items.
+         */
+        getMatchedItems: function (response) {
+            if (Array.isArray(response)) {
+                return response;
+            }
+            if (response && Array.isArray(response.result)) {
+                return response.result;
+            }
+            return [];
+        },
+
+        /**
          * Validates model rules.
          *
          * @param {*} query Method input.
@@ -46,8 +62,9 @@ module.exports = {
                         query: customQuery,
                         searchOptions: customOptions
                     }).then(success => {
-                        if (success && success.length > 0) {
-                            let preMoidel = success[0];
+                        let matchedItems = this.getMatchedItems(success);
+                        if (matchedItems.length > 0) {
+                            let preMoidel = matchedItems[0];
                             preMoidel.versionId = (preMoidel.versionId === undefined) ? -1 : preMoidel.versionId;
                             if (model.versionId <= preMoidel.versionId) {
                                 reject(new CLASSES.NodicsError('ERR_MDL_00004', model.versionId + ', it should be: ' + (preMoidel.versionId + 1)));
@@ -136,10 +153,11 @@ module.exports = {
                                 limit: 1,
                                 sort: { versionId: -1 },
                                 projection: { _id: 0 }
-                            }
-                        }).then(success => {
-                            if (success && success.length > 0) {
-                                let data = _.merge(success[0], newItem);
+                        }
+                    }).then(success => {
+                            let previousItems = _self.getMatchedItems(success);
+                            if (previousItems.length > 0) {
+                                let data = _.merge(previousItems[0], newItem);
                                 data.versionId = (data.versionId === undefined) ? 1 : data.versionId + 1;
                                 finalizeData.push(data);
                             }
@@ -178,9 +196,10 @@ module.exports = {
             return new Promise((resolve, reject) => {
                 try {
                     _self.getItems(input).then(items => {
-                        if (items && items.length > 0) {
+                        let matchedItems = _self.getMatchedItems(items);
+                        if (matchedItems.length > 0) {
                             let finalizeData = [];
-                            _self.fetchPreviousItems(items, input.model, finalizeData).then(success => {
+                            _self.fetchPreviousItems(matchedItems, input.model, finalizeData).then(success => {
                                 if (finalizeData.length > 0) {
                                     _self.insertMany(finalizeData, {}).then(success => {
                                         resolve(success);

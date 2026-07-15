@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to publish"
   },
-  "sourceFiles": 5,
+  "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 15,
-  "sourceFingerprint": "6b43d2cdc9f8215bac3da5a62750ffa2aab11be1e20876b619a50c4abebb6c66",
+  "ownedFiles": 17,
+  "sourceFingerprint": "ea8ccb39df62613785bffac5cc01b79b2682f39bceee7a8f46ad2022f488a6fd",
   "documentation": {
-    "documented": 9,
+    "documented": 11,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to flowCore"
   },
-  "sourceFiles": 39,
+  "sourceFiles": 42,
   "testFiles": 8,
   "dataFiles": 32,
-  "ownedFiles": 87,
-  "sourceFingerprint": "e80e8c328183c114fa196149406ca718dee8881f5a647b3efab5141a3a75b1a2",
+  "ownedFiles": 90,
+  "sourceFingerprint": "673eed4244798aadec0dd81e13423e57faa3c31ef5f98ae720ff7ec4b10b1320",
   "documentation": {
-    "documented": 80,
+    "documented": 83,
     "partially-documented": 2,
     "undocumented": 1,
     "inventory-only": 4

@@ -133,7 +133,7 @@ loader.LOG = {
     }
 };
 
-let mergedRouters = loader.loadRouterFiles('/src/router/router.js', null);
+let mergedRouters = loader.loadRouterFiles('/src/router/routers.js', null);
 assert.strictEqual(mergedRouters.profile.users.getUser.controller, 'ProjectUserController');
 assert.strictEqual(mergedRouters.profile.users.getUser.operation, 'loadUser');
 assert.strictEqual(mergedRouters.profile.users.getUser.method, 'GET');
@@ -154,7 +154,7 @@ global.NODICS.getIndexedModules = function () {
 };
 warnings = [];
 
-let replacedRouters = loader.loadRouterFiles('/src/router/router.js', null);
+let replacedRouters = loader.loadRouterFiles('/src/router/routers.js', null);
 assert.strictEqual(replacedRouters.profile.users.getUser, undefined);
 assert.strictEqual(replacedRouters.profile.users.health.controller, 'UserHealthController');
 assert.strictEqual(warnings.length, 0);

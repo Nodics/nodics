@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer kycSchema"
   },
-  "sourceFiles": 7,
+  "sourceFiles": 8,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 17,
-  "sourceFingerprint": "a0eba97af97e890b4c2c5205e5df560e7077a6859662585183d0f6ea069e097d",
+  "ownedFiles": 18,
+  "sourceFingerprint": "bbd75f75d2c720ca79f68ceb088ac11e26d9c1a9f40f92ab47ccd21486d51cab",
   "documentation": {
-    "documented": 11,
+    "documented": 12,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

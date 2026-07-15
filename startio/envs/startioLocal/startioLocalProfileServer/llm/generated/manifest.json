@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Startio module for startioLocalProfileServer"
   },
-  "sourceFiles": 6,
+  "sourceFiles": 8,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 16,
-  "sourceFingerprint": "25c6b70d23181fb7363200162688432db05daf594caacb6e3a5ce231b26fbf11",
+  "ownedFiles": 18,
+  "sourceFingerprint": "e026949c53c59d3593a5abdc14abc4431ce0d2cd5cb4b572c46dacb573fe5f0b",
   "documentation": {
-    "documented": 10,
+    "documented": 12,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to nodeCache"
   },
-  "sourceFiles": 7,
+  "sourceFiles": 10,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 17,
-  "sourceFingerprint": "057e77a5489897183151067da90c3261cc04050caf27feadd481b056bf2adf9b",
+  "ownedFiles": 20,
+  "sourceFingerprint": "f3d641cbf1ce3757da8345fbd599551e7a4c33791cb5002e1714528914c205d6",
   "documentation": {
-    "documented": 11,
+    "documented": 14,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

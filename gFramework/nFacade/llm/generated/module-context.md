@@ -24,10 +24,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 65 |
+| Source files | 67 |
 | Test files | 0 |
 | Data files | 0 |
-| All module-owned files | 15 |
+| All module-owned files | 17 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -51,7 +51,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 11 |
+| Documented | 13 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -86,6 +86,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nFacade/src/facade/interceptor/defaultInterceptorFacade.js` | `src` | `documented` | 1/1 | Coordinates facade-level delegation for nFacade default interceptor facade operations. |  |
 | `gFramework/nFacade/src/facade/log/defaultLogFacade.js` | `src` | `documented` | 3/3 | Coordinates facade-level delegation for nFacade default log facade operations. |  |
 | `gFramework/nFacade/src/facade/validator/defaultValidatorFacade.js` | `src` | `documented` | 1/1 | Coordinates facade-level delegation for nFacade default validator facade operations. |  |
+| `gFramework/nFacade/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared nFacade enum definition exports. |  |
+| `gFramework/nFacade/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nFacade status and error definition exports. |  |
 | `gFramework/nFacade/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nFacade utility exports for utils. |  |
 
 ## Extension Contract

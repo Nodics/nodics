@@ -31,10 +31,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 39 |
+| Source files | 42 |
 | Test files | 8 |
 | Data files | 32 |
-| All module-owned files | 87 |
+| All module-owned files | 90 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -65,7 +65,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 80 |
+| Documented | 83 |
 | Partially documented | 2 |
 | Undocumented | 1 |
 | Inventory only | 4 |
@@ -80,7 +80,7 @@
 - `gCore/workflow/flowCore/config/prescripts.js`
 - `gCore/workflow/flowCore/config/postscripts.js`
 - `gCore/workflow/flowCore/src/schemas/schemas.js`
-- `gCore/workflow/flowCore/src/router/router.js`
+- `gCore/workflow/flowCore/src/router/routers.js`
 
 ## File Inventory
 
@@ -130,9 +130,9 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/workflow/flowCore/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/workflow/flowCore/src/event/listeners.js` | `src` | `documented` | 0/0 | Documents workflow listeners module behavior. |  |
 | `gCore/workflow/flowCore/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers workflow interceptor wiring for pipeline extension points. |  |
-| `gCore/workflow/flowCore/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines workflow pipeline wiring and execution contracts. |  |
+| `gCore/workflow/flowCore/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines workflow pipeline wiring and execution contracts. |  |
 | `gCore/workflow/flowCore/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines workflow route registration and HTTP exposure metadata. |  |
-| `gCore/workflow/flowCore/src/router/router.js` | `src` | `documented` | 0/0 | Defines workflow route registration and HTTP exposure metadata. |  |
+| `gCore/workflow/flowCore/src/router/routers.js` | `src` | `documented` | 0/0 | Defines workflow route registration and HTTP exposure metadata. |  |
 | `gCore/workflow/flowCore/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines workflow schema metadata, model contracts, and generated capability settings. |  |
 | `gCore/workflow/flowCore/src/service/action/defaultWorkflowActionResponseService.js` | `src` | `documented` | 3/3 | Implements workflow default workflow action response service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/action/defaultWorkflowActionService.js` | `src` | `documented` | 4/4 | Implements workflow default workflow action service business behavior and extension logic. |  |
@@ -144,6 +144,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/workflow/flowCore/src/service/default/defaultSplitEndActionHandlerService.js` | `src` | `documented` | 3/3 | Implements workflow default split end action handler service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/default/defaultSuccessActionHandlerService.js` | `src` | `documented` | 3/3 | Implements workflow default success action handler service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/default/defaultWorkflowActionExecutionService.js` | `src` | `documented` | 3/3 | Implements workflow default workflow action execution service business behavior and extension logic. |  |
+| `gCore/workflow/flowCore/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements flowCore default sample service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/events/defaultWorkflowCarrierChangeListenerService.js` | `src` | `documented` | 3/3 | Implements workflow default workflow carrier change listener service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/events/defaultWorkflowEventService.js` | `src` | `documented` | 6/6 | Implements workflow default workflow event service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/handler/error/defaultWorkflowErrorActionService.js` | `src` | `documented` | 3/3 | Implements workflow default workflow error action service business behavior and extension logic. |  |
@@ -166,6 +167,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/workflow/flowCore/src/service/procs/update/defaultWorkflowCarrierUpdatePipelineService.js` | `src` | `documented` | 6/6 | Implements workflow default workflow carrier update pipeline service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/utils/defaultWorkflowUtilsService.js` | `src` | `documented` | 4/4 | Implements workflow default workflow utils service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/workflow/defaultWorkflowService.js` | `src` | `documented` | 8/8 | Implements workflow default workflow service business behavior and extension logic. |  |
+| `gCore/workflow/flowCore/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared flowCore enum definition exports. |  |
+| `gCore/workflow/flowCore/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared flowCore status and error definition exports. |  |
 | `gCore/workflow/flowCore/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared workflow utility exports for utils. |  |
 | `gCore/workflow/flowCore/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines workflow test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gCore/workflow/flowCore/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines workflow test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

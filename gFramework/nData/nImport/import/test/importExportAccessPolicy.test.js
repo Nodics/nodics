@@ -46,7 +46,7 @@ global.NODICS = {
 };
 
 const importModelProcessService = require('../src/service/process/model/defaultModelImportProcessService');
-const importPipelines = require('../src/pipelines/pipelinesDefinition');
+const importPipelines = require('../src/pipelines/pipelines');
 const dataExportService = require('../../../nExport/export/src/service/DataExportService');
 
 let importRequest = {

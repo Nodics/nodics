@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to dataPublisher"
   },
-  "sourceFiles": 6,
+  "sourceFiles": 8,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 16,
-  "sourceFingerprint": "b352bff91ef48da738ac17a760a6c22442e35dd3cd11d5cad1bf21a5b79f6872",
+  "ownedFiles": 18,
+  "sourceFingerprint": "46c4df611ca1b90cd6c27a9631f680ef1b99fada6a676c28a25c0c58819f3aad",
   "documentation": {
-    "documented": 10,
+    "documented": 12,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Startio module for startioDevCronServer"
   },
-  "sourceFiles": 6,
+  "sourceFiles": 8,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 16,
-  "sourceFingerprint": "e0a75df674418d74b550bfab875b6ff9c72893f33054d95d087ad984add087d8",
+  "ownedFiles": 18,
+  "sourceFingerprint": "b823f2dba7470c86d706cca5b528978ab12b145d4d48d7b3609039ee2ca0cd25",
   "documentation": {
-    "documented": 10,
+    "documented": 12,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

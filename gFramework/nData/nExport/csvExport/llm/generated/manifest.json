@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to csvExport"
   },
-  "sourceFiles": 5,
+  "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 15,
-  "sourceFingerprint": "53f84bc7c08d84a8ae705e2c2557b28f47a10d5f1db1c56814c0cdf70f3145e1",
+  "ownedFiles": 17,
+  "sourceFingerprint": "5f68af63cec45a07f62f70b490b4b950ce23977de58004e300faae7b50f1d546",
   "documentation": {
-    "documented": 9,
+    "documented": 11,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

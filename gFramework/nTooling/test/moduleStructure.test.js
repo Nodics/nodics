@@ -44,11 +44,13 @@ const standardSourceDirectories = new Set([
     'generated'
 ]);
 const sourceDefinitionFiles = {
-    'src/event': 'listeners.js',
-    'src/pipelines': 'pipelinesDefinition.js',
-    'src/schemas': 'schemas.js',
-    'src/search': 'indexes.js',
-    'src/interceptors': 'interceptors.js'
+    'src/event': ['listeners.js'],
+    'src/pipelines': ['pipelines.js'],
+    'src/router': ['routers.js', 'appConfig.js'],
+    'src/schemas': ['schemas.js'],
+    'src/search': ['indexes.js'],
+    'src/interceptors': ['interceptors.js'],
+    'src/utils': ['utils.js', 'enums.js', 'statusDefinitions.js']
 };
 const loaderManagedSource = {
     'src/service': {
@@ -62,10 +64,6 @@ const loaderManagedSource = {
     'src/facade': {
         suffix: 'Facade.js',
         loader: 'FACADE'
-    },
-    'src/pipelines': {
-        suffix: 'Definition.js',
-        loader: 'PIPELINE'
     }
 };
 const generationTemplateNames = new Set(['common.js']);
@@ -221,11 +219,20 @@ function validateStandardSourceStructure(moduleObject) {
         if (!fs.existsSync(directory)) {
             return;
         }
-        const definitionPath = path.join(directory, sourceDefinitionFiles[relativeDirectory]);
-        assert(fs.existsSync(definitionPath),
-            'Standard source definition folder must include registry file: ' +
-            moduleObject.relativePath + '/' + relativeDirectory + '/' + sourceDefinitionFiles[relativeDirectory]);
+        sourceDefinitionFiles[relativeDirectory].forEach(fileName => {
+            const definitionPath = path.join(directory, fileName);
+            assert(fs.existsSync(definitionPath),
+                'Standard source definition folder must include registry file: ' +
+                moduleObject.relativePath + '/' + relativeDirectory + '/' + fileName);
+        });
     });
+    const servicePath = path.join(moduleObject.path, 'src/service');
+    if (fs.existsSync(servicePath)) {
+        const sampleServicePath = path.join(servicePath, 'defaultSampleService.js');
+        assert(fs.existsSync(sampleServicePath),
+            'Standard service folder must include default sample service scaffold: ' +
+            moduleObject.relativePath + '/src/service/defaultSampleService.js');
+    }
 }
 
 /**

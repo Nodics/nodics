@@ -28,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 6 |
+| Source files | 8 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 16 |
+| All module-owned files | 18 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 10 |
+| Documented | 12 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -74,7 +74,7 @@
 - `gDeap/dataProcessor/config/prescripts.js`
 - `gDeap/dataProcessor/config/postscripts.js`
 - `gDeap/dataProcessor/src/schemas/schemas.js`
-- `gDeap/dataProcessor/src/router/router.js`
+- `gDeap/dataProcessor/src/router/routers.js`
 
 ## File Inventory
 
@@ -90,11 +90,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gDeap/dataProcessor/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gDeap/dataProcessor/nodics.js` | `module` | `documented` | 2/2 | DEAP data processor module lifecycle entrypoint. |  |
 | `gDeap/dataProcessor/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gDeap/dataProcessor/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Reserved pipeline definition contribution for DEAP data processing flows. |  |
+| `gDeap/dataProcessor/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Reserved pipeline definition contribution for DEAP data processing flows. |  |
 | `gDeap/dataProcessor/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved application router configuration contribution for DEAP data processor APIs. |  |
-| `gDeap/dataProcessor/src/router/router.js` | `src` | `documented` | 0/0 | Reserved route definition contribution for DEAP data processor APIs. |  |
+| `gDeap/dataProcessor/src/router/routers.js` | `src` | `documented` | 0/0 | Reserved route definition contribution for DEAP data processor APIs. |  |
 | `gDeap/dataProcessor/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Reserved schema contribution for DEAP data processing models. |  |
-| `gDeap/dataProcessor/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Sample service scaffold for DEAP data processing capabilities. |  |
+| `gDeap/dataProcessor/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements dataProcessor default sample service business behavior and extension logic. |  |
+| `gDeap/dataProcessor/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared dataProcessor enum definition exports. |  |
+| `gDeap/dataProcessor/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared dataProcessor status and error definition exports. |  |
 | `gDeap/dataProcessor/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility contribution for DEAP data processing helpers. |  |
 | `gDeap/dataProcessor/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Common sample test scaffold for DEAP data processor contracts. | add JSDoc for 7 exported method(s) |
 | `gDeap/dataProcessor/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Local-environment sample test scaffold for DEAP data processor behavior. | add JSDoc for 7 exported method(s) |

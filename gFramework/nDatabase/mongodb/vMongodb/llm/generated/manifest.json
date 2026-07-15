@@ -13,15 +13,15 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to vMongodb"
   },
-  "sourceFiles": 7,
-  "testFiles": 2,
+  "sourceFiles": 9,
+  "testFiles": 3,
   "dataFiles": 0,
-  "ownedFiles": 17,
-  "sourceFingerprint": "347a977025bec45658a288d44c3cdb444b1113733a75c8edea1d515415df3dbb",
+  "ownedFiles": 20,
+  "sourceFingerprint": "71ac1a482a33ea80dbcfa50df175a09e4be0823126af2d0ee26cd87e455acff1",
   "documentation": {
-    "documented": 11,
+    "documented": 13,
     "partially-documented": 2,
-    "undocumented": 0,
+    "undocumented": 1,
     "inventory-only": 4
   },
   "schemaGroups": {},

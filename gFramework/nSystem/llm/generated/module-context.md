@@ -32,10 +32,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 20 |
+| Source files | 22 |
 | Test files | 16 |
 | Data files | 0 |
-| All module-owned files | 34 |
+| All module-owned files | 36 |
 | Local schema definitions | 3 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 24 |
+| Documented | 26 |
 | Partially documented | 2 |
 | Undocumented | 4 |
 | Inventory only | 4 |
@@ -82,7 +82,7 @@
 - `gFramework/nSystem/config/prescripts.js`
 - `gFramework/nSystem/config/postscripts.js`
 - `gFramework/nSystem/src/schemas/schemas.js`
-- `gFramework/nSystem/src/router/router.js`
+- `gFramework/nSystem/src/router/routers.js`
 
 ## File Inventory
 
@@ -106,16 +106,18 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSystem/src/facade/contract/defaultApiContractFacade.js` | `src` | `documented` | 3/3 | Facade for system API contract operations. It keeps controller routing separate from contract resolution so projects can override policy at the facade layer. |  |
 | `gFramework/nSystem/src/facade/file/defaultFileFacade.js` | `src` | `documented` | 4/4 | Coordinates facade-level delegation for nSystem default file facade operations. |  |
 | `gFramework/nSystem/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers nSystem interceptor wiring for pipeline extension points. |  |
-| `gFramework/nSystem/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nSystem pipeline wiring and execution contracts. |  |
+| `gFramework/nSystem/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nSystem pipeline wiring and execution contracts. |  |
 | `gFramework/nSystem/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nSystem route registration and HTTP exposure metadata. |  |
-| `gFramework/nSystem/src/router/router.js` | `src` | `documented` | 0/0 | Defines nSystem route registration and HTTP exposure metadata. |  |
+| `gFramework/nSystem/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nSystem route registration and HTTP exposure metadata. |  |
 | `gFramework/nSystem/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nSystem schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nSystem/src/service/config/defaultConfigurationService.js` | `src` | `documented` | 21/21 | Implements nSystem default configuration service business behavior and extension logic. |  |
 | `gFramework/nSystem/src/service/contract/defaultApiContractService.js` | `src` | `documented` | 8/8 | Resolves generated API contract artifacts from the active server module while preserving node-specific contract identity. |  |
+| `gFramework/nSystem/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements system default sample service business behavior and extension logic. |  |
 | `gFramework/nSystem/src/service/event/defaultConfigurationChangeListenerService.js` | `src` | `documented` | 1/1 | Implements nSystem default configuration change listener service business behavior and extension logic. |  |
 | `gFramework/nSystem/src/service/event/defaultInterceptorChangeListenerService.js` | `src` | `documented` | 1/1 | Implements nSystem default interceptor change listener service business behavior and extension logic. |  |
 | `gFramework/nSystem/src/service/file/defaultFileService.js` | `src` | `documented` | 4/4 | Implements nSystem default file service business behavior and extension logic. |  |
 | `gFramework/nSystem/src/service/interceptors/defaultConfigurationSaveInterceptorService.js` | `src` | `documented` | 1/1 | Implements nSystem default configuration save interceptor service business behavior and extension logic. |  |
+| `gFramework/nSystem/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared system enum definition exports. |  |
 | `gFramework/nSystem/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nSystem utility exports for status definitions. |  |
 | `gFramework/nSystem/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nSystem utility exports for utils. |  |
 | `gFramework/nSystem/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nSystem test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

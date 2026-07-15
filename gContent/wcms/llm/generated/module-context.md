@@ -30,10 +30,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 7 |
+| Source files | 9 |
 | Test files | 2 |
 | Data files | 16 |
-| All module-owned files | 33 |
+| All module-owned files | 35 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -63,7 +63,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 27 |
+| Documented | 29 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -78,7 +78,7 @@
 - `gContent/wcms/config/prescripts.js`
 - `gContent/wcms/config/postscripts.js`
 - `gContent/wcms/src/schemas/schemas.js`
-- `gContent/wcms/src/router/router.js`
+- `gContent/wcms/src/router/routers.js`
 
 ## File Inventory
 
@@ -111,11 +111,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gContent/wcms/nodics.js` | `module` | `documented` | 2/2 | WCMS module lifecycle entrypoint for workflow-enabled content management features. |  |
 | `gContent/wcms/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gContent/wcms/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Reserved interceptor contribution point for WCMS content validation and workflow governance. |  |
-| `gContent/wcms/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Reserved pipeline definition contribution point for WCMS content workflows. |  |
+| `gContent/wcms/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Reserved pipeline definition contribution point for WCMS content workflows. |  |
 | `gContent/wcms/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved router application configuration contribution for WCMS APIs. |  |
-| `gContent/wcms/src/router/router.js` | `src` | `documented` | 0/0 | Reserved route definition contribution point for WCMS content APIs. |  |
+| `gContent/wcms/src/router/routers.js` | `src` | `documented` | 0/0 | Reserved route definition contribution point for WCMS content APIs. |  |
 | `gContent/wcms/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Reserved schema contribution point for WCMS content model extensions. |  |
-| `gContent/wcms/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Sample WCMS service scaffold showing the service lifecycle shape for content modules. |  |
+| `gContent/wcms/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements wcms default sample service business behavior and extension logic. |  |
+| `gContent/wcms/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared wcms enum definition exports. |  |
+| `gContent/wcms/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared wcms status and error definition exports. |  |
 | `gContent/wcms/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility contribution point for WCMS content helper functions. |  |
 | `gContent/wcms/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Common sample test scaffold for WCMS content module contracts. | add JSDoc for 7 exported method(s) |
 | `gContent/wcms/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Local-environment sample test scaffold for WCMS content behavior. | add JSDoc for 7 exported method(s) |

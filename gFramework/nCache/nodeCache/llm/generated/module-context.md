@@ -28,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 7 |
+| Source files | 10 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 17 |
+| All module-owned files | 20 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 11 |
+| Documented | 14 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -74,7 +74,7 @@
 - `gFramework/nCache/nodeCache/config/prescripts.js`
 - `gFramework/nCache/nodeCache/config/postscripts.js`
 - `gFramework/nCache/nodeCache/src/schemas/schemas.js`
-- `gFramework/nCache/nodeCache/src/router/router.js`
+- `gFramework/nCache/nodeCache/src/router/routers.js`
 
 ## File Inventory
 
@@ -90,12 +90,15 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/nodeCache/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nCache/nodeCache/nodics.js` | `module` | `documented` | 2/2 | Registers the nCache module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nCache/nodeCache/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nCache/nodeCache/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nCache pipeline wiring and execution contracts. |  |
+| `gFramework/nCache/nodeCache/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nCache pipeline wiring and execution contracts. |  |
 | `gFramework/nCache/nodeCache/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
-| `gFramework/nCache/nodeCache/src/router/router.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
+| `gFramework/nCache/nodeCache/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
 | `gFramework/nCache/nodeCache/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nCache schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nCache/nodeCache/src/service/cache/defaultLocalCacheService.js` | `src` | `documented` | 7/7 | Implements the cache adapter contract for process-local storage without mutating caller-owned values. |  |
+| `gFramework/nCache/nodeCache/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements nodeCache default sample service business behavior and extension logic. |  |
 | `gFramework/nCache/nodeCache/src/service/engine/defaultLocalCacheEngineService.js` | `src` | `documented` | 6/6 | Implements nCache default local cache engine service business behavior and extension logic. |  |
+| `gFramework/nCache/nodeCache/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared nodeCache enum definition exports. |  |
+| `gFramework/nCache/nodeCache/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nodeCache status and error definition exports. |  |
 | `gFramework/nCache/nodeCache/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nCache utility exports for utils. |  |
 | `gFramework/nCache/nodeCache/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nCache test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nCache/nodeCache/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nCache test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

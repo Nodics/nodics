@@ -32,10 +32,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 29 |
+| Source files | 31 |
 | Test files | 27 |
 | Data files | 0 |
-| All module-owned files | 60 |
+| All module-owned files | 62 |
 | Local schema definitions | 1 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 43 |
+| Documented | 45 |
 | Partially documented | 2 |
 | Undocumented | 11 |
 | Inventory only | 4 |
@@ -82,7 +82,7 @@
 - `gFramework/nData/nImport/import/config/prescripts.js`
 - `gFramework/nData/nImport/import/config/postscripts.js`
 - `gFramework/nData/nImport/import/src/schemas/schemas.js`
-- `gFramework/nData/nImport/import/src/router/router.js`
+- `gFramework/nData/nImport/import/src/router/routers.js`
 
 ## File Inventory
 
@@ -105,11 +105,12 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/nImport/import/src/facade/import/defaultImportFacade.js` | `src` | `documented` | 7/7 | Coordinates facade-level delegation for nData default import facade operations. |  |
 | `gFramework/nData/nImport/import/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers nData interceptor wiring for pipeline extension points. |  |
 | `gFramework/nData/nImport/import/src/lib/dataImportError.js` | `src` | `documented` | 0/0 | Provides reusable nData library primitives for data import error. |  |
-| `gFramework/nData/nImport/import/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Declares system, local, governed remote, header, file, and model import pipelines using reusable initializer and processing services. |  |
+| `gFramework/nData/nImport/import/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Declares system, local, governed remote, header, file, and model import pipelines using reusable initializer and processing services. |  |
 | `gFramework/nData/nImport/import/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
-| `gFramework/nData/nImport/import/src/router/router.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
+| `gFramework/nData/nImport/import/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
 | `gFramework/nData/nImport/import/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nData schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nData/nImport/import/src/service/defaultDataImportInitializerService.js` | `src` | `documented` | 6/6 | Implements nData default data import initializer service business behavior and extension logic. |  |
+| `gFramework/nData/nImport/import/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements import default sample service business behavior and extension logic. |  |
 | `gFramework/nData/nImport/import/src/service/diagnostics/defaultImportDiagnosticsService.js` | `src` | `documented` | 14/14 | Implements nData default import diagnostics service business behavior and extension logic. |  |
 | `gFramework/nData/nImport/import/src/service/external/defaultExternalModelsImportEventHandlerService.js` | `src` | `documented` | 3/3 | Implements nData default external models import event handler service business behavior and extension logic. |  |
 | `gFramework/nData/nImport/import/src/service/header/defaultHeaderProcessService.js` | `src` | `documented` | 5/5 | Implements nData default header process service business behavior and extension logic. |  |
@@ -125,6 +126,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/nImport/import/src/service/remote/defaultRemoteDataImportInitializerService.js` | `src` | `documented` | 7/7 | Initializes governed remote imports by validating tenant and active-module scope, staging non-executable data through a configured adapter, and pairing it only with trusted headers owned by active Nodics modules. |  |
 | `gFramework/nData/nImport/import/src/service/remote/defaultRemoteImportTransportService.js` | `src` | `documented` | 9/9 | Resolves layered remote-import sources and adapters, stages non-executable data inside the active server module, and enforces tenant, module, timeout, retry, path, symlink, size, extension, and checksum policies before import processing. |  |
 | `gFramework/nData/nImport/import/src/service/system/defaultSystemDataImportInitializerService.js` | `src` | `documented` | 18/18 | Implements nData default system data import initializer service business behavior and extension logic. |  |
+| `gFramework/nData/nImport/import/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared import enum definition exports. |  |
 | `gFramework/nData/nImport/import/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nData utility exports for status definitions. |  |
 | `gFramework/nData/nImport/import/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nData utility exports for utils. |  |
 | `gFramework/nData/nImport/import/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nData test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

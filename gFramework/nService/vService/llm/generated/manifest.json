@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to vService"
   },
-  "sourceFiles": 10,
+  "sourceFiles": 13,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 20,
-  "sourceFingerprint": "4fb3d9d90d18365062905c7b0b421ca458e8ab7567afc82975c71bc04e4be6f5",
+  "ownedFiles": 23,
+  "sourceFingerprint": "a1c43cdb3ccd0b162fe041032e9142078cff57f12a8ef316351faaff77de289c",
   "documentation": {
-    "documented": 14,
+    "documented": 17,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

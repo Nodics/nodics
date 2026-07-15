@@ -95,7 +95,7 @@ path rather than a second loader.
 
 ## Routers
 
-Define static route contributions in `src/router/router.js` using the existing
+Define static route contributions in `src/router/routers.js` using the existing
 module/group/route registry shape. A route contract should declare its path key,
 HTTP method, controller or handler, operation, security/access metadata, cache
 policy when relevant, and help/documentation metadata.
@@ -149,11 +149,11 @@ Nodics runtime loaders discover behavior by both directory and suffix:
 | Service | `src/service/**` | `Service.js` | `SERVICE` |
 | Controller | `src/controller/**` | `Controller.js` | `CONTROLLER` |
 | Facade | `src/facade/**` | `Facade.js` | `FACADE` |
-| Pipeline definition | `src/pipelines/**` | `Definition.js` | `PIPELINE` |
+| Pipeline registry | `src/pipelines` | `pipelines.js` | `PIPELINE` |
 
-Files intended for these runtime registries must be inside the loader directory,
-must use the loader suffix, and must export mergeable object members. Use this
-shape unless there is a documented non-runtime reason:
+Files intended for runtime registries must be inside the loader directory, use
+the layer's canonical file name or suffix, and export mergeable object members.
+Use this shape unless there is a documented non-runtime reason:
 
 ```js
 module.exports = {

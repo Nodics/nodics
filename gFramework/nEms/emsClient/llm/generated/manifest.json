@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Event/message client capability for publishing, consuming, processing, tenant-aware message routing, failed-message persistence, and provider-backed EMS communication."
   },
-  "sourceFiles": 15,
+  "sourceFiles": 17,
   "testFiles": 11,
   "dataFiles": 0,
-  "ownedFiles": 30,
-  "sourceFingerprint": "22027021e91b40c5c1febd5f2ea54b4beac43e8777e3d0b3161471782551363b",
+  "ownedFiles": 32,
+  "sourceFingerprint": "896ce20371bf18c5d74eeda906dc1857bd4a4dcad1f9c275d748633a7ed339fb",
   "documentation": {
-    "documented": 24,
+    "documented": 26,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

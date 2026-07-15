@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to kafka"
   },
-  "sourceFiles": 6,
+  "sourceFiles": 9,
   "testFiles": 3,
   "dataFiles": 0,
-  "ownedFiles": 17,
-  "sourceFingerprint": "5a324f49b0b240250c99615459d82e3f3b4fda238537aa3945686a00f1d45392",
+  "ownedFiles": 20,
+  "sourceFingerprint": "22cc22aff5fc3563d560e10e21fad0324115d4935d83fbb448ee83a7d08cb037",
   "documentation": {
-    "documented": 10,
+    "documented": 13,
     "partially-documented": 2,
     "undocumented": 1,
     "inventory-only": 4

@@ -10,7 +10,7 @@
  */
 
 const { assertRouteContracts } = require('../../nRouter/test/routerContractTestUtils');
-const routerConfig = require('../src/router/router');
+const routerConfig = require('../src/router/routers');
 
 const classController = 'DefaultClassConfigurationController';
 const expectedRoutes = [

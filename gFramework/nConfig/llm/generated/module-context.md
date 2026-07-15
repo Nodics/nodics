@@ -26,10 +26,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 11 |
+| Source files | 14 |
 | Test files | 7 |
 | Data files | 0 |
-| All module-owned files | 29 |
+| All module-owned files | 32 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -55,7 +55,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 25 |
+| Documented | 28 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -69,7 +69,7 @@
 - `gFramework/nConfig/config/properties.js`
 - `gFramework/nConfig/config/prescripts.js`
 - `gFramework/nConfig/config/postscripts.js`
-- `gFramework/nConfig/src/router/router.js`
+- `gFramework/nConfig/src/router/routers.js`
 
 ## File Inventory
 
@@ -89,15 +89,18 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nConfig/nodics.js` | `module` | `documented` | 13/13 | nConfig module lifecycle bridge used by the root Nodics launcher. It prepares process-wide registries, resolves the active environment/server/node hierarchy, loads layered configuration and pre/post scripts, and delegates runtime, clean, and build phases to overrideable nConfig services. |  |
 | `gFramework/nConfig/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nConfig/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved nConfig Express app configuration file. nConfig does not add app middleware by default, but this file keeps the standard app configuration extension point available in the active module hierarchy. |  |
-| `gFramework/nConfig/src/router/router.js` | `src` | `documented` | 0/0 | Reserved nConfig router definition file. nConfig does not expose direct API routes by default, but this file preserves the standard layered router extension point for project or environment modules. |  |
+| `gFramework/nConfig/src/router/routers.js` | `src` | `documented` | 0/0 | Reserved nConfig router definition file. nConfig does not expose direct API routes by default, but this file preserves the standard layered router extension point for project or environment modules. |  |
 | `gFramework/nConfig/src/service/DefaultFrameworkInitializerService.js` | `src` | `documented` | 67/67 | Core Nodics startup coordinator. It resolves the active module hierarchy, validates environment/server/node topology, loads layered configuration, initializes global registries, loads services/pipelines/facades/controllers, and executes entity lifecycle hooks in module index order. |  |
 | `gFramework/nConfig/src/service/DefaultLoggerService.js` | `src` | `documented` | 12/12 | Central logger factory for Nodics runtime entities. It creates and registers Winston loggers using layered configuration and supports console, file, and Elasticsearch transports. |  |
 | `gFramework/nConfig/src/service/DefaultScriptsHandlerService.js` | `src` | `documented` | 6/6 | Loads and executes layered Nodics pre-scripts and post-scripts from active modules. Scripts provide startup extension points without modifying framework code. |  |
 | `gFramework/nConfig/src/service/defaultClassesHandlerService.js` | `src` | `documented` | 5/5 | Loads class exports from active module `src/lib` folders into the global `CLASSES` registry and executes class generalization scripts. |  |
 | `gFramework/nConfig/src/service/defaultEnumService.js` | `src` | `documented` | 4/4 | Loads layered enum definitions from active modules and creates runtime Enum instances in the global `ENUMS` registry. |  |
-| `gFramework/nConfig/src/service/defaultFilesLoaderService.js` | `src` | `documented` | 22/22 | Layer-aware file loading utility. It loads and merges matching files from indexed active modules and recursively processes artifact directories for the dynamic service, facade, controller, class, router, pipeline, and schema loaders. |  |
+| `gFramework/nConfig/src/service/defaultFilesLoaderService.js` | `src` | `documented` | 24/24 | Layer-aware file loading utility. It loads and merges matching files from indexed active modules and recursively processes artifact directories for the dynamic service, facade, controller, class, router, pipeline, and schema loaders. |  |
 | `gFramework/nConfig/src/service/defaultInfraService.js` | `src` | `documented` | 19/19 | Clean/build infrastructure service for generated Nodics artifacts. It removes generated services/facades/controllers/tests/dist folders and regenerates schema-driven runtime files and generated tests from effective definitions. |  |
 | `gFramework/nConfig/src/service/defaultModuleInitializerService.js` | `src` | `documented` | 2/2 | Reserved module initializer service for nConfig. It keeps the standard service lifecycle contract available for future module-specific initialization logic. |  |
+| `gFramework/nConfig/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements config default sample service business behavior and extension logic. |  |
+| `gFramework/nConfig/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared config enum definition exports. |  |
+| `gFramework/nConfig/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared config status and error definition exports. |  |
 | `gFramework/nConfig/src/utils/utils.js` | `src` | `documented` | 25/25 | Shared nConfig utilities for module discovery, runtime activation, hierarchy traversal, generated artifact creation, filesystem cleanup, and router enablement decisions. |  |
 | `gFramework/nConfig/test/artifactOverrideTraceability.test.js` | `test` | `documented` | 0/0 | Verifies that layered service, facade, controller, pipeline, and related artifact contributions retain ordered source-module override trace metadata. |  |
 | `gFramework/nConfig/test/configurationValidation.test.js` | `test` | `documented` | 0/0 | Validates consolidated and modular environment/server/node configuration resolution, canonical package kinds, required module ordering, topology declarations, and negative startup cases. |  |

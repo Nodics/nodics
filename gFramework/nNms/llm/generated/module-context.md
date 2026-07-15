@@ -31,10 +31,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 14 |
+| Source files | 16 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 24 |
+| All module-owned files | 26 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -65,7 +65,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 18 |
+| Documented | 20 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -80,7 +80,7 @@
 - `gFramework/nNms/config/prescripts.js`
 - `gFramework/nNms/config/postscripts.js`
 - `gFramework/nNms/src/schemas/schemas.js`
-- `gFramework/nNms/src/router/router.js`
+- `gFramework/nNms/src/router/routers.js`
 
 ## File Inventory
 
@@ -99,15 +99,17 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nNms/src/controller/defaultNodeManagerController.js` | `src` | `documented` | 5/5 | Exposes request handlers for nNms default node manager controller operations. |  |
 | `gFramework/nNms/src/event/listeners.js` | `src` | `documented` | 0/0 | Documents nNms listeners module behavior. |  |
 | `gFramework/nNms/src/facade/defaultNodeManagerFacade.js` | `src` | `documented` | 5/5 | Coordinates facade-level delegation for nNms default node manager facade operations. |  |
-| `gFramework/nNms/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nNms pipeline wiring and execution contracts. |  |
+| `gFramework/nNms/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nNms pipeline wiring and execution contracts. |  |
 | `gFramework/nNms/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nNms route registration and HTTP exposure metadata. |  |
-| `gFramework/nNms/src/router/router.js` | `src` | `documented` | 0/0 | Defines nNms route registration and HTTP exposure metadata. |  |
+| `gFramework/nNms/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nNms route registration and HTTP exposure metadata. |  |
 | `gFramework/nNms/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nNms schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nNms/src/service/config/defaultNodeConfigurationService.js` | `src` | `documented` | 6/6 | Implements nNms default node configuration service business behavior and extension logic. |  |
+| `gFramework/nNms/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements nms default sample service business behavior and extension logic. |  |
 | `gFramework/nNms/src/service/node/defaultNodeDownHandlerService.js` | `src` | `documented` | 4/4 | Implements nNms default node down handler service business behavior and extension logic. |  |
 | `gFramework/nNms/src/service/node/defaultNodeManagerService.js` | `src` | `documented` | 9/9 | Implements nNms default node manager service business behavior and extension logic. |  |
 | `gFramework/nNms/src/service/node/defaultNodeStateChangeHandlerService.js` | `src` | `documented` | 4/4 | Implements nNms default node state change handler service business behavior and extension logic. |  |
 | `gFramework/nNms/src/service/node/defaultNodeUpHandlerService.js` | `src` | `documented` | 3/3 | Implements nNms default node up handler service business behavior and extension logic. |  |
+| `gFramework/nNms/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared nms enum definition exports. |  |
 | `gFramework/nNms/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nNms utility exports for status definitions. |  |
 | `gFramework/nNms/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nNms utility exports for utils. |  |
 | `gFramework/nNms/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nNms test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

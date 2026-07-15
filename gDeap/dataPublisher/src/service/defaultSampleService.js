@@ -10,18 +10,17 @@
  */
 
 /**
- * @module dataPublisher/service/defaultSampleService
- * @description Sample service scaffold for DEAP data publishing capabilities.
+ * @module gDeap/dataPublisher/src/service/defaultSampleService
+ * @description Implements dataPublisher default sample service business behavior and extension logic.
  * @layer service
  * @owner dataPublisher
- * @override Project DEAP modules should replace scaffolds with concrete publishing services.
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
  */
 module.exports = {
     /**
-     * Initializes the sample data publisher service scaffold.
-     *
-     * @param {Object} options Service loader options supplied during startup.
-     * @returns {Promise<boolean>} Resolves when initialization is complete.
+     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading.
+     * defined it that with Promise way
+     * @param {*} options
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -30,10 +29,9 @@ module.exports = {
     },
 
     /**
-     * Finalizes the sample data publisher service scaffold after loading.
-     *
-     * @param {Object} options Service loader options supplied during startup.
-     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
+     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading.
+     * defined it that with Promise way
+     * @param {*} options
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {

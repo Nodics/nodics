@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to excelExport"
   },
-  "sourceFiles": 5,
+  "sourceFiles": 7,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 15,
-  "sourceFingerprint": "ea7896bebf660f8796d458e2e1bc6a42a78e3f2e0c655c4f202a2be2892051fa",
+  "ownedFiles": 17,
+  "sourceFingerprint": "40f98479a368acf62c6044be1b174941dbf4d30f96995e20e01061e29045bfdc",
   "documentation": {
-    "documented": 9,
+    "documented": 11,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

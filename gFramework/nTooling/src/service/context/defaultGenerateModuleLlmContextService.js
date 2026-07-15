@@ -298,7 +298,7 @@ function createModuleContext(module, files, schemaGroups, fileInventory) {
             getRelativeIfExists(module.path, 'config/prescripts.js'),
             getRelativeIfExists(module.path, 'config/postscripts.js'),
             getRelativeIfExists(module.path, 'src/schemas/schemas.js'),
-            getRelativeIfExists(module.path, 'src/router/router.js')
+            getRelativeIfExists(module.path, 'src/router/routers.js')
         ].filter(Boolean), 'No standard important files were found.'),
         '',
         ...createFileInventoryLines(fileInventory),

@@ -19,7 +19,7 @@ const assert = require('assert');
  * @override Projects may replace administrative groups or route definitions while preserving explicit permissions and tenant/module isolation.
  */
 
-const routerDefinitions = require('../../../nRouter/src/router/router');
+const routerDefinitions = require('../../../nRouter/src/router/routers');
 const authProperties = require('../../../nAuth/config/properties');
 const userGroupsData = require('../../../../gCore/profile/data/init/data/groups/defaultUserGroupsData');
 

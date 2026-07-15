@@ -30,10 +30,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 8 |
+| Source files | 10 |
 | Test files | 3 |
 | Data files | 0 |
-| All module-owned files | 19 |
+| All module-owned files | 21 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -63,7 +63,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 12 |
+| Documented | 14 |
 | Partially documented | 2 |
 | Undocumented | 1 |
 | Inventory only | 4 |
@@ -78,7 +78,7 @@
 - `gCore/workflow/flowApi/config/prescripts.js`
 - `gCore/workflow/flowApi/config/postscripts.js`
 - `gCore/workflow/flowApi/src/schemas/schemas.js`
-- `gCore/workflow/flowApi/src/router/router.js`
+- `gCore/workflow/flowApi/src/router/routers.js`
 
 ## File Inventory
 
@@ -97,10 +97,12 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/workflow/flowApi/src/controller/defaultWorkflowController.js` | `src` | `documented` | 6/6 | Exposes request handlers for workflow default workflow controller operations. |  |
 | `gCore/workflow/flowApi/src/facade/defaultWorkflowFacade.js` | `src` | `documented` | 6/6 | Coordinates facade-level delegation for workflow default workflow facade operations. |  |
 | `gCore/workflow/flowApi/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers workflow interceptor wiring for pipeline extension points. |  |
-| `gCore/workflow/flowApi/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines workflow pipeline wiring and execution contracts. |  |
+| `gCore/workflow/flowApi/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines workflow pipeline wiring and execution contracts. |  |
 | `gCore/workflow/flowApi/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines workflow route registration and HTTP exposure metadata. |  |
-| `gCore/workflow/flowApi/src/router/router.js` | `src` | `documented` | 0/0 | Defines workflow route registration and HTTP exposure metadata. |  |
+| `gCore/workflow/flowApi/src/router/routers.js` | `src` | `documented` | 0/0 | Defines workflow route registration and HTTP exposure metadata. |  |
 | `gCore/workflow/flowApi/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines workflow schema metadata, model contracts, and generated capability settings. |  |
+| `gCore/workflow/flowApi/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared flowApi enum definition exports. |  |
+| `gCore/workflow/flowApi/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared flowApi status and error definition exports. |  |
 | `gCore/workflow/flowApi/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared workflow utility exports for utils. |  |
 | `gCore/workflow/flowApi/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines workflow test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gCore/workflow/flowApi/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines workflow test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

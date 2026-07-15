@@ -25,7 +25,7 @@ const writePolicyService = require('../src/service/schema/defaultSchemaWriteAcce
 const saveInitializerService = require('../src/service/procs/save/defaultModelSaveInitializerService');
 const updateInitializerService = require('../src/service/procs/update/defaultModelsUpdateInitializerService');
 const removeInitializerService = require('../src/service/procs/remove/defaultModelsRemoveInitializerService');
-const pipelines = require('../src/pipelines/pipelinesDefinition');
+const pipelines = require('../src/pipelines/pipelines');
 
 let request = {
     tenant: 'electronics',

@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Startio module for startioInt"
   },
-  "sourceFiles": 6,
+  "sourceFiles": 8,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 16,
-  "sourceFingerprint": "807dba64cdeb951fd171fffb6372eb2d752bbcb2e5120d925c2dccdbc25f0ee6",
+  "ownedFiles": 18,
+  "sourceFingerprint": "477f77917ba29a31a846eb40223891cf053762a23aebe840c8043a33899d9abb",
   "documentation": {
-    "documented": 10,
+    "documented": 12,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

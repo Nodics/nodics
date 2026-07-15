@@ -28,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 6 |
+| Source files | 8 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 16 |
+| All module-owned files | 18 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 10 |
+| Documented | 12 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -74,7 +74,7 @@
 - `startio/envs/startioDev/startioDevProfileServer/config/prescripts.js`
 - `startio/envs/startioDev/startioDevProfileServer/config/postscripts.js`
 - `startio/envs/startioDev/startioDevProfileServer/src/schemas/schemas.js`
-- `startio/envs/startioDev/startioDevProfileServer/src/router/router.js`
+- `startio/envs/startioDev/startioDevProfileServer/src/router/routers.js`
 
 ## File Inventory
 
@@ -90,11 +90,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `startio/envs/startioDev/startioDevProfileServer/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `startio/envs/startioDev/startioDevProfileServer/nodics.js` | `module` | `documented` | 2/2 | Registers the envs module lifecycle hooks and module-level startup behavior. |  |
 | `startio/envs/startioDev/startioDevProfileServer/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `startio/envs/startioDev/startioDevProfileServer/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines envs pipeline wiring and execution contracts. |  |
+| `startio/envs/startioDev/startioDevProfileServer/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines envs pipeline wiring and execution contracts. |  |
 | `startio/envs/startioDev/startioDevProfileServer/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines envs route registration and HTTP exposure metadata. |  |
-| `startio/envs/startioDev/startioDevProfileServer/src/router/router.js` | `src` | `documented` | 0/0 | Defines envs route registration and HTTP exposure metadata. |  |
+| `startio/envs/startioDev/startioDevProfileServer/src/router/routers.js` | `src` | `documented` | 0/0 | Defines envs route registration and HTTP exposure metadata. |  |
 | `startio/envs/startioDev/startioDevProfileServer/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines envs schema metadata, model contracts, and generated capability settings. |  |
-| `startio/envs/startioDev/startioDevProfileServer/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements envs default sample service business behavior and extension logic. |  |
+| `startio/envs/startioDev/startioDevProfileServer/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements startioDevProfileServer default sample service business behavior and extension logic. |  |
+| `startio/envs/startioDev/startioDevProfileServer/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared startioDevProfileServer enum definition exports. |  |
+| `startio/envs/startioDev/startioDevProfileServer/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared startioDevProfileServer status and error definition exports. |  |
 | `startio/envs/startioDev/startioDevProfileServer/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared envs utility exports for utils. |  |
 | `startio/envs/startioDev/startioDevProfileServer/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines envs test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `startio/envs/startioDev/startioDevProfileServer/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines envs test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

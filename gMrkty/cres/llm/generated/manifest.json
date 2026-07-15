@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer review system"
   },
-  "sourceFiles": 7,
+  "sourceFiles": 9,
   "testFiles": 6,
   "dataFiles": 8,
-  "ownedFiles": 25,
-  "sourceFingerprint": "71513d5760bb4d18681c14afc37601ed18dd0ab732d78bf22e42cdc0dc70a77a",
+  "ownedFiles": 27,
+  "sourceFingerprint": "410c929d5df932969a2dfcbcc1a3fff1466e840b18971fd5811000584e97869e",
   "documentation": {
-    "documented": 19,
+    "documented": 21,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

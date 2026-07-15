@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Startio module for startioDevProfileServer"
   },
-  "sourceFiles": 6,
+  "sourceFiles": 8,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 16,
-  "sourceFingerprint": "2e531a000f05f18770f24b848cac634cf7771c1a866588e5d4babb399edee3e1",
+  "ownedFiles": 18,
+  "sourceFingerprint": "c29eeee9b50efbace6bedda8ec2debca61ab7cf729d1e9c24f7ea1b6e74d7f2a",
   "documentation": {
-    "documented": 10,
+    "documented": 12,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

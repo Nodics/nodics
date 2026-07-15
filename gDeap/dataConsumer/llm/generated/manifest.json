@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to dataConsumer"
   },
-  "sourceFiles": 10,
+  "sourceFiles": 13,
   "testFiles": 10,
   "dataFiles": 4,
-  "ownedFiles": 24,
-  "sourceFingerprint": "8c692e2af314bf2bc06edba4c97d0126f399548e91758333923d1d2f5c263cdf",
+  "ownedFiles": 27,
+  "sourceFingerprint": "11d88977f3f2a179c4f71eeb3322323331ccff4db46c31592c9ba741f3543517",
   "documentation": {
-    "documented": 18,
+    "documented": 21,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

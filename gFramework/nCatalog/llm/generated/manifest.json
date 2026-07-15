@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to catalog"
   },
-  "sourceFiles": 7,
+  "sourceFiles": 10,
   "testFiles": 7,
   "dataFiles": 4,
-  "ownedFiles": 22,
-  "sourceFingerprint": "7ea24d5ab921558be7f2f1dbbb3d1d69e88daf4baf8fa18dfb3d8072d8ccdef2",
+  "ownedFiles": 25,
+  "sourceFingerprint": "fa216b6b66f8ce3c4afd7f3eba731ad441a73f01332e926a16524031a6494f4c",
   "documentation": {
-    "documented": 16,
+    "documented": 19,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

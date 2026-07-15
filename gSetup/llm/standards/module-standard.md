@@ -53,8 +53,10 @@ module/                         Module boundary and ownership root.
       listeners.js              Event listener definitions for this module or overrides for listeners defined by earlier modules; generate as `module.exports = {}` when empty.
     lib/                        JavaScript class library directory, especially for implementations driven by the `class` keyword.
     pipelines/                  Loader-visible pipeline definition and pipeline-support artifacts.
-      pipelinesDefinition.js    Pipeline definition registry; multiple pipelines can be defined here and empty modules generate `module.exports = {}`.
+      pipelines.js    Pipeline definition registry; multiple pipelines can be defined here and empty modules generate `module.exports = {}`.
     router/                     Router contribution directory for module-owned API route definitions and route overrides.
+      routers.js                Route definition registry; multiple routers/routes can be defined here and empty modules generate `module.exports = {}`.
+      appConfig.js              Express/application router configuration contribution; generate as `module.exports = {}` when empty.
     schemas/                    Schema contribution directory for module-owned data, persistence, generation, and access definitions.
       schemas.js                Schema definition registry; generate as `module.exports = {}` when no schemas are defined yet.
     search/                     Search index contribution directory for module-owned index definitions.
@@ -62,9 +64,13 @@ module/                         Module boundary and ownership root.
     interceptors/               Interceptor contribution directory for module-owned lifecycle, validation, and pipeline interception rules.
       interceptors.js           Interceptor definition registry; generate as `module.exports = {}` when no interceptors are defined yet.
     service/                    Loader-visible service implementations and non-runtime tooling services.
+      defaultSampleService.js   Standard sample service scaffold with `init` and `postInit`; generate this file whenever `src/service/` exists.
     controller/                 Loader-visible request controller implementations.
     facade/                     Loader-visible orchestration and boundary facade implementations.
-    utils/                      Utility definitions such as `enums.js`, `statusDefinitions.js`, and `utils.js`; generate blank definitions when creating a module.
+    utils/                      Utility contribution directory; generate all standard files when creating a module.
+      utils.js                  General utility contribution registry; generate as `module.exports = {}` when no utilities are defined yet.
+      enums.js                  Enum definition registry; generate as `module.exports = {}` when no enums are defined yet.
+      statusDefinitions.js      Status/error definition registry; generate as `module.exports = {}` when no statuses are defined yet.
   test/                         Module-owned tests proving default behavior and override/customization behavior; not mandatory for pure group modules.
 ```
 
@@ -142,7 +148,7 @@ metadata without editing out-of-the-box framework code.
 Runtime implementation files must stay inside loader radar. Services belong
 under `src/service/**/*Service.js`, controllers under
 `src/controller/**/*Controller.js`, facades under `src/facade/**/*Facade.js`,
-and pipeline definitions under `src/pipelines/**/*Definition.js`. Export
+and pipeline definitions in the `src/pipelines/pipelines.js` registry. Export
 mergeable `module.exports = { methodName: function (...) {} }` objects so a
 later module can replace one behavior member without copying the whole file.
 

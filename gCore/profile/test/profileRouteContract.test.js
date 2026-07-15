@@ -10,7 +10,7 @@
  */
 
 const { assertRouteContracts } = require('../../../gFramework/nRouter/test/routerContractTestUtils');
-const routerConfig = require('../src/router/router');
+const routerConfig = require('../src/router/routers');
 
 const expectedRoutes = [
     { key: '/auth/token/:tntCode', method: 'GET', controller: 'DefaultInternalAuthenticationProviderController', operation: 'getInternalAuthToken', secured: true, permissionConfig: 'authSecurity.internalToken.routePermission' },

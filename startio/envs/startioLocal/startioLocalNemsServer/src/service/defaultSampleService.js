@@ -11,16 +11,16 @@
 
 /**
  * @module startio/envs/startioLocal/startioLocalNemsServer/src/service/defaultSampleService
- * @description Implements envs default sample service business behavior and extension logic.
+ * @description Implements startioLocalNemsServer default sample service business behavior and extension logic.
  * @layer service
- * @owner envs
+ * @owner startioLocalNemsServer
  * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
  */
 module.exports = {
     /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
+     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading.
      * defined it that with Promise way
-     * @param {*} options 
+     * @param {*} options
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -29,9 +29,9 @@ module.exports = {
     },
 
     /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
+     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading.
      * defined it that with Promise way
-     * @param {*} options 
+     * @param {*} options
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {

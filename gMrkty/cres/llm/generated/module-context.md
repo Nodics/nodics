@@ -30,10 +30,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 7 |
+| Source files | 9 |
 | Test files | 6 |
 | Data files | 8 |
-| All module-owned files | 25 |
+| All module-owned files | 27 |
 | Local schema definitions | 1 |
 
 ## Ownership And Dependencies
@@ -63,7 +63,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 19 |
+| Documented | 21 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -78,7 +78,7 @@
 - `gMrkty/cres/config/prescripts.js`
 - `gMrkty/cres/config/postscripts.js`
 - `gMrkty/cres/src/schemas/schemas.js`
-- `gMrkty/cres/src/router/router.js`
+- `gMrkty/cres/src/router/routers.js`
 
 ## File Inventory
 
@@ -103,11 +103,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gMrkty/cres/nodics.js` | `module` | `documented` | 2/2 | Registers the cres module lifecycle hooks and module-level startup behavior. |  |
 | `gMrkty/cres/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gMrkty/cres/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers cres interceptor wiring for pipeline extension points. |  |
-| `gMrkty/cres/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines cres pipeline wiring and execution contracts. |  |
+| `gMrkty/cres/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines cres pipeline wiring and execution contracts. |  |
 | `gMrkty/cres/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines cres route registration and HTTP exposure metadata. |  |
-| `gMrkty/cres/src/router/router.js` | `src` | `documented` | 0/0 | Defines cres route registration and HTTP exposure metadata. |  |
+| `gMrkty/cres/src/router/routers.js` | `src` | `documented` | 0/0 | Defines cres route registration and HTTP exposure metadata. |  |
 | `gMrkty/cres/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines cres schema metadata, model contracts, and generated capability settings. |  |
 | `gMrkty/cres/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements cres default sample service business behavior and extension logic. |  |
+| `gMrkty/cres/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared cres enum definition exports. |  |
+| `gMrkty/cres/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared cres status and error definition exports. |  |
 | `gMrkty/cres/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared cres utility exports for utils. |  |
 | `gMrkty/cres/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines cres test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gMrkty/cres/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines cres test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

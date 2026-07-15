@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to dataCore"
   },
-  "sourceFiles": 14,
+  "sourceFiles": 16,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 24,
-  "sourceFingerprint": "6bb5cce6d15c99c7ff9efee7e90da8fc6ec6e7d7a6117956fb5313af7caf1297",
+  "ownedFiles": 26,
+  "sourceFingerprint": "5ce314d4d02297fa6391560de996cd7a7828fb6c745c0fe9717d1fbb1996268f",
   "documentation": {
-    "documented": 18,
+    "documented": 20,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

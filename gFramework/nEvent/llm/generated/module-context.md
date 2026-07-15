@@ -31,10 +31,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 13 |
+| Source files | 15 |
 | Test files | 0 |
 | Data files | 0 |
-| All module-owned files | 21 |
+| All module-owned files | 23 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -65,7 +65,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 17 |
+| Documented | 19 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -80,7 +80,7 @@
 - `gFramework/nEvent/config/prescripts.js`
 - `gFramework/nEvent/config/postscripts.js`
 - `gFramework/nEvent/src/schemas/schemas.js`
-- `gFramework/nEvent/src/router/router.js`
+- `gFramework/nEvent/src/router/routers.js`
 
 ## File Inventory
 
@@ -101,12 +101,14 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nEvent/src/facade/defaultEventFacade.js` | `src` | `documented` | 4/4 | Coordinates facade-level delegation for nEvent default event facade operations. |  |
 | `gFramework/nEvent/src/lib/eventError.js` | `src` | `documented` | 0/0 | Provides reusable nEvent library primitives for event error. |  |
 | `gFramework/nEvent/src/lib/eventService.js` | `src` | `documented` | 0/0 | Provides reusable nEvent library primitives for event service. |  |
-| `gFramework/nEvent/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nEvent pipeline wiring and execution contracts. |  |
+| `gFramework/nEvent/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nEvent pipeline wiring and execution contracts. |  |
 | `gFramework/nEvent/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nEvent route registration and HTTP exposure metadata. |  |
-| `gFramework/nEvent/src/router/router.js` | `src` | `documented` | 0/0 | Defines nEvent route registration and HTTP exposure metadata. |  |
+| `gFramework/nEvent/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nEvent route registration and HTTP exposure metadata. |  |
 | `gFramework/nEvent/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nEvent schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nEvent/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements event default sample service business behavior and extension logic. |  |
 | `gFramework/nEvent/src/service/event/defaultEventService.js` | `src` | `documented` | 14/14 | Implements nEvent default event service business behavior and extension logic. |  |
 | `gFramework/nEvent/src/service/event/defaultListenerChangeListenerService.js` | `src` | `documented` | 2/2 | Implements nEvent default listener change listener service business behavior and extension logic. |  |
+| `gFramework/nEvent/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared event enum definition exports. |  |
 | `gFramework/nEvent/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nEvent utility exports for status definitions. |  |
 | `gFramework/nEvent/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nEvent utility exports for utils. |  |
 

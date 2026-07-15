@@ -28,7 +28,7 @@ global.CLASSES = {
 
 const readPolicyService = require('../src/service/schema/defaultSchemaReadAccessPolicyService');
 const getInitializerService = require('../src/service/procs/get/defaultModelsGetInitializerService');
-const pipelines = require('../src/pipelines/pipelinesDefinition');
+const pipelines = require('../src/pipelines/pipelines');
 
 let request = {
     tenant: 'electronics',

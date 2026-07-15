@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Startio module for startioLocalNode1"
   },
-  "sourceFiles": 7,
+  "sourceFiles": 9,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 17,
-  "sourceFingerprint": "23d6f6ae51c9decf4faf6a525f18e215125e226a6b31d3990b23a7580848c194",
+  "ownedFiles": 19,
+  "sourceFingerprint": "c4ef9b93855f68bcf55dfd8a394e9dfc0ab2614ebdc6a7546d3e877bbcb9a6ae",
   "documentation": {
-    "documented": 11,
+    "documented": 13,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

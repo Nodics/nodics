@@ -28,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 8 |
+| Source files | 11 |
 | Test files | 4 |
 | Data files | 0 |
-| All module-owned files | 20 |
+| All module-owned files | 23 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 14 |
+| Documented | 17 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -74,7 +74,7 @@
 - `gFramework/nSearch/elastic/config/prescripts.js`
 - `gFramework/nSearch/elastic/config/postscripts.js`
 - `gFramework/nSearch/elastic/src/schemas/schemas.js`
-- `gFramework/nSearch/elastic/src/router/router.js`
+- `gFramework/nSearch/elastic/src/router/routers.js`
 
 ## File Inventory
 
@@ -90,13 +90,16 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSearch/elastic/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nSearch/elastic/nodics.js` | `module` | `documented` | 2/2 | Registers the nSearch module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nSearch/elastic/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nSearch/elastic/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines nSearch pipeline wiring and execution contracts. |  |
+| `gFramework/nSearch/elastic/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nSearch pipeline wiring and execution contracts. |  |
 | `gFramework/nSearch/elastic/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nSearch route registration and HTTP exposure metadata. |  |
-| `gFramework/nSearch/elastic/src/router/router.js` | `src` | `documented` | 0/0 | Defines nSearch route registration and HTTP exposure metadata. |  |
+| `gFramework/nSearch/elastic/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nSearch route registration and HTTP exposure metadata. |  |
 | `gFramework/nSearch/elastic/src/schemas/elasticSearchModel.js` | `src` | `documented` | 14/14 | Defines nSearch schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nSearch/elastic/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nSearch schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nSearch/elastic/src/service/connection/defaultElasticSearchEngineConnectionHandlerService.js` | `src` | `documented` | 5/5 | Implements nSearch default elastic search engine connection handler service business behavior and extension logic. |  |
+| `gFramework/nSearch/elastic/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements elastic default sample service business behavior and extension logic. |  |
 | `gFramework/nSearch/elastic/src/service/schema/defaultElasticSearchSchemaHandlerService.js` | `src` | `documented` | 7/7 | Implements nSearch default elastic search schema handler service business behavior and extension logic. |  |
+| `gFramework/nSearch/elastic/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared elastic enum definition exports. |  |
+| `gFramework/nSearch/elastic/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared elastic status and error definition exports. |  |
 | `gFramework/nSearch/elastic/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nSearch utility exports for utils. |  |
 | `gFramework/nSearch/elastic/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nSearch test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nSearch/elastic/test/elasticConnectionHandlerContract.test.js` | `test` | `documented` | 0/0 | Verifies the Elastic connection handler registers provider model definitions and reads cluster index metadata through the configured engine connection. |  |

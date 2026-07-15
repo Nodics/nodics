@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to cart"
   },
-  "sourceFiles": 16,
+  "sourceFiles": 18,
   "testFiles": 6,
   "dataFiles": 0,
-  "ownedFiles": 26,
-  "sourceFingerprint": "ff1bd437f0da689d6b39022d2d8971424f8770440a90a50aa9cfb90bdc28c647",
+  "ownedFiles": 28,
+  "sourceFingerprint": "1d4c14d42c2cef535fed0ddda0c4dfa9e5e7a1825bf48b664953b81166adf12b",
   "documentation": {
-    "documented": 20,
+    "documented": 22,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

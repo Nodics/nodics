@@ -10,20 +10,17 @@
  */
 
 /**
- * @module mongodb/vMongodb/service/DefaultSampleService
- * @description Versioned MongoDB sample service placeholder used as an
- * extension template for database-specific project behavior.
+ * @module gFramework/nDatabase/mongodb/vMongodb/src/service/defaultSampleService
+ * @description Implements vMongodb default sample service business behavior and extension logic.
  * @layer service
- * @owner nDatabase
- * @override Project modules may replace this sample with real versioned MongoDB
- * behavior without changing Nodics framework modules.
+ * @owner vMongodb
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
  */
 module.exports = {
     /**
-     * Initializes the sample versioned MongoDB service.
-     *
-     * @param {Object} options Startup options supplied by the module initializer.
-     * @returns {Promise<boolean>} Resolves when initialization is complete.
+     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading.
+     * defined it that with Promise way
+     * @param {*} options
      */
     init: function (options) {
         return new Promise((resolve, reject) => {
@@ -32,10 +29,9 @@ module.exports = {
     },
 
     /**
-     * Finalizes the sample versioned MongoDB service.
-     *
-     * @param {Object} options Startup options supplied by the module initializer.
-     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
+     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading.
+     * defined it that with Promise way
+     * @param {*} options
      */
     postInit: function (options) {
         return new Promise((resolve, reject) => {

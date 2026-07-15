@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module works for Even management and Exchange"
   },
-  "sourceFiles": 11,
+  "sourceFiles": 13,
   "testFiles": 7,
   "dataFiles": 2,
-  "ownedFiles": 23,
-  "sourceFingerprint": "1ba54a8a7db7fa881235bd9bfa707c0ea9a79ccc003713b26606a4aab1a974d6",
+  "ownedFiles": 25,
+  "sourceFingerprint": "06290d66d450e2a126bc6d71e23d779283b77b0e2024fbbdd817a4fc7898aac0",
   "documentation": {
-    "documented": 17,
+    "documented": 19,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

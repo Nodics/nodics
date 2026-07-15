@@ -25,6 +25,10 @@ module.exports = {
     activeModules: {
         groups: ['gCore', 'gComm', 'gContent', 'gDeap', 'gMrkty', 'modules'], // Group 'framework' will be included automatically
         modules: [
+            'profile',
+            'nems',
+            'cronjob',
+            'workflow',
             'startioLocalServer',
             'startioLocal'
         ]

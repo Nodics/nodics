@@ -29,10 +29,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 7 |
+| Source files | 9 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 17 |
+| All module-owned files | 19 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -61,7 +61,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 11 |
+| Documented | 13 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -76,7 +76,7 @@
 - `gCore/quizer/vquiz/config/prescripts.js`
 - `gCore/quizer/vquiz/config/postscripts.js`
 - `gCore/quizer/vquiz/src/schemas/schemas.js`
-- `gCore/quizer/vquiz/src/router/router.js`
+- `gCore/quizer/vquiz/src/router/routers.js`
 
 ## File Inventory
 
@@ -93,11 +93,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/quizer/vquiz/nodics.js` | `module` | `documented` | 2/2 | Registers the quizer module lifecycle hooks and module-level startup behavior. |  |
 | `gCore/quizer/vquiz/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/quizer/vquiz/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers quizer interceptor wiring for pipeline extension points. |  |
-| `gCore/quizer/vquiz/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Defines quizer pipeline wiring and execution contracts. |  |
+| `gCore/quizer/vquiz/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines quizer pipeline wiring and execution contracts. |  |
 | `gCore/quizer/vquiz/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines quizer route registration and HTTP exposure metadata. |  |
-| `gCore/quizer/vquiz/src/router/router.js` | `src` | `documented` | 0/0 | Defines quizer route registration and HTTP exposure metadata. |  |
+| `gCore/quizer/vquiz/src/router/routers.js` | `src` | `documented` | 0/0 | Defines quizer route registration and HTTP exposure metadata. |  |
 | `gCore/quizer/vquiz/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines quizer schema metadata, model contracts, and generated capability settings. |  |
-| `gCore/quizer/vquiz/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements quizer default sample service business behavior and extension logic. |  |
+| `gCore/quizer/vquiz/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements vquiz default sample service business behavior and extension logic. |  |
+| `gCore/quizer/vquiz/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared vquiz enum definition exports. |  |
+| `gCore/quizer/vquiz/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared vquiz status and error definition exports. |  |
 | `gCore/quizer/vquiz/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared quizer utility exports for utils. |  |
 | `gCore/quizer/vquiz/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines quizer test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gCore/quizer/vquiz/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines quizer test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |

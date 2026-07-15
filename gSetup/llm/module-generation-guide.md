@@ -8,13 +8,45 @@ The standard folder/file structure for a generated capability module or pure
 group module is defined in `standards/module-standard.md` under "Standard
 Structure For Generated Modules And Group Modules". Project, environment,
 server, and node module generation uses the same source-of-truth principles but
-requires additional topology and activation rules that should be discussed and
-defined separately before implementation.
+requires the boundary and topology rules defined in
+`standards/nodics-structure-matrix.md`.
 
 Module generation is a contract-driven activity. The source of truth is the
 module metadata, active-module hierarchy, layered configuration, source
 definitions, tests, documentation, and generated artifacts produced from those
 definitions.
+
+## Generation Commands
+
+Use the contract-driven structure generator instead of retired template-copy
+generation:
+
+```text
+npm run generate:app -- --name=<projectName> --path=<projectPath> --groupName=<companyGroup>
+npm run generate:group -- --name=<groupName> --path=<groupPath>
+npm run generate:module -- --name=<moduleName> --path=<modulePath>
+npm run generate:env -- --name=<environmentName> --path=<environmentPath>
+npm run generate:server -- --name=<serverName> --path=<serverPath>
+npm run generate:node -- --name=<nodeName> --path=<nodePath>
+npm run generate:provider -- --name=<providerName> --path=<providerPath>
+```
+
+These commands delegate to `structure:generate`, which creates metadata,
+configuration, docs, LLM entries, source registries, service scaffolds, and
+topology folders according to `standards/nodics-structure-matrix.md`. After
+generation, run `npm run structure:audit -- --fail` before adding business
+behavior.
+
+For a full project topology, use the approval-first planner:
+
+```text
+npm run structure:plan -- --name=<projectName> --path=<projectPath> --groupName=<companyGroup> --modules=<moduleA,moduleB> --providers=<providerA> --envs=<local,dev> --servers=<apiServer> --nodes=<node0,node1>
+```
+
+The planner writes no files by default. Review the proposed project,
+capability, provider, environment, server, node, index, path, and
+`activeModules` placement first. After approval, re-run the same command with
+`--apply`; the applied topology must pass `npm run structure:audit -- --fail`.
 
 ## Non-Negotiable Rules
 
@@ -75,7 +107,7 @@ module/
 
 For capability modules, generate `src/` when the module owns source
 definitions or implementation. Generate standard blank definition files such as
-`src/event/listeners.js`, `src/pipelines/pipelinesDefinition.js`,
+`src/event/listeners.js`, `src/pipelines/pipelines.js`,
 `src/schemas/schemas.js`, `src/search/indexes.js`, and
 `src/interceptors/interceptors.js` as `module.exports = {}` when the extension
 point is intentionally present but no definitions exist yet.
@@ -220,16 +252,23 @@ or overrides an existing one:
 
 - Properties: add or override keys in `config/properties.js`.
 - Schemas: contribute schema definitions with governed schema override metadata.
-- Routers: contribute route definitions with governed router override metadata.
+- Routers: contribute route definitions with governed router override metadata
+  in `src/router/routers.js`; keep app-level router configuration in
+  `src/router/appConfig.js`.
 - Services: contribute the smallest necessary method override under
-  `src/service/**/*Service.js`.
+  `src/service/**/*Service.js`; when a module has `src/service/`, generate
+  `src/service/defaultSampleService.js` with `init` and `postInit` so the service
+  extension shape is explicit even before concrete behavior is added.
 - Controllers: contribute controller methods under
   `src/controller/**/*Controller.js`.
 - Facades: contribute facade methods under `src/facade/**/*Facade.js`.
-- Pipeline definitions: contribute definitions under
-  `src/pipelines/**/*Definition.js`.
+- Pipeline definitions: contribute definitions in
+  `src/pipelines/pipelines.js`.
 - Interceptors, validators, data, and tests: use the existing Nodics loaders and
   ownership conventions.
+- Utilities: generate `src/utils/utils.js`, `src/utils/enums.js`, and
+  `src/utils/statusDefinitions.js` so helpers, enum contracts, and status/error
+  definitions have explicit ownership from the first commit.
 
 Do not copy a whole framework service, router, schema, or module just to change
 one decision. Use the smallest later-layer contribution that preserves the

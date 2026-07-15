@@ -6,6 +6,7 @@
 
 - `gFramework/nDatabase/mongodb/vMongodb/test/common/commonTest.js`
 - `gFramework/nDatabase/mongodb/vMongodb/test/env-local/envTest.js`
+- `gFramework/nDatabase/mongodb/vMongodb/test/versionedModelContract.test.js`
 
 ## Generated Tests
 

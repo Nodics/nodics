@@ -27,10 +27,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 19 |
+| Source files | 21 |
 | Test files | 5 |
 | Data files | 0 |
-| All module-owned files | 32 |
+| All module-owned files | 34 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -57,7 +57,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 25 |
+| Documented | 27 |
 | Partially documented | 0 |
 | Undocumented | 3 |
 | Inventory only | 4 |
@@ -71,7 +71,7 @@
 - `gFramework/nRouter/config/properties.js`
 - `gFramework/nRouter/config/prescripts.js`
 - `gFramework/nRouter/config/postscripts.js`
-- `gFramework/nRouter/src/router/router.js`
+- `gFramework/nRouter/src/router/routers.js`
 
 ## File Inventory
 
@@ -87,11 +87,12 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nRouter/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nRouter/nodics.js` | `module` | `documented` | 2/2 | nRouter module lifecycle entrypoint that loads router definitions, initializes router services, applies configuration, registers routes, and loads persisted runtime routers. |  |
 | `gFramework/nRouter/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nRouter/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Pipeline definitions for Nodics API request execution. These definitions compose the request handler pipeline, secured authorization pipeline, and non-secured enterprise/tenant resolution pipeline used by `DefaultRequestHandlerService`. |  |
+| `gFramework/nRouter/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Pipeline definitions for Nodics API request execution. These definitions compose the request handler pipeline, secured authorization pipeline, and non-secured enterprise/tenant resolution pipeline used by `DefaultRequestHandlerService`. |  |
 | `gFramework/nRouter/src/router/appConfig.js` | `src` | `documented` | 8/8 | Default Express application configuration hooks for nRouter. These hooks are executed by `DefaultRouterConfigurationService` against the consolidated default app or module-specific apps based on the selected runtime topology. |  |
-| `gFramework/nRouter/src/router/router.js` | `src` | `documented` | 0/0 | Default nRouter route contract definitions. These definitions provide schema-driven CRUD route templates and common platform routes that are expanded per active schema and module by `DefaultRouterService`. |  |
+| `gFramework/nRouter/src/router/routers.js` | `src` | `documented` | 0/0 | Default nRouter route contract definitions. These definitions provide schema-driven CRUD route templates and common platform routes that are expanded per active schema and module by `DefaultRouterService`. |  |
 | `gFramework/nRouter/src/service/config/defaultRouterConfigurationService.js` | `src` | `documented` | 5/5 | Holds and applies effective router configuration for the active Nodics module hierarchy. It executes layered app configuration scripts and exposes the merged router definitions used by router registration. |  |
 | `gFramework/nRouter/src/service/defaultRequestHandlerService.js` | `src` | `documented` | 3/3 | Entry point from Express route binding into the Nodics request pipeline. It creates the internal request context, starts `requestHandlerPipeline`, and delegates the final response to the configured response handler. |  |
+| `gFramework/nRouter/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements router default sample service business behavior and extension logic. |  |
 | `gFramework/nRouter/src/service/handlers/parser/defaultJsonBodyParserHandlerService.js` | `src` | `documented` | 3/3 | Body parser handler for JSON API routes. It supplies Express middleware for URL-encoded and JSON payload parsing when a router uses the default JSON parser. |  |
 | `gFramework/nRouter/src/service/handlers/parser/defaultTextBodyParserHandlerService.js` | `src` | `documented` | 3/3 | Body parser handler for text API routes. It supplies Express middleware for URL-encoded and text payload parsing when a router selects the text parser. |  |
 | `gFramework/nRouter/src/service/handlers/response/defaultFileDownloadResponseHandlerService.js` | `src` | `documented` | 4/4 | Response handler for routes that return downloadable files instead of JSON payloads. |  |
@@ -104,6 +105,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nRouter/src/service/router/defaultRouterOperationService.js` | `src` | `documented` | 8/8 | Bridges effective Nodics router definitions to Express operations. It binds HTTP methods and delegates incoming requests to the request handler service. |  |
 | `gFramework/nRouter/src/service/router/defaultRouterService.js` | `src` | `documented` | 14/14 | Builds and starts Nodics API routing from the effective module hierarchy. It prepares module server configuration, generates schema-driven default routers, registers common and module-specific routers, and starts HTTP/HTTPS listeners for consolidated or modular runtime topologies. |  |
 | `gFramework/nRouter/src/service/tooling/defaultOpenapiContractGeneratorService.js` | `src` | `documented` | 0/0 | Generates an OpenAPI contract from the effective layered router and schema definitions for a selected Nodics server or node. |  |
+| `gFramework/nRouter/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared router enum definition exports. |  |
 | `gFramework/nRouter/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Status and error definitions for router help, route governance, and override validation. |  |
 | `gFramework/nRouter/src/utils/utils.js` | `src` | `documented` | 2/2 | Router utility helpers for route/model cache eligibility decisions. |  |
 | `gFramework/nRouter/test/authHeaderNormalization.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

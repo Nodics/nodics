@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. It will hold all configuration and system point to start nodics"
   },
-  "sourceFiles": 20,
+  "sourceFiles": 22,
   "testFiles": 16,
   "dataFiles": 0,
-  "ownedFiles": 34,
-  "sourceFingerprint": "ef7c35d1bfad621f586c02a002d22f07daf8cbe72e9079438b833694b0dca931",
+  "ownedFiles": 36,
+  "sourceFingerprint": "280df725111069bde36c7429fa97ee88b88ff62401c7d70c83ec3a58d9500c85",
   "documentation": {
-    "documented": 24,
+    "documented": 26,
     "partially-documented": 2,
     "undocumented": 4,
     "inventory-only": 4

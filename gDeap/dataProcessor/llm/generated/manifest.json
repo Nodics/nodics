@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to dataProcessor"
   },
-  "sourceFiles": 6,
+  "sourceFiles": 8,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 16,
-  "sourceFingerprint": "26faf7f38d2f3a0b41aaffcd01f964c8dbd102dce1b1b68889494fe9a19c66bc",
+  "ownedFiles": 18,
+  "sourceFingerprint": "e7076b951e9713d771c4213d8c3d27828ee8e82b544f6eca3b89cd4338d01da6",
   "documentation": {
-    "documented": 10,
+    "documented": 12,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

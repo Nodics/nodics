@@ -27,10 +27,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 5 |
+| Source files | 7 |
 | Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 15 |
+| All module-owned files | 17 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -57,7 +57,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 9 |
+| Documented | 11 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -72,7 +72,7 @@
 - `gFramework/nPublish/config/prescripts.js`
 - `gFramework/nPublish/config/postscripts.js`
 - `gFramework/nPublish/src/schemas/schemas.js`
-- `gFramework/nPublish/src/router/router.js`
+- `gFramework/nPublish/src/router/routers.js`
 
 ## File Inventory
 
@@ -88,10 +88,12 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nPublish/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nPublish/nodics.js` | `module` | `documented` | 2/2 | Publish module lifecycle entrypoint for staged-to-online data promotion capabilities. |  |
 | `gFramework/nPublish/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nPublish/src/pipelines/pipelinesDefinition.js` | `src` | `documented` | 0/0 | Reserved pipeline definition contribution for publishing and version promotion flows. |  |
+| `gFramework/nPublish/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Reserved pipeline definition contribution for publishing and version promotion flows. |  |
 | `gFramework/nPublish/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved application router configuration contribution for publish APIs. |  |
-| `gFramework/nPublish/src/router/router.js` | `src` | `documented` | 0/0 | Reserved route definition contribution for publish/version promotion APIs. |  |
+| `gFramework/nPublish/src/router/routers.js` | `src` | `documented` | 0/0 | Reserved route definition contribution for publish/version promotion APIs. |  |
 | `gFramework/nPublish/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Reserved schema contribution for publish/version promotion models. |  |
+| `gFramework/nPublish/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared publish enum definition exports. |  |
+| `gFramework/nPublish/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared publish status and error definition exports. |  |
 | `gFramework/nPublish/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility contribution for publish/version promotion helpers. |  |
 | `gFramework/nPublish/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Common sample test scaffold for publish module contracts. | add JSDoc for 7 exported method(s) |
 | `gFramework/nPublish/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Local-environment sample test scaffold for publish module behavior. | add JSDoc for 7 exported method(s) |

@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer kycCore"
   },
-  "sourceFiles": 17,
+  "sourceFiles": 19,
   "testFiles": 2,
   "dataFiles": 6,
-  "ownedFiles": 33,
-  "sourceFingerprint": "083188fe0ecf535b6bf0dfb662a2db7bca2d6258421972dd19e9ad8736c4f6f6",
+  "ownedFiles": 35,
+  "sourceFingerprint": "9d8ccd76c03264b63a305f0ca8a127b412c475426b043d1fbb723f02202e2aac",
   "documentation": {
-    "documented": 27,
+    "documented": 29,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

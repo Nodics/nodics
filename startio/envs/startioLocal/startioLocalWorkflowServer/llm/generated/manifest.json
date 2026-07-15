@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Startio module for startioLocalWorkflowServer"
   },
-  "sourceFiles": 7,
+  "sourceFiles": 9,
   "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 17,
-  "sourceFingerprint": "137d67c1664b5de5c691c7f0572f1d2c9a7012df244e42101a557f587352445b",
+  "ownedFiles": 19,
+  "sourceFingerprint": "8a5edc792333da4ce6eb8abead430d139e7865180dc861ebd5c49cad8e652b7d",
   "documentation": {
-    "documented": 11,
+    "documented": 13,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

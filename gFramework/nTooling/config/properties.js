@@ -190,6 +190,21 @@ module.exports = {
                 handler: 'src/service/command/defaultNodeScriptCommandService.js',
                 script: 'src/service/quality/defaultCopyrightHeaderQualityService.js'
             },
+            'structure:audit': {
+                description: 'Report Nodics project/module/environment/server/node structure gaps against the canonical structure matrix.',
+                handler: 'src/service/command/defaultNodeScriptCommandService.js',
+                script: 'src/service/quality/defaultStructureComplianceQualityService.js'
+            },
+            'structure:generate': {
+                description: 'Generate Nodics project/module/environment/server/node scaffolds from the canonical structure matrix.',
+                handler: 'src/service/command/defaultNodeScriptCommandService.js',
+                script: 'src/service/generation/defaultStructureGeneratorService.js'
+            },
+            'structure:plan': {
+                description: 'Plan or apply an approval-first Nodics project topology using the canonical structure matrix.',
+                handler: 'src/service/command/defaultNodeScriptCommandService.js',
+                script: 'src/service/generation/defaultTopologyPlanService.js'
+            },
             'llm:generate': {
                 description: 'Generate module-owned LLM context for the target Nodics project.',
                 handler: 'src/service/command/defaultNodeScriptCommandService.js',
