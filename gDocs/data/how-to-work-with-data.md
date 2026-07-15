@@ -128,6 +128,72 @@ Sample data is not required production data.
 
 Nodics supports import and export flows for structured data.
 
+For a business-oriented data hub pattern, read [How To Use Nodics As Data As A Service](how-to-use-nodics-as-data-as-a-service.md).
+
+## Data Feeding Patterns
+
+Nodics supports two main ways to feed data into the platform.
+
+### Push-Based Import
+
+In push-based import, an external system calls Nodics import APIs and sends the data to Nodics.
+
+Use this pattern when the source system controls when data should be delivered.
+
+Examples:
+
+- an ERP system pushes product or inventory updates;
+- a partner system pushes customer, order, or catalog records;
+- a supplier portal sends product attributes;
+- an admin tool uploads an approved import payload;
+- a business application pushes data after its own workflow completes.
+
+The flow is:
+
+```text
+External system
+  -> Nodics import API
+  -> import pipeline
+  -> filters, validators, processors, interceptors
+  -> tenant-aware persistence
+  -> events, search indexing, audit, import history
+```
+
+The caller may provide the payload or file reference allowed by the route contract. Nodics still owns validation, tenant resolution, access control, diagnostics, and persistence behavior.
+
+### Scheduled File Import
+
+In scheduled file import, data is placed in a configured location and Nodics picks it up through a scheduled process, usually a CronJob.
+
+Use this pattern when the source system produces files on a schedule or cannot call Nodics APIs directly.
+
+Examples:
+
+- supplier CSV files are placed in an import folder;
+- ERP exports Excel files every night;
+- product catalog JSON files are placed in a governed server import location;
+- business users upload approved files to a governed server location;
+- a CronJob checks for pending files every few minutes or hours.
+
+The flow is:
+
+```text
+External system
+  -> configured file location
+  -> Nodics CronJob or scheduled trigger
+  -> import service
+  -> import pipeline
+  -> filters, validators, processors, interceptors
+  -> tenant-aware persistence
+  -> events, search indexing, audit, import history
+```
+
+Scheduled file import can use JSON, JavaScript data definitions, Excel, CSV, or any other supported file processor. The source system or operations process is responsible for placing files in the expected Nodics import location. Nodics is responsible for reading only the configured files, validating them, importing them through the same governed pipeline, and recording diagnostics.
+
+Remote import adapters are a specialized scheduled file import pattern. They are used when Nodics must directly pull or stage files from SFTP, object storage, partner APIs, HTTPS pulls, enterprise file gateways, or similar external locations before running the import pipeline. This requires a project or provider source to be selected, configured, governed, and tested.
+
+Both patterns must enter the same governed import lifecycle. Do not create a separate persistence path just because the source is API-based, file-based, scheduled, or remote.
+
 An import process explains:
 
 - Which file formats are supported.
@@ -138,6 +204,8 @@ An import process explains:
 - What diagnostics are produced.
 - Whether import history is recorded.
 - Whether rollback or retry behavior exists.
+
+Direct remote pull stays gated until a project or provider module owns the production adapter, source configuration, tenant/module allowlists, checksum policy, staging behavior, sanitized diagnostics, and live integration tests. Do not expose a public remote-import route for a source that has only deterministic framework tests.
 
 Run import-related tests through:
 

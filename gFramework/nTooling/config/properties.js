@@ -421,6 +421,7 @@ module.exports = {
                 handler: 'src/service/command/defaultNodicsLifecycleCommandService.js',
                 steps: [
                     { tool: ['ai:validate'] },
+                    { tool: ['ai:principle-audit'] },
                     { tool: ['quality:copyright', '--fail'] },
                     { tool: ['quality:docs'] },
                     { nodicsMethod: 'buildAll' },

@@ -66,7 +66,7 @@ module.exports = {
      * @returns {string[]} Checks to run.
      */
     resolveChecks: function (checks) {
-        const requested = checks && checks.length ? checks : ['ai:validate', 'llm:validate'];
+        const requested = checks && checks.length ? checks : ['ai:validate', 'ai:principle-audit', 'llm:validate'];
         requested.forEach(checkName => {
             if (!approvedChecks[checkName]) {
                 throw new Error('Unsupported MCP validation check: ' + checkName);

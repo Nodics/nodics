@@ -22,16 +22,18 @@ Start with the first two sections if you are new. Use the task guides when you a
 3. [How Nodics Is Organized](architecture/how-nodics-is-organized.md)
 4. [How Configuration Works](configuration/how-configuration-works.md)
 5. [How To Create Application Functionality](development/how-to-create-application-functionality.md)
-6. [How To Create APIs](development/how-to-create-apis.md)
-7. [How To Work With Data](data/how-to-work-with-data.md)
-8. [How To Create Scheduled Jobs](jobs/how-to-create-scheduled-jobs.md)
-9. [How Platform Capabilities Work](platform/how-platform-capabilities-work.md)
-10. [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md)
-11. [How To Test Nodics Changes](testing/how-to-test-nodics-changes.md)
-12. [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md)
-13. [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md)
-14. [How To Publish Documentation On GitHub](documentation/how-to-publish-documentation-on-github.md)
-15. [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md)
+6. [Common Implementation Examples](development/common-implementation-examples.md)
+7. [How To Create APIs](development/how-to-create-apis.md)
+8. [How To Work With Data](data/how-to-work-with-data.md)
+9. [How To Use Nodics As Data As A Service](data/how-to-use-nodics-as-data-as-a-service.md)
+10. [How To Create Scheduled Jobs](jobs/how-to-create-scheduled-jobs.md)
+11. [How Platform Capabilities Work](platform/how-platform-capabilities-work.md)
+12. [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md)
+13. [How To Test Nodics Changes](testing/how-to-test-nodics-changes.md)
+14. [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md)
+15. [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md)
+16. [How To Publish Documentation On GitHub](documentation/how-to-publish-documentation-on-github.md)
+17. [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md)
 
 ## Documentation Principles
 
@@ -67,8 +69,10 @@ Use this map when you are not sure where to start.
 | Install, build, and start the framework | [How To Set Up Nodics](getting-started/how-to-setup-nodics.md) |
 | Understand projects, modules, environments, servers, and nodes | [How Nodics Is Organized](architecture/how-nodics-is-organized.md) |
 | Add new application behavior | [How To Create Application Functionality](development/how-to-create-application-functionality.md) |
+| Follow examples for APIs, schemas, providers, scheduled jobs, and runtime configuration | [Common Implementation Examples](development/common-implementation-examples.md) |
 | Add or change APIs | [How To Create APIs](development/how-to-create-apis.md) |
 | Work with schemas, import, export, and data providers | [How To Work With Data](data/how-to-work-with-data.md) |
+| Use Nodics as a governed data lake or data hub | [How To Use Nodics As Data As A Service](data/how-to-use-nodics-as-data-as-a-service.md) |
 | Add scheduled jobs | [How To Create Scheduled Jobs](jobs/how-to-create-scheduled-jobs.md) |
 | Understand processes, cache, messaging, logging, and request handling | [How Platform Capabilities Work](platform/how-platform-capabilities-work.md) |
 | Understand users, tenants, permissions, and runtime isolation | [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md) |

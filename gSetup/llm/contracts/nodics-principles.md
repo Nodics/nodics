@@ -13,6 +13,9 @@ The core rule is:
 Capabilities are sacred; implementations are negotiable.
 ```
 
+In governance checks and implementation reviews, this is enforced as:
+capabilities are sacred, implementations are negotiable.
+
 A capability is something the platform can do: expose APIs, define schemas,
 persist data, validate requests, run jobs, publish events, index search data,
 import/export records, apply permissions, isolate tenants, generate artifacts,

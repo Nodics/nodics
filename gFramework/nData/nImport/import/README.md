@@ -54,6 +54,60 @@ introduce executable schema or routing definitions. Projects must provide and
 qualify a production adapter in their own module layer before enabling a source.
 No public remote-import route is advertised by the framework yet.
 
+## Data Feeding Patterns
+
+The import module supports two production ingestion patterns through the same
+governed lifecycle.
+
+Push-based import lets an external system call a Nodics import API and send the
+payload or approved input reference. The external system owns the trigger
+timing, while Nodics owns route permission, tenant resolution, header
+validation, file or payload processing, pipeline execution, diagnostics,
+persistence, events, search indexing, and import history.
+
+Scheduled file import lets an external system or business process place files
+in a configured Nodics import location. A CronJob or other governed trigger
+invokes the import service for pending files. This supports JSON, JavaScript
+data definitions, Excel, CSV, and any additional file processors contributed
+through the module hierarchy.
+
+Direct remote pull through remote import adapters stages files from SFTP,
+object storage, partner APIs, HTTPS pulls, enterprise file gateways, or similar
+external locations before the normal import pipeline runs. A project or
+provider module must own and qualify the production adapter before this path is
+exposed.
+
+Both patterns must use the same import pipeline and diagnostics model. Do not
+add a direct persistence path for one source just because its data arrives by
+API, file drop, CronJob, or remote adapter.
+
+## Production Remote Adapter Gate
+
+The framework remote import contract is implemented and tested, but production
+remote pull remains gated by design. A project or provider module must own the
+actual adapter, because SFTP, object storage, HTTPS pulls, partner APIs, and
+enterprise file gateways each have different authentication, retry, timeout,
+audit, and failure behavior.
+
+A production adapter must:
+
+- register its source and transport through layered `config/properties.js`;
+- keep endpoints, credentials, tokens, and secret paths out of request payloads
+  and source-controlled files;
+- expose a loader-visible adapter service with a `stage(context)` function;
+- stage only data files under the assigned server-owned staging directory;
+- return file descriptors with SHA-256 checksums when checksums are required;
+- respect configured tenant and module allowlists;
+- obey timeout, retry, file-count, byte-limit, extension, checksum, and cleanup
+  policy;
+- write sanitized diagnostics to import run history;
+- include deterministic contract tests and guarded live integration or release
+  tests before any public route exposes that source.
+
+Do not add a generic production remote adapter to the framework only to make the
+route public. The capability is sacred; the implementation belongs to the
+project or provider layer that owns the external source contract.
+
 Generated/finalized files and reports are owned by the selected server module.
 Validation-only mode can inspect headers, files, target schemas/services, and
 processors without persistence.

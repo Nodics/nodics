@@ -12,6 +12,8 @@ Examples:
 - A new data provider belongs near database behavior.
 - A customer-specific order rule belongs in the customer project module, not in framework order code.
 
+For practical task-by-task examples, read [Common Implementation Examples](common-implementation-examples.md). It shows how to create APIs, schemas, providers, scheduled jobs, and runtime configuration changes using the same ownership and verification rules.
+
 ## Step 1: Describe The Feature
 
 Write one sentence:
@@ -113,4 +115,3 @@ Avoid:
 - Duplicating configuration rules.
 - Manually editing generated files.
 - Adding behavior without tests.
-

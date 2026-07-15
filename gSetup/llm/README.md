@@ -77,6 +77,7 @@ Load detailed files only when their subject is affected:
 28. `prompts/schema-change-prompt.md`
 29. `prompts/runtime-governance-prompt.md`
 30. `module-generation-guide.md`
+31. `examples/README.md`
 
 Load `change-gate-contract.md` only at commit, merge/release, periodic-audit, or
 explicit comprehensive-review time. Canonical rules should be referenced rather
@@ -125,6 +126,9 @@ without modifying out-of-the-box Nodics code.
   governance checks.
 - Contract-driven guidance for creating project, environment, server, and node
   modules without reviving copied template scaffolds.
+- Practical implementation examples for creating APIs, schemas, providers,
+  scheduled jobs, and runtime configuration changes without inventing structure
+  or bypassing Nodics loaders.
 - Repeatable `npm run generate:*` aliases backed by `structure:generate` for
   creating project, group, capability, provider, environment, server, and node
   scaffolds from the structure matrix.
