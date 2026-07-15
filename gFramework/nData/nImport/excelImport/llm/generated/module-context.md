@@ -95,7 +95,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/nImport/excelImport/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
 | `gFramework/nData/nImport/excelImport/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nData schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nData/nImport/excelImport/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements excelImport default sample service business behavior and extension logic. |  |
-| `gFramework/nData/nImport/excelImport/src/service/init/defaultExcelFileDataProcessService.js` | `src` | `documented` | 5/5 | Implements nData default excel file data process service business behavior and extension logic. |  |
+| `gFramework/nData/nImport/excelImport/src/service/init/defaultExcelFileDataProcessService.js` | `src` | `documented` | 6/6 | Implements nData default excel file data process service business behavior and extension logic. |  |
 | `gFramework/nData/nImport/excelImport/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared excelImport enum definition exports. |  |
 | `gFramework/nData/nImport/excelImport/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared excelImport status and error definition exports. |  |
 | `gFramework/nData/nImport/excelImport/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nData utility exports for utils. |  |

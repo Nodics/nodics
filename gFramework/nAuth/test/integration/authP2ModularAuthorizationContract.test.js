@@ -53,6 +53,7 @@ function runWorker(input) {
 
 async function run() {
     const jwtProvider = require('../../src/service/authentication/defaultAuthenticationProviderService');
+    const authSecurity = require('../../src/service/security/defaultAuthSecurityService');
     const stampService = require('../../src/service/identity/defaultPrincipalSecurityStampService');
     const serviceTokenService = require('../../src/service/identity/defaultServiceTokenService');
     const remoteProvider = require('../../../nService/src/service/authentication/defaultInternalAuthenticationProviderService');
@@ -63,6 +64,7 @@ async function run() {
             generateAuthToken: options => jwtProvider.generateAuthToken(options),
             addToken: (moduleName, expirable, key, value) => { stamps.set(key, value); return Promise.resolve(value); }
         },
+        DefaultAuthSecurityService: authSecurity,
         DefaultPrincipalSecurityStampService: stampService,
         DefaultModuleService: {
             buildRequest: request => { capturedRequest = request; return { uri: 'http://profile.test/internal-token', source: request }; },

@@ -11,7 +11,7 @@ database names must contain `test`.
 Live shared-cache verification is explicit and never silently skipped:
 
 ```bash
-NODICS_AUTH_P2_REDIS_URL=redis://127.0.0.1:6379 npm run test:auth-p2:redis
+NODICS_AUTH_P2_REDIS_URL=redis://127.0.0.1:6379 npm run test:suite -- --suite=auth-p2-redis
 ```
 
 The release form fails when the live dependency is absent:

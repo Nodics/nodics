@@ -26,6 +26,7 @@ const path = require('path');
 
 const repositoryRoot = path.resolve(__dirname, '../../..');
 const scripts = require(path.join(repositoryRoot, 'package.json')).scripts || {};
+const testSuites = require('../config/properties').tooling.testSuites || {};
 
 function requireScript(scriptName) {
     assert(scripts[scriptName], 'Missing npm script: ' + scriptName);
@@ -42,6 +43,37 @@ function requireScriptIncludes(scriptName, expectedFragments) {
     });
 }
 
+function suiteTokens(suiteName, stack = []) {
+    const suite = testSuites[suiteName];
+    assert(suite, 'Missing configured test suite: ' + suiteName);
+    assert(!stack.includes(suiteName), 'Circular configured test suite reference: ' + stack.concat(suiteName).join(' -> '));
+    return suite.reduce((tokens, step) => {
+        if (step.suite) {
+            return tokens.concat('suite:' + step.suite, suiteTokens(step.suite, stack.concat(suiteName)));
+        }
+        if (step.npm) {
+            return tokens.concat(step.npm, step.args || []);
+        }
+        if (step.node) {
+            return tokens.concat(step.node, step.args || []);
+        }
+        if (step.tool) {
+            return tokens.concat(step.tool, step.args || []);
+        }
+        return tokens.concat(JSON.stringify(step));
+    }, []);
+}
+
+function requireSuiteIncludes(suiteName, expectedFragments) {
+    const tokens = suiteTokens(suiteName);
+    expectedFragments.forEach(fragment => {
+        assert(
+            tokens.some(token => token.includes(fragment)),
+            suiteName + ' suite must include `' + fragment + '` so full-suite coverage remains wired'
+        );
+    });
+}
+
 function requireFile(relativePath) {
     assert(
         fs.existsSync(path.join(repositoryRoot, relativePath)),
@@ -49,29 +81,34 @@ function requireFile(relativePath) {
     );
 }
 
-requireScriptIncludes('test:basic', [
-    'test:import',
-    'test:cronjob',
-    'test:ems',
-    'test:workflow',
-    'test:topology:consolidated'
+requireScriptIncludes('test:basic', ['test:suite --suite=basic']);
+requireScriptIncludes('test:full', ['test:suite --suite=full']);
+requireScriptIncludes('test:import', ['test:suite --suite=import']);
+
+requireSuiteIncludes('basic', [
+    'suite:import',
+    'suite:cronjob',
+    'suite:ems',
+    'suite:workflow',
+    'topology-consolidated'
 ]);
 
-requireScriptIncludes('test:full', [
-    'test:basic',
-    'test:topology:modular'
+requireSuiteIncludes('full', [
+    'basic',
+    'topology-modular'
 ]);
 
-requireScriptIncludes('test:import', [
-    'test:import-tenant-precedence',
-    'test:import-test-tenant-isolation',
-    'test:import-lifecycle',
-    'test:remote-import-transport',
-    'test:import-governance-lifecycle',
-    'test:import-export-access-policy'
+requireSuiteIncludes('import', [
+    'importTenantPrecedence.test.js',
+    'testTenantImportIsolation.test.js',
+    'importLifecycleContract.test.js',
+    'remoteImportTransportGovernance.test.js',
+    'remoteImportInitializerContract.test.js',
+    'importGovernanceLifecycleContract.test.js',
+    'importExportAccessPolicy.test.js'
 ]);
 
-requireScriptIncludes('test:workflow', [
+requireSuiteIncludes('workflow', [
     'workflowServicePipelineContract.test.js',
     'workflowActionPerformEngineContract.test.js',
     'workflowEngineCorrectnessContract.test.js',
@@ -80,15 +117,15 @@ requireScriptIncludes('test:workflow', [
     'workflowLifecyclePipelineContract.test.js'
 ]);
 
-requireScriptIncludes('test:cronjob', [
+requireSuiteIncludes('cronjob', [
     'cronJobServiceLifecycleContract.test.js',
     'cronJobRuntimeContainerContract.test.js',
     'cronJobEventHandlerContract.test.js'
 ]);
 
-requireScriptIncludes('test:ems', [
-    'test:ems-client-routes',
-    'test:ems-message-tenant',
+requireSuiteIncludes('ems', [
+    'emsClientRouteContract.test.js',
+    'messageTenantResolution.test.js',
     'emsClientServiceContract.test.js',
     'emsMessageProcessContract.test.js'
 ]);

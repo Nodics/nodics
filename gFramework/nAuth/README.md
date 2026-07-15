@@ -86,10 +86,11 @@ change, least-privilege API-key policy, credential-free audit records, and a
 preview/apply/repeat/fail/rollback migration lifecycle that never restores a
 plaintext credential.
 
-Run `npm run test:auth-p2` for deterministic P2 contracts plus an explicitly
-reported optional live Redis check. Before release, supply an isolated Redis
-endpoint and run `npm run test:auth-p2:release`; absence of the endpoint fails
-that gate. Test tenant and database names must contain a `test` marker.
+Run `npm run test:suite -- --suite=auth-p2` for deterministic P2 contracts plus
+an explicitly reported optional live Redis check. Before release, supply an
+isolated Redis endpoint and run `npm run test:auth-p2:release`; absence of the
+endpoint fails that gate. Test tenant and database names must contain a `test`
+marker.
 
 ## Deployment and migration order
 

@@ -176,7 +176,276 @@ module.exports = {
                 }
             ]
         },
+        testSuites: {
+            basic: [
+                { npm: 'check:syntax' },
+                { npm: 'quality:copyright' },
+                { suite: 'config' },
+                { suite: 'governance' },
+                { node: 'gFramework/nService/test/statusDefinitionCatalog.test.js' },
+                { suite: 'traceability' },
+                { suite: 'headers' },
+                { suite: 'route-contracts' },
+                { suite: 'generated' },
+                { tool: ['test:capability-behavior', '--area=system'] },
+                { suite: 'import' },
+                { suite: 'profile' },
+                { suite: 'cache' },
+                { suite: 'cronjob' },
+                { suite: 'ems' },
+                { suite: 'search' },
+                { suite: 'dynamo' },
+                { suite: 'workflow' },
+                { node: 'gFramework/nValidator/test/validatorServiceContract.test.js' },
+                { node: 'gFramework/nDatabase/database/test/schemaIndexServiceContract.test.js' },
+                { node: 'gFramework/nDatabase/database/test/schemaIndexControllerRequestMapping.test.js' },
+                { node: 'gFramework/nCatalog/test/catalogCapabilityContract.test.js' },
+                { node: 'gFramework/nOtp/test/otpCapabilityContract.test.js' },
+                { suite: 'topology-consolidated' }
+            ],
+            full: [
+                { suite: 'basic' },
+                { suite: 'topology-modular' }
+            ],
+            config: [
+                { node: 'gFramework/nConfig/test/configurationValidation.test.js' },
+                { node: 'gFramework/nConfig/test/nonRuntimePackageDiscovery.test.js' },
+                { node: 'gFramework/nDatabase/database/test/tenantDatabaseConfigurationValidation.test.js' },
+                { tool: ['module:metadata:validate'] },
+                { suite: 'tooling' },
+                { node: 'gFramework/nTest/test/layeredTestDiscovery.test.js' },
+                { tool: ['llm:validate'] }
+            ],
+            tooling: [
+                { node: 'gFramework/nTooling/test/toolingCommandOverride.test.js' },
+                { node: 'gFramework/nTooling/test/repositoryToolingBoundary.test.js' },
+                { node: 'gFramework/nTooling/test/projectPostmanCoverageOwnership.test.js' },
+                { node: 'gFramework/nTooling/test/fullTestSuiteCoverageContract.test.js' },
+                { node: 'gFramework/nTooling/test/moduleStructure.test.js' },
+                { node: 'gFramework/nTooling/test/structureComplianceAudit.test.js' },
+                { node: 'gFramework/nTooling/test/structureGeneratorAlignment.test.js' },
+                { node: 'gFramework/nTooling/test/topologyPlanWorkflow.test.js' },
+                { node: 'gFramework/nTooling/test/testSuiteCommandContract.test.js' },
+                { node: 'gFramework/nTooling/test/llmChangeAcceptanceContract.test.js' },
+                { node: 'gFramework/nTooling/test/mcpReadOnlyGovernanceContract.test.js' },
+                { node: 'gFramework/nTooling/test/copyrightHeaderGovernance.test.js' }
+            ],
+            governance: [
+                { node: 'gFramework/nConfig/test/layeredCustomizationContract.test.js' },
+                { node: 'gFramework/nConfig/test/schemaOverrideGovernance.test.js' },
+                { node: 'gFramework/nConfig/test/routerOverrideGovernance.test.js' },
+                { suite: 'runtime-overrides' },
+                { suite: 'schema-access-policy' },
+                { node: 'gFramework/nDatabase/database/test/schemaReadAccessPolicyService.test.js' },
+                { node: 'gFramework/nDatabase/database/test/schemaWriteAccessPolicyService.test.js' },
+                { node: 'gFramework/nDatabase/mongodb/vMongodb/test/versionedModelContract.test.js' },
+                { node: 'gFramework/nConfig/test/artifactOverrideTraceability.test.js' }
+            ],
+            'runtime-overrides': [
+                { node: 'gFramework/nConfig/test/runtimeOverrideGovernance.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeRouterConfigurationService.test.js' },
+                { node: 'gFramework/nDynamo/test/routerConfigurationGovernance.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationAuditService.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationActivationAudit.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationRollbackService.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationPreviewService.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationActivationPolicyService.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationActivationPolicyEnforcement.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationActivationRequestService.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimePropertyConfigurationGovernance.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationGovernanceSummaryService.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationGovernanceCleanupService.test.js' }
+            ],
+            'schema-access-policy': [
+                { node: 'gFramework/nDynamo/test/schemaAccessPolicyContractService.test.js' },
+                { node: 'gFramework/nDynamo/test/schemaAccessPolicyResolverService.test.js' },
+                { node: 'gFramework/nDynamo/test/schemaAccessPolicyGovernanceLifecycle.test.js' }
+            ],
+            traceability: [
+                { node: 'gFramework/nCommon/test/errorTraceability.test.js' },
+                { node: 'gFramework/nCommon/test/executionLayerTraceability.test.js' }
+            ],
+            headers: [
+                { node: 'gFramework/nAuth/test/authSecurityContract.test.js' },
+                { node: 'gFramework/nAuth/test/integration/authP2SharedCacheContract.test.js' },
+                { node: 'gFramework/nAuth/test/integration/authP2IdentityIsolationContract.test.js' },
+                { node: 'gCore/profile/test/identityGovernanceP2Integration.test.js' },
+                { node: 'gFramework/nAuth/test/integration/authP2ModularAuthorizationContract.test.js' },
+                { node: 'gFramework/nService/test/authTokenInvalidationService.test.js' },
+                { node: 'gFramework/nRouter/test/authHeaderNormalization.test.js' },
+                { node: 'gFramework/nRouter/test/routeActionAuthorization.test.js' },
+                { node: 'gFramework/nService/test/moduleRequestHeaderNormalization.test.js' },
+                { node: 'gFramework/nRouter/test/jsonResponseStatusResolution.test.js' }
+            ],
+            'auth-p2': [
+                { node: 'gFramework/nAuth/test/integration/authP2SharedCacheContract.test.js' },
+                { node: 'gFramework/nAuth/test/integration/authP2IdentityIsolationContract.test.js' },
+                { node: 'gCore/profile/test/identityGovernanceP2Integration.test.js' },
+                { node: 'gFramework/nAuth/test/integration/authP2ModularAuthorizationContract.test.js' },
+                { node: 'gFramework/nAuth/test/integration/authP2RedisLive.test.js' }
+            ],
+            'auth-p2-redis': [
+                { node: 'gFramework/nAuth/test/integration/authP2RedisLive.test.js' }
+            ],
+            'route-contracts': [
+                { tool: ['test:route-contracts'] },
+                { node: 'gFramework/nRouter/test/openapiContractGeneration.test.js' }
+            ],
+            generated: [
+                { node: 'gFramework/nTest/test/schemaTestGeneratorEffectiveSchema.test.js' },
+                { node: 'gFramework/nTest/test/schemaTestGeneratorCrudFixtureInheritance.test.js' },
+                { tool: ['test:live-tenant-guard'] },
+                { tool: ['test:suite-reporter'] },
+                { tool: ['test:generated'] }
+            ],
+            import: [
+                { node: 'gFramework/nData/nImport/import/test/systemDataImportInitializerValidation.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/importTenantPrecedence.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/testTenantImportIsolation.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/environmentSampleDataContribution.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/mandatoryInitDataImportContract.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/importLifecycleContract.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/remoteImportTransportGovernance.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/remoteImportInitializerContract.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/systemCoreSampleDataCatalog.test.js' },
+                { node: 'startio/envs/startioLocal/test/data/startioLocalTestTenantDataCatalog.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/multiFormatDataProcessors.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/systemImportDiagnosticsValidationOnly.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/importRunSummaryContract.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/importRunHistoryService.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/importGovernanceLifecycleContract.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/importRunHistoryControllerRoute.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/importDuplicateHeaderDiagnostics.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/finalizedRecordCounter.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/finalizedImportDispatch.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/importFailureTraceability.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/importExportAccessPolicy.test.js' }
+            ],
+            profile: [
+                { node: 'gCore/profile/test/initRequiredFlag.test.js' },
+                { node: 'gCore/profile/test/profileInitRequiredDetection.test.js' },
+                { node: 'gCore/profile/test/mandatoryIdentityBootstrapService.test.js' },
+                { node: 'gCore/profile/test/userGroupPermissionResolution.test.js' },
+                { node: 'gCore/profile/test/identityGovernanceContract.test.js' },
+                { node: 'gCore/profile/test/identityGovernanceP1Contract.test.js' },
+                { node: 'gCore/profile/test/profileAuthenticationServiceContract.test.js' },
+                { tool: ['test:capability-behavior', '--area=profile'] }
+            ],
+            cache: [
+                { node: 'gFramework/nCache/cache/test/cacheIsolationAndCorrectnessContract.test.js' },
+                { node: 'gFramework/nCache/cache/test/cacheMutationSecurityContract.test.js' },
+                { node: 'gFramework/nCache/cache/test/cacheDiagnosticsContract.test.js' },
+                { node: 'gFramework/nCache/cache/test/cacheBenchmarkContract.test.js' },
+                { node: 'gFramework/nCache/cache/test/cachePolicyContract.test.js' },
+                { node: 'gFramework/nCache/cache/test/cacheAdapterContract.test.js' },
+                { node: 'gFramework/nCache/cache/test/cacheInvalidationContract.test.js' },
+                { node: 'gFramework/nCache/redisCache/test/cacheRedisLive.test.js' }
+            ],
+            'cache-redis-live': [
+                { node: 'gFramework/nCache/redisCache/test/cacheRedisLive.test.js' }
+            ],
+            cronjob: [
+                { node: 'gCore/cronjob/test/cronJobRouteContract.test.js' },
+                { node: 'gCore/cronjob/test/cronJobControllerRequestMapping.test.js' },
+                { node: 'gCore/cronjob/test/cronJobServiceLifecycleContract.test.js' },
+                { node: 'gCore/cronjob/test/cronJobRuntimeContainerContract.test.js' },
+                { node: 'gCore/cronjob/test/cronJobEventHandlerContract.test.js' }
+            ],
+            ems: [
+                { node: 'gFramework/nEms/emsClient/test/emsClientRouteContract.test.js' },
+                { node: 'gFramework/nEms/emsClient/test/messageTenantResolution.test.js' },
+                { node: 'gFramework/nEms/emsClient/test/emsClientServiceContract.test.js' },
+                { node: 'gFramework/nEms/emsClient/test/emsMessageProcessContract.test.js' },
+                { tool: ['test:capability-behavior', '--area=ems'] }
+            ],
+            search: [
+                { node: 'gFramework/nSearch/search/test/searchRouteContract.test.js' },
+                { node: 'gFramework/nSearch/search/test/searchControllerRequestMapping.test.js' },
+                { node: 'gFramework/nSearch/search/test/searchServicePipelineContract.test.js' },
+                { node: 'gFramework/nSearch/search/test/indexerServiceContract.test.js' },
+                { node: 'gFramework/nSearch/search/test/searchCachePolicyContract.test.js' },
+                { node: 'gFramework/nSearch/elastic/test/elasticSearchModelOperationContract.test.js' },
+                { node: 'gFramework/nSearch/elastic/test/elasticConnectionHandlerContract.test.js' }
+            ],
+            dynamo: [
+                { node: 'gFramework/nDynamo/test/dynamoRouteContract.test.js' },
+                { node: 'gFramework/nDynamo/test/classConfigurationControllerRequestMapping.test.js' },
+                { node: 'gFramework/nDynamo/test/classConfigurationServiceContract.test.js' },
+                { node: 'gFramework/nDynamo/test/dynamoRuntimeAdminSurfaceContract.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeRouterConfigurationService.test.js' },
+                { node: 'gFramework/nDynamo/test/routerConfigurationGovernance.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeSchemaPipelineContract.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationAuditService.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationPreviewService.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationActivationPolicyService.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationActivationPolicyEnforcement.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationActivationRequestService.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationActivationAudit.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationRollbackService.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimePropertyConfigurationGovernance.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationGovernanceSummaryService.test.js' },
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationGovernanceCleanupService.test.js' },
+                { node: 'gFramework/nDynamo/test/schemaAccessPolicyContractService.test.js' },
+                { node: 'gFramework/nDynamo/test/schemaAccessPolicyResolverService.test.js' },
+                { node: 'gFramework/nDynamo/test/schemaAccessPolicyGovernanceLifecycle.test.js' }
+            ],
+            workflow: [
+                { node: 'gCore/workflow/flowApi/test/workflowRouteContract.test.js' },
+                { node: 'gCore/workflow/flowCore/test/workflowServicePipelineContract.test.js' },
+                { node: 'gCore/workflow/flowCore/test/workflowSampleFlowCatalogContract.test.js' },
+                { node: 'gCore/workflow/flowCore/test/workflowActionPerformEngineContract.test.js' },
+                { node: 'gCore/workflow/flowCore/test/workflowEngineCorrectnessContract.test.js' },
+                { node: 'gCore/workflow/flowCore/test/workflowSplitAndRetryContract.test.js' },
+                { node: 'gCore/workflow/flowCore/test/workflowEventContinuationContract.test.js' },
+                { node: 'gCore/workflow/flowSchema/test/workflowSchemaRouterContract.test.js' },
+                { node: 'gFramework/nbpm/test/workflowLifecyclePipelineContract.test.js' }
+            ],
+            'topology-consolidated': [
+                { node: 'startio/envs/startioLocal/test/topology/startioLocalRuntimeTopology.test.js', args: ['--mode=consolidated'] }
+            ],
+            'topology-modular': [
+                { node: 'startio/envs/startioLocal/test/topology/startioLocalRuntimeTopology.test.js', args: ['--mode=modular'] }
+            ]
+        },
         commands: {
+            clean: {
+                description: 'Clean generated Nodics artifacts through governed lifecycle steps.',
+                handler: 'src/service/command/defaultNodicsLifecycleCommandService.js',
+                steps: [
+                    { tool: ['llm:clean'] },
+                    { nodicsMethod: 'cleanAll' }
+                ]
+            },
+            build: {
+                description: 'Build Nodics artifacts and run generated-artifact governance gates.',
+                handler: 'src/service/command/defaultNodicsLifecycleCommandService.js',
+                steps: [
+                    { tool: ['ai:validate'] },
+                    { tool: ['quality:copyright', '--fail'] },
+                    { tool: ['quality:docs'] },
+                    { nodicsMethod: 'buildAll' },
+                    { tool: ['quality:copyright', '--fix'] },
+                    { tool: ['docs:openapi'] },
+                    { tool: ['llm:generate'] },
+                    { tool: ['governance:report'] },
+                    { tool: ['docs:coverage', '--scope=generated', '--fail'] },
+                    { tool: ['quality:copyright', '--fail'] }
+                ]
+            },
+            'test:suite': {
+                description: 'Run a configured Nodics test suite by name from tooling-owned suite configuration.',
+                handler: 'src/service/command/defaultTestSuiteCommandService.js'
+            },
+            'ai:validate': {
+                description: 'Run AI/developer governance validation for Nodics source contracts.',
+                handler: 'src/service/command/defaultNodeScriptCommandService.js',
+                script: 'src/service/quality/defaultAiGovernanceValidationService.js'
+            },
+            'ai:principle-audit': {
+                description: 'Run the Nodics principle audit over governance and command contracts.',
+                handler: 'src/service/command/defaultNodeScriptCommandService.js',
+                script: 'src/service/quality/defaultDesignPrincipleAuditService.js'
+            },
             'docs:coverage': {
                 description: 'Inspect source documentation coverage for the target Nodics project.',
                 handler: 'src/service/command/defaultDocumentationCoverageCommandService.js'

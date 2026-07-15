@@ -24,10 +24,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 26 |
-| Test files | 13 |
+| Source files | 28 |
+| Test files | 14 |
 | Data files | 0 |
-| All module-owned files | 48 |
+| All module-owned files | 51 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -53,7 +53,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 44 |
+| Documented | 47 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -90,6 +90,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/src/service/command/defaultMcpRuntimeContextCommandService.js` | `src` | `documented` | 3/3 | Prints source-backed runtime hierarchy and override-path context for MCP clients. |  |
 | `gFramework/nTooling/src/service/command/defaultMcpValidationCommandService.js` | `src` | `documented` | 3/3 | Runs approved Nodics validation checks for MCP clients and prints structured JSON results. |  |
 | `gFramework/nTooling/src/service/command/defaultNodeScriptCommandService.js` | `src` | `documented` | 1/1 | Executes a trusted Node.js tooling script owned by the effective command-contributing module while preserving the selected project home. |  |
+| `gFramework/nTooling/src/service/command/defaultNodicsLifecycleCommandService.js` | `src` | `documented` | 5/5 | Runs root Nodics lifecycle commands through governed tooling so package.json exposes a small command façade while build and clean gates stay source-controlled. |  |
+| `gFramework/nTooling/src/service/command/defaultTestSuiteCommandService.js` | `src` | `documented` | 7/7 | Runs named Nodics test suites from tooling-owned suite configuration so root package scripts stay small while test composition remains source-controlled and overrideable. |  |
 | `gFramework/nTooling/src/service/context/defaultCleanModuleLlmContextService.js` | `src` | `documented` | 0/0 | Removes generated module context from every discovered project module while preserving human-authored LLM guidance. |  |
 | `gFramework/nTooling/src/service/context/defaultGenerateModuleLlmContextService.js` | `src` | `documented` | 0/0 | Generates deterministic, module-owned source, schema, test, documentation-status, and fingerprint context for every discovered Nodics package. |  |
 | `gFramework/nTooling/src/service/context/defaultModuleLlmContextUtilsService.js` | `src` | `documented` | 0/0 | Shared project-aware discovery, ownership, schema bootstrap, fingerprint, and generated-directory utilities used by Nodics context and metadata commands. |  |
@@ -120,6 +122,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/test/repositoryToolingBoundary.test.js` | `test` | `documented` | 0/0 | Prevents executable tooling from returning to the root scripts folder or depending on temporary docs configuration. |  |
 | `gFramework/nTooling/test/structureComplianceAudit.test.js` | `test` | `documented` | 0/0 | Verifies that the structure compliance audit reports Nodics structure-matrix gaps without mutating project files. |  |
 | `gFramework/nTooling/test/structureGeneratorAlignment.test.js` | `test` | `documented` | 0/0 | Verifies that contract-driven structure generation produces modules that pass the canonical structure compliance audit. |  |
+| `gFramework/nTooling/test/testSuiteCommandContract.test.js` | `test` | `documented` | 0/0 | Verifies package-script normalization through the configurable nTooling test suite command contract. |  |
 | `gFramework/nTooling/test/toolingCommandOverride.test.js` | `test` | `documented` | 0/0 | Verifies numeric command contribution ordering, explicit handler replacement, override traceability, and project-home tooling discovery. |  |
 | `gFramework/nTooling/test/topologyPlanWorkflow.test.js` | `test` | `documented` | 0/0 | Verifies approval-first topology planning and applied topology generation against the structure compliance audit. |  |
 

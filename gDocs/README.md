@@ -1,0 +1,53 @@
+# Nodics Documentation
+
+Welcome to the Nodics documentation.
+
+This documentation is written for two kinds of readers:
+
+- People who are new to Nodics and need step-by-step guidance.
+- Experienced developers who need exact extension points, configuration rules, and verification commands.
+
+Nodics is an enterprise application platform for building modular API-driven applications. It gives you a framework, runtime structure, generated APIs, layered configuration, tenant-aware behavior, scheduled jobs, import/export, messaging, caching, testing, and deployment patterns that can be extended by projects without changing framework source code.
+
+## How To Read This Documentation
+
+Start with the first two sections if you are new. Use the task guides when you already know what you want to build.
+
+1. [What Nodics Is](overview/what-is-nodics.md)
+2. [How To Set Up Nodics](getting-started/how-to-setup-nodics.md)
+3. [How Nodics Is Organized](architecture/how-nodics-is-organized.md)
+4. [How Configuration Works](configuration/how-configuration-works.md)
+5. [How To Create Application Functionality](development/how-to-create-application-functionality.md)
+6. [How To Create APIs](development/how-to-create-apis.md)
+7. [How To Work With Data](data/how-to-work-with-data.md)
+8. [How To Create Scheduled Jobs](jobs/how-to-create-scheduled-jobs.md)
+9. [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md)
+10. [How To Test Nodics Changes](testing/how-to-test-nodics-changes.md)
+11. [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md)
+12. [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md)
+13. [How To Publish Documentation On GitHub](documentation/how-to-publish-documentation-on-github.md)
+14. [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md)
+
+## Documentation Principles
+
+Nodics documentation must be useful before it is clever.
+
+Every guide should answer:
+
+- What problem does this feature solve?
+- When should I use it?
+- Where should I make the change?
+- What files or configuration are involved?
+- What should I avoid?
+- How do I verify that it works?
+- How can a project customize this without changing Nodics framework code?
+
+Avoid internal folder names in page titles unless the folder name is the thing the user must open. Prefer task names such as "How to create a scheduled job" instead of implementation names such as "cronjob module".
+
+## Relationship With Module Documentation
+
+This folder explains Nodics from the user and application-developer point of view.
+
+Module `README.md` files explain the details of one specific capability. For example, this documentation may say how scheduled jobs work in Nodics, while the scheduled-job module README explains the exact schemas, services, routes, and extension contracts owned by that module.
+
+AI-only and implementation-governance rules belong in `AGENTS.md` and `gSetup/llm`, not in public user documentation.

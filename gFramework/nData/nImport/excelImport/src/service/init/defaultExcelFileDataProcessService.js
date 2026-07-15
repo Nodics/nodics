@@ -9,7 +9,7 @@
 
  */
 
-const excelProcess = require('excel-as-json2');
+const ExcelJS = require('exceljs');
 const fs = require('fs');
 const util = require('util');
 
@@ -110,32 +110,76 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (files.length > 0) {
                 let file = files.shift();
-                let convertExcel = excelProcess.processFile;
-                convertExcel(file, null, CONFIG.get('data').excelTypeParserOptions || {}, (error, jsonData) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        //console.log('======================== ');
-                        //console.log(util.inspect(jsonData, showHidden = false, depth = 8, colorize = true));
-                        request.models = jsonData;
-                        if (SERVICE.DefaultImportDiagnosticsService) {
-                            SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsRead', request.models.length);
-                        }
-                        request.outputPath.version = index + '_0';
-                        SERVICE.DefaultPipelineService.start(dataHandler, request, {}).then(success => {
-                            _self.handleFiles(request, response, files, ++index).then(success => {
-                                resolve(true);
-                            }).catch(error => {
-                                reject(error);
-                            });
+                this.convertExcelFile(file, CONFIG.get('data').excelTypeParserOptions || {}).then(jsonData => {
+                    //console.log('======================== ');
+                    //console.log(util.inspect(jsonData, showHidden = false, depth = 8, colorize = true));
+                    request.models = jsonData;
+                    if (SERVICE.DefaultImportDiagnosticsService) {
+                        SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsRead', request.models.length);
+                    }
+                    request.outputPath.version = index + '_0';
+                    SERVICE.DefaultPipelineService.start(dataHandler, request, {}).then(success => {
+                        _self.handleFiles(request, response, files, ++index).then(success => {
+                            resolve(true);
                         }).catch(error => {
                             reject(error);
                         });
-                    }
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
                 });
             } else {
                 resolve(true);
             }
+        });
+    },
+
+    /**
+     * Converts the first configured worksheet of an Excel file into row objects keyed by the header row.
+     *
+     * @param {*} file Excel file path to parse.
+     * @param {*} parserOptions Excel parser options from layered configuration.
+     * @returns {Promise<Array>} Parsed row models.
+     */
+    convertExcelFile: function (file, parserOptions) {
+        return new Promise((resolve, reject) => {
+            let workbook = new ExcelJS.Workbook();
+            workbook.xlsx.readFile(file).then(() => {
+                let sheetIndex = parserOptions && parserOptions.sheet ? Number(parserOptions.sheet) : 1;
+                let worksheet = workbook.worksheets[sheetIndex - 1] || workbook.worksheets[0];
+                if (!worksheet) {
+                    resolve([]);
+                    return;
+                }
+                let headers = [];
+                let records = [];
+                worksheet.eachRow((row, rowNumber) => {
+                    let values = row.values.slice(1);
+                    if (rowNumber === 1) {
+                        headers = values.map(value => value === undefined || value === null ? '' : String(value).trim());
+                    } else {
+                        let record = {};
+                        values.forEach((value, valueIndex) => {
+                            let header = headers[valueIndex];
+                            if (!header) {
+                                return;
+                            }
+                            if ((value === undefined || value === null || value === '') && parserOptions.omitEmptyFields) {
+                                return;
+                            }
+                            record[header] = value && value.text ? value.text : value;
+                        });
+                        if (Object.keys(record).length > 0) {
+                            records.push(record);
+                        }
+                    }
+                });
+                resolve(records);
+            }).catch(error => {
+                reject(error);
+            });
         });
     }
 };

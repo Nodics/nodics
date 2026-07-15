@@ -86,6 +86,21 @@ function readScripts(failures) {
 }
 
 /**
+ * Parses nTooling properties.
+ *
+ * @param {string[]} failures Mutable failure list.
+ * @returns {Object} Tooling configuration.
+ */
+function readToolingProperties(failures) {
+    try {
+        return require(path.join(rootPath, 'gFramework', 'nTooling', 'config', 'properties.js')).tooling || {};
+    } catch (error) {
+        fail(failures, 'nTooling properties must be readable: ' + error.message);
+        return {};
+    }
+}
+
+/**
  * Validates that required command gates remain available.
  *
  * @param {string[]} failures Mutable failure list.
@@ -93,6 +108,7 @@ function readScripts(failures) {
  */
 function auditCommandGates(failures) {
     const scripts = readScripts(failures);
+    const tooling = readToolingProperties(failures);
     [
         'ai:validate',
         'ai:principle-audit',
@@ -110,8 +126,13 @@ function auditCommandGates(failures) {
             fail(failures, 'Missing principle audit command gate: ' + scriptName);
         }
     });
-    if (scripts.build && !scripts.build.includes('governance:report')) {
-        fail(failures, 'build must keep governance:report in the generated-artifact gate');
+    if (scripts.build && !scripts.build.includes('nodics-tool.js build')) {
+        fail(failures, 'build must delegate to the governed nTooling lifecycle command');
+    }
+    const buildSteps = (((tooling.commands || {}).build || {}).steps || []);
+    const includesGovernanceReport = buildSteps.some(step => (step.tool || []).includes('governance:report'));
+    if (!includesGovernanceReport) {
+        fail(failures, 'nTooling build lifecycle must keep governance:report in the generated-artifact gate');
     }
 }
 

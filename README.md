@@ -1,21 +1,103 @@
-Being an extremely interactive JS based enterprise API management framework, Nodics provides you with highly customizable modular architecture design. Based on the latest technologies, it aims at exposing micro services which can be used as REST APIs to provide best in industry experience. The availability of the services within modules makes the job easier and implementation simpler. Flexibility of the platform provides you with extensible modules, where one module can be easily extended by other to provide best in class experience, Exposure of data models and REST web services, makes reach to the data bases simpler.
+# Nodics
 
-## gSetup
+Nodics is an enterprise application platform for building modular, API-driven applications.
 
-`gSetup` is the Nodics setup and onboarding package. It follows the standard Nodics module folder shape with `package.json`, `nodics.js`, and `readme.md`, but it is not part of Nodics runtime startup and must not be included in active server, node, or module startup lists.
+It helps teams create applications from clear capabilities such as APIs, services, data models, configuration, scheduled jobs, events, imports, exports, permissions, tenants, tests, and deployment topology.
 
-The `gSetup/package.json` file marks it as non-runtime with `runtimeModule: false`, so the module discovery process skips it while developers still see a familiar Nodics folder structure.
+## Why Nodics
 
-Use `gSetup` for durable setup instructions, AI/LLM onboarding context, prompts, decision memory, and project working rules. It should not contain generated artifacts.
+Enterprise applications often become difficult to change because business behavior, configuration, data access, security, and generated code are spread across unrelated files.
 
-When starting a new Nodics project or asking any hosted model, local model, coding agent, or IDE assistant to work on Nodics, bootstrap it with:
+Nodics gives each capability a clear owner and a clear extension path.
+
+The main rule is:
 
 ```text
-Read gSetup/llm/README.md first, then follow the linked Nodics principles, modular architecture, schema/generation rules, testing playbook, and feature process before changing code.
+Capabilities are stable. Implementations can change.
 ```
 
-If an LLM automatically scans the repository, `gSetup/llm/README.md` should be treated as the canonical instruction entry point for Nodics development.
+That means a project can customize behavior through project modules, environment configuration, server configuration, node configuration, tenant context, runtime configuration, data, or provider modules without changing released framework code for every customer need.
 
-For more detail, visit http://www.nodics.com
+## What You Can Build
 
-For complete product documentation, visit out WIKI http://nodics.com/wiki-home/nodics/
+With Nodics you can build:
+
+- REST APIs and generated API contracts.
+- Business services and application modules.
+- Tenant-aware applications.
+- Runtime configuration with audit and rollback.
+- Scheduled jobs.
+- Data import and export flows.
+- Event and messaging integrations.
+- Cache-backed services.
+- Database provider integrations.
+- Generated tests, OpenAPI output, and governance reports.
+
+## Start Here
+
+Read the public documentation:
+
+- [Nodics Documentation](gDocs/README.md)
+- [What Nodics Is](gDocs/overview/what-is-nodics.md)
+- [How To Set Up Nodics](gDocs/getting-started/how-to-setup-nodics.md)
+- [How Nodics Is Organized](gDocs/architecture/how-nodics-is-organized.md)
+- [How Configuration Works](gDocs/configuration/how-configuration-works.md)
+
+## Common Commands
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Build generated artifacts and documentation outputs:
+
+```bash
+npm run build
+```
+
+Start Nodics:
+
+```bash
+npm run start
+```
+
+Start with debugger support:
+
+```bash
+npm run start:debug
+```
+
+Run the main test gate:
+
+```bash
+npm run test:basic
+```
+
+Run the full test gate:
+
+```bash
+npm run test:full
+```
+
+## Documentation Map
+
+- Public user and developer guides: [gDocs](gDocs/README.md)
+- Module-specific guides: each module `README.md`
+- AI and implementation rules: `AGENTS.md` and `gSetup/llm`
+- Generated API documentation: generated during build
+- Generated AI context: generated with `npm run llm:generate`
+
+## For Developers
+
+When adding or changing functionality:
+
+1. Find the capability that owns the behavior.
+2. Make the change in the owning module or project layer.
+3. Keep generated files generated from source definitions.
+4. Add or update tests.
+5. Update public and module documentation when behavior changes.
+
+Use [How To Create Application Functionality](gDocs/development/how-to-create-application-functionality.md) for the recommended development flow.
+

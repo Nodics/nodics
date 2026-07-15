@@ -50,6 +50,7 @@ function stampKey(tenant, principalId) { return 'securityStamp:' + tenant + ':' 
 
 async function run() {
     const jwtProvider = require('../../src/service/authentication/defaultAuthenticationProviderService');
+    const authSecurity = require('../../src/service/security/defaultAuthSecurityService');
     const stampService = require('../../src/service/identity/defaultPrincipalSecurityStampService');
     const serviceTokenService = require('../../src/service/identity/defaultServiceTokenService');
     const authorization = require('../../../nService/src/service/authorization/defaultAuthorizationProviderService');
@@ -65,6 +66,7 @@ async function run() {
             findToken: (moduleName, key) => stamps.has(key) ? Promise.resolve(Object.assign({}, stamps.get(key))) : Promise.reject(new NodicsError('ERR_CACHE_00001')),
             isTokenRevoked: () => Promise.resolve(false)
         },
+        DefaultAuthSecurityService: authSecurity,
         DefaultPrincipalSecurityStampService: stampService,
         DefaultAPIKeyCredentialService: credentialService,
         DefaultIdentityGovernanceService: { getSystemAuthData: () => ({ isSystem: true }) }

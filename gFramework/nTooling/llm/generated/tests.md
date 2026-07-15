@@ -15,6 +15,7 @@
 - `gFramework/nTooling/test/repositoryToolingBoundary.test.js`
 - `gFramework/nTooling/test/structureComplianceAudit.test.js`
 - `gFramework/nTooling/test/structureGeneratorAlignment.test.js`
+- `gFramework/nTooling/test/testSuiteCommandContract.test.js`
 - `gFramework/nTooling/test/toolingCommandOverride.test.js`
 - `gFramework/nTooling/test/topologyPlanWorkflow.test.js`
 
