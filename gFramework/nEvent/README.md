@@ -24,3 +24,67 @@ must preserve tenant/request context, traceability, and sanitized diagnostics.
 
 When changing event behavior, test default listener execution and later-module
 listener overrides.
+
+## Capability
+
+`nEvent` provides:
+
+- event controller and facade boundaries;
+- `DefaultEventService` for listener loading, registration, update, removal, publish, and handle behavior;
+- module-local event listener definitions through `src/event/listeners.js`;
+- optional persisted listener merge when generated listener model support is available;
+- common listener registration across active modules;
+- module-specific listener registration;
+- `EventService` and `EventError` library primitives;
+- event listener change handling.
+
+Event listeners are source-owned contracts. Later modules can add, disable, or override listeners through active module hierarchy and persisted runtime governance where available.
+
+## Runtime Flow
+
+1. Startup loads listener definitions from active modules.
+2. Persisted listener definitions are merged when listener model support is available.
+3. Common listeners are registered against active modules.
+4. Module-specific listeners are registered against their owning module.
+5. `publish` or `handleEvent` receives an event with tenant and context.
+6. Registered listeners execute through module event services.
+7. Listener update/removal events refresh runtime listener state.
+
+Events triggered by EMS messages must preserve tenant context, source, target, node id, header, event type, and sanitized diagnostics.
+
+## Listener Guidance
+
+A listener definition should document:
+
+- event name;
+- owning module;
+- handler service and method;
+- active flag;
+- node restriction when applicable;
+- tenant expectation;
+- source/target expectation;
+- retry or failure behavior;
+- side effects and tests.
+
+Do not put broker-specific messaging behavior here. EMS modules own broker integration; `nEvent` owns in-platform event listener execution.
+
+## Tests
+
+Run:
+
+```bash
+npm run quality:docs
+npm run docs:coverage:source -- --limit=20
+```
+
+When changing event behavior, add focused tests for listener registration, listener override, tenant/context propagation, local handling, remote publishing, and failure diagnostics.
+
+## What To Avoid
+
+Avoid:
+
+- hardcoding target module behavior in event service code;
+- dropping tenant or trace context from event payloads;
+- mixing broker client logic into event listeners;
+- registering listeners outside `src/event/listeners.js` or governed persisted listener models;
+- returning raw internal errors in event diagnostics.

@@ -44,3 +44,76 @@ function. The nTooling service merge keeps other default methods, such as
 `getActionCatalog`, from the framework service. Replacing the whole command
 handler is still possible, but it requires the normal explicit
 `$override.mode: 'replace'` governance.
+
+## Capability
+
+`nTooling` provides:
+
+- the `nodics-tool.js` command entrypoint;
+- command discovery from layered `tooling.commands` properties;
+- explicit command override governance;
+- clean/build/lifecycle command wrappers;
+- test-suite command orchestration;
+- documentation coverage and documentation gate checks;
+- source structure compliance audits;
+- copyright header governance;
+- AI governance validation;
+- design principle audits;
+- module metadata normalization;
+- module LLM context generation and validation;
+- topology planning and structure generation support;
+- MCP read-only, validation, runtime-context, and guarded mutation-plan command surfaces.
+
+Tooling is non-runtime. It can inspect, generate, validate, and report, but application startup must not depend on the tooling module being loaded as a runtime capability.
+
+## Command Contract
+
+Commands belong in `config/properties.js` under `tooling.commands`. A command definition should identify:
+
+- command name;
+- service handler;
+- description;
+- arguments/options;
+- whether it can write files;
+- validation behavior;
+- expected output shape;
+- override policy.
+
+Later modules may add commands. Replacing an existing command handler requires explicit `$override.mode: 'replace'` so accidental shadowing does not silently change developer workflows.
+
+## Extension Path
+
+Projects extend tooling by:
+
+- adding project tooling modules;
+- contributing commands through layered properties;
+- adding services under `src/service`;
+- overriding specific service functions through the Nodics service merge model;
+- adding command contract tests;
+- documenting the workflow in README and LLM guidance.
+
+Keep project-specific automation out of framework source unless it is a reusable Nodics platform capability.
+
+## Tests
+
+Run:
+
+```bash
+npm run llm:validate
+npm run quality:docs
+npm run structure:audit -- --fail
+node gFramework/nTooling/test/toolingCommandOverride.test.js
+node gFramework/nTooling/test/moduleStructure.test.js
+node gFramework/nTooling/test/mcpReadOnlyGovernanceContract.test.js
+```
+
+## What To Avoid
+
+Avoid:
+
+- making runtime startup depend on development tooling;
+- placing command configuration outside layered `properties.js`;
+- hardcoding repository-specific paths when project home should be resolved;
+- creating mutation tools that write by default without explicit approval;
+- letting MCP become a hidden source of architecture or runtime configuration;
+- bypassing governance tests after changing command behavior.

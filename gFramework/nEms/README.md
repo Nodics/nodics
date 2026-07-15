@@ -7,6 +7,16 @@ examples for providers such as Tibco, ActiveMQ, and Kafka. Implementations must
 keep provider-specific behavior behind adapter modules and layered
 configuration.
 
+## Module Family
+
+The EMS family is split by responsibility:
+
+- `emsClient` owns provider-neutral publish, consumer registration, publisher registration, close operations, message processing, failed-message persistence, tenant resolution, route contracts, and message-to-event dispatch.
+- `kafka` owns Kafka-specific client, producer, topic, consumer, publish, and failed-consume handling behavior.
+- `activemq` owns ActiveMQ/STOMP-specific connection, producer, queue, consumer, publish, and failed-consume handling behavior.
+
+Business modules should publish and consume through the EMS capability contract. Provider clients must stay inside provider modules or later active project modules.
+
 ## Ownership
 
 `nEms` coordinates:
@@ -16,6 +26,8 @@ configuration.
 - producer and consumer configuration;
 - message routing and runtime diagnostics;
 - extension guidance for adding providers.
+- failed-message capture through `emsFailedMessages`;
+- consumed-message translation and event dispatch into `nEvent`.
 
 ## Producer And Consumer Flow
 
@@ -43,6 +55,16 @@ A consumer defines:
 Do not let provider-specific message clients leak into business services.
 Business services publish or consume through the EMS capability
 contract.
+
+## Runtime Flow
+
+1. Layered `emsClient` configuration defines clients, publishers, consumers, handlers, queue/topic options, node ownership, and tenant policy.
+2. `DefaultEmsClientConfigurationService` configures enabled clients, creates provider producers, and registers enabled publishers/consumers only for the active node.
+3. `DefaultEmsClientService.publish` accepts a single payload or a payload array, resolves the configured publisher by queue name, and delegates to the provider handler.
+4. Provider adapters publish to the broker and return normalized success/error envelopes.
+5. Consumers pass received messages into `processConsumedMessagePipeline`.
+6. `DefaultMessageProcessService` validates queue/message shape, applies the configured message handler pipeline, resolves tenant, and publishes or handles an internal Nodics event.
+7. Failed consumed messages can be logged into `emsFailedMessages` when enabled and tenant context is available.
 
 ## Extension Contract
 
@@ -77,3 +99,27 @@ The implementation path is:
 
 Broker URLs, credentials, topic names, queue names, subscriptions, and routing
 topology must come from layered configuration or governed runtime layers.
+
+## Tests
+
+Run focused EMS coverage with:
+
+```bash
+node gFramework/nEms/emsClient/test/emsClientServiceContract.test.js
+node gFramework/nEms/emsClient/test/emsMessageProcessContract.test.js
+node gFramework/nEms/emsClient/test/messageTenantResolution.test.js
+node gFramework/nEms/emsClient/test/activeEmsPublisher.test.js
+node gFramework/nEms/kafka/test/kafkaPublishCapabilityBehavior.test.js
+npm run quality:docs
+```
+
+## What To Avoid
+
+Avoid:
+
+- calling Kafka, ActiveMQ, or another broker directly from business services;
+- hardcoding broker URLs, credentials, topics, queues, or tenant mappings in source code;
+- registering consumers without tenant resolution and failure handling;
+- publishing consumed messages into events without validation and handler translation;
+- exposing raw broker errors or credentials in diagnostics;
+- treating provider smoke tests as release coverage for a production broker.

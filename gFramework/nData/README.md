@@ -71,3 +71,52 @@ platform governance:
 - record enough run history to explain what happened;
 - expose failure counts and reason codes;
 - support rollback or recovery where the business process requires it.
+
+## Capability Family
+
+`nData` coordinates:
+
+- `dataCore` for shared processors, validators, interceptors, data handlers, finalizers, and writers;
+- `nImport/import` for governed import orchestration, diagnostics, run history, tenant precedence, local/remote staging, and access-policy enforcement;
+- import format modules such as CSV, Excel, JSON, and trusted JavaScript definitions;
+- `nExport/export` for shared export request handling, access-policy application, and fail-closed default export behavior;
+- export format modules such as CSV, Excel, JSON, and trusted JavaScript export processing.
+
+Data movement should always pass through governed pipelines. Do not create one-off scripts that write directly to models just because the source is simple.
+
+## DaaS Pattern
+
+Data as a Service is a platform pattern, not a single module. Nodics can act as a governed data lake or information center by combining:
+
+- import from files, APIs, scheduled drops, or governed remote adapters;
+- schemas and generated services for normalized persistence;
+- tenant isolation for company/application separation;
+- processors, validators, interceptors, and pipelines for transformation;
+- catalog structures for product/content/domain organization;
+- search indexes for retrieval;
+- export processors for target-system contracts;
+- diagnostics, audit, retries, and rollback evidence.
+
+For example, a product catalog information center can import supplier data, normalize it into tenant-specific catalogs, validate and enrich records, index them for business lookup, and export feeds matched to each downstream system's contract.
+
+## Extension Path
+
+Projects extend data movement by:
+
+- adding import/export headers and data under the owning module;
+- adding format modules or provider modules;
+- contributing processors, validators, interceptors, and pipelines;
+- configuring governed remote sources or destinations;
+- adding schema access policy for import/export visibility;
+- adding tests for tenant scope, diagnostics, failure handling, duplicate protection, retry, rollback, and target contracts.
+
+## What To Avoid
+
+Avoid:
+
+- bypassing import/export services for direct database writes;
+- using sample data as production dependency;
+- allowing arbitrary request-supplied URLs, credentials, executable code, or filesystem paths;
+- mixing import format parsing into generic data core;
+- exporting data before schema/property access policies are applied;
+- leaving data movement without run history and diagnostics.
