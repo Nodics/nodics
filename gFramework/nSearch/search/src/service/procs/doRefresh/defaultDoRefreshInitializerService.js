@@ -109,7 +109,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.preDoRefresh), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00007'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -140,7 +140,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.preDoRefresh), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00007'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00007'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -200,7 +200,7 @@ module.exports = {
             SERVICE.DefaultValidatorService.executeValidators([].concat(validators.postDoRefresh), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00008'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00008'));
             });
         } else {
             process.nextSuccess(request, response);
@@ -231,7 +231,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postDoRefresh), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00008'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00008'));
             });
         } else {
             process.nextSuccess(request, response);

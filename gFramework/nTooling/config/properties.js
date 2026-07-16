@@ -237,6 +237,10 @@ module.exports = {
                 { suite: 'runtime-overrides' },
                 { suite: 'schema-access-policy' },
                 { node: 'gFramework/nDatabase/database/test/schemaReadAccessPolicyService.test.js' },
+                { node: 'gFramework/nDatabase/database/test/modelsGetInitializerPipelineContract.test.js' },
+                { node: 'gFramework/nDatabase/database/test/modelSaveInitializerPipelineContract.test.js' },
+                { node: 'gFramework/nDatabase/database/test/modelsSaveInitializerPipelineContract.test.js' },
+                { node: 'gFramework/nDatabase/database/test/modelsRemoveUpdateInitializerPipelineContract.test.js' },
                 { node: 'gFramework/nDatabase/database/test/schemaWriteAccessPolicyService.test.js' },
                 { node: 'gFramework/nDatabase/mongodb/vMongodb/test/versionedModelContract.test.js' },
                 { node: 'gFramework/nConfig/test/artifactOverrideTraceability.test.js' }
@@ -275,6 +279,7 @@ module.exports = {
                 { node: 'gFramework/nRouter/test/authHeaderNormalization.test.js' },
                 { node: 'gFramework/nRouter/test/routeActionAuthorization.test.js' },
                 { node: 'gFramework/nService/test/moduleRequestHeaderNormalization.test.js' },
+                { node: 'gFramework/nRouter/test/requestPipelineResponseContract.test.js' },
                 { node: 'gFramework/nRouter/test/jsonResponseStatusResolution.test.js' }
             ],
             'auth-p2': [
@@ -294,6 +299,7 @@ module.exports = {
             generated: [
                 { node: 'gFramework/nTest/test/schemaTestGeneratorEffectiveSchema.test.js' },
                 { node: 'gFramework/nTest/test/schemaTestGeneratorCrudFixtureInheritance.test.js' },
+                { node: 'gFramework/nTest/test/schemaTestGeneratorEffectiveOverrideRemoval.test.js' },
                 { tool: ['test:live-tenant-guard'] },
                 { tool: ['test:suite-reporter'] },
                 { tool: ['test:generated'] }
@@ -362,6 +368,7 @@ module.exports = {
                 { node: 'gFramework/nSearch/search/test/searchRouteContract.test.js' },
                 { node: 'gFramework/nSearch/search/test/searchControllerRequestMapping.test.js' },
                 { node: 'gFramework/nSearch/search/test/searchServicePipelineContract.test.js' },
+                { node: 'gFramework/nSearch/search/test/searchPipelineInitializerContract.test.js' },
                 { node: 'gFramework/nSearch/search/test/indexerServiceContract.test.js' },
                 { node: 'gFramework/nSearch/search/test/searchCachePolicyContract.test.js' },
                 { node: 'gFramework/nSearch/elastic/test/elasticSearchModelOperationContract.test.js' },

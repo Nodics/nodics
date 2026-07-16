@@ -296,7 +296,7 @@ module.exports = {
                     });
                 }
             } catch (error) {
-                reject(new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00016'));
+                reject(new CLASSES.SearchError(error, null, 'ERR_SRCH_00016'));
             }
         });
     },

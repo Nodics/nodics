@@ -7,6 +7,7 @@
 - `gFramework/nRouter/test/authHeaderNormalization.test.js`
 - `gFramework/nRouter/test/jsonResponseStatusResolution.test.js`
 - `gFramework/nRouter/test/openapiContractGeneration.test.js`
+- `gFramework/nRouter/test/requestPipelineResponseContract.test.js`
 - `gFramework/nRouter/test/routeActionAuthorization.test.js`
 - `gFramework/nRouter/test/routerContractTestUtils.js`
 

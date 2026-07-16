@@ -9,6 +9,7 @@
 - `gFramework/nSearch/search/test/indexerServiceContract.test.js`
 - `gFramework/nSearch/search/test/searchCachePolicyContract.test.js`
 - `gFramework/nSearch/search/test/searchControllerRequestMapping.test.js`
+- `gFramework/nSearch/search/test/searchPipelineInitializerContract.test.js`
 - `gFramework/nSearch/search/test/searchRouteContract.test.js`
 - `gFramework/nSearch/search/test/searchServicePipelineContract.test.js`
 

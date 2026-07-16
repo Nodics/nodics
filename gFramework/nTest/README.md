@@ -85,9 +85,32 @@ tests under the environment/server/node module that owns that topology.
 Generated tests are derived from source definitions. They can cover schema
 contracts, CRUD scenarios, API contracts, and API scenarios.
 
+Generated tests are layer-aware. The generator must create fixtures and
+assertions from the effective active contract for the module being validated:
+the merged schema, active router definitions, route security, access policies,
+and runtime/test configuration visible through the selected module hierarchy.
+
+For example, if the default framework cart schema has `x`, `y`, and `z`, but a
+project removes `z` through a later-layer schema override, the project should
+reuse Nodics generated-test logic and regenerate project-owned tests from the
+effective cart schema containing `x` and `y`. The framework default cart tests
+remain valid for the default framework contract, while the project generated
+tests validate the customized contract.
+
 If a generated test is wrong, fix the schema, route, generator, or test source
 definition. Do not hand-edit generated tests as the long-term source of truth.
 
 Generated tests should make framework behavior visible for both humans and AI
 tools: what schema exists, which APIs are exposed, which routes are secured,
 and which scenarios are expected to work.
+
+When a generated test fails, first identify which contract failed:
+
+- platform invariant;
+- default framework module contract;
+- effective project/customer contract;
+- optional compatibility contract.
+
+Do not copy an entire framework test into a project just to remove one field.
+Override or regenerate the contract-specific fixture/assertion source in the
+project layer so the common Nodics test engine remains reusable.

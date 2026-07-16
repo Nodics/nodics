@@ -33,9 +33,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 43 |
-| Test files | 20 |
+| Test files | 21 |
 | Data files | 0 |
-| All module-owned files | 58 |
+| All module-owned files | 59 |
 | Local schema definitions | 4 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 48 |
+| Documented | 49 |
 | Partially documented | 2 |
 | Undocumented | 4 |
 | Inventory only | 4 |
@@ -130,7 +130,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSearch/search/src/service/procs/doremove/defaultDoRemoveModelsByQueryInitializerService.js` | `src` | `documented` | 13/13 | Implements nSearch default do remove models by query initializer service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/procs/doremove/defaultDoRemoveModelsInitializerService.js` | `src` | `documented` | 13/13 | Implements nSearch default do remove models initializer service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/procs/dosave/defaultDoSaveModelInitializerService.js` | `src` | `documented` | 18/18 | Implements nSearch default do save model initializer service business behavior and extension logic. |  |
-| `gFramework/nSearch/search/src/service/procs/dosave/defaultDoSaveModelsInitializerService.js` | `src` | `documented` | 8/8 | Implements nSearch default do save models initializer service business behavior and extension logic. |  |
+| `gFramework/nSearch/search/src/service/procs/dosave/defaultDoSaveModelsInitializerService.js` | `src` | `documented` | 11/11 | Implements nSearch default do save models initializer service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/procs/indexer/defaultIndexerDataHandlerService.js` | `src` | `documented` | 9/9 | Implements nSearch default indexer data handler service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/procs/indexer/defaultIndexerInitializerService.js` | `src` | `documented` | 8/8 | Implements nSearch default indexer initializer service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/procs/indexer/external/defaultExternalIndexerInitializerService.js` | `src` | `documented` | 11/11 | Implements nSearch default external indexer initializer service business behavior and extension logic. |  |
@@ -146,6 +146,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSearch/search/test/indexerServiceContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nSearch/search/test/searchCachePolicyContract.test.js` | `test` | `documented` | 0/0 | Verifies search query cache writes use the centralized cacheability policy and preserve configured doSearch caching. |  |
 | `gFramework/nSearch/search/test/searchControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/test/searchPipelineInitializerContract.test.js` | `test` | `documented` | 0/0 | Verifies core nSearch initializer pipelines keep cache hits immutable, serialize partial save failures safely, and invalidate cache after successful single-model search saves. |  |
 | `gFramework/nSearch/search/test/searchRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nSearch/search/test/searchServicePipelineContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 

@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 /**
  * @module gFramework/nSearch/search/src/service/procs/doget/defaultDoGetModelsInitializerService
  * @description Implements nSearch default do get models initializer service business behavior and extension logic.
@@ -117,10 +119,11 @@ module.exports = {
                 key: request.cacheKeyHash
             }).then(value => {
                 this.LOG.debug('Fulfilled from model cache');
+                let cachedResponse = _.cloneDeep(value);
                 process.stop(request, response, {
                     code: 'SUC_SRCH_00000',
                     cache: 'item hit',
-                    result: value.result
+                    result: cachedResponse.result
                 });
             }).catch(error => {
                 if (error.code === 'ERR_CACHE_00001') {

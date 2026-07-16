@@ -70,13 +70,17 @@ module.exports = {
         } else {
             let models = [];
             if (request.models) {
-                if (UTILS.isObject(request.models)) {
+                if (UTILS.isObject(request.models) && !Array.isArray(request.models)) {
                     models.push(request.models);
                 } else {
                     models = [].concat(request.models);
                 }
             } else {
                 models.push(request.model);
+            }
+            if (models.length === 0) {
+                process.error(request, response, new CLASSES.SearchError('ERR_SRCH_00003', 'Models to be saved can not be null in request'));
+                return;
             }
             request.models = models;
             process.nextSuccess(request, response);
@@ -133,9 +137,9 @@ module.exports = {
     processModels: function (request, response, process) {
         this.LOG.debug('Processing models');
         if (request.query && !UTILS.isBlank(request.query)) {
-            request.originalQuery = _.merge({}, request.query || {});
+            request.originalQuery = _.cloneDeep(request.query || {});
         }
-        this.handleModelsDoSave(request, response, request.models).then(success => {
+        this.handleModelsDoSave(request, response, request.models.slice()).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -159,38 +163,76 @@ module.exports = {
      */
 
     handleModelsDoSave: function (request, response, models) {
-        return new Promise((resolve, reject) => {
-            if (models && models.length > 0) {
-                request.model = models.shift();
-                try {
-                    SERVICE.DefaultPipelineService.start('doSaveModelInitializerPipeline', request, {}).then(result => {
-                        if (!response.success) response.success = [];
-                        if (success.result instanceof Array) {
-                            response.success = response.success.concat(success.result);
-                        } else {
-                            response.success.push(success.result);
-                        }
-                        this.handleModelsDoSave(request, response, models).then(success => {
-                            resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }).catch(error => {
-                        if (!response.failed) response.failed = [];
-                        response.failed.push(error);
-                        this.handleModelsDoSave(request, response, models).then(success => {
-                            resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    });
-                } catch (error) {
-                    reject(error);
-                }
-            } else {
-                resolve(true);
-            }
+        let modelList = Array.isArray(models) ? models.slice() : [];
+        let savePromise = Promise.resolve(true);
+        modelList.forEach(model => {
+            savePromise = savePromise.then(() => this.doSaveSingleModel(request, response, model));
         });
+        return savePromise;
+    },
+
+    /**
+     * Saves one search model through the single-model search save pipeline.
+     *
+     * @param {Object} request Search bulk save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} model Search model to save.
+     * @returns {Promise<boolean>} Resolves after this model is recorded.
+     */
+    doSaveSingleModel: function (request, response, model) {
+        request.model = model;
+        let saveRequest = Object.assign({}, request, {
+            query: _.cloneDeep(request.originalQuery || {}),
+            model: model
+        });
+        try {
+            return SERVICE.DefaultPipelineService.start('doSaveModelInitializerPipeline', saveRequest, {}).then(success => {
+                if (!response.success) response.success = [];
+                if (success.result instanceof Array) {
+                    response.success = response.success.concat(success.result);
+                } else {
+                    response.success.push(success.result);
+                }
+                return true;
+            }).catch(error => {
+                this.addFailure(response, error, model);
+                return true;
+            });
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    },
+
+    /**
+     * Records one failed search model save with model metadata.
+     *
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Error|Object|string} error Save failure.
+     * @param {Object} model Model associated with the failure.
+     * @returns {undefined}
+     */
+    addFailure: function (response, error, model) {
+        if (!response.failed) response.failed = [];
+        let failure = error && typeof error === 'object' ? error : new CLASSES.SearchError(error, null, 'ERR_SRCH_00000');
+        failure.metadata = _.cloneDeep(model);
+        response.failed.push(failure);
+    },
+
+    /**
+     * Converts a failed search save into response-safe JSON.
+     *
+     * @param {Error|Object|string} error Search save failure.
+     * @returns {Object} Serialized failure.
+     */
+    serializeFailure: function (error) {
+        if (error && typeof error.toJson === 'function') {
+            return error.toJson();
+        }
+        return {
+            code: error && error.code ? error.code : 'ERR_SRCH_00000',
+            message: error && error.message ? error.message : String(error),
+            metadata: error && error.metadata ? error.metadata : undefined
+        };
     },
 
     /**
@@ -252,7 +294,7 @@ module.exports = {
         if (response.failed && response.failed.length > 0) {
             output.errors = [];
             response.failed.forEach(error => {
-                output.errors.push(error.toJson());
+                output.errors.push(this.serializeFailure(error));
             });
         }
         process.resolve(output);

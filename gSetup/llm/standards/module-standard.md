@@ -139,6 +139,14 @@ Capabilities require focused behavior tests. Container, topology, setup, and
 template modules may rely on composition or topology tests, but their untested
 status must remain visible in generated context and governance reports.
 
+Tests must be owned by the layer whose behavior they validate. Framework
+capability tests prove the default framework contract. Project, environment,
+server, node, tenant, and customer tests prove the effective active contract
+after overrides. When a later layer changes a schema, route, permission, data
+contract, or validation rule, do not hand-edit generated framework tests or
+copy entire suites. Reuse Nodics test engines and regenerate or contribute
+layer-owned fixtures and assertions from the effective active definitions.
+
 ## Platform Contract
 
 Framework modules provide defaults. Later project, environment, server, and node

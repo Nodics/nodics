@@ -129,6 +129,20 @@ module.exports = {
         process.nextSuccess(request, response);
     },
     /**
+     * Builds the schema lookup lineage without mutating schema metadata.
+     *
+     * @param {Object} request Nodics get request.
+     * @returns {Array<string>} Parent schemas followed by the active schema name.
+     */
+    getSchemaLineage: function (request) {
+        let parentSchemas = request.schemaModel.rawSchema.parents || [];
+        let baseSchemas = Array.isArray(parentSchemas) ? parentSchemas.slice() : [];
+        if (!baseSchemas.includes(request.schemaModel.schemaName)) {
+            baseSchemas.push(request.schemaModel.schemaName);
+        }
+        return baseSchemas;
+    },
+    /**
      * Attempts to fulfill a get request from schema item cache.
      *
      * @param {Object} request Nodics get request.
@@ -150,8 +164,9 @@ module.exports = {
                 key: request.cacheKeyHash
             }).then(value => {
                 this.LOG.debug('Fulfilled from model cache');
-                value.cache = 'item hit';
-                response.success = value;
+                let cachedResponse = _.cloneDeep(value);
+                cachedResponse.cache = 'item hit';
+                response.success = cachedResponse;
                 let cachePolicyProcess = {};
                 cachePolicyProcess.nextSuccess = () => process.stop(request, response, response.success);
                 cachePolicyProcess.error = (req, res, error) => process.error(req, res, error);
@@ -181,12 +196,7 @@ module.exports = {
     applyPreInterceptors: function (request, response, process) {
         this.LOG.debug('Applying pre get model interceptors');
         let interceptors = {};
-        let baseSchemas = request.schemaModel.rawSchema.parents;
-        if (baseSchemas && baseSchemas.length > 0) {
-            baseSchemas.push(request.schemaModel.schemaName);
-        } else {
-            baseSchemas = [request.schemaModel.schemaName];
-        }
+        let baseSchemas = this.getSchemaLineage(request);
         baseSchemas.forEach(schemaName => {
             interceptors = _.merge(interceptors, SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName));
         });
@@ -211,12 +221,7 @@ module.exports = {
     applyPreValidators: function (request, response, process) {
         this.LOG.debug('Applying pre model validator');
         let validators = {};
-        let baseSchemas = request.schemaModel.rawSchema.parents;
-        if (baseSchemas && baseSchemas.length > 0) {
-            baseSchemas.push(request.schemaModel.schemaName);
-        } else {
-            baseSchemas = [request.schemaModel.schemaName];
-        }
+        let baseSchemas = this.getSchemaLineage(request);
         baseSchemas.forEach(schemaName => {
             validators = _.merge(validators, SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName));
         });
@@ -310,12 +315,7 @@ module.exports = {
     applyPostValidators: function (request, response, process) {
         this.LOG.debug('Applying post model validator');
         let validators = {};
-        let baseSchemas = request.schemaModel.rawSchema.parents;
-        if (baseSchemas && baseSchemas.length > 0) {
-            baseSchemas.push(request.schemaModel.schemaName);
-        } else {
-            baseSchemas = [request.schemaModel.schemaName];
-        }
+        let baseSchemas = this.getSchemaLineage(request);
         baseSchemas.forEach(schemaName => {
             validators = _.merge(validators, SERVICE.DefaultDatabaseConfigurationService.getSchemaValidators(request.tenant, schemaName));
         });
@@ -340,12 +340,7 @@ module.exports = {
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post model interceptors');
         let interceptors = {};
-        let baseSchemas = request.schemaModel.rawSchema.parents;
-        if (baseSchemas && baseSchemas.length > 0) {
-            baseSchemas.push(request.schemaModel.schemaName);
-        } else {
-            baseSchemas = [request.schemaModel.schemaName];
-        }
+        let baseSchemas = this.getSchemaLineage(request);
         baseSchemas.forEach(schemaName => {
             interceptors = _.merge(interceptors, SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName));
         });

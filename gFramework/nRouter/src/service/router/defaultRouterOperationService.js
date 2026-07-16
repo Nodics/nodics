@@ -61,29 +61,48 @@ module.exports = {
      * @param {Object} res Express response.
      * @param {Object} routerDef Route definition captured during Express binding.
      * @returns {void}
-     * @sideEffects Delegates active routes to `DefaultRequestHandlerService`; writes JSON error for inactive or failed routes.
+     * @sideEffects Delegates active routes to `DefaultRequestHandlerService`; writes standard JSON error for inactive or failed routes.
      */
     bindOperation: function (req, res, routerDef) {
+        let requestedRouter = routerDef;
         try {
             routerDef = NODICS.getRouter(routerDef.routerName, routerDef.moduleName);
             if (routerDef.active) {
                 SERVICE.DefaultRequestHandlerService.startRequestHandler(req, res, routerDef);
             } else {
-                res.json({
-                    success: false,
+                this.sendRouterError(req, res, routerDef, {
                     code: 'ERR_SYS_00000',
-                    message: 'Process failed with errors',
-                    error: 'This API is no more active currently'
+                    message: 'This API is no more active currently',
+                    metadata: {
+                        routerName: routerDef.routerName,
+                        moduleName: routerDef.moduleName
+                    }
                 });
             }
         } catch (error) {
             SERVICE.DefaultRouterService.LOG.error(error);
-            res.json({
-                success: false,
-                code: 'ERR_SYS_00000',
-                message: 'Process failed with errors',
-                error: error
-            });
+            this.sendRouterError(req, res, requestedRouter, error);
+        }
+    },
+
+    /**
+     * Sends router binding failures through the configured response handler.
+     *
+     * @param {Object} req Express request.
+     * @param {Object} res Express response.
+     * @param {Object} routerDef Route definition used to resolve response handler.
+     * @param {Error|Object|string} error Router binding failure.
+     * @returns {void}
+     * @sideEffects Writes HTTP status and JSON body through the configured response handler.
+     */
+    sendRouterError: function (req, res, routerDef, error) {
+        let responseHandlers = CONFIG.get('responseHandler') || {};
+        let responseHandler = responseHandlers[(routerDef && routerDef.responseHandler) || 'jsonResponseHandler'];
+        if (responseHandler && SERVICE[responseHandler] && SERVICE[responseHandler].handleError) {
+            SERVICE[responseHandler].handleError(req, res, CLASSES.NodicsError.ensure(error));
+        } else {
+            res.status(SERVICE.DefaultStatusService.get('ERR_SYS_00000').code);
+            res.json(new CLASSES.NodicsError(error).toJson());
         }
     },
 

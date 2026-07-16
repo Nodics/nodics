@@ -60,7 +60,7 @@ module.exports = {
      */
     validateInput: function (request, response, process) {
         this.LOG.debug('Validating input for saving models');
-        if (!request.models) {
+        if (!Array.isArray(request.models) || request.models.length === 0) {
             process.error(request, response, new CLASSES.NodicsError('ERR_SAVE_00003', 'Models can not be null or empty for save operation'));
         } else {
             process.nextSuccess(request, response);
@@ -101,9 +101,9 @@ module.exports = {
     processModels: function (request, response, process) {
         this.LOG.debug('Processing models');
         if (request.query && !UTILS.isBlank(request.query)) {
-            request.originalQuery = _.merge({}, request.query || {});
+            request.originalQuery = _.cloneDeep(request.query || {});
         }
-        this.handleModelsSave(request, response, request.models).then(success => {
+        this.handleModelsSave(request, response, request.models.slice()).then(success => {
             process.nextSuccess(request, response);
         }).catch(error => {
             process.error(request, response, error);
@@ -117,44 +117,78 @@ module.exports = {
      * @param {Object} response Pipeline response accumulator.
      * @param {Object[]} models Mutable model list to process.
      * @returns {Promise<boolean>} Resolves after all models have been attempted.
-     * @sideEffects Consumes `models`, writes `response.success`, and writes `response.failed`.
+     * @sideEffects Writes `response.success`, writes `response.failed`, and updates `request.model` with the model being processed.
      */
     handleModelsSave: function (request, response, models) {
-        return new Promise((resolve, reject) => {
-            if (models && models.length > 0) {
-                request.model = models.shift();
-                try {
-                    SERVICE.DefaultPipelineService.start('modelSaveInitializerPipeline', {
-                        tenant: request.tenant,
-                        authData: request.authData,
-                        schemaModel: request.schemaModel,
-                        query: _.merge({}, request.originalQuery),
-                        model: request.model
-                    }, {}).then(success => {
-                        if (!response.success) response.success = [];
-                        response.success.push(success.result);
-                        this.handleModelsSave(request, response, models).then(success => {
-                            resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    }).catch(error => {
-                        if (!response.failed) response.failed = [];
-                        error.metadata = request.model;
-                        response.failed.push(error);
-                        this.handleModelsSave(request, response, models).then(success => {
-                            resolve(true);
-                        }).catch(error => {
-                            reject(error);
-                        });
-                    });
-                } catch (error) {
-                    reject(new CLASSES.NodicsError(error, null, 'ERR_SAVE_00000'));
-                }
-            } else {
-                resolve(true);
-            }
+        let modelList = Array.isArray(models) ? models.slice() : [];
+        let modelSavePromise = Promise.resolve(true);
+        modelList.forEach(model => {
+            modelSavePromise = modelSavePromise.then(() => this.saveSingleModel(request, response, model));
         });
+        return modelSavePromise;
+    },
+
+    /**
+     * Saves one model through the single-model save pipeline and records its result.
+     *
+     * @param {Object} request Nodics bulk save request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} model Model being saved.
+     * @returns {Promise<boolean>} Resolves after this model has been recorded.
+     * @sideEffects Updates `request.model`, `response.success`, and `response.failed`.
+     */
+    saveSingleModel: function (request, response, model) {
+        request.model = model;
+        try {
+            return SERVICE.DefaultPipelineService.start('modelSaveInitializerPipeline', {
+                tenant: request.tenant,
+                authData: request.authData,
+                schemaModel: request.schemaModel,
+                query: _.cloneDeep(request.originalQuery || {}),
+                model: model
+            }, {}).then(success => {
+                if (!response.success) response.success = [];
+                response.success.push(success.result);
+                return true;
+            }).catch(error => {
+                this.addFailure(response, error, model);
+                return true;
+            });
+        } catch (error) {
+            return Promise.reject(new CLASSES.NodicsError(error, null, 'ERR_SAVE_00000'));
+        }
+    },
+
+    /**
+     * Records a model save failure without assuming framework-specific error shape.
+     *
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Error|Object|string} error Failure returned by the single-model save pipeline.
+     * @param {Object} model Model metadata associated with the failure.
+     * @returns {undefined}
+     */
+    addFailure: function (response, error, model) {
+        if (!response.failed) response.failed = [];
+        let failure = error && typeof error === 'object' ? error : new CLASSES.NodicsError(error, null, 'ERR_SAVE_00000');
+        failure.metadata = _.cloneDeep(model);
+        response.failed.push(failure);
+    },
+
+    /**
+     * Converts a save failure into response-safe JSON.
+     *
+     * @param {Error|Object|string} error Failure captured during model save.
+     * @returns {Object} Serialized error payload.
+     */
+    serializeFailure: function (error) {
+        if (error && typeof error.toJson === 'function') {
+            return error.toJson();
+        }
+        return {
+            code: error && error.code ? error.code : 'ERR_SAVE_00000',
+            message: error && error.message ? error.message : String(error),
+            metadata: error && error.metadata ? error.metadata : undefined
+        };
     },
 
     /**
@@ -202,7 +236,7 @@ module.exports = {
         if (response.failed && response.failed.length > 0) {
             output.errors = [];
             response.failed.forEach(error => {
-                output.errors.push(error.toJson());
+                output.errors.push(this.serializeFailure(error));
             });
         }
         process.resolve(output);

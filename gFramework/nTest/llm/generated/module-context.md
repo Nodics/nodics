@@ -29,9 +29,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 20 |
-| Test files | 6 |
+| Test files | 7 |
 | Data files | 0 |
-| All module-owned files | 34 |
+| All module-owned files | 35 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 27 |
+| Documented | 28 |
 | Partially documented | 0 |
 | Undocumented | 3 |
 | Inventory only | 4 |
@@ -112,6 +112,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTest/test/layeredTestDiscovery.test.js` | `test` | `documented` | 2/2 | Proves deterministic test composition across arbitrarily named capability, project, environment, server, and node modules with override traceability and configurable additional paths. |  |
 | `gFramework/nTest/test/liveTestTenantGuard.test.js` | `test` | `documented` | 0/0 | Verifies default and configured protected-tenant resolution plus explicit live-test override behavior. |  |
 | `gFramework/nTest/test/schemaTestGeneratorCrudFixtureInheritance.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nTest/test/schemaTestGeneratorEffectiveOverrideRemoval.test.js` | `test` | `documented` | 0/0 | Proves generated CRUD scenario tests use the effective project schema contract when a later layer removes a default framework property. |  |
 | `gFramework/nTest/test/schemaTestGeneratorEffectiveSchema.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nTest/test/testExecutionControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nTest/test/testSuiteReporter.test.js` | `test` | `documented` | 0/0 | Verifies Nodics test-output metric parsing and structured report construction. |  |

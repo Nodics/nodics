@@ -60,9 +60,9 @@ module.exports = {
      */
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating remove request: ');
-        if (!request.query || UTILS.isBlank(request.query)) {
+        if (!request.query || !UTILS.isObject(request.query) || Array.isArray(request.query) || UTILS.isBlank(request.query)) {
             process.error(request, response, new CLASSES.NodicsError('ERR_UPD_00003', 'Query can not be null or empty for update operation'));
-        } else if (!request.model || UTILS.isBlank(request.model)) {
+        } else if (!request.model || !UTILS.isObject(request.model) || Array.isArray(request.model) || UTILS.isBlank(request.model)) {
             process.error(request, response, new CLASSES.NodicsError('ERR_UPD_00003', 'Model can not be null or empty for update operation'));
         } else {
             process.nextSuccess(request, response);
@@ -98,7 +98,6 @@ module.exports = {
         this.LOG.debug('Building query options');
         let inputOptions = request.options || {};
         inputOptions.explain = inputOptions.explain || false;
-        inputOptions.explain = inputOptions.explain || false;
         inputOptions.snapshot = inputOptions.snapshot || false;
 
         if (inputOptions.timeout === true) {
@@ -107,6 +106,20 @@ module.exports = {
         }
         request.options = inputOptions;
         process.nextSuccess(request, response);
+    },
+    /**
+     * Resolves affected update count from old and current database adapter result shapes.
+     *
+     * @param {Object} result Update result payload.
+     * @returns {number} Number of modified records.
+     */
+    getAffectedCount: function (result) {
+        if (!result) return 0;
+        if (typeof result.modifiedCount === 'number') return result.modifiedCount;
+        if (typeof result.nModified === 'number') return result.nModified;
+        if (typeof result.n === 'number') return result.n;
+        if (result.result) return this.getAffectedCount(result.result);
+        return 0;
     },
     /**
      * Enforces runtime property-level update policies before mutation.
@@ -185,7 +198,7 @@ module.exports = {
     executeQuery: function (request, response, process) {
         this.LOG.debug('Executing remove query');
         request.schemaModel.updateItems(request).then(result => {
-            if (result.modifiedCount && result.modifiedCount > 0) {
+            if (this.getAffectedCount(result) > 0) {
                 result.message = 'Items have been updated successfull';
             }
             response.success = {
@@ -207,7 +220,7 @@ module.exports = {
      */
     populateSubModels: function (request, response, process) {
         this.LOG.debug('Populating sub models');
-        if (response.success.result && response.success.result.models && request.options.recursive) {
+        if (response.success.result && response.success.result.models && request.options && request.options.recursive) {
             SERVICE.DefaultModelService.travelModels({
                 request: request,
                 response: response,
@@ -255,7 +268,7 @@ module.exports = {
      */
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post update model interceptors');
-        if (response.success && response.success.result && response.success.result.n && response.success.result.n > 0) {
+        if (response.success && response.success.result && this.getAffectedCount(response.success.result) > 0) {
             let schemaName = request.schemaModel.schemaName;
             let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
             if (interceptors && interceptors.postUpdate) {
@@ -283,7 +296,7 @@ module.exports = {
         this.LOG.debug('Invalidating router cache for modified model');
         try {
             let schemaModel = request.schemaModel;
-            if (response.success && response.success.result && response.success.result.n && response.success.result.n > 0) {
+            if (response.success && response.success.result && this.getAffectedCount(response.success.result) > 0) {
                 SERVICE.DefaultCacheService.invalidateResource({
                     tenant: request.tenant,
                     authData: request.authData,
@@ -315,7 +328,7 @@ module.exports = {
         this.LOG.debug('Invalidating item cache for removed model');
         try {
             let schemaModel = request.schemaModel;
-            if (response.success && response.success.result && response.success.result.n && response.success.result.n > 0 &&
+            if (response.success && response.success.result && this.getAffectedCount(response.success.result) > 0 &&
                 schemaModel.rawSchema.cache && schemaModel.rawSchema.cache.enabled) {
                 SERVICE.DefaultCacheService.invalidateResource({
                     tenant: request.tenant,

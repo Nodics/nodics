@@ -62,7 +62,7 @@ module.exports = {
      */
     validateModel: function (request, response, process) {
         this.LOG.debug('Validating input for saving model');
-        if (!request.model) {
+        if (!request.model || !UTILS.isObject(request.model) || Array.isArray(request.model)) {
             process.error(request, response, new CLASSES.NodicsError('ERR_SAVE_00003', 'Model can not be null or empty for save operation'));
         } else {
             process.nextSuccess(request, response);
@@ -107,6 +107,16 @@ module.exports = {
         });
     },
     /**
+     * Resolves tenant-specific schema options defensively.
+     *
+     * @param {Object} request Nodics save request.
+     * @returns {Object} Schema options for the active tenant, or an empty object.
+     */
+    getTenantSchemaOptions: function (request) {
+        let schemaOptions = request.schemaModel.rawSchema.schemaOptions || {};
+        return schemaOptions[request.tenant] || {};
+    },
+    /**
      * Applies schema configured default values before persistence.
      *
      * @param {Object} request Nodics save request.
@@ -117,7 +127,7 @@ module.exports = {
      */
     applyDefaultValues: function (request, response, process) {
         this.LOG.debug('Applying default values to the model');
-        let defaultValues = request.schemaModel.rawSchema.schemaOptions[request.tenant].defaultValues;
+        let defaultValues = this.getTenantSchemaOptions(request).defaultValues;
         if (defaultValues && !UTILS.isBlank(defaultValues)) {
             _.each(defaultValues, (value, property) => {
                 request.model = this.resolveDefaultProperty(property.split('.'), request.model, value);
@@ -247,9 +257,12 @@ module.exports = {
      */
     applyValidators: function (request, response, process) {
         this.LOG.debug('Applying default values to the model');
-        let validators = request.schemaModel.rawSchema.schemaOptions[request.tenant].validators;
+        let validators = this.getTenantSchemaOptions(request).validators;
         if (validators && !UTILS.isBlank(validators)) {
-            _.each(validators, (value, property) => {
+            let properties = Object.keys(validators);
+            for (let index = 0; index < properties.length; index++) {
+                let property = properties[index];
+                let value = validators[property];
                 if (request.model[property]) {
                     try {
                         let serviceName = value.substring(0, value.indexOf('.'));
@@ -257,9 +270,10 @@ module.exports = {
                         SERVICE[serviceName][functionName](request.model[property]);
                     } catch (error) {
                         process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_SAVE_00011'));
+                        return;
                     }
                 }
-            });
+            }
         }
         process.nextSuccess(request, response);
     },
@@ -322,7 +336,7 @@ module.exports = {
      */
     populateSubModels: function (request, response, process) {
         this.LOG.debug('Populating sub models');
-        if (response.success.result && request.options.recursive) {
+        if (response.success.result && request.options && request.options.recursive) {
             SERVICE.DefaultModelService.travelModels({
                 request: request,
                 response: response,

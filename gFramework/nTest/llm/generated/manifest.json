@@ -14,12 +14,12 @@
     "description": "Nodics testing module for layered test discovery, schema/API generated tests, guarded live tests, suite reporting, topology-aware evidence, and report ownership."
   },
   "sourceFiles": 20,
-  "testFiles": 6,
+  "testFiles": 7,
   "dataFiles": 0,
-  "ownedFiles": 34,
-  "sourceFingerprint": "a660ce53119f2d828cd8577045153be1d8a56a56a564737c18177fdb7461e86a",
+  "ownedFiles": 35,
+  "sourceFingerprint": "57e59f4b6994a79042f535cb58efc8a19fb03cdb156d24ce991c98ea8f97c3c3",
   "documentation": {
-    "documented": 27,
+    "documented": 28,
     "partially-documented": 0,
     "undocumented": 3,
     "inventory-only": 4

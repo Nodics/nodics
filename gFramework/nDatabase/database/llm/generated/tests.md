@@ -6,6 +6,10 @@
 
 - `gFramework/nDatabase/database/test/common/commonTest.js`
 - `gFramework/nDatabase/database/test/env-local/envTest.js`
+- `gFramework/nDatabase/database/test/modelSaveInitializerPipelineContract.test.js`
+- `gFramework/nDatabase/database/test/modelsGetInitializerPipelineContract.test.js`
+- `gFramework/nDatabase/database/test/modelsRemoveUpdateInitializerPipelineContract.test.js`
+- `gFramework/nDatabase/database/test/modelsSaveInitializerPipelineContract.test.js`
 - `gFramework/nDatabase/database/test/schemaIndexControllerRequestMapping.test.js`
 - `gFramework/nDatabase/database/test/schemaIndexServiceContract.test.js`
 - `gFramework/nDatabase/database/test/schemaReadAccessPolicyService.test.js`

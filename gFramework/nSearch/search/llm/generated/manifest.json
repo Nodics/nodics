@@ -14,12 +14,12 @@
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to search"
   },
   "sourceFiles": 43,
-  "testFiles": 20,
+  "testFiles": 21,
   "dataFiles": 0,
-  "ownedFiles": 58,
-  "sourceFingerprint": "06cae5e88e70789c8db4c9c2904d9ba53f9d067a556dbe22a421cded2e219de4",
+  "ownedFiles": 59,
+  "sourceFingerprint": "5faffa8788fff5a63c89623bb42d8f8d896b85f43f1099ed0f673b6a9c2ec634",
   "documentation": {
-    "documented": 48,
+    "documented": 49,
     "partially-documented": 2,
     "undocumented": 4,
     "inventory-only": 4

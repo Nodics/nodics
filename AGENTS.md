@@ -29,6 +29,11 @@ layered module hierarchy without modifying out-of-the-box Nodics code.
   generated files as hand-maintained source of truth.
 - Security, access control, validation, audit, rollback, diagnostics, and tests
   are platform contracts, not optional enhancements.
+- Tests must be layer-aware and contract-aware. Framework tests protect
+  platform invariants and default module contracts; project, environment,
+  server, node, tenant, or customer tests must reuse Nodics test engines while
+  generating fixtures and assertions from the effective active contract after
+  overrides.
 - Preserve multi-tenancy, modular deployment, runtime configurability,
   traceability, backward compatibility, and layered overrideability.
 - When working in a customer/project module that uses Nodics, do not inspect or

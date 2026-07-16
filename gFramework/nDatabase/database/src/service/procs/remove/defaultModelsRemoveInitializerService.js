@@ -62,7 +62,9 @@ module.exports = {
      */
     validateRequest: function (request, response, process) {
         this.LOG.debug('Validating remove request: ');
-        if (request.query || (request.ids && request.ids.length > 0) || (request.codes && request.codes.length > 0)) {
+        if ((request.query && !UTILS.isBlank(request.query)) ||
+            (Array.isArray(request.ids) && request.ids.length > 0) ||
+            (Array.isArray(request.codes) && request.codes.length > 0)) {
             process.nextSuccess(request, response);
         } else {
             process.error(request, response, new CLASSES.NodicsError('ERR_DEL_00003', 'Invalid value for ids or codes'));
@@ -140,7 +142,6 @@ module.exports = {
         }
         let inputOptions = request.searchOptions || {};
         inputOptions.explain = inputOptions.explain || false;
-        inputOptions.explain = inputOptions.explain || false;
         inputOptions.snapshot = inputOptions.snapshot || false;
 
         if (inputOptions.timeout === true) {
@@ -149,6 +150,20 @@ module.exports = {
         }
         request.searchOptions = inputOptions;
         process.nextSuccess(request, response);
+    },
+
+    /**
+     * Resolves affected remove count from old and current database adapter result shapes.
+     *
+     * @param {Object} result Remove result payload.
+     * @returns {number} Number of removed records.
+     */
+    getAffectedCount: function (result) {
+        if (!result) return 0;
+        if (typeof result.n === 'number') return result.n;
+        if (typeof result.deletedCount === 'number') return result.deletedCount;
+        if (result.result) return this.getAffectedCount(result.result);
+        return 0;
     },
 
     /**
@@ -229,8 +244,8 @@ module.exports = {
      */
     populateSubModels: function (request, response, process) {
         this.LOG.debug('Populating sub models');
-        if (response.success && response.success.result && response.success.result.n &&
-            response.success.result.n > 0 && response.success.result.models && request.options.recursive) {
+        if (response.success && response.success.result && this.getAffectedCount(response.success.result) > 0 &&
+            response.success.result.models && request.options && request.options.recursive) {
             SERVICE.DefaultModelService.travelModels({
                 request: request,
                 response: response,
@@ -280,7 +295,7 @@ module.exports = {
      */
     applyPostInterceptors: function (request, response, process) {
         this.LOG.debug('Applying post remove model interceptors');
-        if (response.success && response.success.result && response.success.result.n && response.success.result.n > 0) {
+        if (response.success && response.success.result && this.getAffectedCount(response.success.result) > 0) {
             let schemaName = request.schemaModel.schemaName;
             let interceptors = SERVICE.DefaultDatabaseConfigurationService.getSchemaInterceptors(schemaName);
             if (interceptors && interceptors.postRemove) {
@@ -309,7 +324,7 @@ module.exports = {
         this.LOG.debug('Invalidating router cache for removed model');
         try {
             let schemaModel = request.schemaModel;
-            if (response.success && response.success.result && response.success.result.n && response.success.result.n > 0) {
+            if (response.success && response.success.result && this.getAffectedCount(response.success.result) > 0) {
                 SERVICE.DefaultCacheService.invalidateResource({
                     tenant: request.tenant,
                     authData: request.authData,
@@ -342,7 +357,7 @@ module.exports = {
         this.LOG.debug('Invalidating item cache for removed model');
         try {
             let schemaModel = request.schemaModel;
-            if (response.success && response.success.result && response.success.result.n && response.success.result.n > 0 &&
+            if (response.success && response.success.result && this.getAffectedCount(response.success.result) > 0 &&
                 schemaModel.rawSchema.cache && schemaModel.rawSchema.cache.enabled) {
                 SERVICE.DefaultCacheService.invalidateResource({
                     tenant: request.tenant,
@@ -417,7 +432,7 @@ module.exports = {
      */
     handleDeepRemove: function (request, response, process) {
         this.LOG.debug('Request has been processed successfully');
-        if (request.options.deepRemove && response.success.result && response.success.result.models) {
+        if (request.options && request.options.deepRemove && response.success.result && response.success.result.models) {
             SERVICE.DefaultModelService.travelModels({
                 request: request,
                 response: response,

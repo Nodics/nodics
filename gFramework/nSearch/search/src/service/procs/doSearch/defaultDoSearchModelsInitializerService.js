@@ -9,6 +9,8 @@
 
  */
 
+const _ = require('lodash');
+
 /**
  * @module gFramework/nSearch/search/src/service/procs/doSearch/defaultDoSearchModelsInitializerService
  * @description Implements nSearch default do search models initializer service business behavior and extension logic.
@@ -115,10 +117,11 @@ module.exports = {
                 key: request.cacheKeyHash
             }).then(value => {
                 this.LOG.debug('Fulfilled from model cache');
+                let cachedResponse = _.cloneDeep(value);
                 process.stop(request, response, {
                     code: 'SUC_SRCH_00000',
                     cache: 'item hit',
-                    result: value.result
+                    result: cachedResponse.result
                 });
             }).catch(error => {
                 if (error.code === 'ERR_CACHE_00001') {
@@ -308,7 +311,7 @@ module.exports = {
             SERVICE.DefaultInterceptorService.executeInterceptors([].concat(interceptors.postDoSearch), request, response).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
-                process.error(request, response, new CLASSES.NodicsNodics(error, null, 'ERR_SRCH_00008'));
+                process.error(request, response, new CLASSES.SearchError(error, null, 'ERR_SRCH_00008'));
             });
         } else {
             process.nextSuccess(request, response);

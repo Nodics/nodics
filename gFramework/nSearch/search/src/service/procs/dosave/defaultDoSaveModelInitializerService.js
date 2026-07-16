@@ -59,7 +59,7 @@ module.exports = {
 
     validateModel: function (request, response, process) {
         this.LOG.debug('Validating input for doSaving model');
-        if (!request.model) {
+        if (!request.model || !UTILS.isObject(request.model) || Array.isArray(request.model)) {
             process.error(request, response, new CLASSES.SearchError('ERR_SRCH_00003', 'Invalid data model to save'));
         } else {
             process.nextSuccess(request, response);
@@ -135,7 +135,8 @@ module.exports = {
 
     applyDefaultValues: function (request, response, process) {
         this.LOG.debug('Applying default values to the model');
-        let defaultValues = request.schemaModel.rawSchema.schemaOptions[request.tenant].defaultValues;
+        let schemaOptions = request.schemaModel && request.schemaModel.rawSchema && request.schemaModel.rawSchema.schemaOptions || {};
+        let defaultValues = (schemaOptions[request.tenant] || {}).defaultValues;
         if (defaultValues && !UTILS.isBlank(defaultValues)) {
             _.each(defaultValues, (value, property) => {
                 request.model = this.resolveDefaultProperty(property.split('.'), request.model, value);
@@ -440,7 +441,7 @@ module.exports = {
             if (request.schemaModel) {
                 prefix = request.schemaModel.schemaName;
             }
-            if (response.success.success) {
+            if (response.success && response.success.result) {
                 SERVICE.DefaultCacheService.invalidateResource({
                     tenant: request.tenant,
                     authData: request.authData,
@@ -482,7 +483,7 @@ module.exports = {
         try {
             let searchModel = request.searchModel;
             let cache = searchModel.indexDef.cache;
-            if (response.success.success && cache && cache.enabled) {
+            if (response.success && response.success.result && cache && cache.enabled) {
                 SERVICE.DefaultCacheService.invalidateResource({
                     tenant: request.tenant,
                     authData: request.authData,

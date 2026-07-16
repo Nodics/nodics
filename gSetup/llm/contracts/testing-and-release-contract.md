@@ -2,6 +2,44 @@
 
 Use proportionate validation while preserving enterprise reliability.
 
+## Layer-Aware Test Contracts
+
+Nodics tests are contracts for the layer they validate.
+
+- Platform invariant tests must pass in every valid Nodics project. They prove
+  shared runtime behavior such as module loading, request pipelines, auth,
+  schema loading, DAO operations, import/export, cache, events, topology, and
+  generated-test execution.
+- Framework default module tests validate the out-of-the-box contract delivered
+  by Nodics modules. They may assert default schema fields, default routes,
+  default permissions, default data, and default scenarios.
+- Effective project tests validate the active project contract after project,
+  environment, server, node, tenant, customer, and runtime overrides are
+  applied. They should reuse Nodics test engines and generators, but fixtures
+  and assertions must come from the effective active schema/router/service
+  contract, not from stale framework defaults.
+
+If a default module schema contains properties `x`, `y`, and `z`, and a
+customer project intentionally removes `z` through a later-layer schema
+override, the project should not hand-edit the framework test or copy the whole
+test suite. The project must regenerate or contribute project-owned tests that
+use the effective schema containing `x` and `y`. The framework default test
+continues to prove the default framework contract; the project effective test
+proves the customized contract.
+
+AI tools and developers must not "fix" a failing default generated test by
+editing generated files or deleting framework assertions. First identify which
+contract is under test:
+
+- If a platform invariant fails, investigate shared Nodics runtime behavior.
+- If a default module contract fails while default modules are active,
+  investigate framework module behavior.
+- If a customized project contract differs intentionally, regenerate or extend
+  project-owned effective-contract tests from the active definitions.
+- If compatibility with the default framework contract is required, run that as
+  an explicit compatibility suite and report intentional project deviations as
+  not applicable or overridden, not as silent failures.
+
 For active development:
 
 - Run focused tests for the module or behavior changed.
