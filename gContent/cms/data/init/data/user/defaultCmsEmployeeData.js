@@ -16,10 +16,12 @@
  * @owner cms
  * @override Project modules may provide later CMS employee data contributions for project-specific users.
  */
+const crypto = require('crypto');
+
 module.exports = {
     record0: {
         code: 'contentManager',
-        active: true,
+        active: false,
         name: {
             title: 'Mr.',
             firstName: 'workflow',
@@ -28,17 +30,17 @@ module.exports = {
         loginId: 'contentManager',
         password: {
             loginId: 'contentManager',
-            password: 'contentManager',
+            password: crypto.randomBytes(32).toString('base64url'),
             active: true
         },
-        apiKey: '944515ac-bbac-51cd-ac7e-3bbbsdc835ff',
+        principalType: 'human',
         userGroups: ['contentManagerGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']
     },
     record1: {
         code: 'contentCreator',
-        active: true,
+        active: false,
         name: {
             title: 'Mr.',
             firstName: 'Content',
@@ -47,17 +49,17 @@ module.exports = {
         loginId: 'contentCreator',
         password: {
             loginId: 'contentCreator',
-            password: 'contentCreator',
+            password: crypto.randomBytes(32).toString('base64url'),
             active: true
         },
-        apiKey: '944515ac-bbac-51cd-ac7e-3bbbsdc835ff',
+        principalType: 'human',
         userGroups: ['contentCreaterGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']
     },
     record2: {
         code: 'contentApprover',
-        active: true,
+        active: false,
         name: {
             title: 'Mr.',
             firstName: 'Content',
@@ -66,10 +68,10 @@ module.exports = {
         loginId: 'contentApprover',
         password: {
             loginId: 'contentApprover',
-            password: 'contentApprover',
+            password: crypto.randomBytes(32).toString('base64url'),
             active: true
         },
-        apiKey: '944515ac-bbac-51cd-ac7e-3bbbsdc345ff',
+        principalType: 'human',
         userGroups: ['contentApproverGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']

@@ -22,7 +22,8 @@ const flatted = require('flatted');
  * @module config/service/DefaultLoggerService
  * @description Central logger factory for Nodics runtime entities. It creates and
  * registers Winston loggers using layered configuration and supports console, file,
- * and Elasticsearch transports.
+ * and Elasticsearch transports. Sensitive values are redacted before they are
+ * serialized to supported transports.
  * @layer service
  * @owner nConfig
  * @override Project modules may override logger configuration through properties or
@@ -171,11 +172,122 @@ module.exports = {
      * @returns {*} Serialized object string or original scalar value.
      */
     formatObject: function (param) {
-        if (_.isObject(param)) {
-            return flatted.stringify(param);
-            //return JSON.stringify(param);
+        let redacted = this.redactLogValue(param);
+        if (_.isObject(redacted)) {
+            return flatted.stringify(redacted);
+            //return JSON.stringify(redacted);
         }
-        return param;
+        return redacted;
+    },
+
+    /**
+     * Reads the effective log redaction configuration with safe bootstrap defaults.
+     *
+     * @returns {Object} Redaction configuration.
+     */
+    getRedactionConfig: function () {
+        let defaultConfig = {
+            enabled: true,
+            mask: '[REDACTED]',
+            sensitiveKeys: [
+                'authorization',
+                'authToken',
+                'accessToken',
+                'refreshToken',
+                'token',
+                'password',
+                'secret',
+                'credential',
+                'credentials',
+                'apiKey',
+                'x-api-key',
+                'cookie',
+                'set-cookie',
+                'jwtSecretKey',
+                'clientSecret',
+                'privateKey'
+            ]
+        };
+        if (typeof CONFIG === 'undefined' || !CONFIG || !CONFIG.get) {
+            return defaultConfig;
+        }
+        let logConfig = CONFIG.get('log') || {};
+        return _.merge({}, defaultConfig, logConfig.redaction || {});
+    },
+
+    /**
+     * Checks whether a key name should be redacted from log output.
+     *
+     * @param {string} key Object key or metadata field name.
+     * @param {Object} config Redaction configuration.
+     * @returns {boolean} True when the key is sensitive.
+     */
+    isSensitiveLogKey: function (key, config) {
+        if (!key) return false;
+        let normalizedKey = String(key).toLowerCase();
+        return (config.sensitiveKeys || []).some(sensitiveKey => {
+            let normalizedSensitiveKey = String(sensitiveKey).toLowerCase();
+            return normalizedKey === normalizedSensitiveKey || normalizedKey.indexOf(normalizedSensitiveKey) >= 0;
+        });
+    },
+
+    /**
+     * Redacts sensitive fields from a value before log serialization.
+     *
+     * @param {*} value Raw log value.
+     * @param {Object} [config] Redaction configuration.
+     * @param {WeakSet<Object>} [seen] Circular-reference guard.
+     * @returns {*} Redacted value.
+     */
+    redactLogValue: function (value, config, seen) {
+        config = config || this.getRedactionConfig();
+        if (!config.enabled) return value;
+        if (value === null || value === undefined) return value;
+        if (_.isString(value)) {
+            return this.redactLogString(value, config);
+        }
+        if (_.isError(value)) {
+            return {
+                name: value.name,
+                message: this.redactLogString(value.message, config),
+                stack: this.redactLogString(value.stack, config)
+            };
+        }
+        if (_.isObject(value)) {
+            seen = seen || new WeakSet();
+            if (seen.has(value)) {
+                return '[Circular]';
+            }
+            seen.add(value);
+            if (_.isArray(value)) {
+                return value.map(item => this.redactLogValue(item, config, seen));
+            }
+            let output = {};
+            Object.keys(value).forEach(key => {
+                output[key] = this.isSensitiveLogKey(key, config) ? config.mask : this.redactLogValue(value[key], config, seen);
+            });
+            return output;
+        }
+        return value;
+    },
+
+    /**
+     * Redacts sensitive key/value patterns from string log messages.
+     *
+     * @param {string} value Raw message.
+     * @param {Object} config Redaction configuration.
+     * @returns {string} Redacted message.
+     */
+    redactLogString: function (value, config) {
+        if (!_.isString(value)) return value;
+        let mask = config.mask || '[REDACTED]';
+        let sensitiveKeys = (config.sensitiveKeys || []).map(key => String(key).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+        let keyPattern = sensitiveKeys.length ? sensitiveKeys.join('|') : 'password|token|secret|credential|authorization|apiKey';
+        return value
+            .replace(/(Bearer\s+)[A-Za-z0-9._~+/=-]+/gi, '$1' + mask)
+            .replace(/(Basic\s+)[A-Za-z0-9._~+/=-]+/gi, '$1' + mask)
+            .replace(new RegExp('(' + keyPattern + ')(\\s*[:=]\\s*)([^\\s,;}\\]]+)', 'gi'), '$1$2' + mask)
+            .replace(/((?:mongodb(?:\+srv)?|redis|https?):\/\/)([^:@/\s]+):([^@/\s]+)@/gi, '$1' + mask + ':' + mask + '@');
     },
 
     /**
@@ -198,12 +310,12 @@ module.exports = {
             winston.format.prettyPrint(),
             winston.format.printf((info) => {
                 const splat = info[splt] || [];
-                let message = this.formatObject(info.message || info.errmsg);
-                const rest = splat.map(this.formatObject).join(' ');
+                let message = _self.formatObject(info.message || info.errmsg);
+                const rest = splat.map(value => _self.formatObject(value)).join(' ');
                 if (rest && !utils.isBlank(rest) && rest !== '{}' && rest !== '[]') {
                     message = message + ' ' + rest;
                 } else if (info.metadata && !utils.isBlank(info.metadata) && info.metadata !== '{}' && info.metadata !== '[]') {
-                    message = message + ' ' + this.formatObject(info.metadata);
+                    message = message + ' ' + _self.formatObject(info.metadata);
                 }
                 return `${info.timestamp}  ${info.level}: [${info.label}] ${message}`;
             })
@@ -231,8 +343,8 @@ module.exports = {
             _self.getLogFormat(config),
             winston.format.printf((info) => {
                 const splat = info[splt] || [];
-                const message = this.formatObject(info.message || info.errmsg);
-                const rest = splat.map(this.formatObject).join(' ');
+                const message = _self.formatObject(info.message || info.errmsg);
+                const rest = splat.map(value => _self.formatObject(value)).join(' ');
                 if (rest && !utils.isBlank(rest) && rest !== '{}' && rest !== '[]') {
                     info.message = `${message} ${rest}`;
                 } else {
@@ -255,8 +367,22 @@ module.exports = {
     createElasticTransport: function (labelName, config) {
         let options = _.merge({}, config.options);
         options.label = labelName;
-        options.client = this.createElasticLoggerClient(options.client);
-        return new wElasticsearch(options);
+        options.client = this.createElasticLoggerClient(config.client || options.client);
+        options.useTransformer = true;
+        options.transformer = this.createElasticLogTransformer();
+        return new wElasticsearch.ElasticsearchTransport(options);
+    },
+
+    /**
+     * Creates an Elasticsearch transformer that redacts log data before indexing.
+     *
+     * @returns {Function} Winston Elasticsearch transformer.
+     */
+    createElasticLogTransformer: function () {
+        let _self = this;
+        return function (logData) {
+            return wElasticsearch.ElasticsearchTransformer(_self.redactLogValue(logData));
+        };
     },
 
     /**

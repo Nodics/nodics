@@ -94,6 +94,37 @@ When adding a property, document:
 Do not move configurable values to files such as `tooling.js`, standalone
 governance JSON, or custom registries when a property subtree can own them.
 
+## Logging And Redaction
+
+`nConfig` creates the central Nodics logger before most framework services are
+available. Logger behavior is configured under `log` in layered
+`config/properties.js`.
+
+Sensitive log redaction is controlled by `log.redaction`:
+
+```js
+module.exports = {
+    log: {
+        redaction: {
+            enabled: true,
+            mask: '[REDACTED]',
+            sensitiveKeys: ['authorization', 'token', 'password', 'apiKey', 'secret']
+        }
+    }
+};
+```
+
+The logger redacts sensitive object fields, authorization strings, API-key or
+password key/value text, and connection-string credentials before console, file,
+and Elasticsearch transports serialize the log entry. Project, environment,
+server, or node modules may add their own sensitive keys through later
+`properties.js` contributions.
+
+Redaction is a safety net, not permission to log secrets. Source code must log
+safe context such as token type, tenant, operation, correlation id, reason code,
+or status. Do not log generated token values, raw passwords, API keys, cookies,
+authorization headers, private keys, or usable connection credentials.
+
 ## Pre And Post Startup Scripts
 
 `config/prescripts.js` and `config/postscripts.js` are startup extension

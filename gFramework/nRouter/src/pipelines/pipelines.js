@@ -30,13 +30,18 @@
  */
 module.exports = {
     requestHandlerPipeline: {
-        startNode: "helpRequest",
+        startNode: "validateApiExposure",
         hardStop: true, //default value is false
         handleError: 'handleError',
         // define this node, within node definitions, 
         //else will take default 'handleError' one
 
         nodes: {
+            validateApiExposure: {
+                type: 'function',
+                handler: 'DefaultRequestHandlerPipelineService.validateApiExposure',
+                success: 'helpRequest'
+            },
             helpRequest: {
                 type: 'function',
                 handler: 'DefaultRequestHandlerPipelineService.helpRequest',

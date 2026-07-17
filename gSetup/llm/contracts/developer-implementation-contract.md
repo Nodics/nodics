@@ -81,6 +81,39 @@ Check these extension points before proposing framework edits:
 If none of these extension points can safely express the behavior, document the
 gap and treat the work as framework-maintainer mode.
 
+## Control-Plane API Contract
+
+Control-plane work means backend API/security contract work unless the user
+explicitly asks for UI. APIs used by administrators, support tooling, CLI tools,
+AI tools, Postman, or a future admin application must be secured at route
+metadata level.
+
+Every sensitive control-plane route must declare an action-specific
+`permission` or governed `permissionConfig`. Broad access groups such as
+`userGroup` may remain as a base authenticated boundary, but they are not
+sufficient for operations that inspect or mutate runtime state, files, imports,
+exports, logs, schema maintenance, test execution, dynamic classes, cache
+operations, runtime configuration, or governance data.
+
+Every topology-sensitive control-plane route must also declare an `apiExposure`
+category. The request pipeline checks
+`apiExposure.categories.<category>.enabled` before route help, controller
+execution, or service behavior. Permissions decide who can call an exposed API;
+`apiExposure` decides whether that API category is available in the current
+project, environment, server, or node.
+
+When adding or changing a control-plane API:
+
+- choose the owning module and route;
+- choose the `apiExposure` category when the route should be gated by topology;
+- define the action-specific permission name;
+- add it to the permission catalog and the appropriate governed user group;
+- update route contract tests and the cross-module control-plane permission
+  contract;
+- prove disabled categories fail closed before controller execution when
+  `apiExposure` applies;
+- document the operational and security impact.
+
 ## Configuration Ownership Contract
 
 Module configuration belongs in `config/properties.js`. Developers and AI tools

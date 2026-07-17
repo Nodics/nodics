@@ -28,9 +28,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 21 |
-| Test files | 7 |
+| Test files | 8 |
 | Data files | 0 |
-| All module-owned files | 36 |
+| All module-owned files | 37 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -57,7 +57,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 29 |
+| Documented | 30 |
 | Partially documented | 0 |
 | Undocumented | 3 |
 | Inventory only | 4 |
@@ -99,7 +99,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nRouter/src/service/handlers/response/defaultJsonResponseHandlerService.js` | `src` | `documented` | 4/4 | Default JSON response handler for Nodics APIs. It normalizes success payloads with status metadata and converts errors to standard Nodics error JSON. |  |
 | `gFramework/nRouter/src/service/handlers/response/defaultTextResponseHandlerService.js` | `src` | `documented` | 4/4 | Text response handler for routes that return plain text or already formatted textual payloads. |  |
 | `gFramework/nRouter/src/service/request/defaultNonSecuredRequestPipelineService.js` | `src` | `documented` | 5/5 | Non-secured API request pipeline that validates enterprise code, resolves enterprise metadata, and derives the active tenant for public or pre-authentication routes. |  |
-| `gFramework/nRouter/src/service/request/defaultRequestHandlerPipelineService.js` | `src` | `documented` | 12/12 | Shared request pipeline service that normalizes authentication headers, handles help and special requests, chooses secured versus non-secured flow, performs API cache lookup, and dispatches requests to generated or custom controllers. |  |
+| `gFramework/nRouter/src/service/request/defaultRequestHandlerPipelineService.js` | `src` | `documented` | 15/15 | Shared request pipeline service that normalizes authentication headers, handles help and special requests, chooses secured versus non-secured flow, performs API cache lookup, and dispatches requests to generated or custom controllers. |  |
 | `gFramework/nRouter/src/service/request/defaultSecuredRequestPipelineService.js` | `src` | `documented` | 18/18 | Secured API request pipeline that validates credentials, authorizes API keys or bearer tokens, resolves active tenant context, checks route access groups, and optionally checks action-level route permissions before controller execution. |  |
 | `gFramework/nRouter/src/service/router/defaultRouterInitializerService.js` | `src` | `documented` | 1/1 | Initializes Express application and router instances for router-enabled modules according to the selected consolidated or modular runtime topology. |  |
 | `gFramework/nRouter/src/service/router/defaultRouterOperationService.js` | `src` | `documented` | 9/9 | Bridges effective Nodics router definitions to Express operations. It binds HTTP methods and delegates incoming requests to the request handler service. |  |
@@ -110,6 +110,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nRouter/src/utils/utils.js` | `src` | `documented` | 2/2 | Router utility helpers for route/model cache eligibility decisions. |  |
 | `gFramework/nRouter/test/apiMethodStandardRouteContract.test.js` | `test` | `documented` | 0/0 | Verifies repository router definitions keep GET routes read-only and keep help metadata aligned with runtime route methods. |  |
 | `gFramework/nRouter/test/authHeaderNormalization.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nRouter/test/controlPlaneRouteContract.test.js` | `test` | `documented` | 0/0 | Verifies sensitive control-plane route definitions declare action-specific permissions instead of relying only on broad access groups. |  |
 | `gFramework/nRouter/test/jsonResponseStatusResolution.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nRouter/test/openapiContractGeneration.test.js` | `test` | `documented` | 0/0 | Verifies that OpenAPI generation follows effective layered schema and router definitions, excludes inactive capabilities, preserves security metadata, rejects conflicting routes and invalid references, and emits accurate request and response contracts. |  |
 | `gFramework/nRouter/test/requestPipelineResponseContract.test.js` | `test` | `documented` | 0/0 | Verifies that the Nodics request pipeline validates request data, resolves non-secured enterprise/tenant context, hands the request to the selected controller, and returns standard JSON response objects for success and error flows. |  |

@@ -77,6 +77,26 @@ let runtimeViewerGroup = Object.values(userGroupsData).find(group => group.code 
 assert(runtimeAdminGroup, 'Default runtime config admin group should be seeded');
 assert(runtimeViewerGroup.permissions.includes('system.contract.openapi.view'));
 assert(runtimeAdminGroup.permissions.includes('runtime.config.cleanup.execute'));
+[
+    'system.file.read',
+    'system.file.download',
+    'system.log.level.update',
+    'system.schema.index.rebuild',
+    'system.schema.validator.rebuild',
+    'system.test.unit.run',
+    'system.test.nodics.run',
+    'import.init.run',
+    'import.core.run',
+    'import.sample.run',
+    'import.local.run',
+    'export.run',
+    'dynamo.class.view',
+    'dynamo.class.snapshot.view',
+    'dynamo.class.update',
+    'dynamo.class.execute'
+].forEach(permission => {
+    assert(runtimeAdminGroup.permissions.includes(permission), 'Runtime admin group must include ' + permission);
+});
 assert(!runtimeAdminGroup.permissions.includes('*'), 'Runtime admin data should avoid broad wildcard permissions');
 
 let adminEmployee = employeeData.record0;

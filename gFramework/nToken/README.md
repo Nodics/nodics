@@ -74,6 +74,18 @@ module.exports = {
 
 Token type-specific values such as numeric range, expiration, handler service, retry limit, or single-use policy belong under the token type namespace in `config/properties.js`.
 
+## Secret-Safe Diagnostics
+
+Token services may log token type, operation, tenant, correlation id, expiry
+timestamp, attempt-limit decisions, and validation status. They must not log the
+generated token value or a caller-submitted token value.
+
+The central logger redacts known sensitive fields, but token handlers should
+still emit safe metadata rather than relying on redaction to clean raw token
+material. When troubleshooting token behavior, inspect request type, configured
+handler, expiry, remaining attempt count, and pipeline failure reason instead
+of copying token values into logs.
+
 ## Tests
 
 The module owns generated schema coverage for the token schema. Token consumers such as `nOtp` add focused contract tests for route delegation and token-type behavior.

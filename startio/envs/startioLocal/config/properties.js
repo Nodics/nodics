@@ -17,8 +17,8 @@
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {
-    // Local sample credentials are explicit project-layer compatibility values.
-    // Deployments must override both values through governed secret configuration.
+    // Local-only sample credentials keep the startio developer environment runnable.
+    // Real deployments must override these values through governed secret configuration.
     defaultAuthDetail: {
         apiKey: process.env.NODICS_BOOTSTRAP_API_KEY || '944515ac-bbac-51cd-ac7e-3bbbb3c81bff'
     },
@@ -26,6 +26,28 @@ module.exports = {
         adminPassword: process.env.NODICS_BOOTSTRAP_ADMIN_PASSWORD || 'startio-local-admin-change-me',
         servicePassword: process.env.NODICS_BOOTSTRAP_SERVICE_PASSWORD || 'startio-local-service-change-me',
         serviceApiKey: process.env.NODICS_BOOTSTRAP_API_KEY || '944515ac-bbac-51cd-ac7e-3bbbb3c81bff'
+    },
+    apiExposure: {
+        categories: {
+            fileAccess: {
+                enabled: true
+            },
+            dataImport: {
+                enabled: true
+            },
+            dataExport: {
+                enabled: true
+            },
+            logManagement: {
+                enabled: true
+            },
+            testExecution: {
+                enabled: true
+            },
+            dynamicClass: {
+                enabled: true
+            }
+        }
     },
     authSecurity: {
         jwt: {

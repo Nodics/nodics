@@ -45,6 +45,40 @@ module.exports = {
             serviceAccountUserGroup: ['auth.internal.token.read', 'auth.internal.token.read.anyTenant']
         }
     },
+    apiExposure: {
+        default: {
+            enabled: true
+        },
+        categories: {
+            runtimeConfiguration: {
+                enabled: true
+            },
+            schemaMaintenance: {
+                enabled: true
+            },
+            openApiContract: {
+                enabled: true
+            },
+            fileAccess: {
+                enabled: false
+            },
+            dataImport: {
+                enabled: false
+            },
+            dataExport: {
+                enabled: false
+            },
+            logManagement: {
+                enabled: false
+            },
+            testExecution: {
+                enabled: false
+            },
+            dynamicClass: {
+                enabled: false
+            }
+        }
+    },
     tooling: {
         commands: {
             'docs:openapi': {

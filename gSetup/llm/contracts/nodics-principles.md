@@ -146,8 +146,11 @@ Every meaningful behavior change must consider:
 - documentation and LLM context impact.
 
 New code must preserve multi-tenancy, modular deployment, runtime
-configurability, traceability, backward compatibility, and customization through
-the hierarchy.
+configurability, traceability, and customization through the hierarchy.
+Compatibility must be treated as a governed release concern. During the current
+pre-production modernization phase, choose clean best-principle implementations
+over compatibility shims unless the owner explicitly asks for a compatibility
+path.
 
 ## Human And AI Equality
 

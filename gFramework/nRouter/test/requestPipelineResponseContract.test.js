@@ -39,6 +39,7 @@ const statusCodes = {
     SUC_SYS_00000: { code: '200', message: 'Process completed successfully' },
     ERR_TEST_00000: { code: '409', message: 'Controller rejected request' },
     ERR_AUTH_00002: { code: '401', message: 'Authentication or enterprise header is required' },
+    ERR_AUTH_00003: { code: '403', message: 'Access denied' },
     ERR_ENT_00000: { code: '400', message: 'Enterprise code is not valid' },
     ERR_TNT_00000: { code: '400', message: 'Tenant is null or invalid' },
     ERR_PIPE_00000: { code: '500', message: 'Pipeline configuration is invalid' },
@@ -46,6 +47,7 @@ const statusCodes = {
 };
 
 const logs = [];
+let apiExposure = undefined;
 const logger = {
     debug: function () {},
     warn: function (message) {
@@ -69,6 +71,9 @@ global.CONFIG = {
         }
         if (key === 'cache') {
             return { enabled: false, cacheability: { logSkippedReason: false } };
+        }
+        if (key === 'apiExposure') {
+            return apiExposure;
         }
         if (key === 'returnErrorStack') {
             return false;
@@ -295,11 +300,15 @@ function waitForResponse(response) {
 }
 
 async function execute(operation, headers, body) {
+    return executeRoute(createRoute(operation), headers, body);
+}
+
+async function executeRoute(route, headers, body) {
     let response = createHttpResponse();
     global.SERVICE.DefaultRequestHandlerService.startRequestHandler(
         createHttpRequest(headers, body),
         response,
-        createRoute(operation)
+        route
     );
     return waitForResponse(response);
 }
@@ -357,6 +366,27 @@ async function execute(operation, headers, body) {
     assert.strictEqual(validationErrorResponse.payload.responseCode, '401');
     assert.strictEqual(validationErrorResponse.payload.message, 'Authentication or enterprise header is required');
     assert.deepStrictEqual(controllerCalls, []);
+
+    controllerCalls = [];
+    apiExposure = {
+        default: { enabled: true },
+        categories: {
+            testExecution: { enabled: false }
+        }
+    };
+    let disabledExposureRoute = Object.assign(createRoute('success'), {
+        apiExposure: 'testExecution'
+    });
+    let disabledExposureResponse = await executeRoute(disabledExposureRoute, {
+        'x-enterprise-code': 'contractEnterprise'
+    });
+
+    assert.strictEqual(disabledExposureResponse.statusCode, '403');
+    assert.strictEqual(disabledExposureResponse.payload.code, 'ERR_AUTH_00003');
+    assert.strictEqual(disabledExposureResponse.payload.responseCode, '403');
+    assert.strictEqual(disabledExposureResponse.payload.message, 'Access denied: API category is disabled for this runtime: testExecution');
+    assert.deepStrictEqual(controllerCalls, []);
+    apiExposure = undefined;
 
     let inactiveRouteResponse = createHttpResponse();
     global.SERVICE.DefaultRouterOperationService.bindOperation(

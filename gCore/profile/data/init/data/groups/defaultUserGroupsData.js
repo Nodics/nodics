@@ -128,7 +128,23 @@ module.exports = {
             'identity.credential.rotate',
             'cache.flush',
             'cache.configuration.router.update',
-            'cache.configuration.item.update'
+            'cache.configuration.item.update',
+            'system.file.read',
+            'system.file.download',
+            'system.log.level.update',
+            'system.schema.index.rebuild',
+            'system.schema.validator.rebuild',
+            'system.test.unit.run',
+            'system.test.nodics.run',
+            'import.init.run',
+            'import.core.run',
+            'import.sample.run',
+            'import.local.run',
+            'export.run',
+            'dynamo.class.view',
+            'dynamo.class.snapshot.view',
+            'dynamo.class.update',
+            'dynamo.class.execute'
         ]
     },
     record12: {

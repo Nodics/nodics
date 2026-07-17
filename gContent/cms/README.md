@@ -30,6 +30,14 @@ Content templating separates:
 The CMS module owns generic content contracts. Project modules own
 project-specific content types, templates, and sample/core data.
 
+## Initial Users
+
+CMS initializer data may define inactive example principals that show which
+groups own CMS work. It must not ship usable default passwords or API keys.
+Projects that need real CMS users should activate and credential those users in
+their own project/environment layer through governed identity and secret
+handling.
+
 ## Extension And Governance
 
 When changing CMS behavior, document:

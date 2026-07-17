@@ -29,6 +29,8 @@ module.exports = {
             updateSchemaIndexesBySchemaName: {
                 secured: true,
                 accessGroups: ['userGroup'],
+                permission: 'system.schema.index.rebuild',
+                apiExposure: 'schemaMaintenance',
                 key: '/schema/indexes/schema/:schema',
                 method: 'POST',
                 controller: 'DefaultSchemaIndexController',
@@ -43,6 +45,8 @@ module.exports = {
             updateSchemaIndexesByModuleName: {
                 secured: true,
                 accessGroups: ['userGroup'],
+                permission: 'system.schema.index.rebuild',
+                apiExposure: 'schemaMaintenance',
                 key: '/schema/indexes',
                 method: 'POST',
                 controller: 'DefaultSchemaIndexController',
@@ -59,6 +63,8 @@ module.exports = {
             updateSchemaValidatorBySchemaName: {
                 secured: true,
                 accessGroups: ['userGroup'],
+                permission: 'system.schema.validator.rebuild',
+                apiExposure: 'schemaMaintenance',
                 key: '/schema/validator/schema/:schema',
                 method: 'POST',
                 controller: 'DefaultSchemaValidatorController',
@@ -73,6 +79,8 @@ module.exports = {
             updateSchemaValidatorByModuleName: {
                 secured: true,
                 accessGroups: ['userGroup'],
+                permission: 'system.schema.validator.rebuild',
+                apiExposure: 'schemaMaintenance',
                 key: '/schema/validator',
                 method: 'POST',
                 controller: 'DefaultSchemaValidatorController',

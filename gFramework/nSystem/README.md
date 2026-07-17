@@ -5,6 +5,36 @@ imports, exports, diagnostics, contracts, and tests. It is a control-plane
 module: project modules may override its routers, controllers, facades, and
 services through the normal later-loaded hierarchy.
 
+## Control-plane route permissions
+
+System APIs are backend control-plane routes. They may be called by an admin
+application, CLI, AI tool, Postman, or support automation, but the security
+contract is owned by route metadata.
+
+Sensitive system routes must declare action-specific permissions:
+
+- file read/download routes use `system.file.read` and
+  `system.file.download`;
+- import routes use `import.init.run`, `import.core.run`,
+  `import.sample.run`, or `import.local.run`;
+- log-level mutation uses `system.log.level.update`;
+- schema index rebuild uses `system.schema.index.rebuild`;
+- test execution uses `system.test.unit.run` or `system.test.nodics.run`;
+- export uses `export.run`;
+- runtime configuration routes use their `runtime.config.*` permissions.
+
+Sensitive system routes also declare `apiExposure` categories so topology can
+disable complete API families before permission checks or controller execution.
+Current categories include `fileAccess`, `dataImport`, `dataExport`,
+`logManagement`, `testExecution`, `schemaMaintenance`, `runtimeConfiguration`,
+and `openApiContract`. Project, environment, server, or node configuration must
+explicitly enable categories that are not part of the framework default runtime
+surface.
+
+Do not expose system/control-plane behavior with only a broad group such as
+`userGroup`. Add the permission to the catalog and a route contract test when a
+new control-plane API is introduced.
+
 ## Runtime property configuration
 
 `POST /nodics/system/config` no longer mutates tenant properties directly. It

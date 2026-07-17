@@ -15,6 +15,8 @@ Before creating a route, define:
 - Which permission is required?
 - Is the caller a human user, service account, internal module, or external system?
 - Does the route work before login, after login, or only for service-to-service communication?
+- Is this route a sensitive runtime, diagnostic, file, import/export, test,
+  dynamic class, or maintenance API that needs an `apiExposure` category?
 
 ## Route Ownership
 
@@ -33,6 +35,7 @@ A route definition makes these decisions visible:
 - Controller and action.
 - Request type.
 - Permission configuration.
+- API exposure category for topology-sensitive control-plane routes.
 - Authentication or pre-authentication behavior.
 - Tenant requirements.
 - Cache behavior if applicable.
@@ -49,11 +52,20 @@ For every route, document and test:
 
 - Whether authentication is required.
 - Which permission is required.
+- Whether an `apiExposure` category is required and which runtime layers enable
+  it.
 - Whether tenant context is required.
 - Whether internal token access is allowed.
 - Whether the route is intentionally pre-authentication.
 
 Login routes are special because they happen before user authentication. Internal token and module-to-module routes must remain secured.
+
+For control-plane APIs, permissions are not the only decision. Use
+`apiExposure` when the route category should be enabled in local, development,
+support, or operations topology but disabled in production-like servers by
+default. Examples include test execution, file access, data import/export, log
+mutation, dynamic class operations, and other diagnostics. A disabled category
+must fail before route help, controller mapping, or service execution.
 
 ## Standard API Flow
 

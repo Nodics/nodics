@@ -62,7 +62,11 @@ The expected posture is:
   generating fixtures and assertions from the effective active contract after
   overrides.
 - Preserve multi-tenancy, modular deployment, runtime configurability,
-  traceability, backward compatibility, and layered overrideability.
+  traceability, and layered overrideability.
+- Apply compatibility as a governed release concern, not a blanket pre-production
+  constraint. Until Nodics has a production-ready reference project/release,
+  prefer clean best-principle implementations over compatibility shims unless
+  the owner explicitly asks for a compatibility path.
 - When working in a customer/project module that uses Nodics, do not inspect or
   modify framework code unless the developer explicitly asks for framework work.
 

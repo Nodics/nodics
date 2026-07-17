@@ -233,10 +233,16 @@ const moduleServiceSource = read('gFramework/nService/src/service/module/default
 const profileProviderSource = read('gCore/profile/src/service/authentication/defaultAuthenticationProviderService.js');
 const apiKeyInterceptorSource = read('gCore/profile/src/service/interceptors/defaultAPIKeyInterceptorService.js');
 const employeeServiceSource = read('gCore/profile/src/service/employee/defaultEmployeeService.js');
+const cmsEmployeeData = read('gContent/cms/data/init/data/user/defaultCmsEmployeeData.js');
+const workflowEmployeeData = read('gCore/workflow/flowCore/data/init/data/user/defaultWorkflowEmployeeData.js');
 const auditService = require('../src/service/audit/defaultAuthAuditService');
 const routerProperties = require('../../nRouter/config/properties');
 assert.ok(!coreProperties.includes("jwtSecretKey: 'nodics'"));
 assert.ok(!coreProperties.includes("apiKey: '944515ac"));
+assert.ok(!cmsEmployeeData.includes("password: 'content"));
+assert.ok(!cmsEmployeeData.includes("apiKey: '944515ac"));
+assert.ok(!workflowEmployeeData.includes("password: 'workflow"));
+assert.ok(!workflowEmployeeData.includes("apiKey: '944515ac"));
 assert.ok(!authProviderSource.includes("|| 'nodics'"));
 assert.ok(!securedPipelineSource.includes("'Authorizing auth token : ' + request.authToken"));
 assert.ok(!securedPipelineSource.includes("'Authorizing api key : ' + request.apiKey"));

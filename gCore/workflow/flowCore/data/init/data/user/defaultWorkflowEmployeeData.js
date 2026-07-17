@@ -16,10 +16,12 @@
  * @owner workflow
  * @override Projects may override or extend this initializer data through layered import data rather than editing out-of-the-box framework records.
  */
+const crypto = require('crypto');
+
 module.exports = {
     record0: {
         code: 'workflowAdmin',
-        active: true,
+        active: false,
         name: {
             title: 'Mr.',
             firstName: 'workflow',
@@ -28,17 +30,17 @@ module.exports = {
         loginId: 'workflowAdmin',
         password: {
             loginId: 'workflowAdmin',
-            password: 'workflowAdmin',
+            password: crypto.randomBytes(32).toString('base64url'),
             active: true
         },
-        apiKey: '944515ac-bbac-51cd-ac7e-3bbbsdc835ff',
+        principalType: 'human',
         userGroups: ['workflowCreaterGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']
     },
     record1: {
         code: 'workflowCreator',
-        active: true,
+        active: false,
         name: {
             title: 'Mr.',
             firstName: 'workflow',
@@ -47,17 +49,17 @@ module.exports = {
         loginId: 'workflowCreator',
         password: {
             loginId: 'workflowCreator',
-            password: 'workflowCreator',
+            password: crypto.randomBytes(32).toString('base64url'),
             active: true
         },
-        apiKey: '944515ac-bbac-51cd-ac7e-3bbbsdc835ff',
+        principalType: 'human',
         userGroups: ['workflowCreaterGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']
     },
     record2: {
         code: 'workflowApprover',
-        active: true,
+        active: false,
         name: {
             title: 'Mr.',
             firstName: 'workflow',
@@ -66,10 +68,10 @@ module.exports = {
         loginId: 'workflowApprover',
         password: {
             loginId: 'workflowApprover',
-            password: 'workflowApprover',
+            password: crypto.randomBytes(32).toString('base64url'),
             active: true
         },
-        apiKey: '944515ac-bbac-51cd-ac7e-3bbbsdc345ff',
+        principalType: 'human',
         userGroups: ['workflowApproverGroup'],
         addresses: ['defaultEmployeeAddress'],
         contacts: ['defaultEmployeeContact']

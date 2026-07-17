@@ -83,6 +83,28 @@ module.exports = {
     log: {
         enabled: true,
         level: 'debug',
+        redaction: {
+            enabled: true,
+            mask: '[REDACTED]',
+            sensitiveKeys: [
+                'authorization',
+                'authToken',
+                'accessToken',
+                'refreshToken',
+                'token',
+                'password',
+                'secret',
+                'credential',
+                'credentials',
+                'apiKey',
+                'x-api-key',
+                'cookie',
+                'set-cookie',
+                'jwtSecretKey',
+                'clientSecret',
+                'privateKey'
+            ]
+        },
         transports: {
             console: {
                 consoleTransport: {

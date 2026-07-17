@@ -283,7 +283,30 @@ Good diagnostics identify:
 - reason code for failure;
 - sanitized error detail.
 
-Logs must not expose credentials, tokens, secrets, or sensitive payloads. When a failure affects runtime governance, imports, jobs, messaging, or security, diagnostics support audit and rollback decisions.
+Logs must not expose credentials, tokens, secrets, or sensitive payloads. The
+central logger redacts configured sensitive fields before supported transports
+serialize log output, but developers should still log safe metadata instead of
+raw secrets.
+
+Use logs to capture:
+
+- capability owner;
+- operation name;
+- tenant or customer context when safe;
+- correlation id or run id;
+- reason code;
+- status;
+- safe counts and timing.
+
+Do not log generated tokens, caller-submitted tokens, passwords, API keys,
+cookies, authorization headers, private keys, connection-string credentials, or
+full sensitive payloads. Configure extra redaction keys under
+`log.redaction.sensitiveKeys` in layered `properties.js` when a project adds a
+new credential field.
+
+When a failure affects runtime governance, imports, jobs, messaging, or
+security, diagnostics support audit and rollback decisions without exposing
+usable credential material.
 
 ## Data Import And Export
 

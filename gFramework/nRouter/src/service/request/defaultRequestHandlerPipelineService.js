@@ -57,6 +57,60 @@ module.exports = {
     },
 
     /**
+     * Blocks route categories that are not exposed for the active runtime.
+     *
+     * @param {Object} request Nodics request context.
+     * @param {Object} request.router Effective route definition selected from active modules.
+     * @param {Object} response Nodics response context.
+     * @param {Object} process Pipeline process controller.
+     * @returns {void}
+     * @throws Emits `ERR_AUTH_00003` when the route category is disabled.
+     */
+    validateApiExposure: function (request, response, process) {
+        let category = this.getApiExposureCategory(request.router || {});
+        if (!category || this.isApiExposureEnabled(category)) {
+            process.nextSuccess(request, response);
+            return;
+        }
+        process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00003', 'API category is disabled for this runtime: ' + category));
+    },
+
+    /**
+     * Resolves the route exposure category from route metadata.
+     *
+     * @param {Object} router Effective route definition.
+     * @returns {string|undefined} Exposure category.
+     */
+    getApiExposureCategory: function (router) {
+        if (!router || !router.apiExposure) {
+            return undefined;
+        }
+        if (_.isString(router.apiExposure)) {
+            return router.apiExposure;
+        }
+        return router.apiExposure.category;
+    },
+
+    /**
+     * Checks whether an API exposure category is enabled for the active runtime.
+     *
+     * @param {string} category Exposure category.
+     * @returns {boolean} True when the category is exposed.
+     */
+    isApiExposureEnabled: function (category) {
+        let exposure = CONFIG.get('apiExposure') || {};
+        let defaultConfig = exposure.default || {};
+        let categoryConfig = exposure.categories && exposure.categories[category] || {};
+        if (Object.prototype.hasOwnProperty.call(categoryConfig, 'enabled')) {
+            return categoryConfig.enabled !== false;
+        }
+        if (Object.prototype.hasOwnProperty.call(defaultConfig, 'enabled')) {
+            return defaultConfig.enabled !== false;
+        }
+        return true;
+    },
+
+    /**
      * Stops normal execution and returns configured router help when the caller appends `?help`.
      *
      * @param {Object} request Nodics request context.

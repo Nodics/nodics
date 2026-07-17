@@ -14,6 +14,20 @@ environment, server, node, tenant, or runtime governance, prefer
 resolves that value from effective configuration before checking the
 authenticated principal's permissions.
 
+Sensitive runtime, diagnostic, file, import, export, test, dynamic class, and
+maintenance APIs must also declare an `apiExposure` category. The request
+handler pipeline checks `apiExposure.categories.<category>.enabled` before route
+help, controller dispatch, or business behavior runs. This is a topology gate:
+permissions answer "who may call this API"; `apiExposure` answers "should this
+API category exist in this runtime at all."
+
+Framework defaults keep operational configuration, schema maintenance, and
+OpenAPI contract APIs available, while file access, data import/export, log
+mutation, test execution, and dynamic class APIs are disabled unless a
+project/environment/server/node layer enables them. Developer servers such as
+`startioLocal` may opt in through layered `config/properties.js`; production-like
+servers should enable only the categories required for their operational model.
+
 ## Developer Guidance
 
 Router guidance covers route registration, special routers, request objects,
@@ -41,6 +55,7 @@ A route contribution describes:
 - controller and action;
 - request type;
 - security and permission configuration;
+- runtime/topology exposure category when the route is sensitive;
 - tenant/request context expectations;
 - cache behavior if any;
 - generated API/OpenAPI impact;

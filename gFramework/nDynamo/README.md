@@ -40,8 +40,13 @@ Runtime property governance rejects secret-bearing paths and prototype-mutating
 keys. Secrets remain owned by external layered configuration or a customer
 secret-manager integration. All control-plane routes are secured and carry
 action permissions defined by the profile runtime-configuration groups.
-Sensitive paths are matched by the layer-overridable
-`runtimePropertyGovernance.sensitivePathPatterns` property.
+Dynamic class inspection, snapshot, update, and execute routes use
+`dynamo.class.view`, `dynamo.class.snapshot.view`, `dynamo.class.update`, and
+`dynamo.class.execute`. They also declare the `dynamicClass` `apiExposure`
+category so local or support topologies can enable them deliberately while
+production-like servers keep them unavailable by default. Sensitive paths are
+matched by the layer-overridable `runtimePropertyGovernance.sensitivePathPatterns`
+property.
 
 ## Customization contract
 

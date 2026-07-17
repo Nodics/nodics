@@ -31,6 +31,23 @@ configuration and credentials must be contributed by project, environment,
 server, node, external, or governed runtime layers rather than hardcoded into
 framework services.
 
+## Schema Maintenance APIs
+
+Schema index and schema validator rebuild routes are control-plane APIs. They
+are secured and must carry action-specific permissions:
+
+- `system.schema.index.rebuild` for schema index rebuild routes;
+- `system.schema.validator.rebuild` for schema validator rebuild routes.
+
+Projects may override these routes in later modules, but must keep explicit
+permission metadata or a governed `permissionConfig`. Do not rely only on broad
+groups such as `userGroup` for schema maintenance APIs.
+
+These routes also carry the `schemaMaintenance` `apiExposure` category. If a
+project wants to disable schema maintenance APIs for a specific topology, do it
+through layered `apiExposure.categories.schemaMaintenance.enabled` configuration
+instead of removing framework routes.
+
 ## Provider Adapter Checklist
 
 Use this checklist when adding a new database adapter such as Oracle:

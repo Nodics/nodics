@@ -56,7 +56,7 @@ module.exports = {
         try {
             let tokenConfig = CONFIG.get('token')[request.type];
             let generatedToken = SERVICE[tokenConfig.tokenHandler]['generateToken'](request);
-            _self.LOG.debug('Generated Token: ', generatedToken);
+            _self.LOG.debug('Generated token for type: ', request.type);
             return String(generatedToken);
         } catch (error) {
             throw new CLASSES.NodicsError(error, 'While generating Token', 'ERR_TKN_00000');

@@ -112,6 +112,66 @@ Security tests should cover:
 - Invalidation after security changes.
 - Audit records without secrets.
 
+## Bootstrap Credentials
+
+Framework initializer data must not ship usable default passwords, API keys, or
+service credentials. Mandatory bootstrap may create missing non-secret groups,
+permissions, and principal metadata, but credential material must come from
+governed project/environment/server/node configuration, secret management, or an
+explicit credential-rotation operation.
+
+When framework modules seed example users for capability ownership, keep those
+users inactive unless a project layer deliberately activates them, and generate
+non-reusable placeholder password material instead of source-controlled
+passwords. Service API keys must not be embedded in framework data files.
+
+## Control-Plane API Permissions
+
+Control-plane APIs are backend APIs used by administrators, support tooling,
+CLI tools, AI tools, or a future admin application to inspect or change runtime
+state. They are not UI screens.
+
+Control-plane APIs use two separate gates:
+
+1. `apiExposure` decides whether an API category is available in the current
+   project, environment, server, or node.
+2. Route permission metadata decides whether the authenticated caller may use
+   the exposed route.
+
+This separation matters in a micro-services topology. A local developer server
+can enable test execution, dynamic class inspection, file access, import/export,
+or diagnostics when those capabilities are needed for development. A
+production-like server should expose only the categories required for operations
+and should keep local-only utilities disabled even if a user has broad
+permissions.
+
+Every control-plane route must declare an action-specific permission in route
+metadata or an explicit `permissionConfig`. Broad access groups such as
+`userGroup` may remain as a base authenticated-user boundary, but they are not
+enough for sensitive operations.
+
+Examples of action-specific control-plane permissions include:
+
+- `runtime.config.preview`
+- `runtime.config.request.activate`
+- `system.file.read`
+- `system.log.level.update`
+- `system.schema.index.rebuild`
+- `system.schema.validator.rebuild`
+- `import.local.run`
+- `export.run`
+- `dynamo.class.update`
+
+When adding a new control-plane API, update the permission catalog, seed or
+govern the correct user group, add a route contract test, and verify the
+cross-module control-plane route permission contract.
+
+When the API is sensitive to topology, also declare an `apiExposure` category in
+the route metadata and prove that disabled categories fail closed before route
+help or controller execution. Enable categories through layered
+`config/properties.js` only in the project, environment, server, or node where
+the category is intentionally available.
+
 Useful commands:
 
 ```bash

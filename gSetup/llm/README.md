@@ -89,7 +89,11 @@ Nodics is an enterprise application platform and application factory, not a ligh
 
 Capabilities are sacred; implementations are negotiable.
 
-Every feature must preserve layered customization, multi-tenancy, runtime governance, generated artifact regeneration, traceability, and backward compatibility.
+Every feature must preserve layered customization, multi-tenancy, runtime
+governance, generated artifact regeneration, and traceability. Compatibility is
+a governed release concern: during the current pre-production modernization
+phase, prefer clean best-principle implementations over compatibility shims
+unless the owner explicitly asks for a compatibility path.
 
 The `Change Acceptance Contract` in `nodics-principles.md` is mandatory for
 every modified or new source file. In particular, a new or changed extension

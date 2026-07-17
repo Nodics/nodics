@@ -23,6 +23,8 @@ module.exports = {
             getClass: {
                 secured: true,
                 accessGroups: ['userGroup'],
+                permission: 'dynamo.class.view',
+                apiExposure: 'dynamicClass',
                 key: '/class/get/:className',
                 method: 'GET',
                 controller: 'DefaultClassConfigurationController',
@@ -37,6 +39,8 @@ module.exports = {
             getSnapshot: {
                 secured: true,
                 accessGroups: ['userGroup'],
+                permission: 'dynamo.class.snapshot.view',
+                apiExposure: 'dynamicClass',
                 key: '/class/snapshot/:type/:className',
                 method: 'GET',
                 controller: 'DefaultClassConfigurationController',
@@ -51,6 +55,8 @@ module.exports = {
             updateClass: {
                 secured: true,
                 accessGroups: ['userGroup'],
+                permission: 'dynamo.class.update',
+                apiExposure: 'dynamicClass',
                 key: '/class/update/:type/:className',
                 method: 'PUT',
                 controller: 'DefaultClassConfigurationController',
@@ -69,6 +75,8 @@ module.exports = {
             executeClass: {
                 secured: true,
                 accessGroups: ['userGroup'],
+                permission: 'dynamo.class.execute',
+                apiExposure: 'dynamicClass',
                 key: '/class/execute',
                 method: 'POST',
                 controller: 'DefaultClassConfigurationController',
