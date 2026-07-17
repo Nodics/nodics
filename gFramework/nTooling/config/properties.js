@@ -223,6 +223,7 @@ module.exports = {
                 { node: 'gFramework/nTooling/test/toolingCommandOverride.test.js' },
                 { node: 'gFramework/nTooling/test/repositoryToolingBoundary.test.js' },
                 { node: 'gFramework/nTooling/test/dependencyRuntimeContract.test.js' },
+                { node: 'gFramework/nTooling/test/releaseCheckCommandContract.test.js' },
                 { node: 'gFramework/nTooling/test/projectPostmanCoverageOwnership.test.js' },
                 { node: 'gFramework/nTooling/test/fullTestSuiteCoverageContract.test.js' },
                 { node: 'gFramework/nTooling/test/moduleStructure.test.js' },
@@ -448,6 +449,21 @@ module.exports = {
                     { tool: ['governance:report'] },
                     { tool: ['docs:coverage', '--scope=generated', '--fail'] },
                     { tool: ['quality:copyright', '--fail'] }
+                ]
+            },
+            'release:check': {
+                description: 'Print or execute the clean-checkout release gate for dependency install, clean, build, documentation, LLM context, and tests.',
+                handler: 'src/service/command/defaultReleaseCheckCommandService.js',
+                steps: [
+                    { npm: ['ci'] },
+                    { npmRun: ['clean'] },
+                    { npmRun: ['build'] },
+                    { npmRun: ['llm:validate'] },
+                    { npmRun: ['quality:docs'] },
+                    { npmRun: ['test:basic'] }
+                ],
+                fullSteps: [
+                    { npmRun: ['test:full'] }
                 ]
             },
             'test:suite': {

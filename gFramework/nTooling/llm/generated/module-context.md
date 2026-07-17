@@ -24,10 +24,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 28 |
-| Test files | 15 |
+| Source files | 29 |
+| Test files | 16 |
 | Data files | 0 |
-| All module-owned files | 52 |
+| All module-owned files | 54 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -53,7 +53,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 48 |
+| Documented | 50 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -91,6 +91,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/src/service/command/defaultMcpValidationCommandService.js` | `src` | `documented` | 3/3 | Runs approved Nodics validation checks for MCP clients and prints structured JSON results. |  |
 | `gFramework/nTooling/src/service/command/defaultNodeScriptCommandService.js` | `src` | `documented` | 1/1 | Executes a trusted Node.js tooling script owned by the effective command-contributing module while preserving the selected project home. |  |
 | `gFramework/nTooling/src/service/command/defaultNodicsLifecycleCommandService.js` | `src` | `documented` | 5/5 | Runs root Nodics lifecycle commands through governed tooling so package.json exposes a small command façade while build and clean gates stay source-controlled. |  |
+| `gFramework/nTooling/src/service/command/defaultReleaseCheckCommandService.js` | `src` | `documented` | 6/6 | Runs or prints the clean-checkout release gate from governed tooling configuration so dependency installation, generation, documentation, LLM context, and tests remain wired to a single release command. |  |
 | `gFramework/nTooling/src/service/command/defaultTestSuiteCommandService.js` | `src` | `documented` | 7/7 | Runs named Nodics test suites from tooling-owned suite configuration so root package scripts stay small while test composition remains source-controlled and overrideable. |  |
 | `gFramework/nTooling/src/service/context/defaultCleanModuleLlmContextService.js` | `src` | `documented` | 0/0 | Removes generated module context from every discovered project module while preserving human-authored LLM guidance. |  |
 | `gFramework/nTooling/src/service/context/defaultGenerateModuleLlmContextService.js` | `src` | `documented` | 0/0 | Generates deterministic, module-owned source, schema, test, documentation-status, and fingerprint context for every discovered Nodics package. |  |
@@ -120,6 +121,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/test/moduleMetadata.test.js` | `test` | `documented` | 0/0 | Validates canonical Nodics package kinds, runtime flags, loader eligibility, ownership, and topology metadata across the target project. |  |
 | `gFramework/nTooling/test/moduleStructure.test.js` | `test` | `documented` | 0/0 | Enforces mandatory configuration files, canonical README naming, safe runtime identifiers, and explicit framework-folder naming across all Nodics modules. |  |
 | `gFramework/nTooling/test/projectPostmanCoverageOwnership.test.js` | `test` | `documented` | 0/0 | Enforces that reference Postman coverage for domain and project APIs remains owned by the active module that defines the capability. |  |
+| `gFramework/nTooling/test/releaseCheckCommandContract.test.js` | `test` | `documented` | 0/0 | Verifies the clean-checkout release gate is configured, dry-runnable, and executable through governed nTooling command contracts. |  |
 | `gFramework/nTooling/test/repositoryToolingBoundary.test.js` | `test` | `documented` | 0/0 | Prevents executable tooling from returning to the root scripts folder or depending on temporary docs configuration. |  |
 | `gFramework/nTooling/test/structureComplianceAudit.test.js` | `test` | `documented` | 0/0 | Verifies that the structure compliance audit reports Nodics structure-matrix gaps without mutating project files. |  |
 | `gFramework/nTooling/test/structureGeneratorAlignment.test.js` | `test` | `documented` | 0/0 | Verifies that contract-driven structure generation produces modules that pass the canonical structure compliance audit. |  |

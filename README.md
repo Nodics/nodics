@@ -163,6 +163,18 @@ Run the full test gate:
 npm run test:full
 ```
 
+Print the clean-checkout release gate:
+
+```bash
+npm run release:check
+```
+
+Execute it when preparing a release candidate:
+
+```bash
+npm run release:check -- --execute --full
+```
+
 ## Documentation Map
 
 - Public user and developer guides: [gDocs](gDocs/README.md)

@@ -190,6 +190,13 @@ versions or dependency ownership. Commit `package.json` and `package-lock.json`
 together for dependency changes, and run the dependency runtime contract plus
 the appropriate test/documentation gates before accepting the change.
 
+Use `npm run release:check` to print the clean-checkout release gate before
+claiming release readiness. Use `npm run release:check -- --execute` to run the
+standard gate and `npm run release:check -- --execute --full` for a release
+candidate. Do not invent separate release scripts outside nTooling; extend the
+`release:check` tooling command through governed command overrides when a
+project needs stricter gates.
+
 ## Provider Implementation Contract
 
 When adding a new implementation behind an existing capability, such as an

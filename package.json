@@ -17,6 +17,7 @@
         "test:basic:report": "node gFramework/nTooling/bin/nodics-tool.js test:report --suite=basic -- npm run test:basic",
         "test:full": "node gFramework/nTooling/bin/nodics-tool.js test:suite --suite=full",
         "test:full:report": "node gFramework/nTooling/bin/nodics-tool.js test:report --suite=full -- npm run test:full",
+        "release:check": "node gFramework/nTooling/bin/nodics-tool.js release:check",
         "test:config": "node gFramework/nTooling/bin/nodics-tool.js test:suite --suite=config",
         "test:tooling": "node gFramework/nTooling/bin/nodics-tool.js test:suite --suite=tooling",
         "test:generated": "node gFramework/nTooling/bin/nodics-tool.js test:suite --suite=generated",

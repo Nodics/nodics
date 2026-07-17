@@ -84,6 +84,7 @@ function requireFile(relativePath) {
 requireScriptIncludes('test:basic', ['test:suite --suite=basic']);
 requireScriptIncludes('test:full', ['test:suite --suite=full']);
 requireScriptIncludes('test:import', ['test:suite --suite=import']);
+requireScriptIncludes('release:check', ['release:check']);
 
 requireSuiteIncludes('basic', [
     'suite:import',
@@ -144,6 +145,7 @@ requireSuiteIncludes('ems', [
     'gFramework/nData/nImport/import/test/importTenantPrecedence.test.js',
     'gFramework/nData/nImport/import/test/testTenantImportIsolation.test.js',
     'gFramework/nData/nImport/import/test/importGovernanceLifecycleContract.test.js',
+    'gFramework/nTooling/test/releaseCheckCommandContract.test.js',
     'gCore/workflow/flowCore/test/workflowEventContinuationContract.test.js',
     'gCore/workflow/flowCore/test/workflowSplitAndRetryContract.test.js',
     'gCore/cronjob/test/cronJobRuntimeContainerContract.test.js',

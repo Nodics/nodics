@@ -49,6 +49,33 @@ Dependency release validation must include:
 - dependency updates committed with both `package.json` and
   `package-lock.json`.
 
+## Clean-Checkout Release Gate
+
+Use the governed release gate to prove the repository can be installed,
+cleaned, built, regenerated, documented, and tested from a clean checkout.
+
+Print the gate without running it:
+
+```bash
+npm run release:check
+```
+
+Execute the standard gate:
+
+```bash
+npm run release:check -- --execute
+```
+
+Execute the release-candidate gate with full validation:
+
+```bash
+npm run release:check -- --execute --full
+```
+
+The standard gate runs `npm ci`, `npm run clean`, `npm run build`,
+`npm run llm:validate`, `npm run quality:docs`, and `npm run test:basic`.
+The full gate also runs `npm run test:full`.
+
 ## Run Tests
 
 At minimum:
