@@ -4,6 +4,11 @@
     "index": "0",
     "description": "Nodics, A Node based enterprise application solution",
     "main": "nodics.js",
+    "packageManager": "npm@11.6.2",
+    "engines": {
+        "node": ">=22 <27",
+        "npm": ">=10 <12"
+    },
     "scripts": {
         "tool": "node gFramework/nTooling/bin/nodics-tool.js",
         "test": "npm run test:basic",
@@ -135,9 +140,44 @@
         "runtimeModule": true,
         "loadableByNodicsModuleLoader": true,
         "owns": [
-            "composition",
-            "llm"
-        ]
+        "composition",
+        "llm"
+        ],
+        "dependencyGovernance": {
+            "preferredNodeMajor": 24,
+            "supportedNodeMajors": [
+                22,
+                24
+            ],
+            "forwardValidationNodeMajors": [
+                26
+            ],
+            "unsupportedNodeMajors": [
+                20,
+                21,
+                23,
+                25
+            ],
+            "minimumNpmMajor": 10,
+            "maximumNpmMajorExclusive": 12,
+            "lockfile": {
+                "required": true,
+                "file": "package-lock.json",
+                "installCommand": "npm ci",
+                "updateCommand": "npm install",
+                "commitWithPackageJson": true
+            },
+            "releaseValidation": [
+                "npm ci",
+                "npm run clean",
+                "npm run build",
+                "npm run llm:validate",
+                "npm run quality:docs",
+                "npm run test:basic",
+                "npm run test:full"
+            ],
+            "upgradeCadence": "Review security updates when Dependabot reports them and perform planned dependency refreshes before release candidates."
+        }
     },
     "overrides": {
         "diff": "^8.0.3",

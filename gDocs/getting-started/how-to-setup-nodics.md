@@ -33,14 +33,29 @@ Provider-specific work may require additional local or remote infrastructure suc
 
 ## Install Node And NPM
 
-Install Node.js and npm before running Nodics commands. Use the version expected by the repository or project branch. After installation, verify:
+Install Node.js and npm before running Nodics commands. The repository declares
+its runtime contract in root `package.json`, `.nvmrc`, and
+`package-lock.json`.
+
+Current policy:
+
+- Preferred release line: Node.js 24.
+- Supported validation lines: Node.js 22 and Node.js 24.
+- Forward validation line: Node.js 26 when release testing future runtime
+  readiness.
+- npm range: 10.x or 11.x.
+- Node.js 25 is not a release target.
+
+After installation, verify:
 
 ```bash
 node --version
 npm --version
 ```
 
-If a project standardizes Node through a version manager, use the project version before installing dependencies. Changing Node versions after dependency installation can create confusing native-module or lock-file behavior.
+If you use a version manager, select the version from `.nvmrc` before
+installing dependencies. Changing Node versions after dependency installation
+can create confusing native-module or lock-file behavior.
 
 ## Install MongoDB
 
@@ -69,16 +84,19 @@ Startup is controlled by project, environment, server, and optional node selecti
 From the repository root:
 
 ```bash
-npm install
+npm ci
 ```
 
-This installs the Node packages used by the framework, project modules, tests, and tooling.
+This installs exactly the dependency graph recorded in `package-lock.json`.
+Use `npm install` only when you are intentionally adding, removing, or upgrading
+dependencies. When dependencies change, commit `package.json` and
+`package-lock.json` together.
 
 If dependency installation fails, check:
 
 - Your Node.js version.
 - Your npm registry access.
-- Whether the lock file changed unexpectedly.
+- Whether `package-lock.json` changed unexpectedly.
 - Whether native dependencies need local build tools.
 
 ## Install Required Modules

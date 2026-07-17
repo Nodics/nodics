@@ -119,11 +119,19 @@ Read the public documentation:
 
 ## Common Commands
 
+Use the repository runtime contract before installing dependencies. The
+preferred release line is Node.js 24 with npm 11. Node.js 22 remains in the
+supported validation matrix, and Node.js 26 is for forward validation as it
+moves toward LTS. Do not use Node.js 25 as a release target.
+
 Install dependencies:
 
 ```bash
-npm install
+npm ci
 ```
+
+Use `npm install` only when intentionally changing dependencies, and commit
+`package.json` and `package-lock.json` together.
 
 Build generated artifacts and documentation outputs:
 

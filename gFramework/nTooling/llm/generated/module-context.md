@@ -25,9 +25,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 28 |
-| Test files | 14 |
+| Test files | 15 |
 | Data files | 0 |
-| All module-owned files | 51 |
+| All module-owned files | 52 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -53,7 +53,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 47 |
+| Documented | 48 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -112,6 +112,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/src/service/quality/defaultDocumentationGatesQualityService.js` | `src` | `documented` | 0/0 | Applies project-overridable documentation governance configuration to enforced and report-only coverage gates. |  |
 | `gFramework/nTooling/src/service/quality/defaultStructureComplianceQualityService.js` | `src` | `documented` | 0/0 | Audits Nodics module, project, environment, server, and node structure against the canonical structure matrix without mutating source files. |  |
 | `gFramework/nTooling/test/copyrightHeaderGovernance.test.js` | `test` | `documented` | 0/0 | Validates Nodics copyright header detection and normalization. |  |
+| `gFramework/nTooling/test/dependencyRuntimeContract.test.js` | `test` | `documented` | 0/0 | Verifies the repository declares supported Node.js/npm versions, package-lock ownership, and release dependency validation commands. |  |
 | `gFramework/nTooling/test/fullTestSuiteCoverageContract.test.js` | `test` | `documented` | 0/0 | Guards the full Nodics test command surface so import, workflow, cron, NEMS, tenant, and distributed-communication coverage remains wired into executable package gates instead of living only as documentation. |  |
 | `gFramework/nTooling/test/llmChangeAcceptanceContract.test.js` | `test` | `documented` | 0/0 | Prevents the mandatory Nodics hierarchy, customization, and test-coverage contract from disappearing from canonical LLM guidance. |  |
 | `gFramework/nTooling/test/mcpReadOnlyGovernanceContract.test.js` | `test` | `documented` | 0/0 | Verifies the first MCP governance slice remains read-only and reports workspace, module, AGENTS, generated-context, and change-impact guidance from existing Nodics contracts. |  |

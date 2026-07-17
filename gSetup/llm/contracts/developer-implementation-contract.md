@@ -173,6 +173,23 @@ runtime-only expressions. Use a safe extractor, a replaceable service, or a
 documented runtime-independent property reader for the required property
 subtree.
 
+## Dependency And Runtime Contract
+
+Developers and AI tools must follow the root dependency contract before changing
+packages or runtime assumptions. The source of truth is root `package.json`,
+`.nvmrc`, and `package-lock.json`.
+
+Use Node.js 24 as the preferred release line. Keep Node.js 22 in the supported
+validation matrix while it remains supported, and use Node.js 26 only for
+forward validation until it becomes an adopted release target. Do not treat
+Node.js 25 as a release target.
+
+Use `npm ci` for clean installs, CI, release checks, and verification from a
+fresh checkout. Use `npm install` only when intentionally changing dependency
+versions or dependency ownership. Commit `package.json` and `package-lock.json`
+together for dependency changes, and run the dependency runtime contract plus
+the appropriate test/documentation gates before accepting the change.
+
 ## Provider Implementation Contract
 
 When adding a new implementation behind an existing capability, such as an

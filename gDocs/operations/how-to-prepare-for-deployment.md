@@ -11,6 +11,8 @@ Deployment is not only copying files to a server. It includes configuration, gen
 Confirm:
 
 - Target environment.
+- Node.js and npm versions match the repository runtime contract.
+- Dependencies are installed from `package-lock.json` with `npm ci`.
 - Active modules.
 - Server and node topology.
 - Database connection values.
@@ -24,6 +26,12 @@ Confirm:
 
 ## Build Before Release
 
+Install dependencies from the lockfile:
+
+```bash
+npm ci
+```
+
 Run:
 
 ```bash
@@ -31,6 +39,15 @@ npm run build
 ```
 
 The build command validates governance, documentation, generated artifacts, OpenAPI output, LLM context, and generated documentation coverage.
+
+Dependency release validation must include:
+
+- Node.js 24 as the preferred release line;
+- Node.js 22 while it remains in the supported validation matrix;
+- Node.js 26 as a forward validation line before adopting it;
+- `npm run test:full` before a release candidate;
+- dependency updates committed with both `package.json` and
+  `package-lock.json`.
 
 ## Run Tests
 
