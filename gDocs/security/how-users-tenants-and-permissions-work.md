@@ -120,6 +120,15 @@ permissions, and principal metadata, but credential material must come from
 governed project/environment/server/node configuration, secret management, or an
 explicit credential-rotation operation.
 
+Active bootstrap principals must use a declared secret source. Configure
+`bootstrapIdentity.source`, `adminPassword`, `servicePassword`, and
+`serviceApiKey` in the active project/environment/server/node layer or through a
+governed external/secret source. Production-like sources include `environment`,
+`externalProperty`, `secretManager`, and `runtimeSecret`. Local sample and test
+sources are accepted only when
+`authSecurity.compatibility.allowLocalBootstrapIdentity` is explicitly enabled
+by the local/test layer.
+
 When framework modules seed example users for capability ownership, keep those
 users inactive unless a project layer deliberately activates them, and generate
 non-reusable placeholder password material instead of source-controlled

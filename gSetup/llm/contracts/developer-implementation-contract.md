@@ -128,6 +128,22 @@ admin, service-to-service, or external-system access, state whether the existing
 server/node `httpHardening` policy is sufficient and add tests for any changed
 origin, body-limit, proxy, or rate-limit behavior.
 
+## Bootstrap Secret Contract
+
+Developers and AI tools must not put usable production passwords, API keys, JWT
+secrets, API-key peppers, or service credentials into framework source,
+initializer data, generated context, logs, tests, or documentation examples.
+
+Active bootstrap identity credentials must come from declared governed sources.
+When creating or changing a project/environment/server/node that activates
+bootstrap users, define `bootstrapIdentity.source`, `adminPassword`,
+`servicePassword`, and `serviceApiKey` through layered configuration or a
+secret-backed external source. Production-like sources must be governed values
+such as `environment`, `externalProperty`, `secretManager`, or `runtimeSecret`.
+Local/test sources such as `localSample` or `test` require the explicit
+`authSecurity.compatibility.allowLocalBootstrapIdentity` flag and must not be
+used as production defaults.
+
 ## Configuration Ownership Contract
 
 Module configuration belongs in `config/properties.js`. Developers and AI tools

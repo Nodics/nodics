@@ -13,7 +13,22 @@ const assert = require('assert');
 
 // @nodics-capability-behavior @nodics-area profile
 global.CONFIG = {
-    get: function () {
+    get: function (key) {
+        if (key === 'bootstrapIdentity') {
+            return {
+                source: 'test',
+                adminPassword: 'test-admin-password-12345',
+                servicePassword: 'test-service-password-12345',
+                serviceApiKey: 'test-service-api-key-value-12345678901234567890'
+            };
+        }
+        if (key === 'authSecurity') {
+            return {
+                compatibility: {
+                    allowLocalBootstrapIdentity: true
+                }
+            };
+        }
         return undefined;
     }
 };

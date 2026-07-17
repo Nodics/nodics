@@ -109,7 +109,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/data/init/data/enterprise/defaultTenantsData.xlsx` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/profile/data/init/data/groups/defaultUserGroupsData.js` | `data` | `documented` | 0/0 | Seeds the default user-group hierarchy and narrowly scoped administrative permissions required by profile and control-plane capabilities. |  |
 | `gCore/profile/data/init/data/user/defaultCutomerData.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
-| `gCore/profile/data/init/data/user/defaultEmployeeData.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
+| `gCore/profile/data/init/data/user/defaultEmployeeData.js` | `data` | `documented` | 0/0 | Provides mandatory profile initializer employees using validated bootstrap identity credentials from layered configuration. |  |
 | `gCore/profile/data/init/headers/address/defaultAddressesHeader.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
 | `gCore/profile/data/init/headers/address/defaultContactsHeader.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
 | `gCore/profile/data/init/headers/enterprise/defaultEnterpriseHeader.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |

@@ -17,6 +17,16 @@ migration aids, not production defaults. Projects may replace the provider or
 security utility through the normal layered module hierarchy without changing
 framework source.
 
+Bootstrap identity credentials are governed by `authSecurity.bootstrapIdentity`.
+Profile init data calls the nAuth bootstrap validation contract before it emits
+the active `admin` and `apiAdmin` records. A project, environment, server, or
+node layer must provide `bootstrapIdentity.source`, `adminPassword`,
+`servicePassword`, and `serviceApiKey`. Production-like sources should be named
+from governed locations such as `environment`, `externalProperty`,
+`secretManager`, or `runtimeSecret`. Local/test sources such as `localSample`
+and `test` are rejected unless
+`authSecurity.compatibility.allowLocalBootstrapIdentity` is explicitly enabled.
+
 Refresh-token persistence and principal lookup remain profile capabilities.
 Access tokens never contain API keys, passwords, or refresh tokens.
 
@@ -95,8 +105,9 @@ marker.
 ## Deployment and migration order
 
 1. Back up the dedicated tenant databases and verify restore procedures.
-2. Configure strong JWT and API-key secrets through a later project or
-   environment layer.
+2. Configure strong JWT, API-key pepper, and bootstrap identity secrets through
+   a later project, environment, server, node, external, or secret-manager
+   layer.
 3. Configure the profile auth channel to use Redis with local fallback disabled.
 4. Run P2 contracts and the required live Redis release test.
 5. Preview identity migration and retain its correlation identifier.

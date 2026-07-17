@@ -70,8 +70,16 @@ module.exports = {
         },
         compatibility: {
             allowInsecureDevelopmentSecret: false,
+            allowLocalBootstrapIdentity: false,
             allowNonExpiringTokens: false,
             allowPasswordHeaders: false
+        },
+        bootstrapIdentity: {
+            required: true,
+            allowedSources: ['environment', 'externalProperty', 'secretManager', 'runtimeSecret'],
+            localSources: ['localSample', 'test'],
+            minimumPasswordLength: 16,
+            minimumApiKeyLength: 32
         }
     },
     cache: {

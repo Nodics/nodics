@@ -13,6 +13,7 @@ const _ = require('lodash');
 const { v4: uuid } = require('uuid');
 
 const INSECURE_SECRETS = ['nodics', 'secret', 'password', 'changeme'];
+const INSECURE_BOOTSTRAP_VALUES = ['nodics', 'admin', 'apiadmin', 'password', 'secret', 'changeme', 'change-me'];
 
 /**
  * @module gFramework/nAuth/src/service/security/defaultAuthSecurityService
@@ -51,9 +52,70 @@ module.exports = {
             },
             compatibility: {
                 allowInsecureDevelopmentSecret: false,
+                allowLocalBootstrapIdentity: false,
                 allowNonExpiringTokens: false
+            },
+            bootstrapIdentity: {
+                required: true,
+                allowedSources: ['environment', 'externalProperty', 'secretManager', 'runtimeSecret'],
+                localSources: ['localSample', 'test'],
+                minimumPasswordLength: 16,
+                minimumApiKeyLength: 32
             }
         }, this.read(config, 'authSecurity') || {});
+    },
+
+    /**
+     * Resolves and validates bootstrap identity credentials from layered configuration.
+     *
+     * @param {*} config Layered configuration facade.
+     * @returns {Object} Validated bootstrap identity values.
+     * @throws {Error} When required bootstrap credentials or their declared source are unsafe.
+     */
+    validateBootstrapIdentity: function (config) {
+        const security = this.getSecurityConfiguration(config);
+        const policy = security.bootstrapIdentity || {};
+        const identity = this.read(config, 'bootstrapIdentity') || {};
+        if (policy.required === false && !identity.source) {
+            return identity;
+        }
+        const source = identity.source;
+        const allowedSources = [].concat(policy.allowedSources || []);
+        const localSources = [].concat(policy.localSources || []);
+        const localSource = localSources.indexOf(source) >= 0;
+        if (!source || (allowedSources.indexOf(source) < 0 && !localSource)) {
+            throw new Error('Bootstrap identity source must be declared through bootstrapIdentity.source');
+        }
+        if (localSource && security.compatibility.allowLocalBootstrapIdentity !== true) {
+            throw new Error('Local bootstrap identity sources are disabled outside explicit local/test configuration');
+        }
+        this.validateBootstrapSecretValue('adminPassword', identity.adminPassword, policy.minimumPasswordLength || 16, security);
+        this.validateBootstrapSecretValue('servicePassword', identity.servicePassword, policy.minimumPasswordLength || 16, security);
+        this.validateBootstrapSecretValue('serviceApiKey', identity.serviceApiKey, policy.minimumApiKeyLength || 32, security);
+        if (identity.adminPassword === identity.servicePassword) {
+            throw new Error('Bootstrap admin and service passwords must be different');
+        }
+        return identity;
+    },
+
+    /**
+     * Validates one bootstrap credential value.
+     *
+     * @param {string} name Credential name.
+     * @param {string} value Credential value.
+     * @param {number} minimumLength Required minimum length.
+     * @param {Object} security Effective auth security configuration.
+     * @returns {void}
+     */
+    validateBootstrapSecretValue: function (name, value, minimumLength, security) {
+        const normalized = typeof value === 'string' ? value.toLowerCase() : '';
+        const insecure = typeof value !== 'string' ||
+            value.length < minimumLength ||
+            INSECURE_BOOTSTRAP_VALUES.indexOf(normalized) >= 0 ||
+            normalized.indexOf('change-me') >= 0;
+        if (insecure && security.compatibility.allowLocalBootstrapIdentity !== true) {
+            throw new Error('A strong bootstrap ' + name + ' must be supplied through governed bootstrapIdentity configuration');
+        }
     },
 
     /**

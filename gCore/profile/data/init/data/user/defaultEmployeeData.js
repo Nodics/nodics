@@ -10,11 +10,14 @@
  */
 
 const crypto = require('crypto');
-const bootstrapIdentity = typeof CONFIG !== 'undefined' && CONFIG.get('bootstrapIdentity') || {};
+const authSecurity = require('../../../../../../gFramework/nAuth/src/service/security/defaultAuthSecurityService');
+const bootstrapConfig = typeof CONFIG !== 'undefined' ? CONFIG : { get: function () { return undefined; } };
+const bootstrapIdentity = authSecurity.validateBootstrapIdentity(bootstrapConfig);
 
 /**
  * @module gCore/profile/data/init/data/user/defaultEmployeeData
- * @description Provides profile initializer or sample data consumed by the import layer.
+ * @description Provides mandatory profile initializer employees using validated
+ * bootstrap identity credentials from layered configuration.
  * @layer data
  * @owner profile
  * @override Projects may override or extend this initializer data through layered import data rather than editing out-of-the-box framework records.

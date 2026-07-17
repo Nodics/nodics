@@ -72,6 +72,14 @@ implementation creates only missing non-secret groups declared by the effective
 identity-governance policy, never overwrites existing group customizations, and
 records every creation in the identity migration audit model.
 
+Mandatory active `admin` and `apiAdmin` initializer records require validated
+bootstrap identity configuration. The `bootstrapIdentity` property must declare
+its source and provide separate admin password, service password, and service
+API-key values. Production-like deployments should supply those values through
+governed project/environment/server/node configuration, external properties, or
+a secret manager. Local sample credentials are accepted only when the active
+environment explicitly enables the local bootstrap compatibility flag.
+
 Projects can replace the service list, override the reconciler in a later module
 layer, extend `identityGovernance.migration.groupTargets`, or disable automatic
 group reconciliation. Missing service principals or credentials are not

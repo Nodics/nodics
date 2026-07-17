@@ -23,6 +23,7 @@ module.exports = {
         apiKey: process.env.NODICS_BOOTSTRAP_API_KEY || '944515ac-bbac-51cd-ac7e-3bbbb3c81bff'
     },
     bootstrapIdentity: {
+        source: 'localSample',
         adminPassword: process.env.NODICS_BOOTSTRAP_ADMIN_PASSWORD || 'startio-local-admin-change-me',
         servicePassword: process.env.NODICS_BOOTSTRAP_SERVICE_PASSWORD || 'startio-local-service-change-me',
         serviceApiKey: process.env.NODICS_BOOTSTRAP_API_KEY || '944515ac-bbac-51cd-ac7e-3bbbb3c81bff'
@@ -66,7 +67,8 @@ module.exports = {
             secret: process.env.NODICS_JWT_SECRET || 'startio-local-only-jwt-secret-change-before-deployment'
         },
         compatibility: {
-            allowInsecureDevelopmentSecret: true
+            allowInsecureDevelopmentSecret: true,
+            allowLocalBootstrapIdentity: true
         },
         internalToken: {
             crossTenantGroups: ['userGroup']

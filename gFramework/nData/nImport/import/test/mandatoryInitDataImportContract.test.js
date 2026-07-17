@@ -25,10 +25,12 @@ global.CONFIG = {
         if (key === 'defaultTenant') return 'default';
         if (key === 'data') return { dataDirName: 'temp' };
         if (key === 'bootstrapIdentity') return {
-            adminPassword: 'test-admin-password',
-            servicePassword: 'test-service-password',
-            serviceApiKey: 'test-service-api-key'
+            source: 'test',
+            adminPassword: 'test-admin-password-12345',
+            servicePassword: 'test-service-password-12345',
+            serviceApiKey: 'test-service-api-key-value-12345678901234567890'
         };
+        if (key === 'authSecurity') return { compatibility: { allowLocalBootstrapIdentity: true } };
         return undefined;
     }
 };

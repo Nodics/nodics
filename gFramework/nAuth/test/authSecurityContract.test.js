@@ -45,6 +45,36 @@ const secureConfiguration = configuration({
 
 assert.throws(() => authSecurity.getJwtSecret(configuration({})), /strong JWT secret/);
 assert.throws(() => authSecurity.getJwtSecret(configuration({ jwtSecretKey: 'nodics' })), /strong JWT secret/);
+assert.throws(() => authSecurity.validateBootstrapIdentity(configuration({})), /Bootstrap identity source/);
+assert.throws(() => authSecurity.validateBootstrapIdentity(configuration({
+    bootstrapIdentity: {
+        source: 'localSample',
+        adminPassword: 'startio-local-admin-change-me',
+        servicePassword: 'startio-local-service-change-me',
+        serviceApiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff'
+    }
+})), /Local bootstrap identity sources are disabled/);
+assert.throws(() => authSecurity.validateBootstrapIdentity(configuration({
+    bootstrapIdentity: {
+        source: 'environment',
+        adminPassword: 'change-me',
+        servicePassword: 'change-me-too',
+        serviceApiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff'
+    }
+})), /strong bootstrap adminPassword/);
+assert.strictEqual(authSecurity.validateBootstrapIdentity(configuration({
+    authSecurity: {
+        compatibility: {
+            allowLocalBootstrapIdentity: true
+        }
+    },
+    bootstrapIdentity: {
+        source: 'test',
+        adminPassword: 'test-admin-password-12345',
+        servicePassword: 'test-service-password-12345',
+        serviceApiKey: 'test-service-api-key-value-12345678901234567890'
+    }
+})).source, 'test');
 assert.throws(() => authSecurity.getSignOptions(secureConfiguration, { lifetime: true }), /Non-expiring/);
 assert.deepStrictEqual(authSecurity.getVerifyOptions(secureConfiguration).algorithms, ['HS256']);
 assert.strictEqual(authSecurity.getVerifyOptions(secureConfiguration).algorithm, undefined);

@@ -101,7 +101,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nAuth/src/service/identity/defaultIdentityGovernanceService.js` | `src` | `partially-documented` | 3/3 | Supplies layered identity governance decisions for trusted framework operations and administrative access checks. | add @override |
 | `gFramework/nAuth/src/service/identity/defaultPrincipalSecurityStampService.js` | `src` | `documented` | 7/7 | Maintains tenant-scoped principal security stamps in the auth cache. Production deployments should use a shared auth-cache engine. |  |
 | `gFramework/nAuth/src/service/identity/defaultServiceTokenService.js` | `src` | `documented` | 2/2 | Issues tenant-scoped internal service tokens and registers their current security stamp before the token becomes available to other modules. This makes service identity changes enforceable across modular nodes when the auth cache is distributed. |  |
-| `gFramework/nAuth/src/service/security/defaultAuthSecurityService.js` | `src` | `documented` | 6/6 | Implements nAuth token security configuration, JWT option, and payload construction behavior. |  |
+| `gFramework/nAuth/src/service/security/defaultAuthSecurityService.js` | `src` | `documented` | 8/8 | Implements nAuth token security configuration, JWT option, and payload construction behavior. |  |
 | `gFramework/nAuth/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared auth enum definition exports. |  |
 | `gFramework/nAuth/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nAuth utility exports for status definitions. |  |
 | `gFramework/nAuth/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nAuth utility exports for utils. |  |
