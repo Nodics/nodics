@@ -3,6 +3,9 @@
 `nPipeline` owns configurable execution pipelines used to compose ordered
 runtime behavior.
 
+Detailed pipeline framework documentation is maintained in
+[docs/pipeline-framework.md](docs/pipeline-framework.md).
+
 Pipeline guidance covers configurable process-style execution: a definition is
 a series of nodes where each step can decide the next operation. Nodics uses
 pipeline and workflow terminology in different places, so verify the owning
@@ -74,6 +77,10 @@ A pipeline definition should document:
 - tests.
 
 Use pipelines when behavior needs ordered, configurable, replaceable processing. Use workflow modules for business workflow lifecycle, state, and carrier/action orchestration.
+
+Pipeline nodes orchestrate lifecycle steps. Processors are configured handlers
+that may run inside a node to transform data or satisfy an import/export/search
+contract. Do not use processors as hidden pipeline controllers.
 
 ## Tests
 

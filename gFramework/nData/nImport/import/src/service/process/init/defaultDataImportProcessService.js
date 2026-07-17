@@ -161,7 +161,13 @@ module.exports = {
                     pendingFiles: Object.keys(request.dataFiles)
                 }).then(success => {
                     if (response.errors && response.errors.length > 0) {
-                        process.error(request, response);
+                        let error = new CLASSES.DataImportError('ERR_IMP_00000', 'Import processing completed with errors');
+                        response.errors.forEach(importError => {
+                            if (typeof error.add === 'function') {
+                                error.add(importError);
+                            }
+                        });
+                        process.error(request, response, error);
                     } else {
                         process.nextSuccess(request, response);
                     }

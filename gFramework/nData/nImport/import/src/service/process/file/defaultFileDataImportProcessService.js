@@ -99,7 +99,8 @@ module.exports = {
             }
             this.processTenantModel(request, response, {
                 tenants: tenants,
-                pendingModels: Object.keys(request.fileData.models)
+                pendingModels: Object.keys(request.fileData.models),
+                errors: []
             }).then(success => {
                 process.nextSuccess(request, response);
             }).catch(error => {
@@ -184,7 +185,8 @@ module.exports = {
                 if (activeTenants.includes(tenant) && NODICS.getActiveTenants().includes(tenant)) {
                     this.processModel(request, response, {
                         tenant: tenant,
-                        pendingModels: Object.keys(request.fileData.models)
+                        pendingModels: Object.keys(request.fileData.models),
+                        errors: options.errors
                     }).then(success => {
                         _self.processTenantModel(request, response, options).then(success => {
                             resolve(success);
@@ -192,7 +194,15 @@ module.exports = {
                             reject(error);
                         });
                     }).catch(error => {
-                        reject(error);
+                        if (_self.shouldStopImportOnFailure(request)) {
+                            reject(error);
+                            return;
+                        }
+                        _self.processTenantModel(request, response, options).then(success => {
+                            resolve(success);
+                        }).catch(error => {
+                            reject(error);
+                        });
                     });
                 } else {
                     _self.LOG.warn('Tenant: ' + tenant + ' is no more active');
@@ -203,7 +213,11 @@ module.exports = {
                     });
                 }
             } else {
-                resolve(true);
+                if (options.errors && options.errors.length > 0) {
+                    reject(_self.createAggregateImportError(options.errors, 'Import processing completed with record-level errors'));
+                } else {
+                    resolve(true);
+                }
             }
         });
     },
@@ -228,70 +242,233 @@ module.exports = {
         let _self = this;
         return new Promise((resolve, reject) => {
             try {
-                if (options.pendingModels && options.pendingModels.length > 0) {
-                    let fileObj = request.dataFiles[request.fileName];
-                    let modelHash = options.pendingModels.shift();
-                    let dataModel = request.fileData.models[modelHash];
-                    let header = request.fileData.header;
-                    let processedKey = options.tenant + ':' + modelHash;
-                    if (!fileObj.processed.includes(processedKey)) {
-                        if (SERVICE.DefaultImportDiagnosticsService) {
-                            SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsDispatched', 1);
-                        }
-                        SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
-                            tenant: options.tenant,
-                            authData: {
-                                userGroups: header.options.userGroups
-                            },
-                            header: header,
-                            dataModel: dataModel,
-                            importRun: request.importRun
-                        }, {}).then(success => {
-                            if (SERVICE.DefaultImportDiagnosticsService) {
-                                SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsSucceeded', 1);
-                            }
-                            if (!response.success) response.success = [];
-                            if (success && UTILS.isArray(success)) {
-                                success.forEach(element => {
-                                    response.success.push(element);
-                                });
-                            } else {
-                                response.success.push(success);
-                            }
-                            fileObj.processed.push(processedKey);
-                            _self.processModel(request, response, options).then(success => {
-                                resolve(success);
-                            }).catch(error => {
-                                reject(error);
-                            });
-                        }).catch(error => {
-                            if (SERVICE.DefaultImportDiagnosticsService) {
-                                SERVICE.DefaultImportDiagnosticsService.addFailure(request, {
-                                    tenant: options.tenant,
-                                    owningModule: header.options.owningModule,
-                                    targetModule: header.options.moduleName,
-                                    fileName: request.fileName,
-                                    recordKey: modelHash,
-                                    schemaName: header.options.schemaName,
-                                    indexName: header.options.indexName,
-                                    operation: header.options.operation,
-                                    error: error
-                                });
-                            }
-                            reject(error);
-                        });
-                    } else {
-                        if (SERVICE.DefaultImportDiagnosticsService) {
-                            SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsSkipped', 1);
-                        }
-                        resolve(true);
-                    }
-                } else {
+                let batch = _self.collectNextImportBatch(request, options);
+                if (!batch || batch.length === 0) {
                     resolve(true);
+                    return;
                 }
+                _self.dispatchImportBatch(request, response, options, batch).then(success => {
+                    _self.processModel(request, response, options).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    if (_self.shouldStopImportOnFailure(request)) {
+                        reject(error);
+                        return;
+                    }
+                    _self.processModel(request, response, options).then(success => {
+                        resolve(success);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                });
             } catch (error) {
                 reject(new CLASSES.DataImportError(error));
             }
         });
+    },
+
+    /**
+     * Collects the next unprocessed record batch for the active tenant.
+     *
+     * @param {Object} request Import request containing finalized file data.
+     * @param {Object} options Tenant processing options.
+     * @returns {Object[]} Batch entries containing record keys, processed keys, and models.
+     */
+    collectNextImportBatch: function (request, options) {
+        let batchOptions = this.resolveBatchImportOptions(request);
+        let batch = [];
+        let fileObj = request.dataFiles[request.fileName];
+        while (options.pendingModels && options.pendingModels.length > 0 && batch.length < batchOptions.size) {
+            let modelHash = options.pendingModels.shift();
+            let processedKey = options.tenant + ':' + modelHash;
+            if (fileObj.processed.includes(processedKey)) {
+                if (SERVICE.DefaultImportDiagnosticsService) {
+                    SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsSkipped', 1);
+                }
+            } else {
+                batch.push({
+                    recordKey: modelHash,
+                    processedKey: processedKey,
+                    model: request.fileData.models[modelHash]
+                });
+            }
+            if (!batchOptions.enabled && batch.length > 0) {
+                break;
+            }
+        }
+        return batch;
+    },
+
+    /**
+     * Dispatches one finalized import batch through the standard model import pipeline.
+     *
+     * @param {Object} request Import request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} options Tenant processing options.
+     * @param {Object[]} batch Batch entries.
+     * @returns {Promise<boolean>} Resolves when the batch succeeds or is recorded as recoverable.
+     */
+    dispatchImportBatch: function (request, response, options, batch) {
+        let header = request.fileData.header;
+        let models = batch.map(entry => entry.model);
+        if (SERVICE.DefaultImportDiagnosticsService) {
+            SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsDispatched', batch.length);
+        }
+        return SERVICE.DefaultPipelineService.start('processModelImportPipeline', {
+            tenant: options.tenant,
+            authData: {
+                userGroups: header.options.userGroups
+            },
+            header: header,
+            dataModel: models.length === 1 ? models[0] : models,
+            importRun: request.importRun
+        }, {}).then(success => {
+            if (SERVICE.DefaultImportDiagnosticsService) {
+                SERVICE.DefaultImportDiagnosticsService.increment(request, 'recordsSucceeded', batch.length);
+            }
+            this.appendImportSuccess(response, success);
+            this.markImportBatchProcessed(request, batch);
+            return true;
+        }).catch(error => {
+            this.recordImportBatchFailure(request, options, batch, error);
+            if (this.shouldStopImportOnFailure(request)) {
+                return Promise.reject(error);
+            }
+            return Promise.resolve(true);
+        });
+    },
+
+    /**
+     * Appends model import output without assuming single-record or batch shape.
+     *
+     * @param {Object} response Pipeline response accumulator.
+     * @param {*} success Import pipeline success output.
+     * @returns {undefined}
+     */
+    appendImportSuccess: function (response, success) {
+        if (!response.success) response.success = [];
+        if (success && UTILS.isArray(success)) {
+            success.forEach(element => {
+                response.success.push(element);
+            });
+        } else {
+            response.success.push(success);
+        }
+    },
+
+    /**
+     * Marks all records in a successful batch as processed for the file and tenant.
+     *
+     * @param {Object} request Import request.
+     * @param {Object[]} batch Successful batch entries.
+     * @returns {undefined}
+     */
+    markImportBatchProcessed: function (request, batch) {
+        let fileObj = request.dataFiles[request.fileName];
+        batch.forEach(entry => {
+            fileObj.processed.push(entry.processedKey);
+        });
+    },
+
+    /**
+     * Records one failed batch against every record contained in that batch.
+     *
+     * @param {Object} request Import request.
+     * @param {Object} options Tenant processing options.
+     * @param {Object[]} batch Failed batch entries.
+     * @param {*} error Batch failure.
+     * @returns {undefined}
+     */
+    recordImportBatchFailure: function (request, options, batch, error) {
+        let header = request.fileData.header;
+        options.errors = options.errors || [];
+        batch.forEach(entry => {
+            if (SERVICE.DefaultImportDiagnosticsService) {
+                SERVICE.DefaultImportDiagnosticsService.addFailure(request, {
+                    tenant: options.tenant,
+                    owningModule: header.options.owningModule,
+                    targetModule: header.options.moduleName,
+                    fileName: request.fileName,
+                    recordKey: entry.recordKey,
+                    schemaName: header.options.schemaName,
+                    indexName: header.options.indexName,
+                    operation: header.options.operation,
+                    error: error
+                });
+            }
+            options.errors.push(error);
+        });
+    },
+
+    /**
+     * Resolves whether import processing should stop at the first record failure.
+     *
+     * @param {Object} request Import request carrying header and layered configuration context.
+     * @returns {boolean} True when the active configuration requires fail-fast behavior.
+     */
+    shouldStopImportOnFailure: function (request) {
+        let headerOption = request && request.fileData && request.fileData.header &&
+            request.fileData.header.options && request.fileData.header.options.stopImportOnFailure;
+        if (headerOption === true || headerOption === false) {
+            return headerOption;
+        }
+        let dataConfig = this.getDataConfig();
+        return dataConfig.stopImportOnFailure === true;
+    },
+
+    /**
+     * Resolves active batch import options from header overrides and layered data configuration.
+     *
+     * @param {Object} request Import request carrying header options.
+     * @returns {{enabled: boolean, size: number}} Effective batch import options.
+     */
+    resolveBatchImportOptions: function (request) {
+        let dataConfig = this.getDataConfig();
+        let configuredBatch = dataConfig.batchImport || {};
+        let headerBatch = request && request.fileData && request.fileData.header &&
+            request.fileData.header.options && request.fileData.header.options.batchImport || {};
+        let enabled = headerBatch.enabled === true || headerBatch.enabled === false ?
+            headerBatch.enabled : configuredBatch.enabled === true;
+        let configuredSize = headerBatch.size !== undefined ? headerBatch.size : configuredBatch.size;
+        let size = parseInt(configuredSize, 10);
+        if (!enabled || !Number.isFinite(size) || size <= 0) {
+            size = 1;
+        }
+        return {
+            enabled: enabled,
+            size: size
+        };
+    },
+
+    /**
+     * Reads layered data configuration with safe defaults for isolated tests.
+     *
+     * @returns {Object} Active data configuration or an empty object.
+     */
+    getDataConfig: function () {
+        if (typeof CONFIG === 'undefined' || !CONFIG || typeof CONFIG.get !== 'function') {
+            return {};
+        }
+        return CONFIG.get('data') || {};
+    },
+
+    /**
+     * Creates a single import error that preserves all record-level failures.
+     *
+     * @param {Array} errors Record-level errors collected during recursive processing.
+     * @param {string} message Aggregate error message.
+     * @returns {CLASSES.DataImportError} Aggregate import error.
+     */
+    createAggregateImportError: function (errors, message) {
+        let aggregateError = new CLASSES.DataImportError('ERR_IMP_00000', message || 'Import processing completed with errors');
+        [].concat(errors || []).forEach(error => {
+            if (typeof aggregateError.add === 'function') {
+                aggregateError.add(error);
+            }
+        });
+        return aggregateError;
     }
 };

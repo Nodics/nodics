@@ -22,6 +22,11 @@ module.exports = {
         finalizeImportDataAsync: true,
         importDataConvertEncoding: 'utf8',
         readBufferSize: 1024,
+        stopImportOnFailure: false,
+        batchImport: {
+            enabled: false,
+            size: 100
+        },
         headerBatchSize: 0,
         importGovernance: {
             duplicateProtection: true,

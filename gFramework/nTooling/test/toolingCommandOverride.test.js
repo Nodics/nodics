@@ -29,6 +29,8 @@ assert(toolingCommandService.compareModuleIndex('1.9', '1.10') < 0,
 
 assert(toolingProperties.tooling.discovery.ignoredDirectories.includes('node_modules'),
     'Tooling discovery exclusions must be owned by config/properties.js');
+assert(toolingProperties.tooling.discovery.ignoredFiles.includes('.DS_Store'),
+    'Tooling discovery file exclusions must be owned by config/properties.js');
 assert.strictEqual(toolingCommandService.shouldVisitDirectory({
     name: 'node_modules'
 }), false, 'Tooling command discovery must apply configured ignored directories');

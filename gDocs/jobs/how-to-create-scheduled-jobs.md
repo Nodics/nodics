@@ -11,6 +11,12 @@ Examples:
 - Publish pending content.
 - Reconcile failed workflow items.
 
+## CronJobs
+
+CronJobs are Nodics scheduled tasks with persisted definitions, lifecycle operations, handlers, logs, route/service ownership, node responsibility, and tests.
+
+A CronJob should not be only a timer in memory. It should have a definition that explains what runs, when it runs, who owns it, how it is started or stopped, how failures are recorded, and which server/node may execute it.
+
 ## When To Use A Scheduled Job
 
 Use a scheduled job when work runs automatically without a user request.
@@ -37,6 +43,8 @@ A scheduled job usually needs:
 - Tests.
 
 In Nodics, a scheduled job is a persisted platform capability. The job definition, trigger information, handler/service behavior, logs, and lifecycle state are visible and testable.
+
+![CronJob Process](../assets/images/cron-job-process.jpg)
 
 ## Node Ownership
 
@@ -81,6 +89,8 @@ A scheduled job usually moves through lifecycle actions:
 
 Each lifecycle action has permission checks, diagnostics, and tests. Repeated startup does not create duplicate jobs.
 
+![CronJob Lifecycle](../assets/images/cron-job-lifecycle.png)
+
 ## Creating A New Job
 
 Steps:
@@ -101,6 +111,55 @@ Keep handlers small. A handler resolves context, calls the owning service, and r
 
 If a project needs to change a handler, add the override in a later module through the standard service/handler path. Do not edit framework cronjob behavior for one customer requirement.
 
+## Generalizing CronJobService
+
+Generalize `CronJobService` behavior when a project needs to change the way jobs are created, scheduled, executed, logged, paused, resumed, retried, or removed while preserving the scheduled-job contract.
+
+When generalizing:
+
+- keep lifecycle state consistent;
+- preserve tenant and node responsibility;
+- keep logs and diagnostics;
+- avoid duplicate scheduling on repeated startup;
+- keep handlers small and service-driven;
+- add tests for default and override behavior.
+
+## CronJob Handlers
+
+CronJob handlers are lifecycle hooks around scheduled execution. They should resolve context, call the owning service, record results, and pass errors to diagnostics.
+
+### handleCronJobStart
+
+Runs when a CronJob starts scheduling or execution. Use it to record start state, prepare context, and confirm the job is allowed to run on the current node.
+
+### handleCronJobEnd
+
+Runs when a CronJob ends. Use it to finalize state, release resources, and record completion diagnostics.
+
+### handleCronJobPaused
+
+Runs when scheduling is paused. Use it to record paused state and prevent new trigger execution without deleting the job definition.
+
+### handleCronJobResumed
+
+Runs when scheduling resumes. Use it to re-enable trigger evaluation and record the resume action.
+
+### handleJobTriggered
+
+Runs when the schedule or manual run action triggers the job. Use it to capture trigger time, run id, tenant context, and node ownership before business behavior starts.
+
+### handleJobCompleted
+
+Runs after the job work completes. Use it to record result state, duration, output summary, and follow-up actions such as events or retries.
+
+### handleSuccess
+
+Runs when the job succeeds. Use it to record success-specific diagnostics and cleanup. Do not hide partial failures inside success; if record-level failures occurred, the job result should make that visible.
+
+### Generalizing Handlers
+
+Projects may override handlers through later modules when lifecycle behavior needs to change. Handler overrides must preserve lifecycle state, diagnostics, tenant context, node ownership, and failure propagation.
+
 ## Testing Scheduled Jobs
 
 Run scheduled-job tests through:
@@ -114,6 +173,23 @@ The main test gate also includes scheduled-job coverage:
 ```bash
 npm run test:basic
 ```
+
+## Executing or Scheduling CronJobs
+
+CronJobs may run through startup scheduling, API-controlled lifecycle operations, or explicit service-triggered execution when allowed.
+
+Common operations include:
+
+- start scheduling;
+- stop scheduling;
+- pause scheduling;
+- resume scheduling;
+- run once on demand;
+- update definition;
+- remove or deactivate definition;
+- inspect logs.
+
+Each operation should be permissioned, tenant-aware where applicable, observable, and tested. Do not execute the same job from multiple nodes unless the job is explicitly designed for parallel execution.
 
 ## What To Avoid
 

@@ -20,6 +20,9 @@ The `gDocs` folder contains user and developer guides.
 
 Each module README explains the purpose, behavior, configuration, extension points, and tests for that module.
 
+Use [Module Documentation Index](../reference/module-documentation-index.md)
+to connect public task guides to module-owned README and docs pages.
+
 **AI and implementation contracts**
 
 `AGENTS.md` and `gSetup/llm` contain rules for AI tools and developers changing the codebase. They guide implementation work and do not replace user-facing documentation.
@@ -38,6 +41,7 @@ Use the right documentation layer for the right audience.
 | `gDocs` | Users, application developers, framework developers, and technical leads | Provide task-based guides such as setup, APIs, data, jobs, security, testing, and deployment. |
 | Module `README.md` files | Developers working inside one capability | Explain module purpose, owned schemas/routes/services/data/tests, configuration, extension paths, and verification. |
 | Module `docs/` folders | Developers needing deeper module detail | Hold permanent module documentation that belongs with the product. |
+| `gDocs/reference/module-documentation-index.md` | Users and developers moving from guide pages to module details | Maps task-based documentation to the module README and module docs that own exact capability behavior. |
 | `AGENTS.md` | AI tools and developers changing code | Define local implementation behavior, ownership boundaries, and safety rules. |
 | `gSetup/llm` | AI tools, automation, and developers doing implementation work | Define cross-cutting contracts, prompts, standards, generated context rules, and structure guidance. |
 | Generated LLM context | AI tools and reviewers | Summarize source-derived module facts and documentation gaps after regeneration. |

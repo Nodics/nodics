@@ -61,16 +61,35 @@ module.exports = {
      * @returns {Promise<Object[]>} Export-safe models.
      */
     applyExportAccessPolicies: function (request, models) {
+        let exportModels = this.cloneModels(models || []);
         if (!SERVICE.DefaultSchemaReadAccessPolicyService ||
             typeof SERVICE.DefaultSchemaReadAccessPolicyService.applyExportPolicies !== 'function') {
-            return Promise.resolve(models);
+            return Promise.resolve(exportModels);
         }
         return SERVICE.DefaultSchemaReadAccessPolicyService.applyExportPolicies(request, {
             success: {
-                result: models || []
+                result: exportModels
             }
         }).then(response => {
             return response.success.result;
+        });
+    },
+
+    /**
+     * Creates export-safe model copies before policy filtering and rendering.
+     *
+     * @param {Object[]} models Source models selected for export.
+     * @returns {Object[]} Plain model copies that export policies may mutate safely.
+     */
+    cloneModels: function (models) {
+        return [].concat(models || []).map(model => {
+            if (model && typeof model.toObject === 'function') {
+                return model.toObject();
+            }
+            if (model && typeof model.toJSON === 'function') {
+                return model.toJSON();
+            }
+            return Object.assign({}, model);
         });
     }
 };

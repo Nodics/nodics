@@ -4,6 +4,8 @@ Nodics is an enterprise application factory for building modular, governed, API-
 
 It is more than a web framework and more than a collection of utilities. Nodics gives an application a complete operating structure: modules, APIs, schemas, services, permissions, tenants, runtime configuration, scheduled jobs, events, imports, exports, search indexing, catalog and content capabilities, tests, generated artifacts, deployment topology, and documentation.
 
+![Nodics Architecture](../assets/images/nodics-architecture.jpg)
+
 Instead of putting all code in one application folder, Nodics organizes behavior into active capabilities. A capability can provide data models, APIs, services, scheduled jobs, events, import/export behavior, permissions, tests, and documentation. A project can then extend or replace behavior through later-loaded project modules without editing framework files.
 
 Nodics is also built for AI-assisted development. Developers can use CLI-based AI tools, IDE assistants, or conversational coding tools to describe what they want to build. Nodics gives those tools a governed structure to follow so generated or assisted code lands in the right place and respects the same rules as human-written code.
@@ -33,6 +35,44 @@ Capabilities are stable. Implementations can change.
 For example, Nodics can provide a default database capability. A project can add a new database provider or change data access behavior through the module hierarchy, but it does not edit the original framework source just to serve one customer.
 
 This makes Nodics especially strong for customer-specific enterprise work. The framework provides stable capabilities, while projects negotiate the implementation through approved extension layers.
+
+## Technology Stack
+
+Nodics uses Node.js and JavaScript as the runtime foundation for modular API development. It builds on common enterprise application concerns such as Express-style request handling, schema-driven data behavior, database providers, cache providers, search providers, messaging providers, scheduled execution, import/export processing, generated artifacts, and automated tests.
+
+![Nodics Technology Stack](../assets/images/technology-stack.jpg)
+
+The stack is intentionally layered. Application developers should depend on Nodics capability contracts such as schemas, services, routers, pipelines, events, cache, search, import/export, and configuration. Provider-specific behavior belongs behind provider modules so a project can change MongoDB, Cassandra, Redis, search, messaging, file, or integration behavior without rewriting business capabilities.
+
+## Why Nodics Is Different
+
+Nodics is designed for teams that need speed without losing architecture. A startup can build an MVP quickly, including APIs, data models, users, jobs, imports, search, and tests, while still keeping the codebase ready for enterprise scale after funding, customer growth, and product expansion.
+
+## Provided Solutions
+
+Nodics provides a ready platform foundation for common enterprise application needs:
+
+- modular API and microservice-style application development;
+- tenant-aware identity, profile, authentication, authorization, and permissions;
+- schema-driven database behavior and generated CRUD APIs;
+- cache layers for API, item, search, auth, and runtime acceleration;
+- search indexing and retrieval;
+- scheduled jobs and long-running system tasks;
+- event and enterprise messaging integration;
+- import/export and data hub capabilities;
+- catalog, content, and workflow-ready application patterns;
+- generated tests, OpenAPI output, documentation context, and AI/developer contracts;
+- cloud-ready project, environment, server, and node topology.
+
+Nodics provides:
+
+- **Fast MVP delivery** through ready platform capabilities, generated APIs, module scaffolding, layered configuration, and AI-assisted implementation contracts.
+- **Business and service extensibility** through overrideable services, facades, controllers, routers, schemas, processors, interceptors, providers, and data definitions.
+- **Distributed system readiness** through environment, server, node, active-module, remote-module, messaging, cache, and scheduled-job boundaries.
+- **Testing-oriented development** through generated schema/API tests, module-owned tests, topology tests, import/export tests, security tests, and documentation quality gates.
+- **Lower deployment effort** because the same platform model describes local consolidated execution, modular multi-server execution, and cloud-ready process separation.
+
+![Microservices Architecture](../assets/images/microservices-architecture.jpg)
 
 ## Who Uses Nodics
 

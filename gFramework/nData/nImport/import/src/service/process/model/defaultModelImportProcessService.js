@@ -152,11 +152,11 @@ module.exports = {
         let header = request.header;
         if (header.macros && header.rawSchema) {
             if (header.rawSchema.refSchema) {
-                this.resolveRelation(request, response, {
+                this.resolveRelationsForModels(request, response, {
                     header: header,
                     refSchema: header.rawSchema.refSchema,
-                    properties: Object.keys(header.macros),
-                    macros: header.macros
+                    macros: header.macros,
+                    models: UTILS.isArray(request.dataModel) ? request.dataModel.slice() : [request.dataModel]
                 }).then(success => {
                     process.nextSuccess(request, response);
                 }).catch(error => {
@@ -169,6 +169,42 @@ module.exports = {
         } else {
             process.nextSuccess(request, response);
         }
+    },
+
+    /**
+     * Resolves configured relation macros for every record in an import batch.
+     *
+     * @param {Object} request Import request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} options Relation resolution options.
+     * @returns {Promise<boolean>} Resolves when all models have relation values resolved.
+     */
+    resolveRelationsForModels: function (request, response, options) {
+        let _self = this;
+        return new Promise((resolve, reject) => {
+            if (options.models && options.models.length > 0) {
+                let model = options.models.shift();
+                let modelRequest = Object.assign({}, request, {
+                    dataModel: model
+                });
+                _self.resolveRelation(modelRequest, response, {
+                    header: options.header,
+                    refSchema: options.refSchema,
+                    properties: Object.keys(options.macros),
+                    macros: options.macros
+                }).then(success => {
+                    _self.resolveRelationsForModels(request, response, options).then(success => {
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error);
+                    });
+                }).catch(error => {
+                    reject(error);
+                });
+            } else {
+                resolve(true);
+            }
+        });
     },
 
     /**
@@ -514,12 +550,20 @@ module.exports = {
                 moduleName: request.moduleName || header.options.moduleName,
                 options: request.options || {},
                 searchOptions: request.searchOptions,
+                query: header.query,
+                models: models,
                 model: models[0]
             }).then(result => {
-                if (result && result.result > 1) {
+                if (result && result.errors && result.errors.length > 0) {
+                    let error = new CLASSES.DataImportError(result.errors[0]);
+                    for (let count = 1; count < result.errors.length; count++) {
+                        error.add(new CLASSES.DataImportError(result.errors[count]));
+                    }
+                    reject(error);
+                } else if (result && result.result !== undefined && result.result !== null) {
                     resolve(result.result);
                 } else {
-                    reject(new CLASSES.DataImportError('ERR_IMP_00001', 'Could not found any response from data access layer'));
+                    reject(new CLASSES.DataImportError('ERR_IMP_00001', 'Could not found any response from search access layer'));
                 }
             }).catch(error => {
                 reject(new CLASSES.DataImportError(error));

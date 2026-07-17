@@ -31,6 +31,9 @@ module.exports = {
                 'dist',
                 'generated',
                 'docs'
+            ],
+            ignoredFiles: [
+                '.DS_Store'
             ]
         },
         documentationGovernance: {
@@ -324,8 +327,13 @@ module.exports = {
                 { node: 'gFramework/nData/nImport/import/test/importDuplicateHeaderDiagnostics.test.js' },
                 { node: 'gFramework/nData/nImport/import/test/finalizedRecordCounter.test.js' },
                 { node: 'gFramework/nData/nImport/import/test/finalizedImportDispatch.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/importTargetDispatchContract.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/importRecursiveErrorPropagation.test.js' },
                 { node: 'gFramework/nData/nImport/import/test/importFailureTraceability.test.js' },
                 { node: 'gFramework/nData/nImport/import/test/importExportAccessPolicy.test.js' }
+            ],
+            export: [
+                { node: 'gFramework/nData/nExport/export/test/dataExportCapabilityBehavior.test.js' }
             ],
             profile: [
                 { node: 'gCore/profile/test/initRequiredFlag.test.js' },

@@ -20,6 +20,23 @@ A Nodics application usually contains:
 
 This structure lets a project customize behavior without modifying framework files.
 
+![Nodics Structure](../assets/images/nodics-structure.png)
+
+## Framework Walkthrough
+
+Read Nodics from the outside in:
+
+1. The project defines the application boundary.
+2. Environments define deployment contexts such as local, development, QA, pre-production, and production.
+3. Servers define runnable process compositions and active modules.
+4. Nodes define instance-level responsibilities below a server.
+5. Module groups organize related modules.
+6. Capability modules own configuration, schemas, routes, controllers, facades, services, pipelines, interceptors, events, search indexes, data, tests, and documentation.
+7. Generated artifacts are produced from source definitions.
+8. Runtime governance can preview, approve, activate, audit, and roll back selected mutable behavior.
+
+This walkthrough matters because a Nodics change is usually not made in one global application folder. It belongs to the layer and module that owns the capability.
+
 ## The Ownership Rule
 
 Before adding code, configuration, data, or tests, ask:
@@ -139,6 +156,14 @@ A node is a more specific runtime unit below a server.
 Node configuration is useful when multiple processes of the same server type need different responsibilities, ports, ownership rules, or scheduled-job behavior.
 
 A node owns instance-specific overrides below a selected server. It does not replace server-wide process composition or environment-wide configuration.
+
+## Enterprise And Tenant Structure
+
+Nodics can model more than one business inside the same platform. An enterprise can represent a company, group, or business owner. Sub-enterprises can represent business units, brands, regions, or operating divisions. Tenants isolate users, data, configuration, permissions, imports, jobs, runtime behavior, and integration contracts for a selected business context.
+
+![Enterprise Tenant Design](../assets/images/enterprise-tenant-design.jpg)
+
+Use tenant structure when one platform must support multiple customers, companies, brands, catalogs, business units, or deployment contexts without mixing their data or permissions. Keep tenant behavior explicit in schemas, services, routes, imports, events, jobs, cache keys, and tests.
 
 ## Layered Customization
 

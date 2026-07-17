@@ -4,6 +4,8 @@ Deployment means preparing Nodics to run safely in a target environment.
 
 Deployment is not only copying files to a server. It includes configuration, generated artifacts, tests, data, security, and operational checks.
 
+![Cloud Deployment Process](../assets/images/cloud-deployment-process.jpg)
+
 ## Before Deployment
 
 Confirm:

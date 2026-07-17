@@ -13,6 +13,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const Enum = require('../../../../nConfig/bin/enum');
+const toolingProperties = require('../../../config/properties');
 
 /**
  * @module nTooling/service/context/defaultModuleLlmContextUtilsService
@@ -23,18 +24,9 @@ const Enum = require('../../../../nConfig/bin/enum');
  */
 
 const rootPath = path.resolve(process.env.NODICS_HOME || process.cwd());
-const ignoredDirectories = new Set([
-    '.git',
-    '.idea',
-    '.vscode',
-    'node_modules',
-    'logs',
-    'temp',
-    'tmp',
-    'dist',
-    'generated',
-    'docs'
-]);
+const discoveryConfig = toolingProperties.tooling && toolingProperties.tooling.discovery || {};
+const ignoredDirectories = new Set(discoveryConfig.ignoredDirectories || []);
+const ignoredFiles = new Set(discoveryConfig.ignoredFiles || []);
 
 function toPosix(filePath) {
     return filePath.split(path.sep).join('/');
@@ -108,6 +100,9 @@ function collectFiles(directory, matcher, files = []) {
             }
             return;
         }
+        if (ignoredFiles.has(entry.name)) {
+            return;
+        }
         if (!matcher || matcher(entryPath)) {
             files.push(toRelative(entryPath));
         }
@@ -148,7 +143,9 @@ function collectModuleOwnedFiles(modulePath) {
                     walk(entryPath);
                     return;
                 }
-                files.push(toRelative(entryPath));
+                if (!ignoredFiles.has(entry.name)) {
+                    files.push(toRelative(entryPath));
+                }
             });
     }
 

@@ -10,6 +10,8 @@ This prompt consolidates broad enterprise architecture and quality-engineering g
 
 Future AI sessions should use it with the base Nodics prompt whenever the work affects platform behavior, customer customization paths, runtime governance, or enterprise-quality expectations.
 
+Root `AGENTS.md` now makes this posture mandatory for significant work. AI tools and human technical leaders should act with enterprise architecture, solution architecture, software architecture, principal engineering, quality engineering, AI-tool, and Nodics framework expertise; challenge assumptions; identify module boundaries, ownership, coupling risks, security and observability impact, scalability path, deployment impact, testing strategy, and AI/developer guidance impact; and avoid generic recommendations.
+
 ## Enterprise Platform Positioning
 
 Nodics is an enterprise application platform and application factory, not a lightweight Node.js API framework.

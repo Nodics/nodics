@@ -14,9 +14,11 @@
 - `gFramework/nData/nImport/import/test/importFailureTraceability.test.js`
 - `gFramework/nData/nImport/import/test/importGovernanceLifecycleContract.test.js`
 - `gFramework/nData/nImport/import/test/importLifecycleContract.test.js`
+- `gFramework/nData/nImport/import/test/importRecursiveErrorPropagation.test.js`
 - `gFramework/nData/nImport/import/test/importRunHistoryControllerRoute.test.js`
 - `gFramework/nData/nImport/import/test/importRunHistoryService.test.js`
 - `gFramework/nData/nImport/import/test/importRunSummaryContract.test.js`
+- `gFramework/nData/nImport/import/test/importTargetDispatchContract.test.js`
 - `gFramework/nData/nImport/import/test/importTenantPrecedence.test.js`
 - `gFramework/nData/nImport/import/test/mandatoryInitDataImportContract.test.js`
 - `gFramework/nData/nImport/import/test/multiFormatDataProcessors.test.js`

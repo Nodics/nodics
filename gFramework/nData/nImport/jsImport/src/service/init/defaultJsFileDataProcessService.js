@@ -134,6 +134,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (files.length > 0) {
                 let file = files.shift();
+                delete require.cache[require.resolve(file)];
                 models = _.merge(models, require(file));
                 _self.handleFiles(request, response, files, models).then(success => {
                     resolve(success);

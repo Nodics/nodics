@@ -233,6 +233,22 @@ facades use `src/facade/**/*Facade.js`, and pipeline definitions use
 mergeable object members so the same behavior can be overridden by a later
 module with the same artifact name.
 
+When guidance asks for pipeline work, it must also explain the pipeline
+lifecycle contract: pipeline definitions own ordered execution, service methods
+own each node implementation, processors own targeted data transformation, and
+tests must prove default behavior plus the intended later-module override path.
+Use `gFramework/nPipeline/docs/pipeline-framework.md` as the canonical
+framework guide before adding, extending, or documenting pipeline behavior.
+
+When guidance asks for router work, it must explain the full router contract:
+route definitions own HTTP exposure and access metadata, Express app
+configuration owns middleware hooks, `DefaultRouterService` registers effective
+routes, `DefaultRouterOperationService` binds Express methods, the request
+handler pipeline normalizes and secures requests, controllers map request data,
+and downstream facades/services/pipelines own business behavior. Use
+`gFramework/nRouter/docs/router-framework.md` as the canonical framework guide
+before adding, securing, extending, or documenting API routes.
+
 ## Reference Material Use
 
 Use captured notes and extracted documentation only as recovery material for

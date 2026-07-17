@@ -79,6 +79,16 @@ Nodics APIs are layered APIs. Keep that separation:
 
 Small APIs may call a service directly from a controller when no orchestration is needed, but the service still owns business rules. Do not put business logic directly into route definitions.
 
+## Related Module Documentation
+
+For exact implementation details, read:
+
+- [nRouter](../../gFramework/nRouter/README.md) and [Router Framework](../../gFramework/nRouter/docs/router-framework.md) for route definitions, Express registration, request pipelines, security, response handlers, cache, and OpenAPI.
+- [nController](../../gFramework/nController/README.md) for controller request mapping.
+- [nFacade](../../gFramework/nFacade/README.md) for orchestration boundaries.
+- [nService](../../gFramework/nService/README.md) for service behavior and generated CRUD service flow.
+- [Module Documentation Index](../reference/module-documentation-index.md) when you need to find another owning module.
+
 ## Generated CRUD APIs
 
 Many APIs can be generated from schema and route definitions.

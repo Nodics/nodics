@@ -18,6 +18,9 @@ The module currently contributes:
 
 The default `export` implementation rejects with a Nodics error until an active module overrides export behavior. This is intentional: an export surface must not leak data just because the module exists.
 
+For the full engineering contract, read
+[Export Process Framework](docs/export-process-framework.md).
+
 ## Runtime Flow
 
 1. A caller invokes the export controller through a route, internal service, scheduled process, or test.
@@ -26,6 +29,7 @@ The default `export` implementation rejects with a Nodics error until an active 
 4. The facade delegates to `SERVICE.DataExportService.export`.
 5. The base service rejects until a framework/provider/project module supplies governed export behavior.
 6. Implemented exporters should apply schema/property access policy before rendering or delivery.
+7. Export access-policy filtering must operate on export-safe model copies so source models are not mutated in memory.
 
 ## Extension Path
 
@@ -43,12 +47,13 @@ Keep delivery-provider details in their own services. Keep format rendering in f
 
 ## Tests
 
-Focused behavior is covered by `test/dataExportCapabilityBehavior.test.js`, which verifies HTTP request normalization and the default fail-closed service behavior.
+Focused behavior is covered by `test/dataExportCapabilityBehavior.test.js`, which verifies HTTP request normalization, the default fail-closed service behavior, access-policy delegation, and export-safe model copy handling.
 
 Run:
 
 ```bash
 node gFramework/nData/nExport/export/test/dataExportCapabilityBehavior.test.js
+npm run test:export
 npm run quality:docs
 ```
 

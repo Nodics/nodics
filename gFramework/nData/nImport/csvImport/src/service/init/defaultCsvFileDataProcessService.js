@@ -167,7 +167,11 @@ module.exports = {
                             reject(error);
                         });
                     } else {
-                        resolve(true);
+                        _self.handleFiles(request, response, files, ++index).then(success => {
+                            resolve(true);
+                        }).catch(error => {
+                            reject(error);
+                        });
                     }
                 }).on('error', (error) => {
                     reject(error);

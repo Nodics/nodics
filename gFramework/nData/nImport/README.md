@@ -42,6 +42,21 @@ storage locations, credentials, or tenant mappings in framework import code.
 7. Import diagnostics and run history record counts, checksums, fingerprints, retry metadata, failures, and rollback evidence.
 8. Finalized import events can dispatch follow-up behavior such as search indexing or business processing.
 
+## Target Routing
+
+Import headers route finalized models to one of two built-in target families:
+
+- database/schema targets use `options.schemaName` and dispatch through the
+  generated `Default<SchemaName>Service` operation;
+- search/index targets use `options.indexName` and dispatch through the owning
+  search service operation, falling back to `DefaultSearchService` when no
+  index-specific service exists.
+
+Both paths receive the resolved tenant, header user groups, query context, and
+model array. Projects must extend target behavior through later module headers,
+services, processors, interceptors, validators, or search providers instead of
+adding direct database or search-engine calls outside the import lifecycle.
+
 ## Feeding Patterns
 
 Nodics supports two primary ingestion patterns:
@@ -49,7 +64,24 @@ Nodics supports two primary ingestion patterns:
 - Push-based import: an external system calls governed import APIs and sends a payload or approved input reference.
 - Scheduled file import: external systems or business processes place files in configured import locations, and CronJob or another governed trigger starts the import.
 
-Direct remote pull is an internal staged adapter lifecycle. It remains gated until a project/provider module owns the external source contract and release tests.
+Remote import is a governed staged adapter lifecycle. It is available for
+project/provider modules that own an external source contract such as SFTP,
+object storage, partner API file pulls, HTTPS pulls, or enterprise file
+gateways. The framework does not accept arbitrary request-supplied URLs,
+credentials, headers, processors, or routing definitions.
+
+Remote import requests select a configured source name. The effective
+`data.remoteImport` configuration resolves the source, transport, adapter,
+tenant allowlist, module allowlist, header data type, cleanup behavior, timeout,
+retry, size, extension, and checksum policy. The adapter stages data files into
+an isolated server-owned path. Nodics then loads trusted headers from active
+modules and runs the same finalization and processing pipelines used by local
+and scheduled file imports.
+
+A public production remote-import route remains gated until the owning project
+or provider module supplies the adapter, route permission, source
+configuration, tenant/module allowlists, credential handling, operational
+monitoring, and guarded live integration or release tests.
 
 ## Configuration
 
@@ -65,7 +97,25 @@ Import configuration belongs in layered properties, module-owned headers, active
 - interceptor and validator contracts;
 - retry and duplicate protection;
 - diagnostics and rollback policy;
+- fail-fast behavior through `data.stopImportOnFailure`;
+- finalized-record batch dispatch through `data.batchImport` or `header.options.batchImport`;
 - file count, size, extension, checksum, and cleanup policy where files are involved.
+
+For remote import, configuration must also define:
+
+- `data.remoteImport.enabled`;
+- named `sources`;
+- named `transports`;
+- the adapter service for each source or transport;
+- source tenant and module allowlists;
+- `headerDataType`, usually `core`, `init`, or `sample`;
+- checksum, timeout, retry, extension, count, and size policies;
+- cleanup behavior for the isolated staging folder.
+
+Batch import is a throughput control. It groups finalized records before sending
+them through the same model import pipeline and target service contract. It must
+not be used as a reason to write directly to a database, search engine, file
+system, or external provider outside the governed import lifecycle.
 
 ## Tests
 

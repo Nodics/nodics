@@ -16,6 +16,44 @@ You need:
 
 If you are working inside a company project, confirm which branch and environment you should use before running startup commands.
 
+## Minimum System Requirement
+
+For local development, use a machine that can comfortably run Node.js, npm, MongoDB, and at least one Nodics server process. A developer laptop should have enough memory to run the database, the application, tests, and an editor at the same time.
+
+Recommended local baseline:
+
+- current supported Node.js and npm versions for the project branch;
+- MongoDB for the default local persistence path;
+- Redis when testing distributed cache, strict auth cache, or Redis-specific behavior;
+- Git for source control;
+- Visual Studio Code or another debugger-capable editor;
+- terminal access for build, test, and startup commands.
+
+Provider-specific work may require additional local or remote infrastructure such as Cassandra, Kafka, ActiveMQ, external search, SFTP, object storage, or release-grade integration environments. Do not make normal local setup depend on every possible provider.
+
+## Install Node And NPM
+
+Install Node.js and npm before running Nodics commands. Use the version expected by the repository or project branch. After installation, verify:
+
+```bash
+node --version
+npm --version
+```
+
+If a project standardizes Node through a version manager, use the project version before installing dependencies. Changing Node versions after dependency installation can create confusing native-module or lock-file behavior.
+
+## Install MongoDB
+
+MongoDB is the default local database provider used by the baseline local flow. Start MongoDB before starting Nodics when the selected server needs database-backed modules.
+
+Confirm the configured local MongoDB URL in the active project/environment/server properties before diagnosing database errors. A startup failure may come from the selected server pointing to a different database, channel, tenant, or provider than expected.
+
+## Download Nodics
+
+Clone the Nodics repository from the approved source location for your team, then switch to the branch you are expected to use.
+
+For customer or application work, start from the project branch and project module structure. Do not copy framework modules into a customer project just to customize behavior. Use later project modules, environment modules, server modules, node modules, tenant configuration, or runtime governance.
+
 ## Understand What You Are Starting
 
 Nodics can run as a consolidated application or as modular server processes.
@@ -42,6 +80,19 @@ If dependency installation fails, check:
 - Your npm registry access.
 - Whether the lock file changed unexpectedly.
 - Whether native dependencies need local build tools.
+
+## Install Required Modules
+
+`npm install` installs package dependencies. Nodics modules themselves are activated by project, environment, server, node, and active-module configuration.
+
+When a required capability is missing at runtime, check:
+
+- whether the module exists in the project/repository;
+- whether its `package.json` metadata is valid;
+- whether the selected server includes it in `activeModules`;
+- whether its dependencies are active before it;
+- whether provider modules are selected through configuration;
+- whether generated artifacts need to be rebuilt.
 
 ## Build Nodics
 
@@ -85,6 +136,57 @@ During startup, Nodics loads:
 - Schemas, routes, services, events, pipelines, and startup data.
 
 If the server starts successfully, the logs will show the loaded modules and server ports.
+
+## Start NODICS Server
+
+The startup command builds an effective runtime from the selected project, environment, server, node, tenant, and active modules.
+
+Use the documented project command when a project provides one. In a project such as `startio`, startup should follow the normal npm style and pass the selected server/environment through startup arguments.
+
+During startup, watch for:
+
+- selected project;
+- selected environment;
+- selected server;
+- selected node when provided;
+- active modules;
+- database provider and connection;
+- cache provider;
+- messaging provider;
+- route registration;
+- startup data import;
+- generated artifact loading;
+- server host and port.
+
+If you do not pass a server argument, Nodics can only start a meaningful runtime when the selected project/default configuration can resolve a server. If project examples are kept outside repository source, do not rely on them as active modules.
+
+## Test Nodics Framework
+
+After the server can start, run deterministic tests before making changes:
+
+```bash
+npm run test:basic
+```
+
+Use focused tests while developing one capability, then run broader gates before committing or deploying. Good first checks are:
+
+```bash
+npm run test:config
+npm run test:import
+npm run test:topology
+npm run llm:validate
+npm run quality:docs
+```
+
+Testing is part of setup because Nodics behavior is generated, layered, tenant-aware, and overrideable. A server that starts but fails generated or governance tests is not ready for project work.
+
+## Initial Data Import
+
+Initial data creates baseline records that the selected runtime needs to operate, such as tenants, groups, permissions, service accounts, routes, workflow definitions, or other module-owned bootstrap records.
+
+Initial data must be idempotent. Starting the same server twice must not create duplicate baseline records. If startup logs show the same model being saved repeatedly, check the owning module's import headers, unique keys, lookup query, tenant scope, and initializer behavior.
+
+Use sample data for demos and local examples. Do not mix sample data with mandatory production initialization data.
 
 ## Start A Specific Project Server
 

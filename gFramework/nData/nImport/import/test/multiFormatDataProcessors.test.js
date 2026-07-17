@@ -160,18 +160,34 @@ async function createExcelFile(filePath) {
     let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nodics-import-format-'));
     let jsFile = path.join(tmpDir, 'records.js');
     let jsonFile = path.join(tmpDir, 'records.json');
+    let emptyJsonFile = path.join(tmpDir, 'empty-records.json');
+    let jsonFileAfterEmpty = path.join(tmpDir, 'records-after-empty.json');
+    let invalidJsonFile = path.join(tmpDir, 'invalid-records.json');
     let csvFile = path.join(tmpDir, 'records.csv');
+    let emptyCsvFile = path.join(tmpDir, 'empty-records.csv');
+    let csvFileAfterEmpty = path.join(tmpDir, 'records-after-empty.csv');
     let excelFile = path.join(tmpDir, 'records.xlsx');
 
     fs.writeFileSync(jsFile, 'module.exports = { record0: { code: "jsOne" }, record1: { code: "jsTwo" } };');
     fs.writeFileSync(jsonFile, JSON.stringify([{ code: 'jsonOne' }, { code: 'jsonTwo' }]));
+    fs.writeFileSync(emptyJsonFile, JSON.stringify([]));
+    fs.writeFileSync(jsonFileAfterEmpty, JSON.stringify([{ code: 'jsonAfterEmpty' }]));
+    fs.writeFileSync(invalidJsonFile, '[{ "code": "broken" ');
     fs.writeFileSync(csvFile, 'code,name\ncsvOne,Csv One\ncsvTwo,Csv Two\n');
+    fs.writeFileSync(emptyCsvFile, 'code,name\n');
+    fs.writeFileSync(csvFileAfterEmpty, 'code,name\ncsvAfterEmpty,Csv After Empty\n');
     await createExcelFile(excelFile);
 
     pipelineCalls = [];
     let jsRequest = await runProcessor(jsProcessor, [jsFile]);
     assert.deepStrictEqual(pipelineCalls.map(call => call.models.map(model => model.code)), [['jsOne', 'jsTwo']]);
     assert.strictEqual(jsRequest.importRun.summary.recordsRead, 2);
+
+    fs.writeFileSync(jsFile, 'module.exports = { record0: { code: "jsUpdated" } };');
+    pipelineCalls = [];
+    let jsUpdatedRequest = await runProcessor(jsProcessor, [jsFile]);
+    assert.deepStrictEqual(pipelineCalls.map(call => call.models.map(model => model.code)), [['jsUpdated']]);
+    assert.strictEqual(jsUpdatedRequest.importRun.summary.recordsRead, 1);
 
     pipelineCalls = [];
     let jsonRequest = await runProcessor(jsonProcessor, [jsonFile]);
@@ -180,9 +196,28 @@ async function createExcelFile(filePath) {
     assert.strictEqual(jsonRequest.importRun.summary.recordsRead, 2);
 
     pipelineCalls = [];
+    let jsonEmptyFirstRequest = await runProcessor(jsonProcessor, [emptyJsonFile, jsonFileAfterEmpty]);
+    assert.deepStrictEqual(pipelineCalls.flatMap(call => call.models.map(model => model.code)), ['jsonAfterEmpty']);
+    assert.strictEqual(jsonEmptyFirstRequest.importRun.summary.recordsRead, 1);
+
+    pipelineCalls = [];
+    try {
+        await runProcessor(jsonProcessor, [invalidJsonFile]);
+        assert.fail('Expected malformed JSON import data to reject');
+    } catch (error) {
+        assert(error);
+    }
+    assert.deepStrictEqual(pipelineCalls, []);
+
+    pipelineCalls = [];
     let csvRequest = await runProcessor(csvProcessor, [csvFile]);
     assert.deepStrictEqual(pipelineCalls.flatMap(call => call.models.map(model => model.code)), ['csvOne', 'csvTwo']);
     assert.strictEqual(csvRequest.importRun.summary.recordsRead, 2);
+
+    pipelineCalls = [];
+    let csvEmptyFirstRequest = await runProcessor(csvProcessor, [emptyCsvFile, csvFileAfterEmpty]);
+    assert.deepStrictEqual(pipelineCalls.flatMap(call => call.models.map(model => model.code)), ['csvAfterEmpty']);
+    assert.strictEqual(csvEmptyFirstRequest.importRun.summary.recordsRead, 1);
 
     pipelineCalls = [];
     let excelRequest = await runProcessor(excelProcessor, [excelFile]);

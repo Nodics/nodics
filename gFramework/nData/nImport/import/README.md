@@ -40,7 +40,7 @@ data in later active modules. They must not edit framework data files.
 - Environment, server, and node modules may contribute sample/init data through
   the same module-owned directories and active-module ordering.
 - `local` processes an explicitly provided local input structure.
-- `remote` is an internal, disabled-by-default adapter lifecycle. Sources and
+- `remote` is an implemented, disabled-by-default adapter lifecycle. Sources and
   transports are keyed layered configuration entries. Requests select a source
   name rather than supplying arbitrary URLs or credentials. The framework
   enforces tenant/module allowlists, timeouts, bounded retries, isolated
@@ -71,7 +71,7 @@ invokes the import service for pending files. This supports JSON, JavaScript
 data definitions, Excel, CSV, and any additional file processors contributed
 through the module hierarchy.
 
-Direct remote pull through remote import adapters stages files from SFTP,
+Remote import adapters stage files from SFTP,
 object storage, partner APIs, HTTPS pulls, enterprise file gateways, or similar
 external locations before the normal import pipeline runs. A project or
 provider module must own and qualify the production adapter before this path is
@@ -83,11 +83,41 @@ API, file drop, CronJob, or remote adapter.
 
 ## Production Remote Adapter Gate
 
-The framework remote import contract is implemented and tested, but production
-remote pull remains gated by design. A project or provider module must own the
+The framework remote import contract is implemented and tested. Production
+remote import is enabled only through a project or provider module that owns the
 actual adapter, because SFTP, object storage, HTTPS pulls, partner APIs, and
 enterprise file gateways each have different authentication, retry, timeout,
 audit, and failure behavior.
+
+Remote import exists for the Nodics data hub pattern: external systems can
+publish files to their own governed location, and Nodics can stage those files
+before running the same import lifecycle used by module-owned files. This lets
+business teams import supplier catalogs, ERP extracts, partner feeds, reference
+data, or search-index payloads without giving the external source direct write
+access to Nodics persistence services.
+
+The runtime flow is:
+
+1. A CronJob, service, facade, or governed project route calls
+   `DefaultImportService.importRemoteData(request)`.
+2. `remoteDataImportInitializerPipeline` validates the active tenant, requested
+   active modules, configured source, transport, and adapter.
+3. `DefaultRemoteImportTransportService.stage(request)` gives the adapter an
+   assigned server-owned staging path.
+4. The adapter copies or downloads files into that path and returns relative
+   file descriptors with checksums.
+5. Nodics rejects unsafe staging output, including files outside the assigned
+   path, symlinks, disallowed extensions, oversized files, excess file counts,
+   excess total bytes, missing checksums, or checksum mismatches.
+6. `DefaultRemoteDataImportInitializerService.loadHeaderFileList` loads trusted
+   headers from active modules using the configured `headerDataType`.
+7. The standard data import initializer parses and finalizes staged files.
+8. Unless `importFinalizeData` is `false`, finalized records are processed
+   through `processDataImportPipeline` and dispatched to schema or search
+   target services.
+9. Import run history records sanitized source, transport, attempts, file
+   counts, byte totals, diagnostics, success, or failure.
+10. The isolated staging folder is cleaned up when effective policy allows it.
 
 A production adapter must:
 
@@ -103,6 +133,75 @@ A production adapter must:
 - write sanitized diagnostics to import run history;
 - include deterministic contract tests and guarded live integration or release
   tests before any public route exposes that source.
+
+The minimum source configuration belongs in layered `config/properties.js`:
+
+```js
+data: {
+    remoteImport: {
+        enabled: true,
+        defaultTransport: 'partnerSftp',
+        defaultHeaderDataType: 'core',
+        cleanupStaging: true,
+        policy: {
+            timeoutMs: 30000,
+            retries: 1,
+            maxFiles: 100,
+            maxFileBytes: 10485760,
+            maxTotalBytes: 104857600,
+            allowedExtensions: ['json', 'csv', 'xlsx'],
+            requireChecksums: true
+        },
+        transports: {
+            partnerSftp: {
+                enabled: true,
+                service: 'DefaultPartnerSftpImportAdapterService'
+            }
+        },
+        sources: {
+            supplierCatalog: {
+                enabled: true,
+                transport: 'partnerSftp',
+                tenants: ['default'],
+                modules: ['profile', 'catalog'],
+                headerDataType: 'core'
+            }
+        }
+    }
+}
+```
+
+The request selects the source. It does not carry credentials or external
+connection details:
+
+```js
+SERVICE.DefaultImportService.importRemoteData({
+    tenant: 'default',
+    modules: ['profile', 'catalog'],
+    remoteImport: {
+        source: 'supplierCatalog'
+    }
+});
+```
+
+The adapter service must follow Nodics service export style and stage only
+files under the assigned target path:
+
+```js
+module.exports = {
+    stage: function (context) {
+        return Promise.resolve({
+            rootPath: context.targetPath,
+            files: [
+                {
+                    path: 'products.csv',
+                    sha256: '<lowercase sha256 checksum>'
+                }
+            ]
+        });
+    }
+};
+```
 
 Do not add a generic production remote adapter to the framework only to make the
 route public. The capability is sacred; the implementation belongs to the
@@ -124,3 +223,121 @@ Retry metadata is advisory. The framework records attempt/max-attempt state so
 project or provider-specific orchestration can decide whether to reschedule the
 same import. Rollback hooks run only for failed finalization and are reported on
 `importRun.rollback`; they do not create a second import execution path.
+
+## Recursive Error Propagation
+
+Import uses recursive processing for header files, data files, tenants, records,
+relation macros, and multi-file format readers. Recursive import processing must
+always do one of two things:
+
+- continue to the next pending item when the current item is safely skipped;
+- reject with a concrete `DataImportError` or enriched Nodics error when the
+  current item fails.
+
+A skipped, already processed, or failed record must not stop later records in
+the same batch. Successful records are marked in the file-level `processed`
+list. Failed records are not marked processed, so a later phase or later run can
+retry them after the source problem is corrected. The file-level `done` flag may
+be set only after the file pipeline succeeds; any collected record failure keeps
+the file out of the success path.
+
+The `data.stopImportOnFailure` property controls failure mode:
+
+- `false` is the default data-feed mode. Nodics attempts the remaining records,
+  records each failure in import diagnostics, leaves failed records unprocessed
+  for retry, and returns an aggregate import error after the batch is attempted.
+- `true` is fail-fast mode. Nodics stops at the first record failure and returns
+  that failure immediately.
+
+The `data.batchImport` property controls finalized-record dispatch size:
+
+- `enabled: false` is the default compatibility mode. Nodics dispatches one
+  record at a time through `processModelImportPipeline`.
+- `enabled: true` dispatches unprocessed finalized records in batches of
+  `size`. A header may override this through `header.options.batchImport` when
+  a specific data feed needs different throughput behavior.
+
+Batch import is a dispatch optimization, not a second persistence path. Every
+batch still runs through `processModelImportPipeline`, schema/search target
+routing, import access policy, relation macro resolution, target services,
+diagnostics, and import history. A successful batch marks every record in that
+batch as processed. A failed batch records failure diagnostics against every
+record in the batch, leaves those records unprocessed, and either continues or
+stops according to `data.stopImportOnFailure`.
+
+Provider-native bulk insert or bulk indexing may be added later behind the same
+target service contract. Do not bypass schema services, search services,
+interceptors, validators, tenant scope, or access policies to improve import
+speed.
+
+Aggregated recursive failures must pass a real error object into the pipeline
+error terminal so diagnostics, import run history, and failure traceability
+receive usable context.
+
+Malformed parser input, such as invalid JSON, is a hard import failure. It must
+not advance the data handler pipeline or be treated as an empty file.
+
+## Target Dispatch
+
+Every import header must declare exactly where finalized models go. The target
+is selected from trusted active-module header definitions, not from arbitrary
+caller input.
+
+Use `header.options.schemaName` when the import writes to the database through a
+generated schema service. The model import process resolves:
+
+- service: `Default<SchemaName>Service`;
+- operation: `header.options.operation`, usually `saveAll`;
+- tenant: the resolved import tenant;
+- authorization context: `header.options.userGroups`;
+- query: `header.query`;
+- payload: `models`.
+
+This keeps database import under the same generated service, DAO, validation,
+interceptor, access-policy, and tenant contracts as normal CRUD behavior.
+
+Use `header.options.indexName` when the import writes to a search index. The
+model import process resolves:
+
+- service: `Default<IndexName>Service` when available, otherwise
+  `DefaultSearchService`;
+- operation: `header.options.operation`, usually a search save operation;
+- tenant: the resolved import tenant;
+- index/module: `header.options.indexName` and `header.options.moduleName`;
+- authorization context: `header.options.userGroups`;
+- query: `header.query`;
+- payload: both `models` and the compatibility `model` value for services that
+  still process one record at a time.
+
+Search import treats provider errors as import errors and preserves multi-record
+payloads. A normal search response may return an object, array, or single-result
+shape through `result`; it does not need to return more than one result to be
+accepted.
+
+Do not add a second import target path for a specific database, search engine,
+file source, or customer project. Add or override the service, operation,
+processor, interceptor, validator, or header in the owning module layer.
+
+## Header Contract
+
+A data import header describes the import target and processing behavior. Common
+fields include:
+
+- `options.moduleName`: owning module for the target schema or index;
+- `options.schemaName`: database/schema target;
+- `options.indexName`: search/index target;
+- `options.operation`: service method invoked for the target;
+- `options.userGroups`: authorization groups used by the import execution;
+- `options.tenants`: explicit tenant scope, when the header is tenant-specific;
+- `options.dataHandler`: pipeline used after file parsing;
+- `options.processPipeline`: optional model-level processing pipeline;
+- `options.processors`: named processors used by the data handler;
+- `options.finalizeData`: whether finalized output files are written;
+- `options.stopImportOnFailure`: optional header-level fail-fast override;
+- `options.batchImport`: optional header-level batch dispatch override;
+- `query`: target query/context passed to the service operation;
+- `macros`: relation-resolution rules for schema imports.
+
+Headers are source definitions. Projects customize import behavior by adding or
+overriding headers and services in later active modules, then proving the
+effective behavior with import tests.

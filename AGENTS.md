@@ -14,6 +14,33 @@ Framework modules provide default capabilities. Project, environment, server,
 node, tenant, and customer modules may override implementations through the
 layered module hierarchy without modifying out-of-the-box Nodics code.
 
+## Required Expert Posture
+
+AI tools and human technical leaders working on Nodics must use an
+enterprise-grade architecture and quality lens, not a narrow code-editing lens.
+For significant design, implementation, refactor, security, testing,
+documentation, generated-artifact, or runtime-governance work, apply
+`gSetup/llm/prompts/enterprise-architecture-quality-prompt.md`.
+
+The expected posture is:
+
+- act as an enterprise architect, solution architect, software architect,
+  principal engineer, quality engineering leader, AI expert, AI-tool expert,
+  and Nodics framework expert;
+- define module boundaries, ownership, dependencies, coupling risks,
+  customization paths, scalability paths, deployment impact, security impact,
+  observability impact, and testing strategy before recommending architecture;
+- review code for architecture quality, design pattern fit, security,
+  performance, maintainability, runtime governance, generated artifact impact,
+  extension/override behavior, and test coverage;
+- analyze requirements for affected modules, APIs, schemas, database behavior,
+  tenant behavior, permissions, integration contracts, implementation approach,
+  and automated test strategy;
+- challenge assumptions and explain trade-offs instead of providing generic
+  advice;
+- design for enterprise systems that may serve many tenants, environments,
+  deployment topologies, teams, integrations, and high-volume users.
+
 ## Mandatory Rules
 
 - Before changing code, identify the active module boundary and nearest

@@ -25,13 +25,34 @@ Permissions decide what a user or service account can do.
 
 When adding a feature, define the required permissions clearly. Do not rely on hidden checks that only one developer understands.
 
+## NAAM System
+
+NAAM means Nodics Authentication And Authorization Management. It is the identity and access-control capability that protects users, service accounts, tenants, permissions, tokens, and secured routes.
+
+NAAM separates:
+
+- human login;
+- employee/customer identity;
+- service-to-service access;
+- API key and service principal access;
+- authorization through permissions and user groups;
+- tenant isolation;
+- auth cache and invalidation;
+- safe diagnostics.
+
+Do not treat login, internal tokens, API keys, permissions, and tenants as one interchangeable mechanism. Each has a separate security purpose.
+
 ## Human Login
 
 Human login routes are pre-authentication because the user does not have a token yet.
 
+![Authentication Flow](../assets/images/authentication-flow.jpg)
+
 Only true login or credential initiation routes are pre-authentication.
 
 After login, secured APIs must validate authentication, tenant context, and permissions.
+
+![Authorization Flow](../assets/images/authorization-flow.jpg)
 
 ## Service-To-Service Access
 
@@ -56,6 +77,28 @@ Important runtime actions should include:
 - Diagnostics.
 
 This applies especially to configuration, route permissions, schema behavior, and tenant-sensitive settings.
+
+## Add New Tenant
+
+Adding a tenant means introducing a new isolated business/runtime context. A tenant may need users, groups, permissions, data, runtime configuration, import scope, cache partitioning, job behavior, and service-account access.
+
+When adding a tenant, document:
+
+- tenant code and business owner;
+- enterprise or customer relationship;
+- required groups and permissions;
+- startup or initial data;
+- data provider or schema expectations;
+- runtime configuration;
+- import/export scope;
+- cache and auth invalidation behavior;
+- tests for isolation.
+
+### Add in InstalledTanents
+
+The recovered wiki used the spelling `InstalledTanents`. In current Nodics documentation, treat this as the installed or active tenant list that the selected runtime is allowed to use.
+
+Do not activate a tenant only by passing a request header. The tenant must be known to the active runtime, backed by configuration/data, and verified by tests. Request tenant context may narrow execution, but it must not secretly create or broaden tenant scope.
 
 ## Testing Security
 

@@ -63,9 +63,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 15 |
+| Documented | 16 |
 | Partially documented | 2 |
-| Undocumented | 1 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -100,13 +100,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/nExport/export/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
 | `gFramework/nData/nExport/export/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
 | `gFramework/nData/nExport/export/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nData schema metadata, model contracts, and generated capability settings. |  |
-| `gFramework/nData/nExport/export/src/service/DataExportService.js` | `src` | `documented` | 4/4 | Implements nData data export service business behavior and extension logic. |  |
+| `gFramework/nData/nExport/export/src/service/DataExportService.js` | `src` | `documented` | 5/5 | Implements nData data export service business behavior and extension logic. |  |
 | `gFramework/nData/nExport/export/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements export default sample service business behavior and extension logic. |  |
 | `gFramework/nData/nExport/export/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared export enum definition exports. |  |
 | `gFramework/nData/nExport/export/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared export status and error definition exports. |  |
 | `gFramework/nData/nExport/export/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nData utility exports for utils. |  |
 | `gFramework/nData/nExport/export/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nData test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
-| `gFramework/nData/nExport/export/test/dataExportCapabilityBehavior.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nExport/export/test/dataExportCapabilityBehavior.test.js` | `test` | `documented` | 0/0 | Verifies export request normalization, fail-closed default behavior, export access-policy delegation, and export-safe model copy handling. |  |
 | `gFramework/nData/nExport/export/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nData test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract

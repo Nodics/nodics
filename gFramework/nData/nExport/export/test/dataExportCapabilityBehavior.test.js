@@ -9,6 +9,17 @@
 
  */
 
+/**
+ * @module gFramework/nData/nExport/export/test/dataExportCapabilityBehavior
+ * @description Verifies export request normalization, fail-closed default
+ * behavior, export access-policy delegation, and export-safe model copy
+ * handling.
+ * @layer test
+ * @owner export
+ * @override Project modules should add implementation-specific export tests
+ * while preserving these shared export engine contracts.
+ */
+
 const assert = require('assert');
 
 // @nodics-capability-behavior @nodics-area system
@@ -103,6 +114,37 @@ const controller = require('../src/controller/DataExportController');
     assert(exportError instanceof global.CLASSES.NodicsError);
     assert.strictEqual(exportError.code, 'ERR_SYS_00001');
     assert(exportError.message.includes('Data export service is not configured'));
+
+    let selectedModels = [{
+        code: 'product-001',
+        internalCost: 99
+    }];
+    global.SERVICE.DefaultSchemaReadAccessPolicyService = {
+        applyExportPolicies: function (policyRequest, policyResponse) {
+            assert.strictEqual(policyRequest.tenant, 'electronics');
+            assert.strictEqual(policyRequest.schemaModel.schemaName, 'product');
+            delete policyResponse.success.result[0].internalCost;
+            policyResponse.success.policy = {
+                action: 'export',
+                appliedCount: 1
+            };
+            return Promise.resolve(policyResponse);
+        }
+    };
+    let filteredModels = await global.SERVICE.DataExportService.applyExportAccessPolicies({
+        tenant: 'electronics',
+        schemaModel: {
+            schemaName: 'product'
+        }
+    }, selectedModels);
+
+    assert.deepStrictEqual(filteredModels, [{
+        code: 'product-001'
+    }]);
+    assert.deepStrictEqual(selectedModels, [{
+        code: 'product-001',
+        internalCost: 99
+    }]);
 
     console.log('Data export capability behavior validated');
 })().catch((error) => {

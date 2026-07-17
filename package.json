@@ -24,6 +24,8 @@
         "test:access-policy-contract": "node gFramework/nTooling/bin/nodics-tool.js test:access-policy:live --dry-run-contract",
         "test:import": "node gFramework/nTooling/bin/nodics-tool.js test:suite --suite=import",
         "test:import:report": "node gFramework/nTooling/bin/nodics-tool.js test:report --suite=import -- npm run test:import",
+        "test:export": "node gFramework/nTooling/bin/nodics-tool.js test:suite --suite=export",
+        "test:export:report": "node gFramework/nTooling/bin/nodics-tool.js test:report --suite=export -- npm run test:export",
         "test:profile": "node gFramework/nTooling/bin/nodics-tool.js test:suite --suite=profile",
         "test:cache": "node gFramework/nTooling/bin/nodics-tool.js test:suite --suite=cache",
         "test:cache:release": "node gFramework/nCache/redisCache/test/cacheRedisLive.test.js --require-live",
