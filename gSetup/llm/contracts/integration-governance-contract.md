@@ -219,6 +219,8 @@ An integration is complete only when:
 - the owning module and provider adapter are declared;
 - `gDocs/reference/provider-capability-maturity-matrix.md` reflects the
   provider or capability maturity level;
+- root dependency governance and the owner module `package.json` declare any
+  external SDK, provider adapter, or runtime package used by the integration;
 - provider selection is layered and overrideable;
 - connection and secret configuration are governed and redacted;
 - business modules call Nodics contracts rather than provider SDKs directly;

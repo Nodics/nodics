@@ -15,7 +15,9 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics"
     },
-    "dependencies": {},
+    "dependencies": {
+        "node-cache": "^5.1.2"
+    },
     "nodics": {
         "kind": "capability",
         "runtimeModule": true,

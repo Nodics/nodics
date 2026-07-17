@@ -141,8 +141,8 @@
         "runtimeModule": true,
         "loadableByNodicsModuleLoader": true,
         "owns": [
-        "composition",
-        "llm"
+            "composition",
+            "llm"
         ],
         "dependencyGovernance": {
             "preferredNodeMajor": 24,
@@ -177,7 +177,259 @@
                 "npm run test:basic",
                 "npm run test:full"
             ],
-            "upgradeCadence": "Review security updates when Dependabot reports them and perform planned dependency refreshes before release candidates."
+            "upgradeCadence": "Review security updates when Dependabot reports them and perform planned dependency refreshes before release candidates.",
+            "ownedDependencies": {
+                "@elastic/elasticsearch": {
+                    "type": "provider",
+                    "owners": [
+                        "gFramework/nSearch/elastic",
+                        "gFramework/nConfig"
+                    ],
+                    "restricted": true,
+                    "reason": "Elasticsearch search provider and optional Elasticsearch logger transport."
+                },
+                "bcryptjs": {
+                    "type": "shared-utility",
+                    "owners": [
+                        "gFramework/nCommon"
+                    ],
+                    "restricted": false,
+                    "reason": "Shared password hashing utility used by common security helpers."
+                },
+                "body-parser": {
+                    "type": "runtime-framework",
+                    "owners": [
+                        "gFramework/nRouter"
+                    ],
+                    "restricted": false,
+                    "reason": "HTTP body parsing owned by router/app configuration."
+                },
+                "chai": {
+                    "type": "test-framework",
+                    "owners": [
+                        "gFramework/nTest"
+                    ],
+                    "restricted": false,
+                    "reason": "Assertion library for module-owned tests."
+                },
+                "clear-module": {
+                    "type": "runtime-utility",
+                    "owners": [
+                        "gFramework/nData/nImport/import"
+                    ],
+                    "restricted": false,
+                    "reason": "Import JS data reload support."
+                },
+                "cron": {
+                    "type": "runtime-framework",
+                    "owners": [
+                        "gCore/cronjob"
+                    ],
+                    "restricted": true,
+                    "reason": "Cron scheduler runtime owned by cronjob."
+                },
+                "csvtojson": {
+                    "type": "format-provider",
+                    "owners": [
+                        "gFramework/nData/nImport/csvImport"
+                    ],
+                    "restricted": true,
+                    "reason": "CSV import format processor."
+                },
+                "email-validator": {
+                    "type": "domain-utility",
+                    "owners": [
+                        "gCore/profile"
+                    ],
+                    "restricted": true,
+                    "reason": "Profile login-id email validation."
+                },
+                "exceljs": {
+                    "type": "format-provider",
+                    "owners": [
+                        "gFramework/nData/nImport/excelImport"
+                    ],
+                    "restricted": true,
+                    "reason": "Excel import format processor.",
+                    "allowedConsumers": [
+                        "gFramework/nData/nImport/import/test"
+                    ]
+                },
+                "express": {
+                    "type": "runtime-framework",
+                    "owners": [
+                        "gFramework/nRouter"
+                    ],
+                    "restricted": true,
+                    "reason": "Express application and route binding owned by nRouter."
+                },
+                "flatted": {
+                    "type": "shared-utility",
+                    "owners": [
+                        "gFramework/nCommon",
+                        "gFramework/nConfig"
+                    ],
+                    "restricted": false,
+                    "reason": "Safe serialization for errors and logging."
+                },
+                "fs-extra": {
+                    "type": "shared-utility",
+                    "owners": [
+                        "gFramework/nCommon",
+                        "gFramework/nConfig",
+                        "gFramework/nData"
+                    ],
+                    "restricted": false,
+                    "reason": "File-system utility used by shared file, build, import, and data services."
+                },
+                "jsonwebtoken": {
+                    "type": "security",
+                    "owners": [
+                        "gFramework/nAuth",
+                        "gFramework/nService"
+                    ],
+                    "restricted": true,
+                    "reason": "Human and internal service token signing/verification."
+                },
+                "kafkajs": {
+                    "type": "provider",
+                    "owners": [
+                        "gFramework/nEms/kafka"
+                    ],
+                    "restricted": true,
+                    "reason": "Kafka EMS provider adapter."
+                },
+                "lodash": {
+                    "type": "shared-utility",
+                    "owners": [
+                        "gFramework/nCommon"
+                    ],
+                    "restricted": false,
+                    "reason": "Shared object/collection utility used across modules."
+                },
+                "logform": {
+                    "type": "logging",
+                    "owners": [
+                        "gFramework/nConfig"
+                    ],
+                    "restricted": true,
+                    "reason": "Logger format pipeline owned by nConfig."
+                },
+                "mocha": {
+                    "type": "test-framework",
+                    "owners": [
+                        "gFramework/nTest"
+                    ],
+                    "restricted": false,
+                    "reason": "Programmatic test runner owned by nTest."
+                },
+                "mongodb": {
+                    "type": "provider",
+                    "owners": [
+                        "gFramework/nDatabase/mongodb",
+                        "gFramework/nController"
+                    ],
+                    "restricted": true,
+                    "reason": "MongoDB provider plus generated ObjectId route parsing until ID parsing is abstracted."
+                },
+                "node-cache": {
+                    "type": "provider",
+                    "owners": [
+                        "gFramework/nCache/nodeCache"
+                    ],
+                    "restricted": true,
+                    "reason": "Local in-memory cache provider.",
+                    "allowedConsumers": [
+                        "gFramework/nCache/cache/test"
+                    ]
+                },
+                "node-fetch": {
+                    "type": "runtime-framework",
+                    "owners": [
+                        "gFramework/nService"
+                    ],
+                    "restricted": true,
+                    "reason": "Module-to-module HTTP communication owned by nService."
+                },
+                "object-sizeof": {
+                    "type": "runtime-utility",
+                    "owners": [
+                        "gFramework/nData/nImport/csvImport",
+                        "gFramework/nData/nImport/jsonImport",
+                        "gFramework/nSearch/search"
+                    ],
+                    "restricted": false,
+                    "reason": "Import/search batch sizing diagnostics."
+                },
+                "redis": {
+                    "type": "provider",
+                    "owners": [
+                        "gFramework/nCache/redisCache"
+                    ],
+                    "allowedConsumers": [
+                        "gFramework/nAuth/test/integration"
+                    ],
+                    "restricted": true,
+                    "reason": "Redis cache provider and guarded auth/cache live release tests."
+                },
+                "require-from-string": {
+                    "type": "runtime-governance",
+                    "owners": [
+                        "gFramework/nDynamo"
+                    ],
+                    "restricted": true,
+                    "reason": "Dynamic class/runtime governance compilation."
+                },
+                "stompit": {
+                    "type": "provider",
+                    "owners": [
+                        "gFramework/nEms/activemq"
+                    ],
+                    "restricted": true,
+                    "reason": "ActiveMQ EMS provider adapter."
+                },
+                "stream-json": {
+                    "type": "format-provider",
+                    "owners": [
+                        "gFramework/nData/nImport/jsonImport"
+                    ],
+                    "restricted": true,
+                    "reason": "Streaming JSON import processor."
+                },
+                "uuid": {
+                    "type": "shared-utility",
+                    "owners": [
+                        "gFramework/nCommon",
+                        "gFramework/nAuth"
+                    ],
+                    "restricted": false,
+                    "reason": "Common identifiers and auth token identifiers."
+                },
+                "winston": {
+                    "type": "logging",
+                    "owners": [
+                        "gFramework/nConfig"
+                    ],
+                    "restricted": true,
+                    "reason": "Logger runtime owned by nConfig."
+                },
+                "winston-elasticsearch": {
+                    "type": "logging-provider",
+                    "owners": [
+                        "gFramework/nConfig"
+                    ],
+                    "restricted": true,
+                    "reason": "Optional Elasticsearch logger transport owned by nConfig."
+                },
+                "xml-js": {
+                    "type": "format-provider",
+                    "owners": [
+                        "gFramework/nEms/emsClient"
+                    ],
+                    "restricted": true,
+                    "reason": "EMS XML message handler."
+                }
+            }
         }
     },
     "overrides": {

@@ -223,6 +223,7 @@ module.exports = {
                 { node: 'gFramework/nTooling/test/toolingCommandOverride.test.js' },
                 { node: 'gFramework/nTooling/test/repositoryToolingBoundary.test.js' },
                 { node: 'gFramework/nTooling/test/dependencyRuntimeContract.test.js' },
+                { node: 'gFramework/nTooling/test/dependencyOwnershipContract.test.js' },
                 { node: 'gFramework/nTooling/test/releaseCheckCommandContract.test.js' },
                 { node: 'gFramework/nTooling/test/projectPostmanCoverageOwnership.test.js' },
                 { node: 'gFramework/nTooling/test/fullTestSuiteCoverageContract.test.js' },

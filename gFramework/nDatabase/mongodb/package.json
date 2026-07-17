@@ -15,7 +15,9 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics"
     },
-    "dependencies": {},
+    "dependencies": {
+        "mongodb": "^4.17.2"
+    },
     "nodics": {
         "kind": "group",
         "runtimeModule": true,

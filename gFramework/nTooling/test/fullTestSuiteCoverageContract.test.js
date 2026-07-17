@@ -145,6 +145,7 @@ requireSuiteIncludes('ems', [
     'gFramework/nData/nImport/import/test/importTenantPrecedence.test.js',
     'gFramework/nData/nImport/import/test/testTenantImportIsolation.test.js',
     'gFramework/nData/nImport/import/test/importGovernanceLifecycleContract.test.js',
+    'gFramework/nTooling/test/dependencyOwnershipContract.test.js',
     'gFramework/nTooling/test/releaseCheckCommandContract.test.js',
     'gCore/workflow/flowCore/test/workflowEventContinuationContract.test.js',
     'gCore/workflow/flowCore/test/workflowSplitAndRetryContract.test.js',

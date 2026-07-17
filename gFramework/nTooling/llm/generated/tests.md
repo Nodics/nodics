@@ -5,6 +5,7 @@
 ## Hand-Authored Tests
 
 - `gFramework/nTooling/test/copyrightHeaderGovernance.test.js`
+- `gFramework/nTooling/test/dependencyOwnershipContract.test.js`
 - `gFramework/nTooling/test/dependencyRuntimeContract.test.js`
 - `gFramework/nTooling/test/fullTestSuiteCoverageContract.test.js`
 - `gFramework/nTooling/test/llmChangeAcceptanceContract.test.js`

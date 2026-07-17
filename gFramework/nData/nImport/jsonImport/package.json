@@ -15,7 +15,10 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics"
     },
-    "dependencies": {},
+    "dependencies": {
+        "stream-json": "^1.9.1",
+        "object-sizeof": "^1.6.3"
+    },
     "nodics": {
         "kind": "capability",
         "runtimeModule": true,

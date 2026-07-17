@@ -25,9 +25,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 29 |
-| Test files | 16 |
+| Test files | 17 |
 | Data files | 0 |
-| All module-owned files | 54 |
+| All module-owned files | 55 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -53,7 +53,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 50 |
+| Documented | 51 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -113,6 +113,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/src/service/quality/defaultDocumentationGatesQualityService.js` | `src` | `documented` | 0/0 | Applies project-overridable documentation governance configuration to enforced and report-only coverage gates. |  |
 | `gFramework/nTooling/src/service/quality/defaultStructureComplianceQualityService.js` | `src` | `documented` | 0/0 | Audits Nodics module, project, environment, server, and node structure against the canonical structure matrix without mutating source files. |  |
 | `gFramework/nTooling/test/copyrightHeaderGovernance.test.js` | `test` | `documented` | 0/0 | Validates Nodics copyright header detection and normalization. |  |
+| `gFramework/nTooling/test/dependencyOwnershipContract.test.js` | `test` | `documented` | 0/0 | Verifies package dependency ownership so external providers, runtime frameworks, and shared utilities remain declared by their owning Nodics capability modules while the root package remains the install aggregator for the repository. |  |
 | `gFramework/nTooling/test/dependencyRuntimeContract.test.js` | `test` | `documented` | 0/0 | Verifies the repository declares supported Node.js/npm versions, package-lock ownership, and release dependency validation commands. |  |
 | `gFramework/nTooling/test/fullTestSuiteCoverageContract.test.js` | `test` | `documented` | 0/0 | Guards the full Nodics test command surface so import, workflow, cron, NEMS, tenant, and distributed-communication coverage remains wired into executable package gates instead of living only as documentation. |  |
 | `gFramework/nTooling/test/llmChangeAcceptanceContract.test.js` | `test` | `documented` | 0/0 | Prevents the mandatory Nodics hierarchy, customization, and test-coverage contract from disappearing from canonical LLM guidance. |  |

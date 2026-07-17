@@ -17,7 +17,13 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics.git"
     },
-    "dependencies": {},
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "flatted": "^3.2.7",
+        "fs-extra": "^10.1.0",
+        "uuid": "^11.1.1",
+        "lodash": "^4.17.21"
+    },
     "nodics": {
         "kind": "capability",
         "runtimeModule": true,

@@ -190,6 +190,12 @@ versions or dependency ownership. Commit `package.json` and `package-lock.json`
 together for dependency changes, and run the dependency runtime contract plus
 the appropriate test/documentation gates before accepting the change.
 
+Root `package.json` is the repository install aggregator. The owning module
+`package.json` must also declare the dependency it owns, and root
+`nodics.dependencyGovernance.ownedDependencies` must classify the dependency,
+owner module, purpose, and restricted-provider boundary. Provider SDKs must
+stay inside their owner module or an explicitly allowed test/release consumer.
+
 Use `npm run release:check` to print the clean-checkout release gate before
 claiming release readiness. Use `npm run release:check -- --execute` to run the
 standard gate and `npm run release:check -- --execute --full` for a release

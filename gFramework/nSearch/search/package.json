@@ -15,7 +15,9 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics"
     },
-    "dependencies": {},
+    "dependencies": {
+        "object-sizeof": "^1.6.3"
+    },
     "nodics": {
         "kind": "capability",
         "runtimeModule": true,
