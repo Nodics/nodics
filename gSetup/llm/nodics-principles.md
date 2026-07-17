@@ -23,7 +23,7 @@ Modernization may replace outdated libraries, improve security, refactor existin
 7. Keep runtime artifacts inside Nodics loader radar: services under `src/service/**/*Service.js`, controllers under `src/controller/**/*Controller.js`, facades under `src/facade/**/*Facade.js`, and pipeline definitions in `src/pipelines/pipelines.js`.
 8. Export runtime behavior as mergeable `module.exports = { methodName: function (...) {} }` objects so later modules can override the smallest necessary member.
 9. Use schema-driven models, services, routers, APIs, tests, and documentation where possible.
-10. Preserve multi-tenancy and the difference between default tenant and active tenant.
+10. Preserve multi-tenancy, tenant data placement, and the difference between default tenant and active tenant.
 11. Preserve runtime configuration, audit, rollback, validation, and access-control governance.
 12. Add tests for both consolidated and modular deployment behavior when behavior crosses module/process boundaries.
 
@@ -34,6 +34,18 @@ Default tenant is used during startup and system bootstrap when all tenants may 
 Active tenant is used to serve customer requests and should be resolved from request context, enterprise/token data, or runtime request metadata.
 
 Do not confuse these two concepts. Startup logic may use default tenant; request processing should prefer active tenant.
+
+Tenant also decides data placement and runtime isolation. A business that
+accepts shared infrastructure can use the shared `default` tenant. A business
+with privacy, residency, regulatory, or operational separation requirements can
+use a dedicated tenant whose database, search index, cache namespace, storage
+path, import/export location, audit records, diagnostics, and runtime
+configuration point to private or approved infrastructure.
+
+Do not hardcode tenant placement in feature code. Resolve tenant context through
+Nodics and use layered configuration, tenant records, governed runtime
+configuration, or provider modules to decide where data is stored, indexed,
+cached, imported, exported, audited, and governed.
 
 ## Customization Rule
 

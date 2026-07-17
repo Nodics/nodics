@@ -148,7 +148,7 @@ the current process. `server.*` entries describe local or remote endpoint
 coordinates and must not be treated as local activation. Framework code must not
 hardcode sample, customer, or project-specific module names.
 
-## Tenant Model And Runtime Isolation
+## Tenant Model, Data Placement, And Runtime Isolation
 
 Nodics may keep multiple tenants active in one runtime, but tenant-sensitive
 behavior must resolve tenant context explicitly from request, enterprise, token,
@@ -161,6 +161,13 @@ Tenant boundaries apply to persistence, configuration, cache keys, search
 indexes, jobs, events, auth stamps, audit, diagnostics, import/export, and
 runtime governance. Cross-tenant behavior requires an explicit governed
 permission or contract.
+
+Tenant also represents data placement. Shared infrastructure can use the
+`default` tenant when the business accepts shared database, search, cache,
+storage, import/export, audit, diagnostics, and governance behavior. A dedicated
+tenant can point those same capabilities to private or approved infrastructure
+when privacy, residency, regulatory, operational, or customer policy requires
+stronger separation.
 
 ## Versioned Data And Publish Lifecycle
 

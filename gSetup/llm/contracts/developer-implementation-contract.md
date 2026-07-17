@@ -81,6 +81,35 @@ Check these extension points before proposing framework edits:
 If none of these extension points can safely express the behavior, document the
 gap and treat the work as framework-maintainer mode.
 
+## Tenant Placement And Isolation Contract
+
+Treat tenant as the data-placement, isolation, and runtime-governance context.
+It is not only a customer label.
+
+When implementing data-owning behavior, resolve tenant context before touching:
+
+- schema persistence or DAO behavior;
+- search index selection;
+- cache keys, cache channels, or invalidation;
+- import/export source and target paths;
+- files, storage buckets, or provider destinations;
+- jobs, events, retries, and audit records;
+- runtime configuration, diagnostics, and rollback data.
+
+A business that accepts shared infrastructure may use the shared `default`
+tenant. A business with stricter privacy, residency, regulatory, or operational
+requirements may use a dedicated tenant with private database, search, cache,
+storage, audit, import/export, and runtime configuration. The application
+capability remains the same; tenant context decides the concrete data and
+runtime placement.
+
+Developers and AI tools must not hardcode tenant placement details in feature
+code. Use layered `config/properties.js`, tenant records, governed runtime
+configuration, provider modules, and Nodics tenant resolution services. Tests
+must prove tenant-specific behavior does not leak data, cache entries, search
+results, files, events, audit records, permissions, or runtime configuration
+across tenants.
+
 ## Control-Plane API Contract
 
 Control-plane work means backend API/security contract work unless the user

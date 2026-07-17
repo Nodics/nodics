@@ -161,9 +161,22 @@ A node owns instance-specific overrides below a selected server. It does not rep
 
 Nodics can model more than one business inside the same platform. An enterprise can represent a company, group, or business owner. Sub-enterprises can represent business units, brands, regions, or operating divisions. Tenants isolate users, data, configuration, permissions, imports, jobs, runtime behavior, and integration contracts for a selected business context.
 
+A tenant is also the data-placement decision. One business can run inside the
+shared `default` tenant when shared infrastructure is acceptable. Another
+business can use a dedicated tenant when its data must remain inside its own
+database, search cluster, cache namespace, storage location, audit boundary, or
+operational environment. The application capability stays the same; tenant
+configuration decides where the data and runtime state are handled.
+
 ![Enterprise Tenant Design](../assets/images/enterprise-tenant-design.jpg)
 
 Use tenant structure when one platform must support multiple customers, companies, brands, catalogs, business units, or deployment contexts without mixing their data or permissions. Keep tenant behavior explicit in schemas, services, routes, imports, events, jobs, cache keys, and tests.
+
+When designing a module, ask whether the behavior is tenant-neutral or
+tenant-specific. Tenant-specific behavior must not use hardcoded storage,
+search, cache, file, event, or configuration paths. Resolve the active tenant
+through the Nodics tenant context and let layered configuration or governed
+runtime configuration decide the concrete provider details.
 
 ## Layered Customization
 

@@ -136,7 +136,8 @@ With Nodics, you can build:
 - Import and export flows.
 - Search indexing and retrieval flows.
 - Catalog, CMS, and content-template driven experiences.
-- Tenant-aware applications.
+- Tenant-aware applications where shared or dedicated tenants decide data
+  placement, runtime isolation, and governance.
 - Event-driven workflows.
 - Cache-backed services.
 - Runtime configuration tools.
@@ -159,7 +160,8 @@ Nodics provides the following platform capabilities. This list avoids internal f
 | Environment extension layers | Environment-specific defaults can differ for local, development, QA, pre-production, and production deployments. |
 | Server extension layers | Each runnable process can select its active modules, ports, endpoints, and process-level responsibilities. |
 | Node extension layers | Individual nodes can own instance-specific responsibilities such as scheduling, diagnostics, or capacity. |
-| Tenant-aware behavior | Runtime behavior can resolve the active tenant and protect tenant-specific data and configuration. |
+| Tenant-aware behavior | Runtime behavior can resolve the active tenant and protect tenant-specific data, configuration, cache, search, imports, exports, audit, and diagnostics. |
+| Shared and dedicated tenant placement | A business can use shared platform infrastructure or a dedicated tenant with private database, search, cache, storage, and governance configuration. |
 | Customer-aware behavior | Customer-specific rules can live in customer or project layers instead of framework modules. |
 | Runtime governance | Runtime changes can use preview, request, approval, activation, audit, diagnostics, and rollback. |
 | Generated artifacts | Models, APIs, tests, OpenAPI output, and LLM context can be regenerated from source definitions. |
@@ -295,7 +297,7 @@ Nodics provides the following platform capabilities. This list avoids internal f
 | Functionality | What It Provides |
 | --- | --- |
 | Enterprise model | Enterprise records organize business-level ownership. |
-| Tenant model | Tenants isolate runtime behavior, users, data, and configuration. |
+| Tenant model | Tenants isolate runtime behavior, users, data, configuration, and data-placement decisions. |
 | Customer model | Customer records support customer-specific identity and ownership. |
 | Employee model | Employee records support internal user identity. |
 | Principal model | Principals represent authenticated actors. |
@@ -316,7 +318,7 @@ Nodics provides the following platform capabilities. This list avoids internal f
 | Ownership policy | Profile records can enforce owner-based access. |
 | Customer registration | Registration can force safe customer groups and remove privileged caller input. |
 | Profile access control | Profile schemas and routes enforce identity access rules. |
-| Tenant model and runtime isolation | Tenant context separates users, tokens, data, permissions, and runtime behavior. |
+| Tenant model and runtime isolation | Tenant context separates users, tokens, data, permissions, runtime behavior, and private or shared infrastructure placement. |
 
 ### Database And Persistence
 

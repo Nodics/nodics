@@ -2,7 +2,10 @@
 
 Nodics applications are tenant-aware.
 
-A tenant represents an isolated business context. Different tenants can have different users, permissions, data, configuration, and runtime behavior.
+A tenant represents where data lives and how runtime behavior is isolated. It
+is not only a customer name. Different tenants can have different users,
+permissions, data stores, search indexes, cache namespaces, imports, exports,
+configuration, audit records, and runtime behavior.
 
 ## Why Tenants Matter
 
@@ -14,6 +17,38 @@ Examples:
 - A business can test configuration for one tenant before enabling it for another.
 - Runtime configuration can be audited per tenant.
 - Data imports can target a specific tenant.
+
+## Shared Tenant And Dedicated Tenant Example
+
+Imagine a retail marketplace running on Nodics.
+
+`BrandStyle` sells lifestyle products and is comfortable using the platform's
+shared data environment. The project can associate BrandStyle with the
+`default` tenant, so its data uses the default database configuration, shared
+search provider, shared cache configuration, standard import/export locations,
+and common operational governance for that runtime.
+
+`MedSupplyPro` sells regulated healthcare supplies and requires stronger data
+separation. The project can create a dedicated tenant such as `medSupplyPro`.
+That tenant can point schema persistence, search indexes, cache namespace,
+import/export locations, audit records, runtime configuration, service-account
+rules, and diagnostics to MedSupplyPro-owned or MedSupplyPro-approved
+infrastructure.
+
+Both businesses can use the same Nodics modules and APIs. The tenant context
+decides where data is stored, indexed, cached, imported, exported, audited, and
+governed.
+
+The rule is simple:
+
+```text
+Tenant = data placement, isolation boundary, and runtime governance context.
+```
+
+Any route, service, DAO, search operation, cache operation, import/export run,
+job, event, audit record, or runtime configuration change that touches
+tenant-owned data must resolve and preserve tenant context before doing the
+work.
 
 ## Users And Groups
 

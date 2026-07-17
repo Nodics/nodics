@@ -23,6 +23,22 @@ or govern runtime behavior. The capability contract remains stable even
 when a project, provider, environment, server, node, tenant, or customer changes
 how that capability is implemented.
 
+## Tenant Placement Principle
+
+Tenant is the data-placement, isolation, and runtime-governance boundary. It is
+not only a customer label.
+
+A business may use the shared `default` tenant when shared platform
+infrastructure is acceptable. A business may use a dedicated tenant when data
+privacy, residency, regulatory, operational, or customer policy requires private
+database, search, cache, storage, import/export, audit, diagnostics, or runtime
+configuration.
+
+Every tenant-sensitive implementation must preserve tenant context before
+touching persistence, search, cache, imports, exports, files, events, jobs,
+permissions, audit, diagnostics, or runtime governance. Do not hardcode tenant
+placement details in feature code.
+
 ## Layered Ownership
 
 Every feature must respect the layered module hierarchy.
