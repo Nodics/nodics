@@ -38,6 +38,7 @@ Start with the first two sections if you are new. Use the task guides when you a
 19. [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md)
 20. [Module Documentation Index](reference/module-documentation-index.md)
 21. [Provider And Capability Maturity Matrix](reference/provider-capability-maturity-matrix.md)
+22. [Licensing And Header Contract](reference/licensing-and-header-contract.md)
 
 ## Documentation Principles
 
@@ -91,5 +92,6 @@ Use this map when you are not sure where to start.
 | Maintain public and module documentation | [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md) |
 | Find module-specific capability documentation | [Module Documentation Index](reference/module-documentation-index.md) |
 | Check whether a provider or capability is production-ready, guarded, sample, scaffolded, or parked | [Provider And Capability Maturity Matrix](reference/provider-capability-maturity-matrix.md) |
+| Understand which files require the Nodics source header and how the copyright year is enforced | [Licensing And Header Contract](reference/licensing-and-header-contract.md) |
 
 For module-specific details, read the owning module `README.md`. For implementation contracts used by AI tools and developers, read root `AGENTS.md` and `gSetup/llm`.

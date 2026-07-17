@@ -1,7 +1,7 @@
 /*
     Nodics - Enterprice Micro-Services Management Framework
 
-    Copyright (c) 2017 Nodics All rights reserved.
+    Copyright (c) 2026 Nodics All rights reserved.
 
     This software is the confidential and proprietary information of Nodics ("Confidential Information").
     You shall not disclose such Confidential Information and shall use it only in accordance with the
@@ -23,7 +23,7 @@ const path = require('path');
 const requiredHeader = '/*\n' +
     '    Nodics - Enterprice Micro-Services Management Framework\n' +
     '\n' +
-    '    Copyright (c) 2017 Nodics All rights reserved.\n' +
+    '    Copyright (c) 2026 Nodics All rights reserved.\n' +
     '\n' +
     '    This software is the confidential and proprietary information of Nodics ("Confidential Information").\n' +
     '    You shall not disclose such Confidential Information and shall use it only in accordance with the\n' +
@@ -39,8 +39,7 @@ const excludedDirectories = new Set([
     'logs',
     'temp',
     'tmp',
-    'dist',
-    'docs'
+    'dist'
 ]);
 
 const excludedFiles = new Map([
@@ -58,7 +57,8 @@ function relative(filePath, rootDir) {
 }
 
 function isExcludedFile(filePath, rootDir) {
-    return excludedFiles.has(relative(filePath, rootDir));
+    const relativePath = relative(filePath, rootDir);
+    return excludedFiles.has(relativePath) || relativePath === 'docs' || relativePath.startsWith('docs/');
 }
 
 function walk(dir, files, rootDir) {
@@ -114,7 +114,7 @@ function stripExistingNodicsHeader(body) {
     }
     const candidate = content.slice(0, endIndex + 2);
     if (!candidate.includes('Nodics - Enterprice Micro-Services Management Framework') ||
-        !candidate.includes('Copyright (c) 2017 Nodics All rights reserved.')) {
+        !/Copyright \(c\) \d{4} Nodics All rights reserved\./.test(candidate)) {
         return body;
     }
     return leadingWhitespace + content.slice(endIndex + 2).replace(/^\s*\n?/, '');

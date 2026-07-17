@@ -203,6 +203,19 @@ candidate. Do not invent separate release scripts outside nTooling; extend the
 `release:check` tooling command through governed command overrides when a
 project needs stricter gates.
 
+## Licensing And Header Contract
+
+Every Nodics-owned JavaScript source file, generated JavaScript file, template
+JavaScript file, and generated customer project skeleton file must use the
+canonical 2026 Nodics source header. Do not hand-edit one file to use different
+legal text. Update the nTooling copyright quality service, structure generator,
+tests, documentation, and generated artifacts together.
+
+Markdown documentation does not require the JavaScript block header at the top
+of every page, but JavaScript snippets that show Nodics skeletons or source
+templates must use the current 2026 header. Run `npm run quality:copyright` and
+`npm run quality:copyright:fix` for validation and normalization.
+
 ## Provider Implementation Contract
 
 When adding a new implementation behind an existing capability, such as an

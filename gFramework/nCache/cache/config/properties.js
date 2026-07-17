@@ -1,7 +1,7 @@
 /*
     Nodics - Enterprice Micro-Services Management Framework
 
-    Copyright (c) 2017 Nodics All rights reserved.
+    Copyright (c) 2026 Nodics All rights reserved.
 
     This software is the confidential and proprietary information of Nodics ("Confidential Information").
     You shall not disclose such Confidential Information and shall use it only in accordance with the
@@ -19,7 +19,7 @@
 /*
     Nodics - Enterprice Micro-Services Management Framework
 
-    Copyright (c) 2017 Nodics All rights reserved.
+    Copyright (c) 2026 Nodics All rights reserved.
 
     This software is the confidential and proprietary information of Nodics ("Confidential Information").
     You shall not disclose such Confidential Information and shall use it only in accordance with the 
