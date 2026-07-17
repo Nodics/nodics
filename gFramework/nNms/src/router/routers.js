@@ -19,49 +19,49 @@
 module.exports = {
     common: {
         nodeStateChanges: {
-            nodeActivatedGet: {
+            nodeActivatedPost: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/node/active/:nodeId',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultNodeManagerController',
                 operation: 'handleNodeActivated',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/{moduleName}/node/active/:nodeId',
                 }
             },
 
-            requestResponsibilityGet: {
+            requestResponsibilityPost: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/node/request/responsibility/:nodeId',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultNodeManagerController',
                 operation: 'requestResponsibility',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/{moduleName}/node/request/responsibility/:nodeId',
                 }
             }
         },
 
         stopNodeHealthCheck: {
-            stopNodeHealthCheckGet: {
+            stopNodeHealthCheckPost: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/node/health/check/stop',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultNodeManagerController',
                 operation: 'stopHealthCheck',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/{moduleName}/node/health/check/stop',
                 }
             }

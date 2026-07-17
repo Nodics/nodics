@@ -19,21 +19,6 @@
 module.exports = {
     cronjob: {
         createJob: {
-            createGetJob: {
-                secured: true,
-                accessGroups: ['userGroup'],
-                key: '/job/create',
-                method: 'GET',
-                controller: 'DefaultCronJobController',
-                operation: 'createJob',
-                help: {
-                    requestType: 'secured',
-                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/cronjob/job/create',
-                    body: 'All active jobs will be created'
-                }
-            },
             createPostJob: {
                 secured: true,
                 accessGroups: ['userGroup'],
@@ -56,17 +41,17 @@ module.exports = {
                     }
                 }
             },
-            createGetJobByCode: {
+            createPostJobByCode: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/job/create/:jobCode',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultCronJobController',
                 operation: 'createJob',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/cronjob/job/create/:jobCode',
                     body: 'Specific job will be created'
                 }
@@ -74,32 +59,17 @@ module.exports = {
         },
 
         updateJob: {
-            updateGetJob: {
+            updatePatchJob: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/job/update',
-                method: 'GET',
+                method: 'PATCH',
                 controller: 'DefaultCronJobController',
                 operation: 'updateJob',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/cronjob/job/update',
-                    body: 'All active jobs will be updated'
-                }
-            },
-            updatePostJob: {
-                secured: true,
-                accessGroups: ['userGroup'],
-                key: '/job/update',
-                method: 'POST',
-                controller: 'DefaultCronJobController',
-                operation: 'updateJob',
-                help: {
-                    requestType: 'secured',
-                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'POST',
+                    method: 'PATCH',
                     url: 'http://host:port/nodics/cronjob/job/update',
                     body: {
                         recursive: 'optional true/false - default is false',
@@ -111,17 +81,17 @@ module.exports = {
                     }
                 }
             },
-            updateGetJobByCode: {
+            updatePatchJobByCode: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/job/update/:jobCode',
-                method: 'GET',
+                method: 'PATCH',
                 controller: 'DefaultCronJobController',
                 operation: 'updateJob',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'PATCH',
                     url: 'http://host:port/nodics/cronjob/job/update/:jobCode',
                     body: 'Specific job will be updated'
                 }
@@ -129,17 +99,17 @@ module.exports = {
         },
 
         runJob: {
-            runGetJobByCode: {
+            runPostJobByCode: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/job/run/:jobCode',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultCronJobController',
                 operation: 'runJob',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/cronjob/job/run/:jobCode',
                     body: 'Specific job will be executed'
                 }
@@ -147,17 +117,17 @@ module.exports = {
         },
 
         startJob: {
-            startGetJobByCode: {
+            startPostJobByCode: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/job/start/:jobCode',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultCronJobController',
                 operation: 'startJob',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/cronjob/job/start/:jobCode',
                     body: 'Specific job will be started'
                 }
@@ -180,17 +150,17 @@ module.exports = {
         },
 
         stopJob: {
-            stopGetJobByCode: {
+            stopPostJobByCode: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/job/stop/:jobCode',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultCronJobController',
                 operation: 'stopJob',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/cronjob/job/stop/:jobCode',
                     body: 'Specific job will be stoped'
                 }
@@ -213,32 +183,32 @@ module.exports = {
         },
 
         removeJob: {
-            removeGetJobByCode: {
+            removeDeleteJobByCode: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/job/remove/:jobCode',
-                method: 'GET',
+                method: 'DELETE',
                 controller: 'DefaultCronJobController',
                 operation: 'removeJob',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'DELETE',
                     url: 'http://host:port/nodics/cronjob/job/remove/:jobCode',
                     body: 'Specific job will be removed'
                 }
             },
-            removePostJob: {
+            removeDeleteJob: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/job/remove',
-                method: 'POST',
+                method: 'DELETE',
                 controller: 'DefaultCronJobController',
                 operation: 'removeJob',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'POST',
+                    method: 'DELETE',
                     url: 'http://host:port/nodics/cronjob/job/remove',
                     body: ['job1', 'job2', 'job3', 'job...n']
                 }
@@ -246,17 +216,17 @@ module.exports = {
         },
 
         pauseJob: {
-            pauseGetJobByCode: {
+            pausePostJobByCode: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/job/pause/:jobCode',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultCronJobController',
                 operation: 'pauseJob',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/cronjob/job/pause/:jobCode',
                     body: 'Specific job will be paused'
                 }
@@ -279,17 +249,17 @@ module.exports = {
         },
 
         resumeJob: {
-            resumeGetJobByCode: {
+            resumePostJobByCode: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/job/resume/:jobCode',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultCronJobController',
                 operation: 'resumeJob',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/cronjob/job/resume/:jobCode',
                     body: 'Specific job will be resumed'
                 }

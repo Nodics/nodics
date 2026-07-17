@@ -39,6 +39,8 @@ A route definition makes these decisions visible:
 - Help and OpenAPI metadata.
 - Expected tests.
 
+Use HTTP methods according to behavior. `GET` is for read-only retrieval and must not create, update, run, start, stop, pause, resume, remove, publish, import, export, approve, or otherwise mutate state. Use command methods for command behavior: `POST` for actions or creation, `PATCH` for partial updates, `PUT` for complete replacement when applicable, and `DELETE` for removal.
+
 Do not hide route behavior in controller code when route metadata owns it.
 
 ## Security First

@@ -4,6 +4,7 @@
 
 ## Hand-Authored Tests
 
+- `gFramework/nRouter/test/apiMethodStandardRouteContract.test.js`
 - `gFramework/nRouter/test/authHeaderNormalization.test.js`
 - `gFramework/nRouter/test/jsonResponseStatusResolution.test.js`
 - `gFramework/nRouter/test/openapiContractGeneration.test.js`

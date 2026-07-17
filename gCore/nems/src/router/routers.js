@@ -23,28 +23,14 @@ module.exports = {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/event/process',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultEventHandlerController',
                 operation: 'processEvents',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/nems/event/process',
-                }
-            },
-            resetAll: {
-                secured: true,
-                accessGroups: ['userGroup'],
-                key: '/event/reset',
-                method: 'GET',
-                controller: 'DefaultEventHandlerController',
-                operation: 'resetEvents',
-                help: {
-                    requestType: 'secured',
-                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/nems/event/reset',
                 }
             },
 
@@ -58,7 +44,7 @@ module.exports = {
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/nems/event/reset',
                 }
             }

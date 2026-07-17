@@ -196,6 +196,7 @@ Nodics cache behavior can appear at different layers:
 Related module documentation:
 
 - [nCache](../../gFramework/nCache/README.md), [cache](../../gFramework/nCache/cache/README.md), [redisCache](../../gFramework/nCache/redisCache/README.md), [nodeCache](../../gFramework/nCache/nodeCache/README.md), and [hazelcastCache](../../gFramework/nCache/hazelcastCache/README.md).
+- For detailed cache configuration, invalidation, diagnostics, and troubleshooting, read [How Cache Works](how-cache-works.md).
 
 ## Invoking Engine
 
@@ -204,6 +205,8 @@ Cache engine invocation should go through the Nodics cache capability, not direc
 The effective cache configuration selects the engine, channel, TTL behavior, key strategy, serialization, tenant partitioning, and invalidation behavior. Business code asks the cache capability to get, put, consume, flush, or invalidate data. The selected engine implements the provider-specific behavior.
 
 This keeps API cache, item cache, search cache, and auth/runtime caches replaceable across local, Redis, and future provider engines.
+
+Cache also has secured operational controls for flushes and scoped API/item cache configuration changes. These controls are useful when operations needs to adjust cache behavior in a running system, but they are immediate cache events, not a substitute for the governed runtime configuration lifecycle. Use `nDynamo` when a cache-related decision must be previewed, approved, audited, rolled back, or retained as a tenant/business runtime contract.
 
 ## Invalidating Cache
 

@@ -91,6 +91,14 @@ Each lifecycle action has permission checks, diagnostics, and tests. Repeated st
 
 ![CronJob Lifecycle](../assets/images/cron-job-lifecycle.png)
 
+CronJob lifecycle APIs are command APIs. They should use command-safe HTTP methods:
+
+- `POST` to create/register, run, start, stop, pause, and resume jobs;
+- `PATCH` to update job scheduling/runtime definitions;
+- `DELETE` to remove jobs from the runtime scheduler pool.
+
+Do not expose lifecycle mutations through `GET`. A `GET` route can be retried, prefetched, cached, or called by monitoring tools as if it were read-only, so it must not change scheduler state.
+
 ## Creating A New Job
 
 Steps:

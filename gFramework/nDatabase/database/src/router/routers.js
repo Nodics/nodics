@@ -30,13 +30,13 @@ module.exports = {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/schema/indexes/schema/:schema',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultSchemaIndexController',
                 operation: 'updateSchemaIndexes',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/{moduleName}/schema/indexes/schema/:schema'
                 }
             },
@@ -44,13 +44,13 @@ module.exports = {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/schema/indexes',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultSchemaIndexController',
                 operation: 'updateSchemaIndexes',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/{moduleName}/schema/indexes'
                 }
             }
@@ -60,13 +60,13 @@ module.exports = {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/schema/validator/schema/:schema',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultSchemaValidatorController',
                 operation: 'updateSchemaValidator',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/{moduleName}/schema/validator/schema/:schema'
                 }
             },
@@ -74,13 +74,13 @@ module.exports = {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/schema/validator',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultSchemaValidatorController',
                 operation: 'updateSchemaValidator',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/{moduleName}/schema/validator'
                 }
             }

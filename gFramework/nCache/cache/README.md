@@ -9,6 +9,21 @@ Nodics exposes two primary business-cache layers:
 
 Both layers use the same adapter contract and layered channel mapping. A cache change is not complete unless router/API-response behavior and DAO/schema-item behavior are reviewed together, including tenant isolation, principal isolation where relevant, TTL semantics, response envelopes, invalidation, and overrideability through later modules.
 
+For user-facing cache concepts, configuration examples, invalidation rules, diagnostics, and troubleshooting, read [How Cache Works](../../../gDocs/platform/how-cache-works.md). This module README is the implementation contract for the shared cache capability.
+
+## What cache means in Nodics
+
+In Nodics, cache is a controlled acceleration layer around source-of-truth behavior. It stores safe results that can be rebuilt from APIs, services, database models, search indexes, auth/runtime state, or provider systems. It is not an authority for business data, security rules, or runtime decisions.
+
+Cache can be applied at different layers:
+
+- route metadata enables router/API-response cache;
+- schema metadata and database get pipelines enable DAO/schema-item cache;
+- search/index behavior enables search query cache;
+- security/runtime modules can use cache only when invalidation and tenant/principal isolation are strict.
+
+Each layer must document what is cached, who owns the cached value, how the key is built, how long the value can live, what invalidates it, and what tests prove the behavior.
+
 ## Adapter contract
 
 Every enabled engine declares `contractVersion`, handlers, and truthful capabilities for distribution, atomic consume, TTL, non-expiring TTL, prefix flush, key flush, and serialization. The existing dispatcher validates these declarations before connecting; projects extend the same path by overriding engine metadata and services in later module layers.
@@ -17,6 +32,37 @@ Cache activation is governed only by layered Nodics configuration. `cache.enable
 
 TTL `0` means non-expiring. Positive values are seconds. Undefined TTL resolves through channel, engine, then engine-option defaults. Negative and non-numeric values fail with `ERR_CACHE_00009`. Cache misses use `ERR_CACHE_00001`.
 
+## Configuration model
+
+Cache configuration has four main parts:
+
+- global activation and diagnostics under `cache.enabled` and `cache.diagnostics`;
+- cacheability policy under `cache.cacheability`;
+- invalidation behavior under `cache.invalidation`;
+- channels and engines under `cache.default.channels` and `cache.default.engines`.
+
+Channels represent cache purposes such as `router` and `schema`. Engines represent provider implementations such as `local` or `redis`. Enabled channels bind to enabled engines. Enabled engines are validated at startup so provider problems fail early instead of appearing as silent cache misses later.
+
+Router, schema, and auth channel mappings can redirect a specific route, schema, or tenant to a different cache channel:
+
+```js
+{
+    cache: {
+        routerCacheChannelNameMapping: {
+            // getProducts: 'productApiCache'
+        },
+        schemaCacheChannelNameMapping: {
+            // product: 'productItemCache'
+        },
+        authCacheChannelNameMapping: {
+            // default: 'authCache'
+        }
+    }
+}
+```
+
+Use layered properties for provider selection, TTL, channel mapping, cacheability limits, and invalidation behavior. Do not hardcode provider choices or connection values in business services.
+
 ## Tenancy and invalidation
 
 API, item, and search operations pass the resolved tenant into storage. Physical keys are partitioned by channel, module, and tenant, so tenant-scoped flushes cannot remove another tenant's entries. Write, update, and remove pipelines call `invalidateResource`, which resolves layered channel mappings instead of hardcoding an engine or channel.
@@ -24,6 +70,21 @@ API, item, and search operations pass the resolved tenant into storage. Physical
 Schema save, update, and remove pipelines invalidate both affected cache layers: router/API-response cache for generated endpoints that may expose the changed schema data, and DAO/schema-item cache for direct model reads. Invalidation must continue to use `invalidateResource` rather than bypassing layered channel resolution.
 
 Shared adapters such as Redis invalidate the shared store directly. Process-local adapters publish the configured `cacheInvalidation` event to peer module nodes; listeners suppress republication to prevent loops. Peer invalidation events must carry an explicit tenant, target module, and channel name before any local flush is applied.
+
+## Error and troubleshooting contract
+
+Cache errors use `ERR_CACHE_*` status definitions. Common operational meanings are:
+
+- `ERR_CACHE_00001`: cache miss; caller should continue to source of truth when a miss is expected.
+- `ERR_CACHE_00006`: no cache client is configured for the module/channel.
+- `ERR_CACHE_00007`: mutation request escaped the authorized tenant or active module.
+- `ERR_CACHE_00008`: selected adapter is disabled, unavailable, or cannot be activated.
+- `ERR_CACHE_00009`: adapter contract, TTL, or required capability is invalid.
+- `ERR_CACHE_00010`: invalidation event does not include the required tenant, target module, or channel scope.
+
+When cache behavior looks wrong, check the effective `cache` properties, selected channel, selected engine, TTL, key dimensions, tenant, principal context, cacheability decision, invalidation event, and diagnostics snapshot before changing code.
+
+Cache write decisions use `RSN_CACHE_*` reason codes. A skipped cache write should not fail the business request, but it should be visible in diagnostics through `cachePolicyDecision.reasonCode`.
 
 For release readiness, run the fail-closed Redis gate against an isolated Redis endpoint:
 
@@ -34,6 +95,10 @@ NODICS_CACHE_REDIS_URL=redis://127.0.0.1:6379 npm run test:cache:release
 ## Security and customization
 
 Public mutation routes require `runtimeConfigAdminUserGroup` plus `cache.flush`, `cache.configuration.router.update`, or `cache.configuration.item.update`. Flush routes use `DELETE`; configuration routes use `POST`. Service-level validation rejects tenant or module scope changes even when the service is called outside the router.
+
+Cache configuration routes are operational event changes. Use them for scoped cache enablement, TTL, or cache-policy adjustments that can safely take effect in the running process through the cache event listeners. Do not use them as a hidden persistence or approval system.
+
+When a cache-related change must be previewed, approved, audited, rolled back, or preserved as a tenant/business runtime decision, model it through the governed runtime configuration lifecycle owned by `nDynamo`. The direct cache routes and the `nDynamo` lifecycle may both influence cache behavior, but they have different contracts: cache routes are immediate operational controls; runtime configuration is the persisted control-plane contract.
 
 Projects may override channel mappings, engine selection, capabilities, handlers, invalidation transport, and permissions through normal hierarchy layers. Overrides must preserve tenant isolation, capability honesty, response envelopes, diagnostics, and fail-closed security behavior.
 

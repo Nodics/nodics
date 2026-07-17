@@ -160,7 +160,7 @@ module.exports = {
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/{moduleName}/log/level',
                     body: {
                         entityName: 'like EnterpriseService',
@@ -182,7 +182,7 @@ module.exports = {
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/{moduleName}/config',
                     body: {
                         configuration: 'Tenant property patch; sensitive values must use external configuration or a secret manager',
@@ -405,13 +405,13 @@ module.exports = {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/schema/indexes/all',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultSchemaIndexController',
                 operation: 'updateModulesIndexes',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/{moduleName}/schema/indexes/all'
                 }
             },
@@ -423,13 +423,13 @@ module.exports = {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/test/runUTest',
-                method: 'GET',
+                method: 'POST',
                 controller: 'TestExecutionController',
                 operation: 'runUTest',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/system/test/runUTest',
                 }
             },
@@ -437,13 +437,13 @@ module.exports = {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/test/runNTest',
-                method: 'GET',
+                method: 'POST',
                 controller: 'TestExecutionController',
                 operation: 'runNTest',
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/system/test/runNTest',
                 }
             }
@@ -451,20 +451,6 @@ module.exports = {
 
 
         dataExport: {
-            exportGet: {
-                secured: true,
-                accessGroups: ['userGroup'],
-                key: '/export',
-                method: 'GET',
-                controller: 'DataExportController',
-                operation: 'export',
-                help: {
-                    requestType: 'secured',
-                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/system/export',
-                }
-            },
             exportPost: {
                 secured: true,
                 accessGroups: ['userGroup'],

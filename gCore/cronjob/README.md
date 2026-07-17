@@ -59,6 +59,11 @@ Each operation routes through the owning service and is protected by the
 right permission and tenant context. Route handlers do not contain the
 business behavior directly.
 
+Lifecycle APIs are command APIs. CronJob route definitions must use `POST` for
+create/register, run, start, stop, pause, and resume commands, `PATCH` for
+updates, and `DELETE` for removal. Do not expose state-changing CronJob
+operations through `GET`.
+
 ## Handlers And Project Overrides
 
 Handlers resolve execution context and call the owning service. The

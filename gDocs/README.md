@@ -29,13 +29,14 @@ Start with the first two sections if you are new. Use the task guides when you a
 10. [How To Use Nodics As Data As A Service](data/how-to-use-nodics-as-data-as-a-service.md)
 11. [How To Create Scheduled Jobs](jobs/how-to-create-scheduled-jobs.md)
 12. [How Platform Capabilities Work](platform/how-platform-capabilities-work.md)
-13. [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md)
-14. [How To Test Nodics Changes](testing/how-to-test-nodics-changes.md)
-15. [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md)
-16. [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md)
-17. [How To Publish Documentation On GitHub](documentation/how-to-publish-documentation-on-github.md)
-18. [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md)
-19. [Module Documentation Index](reference/module-documentation-index.md)
+13. [How Cache Works](platform/how-cache-works.md)
+14. [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md)
+15. [How To Test Nodics Changes](testing/how-to-test-nodics-changes.md)
+16. [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md)
+17. [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md)
+18. [How To Publish Documentation On GitHub](documentation/how-to-publish-documentation-on-github.md)
+19. [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md)
+20. [Module Documentation Index](reference/module-documentation-index.md)
 
 ## Documentation Principles
 
@@ -81,7 +82,8 @@ Use this map when you are not sure where to start.
 | Work with schemas, import, export, and data providers | [How To Work With Data](data/how-to-work-with-data.md) |
 | Use Nodics as a governed data lake or data hub | [How To Use Nodics As Data As A Service](data/how-to-use-nodics-as-data-as-a-service.md) |
 | Add scheduled jobs | [How To Create Scheduled Jobs](jobs/how-to-create-scheduled-jobs.md) |
-| Understand processes, cache, messaging, logging, and request handling | [How Platform Capabilities Work](platform/how-platform-capabilities-work.md) |
+| Understand processes, messaging, logging, and request handling | [How Platform Capabilities Work](platform/how-platform-capabilities-work.md) |
+| Configure, troubleshoot, or customize cache | [How Cache Works](platform/how-cache-works.md) |
 | Understand users, tenants, permissions, and runtime isolation | [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md) |
 | Verify a change | [How To Test Nodics Changes](testing/how-to-test-nodics-changes.md) |
 | Run, debug, or deploy Nodics | [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md) and [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md) |

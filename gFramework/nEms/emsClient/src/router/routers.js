@@ -41,11 +41,11 @@ module.exports = {
         },
 
         registerConsumers: {
-            getRegisterConsumer: {
+            postRegisterConsumer: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/register/consumer/:consumer',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultEmsClientController',
                 operation: 'registerConsumers',
                 help: {
@@ -77,11 +77,11 @@ module.exports = {
         },
 
         registerPublishers: {
-            getRegisterPublisher: {
+            postRegisterPublisher: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/register/publisher/:publisher',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultEmsClientController',
                 operation: 'registerPublishers',
                 help: {
@@ -113,11 +113,11 @@ module.exports = {
         },
 
         closeConsumers: {
-            getCloseConsumer: {
+            postCloseConsumer: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/close/consumer/:consumer',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultEmsClientController',
                 operation: 'closeConsumers',
                 help: {
@@ -147,11 +147,11 @@ module.exports = {
         },
 
         closePublishers: {
-            getClosePublishers: {
+            postClosePublisher: {
                 secured: true,
                 accessGroups: ['userGroup'],
                 key: '/close/publisher/:publisher',
-                method: 'GET',
+                method: 'POST',
                 controller: 'DefaultEmsClientController',
                 operation: 'closePublishers',
                 help: {

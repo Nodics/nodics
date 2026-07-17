@@ -28,9 +28,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 21 |
-| Test files | 6 |
+| Test files | 7 |
 | Data files | 0 |
-| All module-owned files | 35 |
+| All module-owned files | 36 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -57,7 +57,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 28 |
+| Documented | 29 |
 | Partially documented | 0 |
 | Undocumented | 3 |
 | Inventory only | 4 |
@@ -108,6 +108,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nRouter/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared router enum definition exports. |  |
 | `gFramework/nRouter/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Status and error definitions for router help, route governance, and override validation. |  |
 | `gFramework/nRouter/src/utils/utils.js` | `src` | `documented` | 2/2 | Router utility helpers for route/model cache eligibility decisions. |  |
+| `gFramework/nRouter/test/apiMethodStandardRouteContract.test.js` | `test` | `documented` | 0/0 | Verifies repository router definitions keep GET routes read-only and keep help metadata aligned with runtime route methods. |  |
 | `gFramework/nRouter/test/authHeaderNormalization.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nRouter/test/jsonResponseStatusResolution.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nRouter/test/openapiContractGeneration.test.js` | `test` | `documented` | 0/0 | Verifies that OpenAPI generation follows effective layered schema and router definitions, excludes inactive capabilities, preserves security metadata, rejects conflicting routes and invalid references, and emits accurate request and response contracts. |  |

@@ -212,6 +212,14 @@ cronJobService.get = function (request) {
     assert.strictEqual(startResult.code, 'SUC_JOB_00000', 'startJobs should succeed for created jobs');
     assert.strictEqual(fakeJobs[0].active, true, 'startJobs should activate the runtime job');
 
+    let manualRunResult = await cronJobService.getCronJobContainer().runJobs({
+        tenant: 'tenantA',
+        definitions: [Object.assign({}, tenantJobs.tenantA[0])]
+    });
+    assert.strictEqual(manualRunResult.result.length, 1, 'manual run should succeed for an active tenant-owned job');
+    assert.strictEqual(manualRunResult.failed.length, 0, 'manual run should not record failures for an active tenant-owned job');
+    assert.strictEqual(fakeJobs[0].paused, false, 'manual run should resume the active tenant-owned job after the one-time execution is scheduled');
+
     let pauseResult = await cronJobService.getCronJobContainer().pauseJobs('tenantA', ['ownedJob']);
     assert.strictEqual(pauseResult.code, 'SUC_JOB_00000', 'pauseJobs should succeed for created jobs');
     assert.strictEqual(fakeJobs[0].paused, true, 'pauseJobs should pause the runtime job');

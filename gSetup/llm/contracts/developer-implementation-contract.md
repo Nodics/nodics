@@ -249,6 +249,11 @@ and downstream facades/services/pipelines own business behavior. Use
 `gFramework/nRouter/docs/router-framework.md` as the canonical framework guide
 before adding, securing, extending, or documenting API routes.
 
+Router guidance must preserve HTTP method semantics. `GET` routes are read-only
+and must not mutate state. Commands such as run, start, stop, pause, resume,
+publish, import, export, approve, activate, or remove must use command methods
+such as `POST`, `PATCH`, or `DELETE` according to the behavior.
+
 ## Reference Material Use
 
 Use captured notes and extracted documentation only as recovery material for

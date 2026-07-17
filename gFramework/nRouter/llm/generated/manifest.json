@@ -14,12 +14,12 @@
     "description": "Register routers for all defined items"
   },
   "sourceFiles": 21,
-  "testFiles": 6,
+  "testFiles": 7,
   "dataFiles": 0,
-  "ownedFiles": 35,
-  "sourceFingerprint": "e5d9ecf3dfc7e0320c5611982741681c8ec30fbabe8ace53aef2f54fdaabcbc8",
+  "ownedFiles": 36,
+  "sourceFingerprint": "003864c5a9f9c499fd9343d1d91455aa9d29526f61b819125375c5560079a9b9",
   "documentation": {
-    "documented": 28,
+    "documented": 29,
     "partially-documented": 0,
     "undocumented": 3,
     "inventory-only": 4

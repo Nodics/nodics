@@ -19,21 +19,6 @@
 module.exports = {
     default: {
         defaultDoSearch: {
-            doGetRefresh: {
-                secured: true,
-                accessGroups: ['userGroup'],
-                key: '/schemaName/search/refresh',
-                method: 'GET',
-                controller: 'DefaultctrlName',
-                operation: 'doRefresh',
-                help: {
-                    requestType: 'secured',
-                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/refresh',
-                }
-            },
-
             doPostRefresh: {
                 secured: true,
                 accessGroups: ['userGroup'],
@@ -167,7 +152,7 @@ module.exports = {
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'doSearch',
+                    method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/schemaName/search/:id',
                 }
             },
@@ -310,26 +295,11 @@ module.exports = {
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/{moduleName}/schemaName/search/schema',
                     body: {
                         options: '{ object of options required for this option }'
                     }
-                }
-            },
-
-            doGetUpdateSchema: {
-                secured: true,
-                accessGroups: ['userGroup'],
-                key: '/schemaName/search/schema/update',
-                method: 'GET',
-                controller: 'DefaultctrlName',
-                operation: 'doUpdateSchema',
-                help: {
-                    requestType: 'secured',
-                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/schema/update',
                 }
             },
 
@@ -368,20 +338,6 @@ module.exports = {
                     }
                 }
             },
-            doGetIndex: {
-                secured: true,
-                accessGroups: ['userGroup'],
-                key: '/schemaName/search/index/:indexerCode',
-                method: 'GET',
-                controller: 'DefaultctrlName',
-                operation: 'doIndexing',
-                help: {
-                    requestType: 'secured',
-                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/schemaName/search/index/:indexerCode',
-                }
-            },
             doPostIndex: {
                 secured: true,
                 accessGroups: ['userGroup'],
@@ -404,21 +360,6 @@ module.exports = {
     },
     common: {
         commonDoSearch: {
-            doGetRefresh: {
-                secured: true,
-                accessGroups: ['userGroup'],
-                key: '/:indexName/search/refresh',
-                method: 'GET',
-                controller: 'DefaultSearchController',
-                operation: 'doRefresh',
-                help: {
-                    requestType: 'secured',
-                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/refresh',
-                }
-            },
-
             doPostRefresh: {
                 secured: true,
                 accessGroups: ['userGroup'],
@@ -552,7 +493,7 @@ module.exports = {
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'doSearch',
+                    method: 'GET',
                     url: 'http://host:port/nodics/{moduleName}/:indexName/search/:id',
                 }
             },
@@ -695,26 +636,11 @@ module.exports = {
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'POST',
                     url: 'http://host:port/nodics/{moduleName}/:indexName/search/schema',
                     body: {
                         options: '{ object of options required for this option }'
                     }
-                }
-            },
-
-            doGetUpdateSchema: {
-                secured: true,
-                accessGroups: ['userGroup'],
-                key: '/:indexName/search/schema/update',
-                method: 'GET',
-                controller: 'DefaultSearchController',
-                operation: 'doUpdateSchema',
-                help: {
-                    requestType: 'secured',
-                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/:indexName/search/schema/update',
                 }
             },
 
@@ -751,20 +677,6 @@ module.exports = {
                     body: {
                         options: '{ object of options required for this option }'
                     }
-                }
-            },
-            doGetIndex: {
-                secured: true,
-                accessGroups: ['userGroup'],
-                key: '/:indexName/search/index/:indexerCode',
-                method: 'GET',
-                controller: 'DefaultSearchController',
-                operation: 'doIndexing',
-                help: {
-                    requestType: 'secured',
-                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
-                    url: 'http://host:port/nodics/{moduleName}/search/index/:indexerCode',
                 }
             },
             doPostIndex: {

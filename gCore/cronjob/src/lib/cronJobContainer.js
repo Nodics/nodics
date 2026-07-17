@@ -239,7 +239,7 @@ module.exports = function () {
                     if (_jobPool[definition.tenant] &&
                         _jobPool[definition.tenant][definition.code] &&
                         _jobPool[definition.tenant][definition.code].isActive()) {
-                        _active = _jobPool[definition.code].isActive();
+                        _active = _jobPool[definition.tenant][definition.code].isActive();
                         _jobPool[definition.tenant][definition.code].pauseJob(true);
                     }
                     if (!definition.runOnNode || CONFIG.get('nodeId') === definition.runOnNode) {

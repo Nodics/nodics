@@ -130,6 +130,8 @@ Runtime configuration is configuration that can be previewed, requested, approve
 
 Use runtime configuration when business or operations teams need controlled changes after deployment.
 
+Some platform capabilities also expose operational controls. For example, cache flush and cache configuration routes can apply scoped, secured cache changes to active nodes through cache events. Those operational controls are not the same as governed persisted runtime configuration. Use `nDynamo` runtime configuration when the change needs preview, approval, audit, rollback, or durable business ownership.
+
 Runtime configuration never bypasses:
 
 - Validation.

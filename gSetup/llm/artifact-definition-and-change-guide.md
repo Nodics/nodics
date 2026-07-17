@@ -100,6 +100,12 @@ module/group/route registry shape. A route contract should declare its path key,
 HTTP method, controller or handler, operation, security/access metadata, cache
 policy when relevant, and help/documentation metadata.
 
+Choose HTTP methods by behavior. `GET` is read-only and must not create, update,
+run, start, stop, pause, resume, remove, publish, import, export, approve, or
+otherwise mutate state. Use `POST` for commands and creation, `PATCH` for partial
+updates, `PUT` for full replacement where the contract requires it, and `DELETE`
+for removal.
+
 Router contributions use governed composition:
 
 - additive or partial changes use the default merge mode
@@ -184,10 +190,17 @@ Cache behavior is a cross-layer contract, not a single implementation detail.
 Nodics has router/API-response cache in the request pipeline and DAO/schema-item
 cache in the database get pipeline.
 
+Use the public cache guide at `gDocs/platform/how-cache-works.md` for the
+reader-facing explanation of what cache is, where it applies, how it is
+configured, how invalidation works, and what to check when it fails. Use the
+`nCache/cache` README for implementation contracts.
+
 When adding or changing a cacheable feature:
 
 - define cache policy at the owning source artifact: route metadata for
   router/API-response cache, schema metadata for DAO/schema-item cache
+- explain what is cached, who owns it, the key dimensions, TTL, invalidation
+  rule, cacheability reason behavior, diagnostics, and release tests
 - keep adapters, TTL behavior, physical key construction, and invalidation in
   `nCache` services so project modules can override them through hierarchy
 - verify tenant isolation for both layers and principal/access isolation for
@@ -209,10 +222,16 @@ When adding or changing a cacheable feature:
 - add project-specific cacheability rules with ordered
   `cache.cacheability.policyHandlers` that point to layered services before
   considering a full core policy-service override
+- distinguish immediate cache operations from governed runtime configuration:
+  cache flush/configuration routes apply secured operational cache events, while
+  persisted business or tenant runtime decisions must use the `nDynamo`
+  preview/request/approve/activate/audit/rollback lifecycle
 - invalidate both router/API-response and DAO/schema-item cache on schema save,
   update, and remove through `DefaultCacheService.invalidateResource`
 - test Local behavior deterministically and Redis behavior through the guarded
   live Redis gate when validating release readiness
+- document troubleshooting paths for `ERR_CACHE_*` failures and skipped writes
+  through `RSN_CACHE_*` reason codes
 
 ## Functionality Change-Impact Matrix
 

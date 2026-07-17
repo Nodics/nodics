@@ -29,7 +29,7 @@ module.exports = {
                 help: {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
-                    method: 'GET',
+                    method: 'PUT',
                     url: 'http://host:port/nodics/system/workflow/to/schema',
                     body: {
                         workflowCode: 'Code of the workflow needs to be triggered for this schema',
