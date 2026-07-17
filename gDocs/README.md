@@ -37,6 +37,7 @@ Start with the first two sections if you are new. Use the task guides when you a
 18. [How To Publish Documentation On GitHub](documentation/how-to-publish-documentation-on-github.md)
 19. [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md)
 20. [Module Documentation Index](reference/module-documentation-index.md)
+21. [Provider And Capability Maturity Matrix](reference/provider-capability-maturity-matrix.md)
 
 ## Documentation Principles
 
@@ -89,5 +90,6 @@ Use this map when you are not sure where to start.
 | Run, debug, or deploy Nodics | [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md) and [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md) |
 | Maintain public and module documentation | [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md) |
 | Find module-specific capability documentation | [Module Documentation Index](reference/module-documentation-index.md) |
+| Check whether a provider or capability is production-ready, guarded, sample, scaffolded, or parked | [Provider And Capability Maturity Matrix](reference/provider-capability-maturity-matrix.md) |
 
 For module-specific details, read the owning module `README.md`. For implementation contracts used by AI tools and developers, read root `AGENTS.md` and `gSetup/llm`.

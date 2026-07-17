@@ -217,6 +217,8 @@ Replacing an MCP handler is a larger change and must use
 An integration is complete only when:
 
 - the owning module and provider adapter are declared;
+- `gDocs/reference/provider-capability-maturity-matrix.md` reflects the
+  provider or capability maturity level;
 - provider selection is layered and overrideable;
 - connection and secret configuration are governed and redacted;
 - business modules call Nodics contracts rather than provider SDKs directly;

@@ -53,6 +53,9 @@ Before commit or release:
 - Run `npm run ai:validate`.
 - Run `npm run llm:validate`.
 - Run `npm run quality:docs`.
+- Run `npm run release:check` to print the clean-checkout release gate and use
+  `npm run release:check -- --execute` or
+  `npm run release:check -- --execute --full` for release-candidate evidence.
 - Run broader/full checks when shared runtime behavior, security, persistence,
   cache, auth, schema, router, or generated artifacts are affected.
 

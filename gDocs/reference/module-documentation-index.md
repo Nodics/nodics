@@ -8,6 +8,11 @@ developer perspective. Use module `README.md` files when you need exact source
 definitions, extension points, services, routers, schemas, pipelines,
 configuration, tests, and module-owned behavior.
 
+Use the [Provider And Capability Maturity Matrix](provider-capability-maturity-matrix.md)
+before selecting a provider or external adapter. It shows whether a capability
+is production-ready, guarded, sample/reference, scaffolded, or parked for later
+work.
+
 ## How To Use This Index
 
 1. Start with the task guide that matches what you want to do.
