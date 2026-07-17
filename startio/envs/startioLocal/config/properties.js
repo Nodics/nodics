@@ -49,6 +49,18 @@ module.exports = {
             }
         }
     },
+    httpHardening: {
+        cors: {
+            enabled: true,
+            allowedOrigins: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173', 'http://127.0.0.1:5173'],
+            allowCredentials: true
+        },
+        rateLimit: {
+            enabled: true,
+            windowMs: 60000,
+            max: 2000
+        }
+    },
     authSecurity: {
         jwt: {
             secret: process.env.NODICS_JWT_SECRET || 'startio-local-only-jwt-secret-change-before-deployment'

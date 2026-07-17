@@ -131,7 +131,7 @@ module.exports = {
     post: function (moduleRouter, routerDef) {
         let _self = this;
         let bodyParserHandler = CONFIG.get('bodyParserHandler')[routerDef.bodyParserHandler] || CONFIG.get('bodyParserHandler').jsonBodyParserHandler;
-        moduleRouter.post(routerDef.url, SERVICE[bodyParserHandler].getBodyParser(), (req, res) => {
+        moduleRouter.post(routerDef.url, SERVICE[bodyParserHandler].getBodyParser(routerDef), (req, res) => {
             _self.bindOperation(req, res, routerDef);
         });
     },
@@ -147,7 +147,7 @@ module.exports = {
     delete: function (moduleRouter, routerDef) {
         let _self = this;
         let bodyParserHandler = CONFIG.get('bodyParserHandler')[routerDef.bodyParserHandler] || CONFIG.get('bodyParserHandler').jsonBodyParserHandler;
-        moduleRouter.delete(routerDef.url, SERVICE[bodyParserHandler].getBodyParser(), (req, res) => {
+        moduleRouter.delete(routerDef.url, SERVICE[bodyParserHandler].getBodyParser(routerDef), (req, res) => {
             _self.bindOperation(req, res, routerDef);
         });
     },
@@ -163,7 +163,7 @@ module.exports = {
     put: function (moduleRouter, routerDef) {
         let _self = this;
         let bodyParserHandler = CONFIG.get('bodyParserHandler')[routerDef.bodyParserHandler] || CONFIG.get('bodyParserHandler').jsonBodyParserHandler;
-        moduleRouter.put(routerDef.url, SERVICE[bodyParserHandler].getBodyParser(), (req, res) => {
+        moduleRouter.put(routerDef.url, SERVICE[bodyParserHandler].getBodyParser(routerDef), (req, res) => {
             _self.bindOperation(req, res, routerDef);
         });
     },
@@ -179,7 +179,7 @@ module.exports = {
     patch: function (moduleRouter, routerDef) {
         let _self = this;
         let bodyParserHandler = CONFIG.get('bodyParserHandler')[routerDef.bodyParserHandler] || CONFIG.get('bodyParserHandler').jsonBodyParserHandler;
-        moduleRouter.patch(routerDef.url, SERVICE[bodyParserHandler].getBodyParser(), (req, res) => {
+        moduleRouter.patch(routerDef.url, SERVICE[bodyParserHandler].getBodyParser(routerDef), (req, res) => {
             _self.bindOperation(req, res, routerDef);
         });
     }

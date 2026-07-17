@@ -282,6 +282,7 @@ module.exports = {
                 { node: 'gFramework/nRouter/test/authHeaderNormalization.test.js' },
                 { node: 'gFramework/nRouter/test/routeActionAuthorization.test.js' },
                 { node: 'gFramework/nService/test/moduleRequestHeaderNormalization.test.js' },
+                { node: 'gFramework/nRouter/test/httpHardeningContract.test.js' },
                 { node: 'gFramework/nRouter/test/requestPipelineResponseContract.test.js' },
                 { node: 'gFramework/nRouter/test/jsonResponseStatusResolution.test.js' }
             ],

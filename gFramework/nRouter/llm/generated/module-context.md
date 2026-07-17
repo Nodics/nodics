@@ -27,10 +27,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 21 |
-| Test files | 8 |
+| Source files | 22 |
+| Test files | 9 |
 | Data files | 0 |
-| All module-owned files | 37 |
+| All module-owned files | 39 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -57,7 +57,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 30 |
+| Documented | 32 |
 | Partially documented | 0 |
 | Undocumented | 3 |
 | Inventory only | 4 |
@@ -91,6 +91,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nRouter/src/router/appConfig.js` | `src` | `documented` | 8/8 | Default Express application configuration hooks for nRouter. These hooks are executed by `DefaultRouterConfigurationService` against the consolidated default app or module-specific apps based on the selected runtime topology. |  |
 | `gFramework/nRouter/src/router/routers.js` | `src` | `documented` | 0/0 | Default nRouter route contract definitions. These definitions provide schema-driven CRUD route templates and common platform routes that are expanded per active schema and module by `DefaultRouterService`. |  |
 | `gFramework/nRouter/src/service/config/defaultRouterConfigurationService.js` | `src` | `documented` | 5/5 | Holds and applies effective router configuration for the active Nodics module hierarchy. It executes layered app configuration scripts and exposes the merged router definitions used by router registration. |  |
+| `gFramework/nRouter/src/service/defaultHttpHardeningService.js` | `src` | `documented` | 14/14 | Applies topology-aware HTTP hardening to Express applications using layered Nodics configuration for proxy trust, security headers, CORS, rate limits, and body parser limits. |  |
 | `gFramework/nRouter/src/service/defaultRequestHandlerService.js` | `src` | `documented` | 3/3 | Entry point from Express route binding into the Nodics request pipeline. It creates the internal request context, starts `requestHandlerPipeline`, and delegates the final response to the configured response handler. |  |
 | `gFramework/nRouter/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements router default sample service business behavior and extension logic. |  |
 | `gFramework/nRouter/src/service/handlers/parser/defaultJsonBodyParserHandlerService.js` | `src` | `documented` | 3/3 | Body parser handler for JSON API routes. It supplies Express middleware for URL-encoded and JSON payload parsing when a router uses the default JSON parser. |  |
@@ -111,6 +112,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nRouter/test/apiMethodStandardRouteContract.test.js` | `test` | `documented` | 0/0 | Verifies repository router definitions keep GET routes read-only and keep help metadata aligned with runtime route methods. |  |
 | `gFramework/nRouter/test/authHeaderNormalization.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nRouter/test/controlPlaneRouteContract.test.js` | `test` | `documented` | 0/0 | Verifies sensitive control-plane route definitions declare action-specific permissions instead of relying only on broad access groups. |  |
+| `gFramework/nRouter/test/httpHardeningContract.test.js` | `test` | `documented` | 0/0 | Verifies that nRouter applies topology-aware HTTP hardening through layered configuration for proxy trust, security headers, CORS, rate limits, and body parser limit policy. |  |
 | `gFramework/nRouter/test/jsonResponseStatusResolution.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nRouter/test/openapiContractGeneration.test.js` | `test` | `documented` | 0/0 | Verifies that OpenAPI generation follows effective layered schema and router definitions, excludes inactive capabilities, preserves security metadata, rejects conflicting routes and invalid references, and emits accurate request and response contracts. |  |
 | `gFramework/nRouter/test/requestPipelineResponseContract.test.js` | `test` | `documented` | 0/0 | Verifies that the Nodics request pipeline validates request data, resolves non-secured enterprise/tenant context, hands the request to the selected controller, and returns standard JSON response objects for success and error flows. |  |

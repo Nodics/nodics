@@ -23,6 +23,7 @@ const bodyParser = require('body-parser');
  *
  * @property {Object} default Default app configuration hook set.
  * @property {Object} bodyParser Express body-parser dependency used by default body parsing hook.
+ * @property {Object} SERVICE.DefaultHttpHardeningService Applies HTTP hardening middleware and parser policy.
  */
 module.exports = {
     default: {
@@ -31,12 +32,14 @@ module.exports = {
          *
          * @param {Object} app Express app instance.
          * @returns {void}
+         * @sideEffects Applies proxy trust plus early HTTP hardening middleware.
          * @override Project modules may add app-level properties or early middleware here.
          */
         initProperties: function (app) {
-            /* app.use(function(req, res, next) {
-                 next('Done initProperties');
-             });*/
+            if (SERVICE.DefaultHttpHardeningService) {
+                SERVICE.DefaultHttpHardeningService.applyAppProperties(app);
+                SERVICE.DefaultHttpHardeningService.applyHttpMiddleware(app);
+            }
         },
 
         /**
@@ -81,7 +84,10 @@ module.exports = {
          * @override Project modules may replace parser policy or payload limits here.
          */
         initBodyParser: function (app) {
-            app.use(bodyParser.urlencoded({ extended: true }));
+            let options = SERVICE.DefaultHttpHardeningService
+                ? SERVICE.DefaultHttpHardeningService.getUrlencodedParserOptions()
+                : { extended: true };
+            app.use(bodyParser.urlencoded(options));
             //app.use(bodyParser.json());
             // app.use(bodyParser.raw({ type: 'application/vnd.custom-type' }));
             //app.use(bodyParser.raw());
@@ -95,7 +101,7 @@ module.exports = {
          * @override Project modules may add CORS, security, tracing, or tenant headers here.
          */
         initHeaders: function (app) {
-
+            // HTTP hardening is applied in initProperties so it runs before body parsing.
         },
 
         /**

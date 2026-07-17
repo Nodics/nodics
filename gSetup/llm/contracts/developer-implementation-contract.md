@@ -114,6 +114,20 @@ When adding or changing a control-plane API:
   `apiExposure` applies;
 - document the operational and security impact.
 
+## HTTP Hardening Contract
+
+Developers and AI tools must treat CORS, security headers, body parser limits,
+rate limits, and proxy trust as router/topology policy. Put defaults and
+overrides under `httpHardening` in layered `config/properties.js`, or override
+`DefaultHttpHardeningService` in a later active module when the deployment needs
+provider-grade behavior.
+
+Do not implement HTTP hardening inside controllers, facades, business services,
+schema services, or generated route files. When a new API requires browser,
+admin, service-to-service, or external-system access, state whether the existing
+server/node `httpHardening` policy is sufficient and add tests for any changed
+origin, body-limit, proxy, or rate-limit behavior.
+
 ## Configuration Ownership Contract
 
 Module configuration belongs in `config/properties.js`. Developers and AI tools

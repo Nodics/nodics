@@ -31,6 +31,51 @@ module.exports = {
         jsonBodyParserHandler: 'DefaultJsonBodyParserHandlerService',
         textBodyParserHandler: 'DefaultTextBodyParserHandlerService'
     },
+    httpHardening: {
+        enabled: true,
+        trustProxy: false,
+        body: {
+            urlencoded: {
+                extended: true,
+                limit: '1mb',
+                parameterLimit: 1000
+            },
+            json: {
+                limit: '1mb',
+                strict: true
+            },
+            text: {
+                limit: '1mb',
+                type: 'text/*'
+            }
+        },
+        securityHeaders: {
+            enabled: true,
+            headers: {
+                'X-Content-Type-Options': 'nosniff',
+                'X-Frame-Options': 'DENY',
+                'Referrer-Policy': 'no-referrer',
+                'Cross-Origin-Resource-Policy': 'same-origin',
+                'X-XSS-Protection': '0'
+            }
+        },
+        cors: {
+            enabled: false,
+            allowedOrigins: [],
+            allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+            allowedHeaders: ['Content-Type', 'Authorization', 'X-Nodics-Enterprise', 'X-Nodics-Tenant', 'X-Nodics-Module-Token'],
+            exposedHeaders: [],
+            allowCredentials: false,
+            maxAge: 600
+        },
+        rateLimit: {
+            enabled: true,
+            windowMs: 60000,
+            max: 600,
+            skipOptions: true,
+            keyHeaders: ['x-forwarded-for', 'x-real-ip']
+        }
+    },
 
     responseHandler: {
         jsonResponseHandler: 'DefaultJsonResponseHandlerService',

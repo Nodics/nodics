@@ -21,6 +21,7 @@ const bodyParser = require('body-parser');
  * configuration to apply product-specific payload limits or parsing policies.
  *
  * @property {Object} bodyParser Express body-parser dependency.
+ * @property {Object} SERVICE.DefaultHttpHardeningService Supplies configured body parser limits.
  */
 module.exports = {
 
@@ -55,9 +56,15 @@ module.exports = {
      * @returns {Array<Function>} Body parser middleware chain.
      */
     getBodyParser: function (router) {
+        let urlencodedOptions = SERVICE.DefaultHttpHardeningService
+            ? SERVICE.DefaultHttpHardeningService.getUrlencodedParserOptions()
+            : { extended: true };
+        let jsonOptions = SERVICE.DefaultHttpHardeningService
+            ? SERVICE.DefaultHttpHardeningService.getJsonParserOptions()
+            : {};
         return [
-            bodyParser.urlencoded({ extended: true }),
-            bodyParser.json()
+            bodyParser.urlencoded(urlencodedOptions),
+            bodyParser.json(jsonOptions)
         ];
     }
 };

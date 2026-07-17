@@ -17,6 +17,8 @@ Before creating a route, define:
 - Does the route work before login, after login, or only for service-to-service communication?
 - Is this route a sensitive runtime, diagnostic, file, import/export, test,
   dynamic class, or maintenance API that needs an `apiExposure` category?
+- Does the owning server/node require HTTP hardening changes such as CORS
+  origins, body limits, proxy trust, or rate limits?
 
 ## Route Ownership
 
@@ -45,6 +47,11 @@ A route definition makes these decisions visible:
 Use HTTP methods according to behavior. `GET` is for read-only retrieval and must not create, update, run, start, stop, pause, resume, remove, publish, import, export, approve, or otherwise mutate state. Use command methods for command behavior: `POST` for actions or creation, `PATCH` for partial updates, `PUT` for complete replacement when applicable, and `DELETE` for removal.
 
 Do not hide route behavior in controller code when route metadata owns it.
+
+Do not add CORS, security headers, body-size limits, proxy trust, or rate-limit
+behavior inside controller or service code. Those are HTTP topology decisions
+owned by `nRouter` `httpHardening` configuration and may be overridden by
+project, environment, server, or node layers.
 
 ## Security First
 

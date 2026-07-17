@@ -172,6 +172,31 @@ help or controller execution. Enable categories through layered
 `config/properties.js` only in the project, environment, server, or node where
 the category is intentionally available.
 
+## HTTP Hardening By Topology
+
+HTTP hardening protects how each Nodics server or node accepts traffic before a
+request reaches business behavior. It is separate from `apiExposure` and route
+permissions:
+
+- `httpHardening` controls CORS, response security headers, body limits, rate
+  limits, and proxy trust for the running topology.
+- `apiExposure` controls whether a sensitive API category exists in that
+  runtime.
+- permissions control whether the authenticated caller may use an exposed API.
+
+Framework defaults keep browser cross-origin access closed, security headers
+enabled, body parsing bounded, proxy trust disabled, and a conservative
+per-process rate limit enabled. Local project layers such as `startioLocal` may
+enable local browser origins for development. Production-like deployments should
+define only the origins, proxy behavior, body limits, and traffic limits required
+for that server or node.
+
+Do not put CORS, rate-limit, proxy, body-size, or security-header policy inside
+controllers or feature services. Define the policy in layered
+`config/properties.js` or override the router hardening service in a later
+module when a deployment needs API gateway, service mesh, or provider-specific
+enforcement.
+
 Useful commands:
 
 ```bash

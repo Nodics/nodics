@@ -28,6 +28,31 @@ project/environment/server/node layer enables them. Developer servers such as
 `startioLocal` may opt in through layered `config/properties.js`; production-like
 servers should enable only the categories required for their operational model.
 
+## HTTP Hardening
+
+`nRouter` also owns framework-level HTTP hardening through
+`httpHardening` configuration and `DefaultHttpHardeningService`. This policy is
+applied during Express app initialization before body parsing and route
+dispatch.
+
+The default policy:
+
+- keeps CORS closed unless a project/environment/server/node layer enables
+  allowed origins;
+- applies security headers such as `X-Content-Type-Options`,
+  `X-Frame-Options`, `Referrer-Policy`, and resource policy headers;
+- keeps proxy trust disabled unless the deployment topology explicitly enables
+  it;
+- applies bounded body parser limits for URL-encoded, JSON, and text payloads;
+- applies a per-process rate limit as a framework guardrail.
+
+Use layered `config/properties.js` to change HTTP behavior for local,
+development, support, production, server, or node topology. Do not add ad hoc
+CORS, header, body limit, proxy, or rate-limit middleware inside controllers or
+capability services. If a product needs provider-grade rate limiting, API
+gateway integration, or service-mesh policy, override or replace
+`DefaultHttpHardeningService` while preserving the property contract.
+
 ## Developer Guidance
 
 Router guidance covers route registration, special routers, request objects,

@@ -30,5 +30,10 @@ module.exports = {
     ERR_RTR_00003: {
         code: '400',
         message: 'Invalid router override definition',
+    },
+
+    ERR_RTR_00004: {
+        code: '429',
+        message: 'HTTP rate limit exceeded',
     }
 };
