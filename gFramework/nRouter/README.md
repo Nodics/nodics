@@ -28,6 +28,14 @@ project/environment/server/node layer enables them. Developer servers such as
 `startioLocal` may opt in through layered `config/properties.js`; production-like
 servers should enable only the categories required for their operational model.
 
+Runtime API documentation follows the same route-governance model. OpenAPI is
+generated from effective router and schema contracts with `npm run
+docs:openapi`, exposed at `/nodics/system/v0/contract/openapi`, and viewed
+interactively through `/nodics/system/v0/contract/swagger`. Swagger UI is served
+through normal Nodics routes and secured with `system.contract.swagger.view`, so
+projects can override policy, branding, filtering, and asset handling without
+adding hidden Express middleware.
+
 ## HTTP Hardening
 
 `nRouter` also owns framework-level HTTP hardening through

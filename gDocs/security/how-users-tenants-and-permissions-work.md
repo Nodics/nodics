@@ -7,6 +7,26 @@ is not only a customer name. Different tenants can have different users,
 permissions, data stores, search indexes, cache namespaces, imports, exports,
 configuration, audit records, and runtime behavior.
 
+## Beginner Summary
+
+Security in Nodics has three common questions:
+
+| Question | Nodics concept |
+| --- | --- |
+| Who is calling? | User, service account, token, or internal module identity |
+| What are they allowed to do? | Groups and permissions |
+| Which data/runtime boundary are they working inside? | Tenant and enterprise context |
+
+A user can be logged in and still be blocked if the user lacks the route
+permission. A user can also have permission but still be blocked if the tenant
+context is missing or not allowed.
+
+The simple rule is:
+
+```text
+Authentication proves identity. Authorization proves permission. Tenant context decides data placement and isolation.
+```
+
 ## Why Tenants Matter
 
 Tenant isolation helps one platform serve multiple business contexts safely.
@@ -59,6 +79,23 @@ Groups can hold permissions.
 Permissions decide what a user or service account can do.
 
 When adding a feature, define the required permissions clearly. Do not rely on hidden checks that only one developer understands.
+
+## Where To Add Security Rules
+
+| Need | Change here |
+| --- | --- |
+| Add a permission to an API | Route metadata `permission` or `permissionConfig` |
+| Add permission to the catalog | Auth configuration and identity governance defaults |
+| Give a group access | Group target or governed identity/runtime configuration |
+| Create pre-login route | Route metadata with explicit pre-authentication behavior |
+| Secure internal service route | Internal-token permission configuration |
+| Control whether an API family exists in a topology | `apiExposure.categories.<category>.enabled` |
+| Protect tenant-specific data | Tenant-aware service, DAO, search, cache, import/export, job, and event tests |
+| Change HTTP hardening | Router `httpHardening` configuration |
+
+Do not add secret permission checks only inside services or controllers. Route
+metadata must explain the security contract so tests, OpenAPI, Swagger UI, and
+AI tools can see it.
 
 ## NAAM System
 
@@ -129,9 +166,10 @@ When adding a tenant, document:
 - cache and auth invalidation behavior;
 - tests for isolation.
 
-### Add in InstalledTanents
+### Add In Installed Tenants
 
-The recovered wiki used the spelling `InstalledTanents`. In current Nodics documentation, treat this as the installed or active tenant list that the selected runtime is allowed to use.
+The installed or active tenant list defines which tenants the selected runtime
+is allowed to use. Keep tenant activation explicit and testable.
 
 Do not activate a tenant only by passing a request header. The tenant must be known to the active runtime, backed by configuration/data, and verified by tests. Request tenant context may narrow execution, but it must not secretly create or broaden tenant scope.
 
@@ -258,4 +296,15 @@ Avoid:
 - Skipping tenant context checks.
 - Logging secrets.
 - Creating permissions without documentation.
+
+## Beginner Troubleshooting
+
+| Problem | Likely cause | What to check |
+| --- | --- | --- |
+| Login route works but API fails | Token missing, expired, or not sent | `Authorization` header and token validation |
+| API says forbidden | User lacks required permission | Route permission, permission catalog, user group |
+| Tenant data is missing | Wrong tenant context | `X-Nodics-Tenant`, active tenant list, tenant configuration |
+| Internal module call fails | Internal token route is still secured | Internal-token permission and service account group |
+| API exists locally but not in another server | `apiExposure` disabled in that topology | Environment/server/node properties |
+| Security cache looks stale | User/group/token changed but cache was not invalidated | Auth cache invalidation and diagnostics |
 - Adding runtime mutation paths without audit and rollback.

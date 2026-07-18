@@ -4,6 +4,36 @@ Nodics data behavior is built around schemas, data access services, import/expor
 
 Data changes must be safe, testable, and reversible where the business process requires it.
 
+## Beginner Summary
+
+In Nodics, data work usually starts from a schema.
+
+A schema says what a record looks like. From that source definition, Nodics can
+generate or coordinate models, CRUD APIs, services, search indexes, imports,
+exports, OpenAPI output, and tests. This is why generated files should not be
+edited by hand. If the data shape is wrong, fix the schema or the later schema
+override and regenerate.
+
+Use this simple map:
+
+| Need | Start here |
+| --- | --- |
+| Add a new data type | Owning module `src/schemas/schemas.js` |
+| Add a field or remove a field for a project | Later project module schema contribution |
+| Add searchable fields | `src/search/indexes.js` and search module docs |
+| Add validation before save/update/remove | `src/interceptors/interceptors.js`, validators, or model pipelines |
+| Change database behavior | Database provider module or project provider module |
+| Import records from files | Import configuration, data files, and import pipeline |
+| Export records to a target format | Export module/service/pipeline once the export requirement is defined |
+| Add startup records | Module `data/initial` or owned initializer data |
+| Add demo/local records | Module `data/sample` |
+
+The safest rule is:
+
+```text
+Schema defines data. Services use data. Providers store data.
+```
+
 ## Schemas
 
 A schema defines the shape of stored data.
@@ -122,6 +152,32 @@ For example, MongoDB and Cassandra support live under their own provider areas. 
 
 Do not put Oracle-specific behavior into the generic database layer.
 
+## Adding A Provider Such As Oracle
+
+When a customer project needs Oracle, do not add Oracle calls inside business
+services or generated controllers. Add a provider implementation behind the
+database capability contract.
+
+Beginner implementation path:
+
+1. Read [nDatabase](../../gFramework/nDatabase/README.md) and the current
+   provider README files.
+2. Create or choose a provider module owned by the project or framework.
+3. Put provider configuration defaults in `config/properties.js`.
+4. Put connection lifecycle code in provider-owned services.
+5. Put provider-specific DAO/query behavior behind the same database contract
+   used by business services.
+6. Keep credentials, hosts, schemas, pools, and secret paths in configuration or
+   secret management.
+7. Add deterministic tests without requiring a live Oracle server.
+8. Add optional live-provider tests behind a release/integration gate.
+9. Document how the project activates the provider for a server, node, or
+   tenant.
+
+The business capability should still call Nodics services or DAOs. It should
+not need to know whether the final provider is MongoDB, Cassandra, Oracle, or
+another database.
+
 ## Managing Database
 
 Database behavior is owned by the database capability and provider modules. Application code should call services, facades, generated schema services, or approved DAO contracts instead of directly using provider clients.
@@ -203,6 +259,11 @@ Nodics supports import and export flows for structured data.
 
 For a business-oriented data hub pattern, read [How To Use Nodics As Data As A Service](how-to-use-nodics-as-data-as-a-service.md).
 
+For a beginner, import means "bring data into Nodics through a governed process."
+Export means "send selected Nodics data out in a governed format and location."
+Both should use configuration, pipelines, processors, interceptors, tenant
+context, audit/history, and tests instead of one-off scripts.
+
 ## Data Feeding Patterns
 
 Nodics supports two main ways to feed data into the platform.
@@ -229,6 +290,7 @@ External system
   -> import pipeline
   -> filters, validators, processors, interceptors
   -> tenant-aware persistence
+  -> errors or success summary
   -> events, search indexing, audit, import history
 ```
 

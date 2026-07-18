@@ -6,6 +6,29 @@ A capability is something the application can do, such as manage users, expose A
 
 Each capability has a clear owner.
 
+## Beginner Summary
+
+Nodics is not organized like a small script where all code goes in one folder.
+It is organized like an enterprise platform:
+
+```text
+Project -> Environment -> Server -> Node -> Module Group -> Module -> Layer -> File
+```
+
+When you add behavior, move through that chain from left to right:
+
+1. Which project or customer owns the behavior?
+2. Does it vary by environment, server, node, or tenant?
+3. Which module owns the capability?
+4. Which layer owns the code?
+5. Which file should be changed?
+6. Which tests and generated artifacts prove it?
+
+This is why Nodics can support both fast MVP development and long-term
+enterprise scaling. The same feature can start in a local consolidated server
+and later move into modular servers or tenant-specific deployment without
+rewriting the whole application.
+
 ## The Big Picture
 
 A Nodics application usually contains:

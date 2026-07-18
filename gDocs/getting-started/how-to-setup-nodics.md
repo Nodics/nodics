@@ -4,6 +4,26 @@ This guide explains how to prepare a local Nodics workspace, install dependencie
 
 The goal is not only to run Nodics once. The goal is to understand what each command does so you can diagnose problems later.
 
+## Beginner Summary
+
+Setting up Nodics means preparing three things:
+
+| Area | Meaning |
+| --- | --- |
+| Code workspace | The repository, branch, project modules, and generated artifacts. |
+| Runtime dependencies | Node.js, npm, database, cache, and any provider you intentionally test. |
+| Selected topology | The project, environment, server, and optional node you want to start. |
+
+If startup fails, do not guess from the final error only. First confirm which
+project, environment, server, node, active modules, database, cache, and port
+were selected.
+
+The beginner flow is:
+
+```text
+Install dependencies -> build -> run focused tests -> start selected server -> open APIs/docs -> debug if needed
+```
+
 ## Before You Start
 
 You need:
@@ -133,6 +153,20 @@ The build command performs several important actions:
 
 Generated artifacts should come from source definitions. If a generated file is wrong, fix the source definition and rebuild. Do not manually edit generated output as the long-term fix.
 
+## What The Main Commands Mean
+
+| Command | What it does | When to use |
+| --- | --- | --- |
+| `npm ci` | Installs dependencies exactly from `package-lock.json` | Fresh checkout or clean dependency install |
+| `npm install` | Updates dependency graph | Only when intentionally changing dependencies |
+| `npm run clean` | Removes generated/temporary build output | Before rebuilding generated artifacts |
+| `npm run build` | Regenerates and validates framework artifacts, docs, OpenAPI, and LLM context | Before committing broad source changes |
+| `npm run docs:openapi` | Regenerates OpenAPI contract from active schemas and routers | After route/schema changes |
+| `npm run llm:generate` | Regenerates AI-facing module context | After source or documentation changes |
+| `npm run test:basic` | Runs deterministic framework verification | Before considering a change ready |
+| `npm run start` | Starts the selected Nodics runtime | After build/config are ready |
+| `npm run start:debug` | Starts with Node inspector for breakpoints | When debugging startup or request flow |
+
 ## Start Nodics
 
 Run:
@@ -237,6 +271,23 @@ npm run start:debug
 ```
 
 This starts Node with the inspector and pauses before application startup. Visual Studio Code can attach on port `9229`.
+
+## Beginner Troubleshooting
+
+| Problem | Likely cause | What to check |
+| --- | --- | --- |
+| `npm ci` fails | Wrong Node/npm version or registry issue | `.nvmrc`, root `package.json`, npm registry access |
+| Build generates unexpected files | Source definitions changed or generated output was stale | `git status`, schemas, routers, generator output |
+| Server starts with wrong modules | Wrong project/environment/server selected | Startup arguments and server `activeModules` |
+| Database connection fails | MongoDB/provider not running or wrong URL | Active database provider config and tenant data placement |
+| Port already in use | Another Nodics process is running | Server/node port configuration and local processes |
+| API route missing | Module not active or route disabled by topology | Active modules, router definitions, `apiExposure` |
+| Swagger/OpenAPI missing | Contract not generated or permission missing | `npm run docs:openapi`, `/nodics/system/v0/contract/swagger`, permissions |
+| Startup data repeats | Initial data is not idempotent | Import headers, unique keys, tenant scope, initializer tests |
+
+For any setup issue, write down the selected project, environment, server, node,
+and command before changing code. Many setup problems are topology or
+configuration problems, not framework code problems.
 
 Use this when you want the application to start immediately and attach later:
 

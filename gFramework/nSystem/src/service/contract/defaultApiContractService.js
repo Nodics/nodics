@@ -11,6 +11,15 @@
 
 const fs = require('fs');
 const path = require('path');
+const swaggerUiDist = require('swagger-ui-dist');
+
+const SWAGGER_ASSET_CONTENT_TYPES = {
+    'swagger-ui.css': 'text/css; charset=utf-8',
+    'swagger-ui-bundle.js': 'application/javascript; charset=utf-8',
+    'swagger-ui-standalone-preset.js': 'application/javascript; charset=utf-8',
+    'favicon-16x16.png': 'image/png',
+    'favicon-32x32.png': 'image/png'
+};
 
 /**
  * @module system/service/DefaultApiContractService
@@ -88,6 +97,144 @@ module.exports = {
                 reject(this.enrichError(error, contractContext, 'OpenAPI contract resolution failed'));
             }
         });
+    },
+
+    /**
+     * Returns a self-hosted Swagger UI page for the active runtime OpenAPI contract.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Promise resolving to a text response envelope.
+     */
+    getSwaggerUi: function (request) {
+        return new Promise((resolve) => {
+            resolve({
+                code: 'SUC_SYS_00002',
+                data: this.buildSwaggerUiHtml({
+                    openApiUrl: 'openapi',
+                    assetBaseUrl: 'swagger/asset'
+                }),
+                metadata: {
+                    contentType: 'text/html; charset=utf-8',
+                    contractType: 'swagger-ui'
+                }
+            });
+        });
+    },
+
+    /**
+     * Returns an allowed Swagger UI asset from the governed local package.
+     *
+     * @param {Object} request Nodics request context with `assetName` route parameter.
+     * @returns {Promise<Object>} Promise resolving to a text or binary response envelope.
+     */
+    getSwaggerAsset: function (request) {
+        return new Promise((resolve, reject) => {
+            let assetName = this.getSwaggerAssetName(request);
+            if (!this.isAllowedSwaggerAsset(assetName)) {
+                reject(new CLASSES.NodicsError('ERR_SYS_00001', 'Swagger asset is not allowed'));
+                return;
+            }
+
+            let assetPath = this.resolveSwaggerAssetPath(assetName);
+            fs.readFile(assetPath, (error, contents) => {
+                if (error) {
+                    reject(this.enrichError(error, {
+                        contractType: 'swagger-ui',
+                        filePath: assetPath
+                    }, 'Swagger UI asset could not be read'));
+                    return;
+                }
+                resolve({
+                    code: 'SUC_SYS_00003',
+                    data: contents,
+                    metadata: {
+                        contentType: SWAGGER_ASSET_CONTENT_TYPES[assetName],
+                        contractType: 'swagger-ui',
+                        assetName: assetName
+                    }
+                });
+            });
+        });
+    },
+
+    /**
+     * Builds the Swagger UI HTML shell.
+     *
+     * @param {Object} options Swagger UI rendering options.
+     * @returns {string} HTML document.
+     */
+    buildSwaggerUiHtml: function (options) {
+        return [
+            '<!doctype html>',
+            '<html lang="en">',
+            '<head>',
+            '  <meta charset="utf-8">',
+            '  <title>Nodics API Documentation</title>',
+            '  <meta name="viewport" content="width=device-width, initial-scale=1">',
+            '  <link rel="icon" type="image/png" href="' + options.assetBaseUrl + '/favicon-32x32.png">',
+            '  <link rel="stylesheet" href="' + options.assetBaseUrl + '/swagger-ui.css">',
+            '  <style>',
+            '    body { margin: 0; background: #ffffff; }',
+            '    .topbar { display: none; }',
+            '    .swagger-ui .info { margin: 32px 0 24px; }',
+            '  </style>',
+            '</head>',
+            '<body>',
+            '  <div id="swagger-ui"></div>',
+            '  <script src="' + options.assetBaseUrl + '/swagger-ui-bundle.js"></script>',
+            '  <script src="' + options.assetBaseUrl + '/swagger-ui-standalone-preset.js"></script>',
+            '  <script>',
+            '    window.onload = function () {',
+            '      window.ui = SwaggerUIBundle({',
+            '        url: "' + options.openApiUrl + '",',
+            '        dom_id: "#swagger-ui",',
+            '        deepLinking: true,',
+            '        presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],',
+            '        plugins: [SwaggerUIBundle.plugins.DownloadUrl],',
+            '        layout: "StandaloneLayout",',
+            '        displayRequestDuration: true',
+            '      });',
+            '    };',
+            '  </script>',
+            '</body>',
+            '</html>'
+        ].join('\n');
+    },
+
+    /**
+     * Extracts the requested Swagger asset name from the Nodics request.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {string|undefined} Requested asset file name.
+     */
+    getSwaggerAssetName: function (request) {
+        return request && request.httpRequest && request.httpRequest.params && request.httpRequest.params.assetName;
+    },
+
+    /**
+     * Checks whether the requested Swagger asset is explicitly allowed.
+     *
+     * @param {string} assetName Requested asset file name.
+     * @returns {boolean} True when the asset may be served.
+     */
+    isAllowedSwaggerAsset: function (assetName) {
+        return Object.prototype.hasOwnProperty.call(SWAGGER_ASSET_CONTENT_TYPES, assetName);
+    },
+
+    /**
+     * Resolves a Swagger asset to the installed package directory.
+     *
+     * @param {string} assetName Allowed Swagger asset file name.
+     * @returns {string} Absolute asset path.
+     * @throws {CLASSES.NodicsError} When the resolved asset escapes the package directory.
+     */
+    resolveSwaggerAssetPath: function (assetName) {
+        let swaggerAssetRoot = path.resolve(swaggerUiDist.absolutePath());
+        let assetPath = path.resolve(swaggerAssetRoot, assetName);
+        if (assetPath.indexOf(swaggerAssetRoot + path.sep) !== 0) {
+            throw new CLASSES.NodicsError('ERR_SYS_00001', 'Resolved Swagger asset path is outside the Swagger package');
+        }
+        return assetPath;
     },
 
     /**

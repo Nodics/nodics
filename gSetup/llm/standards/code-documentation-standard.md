@@ -2,6 +2,30 @@
 
 Nodics source documentation must describe the platform contract, not only the local implementation. A file may be overridden by a later module in the hierarchy, so comments should explain ownership, extension points, request/response contracts, and side effects.
 
+## Accessibility And Placement Rule
+
+Documentation must be beginner-readable and implementation-precise at the same
+time. Write as if the reader understands basic programming but does not yet know
+Nodics module hierarchy, enterprise API contracts, generated artifacts, or
+runtime governance.
+
+Every user-facing or AI-facing guide should answer:
+
+- what the capability does in simple language;
+- why and when to use it;
+- which module owns it;
+- which folder and file should be changed;
+- which layer owns the behavior;
+- how a project, environment, server, node, or tenant layer can customize it;
+- which generated files must be regenerated;
+- which tests prove the change;
+- which security, tenant, validation, audit, cache, and governance contracts
+  must remain intact.
+
+Do not rely on expert assumptions such as "add a controller" without naming the
+folder, file pattern, exported function shape, router mapping, service layer,
+permission, test, and generation impact.
+
 ## Three Documentation Levels
 
 ### 1. File Or Module Level
@@ -100,6 +124,19 @@ npm run docs:openapi
 ```
 
 The generator initializes Nodics through the build-style module hierarchy, loads effective schema and router definitions, expands schema-driven CRUD routes plus common/module routers, and writes a rebuildable OpenAPI artifact under the active server or node module at `generated/openapi`. By default it emits file-backed contracts so documentation can be regenerated without requiring a live database.
+
+Runtime API documentation is exposed through `nSystem`:
+
+- `GET /nodics/system/v0/contract/openapi` returns the generated contract for
+  the active server or node and requires `system.contract.openapi.view`.
+- `GET /nodics/system/v0/contract/swagger` returns interactive Swagger UI for
+  that same active contract and requires `system.contract.swagger.view`.
+
+Swagger UI must stay inside the Nodics route/controller/facade/service model.
+Do not mount a hidden Express Swagger middleware that bypasses route metadata,
+permissions, exposure categories, tests, or layered overrides. If a project
+needs a branded UI, filtered operation list, or different asset policy, override
+`DefaultApiContractService` in a later active module.
 
 Use runtime persisted schemas only when the backing database is intentionally available:
 

@@ -9,6 +9,7 @@
 - `gFramework/nSystem/test/systemApiContractService.test.js`
 - `gFramework/nSystem/test/systemConfigurationCapabilityBehavior.test.js`
 - `gFramework/nSystem/test/systemFileService.test.js`
+- `gFramework/nSystem/test/systemHealthService.test.js`
 - `gFramework/nSystem/test/systemRouteContract.test.js`
 
 ## Generated Tests

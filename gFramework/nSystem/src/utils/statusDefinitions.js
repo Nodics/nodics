@@ -17,5 +17,16 @@
  * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
  */
 module.exports = {
-
+    SUC_SYS_00001: {
+        code: '200',
+        message: 'OpenAPI contract resolved successfully'
+    },
+    SUC_SYS_00002: {
+        code: '200',
+        message: 'Swagger UI resolved successfully'
+    },
+    SUC_SYS_00003: {
+        code: '200',
+        message: 'Swagger UI asset resolved successfully'
+    }
 };

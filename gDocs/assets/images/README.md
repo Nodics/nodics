@@ -1,6 +1,7 @@
 # Documentation Images
 
-This folder contains product documentation images recovered from the Nodics Wiki documentation archive and renamed for stable Markdown references.
+This folder contains product documentation images used by the Nodics framework
+guides and renamed for stable Markdown references.
 
 Use these images only when they help a reader understand a platform concept, process flow, runtime topology, security boundary, data movement path, or deployment model.
 

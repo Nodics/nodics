@@ -9,10 +9,13 @@
 
  */
 
+const assert = require('assert');
 const { assertRouteContracts } = require('../../nRouter/test/routerContractTestUtils');
 const routerConfig = require('../src/router/routers');
 
 const expectedRoutes = [
+    { key: '/health/live', method: 'GET', controller: 'DefaultHealthController', operation: 'getLiveness', secured: false },
+    { key: '/health/ready', method: 'GET', controller: 'DefaultHealthController', operation: 'getReadiness', secured: true, permission: 'system.health.readiness.view' },
     { key: '/file/data', method: 'POST', controller: 'DefaultFileController', operation: 'getFileContent', secured: true, permission: 'system.file.read' },
     { key: '/file/download', method: 'POST', controller: 'DefaultFileController', operation: 'downloadFile', secured: true, permission: 'system.file.download' },
     { key: '/import/init', method: 'POST', controller: 'DefaultImportController', operation: 'importInitData', secured: true, permission: 'import.init.run' },
@@ -33,11 +36,15 @@ const expectedRoutes = [
     { key: '/config/runtime/request/activate', method: 'POST', controller: 'DefaultConfigurationController', operation: 'activateRuntimeConfigurationActivationRequest', secured: true, permission: 'runtime.config.request.activate' },
     { key: '/config/runtime/rollback', method: 'POST', controller: 'DefaultConfigurationController', operation: 'rollbackRuntimeConfiguration', secured: true, permission: 'runtime.config.rollback' },
     { key: '/contract/openapi', method: 'GET', controller: 'DefaultApiContractController', operation: 'getOpenApiContract', secured: true, permission: 'system.contract.openapi.view' },
+    { key: '/contract/swagger', method: 'GET', controller: 'DefaultApiContractController', operation: 'getSwaggerUi', secured: true, permission: 'system.contract.swagger.view' },
+    { key: '/contract/swagger/asset/:assetName', method: 'GET', controller: 'DefaultApiContractController', operation: 'getSwaggerAsset', secured: true, permission: 'system.contract.swagger.view' },
     { key: '/schema/indexes/all', method: 'POST', controller: 'DefaultSchemaIndexController', operation: 'updateModulesIndexes', secured: true, permission: 'system.schema.index.rebuild' },
     { key: '/test/runUTest', method: 'POST', controller: 'TestExecutionController', operation: 'runUTest', secured: true, permission: 'system.test.unit.run' },
     { key: '/test/runNTest', method: 'POST', controller: 'TestExecutionController', operation: 'runNTest', secured: true, permission: 'system.test.nodics.run' },
     { key: '/export', method: 'POST', controller: 'DataExportController', operation: 'export', secured: true, permission: 'export.run' }
 ];
 
-assertRouteContracts(routerConfig, expectedRoutes);
+const routes = assertRouteContracts(routerConfig, expectedRoutes);
+const livenessRoute = routes.find(route => route.key === '/health/live' && route.method === 'GET');
+assert.strictEqual(livenessRoute.publicProbe, true, 'Liveness route must bypass enterprise/tenant request pipeline resolution');
 console.log(`System route contract validated: ${expectedRoutes.length} routes`);

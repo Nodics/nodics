@@ -28,9 +28,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 22 |
-| Test files | 9 |
+| Test files | 10 |
 | Data files | 0 |
-| All module-owned files | 39 |
+| All module-owned files | 40 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -57,7 +57,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 32 |
+| Documented | 33 |
 | Partially documented | 0 |
 | Undocumented | 3 |
 | Inventory only | 4 |
@@ -118,6 +118,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nRouter/test/requestPipelineResponseContract.test.js` | `test` | `documented` | 0/0 | Verifies that the Nodics request pipeline validates request data, resolves non-secured enterprise/tenant context, hands the request to the selected controller, and returns standard JSON response objects for success and error flows. |  |
 | `gFramework/nRouter/test/routeActionAuthorization.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nRouter/test/routerContractTestUtils.js` | `test` | `documented` | 0/0 | Shared router test helpers for flattening nested route definitions and asserting route contract fields. |  |
+| `gFramework/nRouter/test/textResponseHandlerContract.test.js` | `test` | `documented` | 0/0 | Verifies the text response handler can return plain text and structured textual artifacts with route-owned content type metadata. |  |
 
 ## Extension Contract
 

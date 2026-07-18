@@ -136,6 +136,40 @@ const service = require('../src/service/contract/defaultApiContractService');
     assert.strictEqual(nodeResponse.metadata.moduleName, nodeName);
     assert.strictEqual(nodeResponse.metadata.artifactPath, path.relative(path.dirname(serverPath), path.join(serverContractDirectory, nodeName + '.openapi.json')));
 
+    let swaggerUiResponse = await service.getSwaggerUi({});
+    assert.strictEqual(swaggerUiResponse.code, 'SUC_SYS_00002');
+    assert.strictEqual(swaggerUiResponse.metadata.contentType, 'text/html; charset=utf-8');
+    assert(swaggerUiResponse.data.includes('Nodics API Documentation'));
+    assert(swaggerUiResponse.data.includes('url: "openapi"'));
+    assert(swaggerUiResponse.data.includes('swagger/asset/swagger-ui.css'));
+
+    let swaggerCssResponse = await service.getSwaggerAsset({
+        httpRequest: {
+            params: {
+                assetName: 'swagger-ui.css'
+            }
+        }
+    });
+    assert.strictEqual(swaggerCssResponse.code, 'SUC_SYS_00003');
+    assert.strictEqual(swaggerCssResponse.metadata.contentType, 'text/css; charset=utf-8');
+    assert(Buffer.isBuffer(swaggerCssResponse.data));
+    assert(swaggerCssResponse.data.length > 0);
+
+    let blockedAssetError;
+    try {
+        await service.getSwaggerAsset({
+            httpRequest: {
+                params: {
+                    assetName: '../package.json'
+                }
+            }
+        });
+    } catch (error) {
+        blockedAssetError = error;
+    }
+    assert(blockedAssetError instanceof global.CLASSES.NodicsError);
+    assert.strictEqual(blockedAssetError.code, 'ERR_SYS_00001');
+
     activeNodeName = 'missingNode';
     let missingContractError;
     try {

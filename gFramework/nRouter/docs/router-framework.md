@@ -533,6 +533,245 @@ response handler, for example:
 Errors should use Nodics error classes so response handlers can serialize code,
 message, response code, metadata, and trace context consistently.
 
+Textual routes can use `textResponseHandler`. The handler supports two shapes:
+
+```javascript
+'plain text response'
+```
+
+or:
+
+```javascript
+{
+    data: '<html></html>',
+    metadata: {
+        contentType: 'text/html; charset=utf-8'
+    }
+}
+```
+
+Use this for governed text, HTML, JavaScript, CSS, CSV previews, or other
+already-formatted textual artifacts when the route must not be wrapped in the
+standard JSON response envelope. Keep the response content owned by a service,
+not by direct Express middleware hidden outside the Nodics loader path.
+
+## OpenAPI And Swagger UI
+
+Nodics exposes API documentation in two related but different forms:
+
+- OpenAPI is the machine-readable runtime contract.
+- Swagger UI is the interactive human console that reads that contract and lets
+  a developer inspect and try APIs.
+
+In simple terms, OpenAPI is the API list in a structured JSON format. Tools can
+read it and understand which APIs exist, which HTTP method each API uses, which
+headers are required, what request body is expected, and what response shape is
+returned. Swagger UI is the browser page that turns that OpenAPI JSON into a
+readable and clickable API console.
+
+Both belong to the active runtime boundary. This is important because Nodics is
+not a single fixed API application. A project may run all modules in one server,
+split modules across several servers, or run multiple nodes of the same server
+behind a load balancer. Documentation must therefore describe what is actually
+active in that runtime, not a separate static list.
+
+For a new developer, the important rule is: Swagger UI does not create APIs. It
+only shows the APIs that Nodics already registered through routers and generated
+from schemas. If an API is missing from Swagger UI, look at the route or schema
+source definition first.
+
+### Runtime Boundary Rule
+
+Use this rule when generating or exposing API documentation:
+
+- If the application runs as one consolidated server, that server exposes one
+  OpenAPI contract and one Swagger UI for all active routes.
+- If the application is split into multiple runtime servers, each server exposes
+  its own OpenAPI contract and Swagger UI for the routes active on that server.
+- If several nodes run the same server behind a load balancer, they normally
+  expose the same contract. If a node layer adds or removes routes, the node
+  contract must reflect that node's effective module hierarchy.
+- A future central documentation server may aggregate multiple runtime
+  contracts, but it must not become the source of route truth. It should collect
+  contracts from runtimes and present them together.
+
+### Generated Contract Endpoint
+
+The OpenAPI artifact is generated from effective schemas and routers:
+
+```bash
+npm run docs:openapi
+```
+
+The generated artifact is written under the active server or node generated
+directory:
+
+```text
+<server-or-node>/generated/openapi/<server-or-node>.openapi.json
+```
+
+At runtime, `nSystem` exposes the active contract through:
+
+```text
+GET /nodics/system/v0/contract/openapi
+```
+
+This route is secured by `system.contract.openapi.view` and belongs to the
+`openApiContract` exposure category.
+
+The generator reads route metadata such as:
+
+- `key`, `method`, `controller`, and `operation`;
+- `secured`, `publicProbe`, `accessGroups`, `permission`, and
+  `permissionConfig`;
+- `apiExposure`;
+- `responseHandler`;
+- route `help` metadata;
+- schema-driven generated CRUD routes.
+
+If OpenAPI output is wrong, fix the source route, schema, permission, or help
+metadata. Do not hand-edit generated OpenAPI files as source truth.
+
+### What A User Sees
+
+When a user opens Swagger UI, each API operation normally shows:
+
+- HTTP method, such as `GET`, `POST`, `PATCH`, or `DELETE`;
+- URL path, such as `/nodics/profile/v0/customer`;
+- route description from the route `help` metadata;
+- path parameters, query parameters, headers, and request body;
+- security requirements;
+- response examples and response status codes.
+
+The HTTP method matters:
+
+- `GET` reads information and must not change data.
+- `POST` usually creates something or runs a command.
+- `PATCH` updates part of an existing resource.
+- `PUT` replaces or saves a complete resource when the route contract says so.
+- `DELETE` removes data or disables a resource when the route contract says so.
+
+Swagger UI is useful because a developer can inspect the contract and try an API
+without writing client code first. The same API still goes through the Nodics
+request pipeline, so Swagger UI is not a shortcut around validation or security.
+
+### Swagger UI Endpoint
+
+Swagger UI is available at:
+
+```text
+GET /nodics/system/v0/contract/swagger
+```
+
+This route is secured by `system.contract.swagger.view` and belongs to the same
+`openApiContract` exposure category. It loads the active runtime OpenAPI
+contract from the sibling `openapi` endpoint, so the browser always reads the
+same server or node contract that the runtime exposes.
+
+The UI assets are served through governed Nodics routes:
+
+```text
+GET /nodics/system/v0/contract/swagger/asset/:assetName
+```
+
+Only approved Swagger UI assets from the local `swagger-ui-dist` package are
+served. This keeps Swagger self-hosted and avoids creating a general-purpose
+file server. Project modules may override `DefaultApiContractService` in a later
+active layer to change branding, filter operations, add environment banners,
+hide sensitive internal APIs, or use a different UI package while preserving the
+same route contract.
+
+### How To Use It
+
+For a developer server:
+
+1. Generate the latest contract with `npm run docs:openapi`.
+2. Start the server or node.
+3. Authenticate with a user that has `system.contract.swagger.view`.
+4. Open `/nodics/system/v0/contract/swagger` in the browser.
+5. Use Swagger UI to inspect route parameters, headers, request body, response
+   examples, and security requirements.
+
+For a first manual check:
+
+1. Open the Swagger UI page.
+2. Find a simple read API.
+3. Click the API row to expand it.
+4. Click `Try it out`.
+5. Fill required path, query, header, and body fields.
+6. Add the same authorization token that would be used from Postman or a client
+   application.
+7. Click `Execute`.
+8. Read the request URL, response code, response body, and error message.
+
+When using Swagger UI's "Try it out" capability, supply the same authorization
+header you would use from Postman or a client application. Nodics route
+security, tenant context, API exposure gates, request pipelines, interceptors,
+controllers, facades, and services still run normally.
+
+Common headers:
+
+| Header | Purpose |
+| --- | --- |
+| `Authorization` | Carries the user or service token. Most secured APIs require it. |
+| `X-Nodics-Enterprise` | Identifies the enterprise context when the runtime requires it. |
+| `X-Nodics-Tenant` | Identifies where tenant-specific data and configuration should be resolved. |
+| `X-Nodics-Module-Token` | Used by governed internal/module-to-module calls, not ordinary browser users. |
+
+If a request fails:
+
+| Symptom | Likely reason | What to check |
+| --- | --- | --- |
+| Swagger page does not open | User lacks Swagger permission or `openApiContract` exposure is disabled | Check `system.contract.swagger.view` and `apiExposure.categories.openApiContract.enabled` |
+| OpenAPI JSON is missing | Contract was not generated or active server/node context is wrong | Run `npm run docs:openapi` and check the generated server or node path |
+| API returns unauthorized | Missing or invalid token | Login again and pass `Authorization: Bearer <token>` |
+| API returns forbidden | Token is valid but user lacks route permission | Check route `permission`, `permissionConfig`, and user group permissions |
+| API returns tenant or enterprise error | Required runtime context is missing | Add the required Nodics enterprise and tenant headers |
+| API is missing from Swagger | Route or schema is not active in this runtime | Check active modules, route definitions, schema router flags, and OpenAPI generation output |
+
+### Customization Points
+
+Use these extension points:
+
+- Route availability: override `apiExposure.categories.openApiContract.enabled`
+  in layered `config/properties.js`.
+- Permission policy: override route `permission` or `permissionConfig` through
+  the owning router layer or later project module.
+- UI behavior: override `DefaultApiContractService.getSwaggerUi` or
+  `buildSwaggerUiHtml`.
+- Asset policy: override `getSwaggerAsset`, `isAllowedSwaggerAsset`, or
+  `resolveSwaggerAssetPath`.
+- Contract generation: extend source schemas, routers, and help metadata, then
+  regenerate OpenAPI.
+
+Do not add Swagger directly as ad hoc Express middleware outside the Nodics
+route/controller/facade/service structure. That would create a second API
+exposure path that bypasses the framework's route metadata, permissions,
+exposure gates, tests, and override model.
+
+### Where To Change Code
+
+Use this map before editing:
+
+| Need | Write code here | Reason |
+| --- | --- | --- |
+| Add a new custom API | Owning module `src/router/routers.js`, `src/controller`, `src/facade`, and `src/service` | Routers expose the HTTP contract; controller/facade/service own behavior |
+| Add generated CRUD APIs for a schema | Owning module `src/schemas/schemas.js` | Schema definitions drive generated routers, controllers, services, tests, and OpenAPI |
+| Change route permission | Owning route definition or layered `permissionConfig` property | Security must be visible in route metadata |
+| Enable or disable API documentation routes | Layered `config/properties.js` under `apiExposure.categories.openApiContract.enabled` | Topology decides whether this API family exists in a runtime |
+| Change Swagger UI branding or filtering | Later module override of `DefaultApiContractService` | UI behavior is service-owned and overrideable |
+| Change generated OpenAPI content | Source schemas, route metadata, controller docs, or help metadata | Generated output is not source truth |
+
+After any API documentation change, run:
+
+```bash
+npm run docs:openapi
+npm run llm:generate
+npm run llm:validate
+npm run quality:docs
+npm run test:basic
+```
+
 ## Testing Router Changes
 
 Router changes should include focused tests for the behavior being changed.
@@ -543,6 +782,7 @@ Current examples:
 - `gFramework/nRouter/test/openapiContractGeneration.test.js`;
 - `gFramework/nRouter/test/requestPipelineResponseContract.test.js`;
 - `gFramework/nRouter/test/routeActionAuthorization.test.js`.
+- `gFramework/nRouter/test/textResponseHandlerContract.test.js`.
 
 Tests should prove:
 
@@ -603,4 +843,3 @@ Avoid:
   values;
 - editing generated controllers or generated route artifacts directly;
 - skipping OpenAPI, test, README, and generated LLM context updates.
-

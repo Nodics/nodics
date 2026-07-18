@@ -4,6 +4,24 @@ Data as a Service, or DaaS, is a Nodics platform pattern. It is not a separate m
 
 In Nodics, DaaS means using the platform as a governed data lake, data hub, or product information center. Data can enter from many sources, move through validation and transformation, become searchable and versioned where required, and then leave through export contracts that match each target system.
 
+## Beginner Summary
+
+DaaS means Nodics can become the trusted center for data movement and data
+quality.
+
+For a beginner, think about four stages:
+
+| Stage | Nodics responsibility |
+| --- | --- |
+| Intake | Receive data from files, APIs, messages, or governed remote sources. |
+| Normalize | Validate, transform, enrich, and map data into canonical schemas. |
+| Govern | Apply tenant isolation, permissions, audit, versioning, search, and workflow. |
+| Deliver | Export data to target systems in the format and contract they require. |
+
+DaaS is powerful because one canonical data model can serve many systems
+without every system writing its own import, validation, transformation, search,
+and export logic.
+
 ## What DaaS Means In Nodics
 
 DaaS combines multiple Nodics capabilities:
@@ -69,6 +87,21 @@ Every import flow identifies:
 - the rollback or recovery expectation.
 
 Do not treat imported files as trusted just because they came from a known system. Import flows must validate structure, required fields, tenant ownership, duplicate headers, target schema, target operation, and processor behavior before mutation.
+
+## Where To Build A DaaS Feature
+
+| Need | Write/configure here |
+| --- | --- |
+| Canonical data shape | Owning module `src/schemas/schemas.js` |
+| Source file or payload mapping | Import headers/data definitions and import services |
+| Validation/transformation | Import processors, validators, interceptors, pipelines, services |
+| Tenant/company isolation | Tenant configuration, schemas, services, cache/search/import/export tests |
+| Product/catalog grouping | Catalog/content modules and project catalog schemas |
+| Search/retrieval | `src/search/indexes.js` and search provider configuration |
+| Scheduled pickup | CronJob plus import service |
+| Target delivery | Export service/pipeline/provider module |
+| Audit and run history | Import/export history services and diagnostics |
+| Customer-specific mapping | Project module override, not framework source |
 
 ## Data Feeding Patterns
 

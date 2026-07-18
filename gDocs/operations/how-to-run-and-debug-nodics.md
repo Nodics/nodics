@@ -2,6 +2,26 @@
 
 This guide explains the common ways to start Nodics and debug startup or runtime behavior.
 
+## Beginner Summary
+
+Running Nodics means starting a selected project, environment, server, and
+optional node. Debugging means slowing that startup or request execution enough
+to see which configuration, module, route, service, provider, tenant, or
+generated artifact is being used.
+
+Before debugging, write down:
+
+- command used to start;
+- selected project;
+- selected environment;
+- selected server;
+- selected node, if any;
+- port;
+- API path or job/import/event being tested.
+
+Most runtime confusion comes from starting a different server or module set than
+the one you expected.
+
 ## Start Normally
 
 Run:
@@ -98,9 +118,35 @@ For scheduled jobs, place breakpoints near:
 - Owning service method.
 - Event or log writer.
 
+## Where To Put Breakpoints
+
+| Problem | Good breakpoint area |
+| --- | --- |
+| Wrong configuration value | Configuration loading and `CONFIG.get` caller |
+| Module not active | Module initializer and selected server `activeModules` |
+| Route not found | Router loading, router registration, generated route output |
+| Unauthorized API | Header normalization, token validation, route authorization |
+| Wrong tenant data | Tenant resolution, DAO/provider resolution, cache/search key creation |
+| Controller receives wrong body | Controller request mapping |
+| Business rule wrong | Owning service function |
+| Generated API wrong | Source schema/router plus generator output |
+| Import fails | Import initializer, file/header processing, target dispatch |
+| Job does not run | CronJob container, node responsibility, job handler |
+| Cache result wrong | Cache key creation, cache policy, invalidation service |
+
 ## Stop The Application
 
 Use `Ctrl+C` in the terminal.
 
 If a process does not stop, check for remaining Node processes and occupied ports before starting again.
 
+## Beginner Troubleshooting
+
+| Symptom | What to check first |
+| --- | --- |
+| Breakpoint never hits | Confirm the file is loader-visible and the selected module is active. |
+| API returns 404 | Confirm context root, module name, API version, and route registration. |
+| API returns 401 or 403 | Confirm token, tenant, route permission, and user group. |
+| Data looks stale | Confirm cache and generated artifacts were refreshed. |
+| Local server behaves differently than test | Confirm selected environment/server/node and runtime configuration. |
+| Debugger cannot attach | Confirm inspector port is unique and the process is running with debug/inspect. |

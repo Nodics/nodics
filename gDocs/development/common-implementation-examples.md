@@ -12,6 +12,38 @@ Capabilities are sacred; implementations are negotiable.
 
 That means the capability contract must stay stable, while the implementation can come from framework modules, project modules, provider modules, environment modules, server modules, node modules, tenant configuration, or runtime governance.
 
+## How To Use These Examples
+
+Each example follows the same beginner-friendly pattern:
+
+1. Identify the business or platform capability.
+2. Choose the owning module or later project layer.
+3. Put each part of the change in the correct Nodics layer.
+4. Keep configuration in `config/properties.js`.
+5. Keep behavior in `src/service`.
+6. Keep API request mapping in `src/controller`.
+7. Keep orchestration in `src/facade`.
+8. Keep route metadata in `src/router/routers.js`.
+9. Keep data definitions in `src/schemas/schemas.js`.
+10. Add tests and regenerate generated artifacts.
+
+If an AI tool is helping, ask it to explain these ten points before it writes
+code. That makes the implementation easier to review and prevents new behavior
+from landing in a random helper file.
+
+## Quick Placement Map
+
+| Change | Main files |
+| --- | --- |
+| New API | `src/router/routers.js`, `src/controller`, `src/facade`, `src/service`, tests |
+| New data model | `src/schemas/schemas.js`, `src/search/indexes.js` if searchable, tests |
+| New provider | Provider module `config/properties.js`, `src/service`, DAO/adapter files, tests |
+| New scheduled job | CronJob data/config, job service, optional pipeline/event hooks, tests |
+| New import rule | Import pipeline, interceptor, service, config, tests |
+| New cache behavior | Cache properties, route/schema/service cache metadata, invalidation tests |
+| New tenant-specific behavior | Tenant/runtime configuration plus tenant-aware service tests |
+| New documentation route or API contract behavior | Router metadata, OpenAPI generation, Swagger/docs tests |
+
 ## Before You Start
 
 Describe the requirement in one sentence:
@@ -29,6 +61,19 @@ Then answer:
 - Which extension point lets a project change this later without editing framework files?
 
 Do not write code until the owner and layer are clear.
+
+## Example Review Questions
+
+Before accepting a change from a human developer or AI tool, ask:
+
+- Did it name the owning module?
+- Did it avoid changing framework code for project-specific behavior?
+- Did it use standard folders and `module.exports`?
+- Did it keep permissions visible in route metadata?
+- Did it keep tenant-sensitive behavior tenant-aware?
+- Did it update generated artifacts when schemas or routes changed?
+- Did it include tests for success, failure, permission, tenant, and override behavior where relevant?
+- Did it update public docs, module README, and LLM context when behavior changed?
 
 ## Example 1: Create A New API
 
@@ -63,6 +108,15 @@ npm run llm:generate
 npm run llm:validate
 npm run quality:docs
 ```
+
+Beginner checklist:
+
+- The route has a clear URL and HTTP method.
+- The route has `secured`, `accessGroups`, permission or `permissionConfig`,
+  and `apiExposure` when sensitive.
+- The controller only maps request data into Nodics context.
+- The service owns the business behavior.
+- Swagger/OpenAPI reflects the route after `npm run docs:openapi`.
 
 ## Example 2: Create Or Change A Schema
 
@@ -101,6 +155,14 @@ npm run llm:validate
 
 Never edit generated model, API, or test files as the source of truth. Change the source schema and regenerate.
 
+Beginner checklist:
+
+- The schema belongs to the module that owns the business meaning.
+- Required fields, defaults, enums, and validators are documented.
+- Generated CRUD APIs are enabled only when they should be exposed.
+- Import/export/search behavior is updated when the schema participates in those flows.
+- Project overrides have tests based on the effective schema, not only the framework default.
+
 ## Example 3: Add A Provider Implementation
 
 Use this when a project needs a new database, cache engine, search engine, message broker, storage provider, email provider, payment gateway, or external adapter.
@@ -137,6 +199,14 @@ npm run quality:docs
 
 Do not make normal basic tests depend on live Redis, Kafka, Oracle, Elasticsearch, or any other external provider.
 
+Beginner checklist:
+
+- Generic business services do not call the provider library directly.
+- Provider credentials and endpoints are configuration, not hardcoded strings.
+- Provider-specific behavior is isolated behind a provider module or project provider module.
+- Deterministic tests run without live infrastructure.
+- Optional live tests are clearly gated.
+
 ## Example 4: Create A Scheduled Job
 
 Use this when work must run periodically, such as cleanup, retries, notifications, imports, exports, synchronization, or batch processing.
@@ -170,6 +240,14 @@ npm run quality:docs
 
 Run topology tests when the job must behave differently across multiple servers or nodes.
 
+Beginner checklist:
+
+- The job has a clear owner and purpose.
+- The schedule and enablement are configurable.
+- Node responsibility is explicit when multiple nodes can run.
+- Job behavior uses services instead of direct provider calls.
+- Failure, retry, audit, and tenant behavior are tested.
+
 ## Example 5: Change Runtime Configuration
 
 Use this when behavior should change by project, environment, server, node, tenant, or runtime activation.
@@ -201,6 +279,14 @@ npm run quality:docs
 ```
 
 Do not create parallel configuration files when the value belongs in `config/properties.js`.
+
+Beginner checklist:
+
+- The property namespace belongs to the module that owns the capability.
+- Defaults are source-controlled.
+- Mutable runtime changes use preview, approval, activation, audit, and rollback when required.
+- Secret values are not stored in source-controlled configuration.
+- Tests prove default, override, invalid, and rollback behavior.
 
 ## Common Verification Checklist
 

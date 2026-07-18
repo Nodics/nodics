@@ -4,6 +4,43 @@ Nodics is designed so projects can customize behavior without changing released 
 
 Customization means a later project, environment, server, node, tenant, provider, or runtime layer contributes behavior through the same Nodics contracts that the framework uses. The goal is not to work around the framework. The goal is to provide a better implementation for the same capability.
 
+## Beginner Summary
+
+Customization is how a project changes behavior safely.
+
+The wrong way is to edit a framework file for one customer. That makes future
+framework updates harder and hides the customer rule inside out-of-box code.
+
+The Nodics way is to add the change in a later active layer:
+
+- project module for customer-specific behavior;
+- environment module for deployment-specific behavior;
+- server module for process-specific behavior;
+- node module for instance-specific behavior;
+- tenant/runtime configuration for governed tenant-specific behavior;
+- provider module for database, cache, search, messaging, storage, email,
+  payment, or infrastructure behavior.
+
+The framework capability remains stable. The implementation changes through the
+active module hierarchy.
+
+## Customization Decision Table
+
+| Need | Customize here | Example |
+| --- | --- | --- |
+| Change business rule for one customer | Project module | Customer-specific order approval rule |
+| Change a value by environment | Environment `config/properties.js` | QA uses a different search endpoint |
+| Change active modules or ports for one process | Server `config/properties.js` | Local runs all modules together |
+| Assign scheduled work to one instance | Node configuration | Only node 1 runs a publishing job |
+| Change data placement for one business | Tenant/runtime configuration | Dedicated tenant uses private database/search/cache |
+| Add Oracle database support | Database provider module or project provider module | Implement provider contract without changing generic database services |
+| Change route permission by project | Route override or `permissionConfig` property | Internal token permission differs by deployment |
+| Change import validation for a customer | Project import service/interceptor/pipeline | Reject or transform customer-specific data |
+
+When a user or AI tool asks for a customization, first identify the row in this
+table. If no row fits, inspect the owning module docs before inventing a new
+extension path.
+
 ## Customizing Or Generalizing Services
 
 Use this pattern when a project needs to change service behavior, add a new service operation, or replace a default implementation.
@@ -60,6 +97,40 @@ Before adding or overriding a service, document:
 - side effects;
 - failure behavior;
 - tests proving framework default and project override behavior.
+
+## Minimal Service Override Example
+
+If a framework module has:
+
+```js
+module.exports = {
+    createPlan: function (options) {
+        return {
+            executableByDefault: false,
+            requiresExplicitApproval: true
+        };
+    }
+};
+```
+
+A later project module can provide the same service artifact and same function
+name when it intentionally changes that behavior:
+
+```js
+module.exports = {
+    createPlan: function (options) {
+        return {
+            executableByDefault: false,
+            requiresExplicitApproval: true,
+            customerPolicy: 'project-owned-policy'
+        };
+    }
+};
+```
+
+The exact file path depends on the service name and owning module, but it must
+remain under `src/service` so the Nodics loader can discover and merge it.
+Always add tests proving the effective project behavior.
 
 ## Overriding Existing Services
 
@@ -196,6 +267,11 @@ When generalizing routers:
 - update OpenAPI/docs when public APIs change;
 - add tests for route registration, permissions, tenant behavior, response success, and response failure.
 
+For a beginner: the router is only the front door. Put the URL, method,
+permission, `apiExposure`, help text, controller, and operation in the router.
+Put request mapping in the controller. Put orchestration in the facade. Put
+business behavior in the service.
+
 ## Data Access Layer - DAO
 
 The DAO/data access layer protects the rest of the application from provider-specific persistence behavior.
@@ -245,6 +321,17 @@ If generated behavior is wrong:
 
 Do not hand-edit generated files as a permanent fix.
 
+## Common Customization Mistakes
+
+| Mistake | Why it is risky | Correct approach |
+| --- | --- | --- |
+| Editing framework service for one customer | Breaks upgrade path and hides customer ownership | Add project module override |
+| Adding files outside `src/service`, `src/controller`, `src/facade`, or other standard folders | Nodics loader may not see or merge the behavior | Use standard module structure |
+| Changing generated code directly | Regeneration will overwrite it | Change schema, route, config, or generator source |
+| Hardcoding tenant, provider, endpoint, or permission | Blocks reuse and runtime governance | Use layered configuration or tenant/runtime records |
+| Putting business logic in routers/controllers | Makes behavior hard to reuse and test | Move logic to facade/service |
+| Bypassing permissions because route is internal | Internal routes still need governed access | Use internal-token permissions and route metadata |
+
 ## Define Callback
 
 Callbacks and hooks must have explicit input, output, and error behavior.
@@ -277,4 +364,3 @@ Nodics reduces deployment effort by keeping:
 - tests aligned with module ownership;
 - runtime changes governed with audit and rollback;
 - provider choices behind configuration and provider modules.
-

@@ -34,11 +34,12 @@ Start with the first two sections if you are new. Use the task guides when you a
 15. [How To Test Nodics Changes](testing/how-to-test-nodics-changes.md)
 16. [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md)
 17. [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md)
-18. [How To Publish Documentation On GitHub](documentation/how-to-publish-documentation-on-github.md)
-19. [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md)
-20. [Module Documentation Index](reference/module-documentation-index.md)
-21. [Provider And Capability Maturity Matrix](reference/provider-capability-maturity-matrix.md)
-22. [Licensing And Header Contract](reference/licensing-and-header-contract.md)
+18. [Production Operating Model](operations/production-operating-model.md)
+19. [How To Publish Documentation On GitHub](documentation/how-to-publish-documentation-on-github.md)
+20. [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md)
+21. [Module Documentation Index](reference/module-documentation-index.md)
+22. [Provider And Capability Maturity Matrix](reference/provider-capability-maturity-matrix.md)
+23. [Licensing And Header Contract](reference/licensing-and-header-contract.md)
 
 ## Documentation Principles
 
@@ -88,7 +89,7 @@ Use this map when you are not sure where to start.
 | Configure, troubleshoot, or customize cache | [How Cache Works](platform/how-cache-works.md) |
 | Understand users, tenants, permissions, and runtime isolation | [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md) |
 | Verify a change | [How To Test Nodics Changes](testing/how-to-test-nodics-changes.md) |
-| Run, debug, or deploy Nodics | [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md) and [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md) |
+| Run, debug, deploy, or operate Nodics | [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md), [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md), and [Production Operating Model](operations/production-operating-model.md) |
 | Maintain public and module documentation | [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md) |
 | Find module-specific capability documentation | [Module Documentation Index](reference/module-documentation-index.md) |
 | Check whether a provider or capability is production-ready, guarded, sample, scaffolded, or parked | [Provider And Capability Maturity Matrix](reference/provider-capability-maturity-matrix.md) |

@@ -67,6 +67,7 @@ global.NODICS = {
 const generator = require('../src/service/tooling/defaultOpenapiContractGeneratorService');
 const authProperties = require('../../nAuth/config/properties');
 assert(authProperties.identityGovernance.permissionCatalog.includes('system.contract.openapi.view'));
+assert(authProperties.identityGovernance.permissionCatalog.includes('system.contract.swagger.view'));
 
 const defaultRoutes = {
     default: {
@@ -116,6 +117,15 @@ const defaultRoutes = {
                 },
                 help: { body: { name: 'Contract name', enabled: true } }
             },
+            live: {
+                secured: false,
+                publicProbe: true,
+                accessGroups: ['userGroup'],
+                key: '/health/live',
+                method: 'GET',
+                controller: 'DefaultHealthController',
+                operation: 'getLiveness'
+            },
             inactive: {
                 secured: true,
                 active: false,
@@ -153,6 +163,8 @@ assert.strictEqual(configured['x-nodics'].permission, 'sample.contract.view');
 assert.strictEqual(configured['x-nodics'].permissionConfig, 'sample.contract.routePermission');
 assert.strictEqual(configured.requestBody.content['application/json'].schema.properties.enabled.type, 'boolean');
 assert(configured.responses.default.$ref);
+assert.strictEqual(document.paths['/nodics/sample/v0/health/live'].get['x-nodics'].publicProbe, true);
+assert.strictEqual(document.paths['/nodics/sample/v0/health/live'].get.security, undefined);
 
 const bodyless = generator.createOperation({
     url: '/sample/:id', method: 'DELETE', routerName: 'bodyless', moduleName: 'sample', active: true

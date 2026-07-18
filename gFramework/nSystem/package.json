@@ -16,7 +16,9 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics"
     },
-    "dependencies": {},
+    "dependencies": {
+        "swagger-ui-dist": "^5.32.9"
+    },
     "nodics": {
         "kind": "capability",
         "runtimeModule": true,

@@ -6,6 +6,36 @@ It is more than a web framework and more than a collection of utilities. Nodics 
 
 ![Nodics Architecture](../assets/images/nodics-architecture.jpg)
 
+## Beginner Summary
+
+Nodics helps you build serious applications without starting from a blank
+folder. It gives you ready places for common enterprise needs: APIs, users,
+permissions, data models, import/export, cache, search, jobs, events, workflow,
+tests, configuration, deployment topology, and documentation.
+
+The most important beginner idea is:
+
+```text
+Every feature must have an owner and a correct layer.
+```
+
+For example:
+
+| If you need | You usually work in |
+| --- | --- |
+| A new API | router, controller, facade, service |
+| A new data model | schema and generated tests |
+| A business rule | service or facade |
+| A database provider | database provider module |
+| A cache rule | cache configuration/service |
+| A scheduled task | cronjob definition and service |
+| A tenant-specific difference | tenant/runtime configuration or later project module |
+| A customer-specific behavior | customer/project module |
+
+This structure is useful for humans and AI tools because it reduces guessing.
+Instead of putting code anywhere, the framework tells you where the code should
+live and how to verify it.
+
 Instead of putting all code in one application folder, Nodics organizes behavior into active capabilities. A capability can provide data models, APIs, services, scheduled jobs, events, import/export behavior, permissions, tests, and documentation. A project can then extend or replace behavior through later-loaded project modules without editing framework files.
 
 Nodics is also built for AI-assisted development. Developers can use CLI-based AI tools, IDE assistants, or conversational coding tools to describe what they want to build. Nodics gives those tools a governed structure to follow so generated or assisted code lands in the right place and respects the same rules as human-written code.

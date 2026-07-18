@@ -48,6 +48,23 @@ Use the right documentation layer for the right audience.
 
 ## Writing Style
 
+Write for guided adoption first. A Nodics page should be understandable by a
+developer with basic programming knowledge, useful to an experienced developer,
+and explicit enough for an AI tool to place code in the correct folder without
+inventing a new structure.
+
+Start with plain language:
+
+- what the feature is;
+- why it exists;
+- when to use it;
+- what problem it solves;
+- where code belongs;
+- how to customize it safely;
+- how to verify it.
+
+Then add deeper framework internals for advanced readers.
+
 Use task-based titles:
 
 - How to set up Nodics.
@@ -78,11 +95,15 @@ Every page explains:
 - When to use it.
 - Step-by-step process.
 - Files or folders involved.
+- Which layer owns each change.
+- Where code should be written.
 - Configuration involved.
 - Security considerations.
 - Testing commands.
 - Common mistakes.
 - Extension or customization path.
+- Generated artifacts that must be regenerated.
+- AI/developer rules that must be preserved.
 
 ## Updating Documentation With Code
 

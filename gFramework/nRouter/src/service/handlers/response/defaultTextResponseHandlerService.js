@@ -45,7 +45,7 @@ module.exports = {
     },
 
     /**
-     * Sends a plain text response.
+     * Sends a text, HTML, JavaScript, CSS, or Buffer response.
      *
      * @param {Object} request Express request.
      * @param {Object} response Express response.
@@ -54,7 +54,14 @@ module.exports = {
      * @sideEffects Writes HTTP response body using Express `send`.
      */
     handleSuccess: function (request, response, success) {
-        response.send(success);
+        let payload = success;
+        if (success && typeof success === 'object' && Object.prototype.hasOwnProperty.call(success, 'data')) {
+            if (success.metadata && success.metadata.contentType && response.type) {
+                response.type(success.metadata.contentType);
+            }
+            payload = success.data;
+        }
+        response.send(payload);
     },
 
     /**

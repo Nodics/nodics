@@ -104,6 +104,9 @@ module.exports = {
             openApiContract: {
                 enabled: true
             },
+            operationalHealth: {
+                enabled: true
+            },
             fileAccess: {
                 enabled: false
             },

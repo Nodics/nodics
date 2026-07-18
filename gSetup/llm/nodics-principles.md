@@ -74,7 +74,7 @@ generated-layer, tenant, or runtime-governance contracts.
 8. Derive generated artifacts from effective layered source definitions. Build must recreate them and clean must remove them safely; generated output is never the source of truth.
 9. Add test coverage with the implementation. Include positive, negative, security/access-control, tenant-context, and traceability coverage as applicable. During the current pre-production modernization phase, prefer clean best-principle implementation tests over compatibility-shim tests unless the owner explicitly asks for a compatibility path. Every new or changed extension point must include an override/customization test proving a later-loaded module can change the behavior without editing core. Cross-module behavior must cover consolidated and modular deployment where applicable.
 10. Every new source file must include file-level documentation when it is created. Document purpose, owner, layer, extension path, inputs/outputs, side effects, failure behavior, and exported methods before the file is considered complete.
-11. Update module and LLM documentation when ownership, configuration, dependencies, extension points, runtime behavior, or operational contracts change.
+11. Update module and LLM documentation when ownership, configuration, dependencies, extension points, runtime behavior, or operational contracts change. Documentation must be beginner-readable and explicit enough for AI tools to place code in the correct module, folder, layer, file, export shape, configuration namespace, test, and generation path.
 
 Code review must reject a change whose customization path is absent, undocumented, or untested. Capabilities are sacred; the default implementation remains negotiable through the hierarchy.
 

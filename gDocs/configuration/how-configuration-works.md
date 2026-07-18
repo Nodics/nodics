@@ -4,6 +4,39 @@ Configuration tells Nodics how to run.
 
 It controls active modules, ports, database connections, cache settings, security rules, import behavior, runtime governance, and many other platform features.
 
+If you are new to Nodics, think of configuration as the place where you answer
+"how should this capability behave in this project, environment, server, node,
+or tenant?" Configuration should not contain business logic. It should contain
+values, switches, provider choices, limits, permissions, paths, topology, and
+policy defaults that code can read.
+
+## Beginner Summary
+
+Use configuration when the answer may change without rewriting business code.
+
+Good configuration examples:
+
+- enable or disable a feature;
+- choose MongoDB, Cassandra, Redis, Elasticsearch, Kafka, or another provider;
+- define a server port;
+- define which modules are active in a server;
+- define a route permission that may differ by project;
+- define import paths, batch sizes, cache TTL, or retry counts;
+- define tenant-specific data placement.
+
+Poor configuration examples:
+
+- "calculate discount" business logic;
+- a hardcoded customer rule that belongs in a project service;
+- a database query that belongs in a DAO/provider service;
+- a one-time script hidden in a property file.
+
+The simple rule is:
+
+```text
+Configuration decides policy and placement. Services execute behavior.
+```
+
 ## Why Configuration Is Layered
 
 Different projects and environments need different behavior.
@@ -42,6 +75,25 @@ Use environment, server, or node configuration when the value depends on where t
 Use tenant or runtime configuration when the value must change per tenant or through governed runtime operations.
 
 Do not hide configuration inside service code when it is a policy, endpoint, permission, or environment-specific value.
+
+## Where To Put Configuration
+
+Use this table before creating or changing a value:
+
+| Need | Put it here | Why |
+| --- | --- | --- |
+| Framework default behavior | Owning framework module `config/properties.js` | The framework owns the default contract. |
+| Project-wide behavior | Project or project module `config/properties.js` | The customer application owns the value. |
+| Local, dev, QA, UAT, pre-prod, prod differences | Environment module `config/properties.js` | The value changes by deployment environment. |
+| Process-specific ports or active modules | Server module `config/properties.js` | The runnable process owns its composition. |
+| Instance-specific behavior | Node module `config/properties.js` | One node can have a different responsibility. |
+| Tenant data placement or tenant policy | Tenant records or governed runtime configuration | The tenant decides data and runtime isolation. |
+| Values changed after deployment with approval | Runtime configuration | The value needs preview, approval, audit, and rollback. |
+| Secret values | External secret manager or environment-specific secure source | Secrets should not live in source-controlled files. |
+
+If you are unsure, start with the module that owns the capability and then move
+later in the hierarchy only when the value must vary by project, environment,
+server, node, or tenant.
 
 ## Configuration Files
 
@@ -110,6 +162,19 @@ Also document:
 - Whether it can vary by tenant.
 - Which tests prove both enabled and disabled behavior.
 
+Example service usage:
+
+```js
+module.exports = {
+    isSampleFeatureEnabled: function () {
+        return CONFIG.get('feature.sampleFeature.enabled') === true;
+    }
+};
+```
+
+Keep the service readable. The service asks configuration for the value, but the
+business behavior still lives in the service or facade that owns the feature.
+
 ## Example: Route Permission Configuration
 
 Routes do not rely on hidden controller checks only.
@@ -153,6 +218,16 @@ Avoid:
 - Putting secrets in source-controlled files.
 - Changing framework defaults for one customer.
 - Using runtime configuration for behavior that belongs in source-controlled and tested definitions.
+
+## Beginner Troubleshooting
+
+| Problem | Likely cause | What to check |
+| --- | --- | --- |
+| Value does not change | A later layer overrides it | Check project, environment, server, node, tenant, and runtime values. |
+| Local works but another environment fails | Environment or server configuration differs | Compare selected environment/server `properties.js`. |
+| Route permission is not respected | Route uses another permission or `permissionConfig` path | Check route metadata and auth permission catalog. |
+| Provider connects to wrong endpoint | Provider config was hardcoded or overridden | Check provider module and environment/server properties. |
+| AI tool added a new config file | File is outside the standard loader path | Move values to `config/properties.js` unless a real loader contract exists. |
 
 ## How To Verify Configuration Changes
 

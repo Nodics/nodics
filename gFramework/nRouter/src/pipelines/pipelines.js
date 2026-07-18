@@ -70,7 +70,8 @@ module.exports = {
                 handler: 'DefaultRequestHandlerPipelineService.redirectRequest',
                 success: {
                     securedRequest: 'handleSecuredRequest',
-                    nonSecureRequest: 'handleNonSecuredRequest'
+                    nonSecureRequest: 'handleNonSecuredRequest',
+                    publicRequest: 'lookupCache'
                 }
             },
             handleSecuredRequest: {

@@ -152,6 +152,19 @@ global.CONTROLLER = {
                 }
             });
         },
+        live: function (request, callback) {
+            controllerCalls.push({
+                operation: 'live',
+                tenant: request.tenant,
+                entCode: request.entCode
+            });
+            callback(null, {
+                code: 'SUC_TEST_00000',
+                data: {
+                    status: 'UP'
+                }
+            });
+        },
         fail: function (request, callback) {
             controllerCalls.push({
                 operation: 'fail',
@@ -366,6 +379,20 @@ async function executeRoute(route, headers, body) {
     assert.strictEqual(validationErrorResponse.payload.responseCode, '401');
     assert.strictEqual(validationErrorResponse.payload.message, 'Authentication or enterprise header is required');
     assert.deepStrictEqual(controllerCalls, []);
+
+    controllerCalls = [];
+    let publicProbeResponse = await executeRoute(Object.assign(createRoute('live'), {
+        publicProbe: true
+    }), {});
+
+    assert.strictEqual(publicProbeResponse.statusCode, '200');
+    assert.strictEqual(publicProbeResponse.payload.code, 'SUC_TEST_00000');
+    assert.deepStrictEqual(publicProbeResponse.payload.data, { status: 'UP' });
+    assert.deepStrictEqual(controllerCalls, [{
+        operation: 'live',
+        tenant: undefined,
+        entCode: undefined
+    }]);
 
     controllerCalls = [];
     apiExposure = {

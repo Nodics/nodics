@@ -4,6 +4,24 @@ Nodics is built as a platform, not as a single API application. Platform capabil
 
 Nodics implements platform capabilities through active modules, source definitions, layered configuration, runtime governance, generated artifacts, and tests.
 
+## Beginner Summary
+
+A platform capability is reusable framework behavior that many business modules
+can depend on. Examples include routing, cache, import/export, messaging,
+scheduled jobs, workflow, search, configuration, testing, and runtime
+governance.
+
+Business modules should use these capabilities instead of building private
+copies. For example, a feature that needs cache should use the cache capability.
+A feature that needs a process should use a pipeline or workflow capability. A
+feature that needs an API should use router/controller/facade/service layers.
+
+The simple rule is:
+
+```text
+Use the platform capability before inventing a private implementation.
+```
+
 ## Platform Capability Rule
 
 A platform capability is reusable, configurable, tenant-aware where required, and replaceable through a later module.
@@ -18,6 +36,25 @@ Before adding or changing a platform feature, ask:
 - Which documentation and generated LLM context must be updated?
 
 Do not add platform behavior as one-off helper code. Platform behavior has an owner, a contract, a configuration path, and a test boundary.
+
+## Capability Placement Map
+
+| Need | Capability/docs to use |
+| --- | --- |
+| Expose an API | Router, controller, facade, service docs |
+| Validate and process ordered steps | Pipeline framework docs |
+| Run stateful business lifecycle | Workflow/nbpm docs |
+| React to something that happened | Event/NEMS docs |
+| Run timed work | CronJob docs |
+| Speed repeatable reads | Cache docs |
+| Import/export records | Data/import/export docs |
+| Make data searchable | Search docs |
+| Change behavior safely at runtime | Runtime configuration/dynamo docs |
+| Run across multiple servers/nodes | Topology and service communication docs |
+| Prove behavior | Testing docs |
+
+When an AI tool proposes a custom helper, compare the helper to this table. If a
+platform capability already exists, use the capability contract.
 
 ## Request Handling
 
@@ -150,13 +187,13 @@ Before changing a predefined process, document:
 - tenant and security impact;
 - tests for default and effective behavior.
 
-### Change Node In sampleProcess
+### Change A Node In An Existing Process
 
 Changing a node means replacing the handler or behavior of one step in an existing process.
 
 Use this when the process sequence is still correct, but one step needs project-specific logic. The replacement node must accept the same request/response/process context and must call success or error consistently.
 
-### Add Node In sampleProcess
+### Add A Node In An Existing Process
 
 Adding a node means introducing a new step before, after, or between existing steps.
 

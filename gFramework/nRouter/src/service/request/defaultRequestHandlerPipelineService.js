@@ -240,7 +240,7 @@ module.exports = {
      * @param {Object} process Pipeline process controller.
      * @returns {void}
      * @sideEffects Writes `request.auth`, `request.apiKey`, `request.authToken`, and `request.entCode`.
-     * @throws Emits `ERR_AUTH_00002` through the pipeline when neither credentials nor enterprise code are supplied.
+     * @throws Emits `ERR_AUTH_00002` through the pipeline when neither credentials nor enterprise code are supplied for normal routes.
      */
     parseHeader: function (request, response, process) {
         this.LOG.debug('Parsing request header for : ' + request.originalUrl);
@@ -256,6 +256,10 @@ module.exports = {
         }
         if (request.auth.entCode) {
             request.entCode = request.auth.entCode;
+        }
+        if (request.router && request.router.publicProbe === true && !request.auth.credentials.length && !request.auth.entCode) {
+            process.nextSuccess(request, response);
+            return;
         }
         if (!request.auth.credentials.length && !request.auth.entCode) {
             process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00002'));
@@ -323,11 +327,14 @@ module.exports = {
      * @param {Object} response Nodics response context mutated with the next target node.
      * @param {Object} process Pipeline process controller.
      * @returns {void}
-     * @sideEffects Writes `response.targetNode` with `securedRequest` or `nonSecureRequest`.
+     * @sideEffects Writes `response.targetNode` with `securedRequest`, `nonSecureRequest`, or `publicRequest`.
      */
     redirectRequest: function (request, response, process) {
         this.LOG.debug('Redirecting secured/non-secured request  : ' + request.originalUrl);
-        if (request.secured) {
+        if (request.router && request.router.publicProbe === true) {
+            this.LOG.debug('Handling public probe request');
+            response.targetNode = 'publicRequest';
+        } else if (request.secured) {
             this.LOG.debug('Handling secured request');
             response.targetNode = 'securedRequest';
         } else {

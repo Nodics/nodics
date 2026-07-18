@@ -126,6 +126,7 @@
         "require-from-string": "^2.0.2",
         "stompit": "^1.0.0",
         "stream-json": "^1.9.1",
+        "swagger-ui-dist": "^5.32.9",
         "uuid": "^11.1.1",
         "winston": "^3.6.0",
         "winston-elasticsearch": "^0.19.0",
@@ -395,6 +396,14 @@
                     ],
                     "restricted": true,
                     "reason": "Streaming JSON import processor."
+                },
+                "swagger-ui-dist": {
+                    "type": "runtime-framework",
+                    "owners": [
+                        "gFramework/nSystem"
+                    ],
+                    "restricted": true,
+                    "reason": "Self-hosted Swagger UI assets for runtime OpenAPI documentation exposure."
                 },
                 "uuid": {
                     "type": "shared-utility",

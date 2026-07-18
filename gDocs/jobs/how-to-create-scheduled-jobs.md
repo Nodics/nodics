@@ -11,6 +11,22 @@ Examples:
 - Publish pending content.
 - Reconcile failed workflow items.
 
+## Beginner Summary
+
+A scheduled job is used when Nodics must do work without a user clicking a
+button or calling an API at that moment.
+
+Think of a job as three parts:
+
+| Part | Meaning |
+| --- | --- |
+| Definition | What the job is called, when it runs, whether it is active, and which module owns it. |
+| Handler | The small runtime function that starts the job work and records lifecycle events. |
+| Service | The real business behavior, such as import files, rebuild indexes, or send messages. |
+
+Keep the service testable without waiting for the clock. The schedule triggers
+the service, but the service owns the business work.
+
 ## CronJobs
 
 CronJobs are Nodics scheduled tasks with persisted definitions, lifecycle operations, handlers, logs, route/service ownership, node responsibility, and tests.
@@ -111,6 +127,22 @@ Steps:
 6. Add tests for lifecycle, handler behavior, and node responsibility.
 7. Document how to run, update, and disable the job.
 
+## Where To Write Job Code
+
+| Need | Write here |
+| --- | --- |
+| Job definition or startup seed data | Owning module data/config area used by CronJob initialization |
+| Schedule, enablement, retry, node responsibility | Owning module or server/node `config/properties.js` |
+| Business behavior | Owning module `src/service/**/*Service.js` |
+| Process hooks around job execution | `src/pipelines`, `src/interceptors`, or `src/event` when the process needs them |
+| API lifecycle route changes | CronJob router/controller/facade/service layer |
+| Status values or enums | Owning module `src/utils/statusDefinitions.js` or `src/utils/enums.js` |
+| Tests | Owning module `test/` plus cronjob route/service/topology tests |
+
+If an AI tool creates a job, ask it to identify each row it touched. If it puts
+the job body directly in a timer callback, ask it to move the behavior into a
+service.
+
 ## Triggers And Handlers
 
 The trigger decides when the job runs. The handler decides what work is executed.
@@ -209,3 +241,13 @@ Avoid:
 - Swallowing failures.
 - Using jobs for work that belongs on an event.
 - Putting customer-specific job behavior into framework code.
+
+## Beginner Troubleshooting
+
+| Problem | Likely cause | What to check |
+| --- | --- | --- |
+| Job runs twice | More than one node owns the same job | Node responsibility and scheduler container tests |
+| Job never runs | Job disabled, wrong schedule, wrong node, or scheduler not started | Job definition, config, lifecycle state, logs |
+| Startup creates duplicates | Initializer is not idempotent | Job code uniqueness and startup tests |
+| Job succeeds but data is wrong | Business logic is hidden in handler or lacks tenant context | Move behavior to service and test tenant behavior |
+| Failure is invisible | Error was swallowed | Logs, result state, diagnostics, failure propagation |

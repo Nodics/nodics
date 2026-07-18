@@ -56,5 +56,25 @@ module.exports = {
      */
     getOpenApiContract: function (request) {
         return SERVICE.DefaultApiContractService.getOpenApiContract(request);
+    },
+
+    /**
+     * Returns the Swagger UI HTML page for the active OpenAPI contract.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Promise resolving to a textual Nodics response envelope.
+     */
+    getSwaggerUi: function (request) {
+        return SERVICE.DefaultApiContractService.getSwaggerUi(request);
+    },
+
+    /**
+     * Returns a governed Swagger UI static asset.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {Promise<Object>} Promise resolving to a textual Nodics response envelope.
+     */
+    getSwaggerAsset: function (request) {
+        return SERVICE.DefaultApiContractService.getSwaggerAsset(request);
     }
 };

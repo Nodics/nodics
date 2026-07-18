@@ -59,6 +59,22 @@ Before commit or release:
 - Run broader/full checks when shared runtime behavior, security, persistence,
   cache, auth, schema, router, or generated artifacts are affected.
 
+## Production Operating Evidence
+
+Release evidence must include the production operating model when a change
+affects startup, topology, health, readiness, shutdown, observability, secrets,
+audit retention, backup/restore, rollback, diagnostics, or support surfaces.
+
+Health endpoints follow this split:
+
+- liveness is low-disclosure and may be unauthenticated for orchestrators;
+- readiness is secured, topology-gated, sanitized, and project-extensible.
+
+When adding a provider or server/node responsibility, add or update readiness
+checks through the owning module or a later project module. Do not expose
+credentials, provider URLs, private file paths, tenant data, or raw diagnostics
+from health responses.
+
 Full validation should happen at commit/release gates or periodic checkpoints,
 not after every tiny edit, so Nodics remains practical for AI-assisted
 development without sacrificing quality.

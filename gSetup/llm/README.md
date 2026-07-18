@@ -89,6 +89,26 @@ Nodics is an enterprise application platform and application factory, not a ligh
 
 Capabilities are sacred; implementations are negotiable.
 
+## Documentation Rule
+
+Nodics documentation must be beginner-readable and implementation-precise.
+Assume the reader may understand programming basics but not Nodics internals.
+Every public guide, module README, AI contract, and generated context should
+help a human or AI tool answer:
+
+- what the capability does;
+- why and when to use it;
+- which module owns it;
+- which folder and file should change;
+- which layer owns the behavior;
+- how a later project/environment/server/node/tenant layer can customize it;
+- which generated artifacts must be regenerated;
+- which tests prove the change.
+
+Do not rely on expert shortcuts such as "add a service" or "change the route"
+without naming the Nodics layer, file pattern, export shape, configuration,
+permission, tenant, generated artifact, and verification impact.
+
 Every feature must preserve layered customization, multi-tenancy, runtime
 governance, generated artifact regeneration, and traceability. Compatibility is
 a governed release concern: during the current pre-production modernization

@@ -23,6 +23,25 @@ work.
 5. Use `gSetup/llm` and `AGENTS.md` when you are changing code and need
    AI/developer implementation contracts.
 
+## How To Read A Module README
+
+Module documentation is more detailed than public task guides because it tells
+you exactly how one capability works. When reading a module README, look for
+answers to these beginner questions:
+
+| Question | Why it matters |
+| --- | --- |
+| What capability does this module own? | Prevents code from being added to the wrong module. |
+| Which schemas, routes, services, facades, controllers, pipelines, interceptors, events, data, and tests does it own? | Shows which layer should receive the change. |
+| Which configuration values belong to this module? | Keeps policy and provider choices out of hardcoded services. |
+| How can a project override or extend the behavior? | Protects framework immutability and customer customization. |
+| Which generated artifacts depend on this module? | Shows when to run build, generated tests, OpenAPI, or LLM generation. |
+| Which tests prove the default and override behavior? | Gives developers and AI tools a verification path. |
+
+If a module README does not answer these questions clearly enough, update the
+module README as part of the change. Do not make a beginner or AI tool infer
+the extension path from source code alone.
+
 ## Core Platform And Startup
 
 | Capability | Module Documentation | Use When |
@@ -38,7 +57,7 @@ work.
 
 | Capability | Module Documentation | Use When |
 | --- | --- | --- |
-| API routes, Express binding, request pipeline, security, OpenAPI | [nRouter](../../gFramework/nRouter/README.md) and [Router Framework](../../gFramework/nRouter/docs/router-framework.md) | You need to create, secure, expose, customize, or debug APIs. |
+| API routes, Express binding, request pipeline, security, OpenAPI, Swagger UI | [nRouter](../../gFramework/nRouter/README.md), [Router Framework](../../gFramework/nRouter/docs/router-framework.md), and [nSystem](../../gFramework/nSystem/README.md) | You need to create, secure, expose, customize, document, or debug APIs. |
 | Controller boundary and request mapping | [nController](../../gFramework/nController/README.md) | You need to map HTTP params, query, body, or headers into Nodics request context. |
 | Facade orchestration boundary | [nFacade](../../gFramework/nFacade/README.md) | You need to coordinate services or capability calls without putting orchestration in controllers. |
 | Service behavior and generated service contracts | [nService](../../gFramework/nService/README.md) | You need business behavior, generated CRUD service flow, or service override rules. |

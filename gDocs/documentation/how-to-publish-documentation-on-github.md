@@ -8,6 +8,22 @@ The goal is simple:
 Users find clear documentation from GitHub without needing to understand internal repository history.
 ```
 
+## Beginner Summary
+
+GitHub has several places where people may look for documentation. Nodics keeps
+the source-controlled documentation in the repository so docs change together
+with code.
+
+Use this mental model:
+
+| Place | Purpose |
+| --- | --- |
+| Root `README.md` | Short public front door. |
+| `gDocs` | Main user and developer documentation source. |
+| Module `README.md` files | Exact capability details for one module. |
+| GitHub Pages | Published website view of repository docs. |
+| GitHub Wiki | Optional index or mirror, not the source of truth. |
+
 ## Recommended Approach
 
 Use this structure:

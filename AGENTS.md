@@ -45,6 +45,10 @@ The expected posture is:
 
 - Before changing code, identify the active module boundary and nearest
   `AGENTS.md`.
+- Write and update documentation for guided adoption. A developer with basic
+  programming knowledge and an AI coding tool must be able to understand what
+  the capability does, where code belongs, how customization works, which
+  generated artifacts are affected, and which tests prove the change.
 - Do not hardcode project-specific behavior into reusable framework behavior.
 - Behavior must come from active modules, layered configuration, tenant context,
   schema definitions, routers, services, pipelines, data, and runtime governance.

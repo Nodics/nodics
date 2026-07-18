@@ -6,6 +6,27 @@ Deployment is not only copying files to a server. It includes configuration, gen
 
 ![Cloud Deployment Process](../assets/images/cloud-deployment-process.jpg)
 
+## Beginner Summary
+
+Deployment is the point where a Nodics runtime must be predictable.
+
+Before deploying, a team should know:
+
+- which project is being deployed;
+- which environment is targeted;
+- which servers and nodes will run;
+- which modules are active in each process;
+- which tenants are allowed;
+- which database, cache, search, messaging, import/export, and storage providers are configured;
+- which APIs are exposed;
+- which tests prove the release.
+
+The simple rule is:
+
+```text
+Do not deploy behavior that cannot be rebuilt, tested, explained, and rolled back.
+```
+
 ## Before Deployment
 
 Confirm:
@@ -115,6 +136,32 @@ Verify modular topology:
 npm run test:topology:modular
 ```
 
+## Verify Health And Readiness
+
+Use liveness to confirm the process can answer HTTP:
+
+```bash
+GET /nodics/system/v0/health/live
+```
+
+Use readiness to decide whether the process should receive traffic:
+
+```bash
+GET /nodics/system/v0/health/ready
+```
+
+Liveness is intentionally low-disclosure and does not require authentication.
+Readiness is secured with `system.health.readiness.view` and gated by
+`apiExposure.categories.operationalHealth`.
+
+For production, each server/node process should have its own readiness contract.
+Provider-specific projects may extend readiness through later modules to check
+database, cache, search, messaging, storage, import/export locations, required
+secrets, and scheduled-job ownership.
+
+Read the [Production Operating Model](production-operating-model.md) before
+using these endpoints as deployment gates.
+
 ## Verify Data
 
 Check:
@@ -148,6 +195,21 @@ Run:
 npm run docs:coverage:source -- --limit=20
 npm run docs:coverage:contracts -- --limit=20
 ```
+
+Also regenerate and inspect API documentation when routes or schemas changed:
+
+```bash
+npm run docs:openapi
+```
+
+For developer/support environments with contract exposure enabled, verify:
+
+```text
+GET /nodics/system/v0/contract/openapi
+GET /nodics/system/v0/contract/swagger
+```
+
+Keep Swagger/OpenAPI secured in shared and production-like topologies.
 
 ## What To Avoid
 

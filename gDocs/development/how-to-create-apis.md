@@ -125,7 +125,14 @@ Treat generated CRUD APIs as real APIs. They need route metadata, permissions, t
 
 ## API Documentation
 
-Nodics can generate OpenAPI documentation.
+Nodics can generate OpenAPI documentation and expose Swagger UI for the active
+runtime server or node.
+
+OpenAPI is the structured API contract. Swagger UI is the browser page that
+uses that contract to show APIs, request fields, headers, examples, and live
+"try it out" calls. A new developer does not need to memorize every route
+manually. Generate the contract, open Swagger UI, and inspect what the active
+runtime exposes.
 
 Run:
 
@@ -133,7 +140,77 @@ Run:
 npm run docs:openapi
 ```
 
-The OpenAPI output reflects route definitions and permissions. If the generated documentation is wrong, fix the source route metadata.
+The OpenAPI output reflects route definitions, schema-generated APIs,
+permissions, request metadata, response handlers, and API exposure categories.
+If the generated documentation is wrong, fix the source route, schema,
+permission, or help metadata.
+
+At runtime, use these secured system routes:
+
+| Purpose | Route | Permission |
+| --- | --- | --- |
+| Machine-readable OpenAPI contract | `GET /nodics/system/v0/contract/openapi` | `system.contract.openapi.view` |
+| Interactive Swagger UI | `GET /nodics/system/v0/contract/swagger` | `system.contract.swagger.view` |
+
+Swagger UI reads the sibling OpenAPI endpoint from the same runtime. If all
+modules run in one server, that server shows one consolidated API contract. If
+modules are split across several servers, each server shows the routes active on
+that server. If a server runs multiple identical nodes behind a load balancer,
+the nodes should expose the same contract unless node-specific modules change
+the route set.
+
+Use Swagger UI to inspect and try APIs, but remember that Nodics security is
+still active. You must provide the same authorization and tenant/enterprise
+headers required by the route. The request handler pipeline, interceptors,
+controller, facade, service, cache behavior, and response handler still execute
+exactly as they do for a normal API client.
+
+Project modules can customize documentation by extending source schemas,
+routers, route help metadata, permissions, or `apiExposure` configuration and
+then regenerating OpenAPI. Do not edit generated OpenAPI output directly.
+
+### First Swagger UI Walkthrough
+
+Use this flow when learning or verifying APIs:
+
+1. Run `npm run docs:openapi`.
+2. Start the server or node.
+3. Login or get a token using the approved authentication flow.
+4. Open `/nodics/system/v0/contract/swagger`.
+5. Expand an API operation.
+6. Read the method, URL, required headers, parameters, and request body.
+7. Click `Try it out`.
+8. Provide required values and the same authorization token used by other API
+   clients.
+9. Click `Execute`.
+10. Read the generated request, response code, and response body.
+
+If the API fails, do not guess. Check the response code and message:
+
+| Response | Meaning | Where to check |
+| --- | --- | --- |
+| Unauthorized | Token is missing, invalid, or expired | Authentication route and `Authorization` header |
+| Forbidden | User is authenticated but lacks permission | Route `permission`, `permissionConfig`, and user group permissions |
+| Not found | API is not active at that path | Active modules, route key, context root, API version |
+| Bad request | Required field, parameter, header, or body is wrong | Route help metadata, schema validators, request body |
+| Server error | Runtime behavior failed | Controller, facade, service, pipeline, logs, and tests |
+
+### Where To Write API Code
+
+Use this placement rule:
+
+| What you need to do | Where to write it |
+| --- | --- |
+| Add HTTP URL, method, security, and help text | `src/router/routers.js` in the owning module |
+| Read path/query/body/header values and shape the request context | `src/controller/**/*Controller.js` |
+| Coordinate one API use case across services | `src/facade/**/*Facade.js` |
+| Implement business behavior | `src/service/**/*Service.js` |
+| Add generated CRUD behavior for a data type | `src/schemas/schemas.js` |
+| Add validation or lifecycle checks | `src/interceptors/interceptors.js`, validators, or a pipeline node |
+| Customize framework behavior for a project | Same artifact name in a later active project/environment/server/node module |
+
+After code changes, regenerate generated artifacts and documentation instead of
+editing generated files by hand.
 
 ## Testing APIs
 

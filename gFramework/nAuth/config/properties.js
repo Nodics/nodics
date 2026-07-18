@@ -128,7 +128,9 @@ module.exports = {
             'cache.flush',
             'cache.configuration.router.update',
             'cache.configuration.item.update',
+            'system.health.readiness.view',
             'system.contract.openapi.view',
+            'system.contract.swagger.view',
             'system.file.read',
             'system.file.download',
             'system.log.level.update',
@@ -167,7 +169,9 @@ module.exports = {
                         'runtime.config.history.view',
                         'runtime.config.summary.view',
                         'runtime.config.request.view',
-                        'system.contract.openapi.view'
+                        'system.health.readiness.view',
+                        'system.contract.openapi.view',
+                        'system.contract.swagger.view'
                     ]
                 },
                 runtimeConfigRequesterUserGroup: {
@@ -197,6 +201,8 @@ module.exports = {
                         'cache.flush',
                         'cache.configuration.router.update',
                         'cache.configuration.item.update',
+                        'system.health.readiness.view',
+                        'system.contract.swagger.view',
                         'system.file.read',
                         'system.file.download',
                         'system.log.level.update',

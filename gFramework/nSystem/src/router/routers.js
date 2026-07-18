@@ -19,6 +19,40 @@
 module.exports = {
 
     system: {
+        health: {
+            getLiveness: {
+                secured: false,
+                accessGroups: ['userGroup'],
+                publicProbe: true,
+                key: '/health/live',
+                method: 'GET',
+                controller: 'DefaultHealthController',
+                operation: 'getLiveness',
+                help: {
+                    requestType: 'public',
+                    message: 'Low-disclosure process liveness probe. Do not include secrets, topology paths, provider endpoints, or tenant data.',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/system/health/live'
+                }
+            },
+            getReadiness: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'system.health.readiness.view',
+                apiExposure: 'operationalHealth',
+                key: '/health/ready',
+                method: 'GET',
+                controller: 'DefaultHealthController',
+                operation: 'getReadiness',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred. Returns sanitized runtime readiness without secrets or provider endpoints.',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/system/health/ready'
+                }
+            }
+        },
+
         fileResponses: {
             returnFileContent: {
                 secured: true,
@@ -422,7 +456,41 @@ module.exports = {
                     requestType: 'secured',
                     message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
                     method: 'GET',
-                    url: 'http://host:port/nodics/system/contract/openapi'
+                    url: 'http://host:port/nodics/system/v0/contract/openapi'
+                }
+            },
+            getSwaggerUi: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'system.contract.swagger.view',
+                apiExposure: 'openApiContract',
+                key: '/contract/swagger',
+                method: 'GET',
+                controller: 'DefaultApiContractController',
+                operation: 'getSwaggerUi',
+                responseHandler: 'textResponseHandler',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; opens interactive Swagger UI backed by the active runtime OpenAPI contract.',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/system/v0/contract/swagger'
+                }
+            },
+            getSwaggerAsset: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'system.contract.swagger.view',
+                apiExposure: 'openApiContract',
+                key: '/contract/swagger/asset/:assetName',
+                method: 'GET',
+                controller: 'DefaultApiContractController',
+                operation: 'getSwaggerAsset',
+                responseHandler: 'textResponseHandler',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; serves approved local Swagger UI assets only.',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/system/v0/contract/swagger/asset/swagger-ui.css'
                 }
             }
         },

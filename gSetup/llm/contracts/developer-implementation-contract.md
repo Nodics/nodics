@@ -11,6 +11,32 @@ Human developers and AI tools follow the same Nodics principles. AI tools do
 not get a separate shortcut path, and human developers should not bypass the
 same contracts expected from automation.
 
+## Documentation Accessibility Contract
+
+Every Nodics implementation guide, module README, AI contract, and generated
+context must be written for guided adoption. Assume the reader has basic
+programming knowledge but may not know Nodics internals, enterprise API
+governance, module hierarchy, or generated artifacts yet.
+
+Documentation must explain:
+
+- what the capability is;
+- why the capability exists;
+- when to use it;
+- which folder and file owns the change;
+- which layer owns the behavior: router, controller, facade, service, DAO,
+  schema, pipeline, interceptor, event, job, data, configuration, or test;
+- how the behavior is customized through later active modules without editing
+  out-of-box framework files;
+- which permissions, tenants, validation, audit, cache, runtime governance, and
+  generated artifacts are affected;
+- which tests and generation commands must be run.
+
+AI tools must not infer a new folder structure when documentation already
+defines one. If a required extension point is unclear, the tool must inspect the
+owning module docs and source before proposing code. If the extension point does
+not exist, document the gap instead of inventing an ungoverned path.
+
 ## Source Perspective
 
 Nodics guidance is organized around how a developer experiences the platform:
@@ -383,6 +409,15 @@ handler pipeline normalizes and secures requests, controllers map request data,
 and downstream facades/services/pipelines own business behavior. Use
 `gFramework/nRouter/docs/router-framework.md` as the canonical framework guide
 before adding, securing, extending, or documenting API routes.
+
+API documentation guidance must keep OpenAPI and Swagger UI inside that same
+router contract. OpenAPI generation comes from effective schemas and routers.
+Runtime OpenAPI is exposed through `nSystem` at
+`/nodics/system/v0/contract/openapi`, and Swagger UI is exposed through
+`/nodics/system/v0/contract/swagger`. Do not suggest hidden Express Swagger
+middleware or static file servers outside the Nodics route/controller/facade/
+service structure. Customization belongs in later active modules, route
+metadata, layered `apiExposure`, and `DefaultApiContractService` overrides.
 
 Router guidance must preserve HTTP method semantics. `GET` routes are read-only
 and must not mutate state. Commands such as run, start, stop, pause, resume,

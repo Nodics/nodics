@@ -21,19 +21,64 @@ Sensitive system routes must declare action-specific permissions:
 - schema index rebuild uses `system.schema.index.rebuild`;
 - test execution uses `system.test.unit.run` or `system.test.nodics.run`;
 - export uses `export.run`;
+- OpenAPI contract exposure uses `system.contract.openapi.view`;
+- Swagger UI exposure uses `system.contract.swagger.view`;
 - runtime configuration routes use their `runtime.config.*` permissions.
 
 Sensitive system routes also declare `apiExposure` categories so topology can
 disable complete API families before permission checks or controller execution.
 Current categories include `fileAccess`, `dataImport`, `dataExport`,
 `logManagement`, `testExecution`, `schemaMaintenance`, `runtimeConfiguration`,
-and `openApiContract`. Project, environment, server, or node configuration must
-explicitly enable categories that are not part of the framework default runtime
-surface.
+`operationalHealth`, and `openApiContract`. Project, environment, server, or
+node configuration must explicitly enable categories that are not part of the
+framework default runtime surface.
 
 Do not expose system/control-plane behavior with only a broad group such as
 `userGroup`. Add the permission to the catalog and a route contract test when a
 new control-plane API is introduced.
+
+## Health And Readiness
+
+`GET /nodics/system/v0/health/live` is a low-disclosure liveness endpoint. It is
+marked with `publicProbe: true` so infrastructure can confirm the process is
+alive without enterprise or tenant headers. This is not the same as a normal
+non-secured business route, which still resolves enterprise and tenant context.
+Liveness must not return paths, provider endpoints, credentials, tenant data,
+module lists, or diagnostic details.
+
+`GET /nodics/system/v0/health/ready` is a secured readiness endpoint. It requires
+`system.health.readiness.view` and `apiExposure.categories.operationalHealth`.
+The default readiness service checks the runtime state, selected server, active
+modules, and active tenants. Project modules may override
+`DefaultHealthService` in a later layer to add database, cache, search,
+messaging, storage, import/export, secret, or scheduled-job readiness checks
+without exposing sensitive configuration.
+
+## API Contract And Swagger UI
+
+`nSystem` exposes the generated API documentation for the active runtime
+boundary.
+
+`GET /nodics/system/v0/contract/openapi` returns the machine-readable OpenAPI
+contract generated under the active server or node `generated/openapi`
+directory. It requires `system.contract.openapi.view`.
+
+`GET /nodics/system/v0/contract/swagger` returns interactive Swagger UI for that
+same contract. It requires `system.contract.swagger.view`. Swagger UI loads the
+local runtime OpenAPI endpoint and serves approved UI assets through
+`GET /nodics/system/v0/contract/swagger/asset/:assetName`.
+
+Keep contract exposure secured in shared, support, staging, and production-like
+topologies. Developer environments may expose it to trusted developers or AI
+tools, but the route still uses normal Nodics authentication, permission checks,
+tenant/enterprise context, route exposure gates, request pipeline execution, and
+response handlers.
+
+Projects may override `DefaultApiContractService` in a later active module to
+brand the UI, filter operations, add environment labels, redact internal-only
+contracts, or alter approved assets. Do not mount Swagger UI directly as hidden
+Express middleware; doing so bypasses the route contract and makes the behavior
+harder to override.
 
 ## Runtime property configuration
 

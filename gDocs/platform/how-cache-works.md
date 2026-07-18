@@ -4,6 +4,30 @@ Cache is a performance capability that stores safe, repeatable results so Nodics
 
 Cache must never become the source of truth. The source of truth remains the database, source definitions, runtime configuration records, search indexes, event logs, or provider system that owns the business data. Cache is a controlled acceleration layer around that source of truth.
 
+## Beginner Summary
+
+Cache is like a short-term memory for data that is expensive to read or compute.
+It can make APIs, database reads, search, authentication checks, and provider
+lookups faster.
+
+The important warning is simple:
+
+```text
+Cache can speed up truth, but cache is not truth.
+```
+
+If data changes, cache must be expired, flushed, or invalidated. Otherwise a
+user may see stale data. If permissions change, auth or API cache must also be
+invalidated so an old permission result is not reused.
+
+Use cache only when you can answer:
+
+- What exact data is cached?
+- Which tenant, user, route, schema, or search query owns the key?
+- When does this cached value expire?
+- Which save/update/remove/security/configuration event invalidates it?
+- What happens if cache is unavailable?
+
 ## When To Use Cache
 
 Use cache when the same data is read many times and can safely be reused for a known period or until an invalidation event happens.
@@ -41,6 +65,23 @@ Router/API cache belongs near the request pipeline. It can avoid controller exec
 Schema/item cache belongs behind the persistence service. It can avoid repeated database reads, but cached values must still pass schema/property access-policy checks before being returned.
 
 Search cache belongs around repeatable search operations. It is useful only when indexing and invalidation rules are clear enough to prevent stale search results from being trusted incorrectly.
+
+## Where To Add Cache Behavior
+
+| Need | Change here |
+| --- | --- |
+| Enable or disable cache globally or by channel | `gFramework/nCache/cache/config/properties.js` or later layered `config/properties.js` |
+| Cache a full API response | Route metadata and router/cache configuration |
+| Cache generated schema reads | Schema/database/cache metadata and cache configuration |
+| Cache search results | Search index/query service and cache configuration |
+| Add provider such as Redis | Cache provider module and engine configuration |
+| Invalidate data after save/update/remove | Model pipelines and cache service invalidation |
+| Add project-specific cacheability rule | Later module policy handler/service override |
+| Troubleshoot cache behavior | Cache diagnostics and status/reason codes |
+
+Do not call Redis, local memory, or another cache provider directly from
+business controllers. Use the Nodics cache service so tenant scope, channel
+mapping, invalidation, diagnostics, and provider fallback stay consistent.
 
 ## How Cache Is Configured
 
@@ -210,6 +251,18 @@ Useful files and services:
 - `DefaultCachePolicyService` for cacheability decisions and reason codes;
 - `gFramework/nCache/cache/src/utils/statusDefinitions.js` for cache error and reason codes.
 
+## Beginner Decision Checklist
+
+Before adding cache, confirm:
+
+- The route/service/search result is safe to reuse.
+- The cache key includes tenant and user/security context when required.
+- Sensitive fields such as tokens, passwords, API keys, secrets, and credentials
+  cannot be cached accidentally.
+- The invalidation path is known and tested.
+- The route or schema still works correctly when cache is disabled.
+- Metrics or diagnostics can explain hits, misses, skipped writes, and failures.
+
 ## Diagnostics
 
 Cache diagnostics are stored in process memory by `DefaultCacheService`.
@@ -292,4 +345,3 @@ Avoid:
 - using cache as the only copy of business data;
 - changing runtime behavior through direct cache events when the change needs approval and rollback;
 - adding policy logic in random routers or DAOs instead of `DefaultCachePolicyService` or configured policy handlers.
-

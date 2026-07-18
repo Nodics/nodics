@@ -10,22 +10,19 @@
  */
 
 /**
- * @module system/controller/DefaultApiContractController
- * @description Controller for exposing generated API contracts from the active
- * server or node module context.
+ * @module system/controller/DefaultHealthController
+ * @description Controller for production liveness and readiness probes owned by
+ * the nSystem operational contract.
  * @layer controller
  * @owner system
- * @override Project modules may override this controller in a later-loaded module
- * to apply project-specific authorization, filtering, or contract response policy
- * without changing Nodics core code.
- *
- * @property {Object} FACADE.DefaultApiContractFacade Facade responsible for
- * retrieving generated API contract artifacts.
+ * @override Project modules may override this controller in later active modules
+ * to add project-specific probe policy while preserving low-disclosure liveness
+ * and secured readiness semantics.
  */
 module.exports = {
 
     /**
-     * Initializes the API contract controller during entity loading.
+     * Initializes the health controller during entity loading.
      *
      * @param {Object} options Nodics initialization options for the active module hierarchy.
      * @returns {Promise<boolean>} Resolves when controller initialization is complete.
@@ -37,7 +34,7 @@ module.exports = {
     },
 
     /**
-     * Finalizes the API contract controller after entity loading.
+     * Finalizes the health controller after entity loading.
      *
      * @param {Object} options Nodics initialization options for the active module hierarchy.
      * @returns {Promise<boolean>} Resolves when post-initialization is complete.
@@ -49,60 +46,40 @@ module.exports = {
     },
 
     /**
-     * Returns the generated OpenAPI contract for the active server or node.
+     * Returns the low-disclosure liveness response for process-alive probes.
      *
      * @param {Object} request Nodics request context.
      * @param {Function} [callback] Optional Node-style callback used by controller pipeline execution.
      * @returns {Promise|undefined} Returns a promise when no callback is supplied.
-     * @throws Propagates facade errors through the callback or rejected promise.
      */
-    getOpenApiContract: function (request, callback) {
+    getLiveness: function (request, callback) {
         if (callback) {
-            FACADE.DefaultApiContractFacade.getOpenApiContract(request).then(success => {
+            FACADE.DefaultHealthFacade.getLiveness(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.DefaultApiContractFacade.getOpenApiContract(request);
+            return FACADE.DefaultHealthFacade.getLiveness(request);
         }
     },
 
     /**
-     * Returns the Swagger UI HTML page for the active OpenAPI contract.
+     * Returns the secured readiness response for runtime dependency probes.
      *
      * @param {Object} request Nodics request context.
      * @param {Function} [callback] Optional Node-style callback used by controller pipeline execution.
      * @returns {Promise|undefined} Returns a promise when no callback is supplied.
      */
-    getSwaggerUi: function (request, callback) {
+    getReadiness: function (request, callback) {
         if (callback) {
-            FACADE.DefaultApiContractFacade.getSwaggerUi(request).then(success => {
+            FACADE.DefaultHealthFacade.getReadiness(request).then(success => {
                 callback(null, success);
             }).catch(error => {
                 callback(error);
             });
         } else {
-            return FACADE.DefaultApiContractFacade.getSwaggerUi(request);
-        }
-    },
-
-    /**
-     * Returns a governed Swagger UI static asset.
-     *
-     * @param {Object} request Nodics request context.
-     * @param {Function} [callback] Optional Node-style callback used by controller pipeline execution.
-     * @returns {Promise|undefined} Returns a promise when no callback is supplied.
-     */
-    getSwaggerAsset: function (request, callback) {
-        if (callback) {
-            FACADE.DefaultApiContractFacade.getSwaggerAsset(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultApiContractFacade.getSwaggerAsset(request);
+            return FACADE.DefaultHealthFacade.getReadiness(request);
         }
     }
 };

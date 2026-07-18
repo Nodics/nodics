@@ -32,10 +32,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 22 |
-| Test files | 16 |
+| Source files | 25 |
+| Test files | 17 |
 | Data files | 0 |
-| All module-owned files | 36 |
+| All module-owned files | 40 |
 | Local schema definitions | 3 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 26 |
+| Documented | 30 |
 | Partially documented | 2 |
 | Undocumented | 4 |
 | Inventory only | 4 |
@@ -99,23 +99,26 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSystem/nodics.js` | `module` | `documented` | 2/2 | Registers the nSystem module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nSystem/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nSystem/src/controller/config/defaultConfigurationController.js` | `src` | `documented` | 14/14 | Controller for runtime configuration changes in the Nodics control plane. |  |
-| `gFramework/nSystem/src/controller/contract/defaultApiContractController.js` | `src` | `documented` | 3/3 | Controller for exposing generated API contracts from the active server or node module context. |  |
+| `gFramework/nSystem/src/controller/contract/defaultApiContractController.js` | `src` | `documented` | 5/5 | Controller for exposing generated API contracts from the active server or node module context. |  |
 | `gFramework/nSystem/src/controller/file/defaultFileController.js` | `src` | `documented` | 4/4 | Exposes request handlers for nSystem default file controller operations. |  |
+| `gFramework/nSystem/src/controller/health/defaultHealthController.js` | `src` | `documented` | 4/4 | Controller for production liveness and readiness probes owned by the nSystem operational contract. |  |
 | `gFramework/nSystem/src/event/listeners.js` | `src` | `documented` | 0/0 | Documents nSystem listeners module behavior. |  |
 | `gFramework/nSystem/src/facade/config/defaultConfigurationFacade.js` | `src` | `documented` | 14/14 | Coordinates facade-level delegation for nSystem default configuration facade operations. |  |
-| `gFramework/nSystem/src/facade/contract/defaultApiContractFacade.js` | `src` | `documented` | 3/3 | Facade for system API contract operations. It keeps controller routing separate from contract resolution so projects can override policy at the facade layer. |  |
+| `gFramework/nSystem/src/facade/contract/defaultApiContractFacade.js` | `src` | `documented` | 5/5 | Facade for system API contract operations. It keeps controller routing separate from contract resolution so projects can override policy at the facade layer. |  |
 | `gFramework/nSystem/src/facade/file/defaultFileFacade.js` | `src` | `documented` | 4/4 | Coordinates facade-level delegation for nSystem default file facade operations. |  |
+| `gFramework/nSystem/src/facade/health/defaultHealthFacade.js` | `src` | `documented` | 4/4 | Facade for system health operations. It keeps route/controller execution separate from runtime health evaluation. |  |
 | `gFramework/nSystem/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers nSystem interceptor wiring for pipeline extension points. |  |
 | `gFramework/nSystem/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines nSystem pipeline wiring and execution contracts. |  |
 | `gFramework/nSystem/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nSystem route registration and HTTP exposure metadata. |  |
 | `gFramework/nSystem/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nSystem route registration and HTTP exposure metadata. |  |
 | `gFramework/nSystem/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nSystem schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nSystem/src/service/config/defaultConfigurationService.js` | `src` | `documented` | 21/21 | Implements nSystem default configuration service business behavior and extension logic. |  |
-| `gFramework/nSystem/src/service/contract/defaultApiContractService.js` | `src` | `documented` | 8/8 | Resolves generated API contract artifacts from the active server module while preserving node-specific contract identity. |  |
+| `gFramework/nSystem/src/service/contract/defaultApiContractService.js` | `src` | `documented` | 14/14 | Resolves generated API contract artifacts from the active server module while preserving node-specific contract identity. |  |
 | `gFramework/nSystem/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements system default sample service business behavior and extension logic. |  |
 | `gFramework/nSystem/src/service/event/defaultConfigurationChangeListenerService.js` | `src` | `documented` | 1/1 | Implements nSystem default configuration change listener service business behavior and extension logic. |  |
 | `gFramework/nSystem/src/service/event/defaultInterceptorChangeListenerService.js` | `src` | `documented` | 1/1 | Implements nSystem default interceptor change listener service business behavior and extension logic. |  |
 | `gFramework/nSystem/src/service/file/defaultFileService.js` | `src` | `documented` | 4/4 | Implements nSystem default file service business behavior and extension logic. |  |
+| `gFramework/nSystem/src/service/health/defaultHealthService.js` | `src` | `documented` | 10/10 | Builds low-disclosure liveness and secured readiness responses from Nodics runtime state without exposing secrets or raw provider settings. |  |
 | `gFramework/nSystem/src/service/interceptors/defaultConfigurationSaveInterceptorService.js` | `src` | `documented` | 1/1 | Implements nSystem default configuration save interceptor service business behavior and extension logic. |  |
 | `gFramework/nSystem/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared system enum definition exports. |  |
 | `gFramework/nSystem/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nSystem utility exports for status definitions. |  |
@@ -125,6 +128,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSystem/test/systemApiContractService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nSystem/test/systemConfigurationCapabilityBehavior.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nSystem/test/systemFileService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSystem/test/systemHealthService.test.js` | `test` | `documented` | 0/0 | Validates nSystem liveness and readiness responses without starting an HTTP server. |  |
 | `gFramework/nSystem/test/systemRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 
 ## Extension Contract
