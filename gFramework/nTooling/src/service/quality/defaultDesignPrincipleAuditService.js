@@ -130,7 +130,18 @@ function auditCommandGates(failures) {
         fail(failures, 'build must delegate to the governed nTooling lifecycle command');
     }
     const buildSteps = (((tooling.commands || {}).build || {}).steps || []);
+    const llmGenerateIndex = buildSteps.findIndex(step => (step.tool || []).includes('llm:generate'));
+    const principleAuditIndex = buildSteps.findIndex(step => (step.tool || []).includes('ai:principle-audit'));
     const includesGovernanceReport = buildSteps.some(step => (step.tool || []).includes('governance:report'));
+    if (llmGenerateIndex === -1) {
+        fail(failures, 'nTooling build lifecycle must generate LLM context before generated-context audit');
+    }
+    if (principleAuditIndex === -1) {
+        fail(failures, 'nTooling build lifecycle must include ai:principle-audit after generated LLM context is available');
+    }
+    if (llmGenerateIndex !== -1 && principleAuditIndex !== -1 && principleAuditIndex < llmGenerateIndex) {
+        fail(failures, 'nTooling build lifecycle must run llm:generate before ai:principle-audit');
+    }
     if (!includesGovernanceReport) {
         fail(failures, 'nTooling build lifecycle must keep governance:report in the generated-artifact gate');
     }

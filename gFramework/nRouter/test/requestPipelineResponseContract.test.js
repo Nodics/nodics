@@ -395,6 +395,48 @@ async function executeRoute(route, headers, body) {
     }]);
 
     controllerCalls = [];
+    let publicDocumentationResponse = await executeRoute(Object.assign(createRoute('success'), {
+        publicAccess: true,
+        apiExposure: 'openApiContract'
+    }), {});
+
+    assert.strictEqual(publicDocumentationResponse.statusCode, '200');
+    assert.strictEqual(publicDocumentationResponse.payload.code, 'SUC_TEST_00000');
+    assert.deepStrictEqual(publicDocumentationResponse.payload.result, {
+        accepted: true,
+        tenant: undefined,
+        entCode: undefined,
+        body: {}
+    });
+    assert.deepStrictEqual(controllerCalls, [{
+        operation: 'success',
+        tenant: undefined,
+        entCode: undefined,
+        body: {}
+    }]);
+
+    controllerCalls = [];
+    let persistedOpenApiRouteResponse = await executeRoute(Object.assign(createRoute('success'), {
+        secured: true,
+        apiExposure: 'openApiContract'
+    }), {});
+
+    assert.strictEqual(persistedOpenApiRouteResponse.statusCode, '200');
+    assert.strictEqual(persistedOpenApiRouteResponse.payload.code, 'SUC_TEST_00000');
+    assert.deepStrictEqual(persistedOpenApiRouteResponse.payload.result, {
+        accepted: true,
+        tenant: undefined,
+        entCode: undefined,
+        body: {}
+    });
+    assert.deepStrictEqual(controllerCalls, [{
+        operation: 'success',
+        tenant: undefined,
+        entCode: undefined,
+        body: {}
+    }]);
+
+    controllerCalls = [];
     apiExposure = {
         default: { enabled: true },
         categories: {

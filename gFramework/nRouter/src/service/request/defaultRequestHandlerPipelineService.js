@@ -111,6 +111,26 @@ module.exports = {
     },
 
     /**
+     * Determines whether a route can enter the public request branch.
+     *
+     * `publicProbe` is reserved for low-disclosure health checks. `publicAccess`
+     * is the explicit route flag for browser-readable documentation and similar
+     * routes. `openApiContract` remains public by category so older persisted
+     * routerConfiguration rows cannot keep Swagger locked behind header parsing
+     * after the framework route contract changes.
+     *
+     * @param {Object} router Effective route definition.
+     * @returns {boolean} True when the route should bypass authentication header requirements.
+     */
+    isPublicRequest: function (router) {
+        return router && (
+            router.publicProbe === true ||
+            router.publicAccess === true ||
+            this.getApiExposureCategory(router) === 'openApiContract'
+        );
+    },
+
+    /**
      * Stops normal execution and returns configured router help when the caller appends `?help`.
      *
      * @param {Object} request Nodics request context.
@@ -257,7 +277,7 @@ module.exports = {
         if (request.auth.entCode) {
             request.entCode = request.auth.entCode;
         }
-        if (request.router && request.router.publicProbe === true && !request.auth.credentials.length && !request.auth.entCode) {
+        if (this.isPublicRequest(request.router) && !request.auth.credentials.length && !request.auth.entCode) {
             process.nextSuccess(request, response);
             return;
         }
@@ -331,8 +351,8 @@ module.exports = {
      */
     redirectRequest: function (request, response, process) {
         this.LOG.debug('Redirecting secured/non-secured request  : ' + request.originalUrl);
-        if (request.router && request.router.publicProbe === true) {
-            this.LOG.debug('Handling public probe request');
+        if (this.isPublicRequest(request.router)) {
+            this.LOG.debug('Handling public request');
             response.targetNode = 'publicRequest';
         } else if (request.secured) {
             this.LOG.debug('Handling secured request');

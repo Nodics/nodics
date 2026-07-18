@@ -35,9 +35,9 @@ const expectedRoutes = [
     { key: '/config/runtime/request/reject', method: 'POST', controller: 'DefaultConfigurationController', operation: 'rejectRuntimeConfigurationActivationRequest', secured: true, permission: 'runtime.config.request.reject' },
     { key: '/config/runtime/request/activate', method: 'POST', controller: 'DefaultConfigurationController', operation: 'activateRuntimeConfigurationActivationRequest', secured: true, permission: 'runtime.config.request.activate' },
     { key: '/config/runtime/rollback', method: 'POST', controller: 'DefaultConfigurationController', operation: 'rollbackRuntimeConfiguration', secured: true, permission: 'runtime.config.rollback' },
-    { key: '/contract/openapi', method: 'GET', controller: 'DefaultApiContractController', operation: 'getOpenApiContract', secured: true, permission: 'system.contract.openapi.view' },
-    { key: '/contract/swagger', method: 'GET', controller: 'DefaultApiContractController', operation: 'getSwaggerUi', secured: true, permission: 'system.contract.swagger.view' },
-    { key: '/contract/swagger/asset/:assetName', method: 'GET', controller: 'DefaultApiContractController', operation: 'getSwaggerAsset', secured: true, permission: 'system.contract.swagger.view' },
+    { key: '/contract/openapi', method: 'GET', controller: 'DefaultApiContractController', operation: 'getOpenApiContract', secured: false, permission: 'system.contract.openapi.view' },
+    { key: '/contract/swagger', method: 'GET', controller: 'DefaultApiContractController', operation: 'getSwaggerUi', secured: false, permission: 'system.contract.swagger.view' },
+    { key: '/contract/swagger/asset/:assetName', method: 'GET', controller: 'DefaultApiContractController', operation: 'getSwaggerAsset', secured: false, permission: 'system.contract.swagger.view' },
     { key: '/schema/indexes/all', method: 'POST', controller: 'DefaultSchemaIndexController', operation: 'updateModulesIndexes', secured: true, permission: 'system.schema.index.rebuild' },
     { key: '/test/runUTest', method: 'POST', controller: 'TestExecutionController', operation: 'runUTest', secured: true, permission: 'system.test.unit.run' },
     { key: '/test/runNTest', method: 'POST', controller: 'TestExecutionController', operation: 'runNTest', secured: true, permission: 'system.test.nodics.run' },
@@ -47,4 +47,9 @@ const expectedRoutes = [
 const routes = assertRouteContracts(routerConfig, expectedRoutes);
 const livenessRoute = routes.find(route => route.key === '/health/live' && route.method === 'GET');
 assert.strictEqual(livenessRoute.publicProbe, true, 'Liveness route must bypass enterprise/tenant request pipeline resolution');
+['/contract/openapi', '/contract/swagger', '/contract/swagger/asset/:assetName'].forEach((key) => {
+    const route = routes.find(item => item.key === key && item.method === 'GET');
+    assert.strictEqual(route.publicAccess, true, key + ' must be browser-accessible when openApiContract exposure is enabled');
+    assert.strictEqual(route.apiExposure, 'openApiContract', key + ' must remain exposure-gated');
+});
 console.log(`System route contract validated: ${expectedRoutes.length} routes`);

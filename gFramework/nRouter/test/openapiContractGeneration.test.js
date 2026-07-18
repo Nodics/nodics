@@ -126,6 +126,16 @@ const defaultRoutes = {
                 controller: 'DefaultHealthController',
                 operation: 'getLiveness'
             },
+            apiDocumentation: {
+                secured: false,
+                publicAccess: true,
+                accessGroups: ['userGroup'],
+                apiExposure: 'openApiContract',
+                key: '/contract/openapi',
+                method: 'GET',
+                controller: 'DefaultApiContractController',
+                operation: 'getOpenApiContract'
+            },
             inactive: {
                 secured: true,
                 active: false,
@@ -165,6 +175,8 @@ assert.strictEqual(configured.requestBody.content['application/json'].schema.pro
 assert(configured.responses.default.$ref);
 assert.strictEqual(document.paths['/nodics/sample/v0/health/live'].get['x-nodics'].publicProbe, true);
 assert.strictEqual(document.paths['/nodics/sample/v0/health/live'].get.security, undefined);
+assert.strictEqual(document.paths['/nodics/sample/v0/contract/openapi'].get['x-nodics'].publicAccess, true);
+assert.strictEqual(document.paths['/nodics/sample/v0/contract/openapi'].get.security, undefined);
 
 const bodyless = generator.createOperation({
     url: '/sample/:id', method: 'DELETE', routerName: 'bodyless', moduleName: 'sample', active: true

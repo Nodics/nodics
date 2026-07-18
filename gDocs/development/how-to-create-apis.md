@@ -145,12 +145,13 @@ permissions, request metadata, response handlers, and API exposure categories.
 If the generated documentation is wrong, fix the source route, schema,
 permission, or help metadata.
 
-At runtime, use these secured system routes:
+At runtime, use these documentation routes when the `openApiContract` exposure
+category is enabled:
 
-| Purpose | Route | Permission |
+| Purpose | Route | Access |
 | --- | --- | --- |
-| Machine-readable OpenAPI contract | `GET /nodics/system/v0/contract/openapi` | `system.contract.openapi.view` |
-| Interactive Swagger UI | `GET /nodics/system/v0/contract/swagger` | `system.contract.swagger.view` |
+| Machine-readable OpenAPI contract | `GET /nodics/system/v0/contract/openapi` | Public documentation route, exposure-gated |
+| Interactive Swagger UI | `GET /nodics/system/v0/contract/swagger` | Public documentation route, exposure-gated |
 
 Swagger UI reads the sibling OpenAPI endpoint from the same runtime. If all
 modules run in one server, that server shows one consolidated API contract. If
@@ -158,6 +159,11 @@ modules are split across several servers, each server shows the routes active on
 that server. If a server runs multiple identical nodes behind a load balancer,
 the nodes should expose the same contract unless node-specific modules change
 the route set.
+
+The OpenAPI endpoint returns raw OpenAPI JSON so Swagger can render it. It does
+not use the normal Nodics success envelope. APIs that you call from Swagger still
+return their normal Nodics response objects unless that route has explicitly
+chosen another response handler.
 
 Use Swagger UI to inspect and try APIs, but remember that Nodics security is
 still active. You must provide the same authorization and tenant/enterprise

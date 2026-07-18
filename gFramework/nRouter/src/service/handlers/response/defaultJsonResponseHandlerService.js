@@ -59,6 +59,14 @@ module.exports = {
      */
     handleSuccess: function (request, response, success) {
         try {
+            if (success && success.metadata && success.metadata.rawResponse === true) {
+                if (success.metadata.contentType && response.type) {
+                    response.type(success.metadata.contentType);
+                }
+                response.status(success.responseCode || 200);
+                response.json(success.data);
+                return;
+            }
             success.code = success.code || 'SUC_SYS_00000';
             success.responseCode = success.responseCode || SERVICE.DefaultStatusService.get(success.code).code;
             success.message = success.message || SERVICE.DefaultStatusService.get(success.code).message;

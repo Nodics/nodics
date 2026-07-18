@@ -429,7 +429,8 @@ function prepareConfiguredRoute(options) {
         permissions: definition.permissions || [],
         permissionConfig: definition.permissionConfig || [],
         responseHandler: definition.responseHandler,
-        publicProbe: definition.publicProbe === true
+        publicProbe: definition.publicProbe === true,
+        publicAccess: definition.publicAccess === true
     };
     return definition;
 }

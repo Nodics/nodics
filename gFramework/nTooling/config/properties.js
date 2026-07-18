@@ -440,13 +440,13 @@ module.exports = {
                 handler: 'src/service/command/defaultNodicsLifecycleCommandService.js',
                 steps: [
                     { tool: ['ai:validate'] },
-                    { tool: ['ai:principle-audit'] },
                     { tool: ['quality:copyright', '--fail'] },
                     { tool: ['quality:docs'] },
                     { nodicsMethod: 'buildAll' },
                     { tool: ['quality:copyright', '--fix'] },
                     { tool: ['docs:openapi'] },
                     { tool: ['llm:generate'] },
+                    { tool: ['ai:principle-audit'] },
                     { tool: ['governance:report'] },
                     { tool: ['docs:coverage', '--scope=generated', '--fail'] },
                     { tool: ['quality:copyright', '--fail'] }

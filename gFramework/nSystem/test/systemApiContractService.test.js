@@ -126,6 +126,8 @@ const service = require('../src/service/contract/defaultApiContractService');
     let serverResponse = await service.getOpenApiContract({});
     assert.strictEqual(serverResponse.code, 'SUC_SYS_00001');
     assert.strictEqual(serverResponse.data.info.title, 'Server Contract');
+    assert.strictEqual(serverResponse.metadata.rawResponse, true);
+    assert.strictEqual(serverResponse.metadata.contentType, 'application/json; charset=utf-8');
     assert.strictEqual(serverResponse.metadata.moduleName, serverName);
     assert.strictEqual(serverResponse.metadata.artifactPath, path.relative(path.dirname(serverPath), path.join(serverContractDirectory, serverName + '.openapi.json')));
 

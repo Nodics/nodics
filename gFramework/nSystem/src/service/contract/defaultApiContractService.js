@@ -85,6 +85,8 @@ module.exports = {
                             data: JSON.parse(contents),
                             metadata: {
                                 contractType: 'openapi',
+                                contentType: 'application/json; charset=utf-8',
+                                rawResponse: true,
                                 moduleName: contractContext.moduleName,
                                 artifactPath: this.getPublicArtifactPath(contractContext)
                             }

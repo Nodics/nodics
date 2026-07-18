@@ -444,51 +444,54 @@ module.exports = {
 
         apiContracts: {
             getOpenApiContract: {
-                secured: true,
+                secured: false,
                 accessGroups: ['userGroup'],
                 permission: 'system.contract.openapi.view',
                 apiExposure: 'openApiContract',
+                publicAccess: true,
                 key: '/contract/openapi',
                 method: 'GET',
                 controller: 'DefaultApiContractController',
                 operation: 'getOpenApiContract',
                 help: {
-                    requestType: 'secured',
-                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
+                    requestType: 'publicDocumentation',
+                    message: 'Returns the active runtime OpenAPI contract when openApiContract exposure is enabled. Disable the category in production environments that should not expose API documentation.',
                     method: 'GET',
                     url: 'http://host:port/nodics/system/v0/contract/openapi'
                 }
             },
             getSwaggerUi: {
-                secured: true,
+                secured: false,
                 accessGroups: ['userGroup'],
                 permission: 'system.contract.swagger.view',
                 apiExposure: 'openApiContract',
+                publicAccess: true,
                 key: '/contract/swagger',
                 method: 'GET',
                 controller: 'DefaultApiContractController',
                 operation: 'getSwaggerUi',
                 responseHandler: 'textResponseHandler',
                 help: {
-                    requestType: 'secured',
-                    message: 'Authorization: Bearer <token> header is preferred; opens interactive Swagger UI backed by the active runtime OpenAPI contract.',
+                    requestType: 'publicDocumentation',
+                    message: 'Opens interactive Swagger UI backed by the active runtime OpenAPI contract when openApiContract exposure is enabled.',
                     method: 'GET',
                     url: 'http://host:port/nodics/system/v0/contract/swagger'
                 }
             },
             getSwaggerAsset: {
-                secured: true,
+                secured: false,
                 accessGroups: ['userGroup'],
                 permission: 'system.contract.swagger.view',
                 apiExposure: 'openApiContract',
+                publicAccess: true,
                 key: '/contract/swagger/asset/:assetName',
                 method: 'GET',
                 controller: 'DefaultApiContractController',
                 operation: 'getSwaggerAsset',
                 responseHandler: 'textResponseHandler',
                 help: {
-                    requestType: 'secured',
-                    message: 'Authorization: Bearer <token> header is preferred; serves approved local Swagger UI assets only.',
+                    requestType: 'publicDocumentation',
+                    message: 'Serves approved local Swagger UI assets only when openApiContract exposure is enabled.',
                     method: 'GET',
                     url: 'http://host:port/nodics/system/v0/contract/swagger/asset/swagger-ui.css'
                 }

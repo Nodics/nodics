@@ -32,9 +32,11 @@ Runtime API documentation follows the same route-governance model. OpenAPI is
 generated from effective router and schema contracts with `npm run
 docs:openapi`, exposed at `/nodics/system/v0/contract/openapi`, and viewed
 interactively through `/nodics/system/v0/contract/swagger`. Swagger UI is served
-through normal Nodics routes and secured with `system.contract.swagger.view`, so
-projects can override policy, branding, filtering, and asset handling without
-adding hidden Express middleware.
+through normal Nodics routes and guarded by the `openApiContract` exposure
+category, so local developer servers can open documentation in a browser while
+production-like environments can disable documentation exposure through layered
+configuration. Projects can override policy, branding, filtering, and asset
+handling without adding hidden Express middleware.
 
 ## HTTP Hardening
 

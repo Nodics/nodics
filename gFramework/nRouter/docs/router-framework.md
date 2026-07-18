@@ -616,13 +616,24 @@ At runtime, `nSystem` exposes the active contract through:
 GET /nodics/system/v0/contract/openapi
 ```
 
-This route is secured by `system.contract.openapi.view` and belongs to the
-`openApiContract` exposure category.
+This route is browser-accessible when the `openApiContract` exposure category is
+enabled. It is marked with `publicAccess: true`, and the request pipeline also
+treats the `openApiContract` category itself as public documentation so older
+persisted router rows cannot block Swagger behind header parsing. Swagger UI
+must fetch the OpenAPI JSON from the browser before a developer can try secured
+APIs. Shared, support, staging, and production-like environments should disable
+`apiExposure.categories.openApiContract.enabled` unless API documentation is
+intentionally published for that environment.
+
+The OpenAPI endpoint returns the OpenAPI document itself as raw JSON, with the
+`openapi` field at the top level. It does not wrap that document in the normal
+Nodics `{ code, data, metadata }` response envelope because Swagger UI and other
+OpenAPI clients expect the standard document shape.
 
 The generator reads route metadata such as:
 
 - `key`, `method`, `controller`, and `operation`;
-- `secured`, `publicProbe`, `accessGroups`, `permission`, and
+- `secured`, `publicProbe`, `publicAccess`, `accessGroups`, `permission`, and
   `permissionConfig`;
 - `apiExposure`;
 - `responseHandler`;
@@ -663,10 +674,10 @@ Swagger UI is available at:
 GET /nodics/system/v0/contract/swagger
 ```
 
-This route is secured by `system.contract.swagger.view` and belongs to the same
-`openApiContract` exposure category. It loads the active runtime OpenAPI
-contract from the sibling `openapi` endpoint, so the browser always reads the
-same server or node contract that the runtime exposes.
+This route is browser-accessible when the same `openApiContract` exposure
+category is enabled. It loads the active runtime OpenAPI contract from the
+sibling `openapi` endpoint, so the browser always reads the same server or node
+contract that the runtime exposes.
 
 The UI assets are served through governed Nodics routes:
 
@@ -687,7 +698,8 @@ For a developer server:
 
 1. Generate the latest contract with `npm run docs:openapi`.
 2. Start the server or node.
-3. Authenticate with a user that has `system.contract.swagger.view`.
+3. Confirm `apiExposure.categories.openApiContract.enabled` is not disabled for
+   the active environment, server, or node.
 4. Open `/nodics/system/v0/contract/swagger` in the browser.
 5. Use Swagger UI to inspect route parameters, headers, request body, response
    examples, and security requirements.
@@ -722,7 +734,7 @@ If a request fails:
 
 | Symptom | Likely reason | What to check |
 | --- | --- | --- |
-| Swagger page does not open | User lacks Swagger permission or `openApiContract` exposure is disabled | Check `system.contract.swagger.view` and `apiExposure.categories.openApiContract.enabled` |
+| Swagger page does not open | `openApiContract` exposure is disabled or the contract file is missing | Check `apiExposure.categories.openApiContract.enabled` and run `npm run docs:openapi` |
 | OpenAPI JSON is missing | Contract was not generated or active server/node context is wrong | Run `npm run docs:openapi` and check the generated server or node path |
 | API returns unauthorized | Missing or invalid token | Login again and pass `Authorization: Bearer <token>` |
 | API returns forbidden | Token is valid but user lacks route permission | Check route `permission`, `permissionConfig`, and user group permissions |

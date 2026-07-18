@@ -59,7 +59,12 @@ responseHandler.LOG = {
 function createResponse() {
     return {
         statusCode: undefined,
+        contentType: undefined,
         payload: undefined,
+        type: function (contentType) {
+            this.contentType = contentType;
+            return this;
+        },
         status: function (statusCode) {
             this.statusCode = statusCode;
             return this;
@@ -84,6 +89,30 @@ assert.strictEqual(successResponse.payload.code, 'SUC_TEST_00000');
 assert.strictEqual(successResponse.payload.responseCode, '201');
 assert.strictEqual(successResponse.payload.message, 'Configured success message');
 assert.deepStrictEqual(successResponse.payload.data, { value: true });
+
+let rawJsonResponse = createResponse();
+responseHandler.handleSuccess({}, rawJsonResponse, {
+    responseCode: 200,
+    data: {
+        openapi: '3.0.3',
+        info: {
+            title: 'Raw OpenAPI Contract'
+        }
+    },
+    metadata: {
+        rawResponse: true,
+        contentType: 'application/json; charset=utf-8'
+    }
+});
+
+assert.strictEqual(rawJsonResponse.statusCode, 200);
+assert.strictEqual(rawJsonResponse.contentType, 'application/json; charset=utf-8');
+assert.deepStrictEqual(rawJsonResponse.payload, {
+    openapi: '3.0.3',
+    info: {
+        title: 'Raw OpenAPI Contract'
+    }
+});
 
 let errorResponse = createResponse();
 responseHandler.handleError({}, errorResponse, new global.CLASSES.NodicsError('ERR_TEST_00000'));

@@ -21,8 +21,7 @@ Sensitive system routes must declare action-specific permissions:
 - schema index rebuild uses `system.schema.index.rebuild`;
 - test execution uses `system.test.unit.run` or `system.test.nodics.run`;
 - export uses `export.run`;
-- OpenAPI contract exposure uses `system.contract.openapi.view`;
-- Swagger UI exposure uses `system.contract.swagger.view`;
+- OpenAPI and Swagger UI documentation use the `openApiContract` exposure category;
 - runtime configuration routes use their `runtime.config.*` permissions.
 
 Sensitive system routes also declare `apiExposure` categories so topology can
@@ -61,18 +60,20 @@ boundary.
 
 `GET /nodics/system/v0/contract/openapi` returns the machine-readable OpenAPI
 contract generated under the active server or node `generated/openapi`
-directory. It requires `system.contract.openapi.view`.
+directory. It is a public documentation route only when the `openApiContract`
+exposure category is enabled.
 
 `GET /nodics/system/v0/contract/swagger` returns interactive Swagger UI for that
-same contract. It requires `system.contract.swagger.view`. Swagger UI loads the
-local runtime OpenAPI endpoint and serves approved UI assets through
+same contract. It is browser-accessible for local/developer documentation when
+`openApiContract` exposure is enabled. Swagger UI loads the local runtime
+OpenAPI endpoint and serves approved UI assets through
 `GET /nodics/system/v0/contract/swagger/asset/:assetName`.
 
-Keep contract exposure secured in shared, support, staging, and production-like
-topologies. Developer environments may expose it to trusted developers or AI
-tools, but the route still uses normal Nodics authentication, permission checks,
-tenant/enterprise context, route exposure gates, request pipeline execution, and
-response handlers.
+Keep contract exposure disabled in shared, support, staging, and production-like
+topologies unless the environment intentionally publishes API documentation.
+Developer environments may expose it to trusted developers or AI tools. The
+route still uses normal Nodics route exposure gates, request pipeline execution,
+and response handlers; it does not create hidden Express middleware.
 
 Projects may override `DefaultApiContractService` in a later active module to
 brand the UI, filter operations, add environment labels, redact internal-only

@@ -128,9 +128,9 @@ The generator initializes Nodics through the build-style module hierarchy, loads
 Runtime API documentation is exposed through `nSystem`:
 
 - `GET /nodics/system/v0/contract/openapi` returns the generated contract for
-  the active server or node and requires `system.contract.openapi.view`.
+  the active server or node when `openApiContract` exposure is enabled.
 - `GET /nodics/system/v0/contract/swagger` returns interactive Swagger UI for
-  that same active contract and requires `system.contract.swagger.view`.
+  that same active contract when `openApiContract` exposure is enabled.
 
 Swagger UI must stay inside the Nodics route/controller/facade/service model.
 Do not mount a hidden Express Swagger middleware that bypasses route metadata,
