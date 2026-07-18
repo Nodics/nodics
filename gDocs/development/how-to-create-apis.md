@@ -166,10 +166,11 @@ return their normal Nodics response objects unless that route has explicitly
 chosen another response handler.
 
 Use Swagger UI to inspect and try APIs, but remember that Nodics security is
-still active. You must provide the same authorization and tenant/enterprise
-headers required by the route. The request handler pipeline, interceptors,
-controller, facade, service, cache behavior, and response handler still execute
-exactly as they do for a normal API client.
+still active. Swagger is a browser client, not a security bypass. You must
+provide the same bearer token, API key, and enterprise header required by the
+route. The request handler pipeline, interceptors, controller, facade, service,
+cache behavior, and response handler still execute exactly as they do for a
+normal API client.
 
 Project modules can customize documentation by extending source schemas,
 routers, route help metadata, permissions, or `apiExposure` configuration and
@@ -181,15 +182,23 @@ Use this flow when learning or verifying APIs:
 
 1. Run `npm run docs:openapi`.
 2. Start the server or node.
-3. Login or get a token using the approved authentication flow.
+3. Login through an authentication route or get a governed service API key for
+   the active local/project environment.
 4. Open `/nodics/system/v0/contract/swagger`.
 5. Expand an API operation.
 6. Read the method, URL, required headers, parameters, and request body.
-7. Click `Try it out`.
-8. Provide required values and the same authorization token used by other API
-   clients.
-9. Click `Execute`.
-10. Read the generated request, response code, and response body.
+7. For secured APIs, click `Authorize` and provide either `Bearer <token>` or
+   the configured API key.
+8. Click `Try it out`.
+9. Provide required values, including `x-enterprise-code` when enterprise or
+   tenant resolution is needed.
+10. Click `Execute`.
+11. Read the generated request, response code, and response body.
+
+For a beginner-friendly first secured check, authenticate first and then call
+`GET /nodics/system/v0/health/ready`. It is a small read-only endpoint, but it
+still proves that Swagger is sending the same authorization context used by a
+real client.
 
 If the API fails, do not guess. Check the response code and message:
 

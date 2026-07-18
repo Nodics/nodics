@@ -334,7 +334,7 @@ async function executeRoute(route, headers, body) {
         name: 'sample'
     });
 
-    assert.strictEqual(successResponse.statusCode, '200');
+    assert.strictEqual(successResponse.statusCode, 200);
     assert.strictEqual(successResponse.payload.code, 'SUC_TEST_00000');
     assert.strictEqual(successResponse.payload.responseCode, '200');
     assert.strictEqual(successResponse.payload.message, 'Controller request processed successfully');
@@ -360,7 +360,7 @@ async function executeRoute(route, headers, body) {
         'x-enterprise-code': 'contractEnterprise'
     });
 
-    assert.strictEqual(controllerErrorResponse.statusCode, '409');
+    assert.strictEqual(controllerErrorResponse.statusCode, 409);
     assert.strictEqual(controllerErrorResponse.payload.code, 'ERR_TEST_00000');
     assert.strictEqual(controllerErrorResponse.payload.responseCode, '409');
     assert.strictEqual(controllerErrorResponse.payload.message, 'Controller rejected request');
@@ -374,7 +374,7 @@ async function executeRoute(route, headers, body) {
     controllerCalls = [];
     let validationErrorResponse = await execute('success', {});
 
-    assert.strictEqual(validationErrorResponse.statusCode, '401');
+    assert.strictEqual(validationErrorResponse.statusCode, 401);
     assert.strictEqual(validationErrorResponse.payload.code, 'ERR_AUTH_00002');
     assert.strictEqual(validationErrorResponse.payload.responseCode, '401');
     assert.strictEqual(validationErrorResponse.payload.message, 'Authentication or enterprise header is required');
@@ -385,7 +385,7 @@ async function executeRoute(route, headers, body) {
         publicProbe: true
     }), {});
 
-    assert.strictEqual(publicProbeResponse.statusCode, '200');
+    assert.strictEqual(publicProbeResponse.statusCode, 200);
     assert.strictEqual(publicProbeResponse.payload.code, 'SUC_TEST_00000');
     assert.deepStrictEqual(publicProbeResponse.payload.data, { status: 'UP' });
     assert.deepStrictEqual(controllerCalls, [{
@@ -400,7 +400,7 @@ async function executeRoute(route, headers, body) {
         apiExposure: 'openApiContract'
     }), {});
 
-    assert.strictEqual(publicDocumentationResponse.statusCode, '200');
+    assert.strictEqual(publicDocumentationResponse.statusCode, 200);
     assert.strictEqual(publicDocumentationResponse.payload.code, 'SUC_TEST_00000');
     assert.deepStrictEqual(publicDocumentationResponse.payload.result, {
         accepted: true,
@@ -421,7 +421,7 @@ async function executeRoute(route, headers, body) {
         apiExposure: 'openApiContract'
     }), {});
 
-    assert.strictEqual(persistedOpenApiRouteResponse.statusCode, '200');
+    assert.strictEqual(persistedOpenApiRouteResponse.statusCode, 200);
     assert.strictEqual(persistedOpenApiRouteResponse.payload.code, 'SUC_TEST_00000');
     assert.deepStrictEqual(persistedOpenApiRouteResponse.payload.result, {
         accepted: true,
@@ -450,7 +450,7 @@ async function executeRoute(route, headers, body) {
         'x-enterprise-code': 'contractEnterprise'
     });
 
-    assert.strictEqual(disabledExposureResponse.statusCode, '403');
+    assert.strictEqual(disabledExposureResponse.statusCode, 403);
     assert.strictEqual(disabledExposureResponse.payload.code, 'ERR_AUTH_00003');
     assert.strictEqual(disabledExposureResponse.payload.responseCode, '403');
     assert.strictEqual(disabledExposureResponse.payload.message, 'Access denied: API category is disabled for this runtime: testExecution');
@@ -464,7 +464,7 @@ async function executeRoute(route, headers, body) {
         createRoute('success')
     );
 
-    assert.strictEqual(inactiveRouteResponse.statusCode, '500');
+    assert.strictEqual(inactiveRouteResponse.statusCode, 500);
     assert.strictEqual(inactiveRouteResponse.payload.code, 'ERR_SYS_00000');
     assert.strictEqual(inactiveRouteResponse.payload.responseCode, '500');
     assert.strictEqual(inactiveRouteResponse.payload.message, 'This API is no more active currently');

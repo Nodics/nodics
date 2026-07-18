@@ -21,6 +21,14 @@
  * @property {Object} CLASSES.NodicsError Standard error wrapper used for unknown failures.
  * @property {Object} SERVICE.DefaultStatusService Resolves response code and message by status code.
  */
+function toHttpStatus(value) {
+    let status = Number(value);
+    if (!Number.isInteger(status) || status < 100 || status > 599) {
+        return 500;
+    }
+    return status;
+}
+
 module.exports = {
 
     /**
@@ -63,14 +71,14 @@ module.exports = {
                 if (success.metadata.contentType && response.type) {
                     response.type(success.metadata.contentType);
                 }
-                response.status(success.responseCode || 200);
+                response.status(toHttpStatus(success.responseCode || 200));
                 response.json(success.data);
                 return;
             }
             success.code = success.code || 'SUC_SYS_00000';
             success.responseCode = success.responseCode || SERVICE.DefaultStatusService.get(success.code).code;
             success.message = success.message || SERVICE.DefaultStatusService.get(success.code).message;
-            response.status(success.responseCode);
+            response.status(toHttpStatus(success.responseCode));
             response.json(success);
         } catch (error) {
             this.handleError(request, response, error);
@@ -92,7 +100,7 @@ module.exports = {
             error = new CLASSES.NodicsError(error);
         }
         this.LOG.error(error);
-        response.status(error.responseCode);
+        response.status(toHttpStatus(error.responseCode));
         response.json(error.toJson());
     }
 };

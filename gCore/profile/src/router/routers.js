@@ -87,6 +87,21 @@ module.exports = {
                     message: 'Send loginId and password in the JSON body; x-enterprise-code is the enterprise header',
                     method: 'POST',
                     url: 'http://host:port/nodics/profile/employee/authenticate',
+                    parameters: [
+                        {
+                            name: 'x-enterprise-code',
+                            in: 'header',
+                            required: false,
+                            description: 'Enterprise code used to resolve the login tenant. Legacy entCode header is deprecated.',
+                            schema: {
+                                type: 'string'
+                            }
+                        }
+                    ],
+                    body: {
+                        loginId: 'Employee login id',
+                        password: 'Employee password'
+                    }
                 }
             },
             authenticateCustomer: {
@@ -101,6 +116,21 @@ module.exports = {
                     message: 'Send loginId and password in the JSON body; x-enterprise-code is the enterprise header',
                     method: 'POST',
                     url: 'http://host:port/nodics/profile/customer/authenticate',
+                    parameters: [
+                        {
+                            name: 'x-enterprise-code',
+                            in: 'header',
+                            required: false,
+                            description: 'Enterprise code used to resolve the login tenant. Legacy entCode header is deprecated.',
+                            schema: {
+                                type: 'string'
+                            }
+                        }
+                    ],
+                    body: {
+                        loginId: 'Customer login id',
+                        password: 'Customer password'
+                    }
                 }
             },
             refreshToken: {

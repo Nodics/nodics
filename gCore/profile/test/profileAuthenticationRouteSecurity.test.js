@@ -28,6 +28,12 @@ assert.strictEqual(router.authenticate.authenticateEmployee.secured, false, 'Emp
 assert.strictEqual(router.authenticate.authenticateCustomer.secured, false, 'Customer username/password login must be pre-authentication');
 assert.strictEqual(router.authenticate.authenticateEmployee.help.requestType, 'pre-authentication');
 assert.strictEqual(router.authenticate.authenticateCustomer.help.requestType, 'pre-authentication');
+assert(router.authenticate.authenticateEmployee.help.body.loginId, 'Employee login route must expose loginId in route help for OpenAPI/Swagger');
+assert(router.authenticate.authenticateEmployee.help.body.password, 'Employee login route must expose password in route help for OpenAPI/Swagger');
+assert(router.authenticate.authenticateCustomer.help.body.loginId, 'Customer login route must expose loginId in route help for OpenAPI/Swagger');
+assert(router.authenticate.authenticateCustomer.help.body.password, 'Customer login route must expose password in route help for OpenAPI/Swagger');
+assert.strictEqual(router.authenticate.authenticateEmployee.help.parameters[0].name, 'x-enterprise-code');
+assert.strictEqual(router.authenticate.authenticateCustomer.help.parameters[0].name, 'x-enterprise-code');
 
 assert.strictEqual(router.loadDefaults.getInternalAuthToken.secured, true, 'Internal module-token retrieval must remain secured');
 assert.strictEqual(router.loadDefaults.getInternalAuthToken.permissionConfig, 'authSecurity.internalToken.routePermission');

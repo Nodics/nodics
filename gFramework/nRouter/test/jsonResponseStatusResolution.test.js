@@ -84,7 +84,7 @@ responseHandler.handleSuccess({}, successResponse, {
     }
 });
 
-assert.strictEqual(successResponse.statusCode, '201');
+assert.strictEqual(successResponse.statusCode, 201);
 assert.strictEqual(successResponse.payload.code, 'SUC_TEST_00000');
 assert.strictEqual(successResponse.payload.responseCode, '201');
 assert.strictEqual(successResponse.payload.message, 'Configured success message');
@@ -92,7 +92,7 @@ assert.deepStrictEqual(successResponse.payload.data, { value: true });
 
 let rawJsonResponse = createResponse();
 responseHandler.handleSuccess({}, rawJsonResponse, {
-    responseCode: 200,
+    responseCode: '200',
     data: {
         openapi: '3.0.3',
         info: {
@@ -117,7 +117,7 @@ assert.deepStrictEqual(rawJsonResponse.payload, {
 let errorResponse = createResponse();
 responseHandler.handleError({}, errorResponse, new global.CLASSES.NodicsError('ERR_TEST_00000'));
 
-assert.strictEqual(errorResponse.statusCode, '418');
+assert.strictEqual(errorResponse.statusCode, 418);
 assert.strictEqual(errorResponse.payload.code, 'ERR_TEST_00000');
 assert.strictEqual(errorResponse.payload.responseCode, '418');
 assert.strictEqual(errorResponse.payload.message, 'Configured error message');

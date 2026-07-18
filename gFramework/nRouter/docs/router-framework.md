@@ -704,7 +704,7 @@ For a developer server:
 5. Use Swagger UI to inspect route parameters, headers, request body, response
    examples, and security requirements.
 
-For a first manual check:
+For a first manual check on a public route:
 
 1. Open the Swagger UI page.
 2. Find a simple read API.
@@ -716,19 +716,34 @@ For a first manual check:
 7. Click `Execute`.
 8. Read the request URL, response code, response body, and error message.
 
+For a secured route:
+
+1. Login through a pre-authentication route, such as
+   `POST /nodics/profile/v0/employee/authenticate`, or obtain a governed service
+   API key from the active local/project environment.
+2. Click the `Authorize` button in Swagger UI.
+3. For bearer access, paste the token as `Bearer <token>`.
+4. For API-key access, paste the configured key into the API-key authorization
+   field.
+5. Expand a secured API, such as
+   `GET /nodics/system/v0/health/ready`.
+6. Click `Try it out`.
+7. Provide `x-enterprise-code` when the route or environment needs enterprise or
+   tenant resolution.
+8. Click `Execute`.
+
 When using Swagger UI's "Try it out" capability, supply the same authorization
-header you would use from Postman or a client application. Nodics route
-security, tenant context, API exposure gates, request pipelines, interceptors,
-controllers, facades, and services still run normally.
+header or API key you would use from Postman or a client application. Nodics
+route security, tenant context, API exposure gates, request pipelines,
+interceptors, controllers, facades, and services still run normally.
 
 Common headers:
 
 | Header | Purpose |
 | --- | --- |
-| `Authorization` | Carries the user or service token. Most secured APIs require it. |
-| `X-Nodics-Enterprise` | Identifies the enterprise context when the runtime requires it. |
-| `X-Nodics-Tenant` | Identifies where tenant-specific data and configuration should be resolved. |
-| `X-Nodics-Module-Token` | Used by governed internal/module-to-module calls, not ordinary browser users. |
+| `Authorization` | Carries the user or service token as `Bearer <token>`. Most secured APIs require either this header or a configured API key. |
+| `x-api-key` | Carries a governed API key for service or bootstrap flows that allow API-key authentication. |
+| `x-enterprise-code` | Identifies the enterprise context used for tenant resolution. Legacy `entCode` is deprecated. |
 
 If a request fails:
 
