@@ -57,6 +57,9 @@
   `envs`. Never hardcode a named environment in reusable BackOffice behavior.
 - Every sensitive route requires an action-specific permission or governed
   `permissionConfig`; topology-sensitive routes also require `apiExposure`.
+- Registry administration must query the owning lease store, use bounded
+  filters and client-safe projection, and reuse existing discovery and
+  availability observers for refresh rather than adding a parallel scheduler.
 - Use existing Nodics lifecycle, module registry, service communication,
   schema/router governance, audit, and generated-artifact paths. Do not add a
   parallel loader, runtime activation mechanism, or authorization path.

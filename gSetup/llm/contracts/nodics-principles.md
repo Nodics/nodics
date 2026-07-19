@@ -103,6 +103,11 @@ coordinates and stable reason codes. Initial and unchanged results must be
 governed to prevent restart or polling storms, and publication failure must not
 block registration or module traffic.
 
+BackOffice registry administration must read the owning lease store, bound all
+filters and pagination, expose only client-safe projections, use distinct view
+and refresh permissions, and invoke existing observers instead of creating a
+parallel inventory or refresh mechanism.
+
 ## Source Of Truth
 
 Behavior must come from Nodics source-of-truth artifacts:

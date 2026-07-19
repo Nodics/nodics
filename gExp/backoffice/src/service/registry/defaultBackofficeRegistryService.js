@@ -283,6 +283,79 @@ module.exports = {
         return Object.assign({ enabled: true, providerModule: providerModule }, catalogue[providerModule].uiComposition);
     },
 
+    /** Resolves and validates bounded administrative query parameters. */
+    getAdminQuery: function (request) {
+        let source = request && (request.query || request.httpRequest && request.httpRequest.query) || {};
+        let limit = source.limit === undefined ? 50 : Number(source.limit);
+        let offset = source.offset === undefined ? 0 : Number(source.offset);
+        if (!Number.isInteger(limit) || limit < 1 || limit > 100 || !Number.isInteger(offset) || offset < 0) {
+            throw new CLASSES.NodicsError('ERR_BOF_00000', 'Invalid registry administration pagination');
+        }
+        let state = source.state && String(source.state).toUpperCase();
+        if (state && !['UP', 'DEGRADED', 'UNAVAILABLE', 'UNKNOWN'].includes(state)) {
+            throw new CLASSES.NodicsError('ERR_BOF_00000', 'Invalid registry availability state');
+        }
+        let compatibility = source.compatibility && String(source.compatibility).toUpperCase();
+        if (compatibility && !['COMPATIBLE', 'DEGRADED', 'INCOMPATIBLE'].includes(compatibility)) {
+            throw new CLASSES.NodicsError('ERR_BOF_00000', 'Invalid registry compatibility state');
+        }
+        return { moduleName: source.moduleName && String(source.moduleName), capability: source.capability && String(source.capability),
+            environment: source.environment && String(source.environment), server: source.server && String(source.server),
+            compatibility: compatibility, state: state, limit: limit, offset: offset };
+    },
+
+    /** Returns bounded sanitized administrative inventory without bypassing registry authority. */
+    adminList: async function (request) {
+        await this.expireStale();
+        let query = this.getAdminQuery(request);
+        let grouped = {};
+        (await this.getStore().values()).forEach(entry => {
+            let instance = entry.value;
+            grouped[instance.moduleName] = grouped[instance.moduleName] || [];
+            grouped[instance.moduleName].push(instance);
+        });
+        let items = Object.keys(grouped).sort().map(moduleName => {
+            let instances = grouped[moduleName];
+            let availability = this.buildAvailability({ [moduleName]: instances })[moduleName];
+            let metadata = instances.map(item => item.backoffice).find(Boolean) || {};
+            return { moduleName: moduleName, version: instances[0].version, moduleKind: instances[0].moduleKind,
+                capabilities: Array.from(new Set(instances.flatMap(item => item.capabilities || []))).sort(),
+                environments: Array.from(new Set(instances.map(item => item.environment).filter(Boolean))).sort(),
+                servers: Array.from(new Set(instances.map(item => item.server).filter(Boolean))).sort(), availability: availability,
+                compatibility: this.evaluateCompatibility(metadata, this.getClientContractVersion(request)), activeInstances: instances.length };
+        }).filter(item => (!query.moduleName || item.moduleName.includes(query.moduleName)) &&
+            (!query.capability || item.capabilities.includes(query.capability)) && (!query.environment || item.environments.includes(query.environment)) &&
+            (!query.server || item.servers.includes(query.server)) && (!query.state || item.availability.state === query.state) &&
+            (!query.compatibility || item.compatibility.status === query.compatibility));
+        return { code: 'SUC_BOF_00011', data: { total: items.length, offset: query.offset, limit: query.limit,
+            items: items.slice(query.offset, query.offset + query.limit) } };
+    },
+
+    /** Returns sanitized leases and aggregate state for one administrative module lookup. */
+    adminDetail: async function (request) {
+        await this.expireStale();
+        let moduleName = String(request && request.params && request.params.moduleName || '');
+        if (!/^[A-Za-z][A-Za-z0-9_-]{0,127}$/.test(moduleName)) throw new CLASSES.NodicsError('ERR_BOF_00000', 'Invalid module name');
+        let instances = (await this.getStore().values()).map(entry => entry.value).filter(item => item.moduleName === moduleName);
+        return { code: 'SUC_BOF_00012', data: { moduleName: moduleName, availability: this.buildAvailability({ [moduleName]: instances })[moduleName],
+            instances: instances.map(instance => this.projectClientSafe(instance)) } };
+    },
+
+    /** Forces existing observers to refresh one registered module under an action-specific permission. */
+    refresh: async function (request) {
+        await this.expireStale();
+        let moduleName = String(request && request.params && request.params.moduleName || '');
+        if (!/^[A-Za-z][A-Za-z0-9_-]{0,127}$/.test(moduleName)) throw new CLASSES.NodicsError('ERR_BOF_00000', 'Invalid module name');
+        let instances = (await this.getStore().values()).map(entry => entry.value).filter(item => item.moduleName === moduleName && item.clientCallable);
+        if (instances.length === 0) throw new CLASSES.NodicsError('ERR_BOF_00000', 'Registered module was not found');
+        let unique = Array.from(new Map(instances.map(item => [item.instanceId, item])).values());
+        await Promise.all(unique.map(item => SERVICE.DefaultBackofficeAvailabilityService ? SERVICE.DefaultBackofficeAvailabilityService.observe(item) : false));
+        if (instances[0] && SERVICE.DefaultBackofficeDiscoveryService) await SERVICE.DefaultBackofficeDiscoveryService.discover(instances[0], undefined, request.authData);
+        await this.audit({ eventType: 'backoffice.registry.refresh', outcome: 'completed', moduleName: moduleName, moduleCount: instances.length });
+        return { code: 'SUC_BOF_00013', data: { moduleName: moduleName, refreshedInstances: unique.length,
+            discoveryRequested: Boolean(instances[0] && SERVICE.DefaultBackofficeDiscoveryService) } };
+    },
+
     /** Returns the authorized module catalogue and compatibility metadata required to bootstrap a BackOffice client. */
     bootstrap: async function (request) {
         let clientContractVersion = this.getClientContractVersion(request);

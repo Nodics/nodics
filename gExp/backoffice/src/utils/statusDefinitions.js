@@ -28,5 +28,8 @@ module.exports = {
     SUC_BOF_00008: { code: '200', message: 'BackOffice contract candidate approved' },
     SUC_BOF_00009: { code: '200', message: 'BackOffice contract candidate rejected' },
     SUC_BOF_00010: { code: '200', message: 'BackOffice contract rollback activated' },
+    SUC_BOF_00011: { code: '200', message: 'Administrative registry inventory returned' },
+    SUC_BOF_00012: { code: '200', message: 'Administrative module detail returned' },
+    SUC_BOF_00013: { code: '202', message: 'Module observation refresh completed' },
     ERR_BOF_00000: { code: '400', message: 'Invalid module registration' }
 };

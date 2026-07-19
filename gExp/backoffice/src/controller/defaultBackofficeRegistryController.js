@@ -35,5 +35,11 @@ module.exports = {
     /** Handles authorized BackOffice client bootstrap requests. */
     bootstrap: function (request, callback) { return this.execute('bootstrap', request, callback); },
     /** Handles secured registry diagnostic requests. */
-    diagnostics: function (request, callback) { return this.execute('diagnostics', request, callback); }
+    diagnostics: function (request, callback) { return this.execute('diagnostics', request, callback); },
+    /** Handles bounded administrative registry search. */
+    adminList: function (request, callback) { return this.execute('adminList', request, callback); },
+    /** Handles sanitized administrative module detail. */
+    adminDetail: function (request, callback) { return this.execute('adminDetail', request, callback); },
+    /** Handles an authorized module observation refresh. */
+    refresh: function (request, callback) { return this.execute('refresh', request, callback); }
 };

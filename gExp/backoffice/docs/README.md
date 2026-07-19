@@ -25,3 +25,5 @@ this runtime module.
 - `availability-observation-contract.md` defines bounded public readiness
   observation, freshness, multi-instance aggregation, security, recovery, and
   diagnostics behavior.
+- `registry-administration-contract.md` defines bounded administrative search,
+  sanitized detail, action-specific permissions, and observer-reuse refresh.

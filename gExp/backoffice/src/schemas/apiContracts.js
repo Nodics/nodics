@@ -137,6 +137,20 @@ module.exports = {
     capabilitySnapshot: capabilitySnapshot,
     uiCompositionSelection: uiCompositionSelection,
     moduleAvailability: moduleAvailability,
+    adminListData: { type: 'object', required: ['total', 'offset', 'limit', 'items'], properties: {
+        total: { type: 'integer', minimum: 0 }, offset: { type: 'integer', minimum: 0 }, limit: { type: 'integer', minimum: 1, maximum: 100 },
+        items: { type: 'array', items: { type: 'object', required: ['moduleName', 'capabilities', 'availability', 'compatibility', 'activeInstances'], properties: {
+            moduleName: moduleName, version: { type: 'string' }, moduleKind: { type: 'string' }, capabilities: { type: 'array', items: { type: 'string' } },
+            environments: { type: 'array', items: { type: 'string' } }, servers: { type: 'array', items: { type: 'string' } },
+            availability: moduleAvailability, compatibility: { type: 'object' }, activeInstances: { type: 'integer', minimum: 0 }
+        } } }
+    } },
+    adminDetailData: { type: 'object', required: ['moduleName', 'instances'], properties: {
+        moduleName: moduleName, availability: moduleAvailability, instances: { type: 'array', items: moduleLease }
+    } },
+    refreshData: { type: 'object', required: ['moduleName', 'refreshedInstances', 'discoveryRequested'], properties: {
+        moduleName: moduleName, refreshedInstances: { type: 'integer', minimum: 0 }, discoveryRequested: { type: 'boolean' }
+    } },
     contractDecision: contractDecision,
     contractHistorySnapshot: contractHistorySnapshot,
     contractActivation: contractActivation,

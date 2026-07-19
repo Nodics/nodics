@@ -29,5 +29,11 @@ module.exports = {
     /** Delegates authorized BackOffice client bootstrap. */
     bootstrap: request => SERVICE.DefaultBackofficeRegistryService.bootstrap(request),
     /** Delegates secured registry diagnostics. */
-    diagnostics: request => SERVICE.DefaultBackofficeRegistryService.diagnostics(request)
+    diagnostics: request => SERVICE.DefaultBackofficeRegistryService.diagnostics(request),
+    /** Delegates bounded administrative registry search. */
+    adminList: request => SERVICE.DefaultBackofficeRegistryService.adminList(request),
+    /** Delegates sanitized administrative module detail. */
+    adminDetail: request => SERVICE.DefaultBackofficeRegistryService.adminDetail(request),
+    /** Delegates an authorized observation refresh. */
+    refresh: request => SERVICE.DefaultBackofficeRegistryService.refresh(request)
 };

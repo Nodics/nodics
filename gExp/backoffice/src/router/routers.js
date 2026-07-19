@@ -92,6 +92,31 @@ module.exports = {
                 responses: { '200': { description: 'Sanitized registry diagnostics', content: { 'application/json': {
                     schema: successEnvelope(contracts.diagnosticsData)
                 } } } }
+            },
+            adminList: {
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.registry.admin.view', apiExposure: 'serviceRegistry',
+                key: '/registry/admin/modules', method: 'GET', controller: 'DefaultBackofficeRegistryController', operation: 'adminList',
+                help: { parameters: ['moduleName', 'capability', 'environment', 'server', 'state', 'compatibility'].map(name =>
+                    ({ name: name, in: 'query', required: false, schema: { type: 'string' } })).concat([
+                    { name: 'offset', in: 'query', required: false, schema: { type: 'integer', minimum: 0 } },
+                    { name: 'limit', in: 'query', required: false, schema: { type: 'integer', minimum: 1, maximum: 100 } }
+                ]) }, responses: { '200': { description: 'Bounded sanitized administrative module inventory', content: { 'application/json': {
+                    schema: successEnvelope(contracts.adminListData)
+                } } } }
+            },
+            adminDetail: {
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.registry.admin.view', apiExposure: 'serviceRegistry',
+                key: '/registry/admin/modules/:moduleName', method: 'GET', controller: 'DefaultBackofficeRegistryController', operation: 'adminDetail',
+                responses: { '200': { description: 'Sanitized administrative module detail', content: { 'application/json': {
+                    schema: successEnvelope(contracts.adminDetailData)
+                } } } }
+            },
+            refresh: {
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.registry.refresh', apiExposure: 'serviceRegistry',
+                key: '/registry/admin/modules/:moduleName/refresh', method: 'POST', controller: 'DefaultBackofficeRegistryController', operation: 'refresh',
+                responses: { '202': { description: 'Existing availability and discovery observers refreshed', content: { 'application/json': {
+                    schema: successEnvelope(contracts.refreshData)
+                } } } }
             }
         },
         contractHistory: {

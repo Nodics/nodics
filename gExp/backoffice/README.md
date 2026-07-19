@@ -57,6 +57,8 @@ Runtime readiness observation and multi-instance availability aggregation follow
 [the availability observation contract](docs/availability-observation-contract.md).
 The same contract governs deduplicated state-transition events and sanitized
 probe/publication metrics through Nodics' existing event capability.
+Bounded administrative inventory, detail, and governed refresh behavior follow
+[the registry administration contract](docs/registry-administration-contract.md).
 
 ## Customization
 

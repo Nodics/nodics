@@ -44,6 +44,7 @@ global.SERVICE = {
     } },
     DefaultBackofficeAvailabilityService: {
         scheduleObservation: registration => { availabilitySchedules.push(registration.instanceId); return Promise.resolve(true); },
+        observe: registration => { availabilitySchedules.push('refresh:' + registration.instanceId); return Promise.resolve(true); },
         getModuleAvailability: instances => ({ state: 'UP', activeInstances: instances.length, healthyInstances: instances.length,
             unavailableInstances: 0, unknownInstances: 0 }),
         getDiagnostics: () => ({ trackedInstances: 1, inflight: 0, metrics: {} }),
@@ -51,6 +52,7 @@ global.SERVICE = {
     },
     DefaultBackofficeDiscoveryService: {
         scheduleDiscovery: (registration, authData) => { discoveryAuthData.push(authData); return Promise.resolve(true); },
+        discover: (registration, document, authData) => { discoveryAuthData.push(authData); return Promise.resolve(true); },
         getSnapshot: moduleName => moduleName === 'cms' ? { moduleName: 'cms', hash: 'contract-hash', operations: [] } : undefined,
         getDiagnostics: () => ({ attempts: 1, successes: 1 })
     }
@@ -124,6 +126,17 @@ async function run() {
     assert.deepStrictEqual(discoveryAuthData.slice(-2).map(authData => authData.userGroups),
         [['serviceAccountUserGroup'], ['serviceAccountUserGroup']], 'batch discovery must preserve authenticated service groups');
     assert(availabilitySchedules.includes('runtime-1'), 'client-callable batch registration must schedule availability observation');
+    let adminList = await service.adminList({ query: { environment: 'local', state: 'UP', limit: '10' } });
+    assert.strictEqual(adminList.data.total, 2);
+    assert.strictEqual(adminList.data.items[0].environments[0], 'local');
+    await assert.rejects(() => service.adminList({ query: { limit: '101' } }));
+    let adminDetail = await service.adminDetail({ params: { moduleName: 'cms' } });
+    assert.strictEqual(adminDetail.data.instances.length, 1);
+    assert.strictEqual(adminDetail.data.instances[0].environment, undefined, 'administrative detail must honor client-safe projection');
+    let refreshed = await service.refresh({ params: { moduleName: 'cms' }, authData: { principalId: 'operator' } });
+    assert.strictEqual(refreshed.data.refreshedInstances, 1);
+    assert(availabilitySchedules.includes('refresh:runtime-1'));
+    await assert.rejects(() => service.refresh({ params: { moduleName: 'missing' }, authData: {} }));
     list = await service.list({ authData: { permissions: ['cms.backoffice.view'] } });
     assert.strictEqual(list.data.modules.workflowCore, undefined, 'non-API modules must not appear in client discovery');
     let diagnostics = await service.diagnostics({ authData: { userGroups: ['runtimeConfigAdminUserGroup'] } });
