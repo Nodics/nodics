@@ -29,3 +29,5 @@ this runtime module.
   sanitized detail, action-specific permissions, and observer-reuse refresh.
 - `administrative-security-contract.md` defines human/service separation,
   permission ownership, tenant isolation, refresh abuse controls, and auditing.
+- `performance-and-scale-contract.md` defines structural performance budgets,
+  bounded probe pressure, deterministic benchmark evidence, and load-test scope.

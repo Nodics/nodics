@@ -18,6 +18,7 @@ const assert = require('assert');
 
 let policy = { enabled: true, timeoutMs: 50, refreshIntervalMs: 1000, staleAfterMs: 5000,
     maxResponseBytes: 2048, allowRedirects: false, allowedHosts: ['module.example'],
+    maxConcurrentObservations: 2, maxQueuedObservations: 1, failureBackoffMultiplier: 2, maxFailureBackoffMs: 5000,
     events: { enabled: true, emitInitialState: false, publisherService: 'DefaultEventService' } };
 let response = { data: { status: 'UP', privateDetail: 'must-not-be-retained' } };
 let fetchedRequest;
@@ -39,8 +40,10 @@ global.SERVICE = {
 const definition = require('../src/service/availability/defaultBackofficeAvailabilityService');
 const service = Object.assign({}, definition, { _observations: new Map(), _inflight: new Map(), _moduleStates: new Map(),
     _moduleTransitions: new Map(), _instanceModules: new Map(), _moduleRegistrations: new Map(),
+    _queue: [], _activeObservations: 0,
     _metrics: { attempts: 0, successes: 0, failures: 0, readinessFailures: 0, transportFailures: 0,
-        timeouts: 0, staleReads: 0, suppressedRefreshes: 0, inflightDeduplications: 0, transitions: 0,
+        timeouts: 0, staleReads: 0, suppressedRefreshes: 0, inflightDeduplications: 0, queued: 0,
+        queueRejected: 0, maxConcurrentObserved: 0, transitions: 0,
         publicationAttempts: 0, publicationSuccesses: 0, publicationFailures: 0, totalDurationMs: 0,
         maxDurationMs: 0, lastDurationMs: 0, lastSuccessAt: null, lastFailureAt: null, lastFailureCode: null } });
 const registration = instanceId => ({ moduleName: 'cms', instanceId: instanceId, clientCallable: true,
@@ -102,9 +105,21 @@ async function run() {
     await service.observe(registration('one'));
     await new Promise(resolve => setImmediate(resolve));
     assert.strictEqual(service.getDiagnostics().metrics.publicationFailures, 1, 'publisher failure must remain fail-open and observable');
+    let activeFetches = 0;
+    let maxActiveFetches = 0;
+    response = { data: { status: 'UP' } };
+    SERVICE.DefaultModuleService.fetch = request => new Promise(resolve => {
+        activeFetches++;
+        maxActiveFetches = Math.max(maxActiveFetches, activeFetches);
+        setImmediate(() => { activeFetches--; resolve(response); });
+    });
+    await Promise.all(['queue-1', 'queue-2', 'queue-3', 'queue-overflow'].map(instanceId => service.scheduleObservation(registration(instanceId))));
+    assert(maxActiveFetches <= 2, 'availability work must respect the process concurrency ceiling');
+    assert(service.getDiagnostics().metrics.queued >= 1, 'excess observations must use the bounded queue');
+    assert.strictEqual(service.getDiagnostics().metrics.queueRejected, 1, 'queue overflow must fail open without creating more work');
     service.removeInstance('two');
-    assert.strictEqual(service.getDiagnostics().trackedInstances, 2);
-    assert.strictEqual(service.reconcileActiveInstances(['one']), 1, 'orphaned process observations must be removed');
+    assert.strictEqual(service.getDiagnostics().trackedInstances, 5);
+    assert.strictEqual(service.reconcileActiveInstances(['one']), 4, 'orphaned process observations must be removed');
     console.log('BackOffice availability service validated');
 }
 run().catch(error => { console.error(error); process.exit(1); });

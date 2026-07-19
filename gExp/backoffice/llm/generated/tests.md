@@ -13,6 +13,7 @@
 - `gExp/backoffice/test/backofficeDiscoveryService.test.js`
 - `gExp/backoffice/test/backofficeDistributedRegistryStore.test.js`
 - `gExp/backoffice/test/backofficeModuleBoundaryContract.test.js`
+- `gExp/backoffice/test/backofficePerformanceContract.test.js`
 - `gExp/backoffice/test/backofficeRegistryRouteContract.test.js`
 - `gExp/backoffice/test/backofficeRegistryService.test.js`
 

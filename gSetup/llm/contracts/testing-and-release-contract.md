@@ -127,6 +127,12 @@ permissions, refresh rate boundaries, independent principals, idempotent replay
 and in-flight deduplication, bounded state, audit correlation/redaction,
 topology, and regression behavior.
 
+BackOffice performance changes must test bounded registration batches,
+asynchronous observer scheduling, large lease inventory, bounded store scans and
+result pages, one probe per runtime, active and queued probe ceilings, overflow
+cleanup, failure backoff, idempotent refresh collapse, sanitized evidence,
+topology, and regression behavior.
+
 When adding a provider or server/node responsibility, add or update readiness
 checks through the owning module or a later project module. Do not expose
 credentials, provider URLs, private file paths, tenant data, or raw diagnostics

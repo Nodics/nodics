@@ -48,6 +48,10 @@ module.exports = {
             enabled: true,
             timeoutMs: 1000,
             refreshIntervalMs: 10000,
+            maxConcurrentObservations: 32,
+            maxQueuedObservations: 10000,
+            failureBackoffMultiplier: 2,
+            maxFailureBackoffMs: 60000,
             staleAfterMs: 30000,
             maxResponseBytes: 65536,
             allowRedirects: false,
@@ -86,6 +90,16 @@ module.exports = {
             refreshMaxPerWindow: 5,
             idempotencyTtlMs: 60000,
             maxIdempotencyEntries: 1000
+        },
+        benchmark: {
+            registrationModules: 128,
+            registryLeases: 2000,
+            hostedModulesPerInstance: 64,
+            concurrentRefreshRequests: 32,
+            maxAdminResultPage: 100,
+            maxAdminStoreScans: 3,
+            maxAvailabilityProbesPerInstance: 1,
+            maxRefreshExecutionsPerIdempotencyKey: 1
         },
         allowedSchemes: ['http', 'https'],
         clientSafeMetadata: ['moduleName', 'instanceId', 'version', 'moduleKind', 'capabilities', 'endpoint', 'healthPath', 'state', 'lastSeenAt', 'backoffice']

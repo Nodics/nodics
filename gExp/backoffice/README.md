@@ -61,6 +61,8 @@ Bounded administrative inventory, detail, and governed refresh behavior follow
 [the registry administration contract](docs/registry-administration-contract.md).
 Human/service separation and the administrative permission matrix follow
 [the administrative security contract](docs/administrative-security-contract.md).
+Structural scale budgets and benchmark evidence follow
+[the performance and scale contract](docs/performance-and-scale-contract.md).
 
 ## Customization
 

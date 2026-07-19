@@ -118,6 +118,11 @@ identity domains. Administrative services must reject service tokens, require a
 stable principal, enforce tenant consistency, retain action-specific route
 permissions, and bound refresh throttling and idempotency state.
 
+BackOffice probe pressure must be bounded independently of hosted module count.
+Core performance evidence should enforce deterministic path and operation
+budgets with sanitized timings, while deployment layers own environment-sized
+distributed load thresholds.
+
 ## Source Of Truth
 
 Behavior must come from Nodics source-of-truth artifacts:

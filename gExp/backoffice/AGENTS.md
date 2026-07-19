@@ -66,6 +66,9 @@
 - Human administrative routes must reject service tokens, require a stable
   principal, preserve tenant consistency, use action-specific route permissions,
   and apply bounded per-principal/module refresh idempotency and throttling.
+- Core performance gates must prefer deterministic path/operation budgets and
+  sanitized timing evidence. Availability work requires layered active/queue
+  ceilings and must never block registration or application traffic.
 - Use existing Nodics lifecycle, module registry, service communication,
   schema/router governance, audit, and generated-artifact paths. Do not add a
   parallel loader, runtime activation mechanism, or authorization path.

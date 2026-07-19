@@ -23,8 +23,11 @@ module.exports = {
     _moduleTransitions: new Map(),
     _instanceModules: new Map(),
     _moduleRegistrations: new Map(),
+    _queue: [],
+    _activeObservations: 0,
     _metrics: { attempts: 0, successes: 0, failures: 0, readinessFailures: 0, transportFailures: 0,
-        timeouts: 0, staleReads: 0, suppressedRefreshes: 0, inflightDeduplications: 0, transitions: 0,
+        timeouts: 0, staleReads: 0, suppressedRefreshes: 0, inflightDeduplications: 0, queued: 0,
+        queueRejected: 0, maxConcurrentObserved: 0, transitions: 0,
         publicationAttempts: 0, publicationSuccesses: 0, publicationFailures: 0, totalDurationMs: 0,
         maxDurationMs: 0, lastDurationMs: 0, lastSuccessAt: null, lastFailureAt: null, lastFailureCode: null },
 
@@ -179,6 +182,8 @@ module.exports = {
         this._moduleRegistrations.get(moduleName).set(key, Object.assign({}, registration));
         let previous = this._observations.get(key);
         let refreshIntervalMs = Math.max(1, Number(policy.refreshIntervalMs || 10000));
+        if (previous && previous.state === 'UNAVAILABLE') refreshIntervalMs = Math.min(Number(policy.maxFailureBackoffMs || 60000),
+            refreshIntervalMs * Math.max(1, Number(policy.failureBackoffMultiplier || 2)));
         if (previous && Date.now() - Date.parse(previous.attemptedAt) < refreshIntervalMs) {
             this._metrics.suppressedRefreshes++;
             return Promise.resolve(false);
@@ -187,9 +192,38 @@ module.exports = {
             this._metrics.inflightDeduplications++;
             return this._inflight.get(key);
         }
-        let promise = Promise.resolve().then(() => this.observe(registration)).finally(() => this._inflight.delete(key));
+        if (this._queue.length >= Number(policy.maxQueuedObservations || 10000)) {
+            this._metrics.queueRejected++;
+            this.removeScheduledRegistration(key, moduleName);
+            return Promise.resolve(false);
+        }
+        let promise = this.enqueueObservation(registration).finally(() => this._inflight.delete(key));
         this._inflight.set(key, promise);
         return promise;
+    },
+    /** Removes registration metadata for work rejected before observation, preventing queue-pressure leaks. */
+    removeScheduledRegistration: function (instanceId, moduleName) {
+        let modules = this._instanceModules.get(instanceId);
+        if (modules) { modules.delete(moduleName); if (modules.size === 0) this._instanceModules.delete(instanceId); }
+        let registrations = this._moduleRegistrations.get(moduleName);
+        if (registrations) { registrations.delete(instanceId); if (registrations.size === 0) this._moduleRegistrations.delete(moduleName); }
+    },
+    /** Runs or queues one observation under the layered process concurrency ceiling. */
+    enqueueObservation: function (registration) {
+        let limit = Math.max(1, Number(this.getConfiguration().maxConcurrentObservations || 32));
+        if (this._activeObservations < limit) return this.runObservation(registration);
+        this._metrics.queued++;
+        return new Promise((resolve, reject) => this._queue.push({ registration: registration, resolve: resolve, reject: reject }));
+    },
+    /** Executes one queued observation and drains the next item without blocking registration traffic. */
+    runObservation: function (registration) {
+        this._activeObservations++;
+        this._metrics.maxConcurrentObserved = Math.max(this._metrics.maxConcurrentObserved, this._activeObservations);
+        return Promise.resolve().then(() => this.observe(registration)).finally(() => {
+            this._activeObservations--;
+            let next = this._queue.shift();
+            if (next) this.runObservation(next.registration).then(next.resolve, next.reject);
+        });
     },
     /** Removes process-instance state after its final lease is removed or expires. */
     removeInstance: function (instanceId) {
@@ -238,6 +272,7 @@ module.exports = {
     /** Returns low-disclosure counters for secured BackOffice diagnostics. */
     getDiagnostics: function () {
         return { trackedInstances: this._observations.size, trackedModules: this._moduleStates.size,
-            inflight: this._inflight.size, inflightTransitions: this._moduleTransitions.size, metrics: Object.assign({}, this._metrics) };
+            inflight: this._inflight.size, queued: this._queue.length, activeObservations: this._activeObservations,
+            inflightTransitions: this._moduleTransitions.size, metrics: Object.assign({}, this._metrics) };
     }
 };
