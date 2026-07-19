@@ -21,5 +21,6 @@ module.exports = {
     SUC_BOF_00001: { code: '200', message: 'Module instance lease removed' },
     SUC_BOF_00002: { code: '200', message: 'Active module registry returned' },
     SUC_BOF_00003: { code: '200', message: 'Registry diagnostics returned' },
+    SUC_BOF_00004: { code: '200', message: 'Authorized BackOffice bootstrap returned' },
     ERR_BOF_00000: { code: '400', message: 'Invalid module registration' }
 };

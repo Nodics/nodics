@@ -33,10 +33,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 14 |
+| Source files | 15 |
 | Test files | 3 |
 | Data files | 0 |
-| All module-owned files | 25 |
+| All module-owned files | 26 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 20 |
+| Documented | 21 |
 | Partially documented | 0 |
 | Undocumented | 1 |
 | Inventory only | 4 |
@@ -98,7 +98,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gExp/backoffice/nodics.js` | `module` | `documented` | 2/2 | Declares the lifecycle boundary for the BackOffice registry and discovery capability. |  |
 | `gExp/backoffice/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gExp/backoffice/src/controller/defaultBackofficeRegistryController.js` | `src` | `documented` | 7/7 | Maps BackOffice registry HTTP operations to the registry facade with promise and callback support. |  |
+| `gExp/backoffice/src/controller/defaultBackofficeRegistryController.js` | `src` | `documented` | 8/8 | Maps BackOffice registry HTTP operations to the registry facade with promise and callback support. |  |
 | `gExp/backoffice/src/event/listeners.js` | `src` | `documented` | 0/0 | Event listener registry for this boundary. |  |
 | `gExp/backoffice/src/facade/defaultBackofficeRegistryFacade.js` | `src` | `documented` | 2/2 | Delegates BackOffice registry API operations to the owning registry service. |  |
 | `gExp/backoffice/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Interceptor definition registry for this boundary. |  |
@@ -108,7 +108,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Schema definition registry for this boundary. |  |
 | `gExp/backoffice/src/search/indexes.js` | `src` | `documented` | 0/0 | Search index definition registry for this boundary. |  |
 | `gExp/backoffice/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Reserves the standard BackOffice service lifecycle and documents the mergeable service override shape. |  |
-| `gExp/backoffice/src/service/registry/defaultBackofficeRegistryService.js` | `src` | `documented` | 12/12 | Owns ephemeral observed module-instance leases for BackOffice discovery without becoming topology or activation authority. |  |
+| `gExp/backoffice/src/service/registry/defaultBackofficeRegistryService.js` | `src` | `documented` | 18/18 | Owns ephemeral observed module-instance leases for BackOffice discovery without becoming topology or activation authority. |  |
+| `gExp/backoffice/src/service/registry/defaultBackofficeRegistryStoreService.js` | `src` | `documented` | 8/8 | Provides the replaceable lease-store boundary used by the BackOffice observed-state registry. |  |
 | `gExp/backoffice/src/utils/enums.js` | `src` | `documented` | 0/0 | Enum definition registry for this boundary. |  |
 | `gExp/backoffice/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Status and error definition registry for this boundary. |  |
 | `gExp/backoffice/src/utils/utils.js` | `src` | `documented` | 0/0 | Utility function registry for this boundary. |  |

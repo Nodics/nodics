@@ -65,7 +65,9 @@ let groupTree = [{
                     'runtime.config.history.view',
                     'runtime.config.summary.view',
                     'runtime.config.request.view',
-                    'system.contract.openapi.view'
+                    'system.contract.openapi.view',
+                    'backoffice.registry.view',
+                    'backoffice.bootstrap.view'
                 ]
             }]
         }]
@@ -84,6 +86,8 @@ assert(permissions.includes('runtime.config.cleanup.preview'));
 assert(permissions.includes('runtime.config.preview'));
 assert(permissions.includes('runtime.config.request.view'));
 assert(permissions.includes('system.contract.openapi.view'));
+assert(permissions.includes('backoffice.registry.view'));
+assert(permissions.includes('backoffice.bootstrap.view'));
 assert(permissions.includes('runtime.config.request.approve'));
 assert.strictEqual(permissions.filter(permission => permission === 'runtime.config.request.view').length, 1);
 
@@ -92,6 +96,7 @@ let runtimeViewerGroup = Object.values(userGroupsData).find(group => group.code 
 assert(runtimeAdminGroup, 'Default runtime config admin group should be seeded');
 assert(runtimeViewerGroup.permissions.includes('system.contract.openapi.view'));
 assert(runtimeAdminGroup.permissions.includes('runtime.config.cleanup.execute'));
+assert(runtimeAdminGroup.permissions.includes('backoffice.registry.diagnostics.view'));
 [
     'system.file.read',
     'system.file.download',

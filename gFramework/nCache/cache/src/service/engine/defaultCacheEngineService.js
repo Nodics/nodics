@@ -38,9 +38,21 @@ module.exports = {
      * @param {*} options 
      */
     init: function (options) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-        });
+        if (SERVICE.DefaultRuntimeLifecycleService) {
+            SERVICE.DefaultRuntimeLifecycleService.registerContributor('cacheEngines', {
+                order: 260,
+                shutdown: () => this.closeEngineClients()
+            });
+        }
+        if (SERVICE.DefaultHealthService) {
+            SERVICE.DefaultHealthService.registerReadinessContributor('cacheEngines', {
+                required: false,
+                order: 360,
+                description: 'Initialized cache engine clients remain ready',
+                check: () => this.getCacheReadiness()
+            });
+        }
+        return Promise.resolve(true);
     },
 
     /**
@@ -70,6 +82,32 @@ module.exports = {
         } else {
             return null;
         }
+    },
+
+    /** Reports readiness for initialized provider clients without probing disabled cache engines. */
+    getCacheReadiness: function () {
+        return Object.keys(this.engineClients).every(moduleName => Object.keys(this.engineClients[moduleName]).every(engineName => {
+            let client = this.engineClients[moduleName][engineName];
+            return !client || client.isReady === undefined || client.isReady === true;
+        }));
+    },
+
+    /** Closes each unique initialized provider client during central runtime shutdown. */
+    closeEngineClients: async function () {
+        let clients = [];
+        Object.keys(this.engineClients).forEach(moduleName => Object.keys(this.engineClients[moduleName]).forEach(engineName => {
+            let client = this.engineClients[moduleName][engineName];
+            if (client && !clients.includes(client)) clients.push(client);
+        }));
+        await Promise.all(clients.map(client => {
+            if (typeof client.quit === 'function') return client.quit();
+            if (typeof client.disconnect === 'function') return client.disconnect();
+            if (typeof client.close === 'function') return client.close();
+            return true;
+        }));
+        this.cacheClients = {};
+        this.engineClients = {};
+        return true;
     },
 
     /** Returns whether the cache subsystem is enabled by layered configuration. */

@@ -78,7 +78,9 @@ module.exports = {
             'runtime.config.history.view',
             'runtime.config.summary.view',
             'runtime.config.request.view',
-            'system.contract.openapi.view'
+            'system.contract.openapi.view',
+            'backoffice.registry.view',
+            'backoffice.bootstrap.view'
         ]
     },
     record8: {
@@ -144,7 +146,8 @@ module.exports = {
             'dynamo.class.view',
             'dynamo.class.snapshot.view',
             'dynamo.class.update',
-            'dynamo.class.execute'
+            'dynamo.class.execute',
+            'backoffice.registry.diagnostics.view'
         ]
     },
     record12: {

@@ -58,16 +58,22 @@ module.exports = {
     fetchInternalAuthToken: function (tntCode) {
         let _self = this;
         return new Promise((resolve, reject) => {
+            let header = {
+                'x-api-key': CONFIG.get('defaultAuthDetail').apiKey,
+                'x-enterprise-code': CONFIG.get('defaultAuthDetail').entCode
+            };
+            if (typeof NODICS !== 'undefined' && NODICS && typeof NODICS.getActiveModules === 'function') {
+                header['x-nodics-runtime-instance'] = [NODICS.getEnvironmentName(), NODICS.getServerName(),
+                    NODICS.getNodeName() || 'default', process.pid].join(':');
+                header['x-nodics-modules'] = (NODICS.getActiveModules() || []).join(',');
+            }
             let requestUrl = SERVICE.DefaultModuleService.buildRequest({
                 moduleName: CONFIG.get('profileModuleName') || 'profile',
                 methodName: 'GET',
                 apiName: '/auth/token/' + tntCode,
                 requestBody: {},
                 responseType: true,
-                header: {
-                    'x-api-key': CONFIG.get('defaultAuthDetail').apiKey,
-                    'x-enterprise-code': CONFIG.get('defaultAuthDetail').entCode
-                }
+                header: header
             });
             try {
                 SERVICE.DefaultModuleService.fetch(requestUrl).then(response => {

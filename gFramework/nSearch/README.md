@@ -1,5 +1,9 @@
 # nSearch
 
+Initialized search providers contribute optional readiness and close their
+unique connections through the central runtime lifecycle contract. Provider
+modules retain connection ownership; the lifecycle service only orders hooks.
+
 `nSearch` is the framework search family. It provides search/indexing abstractions, generated search APIs, cache policy integration, and provider extension points for engines such as Elasticsearch.
 
 Use this root module for family-level search ownership and defaults. Provider-neutral search behavior belongs in `nSearch/search`; engine-specific integration belongs in adapter modules such as `nSearch/elastic`.

@@ -26,6 +26,22 @@ Modernization may replace outdated libraries, improve security, refactor existin
 10. Preserve multi-tenancy, tenant data placement, and the difference between default tenant and active tenant.
 11. Preserve runtime configuration, audit, rollback, validation, and access-control governance.
 12. Add tests for both consolidated and modular deployment behavior when behavior crosses module/process boundaries.
+13. Treat modules as the unit of capability, ownership, registration, discovery,
+    lifecycle, and customization. Environment, server, and node definitions
+    compose runtime processes and endpoint coordinates; they are not capability
+    boundaries and must not replace module-centric behavior.
+
+## Module And Runtime Composition Principle
+
+Every active module contributes its own metadata and lifecycle identity. A
+runtime instance is a process hosting an effective set of active modules. A
+server definition selects that set and declares local or remote coordinates; it
+does not own the capabilities provided by those modules.
+
+Control-plane registration and discovery must therefore use module identity
+plus runtime-instance identity. Non-API modules may register ownership and
+capability metadata without a callable endpoint. Client discovery exposes only
+modules whose effective metadata and policy make them client-callable.
 
 ## Default Tenant And Active Tenant
 
@@ -100,3 +116,7 @@ The admin application should become the Nodics control plane for:
 - import/export runs
 
 Backend APIs must support this control plane. UI is a client of the backend, not a replacement for backend governance.
+
+The control plane presents server and node compositions only as deployment
+views over modules. Modules remain authoritative for capabilities, schemas,
+routes, permissions, lifecycle, and business behavior.

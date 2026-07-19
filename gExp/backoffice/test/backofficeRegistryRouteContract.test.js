@@ -14,8 +14,9 @@ const routers = require('../src/router/routers').backoffice;
 assert.strictEqual(routers.registryControl.register.permissionConfig, 'authSecurity.internalToken.routePermission');
 assert.strictEqual(routers.registryControl.deregister.permissionConfig, 'authSecurity.internalToken.routePermission');
 assert.strictEqual(routers.registryDiscovery.list.permission, 'backoffice.registry.view');
+assert.strictEqual(routers.registryDiscovery.bootstrap.permission, 'backoffice.bootstrap.view');
 assert.strictEqual(routers.registryDiscovery.diagnostics.permission, 'backoffice.registry.diagnostics.view');
-[routers.registryControl.register, routers.registryControl.deregister, routers.registryDiscovery.list,
+[routers.registryControl.register, routers.registryControl.deregister, routers.registryDiscovery.list, routers.registryDiscovery.bootstrap,
     routers.registryDiscovery.diagnostics].forEach(route => {
     assert.strictEqual(route.secured, true);
     assert.strictEqual(route.apiExposure, 'serviceRegistry');

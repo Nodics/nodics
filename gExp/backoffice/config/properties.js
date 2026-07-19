@@ -21,7 +21,14 @@ module.exports = {
         enabled: true,
         leaseTtlMs: 30000,
         sweepIntervalMs: 5000,
+        maxModulesPerRegistration: 512,
+        requireBoundServiceIdentity: true,
+        modulePermissions: {},
+        compatibility: {
+            registryContractVersion: 1,
+            minimumClientContractVersion: 1
+        },
         allowedSchemes: ['http', 'https'],
-        clientSafeMetadata: ['moduleName', 'instanceId', 'version', 'capabilities', 'endpoint', 'healthPath', 'state', 'lastSeenAt']
+        clientSafeMetadata: ['moduleName', 'instanceId', 'version', 'moduleKind', 'capabilities', 'endpoint', 'healthPath', 'state', 'lastSeenAt']
     }
 };

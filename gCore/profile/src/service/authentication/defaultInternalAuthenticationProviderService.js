@@ -50,6 +50,28 @@ module.exports = {
                     reject(new CLASSES.NodicsError('ERR_AUTH_00003', 'Cross-tenant internal token access is not permitted'));
                     return;
                 }
+                let headers = request.headers || {};
+                let runtimeInstanceId = headers['x-nodics-runtime-instance'];
+                let requestedModules = String(headers['x-nodics-modules'] || '').split(',').map(value => value.trim()).filter(Boolean);
+                if (runtimeInstanceId && requestedModules.length > 0) {
+                    let unknownModules = requestedModules.filter(moduleName => !NODICS.getRawModule(moduleName));
+                    if (unknownModules.length > 0) {
+                        reject(new CLASSES.NodicsError('ERR_AUTH_00003', 'Unknown module identity requested'));
+                        return;
+                    }
+                    let principal = authData.person || {};
+                    SERVICE.DefaultServiceTokenService.issue({
+                        entCode: authData.entCode,
+                        tenant: request.tenant,
+                        serviceId: authData.serviceId || principal.loginId || principal.code || 'nodics-runtime',
+                        runtimeInstanceId: runtimeInstanceId,
+                        modules: requestedModules,
+                        authVersion: authData.authVersion || principal.authVersion || 1,
+                        userGroups: authData.userGroups || [],
+                        permissions: authData.permissions || []
+                    }).then(authToken => resolve({ code: 'SUC_AUTH_00000', result: { authToken: authToken } })).catch(reject);
+                    return;
+                }
                 let authToken = NODICS.getInternalAuthToken(request.tenant);
                 if (!authToken) {
                     reject(new CLASSES.NodicsError('ERR_AUTH_00001', 'Internal authentication token is unavailable'));

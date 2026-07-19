@@ -240,6 +240,8 @@ module.exports = {
                                                             entCode: enterprise.code,
                                                             tenant: enterprise.tenant.code,
                                                             serviceId: success.result[0].loginId || 'nodics-runtime',
+                                                            runtimeInstanceId: [NODICS.getEnvironmentName(), NODICS.getServerName(), NODICS.getNodeName() || 'default', process.pid].join(':'),
+                                                            modules: NODICS.getActiveModules(),
                                                             authVersion: success.result[0].authVersion || 1,
                                                             userGroups: success.result[0].userGroupCodes,
                                                             permissions: success.result[0].userGroupPermissions
@@ -262,6 +264,8 @@ module.exports = {
                                                 entCode: enterprise.code,
                                                 tenant: enterprise.tenant.code,
                                                 serviceId: success.result[0].loginId || 'nodics-runtime',
+                                                runtimeInstanceId: [NODICS.getEnvironmentName(), NODICS.getServerName(), NODICS.getNodeName() || 'default', process.pid].join(':'),
+                                                modules: NODICS.getActiveModules(),
                                                 authVersion: success.result[0].authVersion || 1,
                                                 userGroups: success.result[0].userGroupCodes,
                                                 permissions: success.result[0].userGroupPermissions

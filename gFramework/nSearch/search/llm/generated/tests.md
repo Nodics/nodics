@@ -11,6 +11,7 @@
 - `gFramework/nSearch/search/test/searchControllerRequestMapping.test.js`
 - `gFramework/nSearch/search/test/searchPipelineInitializerContract.test.js`
 - `gFramework/nSearch/search/test/searchRouteContract.test.js`
+- `gFramework/nSearch/search/test/searchRuntimeLifecycleContract.test.js`
 - `gFramework/nSearch/search/test/searchServicePipelineContract.test.js`
 
 ## Generated Tests

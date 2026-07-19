@@ -51,11 +51,15 @@ async function run() {
     assert(contributor, 'registration agent must use the central lifecycle');
     assert.strictEqual(contributor.ready(), true, 'ready hook must not await BackOffice network traffic');
     await new Promise(resolve => setImmediate(resolve));
-    assert.strictEqual(requests.length, 1, 'only locally served router modules should register');
+    assert.strictEqual(requests.length, 1, 'one bounded runtime batch should register all active modules');
     assert.strictEqual(requests[0].header.Authorization, 'Bearer service-token');
     assert(requests[0].header['Idempotency-Key']);
+    assert.deepStrictEqual(requests[0].requestBody.registrations.map(item => item.moduleName), ['cms', 'utility']);
+    assert.strictEqual(requests[0].requestBody.registrations[0].clientCallable, true);
+    assert.strictEqual(requests[0].requestBody.registrations[1].clientCallable, false);
+    assert.strictEqual(requests[0].requestBody.registrations[1].endpoint, undefined);
     await contributor.drain();
-    assert.strictEqual(requests.length, 2, 'drain should attempt deregistration');
+    assert.strictEqual(requests.length, 2, 'drain should attempt one instance-wide deregistration');
     assert.strictEqual(service._timer, null);
 
     NODICS.getInternalAuthToken = () => undefined;

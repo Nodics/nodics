@@ -122,11 +122,15 @@ const serviceToken = provider.generateAuthToken({
     entCode: 'enterprise-a',
     tenant: 'tenant-a',
     tokenType: 'service',
-    serviceId: 'module-a'
+    serviceId: 'module-a',
+    runtimeInstanceId: 'runtime-a',
+    modules: ['module-a', 'module-b']
 });
 const servicePayload = jwt.verify(serviceToken, strongSecret, authSecurity.getVerifyOptions(secureConfiguration));
 assert.strictEqual(servicePayload.tokenType, 'service');
 assert.strictEqual(servicePayload.serviceId, 'module-a');
+assert.strictEqual(servicePayload.runtimeInstanceId, 'runtime-a');
+assert.deepStrictEqual(servicePayload.modules, ['module-a', 'module-b']);
 assert.ok(servicePayload.exp > servicePayload.iat);
 
 const passwordInterceptor = require(path.join(repositoryRoot, 'gCore/profile/src/service/interceptors/defaultPasswordSaveInterceptorService'));

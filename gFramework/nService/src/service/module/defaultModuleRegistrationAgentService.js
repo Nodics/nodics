@@ -50,13 +50,9 @@ module.exports = {
         return true;
     },
 
-    /** Returns active modules whose routers are served by this process. */
+    /** Returns every active module hosted by this runtime instance. */
     getLocalModules: function () {
-        return (NODICS.getActiveModules() || []).filter(moduleName => {
-            let moduleObject = NODICS.getRawModule(moduleName);
-            return moduleObject && moduleObject.metaData && moduleObject.metaData.nodics &&
-                moduleObject.metaData.nodics.runtime && moduleObject.metaData.nodics.runtime.router === true;
-        });
+        return (NODICS.getActiveModules() || []).slice();
     },
 
     /** Builds a process-unique instance identity from selected runtime coordinates. */
@@ -68,16 +64,26 @@ module.exports = {
     buildRegistration: function (moduleName) {
         let rawModule = NODICS.getRawModule(moduleName) || {};
         let metadata = rawModule.metaData || {};
+        let nodicsMetadata = metadata.nodics || {};
+        let runtime = nodicsMetadata.runtime || {};
         let config = this.getConfiguration();
-        return {
+        let registration = {
             moduleName: moduleName,
             instanceId: this.getInstanceId(),
             version: metadata.version || 'unknown',
-            capabilities: (metadata.nodics && metadata.nodics.owns || []).slice(),
-            endpoint: SERVICE.DefaultRouterService.prepareUrl({ moduleName: moduleName }),
+            moduleKind: nodicsMetadata.kind || 'unknown',
+            capabilities: (nodicsMetadata.owns || []).slice(),
+            clientCallable: runtime.router === true,
+            runtime: {
+                router: runtime.router === true,
+                publish: runtime.publish === true,
+                web: runtime.web === true
+            },
             healthPath: config.healthPath,
             leaseTtlMs: config.leaseTtlMs
         };
+        if (registration.clientCallable) registration.endpoint = SERVICE.DefaultRouterService.prepareUrl({ moduleName: moduleName });
+        return registration;
     },
 
     /** Resolves the tenant-scoped internal service authorization header. */
@@ -97,14 +103,21 @@ module.exports = {
             if (!header) throw new Error('Internal service token is not available');
             let config = this.getConfiguration();
             let modules = this.getLocalModules();
-            await Promise.all(modules.map(moduleName => SERVICE.DefaultModuleService.fetch(SERVICE.DefaultModuleService.buildRequest({
+            if (modules.length > Number(config.maxModulesPerRegistration || 512)) throw new Error('Active module registration limit exceeded');
+            await SERVICE.DefaultModuleService.fetch(SERVICE.DefaultModuleService.buildRequest({
                 moduleName: config.moduleName || 'backoffice',
                 apiName: '/registry/instances',
                 methodName: 'PUT',
-                header: Object.assign({ 'Idempotency-Key': this.getInstanceId() + ':' + moduleName }, header),
-                requestBody: this.buildRegistration(moduleName),
+                header: Object.assign({ 'Idempotency-Key': this.getInstanceId() }, header),
+                requestBody: {
+                    instanceId: this.getInstanceId(),
+                    environment: NODICS.getEnvironmentName(),
+                    server: NODICS.getServerName(),
+                    node: NODICS.getNodeName() || null,
+                    registrations: modules.map(moduleName => this.buildRegistration(moduleName))
+                },
                 timeoutMs: config.requestTimeoutMs
-            }))));
+            }));
             this._registered = modules;
             this._metrics.successes++;
             this._metrics.lastSuccessAt = new Date().toISOString();
@@ -127,14 +140,14 @@ module.exports = {
         if (!header || this._registered.length === 0) return false;
         let config = this.getConfiguration();
         try {
-            await Promise.all(this._registered.map(moduleName => SERVICE.DefaultModuleService.fetch(SERVICE.DefaultModuleService.buildRequest({
+            await SERVICE.DefaultModuleService.fetch(SERVICE.DefaultModuleService.buildRequest({
                 moduleName: config.moduleName || 'backoffice',
                 apiName: '/registry/instances/' + encodeURIComponent(this.getInstanceId()),
                 methodName: 'DELETE',
-                header: Object.assign({ 'Idempotency-Key': this.getInstanceId() + ':' + moduleName + ':delete' }, header),
-                requestBody: { moduleName: moduleName },
+                header: Object.assign({ 'Idempotency-Key': this.getInstanceId() + ':delete' }, header),
+                requestBody: {},
                 timeoutMs: config.requestTimeoutMs
-            }))));
+            }));
             this._metrics.deregistrations++;
             return true;
         } catch (error) {

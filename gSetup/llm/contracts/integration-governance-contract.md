@@ -125,6 +125,11 @@ process composition and remote endpoints. Node modules own instance-specific
 ownership, capacity, and diagnostics. Tenant runtime governance owns
 tenant-specific behavior.
 
+Modules remain the integration capability and registration unit across every
+composition. Do not describe a fixed set of configured servers as the platform
+module model. Discovery records which module capabilities are observed on each
+runtime instance; server and node metadata are deployment coordinates only.
+
 ## Security, Redaction, Audit, Diagnostics, And Rollback
 
 Every integration must preserve platform security contracts:
@@ -211,6 +216,19 @@ keep the built-in nTooling handler alias, such as
 to replace that function while inheriting the rest of the framework service.
 Replacing an MCP handler is a larger change and must use
 `$override.mode: 'replace'`.
+
+## Provider Runtime Lifecycle
+
+Every long-lived provider connection or workload must contribute bounded
+readiness, drain, and shutdown behavior through the single runtime lifecycle
+and health contracts owned by Nodics. Provider modules retain their resource
+ownership; no provider may install an independent process-signal handler,
+readiness authority, or parallel lifecycle coordinator.
+
+Readiness contribution must follow layered activation and must not activate or
+probe a disabled provider merely because connection values exist. Shutdown must
+close each owned connection once, tolerate partial initialization, and avoid
+including provider credentials or connection settings in diagnostics.
 
 ## Completion Checklist
 

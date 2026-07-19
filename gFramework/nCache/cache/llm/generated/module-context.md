@@ -30,9 +30,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 15 |
-| Test files | 9 |
+| Test files | 10 |
 | Data files | 0 |
-| All module-owned files | 32 |
+| All module-owned files | 33 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -63,7 +63,7 @@
 | --- | ---: |
 | Documented | 26 |
 | Partially documented | 2 |
-| Undocumented | 0 |
+| Undocumented | 1 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -101,7 +101,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/cache/src/service/cache/defaultCacheService.js` | `src` | `documented` | 34/34 | Routes cache operations and runtime cache-configuration changes through the layered engine and event contracts. |  |
 | `gFramework/nCache/cache/src/service/config/defaultCacheConfigurationService.js` | `src` | `documented` | 15/15 | Builds layered cache engine/channel configuration and deterministic tenant- and principal-scoped cache keys. |  |
 | `gFramework/nCache/cache/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements cache default sample service business behavior and extension logic. |  |
-| `gFramework/nCache/cache/src/service/engine/defaultCacheEngineService.js` | `src` | `documented` | 15/15 | Builds cache channels from layered configuration and validates adapter capabilities before any connection or fallback is activated. |  |
+| `gFramework/nCache/cache/src/service/engine/defaultCacheEngineService.js` | `src` | `documented` | 17/17 | Builds cache channels from layered configuration and validates adapter capabilities before any connection or fallback is activated. |  |
 | `gFramework/nCache/cache/src/service/event/defaultCacheChangeListenerService.js` | `src` | `documented` | 4/4 | Adapts distributed cache configuration events into tenant-aware local service updates. |  |
 | `gFramework/nCache/cache/src/service/policy/defaultCachePolicyService.js` | `src` | `documented` | 18/18 | Centralizes router/API and DAO/schema cacheability decisions using layered properties while preserving legacy utility checks. |  |
 | `gFramework/nCache/cache/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared cache enum definition exports. |  |
@@ -114,6 +114,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/cache/test/cacheIsolationAndCorrectnessContract.test.js` | `test` | `documented` | 0/0 | Verifies tenant/principal-safe API keys, response-envelope cache hits, mutation-free local storage, custom key flush dispatch, schema configuration compatibility, and event target propagation. |  |
 | `gFramework/nCache/cache/test/cacheMutationSecurityContract.test.js` | `test` | `documented` | 0/0 | Verifies permissioned cache mutation routes, governed administrative permissions, and tenant/module-safe service boundaries. |  |
 | `gFramework/nCache/cache/test/cachePolicyContract.test.js` | `test` | `documented` | 0/0 | Verifies layered cacheability governance for payload size, sensitive fields, empty results, binary payloads, skip reasons, and write-path integration. |  |
+| `gFramework/nCache/cache/test/cacheRuntimeLifecycleContract.test.js` | `test` | `undocumented` | 0/0 | Validates cache readiness and central shutdown contribution without requiring a live provider. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/cache/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nCache test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nCache/cache/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nCache test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 

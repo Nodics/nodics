@@ -59,6 +59,20 @@ Before changing behavior, identify the smallest layer that can own the change:
 Framework code changes only when the framework capability itself is
 missing, incorrect, insecure, ungoverned, or impossible to extend cleanly.
 
+## Module-Centric Runtime Principle
+
+Modules are the unit of capability ownership, lifecycle contribution,
+registration, discovery, and customization. A runtime instance is a process
+hosting an effective active-module set. Environment, server, and node modules
+compose processes, coordinates, and instance policy; they do not become
+alternate capability owners.
+
+Registries identify `module + runtime instance`, including modules without HTTP
+routers. Callable endpoints are conditional metadata, not proof that a module
+exists. Client discovery filters the observed module registry to effective,
+authorized, client-callable capabilities while target modules retain final
+authorization.
+
 ## Source Of Truth
 
 Behavior must come from Nodics source-of-truth artifacts:

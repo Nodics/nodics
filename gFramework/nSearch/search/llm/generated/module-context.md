@@ -33,9 +33,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 43 |
-| Test files | 21 |
+| Test files | 22 |
 | Data files | 0 |
-| All module-owned files | 59 |
+| All module-owned files | 60 |
 | Local schema definitions | 4 |
 
 ## Ownership And Dependencies
@@ -69,7 +69,7 @@
 | --- | ---: |
 | Documented | 49 |
 | Partially documented | 2 |
-| Undocumented | 4 |
+| Undocumented | 5 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -112,7 +112,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSearch/search/src/search/indexes.js` | `src` | `documented` | 0/0 | Documents nSearch indexes module behavior. |  |
 | `gFramework/nSearch/search/src/service/cache/defaultCacheService.js` | `src` | `documented` | 1/1 | Implements nSearch default cache service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/common.js` | `src` | `documented` | 16/16 | Template service used by generated nSearch schema services. During generation, placeholders are replaced with the owning search service, schema, and index identifiers. |  |
-| `gFramework/nSearch/search/src/service/config/defaultSearchConfigurationService.js` | `src` | `documented` | 23/23 | Implements nSearch default search configuration service business behavior and extension logic. |  |
+| `gFramework/nSearch/search/src/service/config/defaultSearchConfigurationService.js` | `src` | `documented` | 25/25 | Implements nSearch default search configuration service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/connection/defaultSearchEngineConnectionHandlerService.js` | `src` | `documented` | 6/6 | Implements nSearch default search engine connection handler service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements search default sample service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/handlers/defaultSearchPropertiesValueHandlerService.js` | `src` | `documented` | 5/5 | Implements nSearch default search properties value handler service business behavior and extension logic. |  |
@@ -148,6 +148,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSearch/search/test/searchControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nSearch/search/test/searchPipelineInitializerContract.test.js` | `test` | `documented` | 0/0 | Verifies core nSearch initializer pipelines keep cache hits immutable, serialize partial save failures safely, and invalidate cache after successful single-model search saves. |  |
 | `gFramework/nSearch/search/test/searchRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nSearch/search/test/searchRuntimeLifecycleContract.test.js` | `test` | `undocumented` | 0/0 | Validates search readiness and central shutdown contribution without requiring a live provider. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nSearch/search/test/searchServicePipelineContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 
 ## Extension Contract

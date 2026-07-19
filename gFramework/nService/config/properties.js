@@ -47,6 +47,7 @@ module.exports = {
         heartbeatIntervalMs: 10000,
         retryIntervalMs: 5000,
         requestTimeoutMs: 2000,
+        maxModulesPerRegistration: 512,
         healthPath: '/nodics/system/v0/health/ready'
     }
 };

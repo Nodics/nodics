@@ -32,9 +32,21 @@ module.exports = {
      * @param {*} options 
      */
     init: function (options) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-        });
+        if (SERVICE.DefaultRuntimeLifecycleService) {
+            SERVICE.DefaultRuntimeLifecycleService.registerContributor('searchEngines', {
+                order: 270,
+                shutdown: () => this.closeSearchEngines()
+            });
+        }
+        if (SERVICE.DefaultHealthService) {
+            SERVICE.DefaultHealthService.registerReadinessContributor('searchEngines', {
+                required: false,
+                order: 370,
+                description: 'Initialized search engine clients remain active',
+                check: () => this.getSearchReadiness()
+            });
+        }
+        return Promise.resolve(true);
     },
 
     /**
@@ -138,6 +150,27 @@ module.exports = {
 
     getSearchEngines: function () {
         return this.searchEngines;
+    },
+
+    /** Reports readiness for initialized search engines without activating or probing disabled providers. */
+    getSearchReadiness: function () {
+        return Object.keys(this.searchEngines).every(moduleName => Object.keys(this.searchEngines[moduleName]).every(tenant => {
+            let engine = this.searchEngines[moduleName][tenant];
+            return !engine || typeof engine.isActive !== 'function' || engine.isActive() === true;
+        }));
+    },
+
+    /** Closes each unique initialized search provider connection during central runtime shutdown. */
+    closeSearchEngines: async function () {
+        let connections = [];
+        Object.keys(this.searchEngines).forEach(moduleName => Object.keys(this.searchEngines[moduleName]).forEach(tenant => {
+            let engine = this.searchEngines[moduleName][tenant];
+            let connection = engine && typeof engine.getConnection === 'function' && engine.getConnection();
+            if (connection && !connections.includes(connection)) connections.push(connection);
+        }));
+        await Promise.all(connections.map(connection => typeof connection.close === 'function' ? connection.close() : true));
+        this.searchEngines = {};
+        return true;
     },
 
     /**

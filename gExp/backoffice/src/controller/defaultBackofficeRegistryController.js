@@ -32,6 +32,8 @@ module.exports = {
     deregister: function (request, callback) { return this.execute('deregister', request, callback); },
     /** Handles client-safe registry discovery requests. */
     list: function (request, callback) { return this.execute('list', request, callback); },
+    /** Handles authorized BackOffice client bootstrap requests. */
+    bootstrap: function (request, callback) { return this.execute('bootstrap', request, callback); },
     /** Handles secured registry diagnostic requests. */
     diagnostics: function (request, callback) { return this.execute('diagnostics', request, callback); }
 };

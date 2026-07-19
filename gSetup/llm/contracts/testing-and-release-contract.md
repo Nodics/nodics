@@ -68,7 +68,14 @@ audit retention, backup/restore, rollback, diagnostics, or support surfaces.
 Health endpoints follow this split:
 
 - liveness is low-disclosure and may be unauthenticated for orchestrators;
-- readiness is secured, topology-gated, sanitized, and project-extensible.
+- readiness has a low-disclosure public probe for orchestration; detailed
+  readiness is secured, topology-gated, sanitized, and project-extensible.
+
+Distributed validation must describe results in terms of active modules and
+runtime instances. Server configurations are test compositions and coordinate
+sources, not the capability unit. Registration tests must cover API and non-API
+modules, multiple instances of one module, identity mismatch, lease expiry,
+restart reconciliation, and authorized client filtering.
 
 When adding a provider or server/node responsibility, add or update readiness
 checks through the owning module or a later project module. Do not expose

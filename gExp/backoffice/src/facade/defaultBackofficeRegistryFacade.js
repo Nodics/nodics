@@ -26,6 +26,8 @@ module.exports = {
     deregister: request => SERVICE.DefaultBackofficeRegistryService.deregister(request),
     /** Delegates client-safe discovery. */
     list: request => SERVICE.DefaultBackofficeRegistryService.list(request),
+    /** Delegates authorized BackOffice client bootstrap. */
+    bootstrap: request => SERVICE.DefaultBackofficeRegistryService.bootstrap(request),
     /** Delegates secured registry diagnostics. */
     diagnostics: request => SERVICE.DefaultBackofficeRegistryService.diagnostics(request)
 };

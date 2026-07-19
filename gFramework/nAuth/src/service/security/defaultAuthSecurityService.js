@@ -202,6 +202,8 @@ module.exports = {
         };
         if (options.loginId) payload.loginId = options.loginId;
         if (options.serviceId) payload.serviceId = options.serviceId;
+        if (options.runtimeInstanceId) payload.runtimeInstanceId = options.runtimeInstanceId;
+        if (Array.isArray(options.modules) && options.modules.length > 0) payload.modules = options.modules.slice();
         if (options.principalType) payload.principalType = options.principalType;
         if (options.userGroups && options.userGroups.length > 0) payload.userGroups = options.userGroups;
         if (options.permissions && options.permissions.length > 0) payload.permissions = options.permissions;

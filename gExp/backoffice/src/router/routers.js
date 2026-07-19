@@ -51,6 +51,16 @@ module.exports = {
                 controller: 'DefaultBackofficeRegistryController',
                 operation: 'list'
             },
+            bootstrap: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'backoffice.bootstrap.view',
+                apiExposure: 'serviceRegistry',
+                key: '/bootstrap',
+                method: 'GET',
+                controller: 'DefaultBackofficeRegistryController',
+                operation: 'bootstrap'
+            },
             diagnostics: {
                 secured: true,
                 accessGroups: ['userGroup'],
