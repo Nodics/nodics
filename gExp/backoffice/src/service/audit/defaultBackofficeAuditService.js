@@ -29,7 +29,7 @@ module.exports = {
         let sanitized = {};
         ['eventType', 'outcome', 'reasonCode', 'moduleName', 'instanceId', 'moduleCount', 'operation',
             'storeMode', 'compatibilityStatus', 'changeClassification', 'activeHash', 'candidateHash', 'targetHash',
-            'principalId', 'tokenType', 'traceId', 'correlationId', 'requestId']
+            'principalId', 'tokenType', 'tenant', 'traceId', 'correlationId', 'requestId']
             .forEach(key => { if (source[key] !== undefined && source[key] !== null) sanitized[key] = source[key]; });
         sanitized.occurredAt = source.occurredAt || new Date().toISOString();
         return sanitized;

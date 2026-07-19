@@ -121,6 +121,12 @@ matching conditional deletion, unsupported atomic providers, replica
 visibility, ephemeral cache reconciliation, durable-history protection,
 sanitized auditing, restart recovery, and modular topology behavior.
 
+BackOffice administrative security changes must test human success, service
+identity rejection, missing principals, cross-tenant requests, action-specific
+permissions, refresh rate boundaries, independent principals, idempotent replay
+and in-flight deduplication, bounded state, audit correlation/redaction,
+topology, and regression behavior.
+
 When adding a provider or server/node responsibility, add or update readiness
 checks through the owning module or a later project module. Do not expose
 credentials, provider URLs, private file paths, tenant data, or raw diagnostics

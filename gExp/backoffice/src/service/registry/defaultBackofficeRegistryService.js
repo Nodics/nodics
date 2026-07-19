@@ -306,6 +306,7 @@ module.exports = {
 
     /** Returns bounded sanitized administrative inventory without bypassing registry authority. */
     adminList: async function (request) {
+        SERVICE.DefaultBackofficeAdministrativeSecurityService.validate(request);
         await this.expireStale();
         let query = this.getAdminQuery(request);
         let grouped = {};
@@ -333,6 +334,7 @@ module.exports = {
 
     /** Returns sanitized leases and aggregate state for one administrative module lookup. */
     adminDetail: async function (request) {
+        SERVICE.DefaultBackofficeAdministrativeSecurityService.validate(request);
         await this.expireStale();
         let moduleName = String(request && request.params && request.params.moduleName || '');
         if (!/^[A-Za-z][A-Za-z0-9_-]{0,127}$/.test(moduleName)) throw new CLASSES.NodicsError('ERR_BOF_00000', 'Invalid module name');
@@ -343,17 +345,21 @@ module.exports = {
 
     /** Forces existing observers to refresh one registered module under an action-specific permission. */
     refresh: async function (request) {
-        await this.expireStale();
         let moduleName = String(request && request.params && request.params.moduleName || '');
         if (!/^[A-Za-z][A-Za-z0-9_-]{0,127}$/.test(moduleName)) throw new CLASSES.NodicsError('ERR_BOF_00000', 'Invalid module name');
-        let instances = (await this.getStore().values()).map(entry => entry.value).filter(item => item.moduleName === moduleName && item.clientCallable);
-        if (instances.length === 0) throw new CLASSES.NodicsError('ERR_BOF_00000', 'Registered module was not found');
-        let unique = Array.from(new Map(instances.map(item => [item.instanceId, item])).values());
-        await Promise.all(unique.map(item => SERVICE.DefaultBackofficeAvailabilityService ? SERVICE.DefaultBackofficeAvailabilityService.observe(item) : false));
-        if (instances[0] && SERVICE.DefaultBackofficeDiscoveryService) await SERVICE.DefaultBackofficeDiscoveryService.discover(instances[0], undefined, request.authData);
-        await this.audit({ eventType: 'backoffice.registry.refresh', outcome: 'completed', moduleName: moduleName, moduleCount: instances.length });
-        return { code: 'SUC_BOF_00013', data: { moduleName: moduleName, refreshedInstances: unique.length,
-            discoveryRequested: Boolean(instances[0] && SERVICE.DefaultBackofficeDiscoveryService) } };
+        return SERVICE.DefaultBackofficeAdministrativeSecurityService.executeRefresh(request, moduleName, async () => {
+            await this.expireStale();
+            let instances = (await this.getStore().values()).map(entry => entry.value).filter(item => item.moduleName === moduleName && item.clientCallable);
+            if (instances.length === 0) throw new CLASSES.NodicsError('ERR_BOF_00000', 'Registered module was not found');
+            let unique = Array.from(new Map(instances.map(item => [item.instanceId, item])).values());
+            await Promise.all(unique.map(item => SERVICE.DefaultBackofficeAvailabilityService ? SERVICE.DefaultBackofficeAvailabilityService.observe(item) : false));
+            if (instances[0] && SERVICE.DefaultBackofficeDiscoveryService) await SERVICE.DefaultBackofficeDiscoveryService.discover(instances[0], undefined, request.authData);
+            let context = SERVICE.DefaultBackofficeAdministrativeSecurityService.getAuditContext(request);
+            await this.audit(Object.assign({ eventType: 'backoffice.registry.refresh', outcome: 'completed', moduleName: moduleName,
+                moduleCount: instances.length }, context));
+            return { code: 'SUC_BOF_00013', data: { moduleName: moduleName, refreshedInstances: unique.length,
+                discoveryRequested: Boolean(instances[0] && SERVICE.DefaultBackofficeDiscoveryService) } };
+        });
     },
 
     /** Returns the authorized module catalogue and compatibility metadata required to bootstrap a BackOffice client. */
@@ -389,6 +395,7 @@ module.exports = {
 
     /** Returns sanitized registry size and lifecycle counters. */
     diagnostics: async function (request) {
+        SERVICE.DefaultBackofficeAdministrativeSecurityService.validate(request);
         await this.expireStale();
         let activeModuleLeases = await this.getStore().size();
         let repository = SERVICE.DefaultBackofficeContractRepositoryService;

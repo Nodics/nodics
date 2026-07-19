@@ -33,10 +33,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 24 |
-| Test files | 12 |
+| Source files | 25 |
+| Test files | 13 |
 | Data files | 0 |
-| All module-owned files | 42 |
+| All module-owned files | 44 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -69,8 +69,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 30 |
-| Partially documented | 7 |
+| Documented | 31 |
+| Partially documented | 8 |
 | Undocumented | 1 |
 | Inventory only | 4 |
 
@@ -121,9 +121,11 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/src/service/discovery/defaultBackofficeDiscoveryService.js` | `src` | `documented` | 18/18 | Discovers effective Nodics contracts through existing System APIs and maintains normalized, client-safe observed snapshots. |  |
 | `gExp/backoffice/src/service/registry/defaultBackofficeRegistryService.js` | `src` | `documented` | 28/28 | Owns ephemeral observed module-instance leases for BackOffice discovery without becoming topology or activation authority. |  |
 | `gExp/backoffice/src/service/registry/defaultBackofficeRegistryStoreService.js` | `src` | `documented` | 15/15 | Provides the single asynchronous memory or nCache-owned distributed lease-store boundary used by BackOffice. |  |
+| `gExp/backoffice/src/service/security/defaultBackofficeAdministrativeSecurityService.js` | `src` | `documented` | 10/10 | Enforces human/service separation, tenant consistency, refresh throttling, idempotency, and audit correlation for BackOffice administration. |  |
 | `gExp/backoffice/src/utils/enums.js` | `src` | `documented` | 0/0 | Enum definition registry for this boundary. |  |
 | `gExp/backoffice/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Status and error definition registry for this boundary. |  |
 | `gExp/backoffice/src/utils/utils.js` | `src` | `documented` | 0/0 | Utility function registry for this boundary. |  |
+| `gExp/backoffice/test/backofficeAdministrativeSecurityService.test.js` | `test` | `partially-documented` | 0/0 | Validates human/service separation, tenant isolation, refresh throttling, idempotency, and bounded state. | add @override |
 | `gExp/backoffice/test/backofficeApiContract.test.js` | `test` | `partially-documented` | 0/0 | Validates registration schemas, route OpenAPI contracts, module-owned catalogue metadata, and compatibility boundaries. | add @override |
 | `gExp/backoffice/test/backofficeAuditService.test.js` | `test` | `partially-documented` | 0/0 | Validates BackOffice audit field allowlisting, secret redaction, publisher delegation, and disabled behavior. | add @override |
 | `gExp/backoffice/test/backofficeAvailabilityService.test.js` | `test` | `partially-documented` | 0/0 | Validates bounded readiness observation, freshness, failure isolation, deduplication, and multi-instance aggregation. | add @override |

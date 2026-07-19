@@ -27,3 +27,5 @@ this runtime module.
   diagnostics behavior.
 - `registry-administration-contract.md` defines bounded administrative search,
   sanitized detail, action-specific permissions, and observer-reuse refresh.
+- `administrative-security-contract.md` defines human/service separation,
+  permission ownership, tenant isolation, refresh abuse controls, and auditing.

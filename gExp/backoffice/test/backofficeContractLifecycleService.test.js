@@ -34,6 +34,7 @@ const repository = {
     rollback: async (moduleName, value, request) => { calls.push(['rollback', moduleName, value, request]); return { snapshot: active, activation: { revision: 5 } }; }
 };
 global.SERVICE = { DefaultBackofficeContractRepositoryService: repository,
+    DefaultBackofficeAdministrativeSecurityService: { validate: () => true, getAuditContext: () => ({ principalId: 'admin', correlationId: 'corr-1' }) },
     DefaultBackofficeAuditService: { record: async event => { audits.push(event); return event; } } };
 global.CONFIG = { get: key => key === 'backofficeRegistry' ? { contractHistory: { historyLimit: 50 } } : undefined };
 global.CLASSES = { NodicsError: class NodicsError extends Error {} };

@@ -113,6 +113,11 @@ atomic provider operation. Cache reconciliation may remove only ephemeral state
 absent from active leases and must not weaken durable active or pending contract
 retention.
 
+BackOffice human administration and module self-registration are separate
+identity domains. Administrative services must reject service tokens, require a
+stable principal, enforce tenant consistency, retain action-specific route
+permissions, and bound refresh throttling and idempotency state.
+
 ## Source Of Truth
 
 Behavior must come from Nodics source-of-truth artifacts:

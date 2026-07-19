@@ -63,6 +63,9 @@
 - Distributed expiry must use provider-atomic compare-and-delete semantics;
   stale scans must never delete renewed leases. Ephemeral caches reconcile from
   active leases without deleting durable active or pending contract history.
+- Human administrative routes must reject service tokens, require a stable
+  principal, preserve tenant consistency, use action-specific route permissions,
+  and apply bounded per-principal/module refresh idempotency and throttling.
 - Use existing Nodics lifecycle, module registry, service communication,
   schema/router governance, audit, and generated-artifact paths. Do not add a
   parallel loader, runtime activation mechanism, or authorization path.

@@ -96,6 +96,9 @@ module.exports = {
             return instances.length > 0 && availabilityService ? Object.assign({ moduleName: moduleName },
                 availabilityService.getModuleAvailability(instances)) : undefined;
         }).filter(Boolean);
+        let defaultTenant = CONFIG.get('defaultTenant') || 'default';
+        let administrativeProbe = { tenant: defaultTenant, requestId: 'test-runtime-contract-probe',
+            authData: { tokenType: 'access', tenant: defaultTenant, principalId: 'test-runtime-contract-probe' } };
         return {
             available: true,
             instances: entries.map(entry => ({
@@ -114,7 +117,7 @@ module.exports = {
                 .filter(name => /Contract(Snapshot|Activation)/i.test(name)).sort(),
             durableContracts: durableContracts.sort((left, right) => left.moduleName.localeCompare(right.moduleName)),
             availability: availability,
-            diagnostics: (await registry.diagnostics()).data
+            diagnostics: (await registry.diagnostics(administrativeProbe)).data
         };
     },
 

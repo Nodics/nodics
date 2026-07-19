@@ -64,18 +64,21 @@ module.exports = {
     },
     /** Returns the active durable snapshot for one module. */
     current: async function (request) {
+        SERVICE.DefaultBackofficeAdministrativeSecurityService.validate(request);
         let moduleName = this.validateCoordinates(request, false).moduleName;
         let snapshot = await this.getRepository().getActiveSnapshot(moduleName, request);
         return { code: 'SUC_BOF_00005', data: { snapshot: this.projectSnapshot(snapshot) || null } };
     },
     /** Returns bounded durable contract history for one module. */
     history: async function (request) {
+        SERVICE.DefaultBackofficeAdministrativeSecurityService.validate(request);
         let moduleName = this.validateCoordinates(request, false).moduleName;
         let items = await this.getRepository().getHistory(moduleName, Object.assign({}, request, { limit: this.getHistoryLimit(request) }));
         return { code: 'SUC_BOF_00006', data: { moduleName: moduleName, snapshots: items.map(item => this.projectSnapshot(item)) } };
     },
     /** Compares one retained snapshot with the active snapshot using operation identifiers. */
     compare: async function (request) {
+        SERVICE.DefaultBackofficeAdministrativeSecurityService.validate(request);
         let params = this.validateCoordinates(request, true);
         let active = await this.getRepository().getActiveSnapshot(params.moduleName, request);
         let candidate = await this.getRepository().getSnapshot(params.moduleName, params.hash, request);
@@ -96,29 +99,32 @@ module.exports = {
     },
     /** Approves a pending candidate with optimistic activation revision. */
     approve: async function (request) {
+        SERVICE.DefaultBackofficeAdministrativeSecurityService.validate(request);
         let params = this.validateCoordinates(request, true);
         let decision = this.getDecision(request);
         let result = await this.getRepository().approve(params.moduleName, params.hash, Object.assign({}, request, decision));
-        await this.auditDecision({ eventType: 'backoffice.contract.decision', operation: 'approve', outcome: 'approved',
-            moduleName: params.moduleName, candidateHash: params.hash, principalId: this.getRepository().getActor(request) });
+        await this.auditDecision(Object.assign({ eventType: 'backoffice.contract.decision', operation: 'approve', outcome: 'approved',
+            moduleName: params.moduleName, candidateHash: params.hash }, SERVICE.DefaultBackofficeAdministrativeSecurityService.getAuditContext(request)));
         return { code: 'SUC_BOF_00008', data: { snapshot: this.projectSnapshot(result.snapshot), activation: result.activation } };
     },
     /** Rejects a pending candidate with a required reason. */
     reject: async function (request) {
+        SERVICE.DefaultBackofficeAdministrativeSecurityService.validate(request);
         let params = this.validateCoordinates(request, true);
         let decision = this.getDecision(request);
         let snapshot = await this.getRepository().reject(params.moduleName, params.hash, Object.assign({}, request, decision));
-        await this.auditDecision({ eventType: 'backoffice.contract.decision', operation: 'reject', outcome: 'rejected',
-            moduleName: params.moduleName, candidateHash: params.hash, principalId: this.getRepository().getActor(request) });
+        await this.auditDecision(Object.assign({ eventType: 'backoffice.contract.decision', operation: 'reject', outcome: 'rejected',
+            moduleName: params.moduleName, candidateHash: params.hash }, SERVICE.DefaultBackofficeAdministrativeSecurityService.getAuditContext(request)));
         return { code: 'SUC_BOF_00009', data: { snapshot: this.projectSnapshot(snapshot) } };
     },
     /** Rolls back the active pointer to one retained safe historical snapshot. */
     rollback: async function (request) {
+        SERVICE.DefaultBackofficeAdministrativeSecurityService.validate(request);
         let params = this.validateCoordinates(request, true);
         let decision = this.getDecision(request);
         let result = await this.getRepository().rollback(params.moduleName, params.hash, Object.assign({}, request, decision));
-        await this.auditDecision({ eventType: 'backoffice.contract.decision', operation: 'rollback', outcome: 'activated',
-            moduleName: params.moduleName, targetHash: params.hash, principalId: this.getRepository().getActor(request) });
+        await this.auditDecision(Object.assign({ eventType: 'backoffice.contract.decision', operation: 'rollback', outcome: 'activated',
+            moduleName: params.moduleName, targetHash: params.hash }, SERVICE.DefaultBackofficeAdministrativeSecurityService.getAuditContext(request)));
         return { code: 'SUC_BOF_00010', data: { snapshot: this.projectSnapshot(result.snapshot), activation: result.activation } };
     }
 };

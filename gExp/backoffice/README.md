@@ -59,6 +59,8 @@ The same contract governs deduplicated state-transition events and sanitized
 probe/publication metrics through Nodics' existing event capability.
 Bounded administrative inventory, detail, and governed refresh behavior follow
 [the registry administration contract](docs/registry-administration-contract.md).
+Human/service separation and the administrative permission matrix follow
+[the administrative security contract](docs/administrative-security-contract.md).
 
 ## Customization
 

@@ -35,6 +35,8 @@ let discoveryAuthData = [];
 let diagnosticsAuthData;
 let availabilitySchedules = [];
 global.SERVICE = {
+    DefaultBackofficeAdministrativeSecurityService: { validate: () => true, getAuditContext: () => ({ principalId: 'operator' }),
+        executeRefresh: (request, moduleName, executor) => executor() },
     DefaultBackofficeRegistryStoreService: store,
     DefaultBackofficeContractService: contractService,
     DefaultBackofficeAuditService: { record: event => { auditEvents.push(event); return Promise.resolve(event); } },

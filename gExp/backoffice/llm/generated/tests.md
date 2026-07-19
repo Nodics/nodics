@@ -4,6 +4,7 @@
 
 ## Hand-Authored Tests
 
+- `gExp/backoffice/test/backofficeAdministrativeSecurityService.test.js`
 - `gExp/backoffice/test/backofficeApiContract.test.js`
 - `gExp/backoffice/test/backofficeAuditService.test.js`
 - `gExp/backoffice/test/backofficeAvailabilityService.test.js`

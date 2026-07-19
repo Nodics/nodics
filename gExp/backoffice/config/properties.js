@@ -79,6 +79,14 @@ module.exports = {
             failClosed: false,
             publisherService: undefined
         },
+        administration: {
+            rejectServiceTokens: true,
+            requirePrincipal: true,
+            refreshWindowMs: 60000,
+            refreshMaxPerWindow: 5,
+            idempotencyTtlMs: 60000,
+            maxIdempotencyEntries: 1000
+        },
         allowedSchemes: ['http', 'https'],
         clientSafeMetadata: ['moduleName', 'instanceId', 'version', 'moduleKind', 'capabilities', 'endpoint', 'healthPath', 'state', 'lastSeenAt', 'backoffice']
     }
