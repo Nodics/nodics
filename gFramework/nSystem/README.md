@@ -63,6 +63,14 @@ contract generated under the active server or node `generated/openapi`
 directory. It is a public documentation route only when the `openApiContract`
 exposure category is enabled.
 
+`GET /nodics/system/v0/contract/openapi/internal` returns that same authoritative
+effective contract through the secured internal-service-token and
+`serviceRegistry` exposure boundary. BackOffice capability discovery uses this
+route so production discovery does not require public documentation exposure.
+When a generated file is unavailable, the service builds the document from the
+already-loaded effective router and schema registries through the existing
+OpenAPI generator; it does not add another loader or persist a second contract.
+
 `GET /nodics/system/v0/contract/swagger` returns interactive Swagger UI for that
 same contract. It is browser-accessible for local/developer documentation when
 `openApiContract` exposure is enabled. Swagger UI loads the local runtime

@@ -76,6 +76,26 @@ module.exports = {
                 contractContext = this.resolveOpenApiContractContext();
                 fs.readFile(contractContext.filePath, 'utf8', (error, contents) => {
                     if (error) {
+                        if (error.code === 'ENOENT') {
+                            try {
+                                let runtimeContract = this.buildRuntimeOpenApiContract();
+                                resolve({
+                                    code: 'SUC_SYS_00001',
+                                    data: runtimeContract,
+                                    metadata: {
+                                        contractType: 'openapi',
+                                        contentType: 'application/json; charset=utf-8',
+                                        rawResponse: true,
+                                        moduleName: contractContext.moduleName,
+                                        artifactPath: 'runtime-effective'
+                                    }
+                                });
+                                return;
+                            } catch (runtimeError) {
+                                reject(this.enrichError(runtimeError, contractContext, 'Runtime OpenAPI contract could not be built'));
+                                return;
+                            }
+                        }
                         reject(this.enrichError(error, contractContext, 'OpenAPI contract file could not be read'));
                         return;
                     }
@@ -98,6 +118,22 @@ module.exports = {
             } catch (error) {
                 reject(this.enrichError(error, contractContext, 'OpenAPI contract resolution failed'));
             }
+        });
+    },
+
+    /** Builds the same governed OpenAPI document from already-loaded effective runtime schemas and routers when no generated file is present. */
+    buildRuntimeOpenApiContract: function () {
+        let generator = SERVICE.DefaultOpenapiContractGeneratorService;
+        let routerConfiguration = SERVICE.DefaultRouterConfigurationService;
+        let databaseConfiguration = SERVICE.DefaultDatabaseConfigurationService;
+        if (!generator || !routerConfiguration || !databaseConfiguration || typeof generator.createDocument !== 'function') {
+            throw new Error('Effective runtime OpenAPI services are unavailable');
+        }
+        return generator.createDocument({
+            rawRouters: routerConfiguration.getRawRouters(),
+            rawSchema: databaseConfiguration.getRawSchema(),
+            options: { includeRuntimeSchemas: true },
+            warnings: []
         });
     },
 

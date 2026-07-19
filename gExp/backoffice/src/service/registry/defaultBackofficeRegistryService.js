@@ -114,6 +114,7 @@ module.exports = {
             expiresAt: now + leaseTtlMs
         };
         await store.set(key, observed, leaseTtlMs);
+        if (SERVICE.DefaultBackofficeDiscoveryService) SERVICE.DefaultBackofficeDiscoveryService.scheduleDiscovery(observed);
         existing ? this._metrics.renewals++ : this._metrics.registrations++;
         if (request._batchOutcomes) request._batchOutcomes.push(existing ? 'renewed' : 'registered');
         if (!request._batchRegistration) await this.audit({ eventType: 'backoffice.registry.registration',
@@ -237,10 +238,12 @@ module.exports = {
             let instances = modules[moduleName];
             let metadata = instances.map(instance => instance.backoffice).find(value => value && value.enabled !== false);
             if (!metadata) return;
+            let snapshot = SERVICE.DefaultBackofficeDiscoveryService && SERVICE.DefaultBackofficeDiscoveryService.getSnapshot(moduleName);
             catalogue[moduleName] = Object.assign({}, metadata, {
                 moduleName: moduleName,
                 activeModuleLeases: instances.length,
-                compatibility: this.evaluateCompatibility(metadata, clientContractVersion)
+                compatibility: this.evaluateCompatibility(metadata, clientContractVersion),
+                contract: snapshot
             });
         });
         return catalogue;
@@ -252,6 +255,22 @@ module.exports = {
         if (statuses.includes('INCOMPATIBLE')) return 'INCOMPATIBLE';
         if (statuses.includes('DEGRADED')) return 'DEGRADED';
         return 'COMPATIBLE';
+    },
+
+    /** Selects one authorized compatible UI-composition provider from module-owned metadata and layered preference. */
+    selectUiComposition: function (catalogue) {
+        let config = this.getConfiguration().uiComposition || {};
+        let fallback = { enabled: false, fallbackMode: 'STATIC_RECOVERY_SHELL' };
+        if (config.enabled === false) return fallback;
+        let role = config.providerRole || 'UI_COMPOSITION_PROVIDER';
+        let providers = Object.keys(catalogue).filter(moduleName => {
+            let metadata = catalogue[moduleName];
+            return Array.isArray(metadata.roles) && metadata.roles.includes(role) && metadata.uiComposition &&
+                metadata.compatibility.status !== 'INCOMPATIBLE';
+        }).sort();
+        let providerModule = config.preferredModule && providers.includes(config.preferredModule) ? config.preferredModule : providers[0];
+        if (!providerModule) return fallback;
+        return Object.assign({ enabled: true, providerModule: providerModule }, catalogue[providerModule].uiComposition);
     },
 
     /** Returns the authorized module catalogue and compatibility metadata required to bootstrap a BackOffice client. */
@@ -278,7 +297,8 @@ module.exports = {
                 }),
                 modules: result.data.modules,
                 catalogue: catalogue,
-                availability: this.buildAvailability(result.data.modules)
+                availability: this.buildAvailability(result.data.modules),
+                uiComposition: this.selectUiComposition(catalogue)
             }
         };
     },
@@ -293,7 +313,8 @@ module.exports = {
                 activeModuleLeases: activeModuleLeases,
                 activeInstances: activeModuleLeases,
                 metrics: Object.assign({}, this._metrics),
-                store: this.getStore().diagnostics()
+                store: this.getStore().diagnostics(),
+                discovery: SERVICE.DefaultBackofficeDiscoveryService ? SERVICE.DefaultBackofficeDiscoveryService.getDiagnostics() : undefined
             }
         };
     },

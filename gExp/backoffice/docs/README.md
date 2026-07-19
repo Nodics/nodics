@@ -16,3 +16,6 @@ this runtime module.
   compatibility negotiation, and audit events.
 - `environment-deployment-contract.md` defines deployment configuration through
   the existing `envs` module-group layering without named-environment coupling.
+- `capability-discovery-contract.md` defines module-owned provider roles,
+  bounded OpenAPI discovery, normalized snapshots, change classification, and
+  CMS UI-composition provider selection.

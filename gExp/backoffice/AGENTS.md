@@ -30,6 +30,13 @@
   module in `package.json#nodics.backoffice`. BackOffice validates and
   permission-filters that metadata; it must not maintain a duplicated manual
   module catalogue.
+- Discover effective contracts through existing System/OpenAPI authorities.
+  Normalize and hash client-safe observations; never add a parallel schema or
+  router loader, retain arbitrary source documents, or let BackOffice edit a
+  target module's contract.
+- UI-composition providers declare non-executable defaults. Provider selection
+  may be layered, but BackOffice must not proxy CMS data-plane traffic or return
+  executable code.
 - Environment-specific provider, namespace, lease, audit, readiness, and
   workload-identity settings belong in the established group modules below
   `envs`. Never hardcode a named environment in reusable BackOffice behavior.

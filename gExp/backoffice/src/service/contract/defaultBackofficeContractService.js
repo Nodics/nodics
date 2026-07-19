@@ -35,13 +35,26 @@ module.exports = {
         if (metadata === undefined) return true;
         if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) return false;
         let allowed = ['enabled', 'capabilityId', 'displayName', 'category', 'icon', 'contractVersion',
-            'minimumClientContractVersion', 'requiredPermissions', 'navigation'];
+            'minimumClientContractVersion', 'roles', 'discovery', 'uiComposition', 'requiredPermissions', 'navigation'];
         if (Object.keys(metadata).some(key => !allowed.includes(key))) return false;
         if (metadata.enabled !== undefined && typeof metadata.enabled !== 'boolean') return false;
         if (['capabilityId', 'displayName', 'category', 'icon'].some(key => metadata[key] !== undefined && !this.isString(metadata[key]))) return false;
         if (['contractVersion', 'minimumClientContractVersion'].some(key => metadata[key] !== undefined &&
             (!Number.isInteger(metadata[key]) || metadata[key] < 1))) return false;
         if (metadata.requiredPermissions !== undefined && !this.isStringList(metadata.requiredPermissions)) return false;
+        let roleValues = contracts.moduleRole.enum;
+        if (metadata.roles !== undefined && (!this.isStringList(metadata.roles, roleValues.length) ||
+            metadata.roles.some(role => !roleValues.includes(role)))) return false;
+        if (metadata.discovery !== undefined && (!metadata.discovery || typeof metadata.discovery !== 'object' ||
+            Array.isArray(metadata.discovery) || Object.keys(metadata.discovery).some(key => !['openApiPath', 'contractVersion'].includes(key)) ||
+            (metadata.discovery.openApiPath !== undefined && (!this.isString(metadata.discovery.openApiPath, 512) ||
+                !metadata.discovery.openApiPath.startsWith('/'))) || (metadata.discovery.contractVersion !== undefined &&
+                (!Number.isInteger(metadata.discovery.contractVersion) || metadata.discovery.contractVersion < 1)))) return false;
+        if (metadata.uiComposition !== undefined && (!metadata.roles || !metadata.roles.includes('UI_COMPOSITION_PROVIDER') ||
+            !metadata.uiComposition || typeof metadata.uiComposition !== 'object' || Array.isArray(metadata.uiComposition) ||
+            Object.keys(metadata.uiComposition).some(key => !['site', 'catalog', 'defaultPage', 'fallbackMode'].includes(key)) ||
+            !['site', 'catalog', 'defaultPage'].every(key => this.isString(metadata.uiComposition[key])) ||
+            metadata.uiComposition.fallbackMode !== 'STATIC_RECOVERY_SHELL')) return false;
         if (metadata.contractVersion !== undefined && metadata.minimumClientContractVersion !== undefined &&
             metadata.minimumClientContractVersion > metadata.contractVersion) return false;
         return metadata.navigation === undefined || Array.isArray(metadata.navigation) && metadata.navigation.length <= 64 &&

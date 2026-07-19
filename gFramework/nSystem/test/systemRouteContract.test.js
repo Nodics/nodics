@@ -36,6 +36,7 @@ const expectedRoutes = [
     { key: '/config/runtime/request/reject', method: 'POST', controller: 'DefaultConfigurationController', operation: 'rejectRuntimeConfigurationActivationRequest', secured: true, permission: 'runtime.config.request.reject' },
     { key: '/config/runtime/request/activate', method: 'POST', controller: 'DefaultConfigurationController', operation: 'activateRuntimeConfigurationActivationRequest', secured: true, permission: 'runtime.config.request.activate' },
     { key: '/config/runtime/rollback', method: 'POST', controller: 'DefaultConfigurationController', operation: 'rollbackRuntimeConfiguration', secured: true, permission: 'runtime.config.rollback' },
+    { key: '/contract/openapi/internal', method: 'GET', controller: 'DefaultApiContractController', operation: 'getOpenApiContract', secured: true, permissionConfig: 'authSecurity.internalToken.routePermission' },
     { key: '/contract/openapi', method: 'GET', controller: 'DefaultApiContractController', operation: 'getOpenApiContract', secured: false, permission: 'system.contract.openapi.view' },
     { key: '/contract/swagger', method: 'GET', controller: 'DefaultApiContractController', operation: 'getSwaggerUi', secured: false, permission: 'system.contract.swagger.view' },
     { key: '/contract/swagger/asset/:assetName', method: 'GET', controller: 'DefaultApiContractController', operation: 'getSwaggerAsset', secured: false, permission: 'system.contract.swagger.view' },
@@ -50,6 +51,9 @@ const livenessRoute = routes.find(route => route.key === '/health/live' && route
 assert.strictEqual(livenessRoute.publicProbe, true, 'Liveness route must bypass enterprise/tenant request pipeline resolution');
 const readinessRoute = routes.find(route => route.key === '/health/ready' && route.method === 'GET');
 assert.strictEqual(readinessRoute.publicProbe, true, 'Readiness probe must bypass human authentication and tenant resolution');
+const internalContractRoute = routes.find(route => route.key === '/contract/openapi/internal' && route.method === 'GET');
+assert.strictEqual(internalContractRoute.apiExposure, 'serviceRegistry');
+assert.notStrictEqual(internalContractRoute.publicAccess, true, 'Internal contract discovery must not use public documentation access');
 ['/contract/openapi', '/contract/swagger', '/contract/swagger/asset/:assetName'].forEach((key) => {
     const route = routes.find(item => item.key === key && item.method === 'GET');
     assert.strictEqual(route.publicAccess, true, key + ' must be browser-accessible when openApiContract exposure is enabled');

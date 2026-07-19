@@ -6,6 +6,7 @@
 
 - `gExp/backoffice/test/backofficeApiContract.test.js`
 - `gExp/backoffice/test/backofficeAuditService.test.js`
+- `gExp/backoffice/test/backofficeDiscoveryService.test.js`
 - `gExp/backoffice/test/backofficeDistributedRegistryStore.test.js`
 - `gExp/backoffice/test/backofficeModuleBoundaryContract.test.js`
 - `gExp/backoffice/test/backofficeRegistryRouteContract.test.js`

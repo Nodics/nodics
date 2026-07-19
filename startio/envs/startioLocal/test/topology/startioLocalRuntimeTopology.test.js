@@ -299,8 +299,9 @@ async function runModularSmoke() {
         let expectedModules = Array.from(new Set(runtimes.flatMap(runtime => runtime.contract.activeModules)));
         let initialRegistry = await waitForRegistry(backofficeRuntime, snapshot => {
             let observed = snapshot.instances.map(instance => instance.moduleName);
-            return expectedModules.every(moduleName => observed.includes(moduleName));
-        }, 'registration of every active module');
+            return expectedModules.every(moduleName => observed.includes(moduleName)) &&
+                snapshot.discoveries.some(discovery => discovery.moduleName === 'cms' && discovery.operations > 0);
+        }, 'registration of every active module and CMS capability discovery');
 
         let cmsIndex = runtimes.findIndex(runtime => runtime.serverName === 'startioLocalCmsServer');
         let previousCmsRuntime = runtimes[cmsIndex];
@@ -319,6 +320,7 @@ async function runModularSmoke() {
             registry: {
                 activeInstances: reconciledRegistry.diagnostics.activeInstances,
                 registeredModules: Array.from(new Set(reconciledRegistry.instances.map(instance => instance.moduleName))).length,
+                discoveredModules: reconciledRegistry.discoveries.length,
                 cmsRestartReconciled: true
             }
         };

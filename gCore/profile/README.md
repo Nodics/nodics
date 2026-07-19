@@ -29,6 +29,9 @@ Profile owns its optional BackOffice catalogue declaration in `package.json`.
 The declaration identifies the identity capability, navigation hint, contract
 version, and discovery permission; it does not transfer authentication or
 authorization authority to BackOffice.
+Its provider roles and relative OpenAPI discovery coordinate allow BackOffice
+to observe effective Profile operations without creating a second identity or
+route contract.
 
 User-group save and update interceptors validate parent existence, active
 parents, acyclic inheritance, and permission catalog membership. Principal

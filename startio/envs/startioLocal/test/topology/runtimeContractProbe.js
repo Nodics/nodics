@@ -74,12 +74,21 @@ module.exports = {
         let registry = typeof SERVICE !== 'undefined' && SERVICE.DefaultBackofficeRegistryService;
         if (!registry) return { available: false, instances: [] };
         let entries = await registry.getStore().values();
+        let discovery = SERVICE.DefaultBackofficeDiscoveryService;
+        let moduleNames = Array.from(new Set(entries.map(entry => entry.value.moduleName)));
+        let snapshots = discovery ? discovery.getSnapshots(moduleNames) : {};
         return {
             available: true,
             instances: entries.map(entry => ({
                 moduleName: entry.value.moduleName,
                 instanceId: entry.value.instanceId,
                 clientCallable: entry.value.clientCallable === true
+            })),
+            discoveries: Object.keys(snapshots).sort().map(moduleName => ({
+                moduleName: moduleName,
+                hash: snapshots[moduleName].hash,
+                operations: snapshots[moduleName].operations.length,
+                changeClassification: snapshots[moduleName].latestChangeClassification
             })),
             diagnostics: (await registry.diagnostics()).data
         };

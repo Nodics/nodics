@@ -17,12 +17,55 @@
  * @override Later modules may replace these schemas while preserving field meaning, security boundaries, and contract versions.
  */
 const moduleName = { type: 'string', pattern: '^[A-Za-z][A-Za-z0-9_-]{0,127}$' };
+const moduleRole = { enum: ['AUTHENTICATION_PROVIDER', 'CONTROL_PLANE_PROVIDER', 'UI_COMPOSITION_PROVIDER',
+    'FUNCTIONAL_CAPABILITY_PROVIDER', 'MONITORING_PROVIDER'] };
+const uiComposition = {
+    type: 'object', additionalProperties: false, required: ['site', 'catalog', 'defaultPage', 'fallbackMode'],
+    properties: {
+        site: { type: 'string' }, catalog: { type: 'string' }, defaultPage: { type: 'string' },
+        fallbackMode: { enum: ['STATIC_RECOVERY_SHELL'] }
+    }
+};
+const discovery = {
+    type: 'object', additionalProperties: false,
+    properties: {
+        openApiPath: { type: 'string' }, contractVersion: { type: 'integer', minimum: 1 }
+    }
+};
+const capabilityOperation = {
+    type: 'object', additionalProperties: false, required: ['operationId', 'path', 'method', 'permissions'],
+    properties: {
+        operationId: { type: 'string' }, path: { type: 'string' }, method: { enum: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'] },
+        schemaName: { type: 'string' }, operation: { type: 'string' },
+        permissions: { type: 'array', uniqueItems: true, items: { type: 'string' } }
+    }
+};
+const capabilitySnapshot = {
+    type: 'object', additionalProperties: false,
+    required: ['moduleName', 'contractType', 'contractVersion', 'operations', 'schemas', 'hash', 'discoveredAt', 'changeClassification'],
+    properties: {
+        moduleName: moduleName, contractType: { enum: ['OPENAPI'] }, contractVersion: { type: 'integer', minimum: 1 },
+        operations: { type: 'array', items: capabilityOperation }, schemas: { type: 'array', uniqueItems: true, items: { type: 'string' } },
+        hash: { type: 'string', pattern: '^[a-f0-9]{64}$' }, discoveredAt: { type: 'string', format: 'date-time' },
+        changeClassification: { enum: ['INITIAL', 'UNCHANGED', 'NON_BREAKING', 'POTENTIALLY_BREAKING', 'BREAKING'] },
+        latestChangeClassification: { enum: ['INITIAL', 'UNCHANGED', 'NON_BREAKING', 'POTENTIALLY_BREAKING', 'BREAKING'] },
+        candidateHash: { type: 'string', pattern: '^[a-f0-9]{64}$' }
+    }
+};
+const uiCompositionSelection = {
+    type: 'object', required: ['enabled', 'fallbackMode'], properties: {
+        enabled: { type: 'boolean' }, providerModule: moduleName, site: { type: 'string' }, catalog: { type: 'string' },
+        defaultPage: { type: 'string' }, fallbackMode: { enum: ['STATIC_RECOVERY_SHELL'] }
+    }
+};
 const backofficeMetadata = {
     type: 'object', additionalProperties: false,
     properties: {
         enabled: { type: 'boolean' }, capabilityId: { type: 'string' }, displayName: { type: 'string' },
         category: { type: 'string' }, icon: { type: 'string' }, contractVersion: { type: 'integer', minimum: 1 },
         minimumClientContractVersion: { type: 'integer', minimum: 1 },
+        roles: { type: 'array', uniqueItems: true, items: moduleRole }, discovery: discovery,
+        uiComposition: uiComposition,
         requiredPermissions: { type: 'array', uniqueItems: true, items: { type: 'string' } },
         navigation: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['id', 'label'], properties: {
             id: { type: 'string' }, label: { type: 'string' }, route: { type: 'string' }, order: { type: 'integer' },
@@ -52,6 +95,12 @@ const moduleLease = {
 
 module.exports = {
     moduleName: moduleName,
+    moduleRole: moduleRole,
+    uiComposition: uiComposition,
+    discovery: discovery,
+    capabilityOperation: capabilityOperation,
+    capabilitySnapshot: capabilitySnapshot,
+    uiCompositionSelection: uiCompositionSelection,
     backofficeMetadata: backofficeMetadata,
     registration: registration,
     registrationBatch: {
@@ -69,8 +118,9 @@ module.exports = {
         clientContractVersion: { type: 'integer', minimum: 1 }, moduleContractVersion: { type: 'integer', minimum: 1 },
         minimumClientContractVersion: { type: 'integer', minimum: 1 }, status: { enum: ['COMPATIBLE', 'DEGRADED', 'INCOMPATIBLE'] }
     } },
-    bootstrapData: { type: 'object', required: ['compatibility', 'modules', 'catalogue', 'availability'], properties: {
-        compatibility: { type: 'object' }, modules: { type: 'object' }, catalogue: { type: 'object' }, availability: { type: 'object' }
+    bootstrapData: { type: 'object', required: ['compatibility', 'modules', 'catalogue', 'availability', 'uiComposition'], properties: {
+        compatibility: { type: 'object' }, modules: { type: 'object' }, catalogue: { type: 'object' },
+        availability: { type: 'object' }, uiComposition: uiCompositionSelection
     } },
     diagnosticsData: { type: 'object', required: ['activeModuleLeases', 'metrics', 'store'], properties: {
         activeModuleLeases: { type: 'integer', minimum: 0 }, metrics: { type: 'object' }, store: { type: 'object' }

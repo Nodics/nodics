@@ -46,6 +46,13 @@
             "icon": "workflow",
             "contractVersion": 1,
             "minimumClientContractVersion": 1,
+            "roles": [
+                "FUNCTIONAL_CAPABILITY_PROVIDER"
+            ],
+            "discovery": {
+                "openApiPath": "/nodics/system/v0/contract/openapi/internal",
+                "contractVersion": 1
+            },
             "requiredPermissions": [
                 "workflow.backoffice.view"
             ],

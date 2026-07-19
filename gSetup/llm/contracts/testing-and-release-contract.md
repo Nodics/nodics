@@ -88,6 +88,11 @@ unknown-field rejection, secret-field rejection, module-owned metadata,
 permission filtering, compatible/degraded/incompatible negotiation, sanitized
 auditing, and the absence of named-environment coupling.
 
+BackOffice capability discovery changes must additionally test source-owner
+filtering, safe URL construction, timeout and response bounds, deterministic
+hashing, all change classifications, preservation of the last safe snapshot,
+authorized provider selection, fallback behavior, and asynchronous registration.
+
 When adding a provider or server/node responsibility, add or update readiness
 checks through the owning module or a later project module. Do not expose
 credentials, provider URLs, private file paths, tenant data, or raw diagnostics

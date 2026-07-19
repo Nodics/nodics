@@ -143,6 +143,13 @@ BackOffice or another aggregator may permission-filter and negotiate those
 contributions but must not create a manually duplicated catalogue, proxy target
 operations, or become target authorization authority.
 
+Capability discovery must consume existing effective Nodics contract APIs,
+filter their ownership metadata, and retain only bounded normalized snapshots.
+It must not introduce another schema/router loader or editable contract
+authority. Discovery is asynchronous to readiness, exact-origin, timeout and
+response-size bounded, redirect governed, auditable, and safe on invalid or
+breaking input.
+
 Environment-specific provider selection, namespaces, endpoints, credentials,
 timeouts, lease policy, alert integration, and audit publishers belong in the
 existing group modules below `envs`. Reusable integrations must not encode a

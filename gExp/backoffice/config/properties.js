@@ -34,6 +34,21 @@ module.exports = {
             registryContractVersion: 1,
             minimumClientContractVersion: 1
         },
+        discovery: {
+            enabled: true,
+            timeoutMs: 3000,
+            refreshIntervalMs: 300000,
+            maxResponseBytes: 5242880,
+            maxPaths: 5000,
+            maxOperations: 10000,
+            allowRedirects: false,
+            allowedHosts: []
+        },
+        uiComposition: {
+            enabled: true,
+            providerRole: 'UI_COMPOSITION_PROVIDER',
+            preferredModule: undefined
+        },
         audit: {
             enabled: true,
             failClosed: false,

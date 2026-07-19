@@ -55,11 +55,17 @@ function createService() {
 }
 
 async function run() {
-    let attempts = { safe: 0, unsafe: 0, idempotent: 0, slow: 0 };
+    let attempts = { safe: 0, unsafe: 0, idempotent: 0, slow: 0, large: 0, redirect: 0 };
     let server = http.createServer((request, response) => {
         let name = request.url.substring(1);
         attempts[name]++;
         if (name === 'slow') return setTimeout(() => response.end('{}'), 100);
+        if (name === 'large') return response.end(JSON.stringify({ payload: 'x'.repeat(256) }));
+        if (name === 'redirect') {
+            response.statusCode = 302;
+            response.setHeader('location', baseUri + '/safe');
+            return response.end();
+        }
         if ((name === 'safe' || name === 'idempotent') && attempts[name] === 1) {
             response.statusCode = 503;
             return response.end('{}');
@@ -87,6 +93,10 @@ async function run() {
     assert.strictEqual(attempts.idempotent, 2, 'idempotent writes may retry');
 
     await assert.rejects(service.fetch({ method: 'GET', uri: baseUri + '/slow', headers: {}, json: true, maxAttempts: 1, nodicsContext: { moduleName: 'slow' } }), error => error.code === 'ETIMEDOUT');
+    await assert.rejects(service.fetch({ method: 'GET', uri: baseUri + '/large', headers: {}, json: true,
+        maxAttempts: 1, maxResponseBytes: 32, nodicsContext: { moduleName: 'large' } }));
+    await assert.rejects(service.fetch({ method: 'GET', uri: baseUri + '/redirect', headers: {}, json: true,
+        maxAttempts: 1, followRedirects: false, nodicsContext: { moduleName: 'redirect' } }));
     assert.strictEqual(service.getTransportDiagnostics().timeouts, 1);
     assert(service._agents.http.options.keepAlive, 'HTTP connections must use the governed pool');
 

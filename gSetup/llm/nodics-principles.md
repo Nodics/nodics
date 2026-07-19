@@ -48,6 +48,10 @@ authoritative module metadata. BackOffice may validate, observe, aggregate,
 permission-filter, and negotiate that metadata, but it must not maintain a
 second manually authored catalogue or infer target-module permissions.
 
+BackOffice discovers capabilities through existing effective Nodics contract
+APIs. Its normalized snapshots are bounded observations; they never become a
+second schema, router, permission, or business-contract authority.
+
 Runtime-bound service tokens may declare the active modules hosted by the
 requesting runtime. The identity provider validates declaration shape, bounds,
 and authenticated workload authority; it must not compare that declaration to

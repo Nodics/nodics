@@ -241,6 +241,8 @@ module.exports = {
             json: options.responseType || true,
             timeoutMs: options.timeoutMs,
             maxAttempts: options.maxAttempts,
+            maxResponseBytes: options.maxResponseBytes,
+            followRedirects: options.followRedirects,
             idempotencyKey: options.idempotencyKey,
             nodicsContext: {
                 layer: 'remote-module',
@@ -260,6 +262,8 @@ module.exports = {
      * @param {Object} [options.params] Query parameters.
      * @param {Object} [options.requestBody] Request body.
      * @param {Object} [options.header] Additional headers.
+     * @param {number} [options.maxResponseBytes] Maximum accepted response body size.
+     * @param {boolean} [options.followRedirects=true] Whether HTTP redirects may be followed.
      * @returns {Object} Fetch request options with external context metadata.
      */
     buildExternalRequest: function (options) {
@@ -290,6 +294,8 @@ module.exports = {
             rejectUnauthorized: options.rejectUnauthorized !== false,
             timeoutMs: options.timeoutMs,
             maxAttempts: options.maxAttempts,
+            maxResponseBytes: options.maxResponseBytes,
+            followRedirects: options.followRedirects,
             idempotencyKey: options.idempotencyKey,
             nodicsContext: {
                 layer: 'external-http',
@@ -348,7 +354,9 @@ module.exports = {
                 let fetchOptions = {
                     method: requestUrl.method,
                     headers: requestUrl.headers,
-                    signal: controller.signal
+                    signal: controller.signal,
+                    size: requestUrl.maxResponseBytes,
+                    redirect: requestUrl.followRedirects === false ? 'error' : 'follow'
                 };
                 if (!['GET', 'HEAD'].includes(String(requestUrl.method).toUpperCase()) && requestUrl.body !== undefined) {
                     fetchOptions.body = typeof requestUrl.body === 'string' ? requestUrl.body : JSON.stringify(requestUrl.body);

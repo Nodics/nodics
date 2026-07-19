@@ -45,6 +45,20 @@
             "icon": "content",
             "contractVersion": 1,
             "minimumClientContractVersion": 1,
+            "roles": [
+                "UI_COMPOSITION_PROVIDER",
+                "FUNCTIONAL_CAPABILITY_PROVIDER"
+            ],
+            "discovery": {
+                "openApiPath": "/nodics/system/v0/contract/openapi/internal",
+                "contractVersion": 1
+            },
+            "uiComposition": {
+                "site": "nodicsBackOffice",
+                "catalog": "nodicsBackOfficeContentCatalog",
+                "defaultPage": "backofficeDashboard",
+                "fallbackMode": "STATIC_RECOVERY_SHELL"
+            },
             "requiredPermissions": [
                 "cms.backoffice.view"
             ],

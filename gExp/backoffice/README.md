@@ -48,6 +48,8 @@ See [the registry contract](docs/module-registry-contract.md) and
 compatibility, and audit behavior is defined by
 [the API catalogue contract](docs/api-catalogue-contract.md); deployment
 configuration follows [the environment deployment contract](docs/environment-deployment-contract.md).
+Module capability discovery, safe snapshot behavior, and CMS provider selection
+follow [the capability discovery contract](docs/capability-discovery-contract.md).
 
 ## Customization
 

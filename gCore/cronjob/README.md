@@ -10,6 +10,9 @@ Persisted job ownership remains authoritative after hard termination.
 CronJob owns its optional BackOffice catalogue declaration in `package.json`.
 The declaration advertises discovery and navigation metadata only; every job
 operation remains protected and executed by CronJob itself.
+The relative discovery coordinate references the effective System OpenAPI
+contract; normalized BackOffice snapshots never replace CronJob route,
+permission, or scheduler authority.
 
 ## Configuration
 

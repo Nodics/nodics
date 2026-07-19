@@ -9,6 +9,8 @@ recovery authority after hard process termination.
 Workflow owns its optional BackOffice catalogue declaration in `package.json`.
 The declaration is client-safe discovery metadata and never replaces flow API
 authorization, schemas, or durable carrier state.
+Its functional-provider role and relative OpenAPI coordinate let BackOffice
+observe effective workflow operations without becoming a workflow authority.
 
 Use this module for composition and shared workflow defaults. Schema ownership belongs in `flowSchema`, runtime workflow behavior belongs in `flowCore`, and API-facing behavior belongs in `flowApi`.
 

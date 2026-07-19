@@ -77,6 +77,11 @@ Client catalogue metadata is optional module-owned metadata. Aggregators may
 validate and filter it but must not duplicate it as configuration or use it to
 replace the target module's API authorization.
 
+BackOffice capability discovery consumes the effective contracts already owned
+by target modules and Nodics System. Normalized hashes and snapshots are
+observations, not editable authority; breaking candidates must not displace the
+last safe active observation.
+
 Runtime module claims must be bound to authenticated workload identity and a
 specific runtime instance. Identity validation must not treat Profile's local
 active-module list as authority for another runtime's module composition.

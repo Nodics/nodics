@@ -34,7 +34,12 @@ let auditEvents = [];
 global.SERVICE = {
     DefaultBackofficeRegistryStoreService: store,
     DefaultBackofficeContractService: contractService,
-    DefaultBackofficeAuditService: { record: event => { auditEvents.push(event); return Promise.resolve(event); } }
+    DefaultBackofficeAuditService: { record: event => { auditEvents.push(event); return Promise.resolve(event); } },
+    DefaultBackofficeDiscoveryService: {
+        scheduleDiscovery: () => Promise.resolve(true),
+        getSnapshot: moduleName => moduleName === 'cms' ? { moduleName: 'cms', hash: 'contract-hash', operations: [] } : undefined,
+        getDiagnostics: () => ({ attempts: 1, successes: 1 })
+    }
 };
 global.CLASSES = { NodicsError: class NodicsError extends Error {} };
 
@@ -50,7 +55,11 @@ async function run() {
         moduleName: 'cms', instanceId: 'cms-1', endpoint: 'http://cms:3040/nodics/cms',
         version: '1.0.0', capabilities: ['router'], clientCallable: true, leaseTtlMs: 1000,
         backoffice: { enabled: true, capabilityId: 'content-management', displayName: 'Content', category: 'content',
-            contractVersion: 2, minimumClientContractVersion: 1, requiredPermissions: ['cms.backoffice.view'] }
+            contractVersion: 2, minimumClientContractVersion: 1, roles: ['UI_COMPOSITION_PROVIDER'],
+            discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
+            uiComposition: { site: 'nodicsBackOffice', catalog: 'nodicsBackOfficeContentCatalog',
+                defaultPage: 'backofficeDashboard', fallbackMode: 'STATIC_RECOVERY_SHELL' },
+            requiredPermissions: ['cms.backoffice.view'] }
     };
     let identity = { tokenType: 'service', runtimeInstanceId: 'cms-1', modules: ['cms'] };
     let first = await service.register({ body: registration, authData: identity });
@@ -102,6 +111,9 @@ async function run() {
     assert.strictEqual(service.evaluateCompatibility({ contractVersion: 2, minimumClientContractVersion: 2 }, 1).status, 'INCOMPATIBLE');
     assert.strictEqual(service.evaluateCompatibility({ contractVersion: 2, minimumClientContractVersion: 1 }, 2).status, 'COMPATIBLE');
     assert.strictEqual(bootstrap.data.availability.cms.activeInstances, 1);
+    assert.strictEqual(bootstrap.data.catalogue.cms.contract.hash, 'contract-hash');
+    assert.strictEqual(bootstrap.data.uiComposition.providerModule, 'cms');
+    assert.strictEqual(bootstrap.data.uiComposition.fallbackMode, 'STATIC_RECOVERY_SHELL');
     await assert.rejects(() => Promise.resolve().then(() => service.bootstrap({ authData: { permissions: [] },
         headers: { 'x-nodics-client-contract-version': 'invalid' } })));
     assert(auditEvents.some(event => event.eventType === 'backoffice.registry.registration'));

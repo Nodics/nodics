@@ -459,6 +459,22 @@ module.exports = {
         },
 
         apiContracts: {
+            getInternalOpenApiContract: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permissionConfig: 'authSecurity.internalToken.routePermission',
+                apiExposure: 'serviceRegistry',
+                key: '/contract/openapi/internal',
+                method: 'GET',
+                controller: 'DefaultApiContractController',
+                operation: 'getOpenApiContract',
+                help: {
+                    requestType: 'internalService',
+                    message: 'Returns the effective runtime OpenAPI contract to authenticated service-registry consumers.',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/system/v0/contract/openapi/internal'
+                }
+            },
             getOpenApiContract: {
                 secured: false,
                 accessGroups: ['userGroup'],

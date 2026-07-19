@@ -113,7 +113,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSystem/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nSystem route registration and HTTP exposure metadata. |  |
 | `gFramework/nSystem/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nSystem schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nSystem/src/service/config/defaultConfigurationService.js` | `src` | `documented` | 21/21 | Implements nSystem default configuration service business behavior and extension logic. |  |
-| `gFramework/nSystem/src/service/contract/defaultApiContractService.js` | `src` | `documented` | 14/14 | Resolves generated API contract artifacts from the active server module while preserving node-specific contract identity. |  |
+| `gFramework/nSystem/src/service/contract/defaultApiContractService.js` | `src` | `documented` | 15/15 | Resolves generated API contract artifacts from the active server module while preserving node-specific contract identity. |  |
 | `gFramework/nSystem/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements system default sample service business behavior and extension logic. |  |
 | `gFramework/nSystem/src/service/event/defaultConfigurationChangeListenerService.js` | `src` | `documented` | 1/1 | Implements nSystem default configuration change listener service business behavior and extension logic. |  |
 | `gFramework/nSystem/src/service/event/defaultInterceptorChangeListenerService.js` | `src` | `documented` | 1/1 | Implements nSystem default interceptor change listener service business behavior and extension logic. |  |

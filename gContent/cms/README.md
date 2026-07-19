@@ -9,6 +9,10 @@ Content definitions remain schema-driven and tenant-aware so projects can extend
 CMS owns its optional BackOffice catalogue declaration in `package.json`.
 BackOffice may expose that client-safe metadata to authorized users, while CMS
 remains authoritative for content schemas, permissions, and operations.
+CMS declares its UI-composition provider role and non-executable default site,
+catalogue, page, and recovery identifiers there. BackOffice discovers CMS
+operations from the existing effective System OpenAPI contract; it does not
+copy or edit CMS schema authority.
 
 ## CMS Capability Model
 

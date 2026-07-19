@@ -22,12 +22,18 @@ A module may declare `nodics.backoffice` in its own `package.json`:
 - `capabilityId`, `displayName`, `category`, and `icon` are client-safe labels;
 - `contractVersion` and `minimumClientContractVersion` drive compatibility;
 - `requiredPermissions` filters module discovery;
+- `roles` declares how the module participates in BackOffice;
+- `discovery` references existing module-owned contract endpoints;
+- `uiComposition` may declare non-executable defaults only for a declared UI
+  composition provider;
 - `navigation` contributes identifiers, labels, logical routes, order, and
   optional permissions.
 
 BackOffice observes this metadata during module registration. It does not keep
 a manually duplicated catalogue. Target modules remain authoritative for their
 routes, schemas, data, permissions, validation, and business behavior.
+Normalized discovery snapshots and UI-composition selection follow
+`capability-discovery-contract.md`.
 
 ## Compatibility Negotiation
 
