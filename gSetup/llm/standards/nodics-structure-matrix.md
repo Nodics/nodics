@@ -33,7 +33,7 @@ configuration, and the selected environment/server/node hierarchy.
 - Environment modules are `group` modules; server and node modules are concrete
   runtime topology modules.
 - Local activation and remote coordinates are different contracts:
-  `activeModules` loads behavior into the current process, while `server.*`
+  `activeModules` loads behavior into the current process, while `servers.*`
   coordinates describe how to call local or remote endpoints.
 
 ## Metadata Matrix
@@ -71,7 +71,7 @@ Every generated `package.json.nodics` block must define:
 | Framework group module | Standard package fields. | `group` | Owns framework child composition, shared framework defaults, framework docs, and framework LLM guidance. | Must not declare customer `groupName`, customer topology, or project-specific activation. |
 | Capability module | Standard package fields. | `capability` or an existing specialized kind such as `publish` | Owns loader-visible source surfaces listed in `nodics.owns`, module data, tests, docs, and generated context. Provider modules must declare only the provider behavior they actually own. | Provider choice, credentials, tenant selection, and environment/server/node overrides belong in layered configuration. |
 | Environment module | Standard package fields. | `group` | Owns deployment-wide environment config/docs/LLM guidance, environment-owned data, and server catalog. | Environment defaults live in `config/properties.js`; process composition belongs to server modules. |
-| Server module | Standard package fields. | `server` | Owns process composition, active local module selection, server runtime config, server tests, server data, generated reports, and server-level overrides. | `activeModules` belongs in server `config/properties.js`. `server.*` endpoint coordinates describe local or remote calls; they do not replace activation. |
+| Server module | Standard package fields. | `server` | Owns process composition, active local module selection, server runtime config, server tests, server data, generated reports, and server-level overrides. | `activeModules` belongs in server `config/properties.js`. `servers.*` endpoint coordinates describe local or remote calls; they do not replace activation. |
 | Node module | Standard package fields. | `node` | Owns node id, node-local config, node-level overrides, node tests, diagnostics, and generated node reports. | Parent server relationship must be explicit in metadata or approved topology. Do not infer it from folder name alone. |
 
 Metadata and folder structure must agree. If `nodics.owns` includes `router`,
@@ -102,7 +102,7 @@ it without changing out-of-the-box Nodics files.
 | Capability module | Capability defaults, service policies, route/security defaults, schema/search/interceptor/pipeline defaults, and provider-neutral extension contracts. | Environment credentials, tenant secrets, server process composition, node ids, or a hardcoded provider choice when multiple providers exist. | Capability behavior becomes active only when its module is part of the active module set for the selected process. |
 | Provider module | Provider-specific defaults such as client options, adapter policies, and provider capability switches. | Global provider selection for every project/customer, credentials baked into source, or unrelated provider behavior. | Provider module must be explicitly active or selected through layered configuration; selection must stay overrideable by project/environment/server/node/tenant/customer layers. |
 | Environment module | Deployment-wide defaults such as local/dev/UAT/prod policy, environment security compatibility values, cache defaults, test topology expectations, and environment-owned data toggles. | Per-process `activeModules`, concrete node id, reusable capability implementation, or source behavior unless the environment intentionally owns an override. | Environment config is selected by startup/topology and then inherited by its server modules. |
-| Server module | `activeModules`, process composition, server runtime flags, ports, local/remote endpoint coordinates under `server.*`, process-level logging/search/cache/cron/EMS settings, server data toggles, and generated report location. | Environment-wide policy, node-local id/diagnostics, project module catalog, or reusable framework/provider behavior. | Server `activeModules.groups` and `activeModules.modules` decide what runs in the current process. `server.*` coordinates only describe how this process calls endpoints. |
+| Server module | `activeModules`, process composition, server runtime flags, ports, local/remote endpoint coordinates under `servers.*`, process-level logging/search/cache/cron/EMS settings, server data toggles, and generated report location. | Environment-wide policy, node-local id/diagnostics, project module catalog, or reusable framework/provider behavior. | Server `activeModules.groups` and `activeModules.modules` decide what runs in the current process. `servers.*` coordinates only describe how this process calls endpoints. |
 | Node module | `nodeId`, node-local endpoint overrides, node diagnostics, node runtime overrides, and node-specific test/report settings. | Server-wide active module composition, environment-wide data, project catalog, or reusable source implementation. | Node config refines the selected server process. It must not replace server activation. |
 
 Secrets and credentials must be injected through governed secret configuration
@@ -113,7 +113,7 @@ that deployments must override them.
 Activation, endpoint routing, and provider selection are separate contracts:
 
 - `activeModules` decides which local modules load into the current process.
-- `server.*` describes local or remote coordinates for communicating with
+- `servers.*` describes local or remote coordinates for communicating with
   processes.
 - Provider selection chooses an implementation for a capability and must remain
   layered and overrideable.

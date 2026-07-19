@@ -144,7 +144,7 @@ human-friendly, but behavior must be selected by metadata and layered
 configuration.
 
 `activeModules.groups` and `activeModules.modules` decide which modules run in
-the current process. `server.*` entries describe local or remote endpoint
+the current process. `servers.*` entries describe local or remote endpoint
 coordinates and must not be treated as local activation. Framework code must not
 hardcode sample, customer, or project-specific module names.
 

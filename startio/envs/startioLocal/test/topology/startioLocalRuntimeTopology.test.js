@@ -46,8 +46,8 @@ function loadProperties(serverName) {
 
 function getDefaultNodeId(serverName) {
     let props = loadProperties(serverName);
-    let nodes = props.server && props.server.default && props.server.default.nodes;
-    assert(nodes && Object.keys(nodes).length > 0, 'server.default.nodes must define at least one node for ' + serverName);
+    let nodes = props.servers && props.servers.default && props.servers.default.nodes;
+    assert(nodes && Object.keys(nodes).length > 0, 'servers.default.nodes must define at least one node for ' + serverName);
     return Object.keys(nodes)[0];
 }
 
@@ -65,9 +65,9 @@ function getNodeId(serverName, nodeName) {
 function getServerNodePort(serverName, nodeName) {
     let props = loadProperties(serverName);
     let nodeId = getNodeId(serverName, nodeName);
-    assert(props.server && props.server.default && props.server.default.nodes, 'server.default.nodes is required for ' + serverName);
-    assert(props.server.default.nodes[nodeId], serverName + ' does not define node: ' + nodeId);
-    return props.server.default.nodes[nodeId].httpPort;
+    assert(props.servers && props.servers.default && props.servers.default.nodes, 'servers.default.nodes is required for ' + serverName);
+    assert(props.servers.default.nodes[nodeId], serverName + ' does not define node: ' + nodeId);
+    return props.servers.default.nodes[nodeId].httpPort;
 }
 
 function waitForPort(port, timeoutMs) {
@@ -274,7 +274,7 @@ async function runModularSmoke() {
 
 async function runModularCommunicationSmoke() {
     let results = [];
-    for (let check of COMMUNICATION_CHECKS) {
+    for (let check of COMMUNICATION_CHECKS.filter(item => !item.topologies || item.topologies.includes('modular'))) {
         assert(check.server, 'communication check server is required');
         assert(check.moduleName, 'communication check moduleName is required for ' + check.server);
         results.push(await requestModuleEndpoint(check));
@@ -284,7 +284,7 @@ async function runModularCommunicationSmoke() {
 
 async function runConsolidatedCommunicationSmoke() {
     let results = [];
-    for (let check of COMMUNICATION_CHECKS) {
+    for (let check of COMMUNICATION_CHECKS.filter(item => !item.topologies || item.topologies.includes('consolidated'))) {
         assert(check.moduleName, 'communication check moduleName is required for consolidated topology');
         results.push(await requestModuleEndpoint(Object.assign({}, check, {
             server: CONSOLIDATED_SERVER,

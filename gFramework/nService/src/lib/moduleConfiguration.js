@@ -30,8 +30,8 @@ module.exports = function (moduleName) {
 
     let _moduleName = moduleName;
     let _options = {};
-    let _server = {};
-    let _abstractServer = {};
+    let _endpoint = {};
+    let _abstractEndpoint = {};
     let _nodes = {};
     let _isServerRunning = false;
     this.LOG = SERVICE.DefaultLoggerService.createLogger('ExternalModule');
@@ -47,26 +47,26 @@ module.exports = function (moduleName) {
         return _options;
     };
 
-    this.addServer = function (serverConfig) {
-        _server = new CLASSES.NodeConfiguration('server',
-            serverConfig.httpHost,
-            serverConfig.httpsHost,
-            serverConfig.httpPort,
-            serverConfig.httpsPort);
+    this.addEndpoint = function (endpointConfig) {
+        _endpoint = new CLASSES.NodeConfiguration('endpoint',
+            endpointConfig.httpHost,
+            endpointConfig.httpsHost,
+            endpointConfig.httpPort,
+            endpointConfig.httpsPort);
     };
-    this.getServer = function () {
-        return _server;
+    this.getEndpoint = function () {
+        return _endpoint;
     };
 
-    this.addAbstractServer = function (abstractConfig) {
-        _abstractServer = new CLASSES.NodeConfiguration('abstractServer',
+    this.addAbstractEndpoint = function (abstractConfig) {
+        _abstractEndpoint = new CLASSES.NodeConfiguration('abstractEndpoint',
             abstractConfig.httpHost,
             abstractConfig.httpsHost,
             abstractConfig.httpPort,
             abstractConfig.httpsPort);
     };
-    this.getAbstractServer = function () {
-        return _abstractServer;
+    this.getAbstractEndpoint = function () {
+        return _abstractEndpoint;
     };
 
     this.addNode = function (nodeId, nodeConfig) {

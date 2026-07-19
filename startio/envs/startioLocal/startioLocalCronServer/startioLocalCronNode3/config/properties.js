@@ -19,9 +19,9 @@
 module.exports = {
 
     nodeId: 'node3',
-    server: {
+    servers: {
         default: {
-            server: {
+            endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3036,
 

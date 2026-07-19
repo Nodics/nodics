@@ -1,0 +1,30 @@
+{
+    "name": "gExp",
+    "index": "60.99",
+    "requiredModules": [
+        "backoffice"
+    ],
+    "description": "Backend experience capability group for administration, customer, partner, storefront, mobile, and future client-facing API experiences.",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL-3.0-or-later",
+    "nodics": {
+        "kind": "group",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "composition",
+            "configuration",
+            "llm"
+        ],
+        "description": "Backend experience capability group for administration, customer, partner, storefront, mobile, and future client-facing API experiences.",
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        }
+    },
+    "scripts": {},
+    "dependencies": {}
+}

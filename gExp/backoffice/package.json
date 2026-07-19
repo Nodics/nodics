@@ -1,0 +1,35 @@
+{
+    "name": "backoffice",
+    "index": "60.20",
+    "description": "Backend registry, discovery, catalogue, and bootstrap capability for the Nodics Axis administration experience.",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL-3.0-or-later",
+    "nodics": {
+        "kind": "capability",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "configuration",
+            "event",
+            "pipeline",
+            "router",
+            "schema",
+            "search",
+            "interceptor",
+            "service",
+            "utility",
+            "test",
+            "llm"
+        ],
+        "description": "Backend registry, discovery, catalogue, and bootstrap capability for the Nodics Axis administration experience.",
+        "runtime": {
+            "router": true,
+            "publish": false,
+            "web": false
+        }
+    },
+    "scripts": {},
+    "dependencies": {}
+}

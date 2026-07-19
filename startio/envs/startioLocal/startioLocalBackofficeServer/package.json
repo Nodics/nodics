@@ -1,0 +1,32 @@
+{
+    "name": "startioLocalBackofficeServer",
+    "index": "3001.18",
+    "description": "Local modular server composition for the Nodics BackOffice registry capability",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL-3.0-or-later",
+    "nodics": {
+        "kind": "server",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "composition",
+            "configuration",
+            "router",
+            "service",
+            "pipeline",
+            "utility",
+            "test",
+            "llm"
+        ],
+        "description": "Local modular server composition for the Nodics BackOffice registry capability",
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        }
+    },
+    "scripts": {},
+    "dependencies": {}
+}

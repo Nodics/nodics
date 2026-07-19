@@ -14,7 +14,7 @@ const _ = require('lodash');
 /**
  * @module service/lib/ModulesConfigurationContainer
  * @description Runtime container for module topology configuration loaded from
- * layered `server` properties. It builds `ModuleConfiguration` objects used for
+ * layered `servers` properties. It builds `ModuleConfiguration` objects used for
  * internal module communication and distributed node routing.
  * @layer lib
  * @owner nService
@@ -22,7 +22,7 @@ const _ = require('lodash');
  * discovery systems, but should preserve module lookup and availability
  * semantics.
  *
- * @property {Object} CONFIG.server Layered server/module topology configuration.
+ * @property {Object} CONFIG.servers Layered server/module topology configuration.
  */
 module.exports = function () {
 
@@ -35,10 +35,10 @@ module.exports = function () {
 
     this.prepareModulesConfiguration = function () {
         let _self = this;
-        _.each(CONFIG.get('server'), (moduleConfig, moduleName) => {
+        _.each(CONFIG.get('servers'), (moduleConfig, moduleName) => {
             if (moduleName !== 'options') {
                 try {
-                    moduleConfig.options = moduleConfig.options || CONFIG.get('server').options;
+                    moduleConfig.options = moduleConfig.options || CONFIG.get('servers').options;
                     _self.addModule(moduleName, moduleConfig);
                 } catch (error) {
                     this.LOG.error('Invalid configuration found for module : ' + moduleName);
@@ -50,22 +50,22 @@ module.exports = function () {
 
     this.addModule = function (moduleName, moduleConfig) {
         let _self = this;
-        if (!moduleConfig.server) {
-            throw new Error('Invalid server configuration for module : ' + moduleName);
+        if (!moduleConfig.endpoint) {
+            throw new Error('Invalid endpoint configuration for module : ' + moduleName);
         }
-        if (!moduleConfig.abstractServer) {
-            moduleConfig.abstractServer = moduleConfig.server;
+        if (!moduleConfig.abstractEndpoint) {
+            moduleConfig.abstractEndpoint = moduleConfig.endpoint;
         }
         if (UTILS.isBlank(moduleConfig.nodes)) {
             moduleConfig.nodes = {
-                node0: moduleConfig.server
+                node0: moduleConfig.endpoint
             };
         }
         _self.LOG.debug('Adding module for : ' + moduleName);
         let moduleObj = new CLASSES.ModuleConfiguration(moduleName);
-        moduleObj.addServer(moduleConfig.server);
+        moduleObj.addEndpoint(moduleConfig.endpoint);
         moduleObj.addOptions(moduleConfig.options);
-        moduleObj.addAbstractServer(moduleConfig.abstractServer);
+        moduleObj.addAbstractEndpoint(moduleConfig.abstractEndpoint);
         _.each(moduleConfig.nodes, (nodeConfig, nodeName) => {
             _self.LOG.debug('   Adding type for : ' + nodeName);
             moduleObj.addNode(nodeName, nodeConfig);

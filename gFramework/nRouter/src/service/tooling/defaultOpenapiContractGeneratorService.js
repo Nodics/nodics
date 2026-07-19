@@ -475,7 +475,7 @@ function addConfiguredRoutes(paths, options) {
 function collectRoutes(rawRouters, rawSchema, components) {
     const paths = {};
     const modules = NODICS.getModules();
-    const contextRoot = CONFIG.get('server').options.contextRoot;
+    const contextRoot = CONFIG.get('servers').options.contextRoot;
     const routerLevelCacheConfig = CONFIG.get('cache').routerLevelCache || {};
 
     Object.keys(modules || {}).forEach(moduleName => {

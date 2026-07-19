@@ -242,7 +242,7 @@ module.exports = {
     },
 
     /**
-     * Returns module endpoint names declared under `server.*` configuration.
+     * Returns module endpoint names declared under `servers.*` configuration.
      *
      * Endpoint coordinates describe where a module can be reached. They do not
      * activate that module locally; local activation remains owned by `activeModules`.
@@ -251,7 +251,7 @@ module.exports = {
      * @returns {string[]} Configured module endpoint names, excluding framework control keys.
      */
     getConfiguredServerEndpointNames: function (serverProperties) {
-        return Object.keys(serverProperties.server || {}).filter(moduleName => {
+        return Object.keys(serverProperties.servers || {}).filter(moduleName => {
             return moduleName !== 'default' && moduleName !== 'options';
         });
     },
@@ -668,39 +668,39 @@ module.exports = {
     /**
      * Validates a server or module server configuration block.
      *
-     * @param {string} moduleName Module name under `server` configuration.
+     * @param {string} moduleName Module name under `servers` configuration.
      * @param {Object} moduleConfig Server configuration for the module.
      * @returns {void}
      * @throws Invalid configuration error when host, port, or node endpoint details are missing.
      */
     validateServerDefinition: function (moduleName, moduleConfig) {
-        if (!moduleConfig || !moduleConfig.server) {
-            this.failConfiguration('server.' + moduleName + '.server must be defined');
+        if (!moduleConfig || !moduleConfig.endpoint) {
+            this.failConfiguration('servers.' + moduleName + '.endpoint must be defined');
         }
-        if (!moduleConfig.server.httpHost || !moduleConfig.server.httpPort) {
-            this.failConfiguration('server.' + moduleName + '.server requires httpHost and httpPort');
+        if (!moduleConfig.endpoint.httpHost || !moduleConfig.endpoint.httpPort) {
+            this.failConfiguration('servers.' + moduleName + '.endpoint requires httpHost and httpPort');
         }
         if (moduleConfig.nodes && !utils.isBlank(moduleConfig.nodes)) {
             _.each(moduleConfig.nodes, (nodeConfig, nodeName) => {
                 if (!nodeConfig.httpHost || !nodeConfig.httpPort) {
-                    this.failConfiguration('server.' + moduleName + '.nodes.' + nodeName + ' requires httpHost and httpPort');
+                    this.failConfiguration('servers.' + moduleName + '.nodes.' + nodeName + ' requires httpHost and httpPort');
                 }
             });
         }
     },
 
     /**
-     * Validates the complete `server` configuration object.
+     * Validates the complete `servers` configuration object.
      *
      * @param {Object} serverProperties Merged server properties.
      * @returns {void}
      * @throws Invalid configuration error when default or module server definitions are invalid.
      */
     validateServerConfiguration: function (serverProperties) {
-        if (!serverProperties.server || !serverProperties.server.default) {
-            this.failConfiguration('server.default must be defined for server: ' + NODICS.getServerName());
+        if (!serverProperties.servers || !serverProperties.servers.default) {
+            this.failConfiguration('servers.default must be defined for server: ' + NODICS.getServerName());
         }
-        _.each(serverProperties.server, (moduleConfig, moduleName) => {
+        _.each(serverProperties.servers, (moduleConfig, moduleName) => {
             if (moduleName !== 'options') {
                 this.validateServerDefinition(moduleName, moduleConfig);
             }
@@ -726,8 +726,8 @@ module.exports = {
             this.failConfiguration('node ' + NODICS.getNodeName() + ' does not belong to server ' + NODICS.getServerName());
         }
         let nodeId = serverProperties.nodeId || props.nodeId;
-        if (!serverProperties.server.default.nodes || !serverProperties.server.default.nodes[nodeId]) {
-            this.failConfiguration('server.default.nodes must define nodeId: ' + nodeId);
+        if (!serverProperties.servers.default.nodes || !serverProperties.servers.default.nodes[nodeId]) {
+            this.failConfiguration('servers.default.nodes must define nodeId: ' + nodeId);
         }
     },
 
@@ -745,9 +745,9 @@ module.exports = {
         let profileModuleName = props.profileModuleName || 'profile';
         if (!NODICS.isModuleActive(profileModuleName)) {
             if (!this.getConfiguredRemoteModuleNames(serverProperties).includes(profileModuleName)) {
-                this.failConfiguration('server.' + profileModuleName + ' must be defined when profile module is not active locally');
+                this.failConfiguration('servers.' + profileModuleName + ' must be defined when profile module is not active locally');
             }
-            this.validateServerDefinition(profileModuleName, serverProperties.server[profileModuleName]);
+            this.validateServerDefinition(profileModuleName, serverProperties.servers[profileModuleName]);
         }
     },
 

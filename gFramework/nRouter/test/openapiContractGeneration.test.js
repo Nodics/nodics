@@ -21,7 +21,7 @@ const assert = require('assert');
 
 global.CONFIG = {
     get: function (name) {
-        if (name === 'server') return { options: { contextRoot: 'nodics' } };
+        if (name === 'servers') return { options: { contextRoot: 'nodics' } };
         if (name === 'cache') return { routerLevelCache: {} };
         return undefined;
     }

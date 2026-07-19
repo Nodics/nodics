@@ -8,7 +8,7 @@ The hierarchy commonly includes:
 
 - `gFramework`: platform foundation modules.
 - `gCore`: core business capabilities such as profile, cronjob, workflow, and NEMS.
-- `gComm`, `gContent`, `gDeap`, `gMrkty`: domain capability groups.
+- `gComm`, `gContent`, `gExp`, `gDeap`, `gMrkty`: domain and experience capability groups.
 - application modules such as `startio`: example/test application modules.
 - environment/server/node modules under the application: runtime topology and deployment-specific configuration.
 
@@ -28,7 +28,7 @@ Use the layers for different decisions:
   groups, shared endpoint defaults, feature toggles, diagnostics posture, and
   topology test declarations.
 - Server modules hold one runnable process composition, including local
-  `activeModules`, the process `server.default` endpoint, and remote
+  `activeModules`, the process `servers.default` endpoint, and remote
   `server.<module>` endpoints the process must call.
 - Node modules hold instance-specific overrides below a selected server, such
   as node identity, node coordinates, scheduler/consumer ownership, diagnostics,
@@ -63,9 +63,9 @@ Nodics supports both:
 
 Keep local activation separate from endpoint coordinates. `activeModules.groups`
 and `activeModules.modules` decide which modules run inside the current process.
-`server.*` entries describe how to reach local or remote module endpoints and
+`servers.*` entries describe how to reach local or remote module endpoints and
 must not be treated as local activation. In modular runtime, a server may define
-`server.profile`, `server.nems`, or another module endpoint so it can call that
+`servers.profile`, `servers.nems`, or another module endpoint so it can call that
 remote process without loading that module locally.
 
 Testing should cover both styles when behavior depends on module communication.

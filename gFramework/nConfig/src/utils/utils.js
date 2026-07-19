@@ -470,7 +470,7 @@ module.exports = {
                 return value;
             }
         }, 4);
-        let contextRoot = CONFIG.get('server').options.contextRoot;
+        let contextRoot = CONFIG.get('servers').options.contextRoot;
         commonDefinitionString = commonDefinitionString.replaceAll('mdulnm', options.moduleName)
             .replaceAll('mdlnm', options.modelName + 'Model')
             .replaceAll('schmanm', options.schemaName)

@@ -135,9 +135,9 @@ module.exports = {
         let url = '';
         try {
             let moduleConfig = this.getModuleServerConfig(options.moduleName);
-            let contextRoot = moduleConfig.getOptions().contextRoot || CONFIG.get('server').options.contextRoot;
+            let contextRoot = moduleConfig.getOptions().contextRoot || CONFIG.get('servers').options.contextRoot;
             if (options.nodeId === undefined) {
-                url = this.getURL(moduleConfig.getAbstractServer());
+                url = this.getURL(moduleConfig.getAbstractEndpoint());
             } else {
                 if (moduleConfig.getNode(options.nodeId)) {
                     url = this.getURL(moduleConfig.getNode(options.nodeId));
@@ -291,7 +291,7 @@ module.exports = {
                         definition.key = definition.key.replaceAll('schemaName', options.alias.toLowerCase());
                         definition.controller = definition.controller.replaceAll('ctrlName', options.schemaName.toUpperCaseEachWord() + 'Controller');
                         definition.apiVersion = definition.apiVersion ? definition.apiVersion : 'v0';
-                        definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + options.urlPrefix + '/' + definition.apiVersion + definition.key;
+                        definition.url = '/' + CONFIG.get('servers').options.contextRoot + '/' + options.urlPrefix + '/' + definition.apiVersion + definition.key;
                         definition.active = (definition.active === undefined) ? true : definition.active;
                         definition.moduleName = options.moduleName;
                         definition.prefix = options.schemaName + '_' + routerName;
@@ -329,7 +329,7 @@ module.exports = {
         let definition = _.merge({}, options.routerDef);
         definition.method = definition.method.toLowerCase();
         definition.apiVersion = definition.apiVersion ? definition.apiVersion : 'v0';
-        definition.url = '/' + CONFIG.get('server').options.contextRoot + '/' + options.urlPrefix + '/' + definition.apiVersion + definition.key;
+        definition.url = '/' + CONFIG.get('servers').options.contextRoot + '/' + options.urlPrefix + '/' + definition.apiVersion + definition.key;
         definition.active = (definition.active === undefined) ? true : definition.active;
         definition.moduleName = options.moduleName;
         definition.prefix = options.routerName;
@@ -382,8 +382,8 @@ module.exports = {
                             app.use('/', NODICS.getModules().default.moduleRouter);
                             displayName = 'default';
                         }
-                        const httpPort = moduleConfig.getServer().getHttpPort();
-                        const httpsPort = moduleConfig.getServer().getHttpsPort();
+                        const httpPort = moduleConfig.getEndpoint().getHttpPort();
+                        const httpsPort = moduleConfig.getEndpoint().getHttpsPort();
                         if (!httpPort) {
                             _self.LOG.error('Please define listening PORT for module: ' + moduleName);
                             process.exit(CONFIG.get('errorExitCode'));

@@ -338,7 +338,7 @@ requireClauses('gSetup/llm/standards/nodics-structure-matrix.md', [
     '`loadableByNodicsModuleLoader`',
     '`owns`: the explicit ownership list',
     '`activeModules` belongs in server `config/properties.js`',
-    '`server.*` endpoint coordinates describe local or remote calls',
+    '`servers.*` endpoint coordinates describe local or remote calls',
     '## Configuration And Activation Matrix',
     '`config/properties.js` is the standard owner for configurable values',
     'Configuration is layered from framework defaults through project, environment',

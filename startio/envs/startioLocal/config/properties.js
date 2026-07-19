@@ -117,7 +117,8 @@ module.exports = {
                 'startioLocalDeapServer',
                 'startioLocalCronServer',
                 'startioLocalCmsServer',
-                'startioLocalWorkflowServer'
+                'startioLocalWorkflowServer',
+                'startioLocalBackofficeServer'
             ],
             communicationChecks: [
                 {
@@ -139,6 +140,12 @@ module.exports = {
                     server: 'startioLocalWorkflowServer',
                     moduleName: 'workflow',
                     path: '/v0/ping?help'
+                },
+                {
+                    server: 'startioLocalBackofficeServer',
+                    moduleName: 'backoffice',
+                    path: '/v0/ping?help',
+                    topologies: ['modular']
                 }
             ]
         }

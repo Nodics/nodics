@@ -54,6 +54,8 @@ const modules = [{
 }].concat(scanModules());
 
 const modernizedDescriptions = {
+    'gExp': ['Backend experience capability group', 'administration', 'client-facing API experiences'],
+    'gExp/backoffice': ['Backend registry', 'discovery', 'Nodics Axis'],
     'gCore/profile': ['Identity and profile module', 'tenants', 'authentication'],
     'gCore/cronjob': ['Scheduler capability', 'node ownership', 'event-driven execution'],
     'gCore/workflow': ['Workflow capability group', 'event continuation', 'split/retry'],

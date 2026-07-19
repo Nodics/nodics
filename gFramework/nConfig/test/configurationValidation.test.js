@@ -101,8 +101,10 @@ initService.validateSelectedRuntimeConfigurationFiles();
 initService.validateRequiredModuleDependencies();
 
 let serverProperties = CONFIG.getProperties();
-assert(serverProperties.server.default, 'server.default should be available after environment/server merge');
-assert(serverProperties.server.default.server.httpPort, 'server.default.server.httpPort should be defined');
+assert(serverProperties.servers.default, 'servers.default should be available after environment/server merge');
+assert(serverProperties.servers.default.endpoint.httpPort, 'servers.default.endpoint.httpPort should be defined');
+assert(serverProperties.servers.default.abstractEndpoint.httpPort, 'servers.default.abstractEndpoint.httpPort should be defined');
+assert.strictEqual(serverProperties.server, undefined, 'legacy singular server collection must not remain in effective configuration');
 initService.validateRuntimeTopologyConfiguration(serverProperties);
 
 let loadOrder = initService.getConfigurationLoadOrder();
@@ -113,7 +115,7 @@ assert(!NODICS.isModuleActive('profile'), 'workflow server should use profile re
 serverProperties = CONFIG.getProperties();
 assert(initService.getConfiguredServerEndpointNames(serverProperties).includes('profile'));
 assert(initService.getConfiguredRemoteModuleNames(serverProperties).includes('profile'));
-assert(!NODICS.getActiveModules().includes('profile'), 'server.profile endpoint coordinates must not activate profile locally');
+assert(!NODICS.getActiveModules().includes('profile'), 'servers.profile endpoint coordinates must not activate profile locally');
 
 assert.throws(() => {
     initService.validateModuleKind('profile', 'server', 'test module kind validation');
@@ -152,9 +154,22 @@ assert.throws(() => {
 
 assert.throws(() => {
     initService.validateServerConfiguration({
-        server: {}
+        servers: {}
     });
-}, /server.default must be defined/);
+}, /servers.default must be defined/);
+
+assert.throws(() => {
+    initService.validateServerConfiguration({
+        servers: {
+            default: {
+                server: {
+                    httpHost: 'localhost',
+                    httpPort: 3000
+                }
+            }
+        }
+    });
+}, /servers.default.endpoint must be defined/);
 
 assert.throws(() => {
     initService.validateModuleIndexOrder({

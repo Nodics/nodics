@@ -43,19 +43,19 @@ module.exports = {
         }
     },
 
-    server: {
+    servers: {
         default: {
             options: {
                 contextRoot: 'nodics'
             },
-            server: {
+            endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3002,
 
                 httpsHost: 'localhost',
                 httpsPort: 3003
             },
-            abstract: {
+            abstractEndpoint: {
                 httpHost: 'localhost',
                 httpPort: 3002,
 
@@ -77,14 +77,14 @@ module.exports = {
             options: {
                 contextRoot: 'nodics'
             },
-            server: {
+            endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3000,
 
                 httpsHost: 'localhost',
                 httpsPort: 3001
             },
-            abstract: {
+            abstractEndpoint: {
                 httpHost: 'localhost',
                 httpPort: 3000,
 
@@ -106,14 +106,14 @@ module.exports = {
             options: {
                 contextRoot: 'nodics'
             },
-            server: {
+            endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3004,
 
                 httpsHost: 'localhost',
                 httpsPort: 3005
             },
-            abstract: {
+            abstractEndpoint: {
                 httpHost: 'localhost',
                 httpPort: 3004,
 
@@ -135,14 +135,14 @@ module.exports = {
             options: {
                 contextRoot: 'nodics'
             },
-            server: {
+            endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3010,
 
                 httpsHost: 'localhost',
                 httpsPort: 3011
             },
-            abstract: {
+            abstractEndpoint: {
                 httpHost: 'localhost',
                 httpPort: 3010,
 

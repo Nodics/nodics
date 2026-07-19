@@ -75,7 +75,7 @@ module.exports = {
         }
     },
 
-    server: {
+    servers: {
         default: {
             nodes: {
                 node0: {
@@ -102,7 +102,7 @@ module.exports = {
             }
         },
         // profile: {
-        //     server: {
+        //     endpoint: {
         //         httpHost: 'localhost',
         //         httpPort: 3002,
 
@@ -111,7 +111,7 @@ module.exports = {
         //     }
         // },
         // cronjob: {
-        //     server: {
+        //     endpoint: {
         //         httpHost: 'localhost',
         //         httpPort: 3004,
 

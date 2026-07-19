@@ -191,10 +191,10 @@ then loaded by deterministic dotted `index` order.
 modules are loaded in the current runtime and may contribute configuration,
 schemas, routers, services, pipelines, data, tests, and lifecycle behavior.
 
-`server.*` entries are endpoint coordinates. They describe where a local or
+`servers.*` entries are endpoint coordinates. They describe where a local or
 remote module can be reached by HTTP/node communication, but they must not
 activate the module locally. For example, a modular workflow server may define
-`server.profile` so it can call the profile process without loading the profile
+`servers.profile` so it can call the profile process without loading the profile
 module into the workflow process.
 
 ## Environment, Server, And Node Responsibilities
@@ -205,7 +205,7 @@ data/search/cache toggles, diagnostics posture, and topology test declarations
 that apply to every server in that environment.
 
 Server modules own one runnable process composition. They select the local
-modules for that process through `activeModules`, define `server.default`
+modules for that process through `activeModules`, define `servers.default`
 coordinates for the process itself, and may define `server.<module>` endpoint
 coordinates for remote modules the process must call.
 

@@ -48,6 +48,13 @@ This file gives AI agents and developers a first-pass map of important Nodics mo
 | `cms` | CMS site/page/component/type capabilities. |
 | `wcms` | Web CMS extension module. |
 
+## Experience Modules
+
+| Module | Responsibility |
+| --- | --- |
+| `gExp` | Backend/API experience-capability group for administrative, customer, partner, storefront, mobile, and future client experiences. |
+| `backoffice` | Registry, discovery, catalogue, compatibility, availability-summary, and bootstrap capability for the separate Nodics Axis administration application. |
+
 ## Data/Application Modules
 
 | Module | Responsibility |

@@ -107,7 +107,7 @@ module.exports = {
             _self.executeRouterConfig(modules.default.app, commonConfig.default);
         }
 
-        if (CONFIG.get('server').options.runAsDefault) {
+        if (CONFIG.get('servers').options.runAsDefault) {
             if (!modules.default || !modules.default.app) {
                 _self.LOG.error('Server configurations has not be initialized. Please verify.');
                 process.exit(CONFIG.get('errorExitCode'));
