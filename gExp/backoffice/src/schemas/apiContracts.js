@@ -208,6 +208,9 @@ module.exports = {
                 publicationFailures: { type: 'integer', minimum: 0 }, totalDurationMs: { type: 'integer', minimum: 0 },
                 maxDurationMs: { type: 'integer', minimum: 0 }, lastDurationMs: { type: 'integer', minimum: 0 }
             } }
+        } }, security: { type: 'object' }, operations: { type: 'object', properties: {
+            state: { enum: ['READY', 'DEGRADED', 'NOT_READY'] }, alerts: { type: 'array', items: { type: 'string' } },
+            checkedAt: { type: 'string', format: 'date-time' }
         } }, contracts: { type: 'object', properties: {
             persistenceStatus: { enum: ['AVAILABLE', 'UNAVAILABLE', 'AUTH_CONTEXT_REQUIRED'] },
             pendingApprovals: { type: 'integer', nullable: true, minimum: 0 },

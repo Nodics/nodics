@@ -101,6 +101,18 @@ module.exports = {
             maxAvailabilityProbesPerInstance: 1,
             maxRefreshExecutionsPerIdempotencyKey: 1
         },
+        operations: {
+            requireDistributedStore: false,
+            minimumSamples: 10,
+            thresholds: {
+                availabilityFailurePercent: 25,
+                availabilityQueuePercent: 80,
+                discoveryFailurePercent: 25,
+                storeErrors: 1,
+                conditionalDeleteConflicts: 10,
+                refreshThrottles: 1
+            }
+        },
         allowedSchemes: ['http', 'https'],
         clientSafeMetadata: ['moduleName', 'instanceId', 'version', 'moduleKind', 'capabilities', 'endpoint', 'healthPath', 'state', 'lastSeenAt', 'backoffice']
     }

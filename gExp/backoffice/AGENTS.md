@@ -69,6 +69,9 @@
 - Core performance gates must prefer deterministic path/operation budgets and
   sanitized timing evidence. Availability work requires layered active/queue
   ceilings and must never block registration or application traffic.
+- Operational readiness may aggregate only stable low-disclosure diagnostics
+  from owning services. Environment layers decide whether distributed storage
+  is mandatory and own real alert thresholds, provider secrets, and load gates.
 - Use existing Nodics lifecycle, module registry, service communication,
   schema/router governance, audit, and generated-artifact paths. Do not add a
   parallel loader, runtime activation mechanism, or authorization path.

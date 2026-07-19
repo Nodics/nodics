@@ -123,6 +123,11 @@ Core performance evidence should enforce deterministic path and operation
 budgets with sanitized timings, while deployment layers own environment-sized
 distributed load thresholds.
 
+BackOffice operational readiness may classify existing authoritative
+diagnostics but must not become a second health, metrics, or topology authority.
+Reusable defaults remain environment-neutral; deployment layers own distributed
+store requirements, alert thresholds, secrets, and production load evidence.
+
 ## Source Of Truth
 
 Behavior must come from Nodics source-of-truth artifacts:

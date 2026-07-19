@@ -399,19 +399,17 @@ module.exports = {
         await this.expireStale();
         let activeModuleLeases = await this.getStore().size();
         let repository = SERVICE.DefaultBackofficeContractRepositoryService;
-        return {
-            code: 'SUC_BOF_00003',
-            data: {
-                activeModuleLeases: activeModuleLeases,
-                activeInstances: activeModuleLeases,
-                metrics: Object.assign({}, this._metrics),
-                store: this.getStore().diagnostics(),
-                discovery: SERVICE.DefaultBackofficeDiscoveryService ? SERVICE.DefaultBackofficeDiscoveryService.getDiagnostics() : undefined,
-                availability: SERVICE.DefaultBackofficeAvailabilityService ? SERVICE.DefaultBackofficeAvailabilityService.getDiagnostics() : undefined,
-                contracts: repository && typeof repository.getOperationalDiagnostics === 'function' ?
-                    await repository.getOperationalDiagnostics(request) : undefined
-            }
-        };
+        let data = { activeModuleLeases: activeModuleLeases, activeInstances: activeModuleLeases,
+            metrics: Object.assign({}, this._metrics), store: this.getStore().diagnostics(),
+            discovery: SERVICE.DefaultBackofficeDiscoveryService ? SERVICE.DefaultBackofficeDiscoveryService.getDiagnostics() : undefined,
+            availability: SERVICE.DefaultBackofficeAvailabilityService ? SERVICE.DefaultBackofficeAvailabilityService.getDiagnostics() : undefined,
+            security: SERVICE.DefaultBackofficeAdministrativeSecurityService.getDiagnostics ?
+                SERVICE.DefaultBackofficeAdministrativeSecurityService.getDiagnostics() : undefined,
+            contracts: repository && typeof repository.getOperationalDiagnostics === 'function' ?
+                await repository.getOperationalDiagnostics(request) : undefined };
+        data.operations = SERVICE.DefaultBackofficeOperationalReadinessService ?
+            SERVICE.DefaultBackofficeOperationalReadinessService.assess(data) : undefined;
+        return { code: 'SUC_BOF_00003', data: data };
     },
 
     /** Projects only configured fields approved for BackOffice clients. */

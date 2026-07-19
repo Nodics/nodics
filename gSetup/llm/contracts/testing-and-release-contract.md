@@ -133,6 +133,12 @@ result pages, one probe per runtime, active and queued probe ceilings, overflow
 cleanup, failure backoff, idempotent refresh collapse, sanitized evidence,
 topology, and regression behavior.
 
+BackOffice deployment-readiness changes must test configuration invariants,
+required readiness contribution, READY/DEGRADED/NOT_READY classification,
+stable alert thresholds, distributed-store requirement overrides, provider
+loss/recovery, sanitized diagnostics, release documentation, rollback guidance,
+topology, and regression behavior.
+
 When adding a provider or server/node responsibility, add or update readiness
 checks through the owning module or a later project module. Do not expose
 credentials, provider URLs, private file paths, tenant data, or raw diagnostics

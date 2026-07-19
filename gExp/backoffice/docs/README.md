@@ -31,3 +31,5 @@ this runtime module.
   permission ownership, tenant isolation, refresh abuse controls, and auditing.
 - `performance-and-scale-contract.md` defines structural performance budgets,
   bounded probe pressure, deterministic benchmark evidence, and load-test scope.
+- `backend-release-readiness.md` defines environment configuration, go-live,
+  monitoring, rollback, and residual-risk gates for the backend capability.

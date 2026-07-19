@@ -20,6 +20,7 @@ module.exports = {
     _counters: new Map(),
     _inflight: new Map(),
     _results: new Map(),
+    _metrics: { rejected: 0, throttled: 0, idempotentInflightReuses: 0, idempotentResultReuses: 0 },
     /** Initializes administrative security state. */
     init: function () { return Promise.resolve(true); },
     /** Completes administrative security initialization. */
@@ -51,14 +52,17 @@ module.exports = {
         let auth = request && request.authData || {};
         let principal = this.getPrincipal(request);
         if (policy.rejectServiceTokens !== false && auth.tokenType === 'service') {
+            this._metrics.rejected++;
             this.audit(request, 'rejected', 'SERVICE_IDENTITY_FORBIDDEN', 'authorize');
             throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Service identities cannot perform BackOffice administration');
         }
         if (policy.requirePrincipal !== false && !principal) {
+            this._metrics.rejected++;
             this.audit(request, 'rejected', 'PRINCIPAL_REQUIRED', 'authorize');
             throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Administrative principal is required');
         }
         if (request && request.tenant && auth.tenant && request.tenant !== auth.tenant) {
+            this._metrics.rejected++;
             this.audit(request, 'rejected', 'TENANT_MISMATCH', 'authorize');
             throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Cross-tenant BackOffice administration is not allowed');
         }
@@ -83,14 +87,21 @@ module.exports = {
         let scope = [context.tenant || 'default', context.principalId, moduleName].join(':');
         let suppliedKey = this.getIdempotencyKey(request);
         let idempotencyKey = suppliedKey ? scope + ':' + suppliedKey : '';
-        if (idempotencyKey && this._results.has(idempotencyKey)) return Promise.resolve(this._results.get(idempotencyKey).result);
-        if (idempotencyKey && this._inflight.has(idempotencyKey)) return this._inflight.get(idempotencyKey);
+        if (idempotencyKey && this._results.has(idempotencyKey)) {
+            this._metrics.idempotentResultReuses++;
+            return Promise.resolve(this._results.get(idempotencyKey).result);
+        }
+        if (idempotencyKey && this._inflight.has(idempotencyKey)) {
+            this._metrics.idempotentInflightReuses++;
+            return this._inflight.get(idempotencyKey);
+        }
         let now = Date.now();
         let counter = this._counters.get(scope);
         if (!counter || counter.resetAt <= now) counter = { count: 0, resetAt: now + Number(policy.refreshWindowMs || 60000) };
         counter.count++;
         this._counters.set(scope, counter);
         if (counter.count > Number(policy.refreshMaxPerWindow || 5)) {
+            this._metrics.throttled++;
             this.audit(request, 'throttled', 'REFRESH_RATE_LIMITED', 'refresh');
             throw new CLASSES.NodicsError('ERR_RTR_00004', 'BackOffice refresh rate limit exceeded');
         }
@@ -104,5 +115,10 @@ module.exports = {
         }).finally(() => { if (idempotencyKey) this._inflight.delete(idempotencyKey); });
         if (idempotencyKey) this._inflight.set(idempotencyKey, promise);
         return promise;
+    },
+    /** Returns sanitized administrative protection counters. */
+    getDiagnostics: function () {
+        return Object.assign({}, this._metrics, { activeCounters: this._counters.size, inflight: this._inflight.size,
+            cachedIdempotencyResults: this._results.size });
     }
 };

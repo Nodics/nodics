@@ -47,6 +47,21 @@ pending-approval and active-selection counts; and last success/error timestamps.
 It never returns
 provider URLs, credentials, keys, stored lease bodies, tokens, or headers.
 
+Operational assessment reports `READY`, `DEGRADED`, or `NOT_READY` with stable
+alert codes. Invalid required configuration or an unavailable registry store is
+`NOT_READY`. Failure ratios, queue saturation, store errors, renewal conflicts,
+discovery failures, and administrative throttling are `DEGRADED`; they do not
+replace the owning subsystem's metrics or target-module health.
+
+Route stable alert codes to the environment monitoring system:
+
+- page for `REGISTRY_STORE_UNAVAILABLE` and configuration failures;
+- investigate `REGISTRY_STORE_ERRORS` and `LEASE_RENEWAL_CONFLICTS`;
+- scale or tune for `AVAILABILITY_QUEUE_SATURATED`;
+- inspect target/runtime health for `AVAILABILITY_FAILURE_RATE`;
+- inspect target contracts for `DISCOVERY_FAILURE_RATE`;
+- inspect clients and permissions for `ADMIN_REFRESH_THROTTLED`.
+
 ## Failure and Recovery
 
 - If BackOffice is unavailable, module traffic remains ready and registration
@@ -72,6 +87,10 @@ provider URLs, credentials, keys, stored lease bodies, tokens, or headers.
 6. Restart one BackOffice replica and confirm other replicas retain leases.
 7. Confirm the restarted replica reports the same active contract hash and
    activation revision and that reconciliation failures remain zero.
+8. Interrupt and restore the distributed provider; confirm BackOffice readiness
+   changes without stopping target-module traffic.
+9. Confirm operational assessment returns `READY` after recovery and alert/audit
+   payloads contain no credentials, endpoints, or provider messages.
 
 Use `npm run test:topology:modular` for governed local registration, CMS restart
 reconciliation, and BackOffice durable-pointer restart recovery. Use the guarded

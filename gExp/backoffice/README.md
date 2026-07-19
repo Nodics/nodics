@@ -63,6 +63,8 @@ Human/service separation and the administrative permission matrix follow
 [the administrative security contract](docs/administrative-security-contract.md).
 Structural scale budgets and benchmark evidence follow
 [the performance and scale contract](docs/performance-and-scale-contract.md).
+Backend go-live, monitoring, rollback, and residual-risk gates follow
+[the backend release-readiness checklist](docs/backend-release-readiness.md).
 
 ## Customization
 
