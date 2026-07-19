@@ -278,6 +278,7 @@ async function waitForRegistry(runtime, predicate, description) {
         discoveries: lastSnapshot.discoveries,
         contractPersistenceServices: lastSnapshot.contractPersistenceServices,
         contractPersistenceModels: lastSnapshot.contractPersistenceModels,
+        contractPersistenceError: lastSnapshot.contractPersistenceError,
         durableContracts: lastSnapshot.durableContracts,
         availability: lastSnapshot.availability,
         discoveryDiagnostics: lastSnapshot.diagnostics && lastSnapshot.diagnostics.discovery

@@ -21,6 +21,8 @@ const path = require('path');
 
 const groupMetadata = require(path.resolve(__dirname, '../../package.json'));
 const moduleMetadata = require(path.resolve(__dirname, '../package.json'));
+const consolidatedProperties = require(path.resolve(__dirname,
+    '../../../startio/envs/startioLocal/startioLocalServer/config/properties.js'));
 
 assert.strictEqual(groupMetadata.name, 'gExp');
 assert.strictEqual(groupMetadata.nodics.kind, 'group');
@@ -39,5 +41,7 @@ assert(moduleMetadata.nodics.owns.includes('service'));
 assert(moduleMetadata.nodics.owns.includes('router'));
 assert(moduleMetadata.nodics.owns.includes('schema'));
 assert(moduleMetadata.nodics.owns.includes('test'));
+assert(consolidatedProperties.activeModules.groups.includes('gExp'),
+    'The clean-build authority must include gExp so BackOffice schema services are generated for modular execution');
 
 console.log('BackOffice module boundary contract validated');

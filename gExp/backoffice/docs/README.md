@@ -33,3 +33,6 @@ this runtime module.
   bounded probe pressure, deterministic benchmark evidence, and load-test scope.
 - `backend-release-readiness.md` defines environment configuration, go-live,
   monitoring, rollback, and residual-risk gates for the backend capability.
+- `backend-acceptance-report.md` records the latest evidence-backed backend
+  acceptance decision and separates locally proven behavior from mandatory
+  production-environment validation.

@@ -84,11 +84,17 @@ module.exports = {
         let discoverableModules = Array.from(new Set(entries.filter(entry => entry.value.backoffice && entry.value.backoffice.discovery)
             .map(entry => entry.value.moduleName)));
         let durableContracts = [];
+        let contractPersistenceError;
         if (repository && systemIdentity) {
             for (let moduleName of discoverableModules) {
-                let active = await repository.getActiveSnapshot(moduleName, { authData: systemIdentity });
-                if (active) durableContracts.push({ moduleName: moduleName, hash: active.contractHash,
-                    activationRevision: active.activationRevision, state: active.state });
+                try {
+                    let active = await repository.getActiveSnapshot(moduleName, { authData: systemIdentity });
+                    if (active) durableContracts.push({ moduleName: moduleName, hash: active.contractHash,
+                        activationRevision: active.activationRevision, state: active.state });
+                } catch (error) {
+                    contractPersistenceError = error.code || error.name || 'PERSISTENCE_FAILED';
+                    break;
+                }
             }
         }
         let availability = moduleNames.sort().map(moduleName => {
@@ -115,6 +121,7 @@ module.exports = {
             contractPersistenceServices: Object.keys(SERVICE).filter(name => /Backoffice/i.test(name)).sort(),
             contractPersistenceModels: Object.keys(NODICS.getModels('backoffice', CONFIG.get('defaultTenant') || 'default') || {})
                 .filter(name => /Contract(Snapshot|Activation)/i.test(name)).sort(),
+            contractPersistenceError: contractPersistenceError,
             durableContracts: durableContracts.sort((left, right) => left.moduleName.localeCompare(right.moduleName)),
             availability: availability,
             diagnostics: (await registry.diagnostics(administrativeProbe)).data

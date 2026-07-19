@@ -23,7 +23,7 @@ module.exports = {
     webEnabled: false,
 
     activeModules: {
-        groups: ['gCore', 'gComm', 'gContent', 'gDeap', 'gMrkty', 'modules'], // Group 'framework' will be included automatically
+        groups: ['gCore', 'gComm', 'gContent', 'gDeap', 'gExp', 'gMrkty', 'modules'], // Group 'framework' will be included automatically
         modules: [
             'profile',
             'nems',

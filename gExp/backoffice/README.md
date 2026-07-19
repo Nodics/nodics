@@ -65,6 +65,8 @@ Structural scale budgets and benchmark evidence follow
 [the performance and scale contract](docs/performance-and-scale-contract.md).
 Backend go-live, monitoring, rollback, and residual-risk gates follow
 [the backend release-readiness checklist](docs/backend-release-readiness.md).
+The current evidence, acceptance decision, and remaining production gates are
+recorded in [the backend acceptance report](docs/backend-acceptance-report.md).
 
 ## Customization
 
