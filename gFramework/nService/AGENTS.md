@@ -19,3 +19,8 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
 - Authentication and token/session helper services must keep logs, audit
   records, and events free of bearer tokens, refresh tokens, API keys, and auth
   cache keys while preserving tenant-scoped traceability.
+- All module HTTP communication must use `DefaultModuleService`; do not add
+  parallel timeout, retry, pooling, or circuit-breaker clients. Unsafe writes
+  require explicit idempotency before retry.
+- BackOffice self-registration must remain asynchronous control-plane work and
+  use internal service identity rather than username/password authentication.

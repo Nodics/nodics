@@ -19,15 +19,30 @@ const _ = require('lodash');
  * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
  */
 module.exports = {
+    acceptingWork: true,
+    inFlight: new Set(),
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
      * defined it that with Promise way
      * @param {*} options 
      */
     init: function (options) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-        });
+        if (SERVICE.DefaultRuntimeLifecycleService) {
+            SERVICE.DefaultRuntimeLifecycleService.registerContributor('workflowWorkload', {
+                order: 210,
+                drain: () => this.drainWorkload(),
+                shutdown: () => this.drainWorkload()
+            });
+        }
+        if (SERVICE.DefaultHealthService) {
+            SERVICE.DefaultHealthService.registerReadinessContributor('workflowEngine', {
+                required: false,
+                order: 310,
+                description: 'Workflow engine accepts new carrier work',
+                check: () => this.acceptingWork
+            });
+        }
+        return Promise.resolve(true);
     },
 
     /**
@@ -39,6 +54,20 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
+    },
+
+    /** Starts a workflow pipeline while tracking it as in-flight process work. */
+    startTrackedPipeline: function (pipelineName, request) {
+        if (!this.acceptingWork) return Promise.reject(new CLASSES.WorkflowError('Workflow runtime is draining'));
+        let execution = Promise.resolve().then(() => SERVICE.DefaultPipelineService.start(pipelineName, request, {}));
+        this.inFlight.add(execution);
+        return execution.finally(() => this.inFlight.delete(execution));
+    },
+
+    /** Stops new workflow work and waits for tracked pipelines to settle. */
+    drainWorkload: function () {
+        this.acceptingWork = false;
+        return Promise.allSettled(Array.from(this.inFlight)).then(() => true);
     },
 
     /**
@@ -56,7 +85,7 @@ module.exports = {
     initCarrier: function (request) {
         return new Promise((resolve, reject) => {
             try {
-                SERVICE.DefaultPipelineService.start('initWorkflowCarrierPipeline', request, {}).then(success => {
+                this.startTrackedPipeline('initWorkflowCarrierPipeline', request).then(success => {
                     resolve({
                         code: 'SUC_WF_00000',
                         result: success
@@ -76,7 +105,7 @@ module.exports = {
     releaseCarrier: function (request) {
         return new Promise((resolve, reject) => {
             try {
-                SERVICE.DefaultPipelineService.start('releaseWorkflowCarrierPipeline', request, {}).then(success => {
+                this.startTrackedPipeline('releaseWorkflowCarrierPipeline', request).then(success => {
                     resolve({
                         code: 'SUC_WF_00000',
                         result: success
@@ -97,7 +126,7 @@ module.exports = {
     updateCarrier: function (request) {
         return new Promise((resolve, reject) => {
             try {
-                SERVICE.DefaultPipelineService.start('updateWorkflowCarrierPipeline', request, {}).then(success => {
+                this.startTrackedPipeline('updateWorkflowCarrierPipeline', request).then(success => {
                     resolve({
                         code: 'SUC_WF_00000',
                         result: success
@@ -121,7 +150,7 @@ module.exports = {
     performAction: function (request) {
         return new Promise((resolve, reject) => {
             try {
-                SERVICE.DefaultPipelineService.start('performWorkflowActionPipeline', request, {}).then(success => {
+                this.startTrackedPipeline('performWorkflowActionPipeline', request).then(success => {
                     resolve({
                         code: 'SUC_WF_00000',
                         result: success
@@ -142,7 +171,7 @@ module.exports = {
     nextAction: function (request) {
         return new Promise((resolve, reject) => {
             try {
-                SERVICE.DefaultPipelineService.start('nextWorkflowActionPipeline', request, {}).then(success => {
+                this.startTrackedPipeline('nextWorkflowActionPipeline', request).then(success => {
                     resolve(success);
                 }).catch(error => {
                     reject(error);

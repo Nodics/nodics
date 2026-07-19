@@ -5,6 +5,8 @@
 ## Hand-Authored Tests
 
 - `gExp/backoffice/test/backofficeModuleBoundaryContract.test.js`
+- `gExp/backoffice/test/backofficeRegistryRouteContract.test.js`
+- `gExp/backoffice/test/backofficeRegistryService.test.js`
 
 ## Generated Tests
 

@@ -17,5 +17,9 @@
  * @override Later active modules may extend or replace this registry through Nodics layering.
  */
 module.exports = {
-
+    SUC_BOF_00000: { code: '200', message: 'Module instance lease registered' },
+    SUC_BOF_00001: { code: '200', message: 'Module instance lease removed' },
+    SUC_BOF_00002: { code: '200', message: 'Active module registry returned' },
+    SUC_BOF_00003: { code: '200', message: 'Registry diagnostics returned' },
+    ERR_BOF_00000: { code: '400', message: 'Invalid module registration' }
 };

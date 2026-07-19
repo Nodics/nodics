@@ -2,6 +2,10 @@
 
 `emsClient` is the shared messaging client capability for `nEms`. It owns the framework-facing APIs and route contracts for publishing messages through the active EMS provider.
 
+Messaging participates in central readiness and shutdown. Drain closes
+consumers before publishers and provider connections so no new messages are
+acquired during termination.
+
 Use this module for provider-neutral message publishing, tenant resolution, active provider selection, and EMS client facade/controller behavior. Provider-specific broker wiring belongs in modules such as `activemq` and `kafka`.
 
 Project extensions should register providers and message policies through layered configuration. Do not bypass tenant context, access control, diagnostics, or provider selection when adding messaging behavior.

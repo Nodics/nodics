@@ -30,6 +30,9 @@ module.exports = {
     },
     apiExposure: {
         categories: {
+            serviceRegistry: {
+                enabled: true
+            },
             fileAccess: {
                 enabled: true
             },

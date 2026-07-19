@@ -25,6 +25,8 @@ contracts.
 - generated schema service templates for get, get by id, get by code, save, save all, update, remove, remove by id, and remove by code;
 - generated service artifacts under `src/service/gen`;
 - module-to-module and external HTTP request helpers;
+- bounded request deadlines, pooled keep-alive connections, safe retries,
+  circuit breaking, lifecycle cleanup, and sanitized transport diagnostics;
 - standard header normalization for authorization, API key, and enterprise context;
 - authentication provider services for user login and internal module access;
 - authorization provider services;
@@ -46,6 +48,12 @@ Generated services delegate schema CRUD behavior into pipeline contracts. Handwr
 6. Database, validation, interceptor, audit, cache, and diagnostics behavior runs through the pipeline.
 
 For module-to-module calls, `DefaultModuleService` builds governed request options, normalizes headers, delegates URL resolution to the router service, executes the request, and enriches failures with sanitized context.
+
+Transport policy is layered under `serviceCommunication`. Automatic retries
+apply only to GET, HEAD, and OPTIONS requests, or writes carrying an explicit
+idempotency key. Projects may override the service or properties, but must keep
+timeouts bounded and must not expose credentials or response bodies through
+diagnostics.
 
 ## Configuration And Security
 
@@ -84,6 +92,7 @@ Run focused service coverage with:
 ```bash
 node gFramework/nService/test/authTokenInvalidationService.test.js
 node gFramework/nService/test/moduleRequestHeaderNormalization.test.js
+node gFramework/nService/test/moduleTransportResilience.test.js
 node gFramework/nService/test/statusDefinitionCatalog.test.js
 npm run quality:docs
 ```

@@ -117,7 +117,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/cronjob/src/router/routers.js` | `src` | `documented` | 0/0 | Secured cronjob route contracts for creating, updating, running, starting, stopping, removing, pausing, and resuming jobs. |  |
 | `gCore/cronjob/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Cronjob schema definitions for job records, triggers, logs, and node responsibility models. |  |
 | `gCore/cronjob/src/service/config/defaultCronJobConfigurationService.js` | `src` | `documented` | 11/11 | Caches cronjob interceptor and validator configuration and supplies the default active-job query. |  |
-| `gCore/cronjob/src/service/cronjob/defaultCronJobService.js` | `src` | `documented` | 12/12 | Coordinates persisted cronjob definitions with the in-memory scheduler container across tenants. |  |
+| `gCore/cronjob/src/service/cronjob/defaultCronJobService.js` | `src` | `documented` | 16/16 | Coordinates persisted cronjob definitions with the in-memory scheduler container across tenants. |  |
 | `gCore/cronjob/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements cronjob default sample service business behavior and extension logic. |  |
 | `gCore/cronjob/src/service/event/defaultEventHandlerJobService.js` | `src` | `documented` | 5/5 | Cronjob job implementation that triggers NEMS event processing and records job outcome. |  |
 | `gCore/cronjob/src/service/handler/defaultJobHandlerService.js` | `src` | `documented` | 8/8 | Default logging hooks for cronjob lifecycle events. |  |

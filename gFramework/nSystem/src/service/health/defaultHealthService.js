@@ -86,7 +86,8 @@ module.exports = {
                 serverState: this.getRuntimeValue('getServerState'),
                 uptimeSeconds: Math.floor(process.uptime()),
                 topology: this.getTopologySummary(),
-                checks: result.checks
+                checks: result.checks,
+                resilience: this.getResilienceSummary()
             }
         }));
     },
@@ -219,6 +220,18 @@ module.exports = {
             activeModuleCount: this.getActiveModules().length,
             activeTenantCount: this.getActiveTenants().length,
             nTestRunning: !!this.getRuntimeValue('isNTestRunning')
+        };
+    },
+
+    /** Returns sanitized transport and control-plane counters for secured operations diagnostics. */
+    getResilienceSummary: function () {
+        return {
+            moduleTransport: typeof SERVICE !== 'undefined' && SERVICE.DefaultModuleService &&
+                typeof SERVICE.DefaultModuleService.getTransportDiagnostics === 'function' ?
+                SERVICE.DefaultModuleService.getTransportDiagnostics() : undefined,
+            backofficeRegistration: typeof SERVICE !== 'undefined' && SERVICE.DefaultModuleRegistrationAgentService &&
+                typeof SERVICE.DefaultModuleRegistrationAgentService.getDiagnostics === 'function' ?
+                SERVICE.DefaultModuleRegistrationAgentService.getDiagnostics() : undefined
         };
     },
 

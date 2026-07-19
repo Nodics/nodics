@@ -36,9 +36,21 @@ module.exports = {
      * @returns {Promise<boolean>} Resolves when initialization is complete.
      */
     init: function (options) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-        });
+        if (SERVICE.DefaultRuntimeLifecycleService) {
+            SERVICE.DefaultRuntimeLifecycleService.registerContributor('databaseConnections', {
+                order: 600,
+                shutdown: () => this.closeAllConnections()
+            });
+        }
+        if (SERVICE.DefaultHealthService) {
+            SERVICE.DefaultHealthService.registerReadinessContributor('databaseConnections', {
+                required: true,
+                order: 100,
+                description: 'Required tenant database handles are initialized',
+                check: () => this.areRequiredConnectionsReady()
+            });
+        }
+        return Promise.resolve(true);
     },
 
     /**
@@ -51,6 +63,27 @@ module.exports = {
         return new Promise((resolve, reject) => {
             resolve(true);
         });
+    },
+
+    /** Checks existing required tenant database handles without opening probe connections. */
+    areRequiredConnectionsReady: function () {
+        let modules = SERVICE.DefaultDatabaseConfigurationService.getDatabaseActiveModules();
+        let tenants = NODICS.getActiveTenants();
+        if (tenants.length === 0) tenants = [CONFIG.get('defaultTenant') || 'default'];
+        return modules.every(moduleName => tenants.every(tenant => {
+            let value;
+            try { value = SERVICE.DefaultDatabaseConfigurationService.getTenantDatabase(moduleName, tenant); } catch (error) { return false; }
+            return !!(value && value.master && value.master.getConnection && value.master.getConnection());
+        }));
+    },
+
+    /** Closes all registered module and tenant database handles during shutdown. */
+    closeAllConnections: function () {
+        let modules = SERVICE.DefaultDatabaseConfigurationService.getDatabaseActiveModules();
+        let tenants = NODICS.getActiveTenants();
+        if (tenants.length === 0) tenants = [CONFIG.get('defaultTenant') || 'default'];
+        modules.forEach(moduleName => tenants.forEach(tenant => this.closeConnection(moduleName, tenant)));
+        return Promise.resolve(true);
     },
 
     /**

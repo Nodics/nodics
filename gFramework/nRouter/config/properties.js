@@ -107,6 +107,9 @@ module.exports = {
             operationalHealth: {
                 enabled: true
             },
+            serviceRegistry: {
+                enabled: false
+            },
             fileAccess: {
                 enabled: false
             },

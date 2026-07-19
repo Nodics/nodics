@@ -28,9 +28,22 @@ module.exports = {
      * @param {*} options 
      */
     init: function (options) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-        });
+        if (SERVICE.DefaultRuntimeLifecycleService) {
+            SERVICE.DefaultRuntimeLifecycleService.registerContributor('emsClientWorkload', {
+                order: 220,
+                drain: () => this.drainConsumers(),
+                shutdown: () => this.closeClients()
+            });
+        }
+        if (SERVICE.DefaultHealthService) {
+            SERVICE.DefaultHealthService.registerReadinessContributor('emsClients', {
+                required: false,
+                order: 320,
+                description: 'Configured messaging clients are connected',
+                check: () => this.getMessagingReadiness()
+            });
+        }
+        return Promise.resolve(true);
     },
 
     /**
@@ -56,6 +69,33 @@ module.exports = {
 
     getEmsClients: function () {
         return this.emsClients;
+    },
+
+    /** Checks whether every enabled messaging client already has a runtime handle. */
+    getMessagingReadiness: function () {
+        let configured = CONFIG.get('emsClient') && CONFIG.get('emsClient').clients || {};
+        let required = Object.keys(configured).filter(name => configured[name].enabled);
+        return required.every(name => !!this.emsClients[name]);
+    },
+
+    /** Stops all active consumers so no new messages are acquired during drain. */
+    drainConsumers: function () {
+        return this.closeConsumers(Object.keys(this.emsConsumers));
+    },
+
+    /** Closes consumers, publishers, and provider connections during shutdown. */
+    closeClients: async function () {
+        await this.drainConsumers();
+        await this.closePublishers(Object.keys(this.emsPublishers));
+        let clients = Object.keys(this.emsClients).map(name => this.emsClients[name]);
+        await Promise.all(clients.map(client => {
+            let connection = client.connection;
+            if (connection && typeof connection.disconnect === 'function') return connection.disconnect();
+            if (connection && typeof connection.close === 'function') return connection.close();
+            return true;
+        }));
+        this.emsClients = {};
+        return true;
     },
 
     /**

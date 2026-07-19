@@ -21,6 +21,42 @@ const _ = require('lodash');
 module.exports = {
 
     cronJobContainer: new CLASSES.CronJobContainer(),
+    acceptingWork: true,
+
+    /** Registers cron scheduling with lifecycle and readiness coordination. */
+    init: function () {
+        if (SERVICE.DefaultRuntimeLifecycleService) {
+            SERVICE.DefaultRuntimeLifecycleService.registerContributor('cronjobWorkload', {
+                order: 200,
+                drain: () => this.drainWorkload(),
+                shutdown: () => this.drainWorkload()
+            });
+        }
+        if (SERVICE.DefaultHealthService) {
+            SERVICE.DefaultHealthService.registerReadinessContributor('cronjobScheduler', {
+                required: false,
+                order: 300,
+                description: 'Cron scheduler accepts work when the runtime is traffic-ready',
+                check: () => this.acceptingWork
+            });
+        }
+        return Promise.resolve(true);
+    },
+
+    /** Completes the standard service post-initialization contract. */
+    postInit: function () { return Promise.resolve(true); },
+
+    /** Rejects new scheduler acquisition while the runtime is draining. */
+    assertAcceptingWork: function () {
+        if (!this.acceptingWork) return Promise.reject(new CLASSES.NodicsError('ERR_JOB_00000', 'Cronjob runtime is draining'));
+        return null;
+    },
+
+    /** Stops accepting cron work and stops every process-owned schedule. */
+    drainWorkload: function () {
+        this.acceptingWork = false;
+        return this.cronJobContainer.stopAllJobs();
+    },
 
     /**
      * Returns the process-local cronjob container.
@@ -107,6 +143,8 @@ module.exports = {
      * @returns {Promise<Object>} Aggregate creation result.
      */
     createAllJobs: function (tenants = NODICS.getActiveTenants()) {
+        let rejection = this.assertAcceptingWork();
+        if (rejection) return rejection;
         return new Promise((resolve, reject) => {
             const activeTenants = tenants.slice();
             this.getTenantsJobs({
@@ -143,6 +181,8 @@ module.exports = {
      * @returns {Promise<Object>} Aggregate creation result.
      */
     createJob: function (request) {
+        let rejection = this.assertAcceptingWork();
+        if (rejection) return rejection;
         return new Promise((resolve, reject) => {
             this.getTenantsJobs({
                 searchOptions: _.merge({
@@ -214,6 +254,8 @@ module.exports = {
      * @returns {Promise<Object>} Aggregate run result.
      */
     runJob: function (request) {
+        let rejection = this.assertAcceptingWork();
+        if (rejection) return rejection;
         return new Promise((resolve, reject) => {
             this.getTenantsJobs({
                 searchOptions: _.merge({
@@ -249,6 +291,8 @@ module.exports = {
      * @returns {Promise<Object>} Aggregate start result.
      */
     startJob: function (request) {
+        let rejection = this.assertAcceptingWork();
+        if (rejection) return rejection;
         return this.cronJobContainer.startJobs(request.tenant, request.jobCodes);
     },
 

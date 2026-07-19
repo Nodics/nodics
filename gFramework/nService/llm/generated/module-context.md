@@ -26,10 +26,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 80 |
-| Test files | 3 |
+| Source files | 81 |
+| Test files | 5 |
 | Data files | 0 |
-| All module-owned files | 33 |
+| All module-owned files | 36 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -56,7 +56,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 27 |
+| Documented | 30 |
 | Partially documented | 0 |
 | Undocumented | 2 |
 | Inventory only | 4 |
@@ -100,7 +100,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nService/src/service/enterprise/defaultEnterpriseHandlerService.js` | `src` | `documented` | 6/6 | Loads active enterprises and tenants during startup, then builds tenant-scoped runtime state: active enterprise mapping, tenant properties, database connections, generated models, search engines, cron jobs, initial data, and internal auth tokens. |  |
 | `gFramework/nService/src/service/enterprise/defaultEnterpriseUpdateListenerService.js` | `src` | `documented` | 4/4 | Event listener for enterprise activation and deactivation. It turns enterprise update events into tenant bootstrap or tenant runtime cleanup on the current node. |  |
 | `gFramework/nService/src/service/log/defaultLogService.js` | `src` | `documented` | 3/3 | Runtime log-level management service. It updates logger levels for named Nodics entities so operators can adjust diagnostics without restarting the node. |  |
-| `gFramework/nService/src/service/module/defaultModuleService.js` | `src` | `documented` | 7/7 | Builds and executes internal module-to-module and external HTTP requests for Nodics. It normalizes authentication, API key, and enterprise headers to the modern standard while preserving legacy header compatibility. |  |
+| `gFramework/nService/src/service/module/defaultModuleRegistrationAgentService.js` | `src` | `documented` | 12/12 | Registers locally served modules with BackOffice asynchronously after traffic startup and renews their observed leases. |  |
+| `gFramework/nService/src/service/module/defaultModuleService.js` | `src` | `documented` | 18/18 | Builds and executes internal module-to-module and external HTTP requests for Nodics. It normalizes authentication, API key, and enterprise headers to the modern standard while preserving legacy header compatibility. |  |
 | `gFramework/nService/src/service/profile/defaultEnterpriseProviderService.js` | `src` | `documented` | 4/4 | Resolves enterprise records for incoming requests. When profile is local it reads generated enterprise services directly; when profile is remote it calls the profile module API using the default internal auth token. |  |
 | `gFramework/nService/src/service/status/defaultStatusService.js` | `src` | `documented` | 5/5 | Loads and serves Nodics status/error definitions from active module hierarchy. It validates each status definition and provides runtime lookup for consistent error and success response messages. |  |
 | `gFramework/nService/src/service/tenant/defaultTenantHandlerService.js` | `src` | `documented` | 3/3 | Deactivates tenants from the runtime node by removing tenant registry entries, stopping tenant cron jobs, dropping tenant database handles, removing generated models, and cleaning search runtime state. |  |
@@ -108,7 +109,9 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nService/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Shared tenant/service operation status and error definitions. |  |
 | `gFramework/nService/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for shared service-layer helper functions. |  |
 | `gFramework/nService/test/authTokenInvalidationService.test.js` | `test` | `documented` | 0/0 | Verifies auth cache invalidation callbacks produce sanitized observability without logging token material or cache keys. |  |
+| `gFramework/nService/test/moduleRegistrationAgent.test.js` | `test` | `documented` | 0/0 | Validates non-blocking lifecycle registration, router-module filtering, service-token use, and graceful deregistration. |  |
 | `gFramework/nService/test/moduleRequestHeaderNormalization.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nService/test/moduleTransportResilience.test.js` | `test` | `documented` | 0/0 | Validates timeout, safe retry, unsafe-write, circuit-breaker, pooling, diagnostics, and lifecycle-cleanup contracts for module HTTP calls. |  |
 | `gFramework/nService/test/statusDefinitionCatalog.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 
 ## Extension Contract

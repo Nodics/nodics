@@ -17,5 +17,11 @@
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {
-
+    backofficeRegistry: {
+        enabled: true,
+        leaseTtlMs: 30000,
+        sweepIntervalMs: 5000,
+        allowedSchemes: ['http', 'https'],
+        clientSafeMetadata: ['moduleName', 'instanceId', 'version', 'capabilities', 'endpoint', 'healthPath', 'state', 'lastSeenAt']
+    }
 };

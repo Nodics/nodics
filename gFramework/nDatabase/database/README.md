@@ -4,6 +4,10 @@ The `database` module owns schema-driven persistence contracts, tenant/module
 database configuration, connection lifecycle, model generation, CRUD pipeline
 integration, ownership enforcement, and database adapter extension points.
 
+Existing module/tenant handles contribute required readiness without opening
+probe connections. Central shutdown closes registered handles through their
+configured adapter services.
+
 ## Tenant and module configuration
 
 Database configuration is resolved from the effective layered `database`

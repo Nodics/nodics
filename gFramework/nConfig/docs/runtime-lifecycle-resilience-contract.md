@@ -76,3 +76,17 @@ Provider integrations must reuse this lifecycle coordinator. Planned
 contributors include internal HTTP clients, MongoDB, Redis, Kafka, ActiveMQ,
 search, CronJob/NEMS ownership, and BackOffice registration. Each addition
 requires positive, negative, timeout, restart, integration, and regression tests.
+
+## Deployment probe contract
+
+Supervisors use `/nodics/system/v0/health/live` for liveness and
+`/nodics/system/v0/health/ready` for traffic readiness. They must not use the
+secured readiness-details route as a probe. Termination sends `SIGTERM`, waits
+for readiness to become `DOWN`, and allows at least the configured shutdown
+deadline plus load-balancer propagation before force termination. With the
+default 30-second Nodics deadline, the recommended external grace period is at
+least 45 seconds.
+
+OOM kills and hard termination cannot execute cleanup hooks. BackOffice lease
+expiry removes stale instances, while cron, event, and workflow recovery remains
+owned by their durable state and failover contracts.

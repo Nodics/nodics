@@ -100,7 +100,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nEms/emsClient/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nEms route registration and HTTP exposure metadata. |  |
 | `gFramework/nEms/emsClient/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nEms route registration and HTTP exposure metadata. |  |
 | `gFramework/nEms/emsClient/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nEms schema metadata, model contracts, and generated capability settings. |  |
-| `gFramework/nEms/emsClient/src/service/config/defaultEmsClientConfigurationService.js` | `src` | `documented` | 13/13 | Implements nEms default ems client configuration service business behavior and extension logic. |  |
+| `gFramework/nEms/emsClient/src/service/config/defaultEmsClientConfigurationService.js` | `src` | `documented` | 16/16 | Implements nEms default ems client configuration service business behavior and extension logic. |  |
 | `gFramework/nEms/emsClient/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements emsClient default sample service business behavior and extension logic. |  |
 | `gFramework/nEms/emsClient/src/service/ems/defaultEmsClientService.js` | `src` | `documented` | 7/7 | Implements nEms default ems client service business behavior and extension logic. |  |
 | `gFramework/nEms/emsClient/src/service/handlers/defaultJSONMessageHandlerService.js` | `src` | `documented` | 4/4 | Implements nEms default jsonmessage handler service business behavior and extension logic. |  |

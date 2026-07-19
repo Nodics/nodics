@@ -35,11 +35,11 @@ module.exports = {
         message: 'Invalid or expired authorization token',
     },
     ERR_AUTH_00002: {
-        code: '400',
+        code: '401',
         message: 'Invalid authentication parameters'
     },
     ERR_AUTH_00003: {
-        code: '400',
+        code: '403',
         message: 'Access denied'
     },
 

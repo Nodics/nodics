@@ -3,6 +3,10 @@
 The `cronjob` capability owns scheduled execution, cron lifecycle services,
 routes, persistence schemas, pipelines, interceptors, events, data, and tests.
 
+Cron scheduling participates in the central runtime lifecycle. Drain stops new
+job acquisition and every process-owned schedule before connection shutdown.
+Persisted job ownership remains authoritative after hard termination.
+
 ## Configuration
 
 Defaults live under `config/`; project, environment, server, and node modules may

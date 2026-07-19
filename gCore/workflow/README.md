@@ -2,6 +2,10 @@
 
 `workflow` composes the application workflow modules `flowSchema`, `flowCore`, and `flowApi`. It provides the group-level configuration and activation point for workflow behavior outside the framework BPM core.
 
+Workflow drain rejects new carrier work and waits, within the global shutdown
+deadline, for tracked pipelines to settle. Durable carrier state remains the
+recovery authority after hard process termination.
+
 Use this module for composition and shared workflow defaults. Schema ownership belongs in `flowSchema`, runtime workflow behavior belongs in `flowCore`, and API-facing behavior belongs in `flowApi`.
 
 Workflow changes should preserve source definitions, validation, auditability, rollback safety, and generated artifacts.

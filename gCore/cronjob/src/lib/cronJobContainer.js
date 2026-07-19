@@ -22,6 +22,21 @@ module.exports = function () {
     let _jobPool = {};
     this.LOG = SERVICE.DefaultLoggerService.createLogger('CronJobContainer');
 
+    /** Returns a read-only summary of scheduler ownership for diagnostics. */
+    this.getPoolSummary = function () {
+        let tenants = Object.keys(_jobPool);
+        return {
+            tenants: tenants.length,
+            jobs: tenants.reduce((count, tenant) => count + Object.keys(_jobPool[tenant] || {}).length, 0)
+        };
+    };
+
+    /** Stops acquisition for every process-owned scheduled job. */
+    this.stopAllJobs = function (tenants) {
+        tenants = (tenants || Object.keys(_jobPool)).slice();
+        return Promise.all(tenants.map(tenant => this.stopJobs(tenant, Object.keys(_jobPool[tenant] || {}))));
+    };
+
     this.createJobs = function (input, result = [], failed = []) {
         let _self = this;
         return new Promise((resolve, reject) => {

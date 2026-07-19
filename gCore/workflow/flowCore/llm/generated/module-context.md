@@ -166,7 +166,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/workflow/flowCore/src/service/procs/release/defaultWorkflowCarrierReleasePipelineService.js` | `src` | `documented` | 6/6 | Implements workflow default workflow carrier release pipeline service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/procs/update/defaultWorkflowCarrierUpdatePipelineService.js` | `src` | `documented` | 6/6 | Implements workflow default workflow carrier update pipeline service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/service/utils/defaultWorkflowUtilsService.js` | `src` | `documented` | 4/4 | Implements workflow default workflow utils service business behavior and extension logic. |  |
-| `gCore/workflow/flowCore/src/service/workflow/defaultWorkflowService.js` | `src` | `documented` | 8/8 | Implements workflow default workflow service business behavior and extension logic. |  |
+| `gCore/workflow/flowCore/src/service/workflow/defaultWorkflowService.js` | `src` | `documented` | 10/10 | Implements workflow default workflow service business behavior and extension logic. |  |
 | `gCore/workflow/flowCore/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared flowCore enum definition exports. |  |
 | `gCore/workflow/flowCore/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared flowCore status and error definition exports. |  |
 | `gCore/workflow/flowCore/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared workflow utility exports for utils. |  |

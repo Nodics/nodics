@@ -312,7 +312,7 @@ async function runRuntimeReadinessSmoke(runtimes) {
             node: runtime.nodeName,
             moduleName: 'system',
             path: '/v0/health/ready/details',
-            expectedStatus: 400
+            expectedStatus: 401
         }));
     }
     return results;
