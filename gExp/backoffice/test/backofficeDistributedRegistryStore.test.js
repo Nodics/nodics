@@ -30,6 +30,14 @@ let client = {
         return record.value;
     },
     del: async key => records.delete(key) ? 1 : 0,
+    eval: async (script, options) => {
+        let record = records.get(options.keys[0]);
+        if (!record) return 0;
+        let lease = JSON.parse(record.value);
+        if (String(lease.expiresAt) !== options.arguments[0]) return -1;
+        records.delete(options.keys[0]);
+        return 1;
+    },
     mGet: async keys => Promise.all(keys.map(key => client.get(key))),
     scanIterator: async function* (options) {
         let prefix = options.MATCH.slice(0, -1);
@@ -63,6 +71,23 @@ async function run() {
     await replicaOne.set('cms:runtime-2', Object.assign({}, lease, { instanceId: 'runtime-2' }), 5000);
     assert.strictEqual(await replicaTwo.delete('cms:runtime-2'), true);
     assert.strictEqual(await replicaOne.size(), 0);
+
+    let stale = { moduleName: 'cms', instanceId: 'runtime-race', expiresAt: now + 1000 };
+    await replicaOne.set('cms:runtime-race', stale, 1000);
+    let renewed = Object.assign({}, stale, { expiresAt: now + 5000 });
+    await replicaTwo.set('cms:runtime-race', renewed, 5000);
+    assert.strictEqual(await replicaOne.deleteIfExpiresAt('cms:runtime-race', stale.expiresAt), false,
+        'stale replica must not delete a lease renewed by another replica');
+    assert.deepStrictEqual(await replicaOne.get('cms:runtime-race'), renewed);
+    assert.strictEqual(await replicaOne.deleteIfExpiresAt('cms:runtime-race', renewed.expiresAt), true);
+    assert(replicaOne.diagnostics().metrics.conditionalDeleteConflicts > 0);
+
+    let atomicEval = client.eval;
+    client.eval = undefined;
+    await replicaOne.set('cms:unsupported', Object.assign({}, lease, { instanceId: 'unsupported' }), 5000);
+    await assert.rejects(replicaOne.deleteIfExpiresAt('cms:unsupported', lease.expiresAt), /atomic conditional delete support/);
+    client.eval = atomicEval;
+    await replicaOne.delete('cms:unsupported');
 
     global.SERVICE.DefaultCacheEngineService.getEngineClient = () => null;
     await assert.rejects(replicaOne.get('missing'), /distributed registry store is unavailable/);

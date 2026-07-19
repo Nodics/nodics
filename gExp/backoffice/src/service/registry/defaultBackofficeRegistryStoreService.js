@@ -18,7 +18,8 @@
  */
 module.exports = {
     _instances: new Map(),
-    _metrics: { reads: 0, writes: 0, deletes: 0, scans: 0, errors: 0, lastSuccessAt: null, lastErrorAt: null },
+    _metrics: { reads: 0, writes: 0, deletes: 0, conditionalDeletes: 0, conditionalDeleteConflicts: 0,
+        scans: 0, errors: 0, lastSuccessAt: null, lastErrorAt: null },
 
     /** Initializes the configured store without creating provider connections outside nCache. */
     init: function () { return Promise.resolve(true); },
@@ -76,6 +77,25 @@ module.exports = {
         return this.observe('deletes', () => {
             if (!this.isDistributed()) return this._instances.delete(key);
             return this.getDistributedClient().del(this.getStorageKey(key)).then(count => count > 0);
+        });
+    },
+    /** Removes a lease only when its observed expiry still matches, preventing stale-scan deletion of a renewed lease. */
+    deleteIfExpiresAt: function (key, expectedExpiresAt) {
+        return this.observe('conditionalDeletes', async () => {
+            if (!this.isDistributed()) {
+                let current = this._instances.get(key);
+                if (!current || Number(current.expiresAt) !== Number(expectedExpiresAt)) {
+                    this._metrics.conditionalDeleteConflicts++;
+                    return false;
+                }
+                return this._instances.delete(key);
+            }
+            let client = this.getDistributedClient();
+            if (typeof client.eval !== 'function') throw new Error('Distributed registry store requires atomic conditional delete support');
+            let script = "local value=redis.call('GET',KEYS[1]); if not value then return 0 end; local lease=cjson.decode(value); if tostring(lease.expiresAt)~=ARGV[1] then return -1 end; return redis.call('DEL',KEYS[1])";
+            let result = await client.eval(script, { keys: [this.getStorageKey(key)], arguments: [String(expectedExpiresAt)] });
+            if (Number(result) === -1) this._metrics.conditionalDeleteConflicts++;
+            return Number(result) === 1;
         });
     },
     /** Returns a snapshot of every currently present observed lease. */

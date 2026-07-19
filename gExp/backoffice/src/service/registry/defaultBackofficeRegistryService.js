@@ -422,17 +422,23 @@ module.exports = {
         await Promise.all(entries.map(async entry => {
             let instance = entry.value;
             if (instance.expiresAt <= now) {
-                await this.getStore().delete(entry.key);
-                this._metrics.expirations++;
-                expired++;
+                let removed = await this.getStore().deleteIfExpiresAt(entry.key, instance.expiresAt);
+                if (removed) { this._metrics.expirations++; expired++; }
             }
         }));
         if (expired > 0) await this.audit({ eventType: 'backoffice.registry.expiry', outcome: 'expired', moduleCount: expired });
-        if (expired > 0 && SERVICE.DefaultBackofficeAvailabilityService) {
-            let remaining = await this.getStore().values();
-            let activeInstanceIds = new Set(remaining.map(entry => entry.value.instanceId));
-            entries.forEach(entry => { if (!activeInstanceIds.has(entry.value.instanceId)) SERVICE.DefaultBackofficeAvailabilityService.removeInstance(entry.value.instanceId); });
+        let remaining = await this.getStore().values();
+        let availabilityRemoved = 0;
+        let discoveryRemoved = 0;
+        if (SERVICE.DefaultBackofficeAvailabilityService && SERVICE.DefaultBackofficeAvailabilityService.reconcileActiveInstances) {
+            availabilityRemoved = SERVICE.DefaultBackofficeAvailabilityService.reconcileActiveInstances(remaining.map(entry => entry.value.instanceId));
         }
+        if (SERVICE.DefaultBackofficeDiscoveryService && SERVICE.DefaultBackofficeDiscoveryService.reconcileActiveModules) {
+            discoveryRemoved = SERVICE.DefaultBackofficeDiscoveryService.reconcileActiveModules(remaining.map(entry => entry.value.moduleName));
+        }
+        if (availabilityRemoved + discoveryRemoved > 0) await this.audit({ eventType: 'backoffice.registry.reconciliation',
+            outcome: 'reconciled', moduleCount: discoveryRemoved, operation: 'ephemeralCleanup' });
+        return expired;
     },
 
     /** Starts the single unreferenced background lease expiry timer. */

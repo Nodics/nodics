@@ -104,6 +104,7 @@ async function run() {
     assert.strictEqual(service.getDiagnostics().metrics.publicationFailures, 1, 'publisher failure must remain fail-open and observable');
     service.removeInstance('two');
     assert.strictEqual(service.getDiagnostics().trackedInstances, 2);
+    assert.strictEqual(service.reconcileActiveInstances(['one']), 1, 'orphaned process observations must be removed');
     console.log('BackOffice availability service validated');
 }
 run().catch(error => { console.error(error); process.exit(1); });

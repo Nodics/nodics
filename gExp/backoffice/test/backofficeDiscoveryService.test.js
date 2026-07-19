@@ -84,6 +84,8 @@ async function run() {
         get: operation('cms_page_get', 'get'), post: operation('cms_page_post', 'save')
     } })));
     assert.strictEqual(service.getDiagnostics().failures, 2);
+    assert.strictEqual(service.reconcileActiveModules([]), 1, 'orphaned process discovery state must be removed');
+    assert.strictEqual(service.getSnapshot('cms'), undefined);
     console.log('BackOffice discovery service validated');
 }
 

@@ -238,6 +238,13 @@ module.exports = {
         });
         return result;
     },
+    /** Removes process-local discovery state for modules absent from the authoritative active lease snapshot. */
+    reconcileActiveModules: function (moduleNames) {
+        let active = new Set((moduleNames || []).map(String));
+        let removed = 0;
+        Array.from(this._snapshots.keys()).forEach(moduleName => { if (!active.has(moduleName)) { this._snapshots.delete(moduleName); removed++; } });
+        return removed;
+    },
 
     /** Returns sanitized discovery counters. */
     getDiagnostics: function () { return Object.assign({}, this._metrics, { activeSnapshots: this._snapshots.size, inflight: this._inflight.size }); }

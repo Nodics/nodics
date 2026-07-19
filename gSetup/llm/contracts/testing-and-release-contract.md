@@ -116,6 +116,11 @@ permissions, bounded filters and pagination, invalid states and coordinates,
 sanitized detail, missing-module refresh rejection, observer reuse, audit,
 OpenAPI, and modular topology behavior.
 
+Distributed registry retention changes must test stale-scan renewal races,
+matching conditional deletion, unsupported atomic providers, replica
+visibility, ephemeral cache reconciliation, durable-history protection,
+sanitized auditing, restart recovery, and modular topology behavior.
+
 When adding a provider or server/node responsibility, add or update readiness
 checks through the owning module or a later project module. Do not expose
 credentials, provider URLs, private file paths, tenant data, or raw diagnostics

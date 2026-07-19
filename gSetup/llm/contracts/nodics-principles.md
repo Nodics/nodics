@@ -108,6 +108,11 @@ filters and pagination, expose only client-safe projections, use distinct view
 and refresh permissions, and invoke existing observers instead of creating a
 parallel inventory or refresh mechanism.
 
+Distributed lease cleanup must compare the scanned expiry coordinate inside an
+atomic provider operation. Cache reconciliation may remove only ephemeral state
+absent from active leases and must not weaken durable active or pending contract
+retention.
+
 ## Source Of Truth
 
 Behavior must come from Nodics source-of-truth artifacts:

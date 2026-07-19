@@ -23,6 +23,12 @@ A production multi-replica deployment enables the nCache distributed engine and
 sets `backofficeRegistry.store.mode` to `distributed`. Replica behavior is
 tested against one shared store contract.
 
+Distributed expiry uses an atomic expiry-coordinate comparison at this store
+boundary. A stale sweep cannot delete a lease renewed by another replica, and a
+provider without atomic conditional deletion fails closed. After each sweep,
+process-local availability and discovery state is reconciled against active
+leases without deleting durable active or pending contract history.
+
 Registration and deregistration require a service token whose declared runtime
 instance matches the request and whose module claims contain every module in a
 registration batch. Human username/password sessions never register modules.

@@ -60,6 +60,9 @@
 - Registry administration must query the owning lease store, use bounded
   filters and client-safe projection, and reuse existing discovery and
   availability observers for refresh rather than adding a parallel scheduler.
+- Distributed expiry must use provider-atomic compare-and-delete semantics;
+  stale scans must never delete renewed leases. Ephemeral caches reconcile from
+  active leases without deleting durable active or pending contract history.
 - Use existing Nodics lifecycle, module registry, service communication,
   schema/router governance, audit, and generated-artifact paths. Do not add a
   parallel loader, runtime activation mechanism, or authorization path.

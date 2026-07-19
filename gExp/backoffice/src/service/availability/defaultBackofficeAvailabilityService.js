@@ -206,6 +206,13 @@ module.exports = {
         });
         return removed;
     },
+    /** Removes only process-local observations absent from the authoritative active lease snapshot. */
+    reconcileActiveInstances: function (instanceIds) {
+        let active = new Set((instanceIds || []).map(String));
+        let removed = 0;
+        Array.from(this._observations.keys()).forEach(instanceId => { if (!active.has(instanceId) && this.removeInstance(instanceId)) removed++; });
+        return removed;
+    },
     /** Returns one fresh instance state, treating missing or stale observations as unknown. */
     getInstanceState: function (instanceId) {
         let observation = this._observations.get(String(instanceId || ''));

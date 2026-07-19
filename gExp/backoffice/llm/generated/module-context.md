@@ -113,14 +113,14 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Schema definition registry for this boundary. |  |
 | `gExp/backoffice/src/search/indexes.js` | `src` | `documented` | 0/0 | Search index definition registry for this boundary. |  |
 | `gExp/backoffice/src/service/audit/defaultBackofficeAuditService.js` | `src` | `documented` | 5/5 | Records sanitized BackOffice registry, discovery, compatibility, identity, expiry, and store lifecycle audit events. |  |
-| `gExp/backoffice/src/service/availability/defaultBackofficeAvailabilityService.js` | `src` | `documented` | 14/14 | Observes bounded public runtime readiness asynchronously and aggregates module availability without replacing target health authority. |  |
+| `gExp/backoffice/src/service/availability/defaultBackofficeAvailabilityService.js` | `src` | `documented` | 15/15 | Observes bounded public runtime readiness asynchronously and aggregates module availability without replacing target health authority. |  |
 | `gExp/backoffice/src/service/contract/defaultBackofficeContractLifecycleService.js` | `src` | `documented` | 15/15 | Provides secured read, comparison, approval, rejection, and rollback orchestration over durable normalized contract history. |  |
 | `gExp/backoffice/src/service/contract/defaultBackofficeContractRepositoryService.js` | `src` | `documented` | 24/24 | Persists immutable normalized contract observations and selects active hashes through an optimistic compare-and-set pointer. |  |
 | `gExp/backoffice/src/service/contract/defaultBackofficeContractService.js` | `src` | `documented` | 8/8 | Validates BackOffice registration and module-owned catalogue metadata against the authoritative API contracts. |  |
 | `gExp/backoffice/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Reserves the standard BackOffice service lifecycle and documents the mergeable service override shape. |  |
-| `gExp/backoffice/src/service/discovery/defaultBackofficeDiscoveryService.js` | `src` | `documented` | 17/17 | Discovers effective Nodics contracts through existing System APIs and maintains normalized, client-safe observed snapshots. |  |
+| `gExp/backoffice/src/service/discovery/defaultBackofficeDiscoveryService.js` | `src` | `documented` | 18/18 | Discovers effective Nodics contracts through existing System APIs and maintains normalized, client-safe observed snapshots. |  |
 | `gExp/backoffice/src/service/registry/defaultBackofficeRegistryService.js` | `src` | `documented` | 28/28 | Owns ephemeral observed module-instance leases for BackOffice discovery without becoming topology or activation authority. |  |
-| `gExp/backoffice/src/service/registry/defaultBackofficeRegistryStoreService.js` | `src` | `documented` | 14/14 | Provides the single asynchronous memory or nCache-owned distributed lease-store boundary used by BackOffice. |  |
+| `gExp/backoffice/src/service/registry/defaultBackofficeRegistryStoreService.js` | `src` | `documented` | 15/15 | Provides the single asynchronous memory or nCache-owned distributed lease-store boundary used by BackOffice. |  |
 | `gExp/backoffice/src/utils/enums.js` | `src` | `documented` | 0/0 | Enum definition registry for this boundary. |  |
 | `gExp/backoffice/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Status and error definition registry for this boundary. |  |
 | `gExp/backoffice/src/utils/utils.js` | `src` | `documented` | 0/0 | Utility function registry for this boundary. |  |
