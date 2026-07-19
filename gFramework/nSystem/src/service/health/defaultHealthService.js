@@ -20,6 +20,8 @@
  * preserving sanitized response envelopes and topology gates.
  */
 module.exports = {
+    _readinessContributors: {},
+    _readinessCache: null,
 
     /**
      * Initializes the health service during entity loading.
@@ -69,20 +71,24 @@ module.exports = {
      * @returns {Promise<Object>} Promise resolving to a readiness response envelope.
      */
     getReadiness: function (request) {
-        return new Promise((resolve, reject) => {
-            let checks = this.getReadinessChecks();
-            let ready = checks.every(check => check.status === 'UP');
-            resolve({
-                code: ready ? 'SUC_SYS_HEALTH_READY' : 'SUC_SYS_HEALTH_NOT_READY',
-                data: {
-                    status: ready ? 'UP' : 'DOWN',
-                    serverState: this.getRuntimeValue('getServerState'),
-                    uptimeSeconds: Math.floor(process.uptime()),
-                    topology: this.getTopologySummary(),
-                    checks: checks
-                }
-            });
-        });
+        return this.evaluateReadiness().then(result => ({
+            code: result.ready ? 'SUC_SYS_HEALTH_READY' : 'SUC_SYS_HEALTH_NOT_READY',
+            data: { status: result.ready ? 'UP' : 'DOWN' }
+        }));
+    },
+
+    /** Returns secured sanitized readiness details for operations diagnostics. */
+    getReadinessDetails: function (request) {
+        return this.evaluateReadiness().then(result => ({
+            code: result.ready ? 'SUC_SYS_HEALTH_READY' : 'SUC_SYS_HEALTH_NOT_READY',
+            data: {
+                status: result.ready ? 'UP' : 'DOWN',
+                serverState: this.getRuntimeValue('getServerState'),
+                uptimeSeconds: Math.floor(process.uptime()),
+                topology: this.getTopologySummary(),
+                checks: result.checks
+            }
+        }));
     },
 
     /**
@@ -90,13 +96,72 @@ module.exports = {
      *
      * @returns {Array<Object>} Readiness check results.
      */
-    getReadinessChecks: function () {
+    getCoreReadinessChecks: function () {
+        let state = this.getRuntimeValue('getServerState');
+        let config = this.getReadinessConfig();
+        let runtimeReady = state === 'started' || (state === 'degraded' && config.degradedIsReady === true);
+        let defaultTenant = this.getConfigValue('defaultTenant') || 'default';
         return [
-            this.createCheck('runtimeState', this.getRuntimeValue('getServerState') === 'started', 'Runtime state must be started'),
+            this.createCheck('runtimeState', runtimeReady, 'Runtime state must permit traffic', true),
             this.createCheck('serverSelected', !!this.getRuntimeValue('getServerName'), 'Selected server must be resolved'),
             this.createCheck('activeModulesLoaded', this.getActiveModules().length > 0, 'Active module list must be loaded'),
-            this.createCheck('activeTenantsLoaded', this.getActiveTenants().length > 0, 'At least one tenant must be active')
+            this.createCheck('activeTenantsLoaded', this.getActiveTenants().length > 0, 'At least one tenant must be active'),
+            this.createCheck('internalAuthenticationReady', !!this.getInternalAuthToken(defaultTenant), 'Internal service identity must be initialized')
         ];
+    },
+
+    /** Registers one uniquely named provider or subsystem readiness contributor. */
+    registerReadinessContributor: function (name, contributor) {
+        if (!name || !contributor || typeof contributor.check !== 'function') {
+            throw new Error('Readiness contributor requires a name and check function');
+        }
+        if (this._readinessContributors[name]) throw new Error('Readiness contributor already registered: ' + name);
+        this._readinessContributors[name] = Object.assign({ required: true, order: 1000 }, contributor);
+        this._readinessCache = null;
+        return this._readinessContributors[name];
+    },
+
+    /** Evaluates core checks immediately and cached bounded contributors asynchronously. */
+    evaluateReadiness: function () {
+        let coreChecks = this.getCoreReadinessChecks();
+        return this.getContributorReadinessChecks().then(contributorChecks => {
+            let checks = coreChecks.concat(contributorChecks);
+            return {
+                ready: checks.filter(check => check.required !== false).every(check => check.status === 'UP'),
+                checks: checks
+            };
+        });
+    },
+
+    /** Returns cached contributor checks or refreshes them within configured time bounds. */
+    getContributorReadinessChecks: function () {
+        let config = this.getReadinessConfig();
+        let now = Date.now();
+        if (this._readinessCache && now - this._readinessCache.createdAt < Number(config.cacheTtlMs || 1000)) {
+            return Promise.resolve(this._readinessCache.checks);
+        }
+        let contributors = Object.keys(this._readinessContributors).map(name => Object.assign({ name }, this._readinessContributors[name]))
+            .sort((left, right) => Number(left.order) - Number(right.order) || left.name.localeCompare(right.name));
+        return Promise.all(contributors.map(contributor => this.evaluateReadinessContributor(contributor))).then(checks => {
+            this._readinessCache = { createdAt: Date.now(), checks };
+            return checks;
+        });
+    },
+
+    /** Runs one contributor without allowing a slow dependency to stall probes. */
+    evaluateReadinessContributor: function (contributor) {
+        let timeoutMs = Number(contributor.timeoutMs || this.getReadinessConfig().contributorTimeoutMs || 1000);
+        let timeout;
+        return Promise.race([
+            Promise.resolve().then(() => contributor.check()).then(result => {
+                let passed = result === true || result && result.status === 'UP';
+                return this.createCheck(contributor.name, passed, contributor.description || 'Runtime dependency readiness', contributor.required !== false);
+            }),
+            new Promise((resolve, reject) => {
+                timeout = setTimeout(() => reject(new Error('Readiness contributor timed out')), timeoutMs);
+            })
+        ]).catch(() => this.createCheck(contributor.name, false,
+            contributor.description || 'Runtime dependency readiness', contributor.required !== false)).finally(() => clearTimeout(timeout));
     },
 
     /**
@@ -107,12 +172,38 @@ module.exports = {
      * @param {string} description Human-readable check purpose.
      * @returns {Object} Normalized check result.
      */
-    createCheck: function (name, passed, description) {
+    createCheck: function (name, passed, description, required) {
         return {
             name: name,
             status: passed ? 'UP' : 'DOWN',
-            description: description
+            description: description,
+            required: required !== false
         };
+    },
+
+    /** Returns layered readiness policy without exposing it in responses. */
+    getReadinessConfig: function () {
+        return this.getConfigValue('readiness') || {};
+    },
+
+    /** Safely reads one effective configuration value. */
+    getConfigValue: function (name) {
+        if (typeof CONFIG !== 'undefined' && CONFIG && typeof CONFIG.get === 'function') return CONFIG.get(name);
+        return undefined;
+    },
+
+    /** Returns the tenant-scoped internal token without exposing its value. */
+    getInternalAuthToken: function (tenant) {
+        if (typeof NODICS !== 'undefined' && NODICS && typeof NODICS.getInternalAuthToken === 'function') {
+            return NODICS.getInternalAuthToken(tenant);
+        }
+        return undefined;
+    },
+
+    /** Clears registered contributors and cached results for isolated tests. */
+    resetReadinessContributors: function () {
+        this._readinessContributors = {};
+        this._readinessCache = null;
     },
 
     /**

@@ -28,7 +28,7 @@ const rootPath = path.resolve(process.env.NODICS_HOME || process.cwd());
 const ignoredDirectories = new Set(['.git', 'docs', 'generated', 'node_modules']);
 const controlPlanePathPattern = /\/(config|class|import|export|test|log|schema\/indexes|schema\/validator|file\/data|file\/download|contract\/openapi|contract\/swagger|health\/ready)(\/|$)/i;
 const expectedPermissions = {
-    'GET /health/ready': 'system.health.readiness.view',
+    'GET /health/ready/details': 'system.health.readiness.view',
     'POST /file/data': 'system.file.read',
     'POST /file/download': 'system.file.download',
     'POST /import/init': 'import.init.run',
@@ -54,6 +54,7 @@ const expectedPermissions = {
 };
 const expectedExposure = {
     'GET /health/ready': 'operationalHealth',
+    'GET /health/ready/details': 'operationalHealth',
     'POST /file/data': 'fileAccess',
     'POST /file/download': 'fileAccess',
     'POST /import/init': 'dataImport',
@@ -105,6 +106,12 @@ collectRouterFiles(rootPath).forEach((filePath) => {
             return;
         }
         let routeKey = String(route.method).toUpperCase() + ' ' + route.key;
+        if (route.publicProbe === true) {
+            if (route.apiExposure !== 'operationalHealth') {
+                violations.push(`${path.relative(rootPath, filePath)}: ${routeKey} public probe requires operationalHealth exposure`);
+            }
+            return;
+        }
         let expectedPermission = expectedPermissions[routeKey];
         if (expectedPermission && route.permission !== expectedPermission) {
             violations.push(`${path.relative(rootPath, filePath)}: ${routeKey} expected ${expectedPermission}, found ${route.permission || 'none'}`);

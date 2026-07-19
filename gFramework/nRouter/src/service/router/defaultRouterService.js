@@ -34,6 +34,12 @@ const https = require('https');
  */
 module.exports = {
 
+    /** Active HTTP/HTTPS listener handles owned by this process. */
+    runtimeServers: [],
+
+    /** Whether the router has registered its single lifecycle contributor. */
+    lifecycleContributorRegistered: false,
+
     /**
      * Prepared module/server/node configuration container used for URL resolution and server startup.
      *
@@ -364,10 +370,10 @@ module.exports = {
      */
     startServers: function () {
         let _self = this;
-        return new Promise((resolve, reject) => {
-            try {
-                _.each(NODICS.getModules(), function (moduleObject, moduleName) {
-                    if (UTILS.isRouterEnabled(moduleName)) {
+        let listeners = [];
+        try {
+            _.each(NODICS.getModules(), function (moduleObject, moduleName) {
+                if (UTILS.isRouterEnabled(moduleName)) {
                         let app = {};
                         let moduleConfig;
                         let displayName = null;
@@ -389,45 +395,62 @@ module.exports = {
                             process.exit(CONFIG.get('errorExitCode'));
                         }
                         if (!moduleConfig.isServerRunning()) {
-                            _self.registerListenEvents(displayName, httpPort, false, http.createServer(app)).listen(httpPort);
-                            _self.registerListenEvents(displayName, httpsPort, true, https.createServer(app)).listen(httpsPort);
                             moduleConfig.setIsServerRunning(true);
+                            listeners.push(_self.startListener(displayName, httpPort, false, http.createServer(app), moduleConfig));
+                            listeners.push(_self.startListener(displayName, httpsPort, true, https.createServer(app), moduleConfig));
                         }
-                    }
-                });
-                resolve(true);
-            } catch (error) {
+                }
+            });
+            this.registerLifecycleContributor();
+            return Promise.all(listeners).then(() => true);
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    },
+
+    /** Starts one listener and resolves only after the operating system accepts it. */
+    startListener: function (moduleName, port, isSecure, server, moduleConfig) {
+        let _self = this;
+        this.runtimeServers.push({ moduleName, port, isSecure, server });
+        return new Promise((resolve, reject) => {
+            server.once('error', error => {
+                moduleConfig.setIsServerRunning(false);
+                _self.LOG.error('Failed to start ' + (isSecure ? 'HTTPS' : 'HTTP') + ' Server for module : ' + moduleName + ' on PORT : ' + port);
+                _self.LOG.error(error);
                 reject(error);
-            }
+            });
+            server.once('listening', () => {
+                _self.LOG.info('Starting ' + (isSecure ? 'HTTPS' : 'HTTP') + ' Server for module : ' + moduleName + ' on PORT : ' + port);
+                resolve(true);
+            });
+            server.listen(port);
         });
     },
 
-    /**
-     * Registers logging callbacks for server error and listening events.
-     *
-     * @param {string} moduleName Display module name for startup logs.
-     * @param {number|string} port Port being listened on.
-     * @param {boolean} isSecure Whether this server is HTTPS.
-     * @param {Object} server Node HTTP/HTTPS server instance.
-     * @returns {Object} Same server instance with registered listeners.
-     */
-    registerListenEvents: function (moduleName, port, isSecure, server) {
-        let _self = this;
-        server.on('error', function (error) {
-            if (isSecure) {
-                _self.LOG.error('Failed to start HTTPS Server for module : ' + moduleName + ' on PORT : ' + port);
-            } else {
-                _self.LOG.error('Failed to start HTTP Server for module : ' + moduleName + ' on PORT : ' + port);
-            }
-            _self.LOG.error(error);
+    /** Registers router draining with the single process lifecycle owner. */
+    registerLifecycleContributor: function () {
+        if (this.lifecycleContributorRegistered || !SERVICE.DefaultRuntimeLifecycleService) return false;
+        SERVICE.DefaultRuntimeLifecycleService.registerContributor('httpListeners', {
+            order: 100,
+            drain: () => this.closeRuntimeServers(false),
+            shutdown: () => this.closeRuntimeServers(true)
         });
-        server.on('listening', function () {
-            if (isSecure) {
-                _self.LOG.info('Starting HTTPS Server for module : ' + moduleName + ' on PORT : ' + port);
-            } else {
-                _self.LOG.info('Starting HTTP Server for module : ' + moduleName + ' on PORT : ' + port);
+        this.lifecycleContributorRegistered = true;
+        return true;
+    },
+
+    /** Stops accepting traffic and optionally destroys remaining connections. */
+    closeRuntimeServers: function (force) {
+        return Promise.all(this.runtimeServers.map(runtimeServer => new Promise((resolve, reject) => {
+            let server = runtimeServer.server;
+            if (!server.listening) {
+                if (force && typeof server.closeAllConnections === 'function') server.closeAllConnections();
+                resolve(true);
+                return;
             }
-        });
-        return server;
+            server.close(error => error ? reject(error) : resolve(true));
+            if (typeof server.closeIdleConnections === 'function') server.closeIdleConnections();
+            if (force && typeof server.closeAllConnections === 'function') server.closeAllConnections();
+        })));
     },
 };

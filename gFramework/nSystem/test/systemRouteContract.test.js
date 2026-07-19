@@ -15,7 +15,8 @@ const routerConfig = require('../src/router/routers');
 
 const expectedRoutes = [
     { key: '/health/live', method: 'GET', controller: 'DefaultHealthController', operation: 'getLiveness', secured: false },
-    { key: '/health/ready', method: 'GET', controller: 'DefaultHealthController', operation: 'getReadiness', secured: true, permission: 'system.health.readiness.view' },
+    { key: '/health/ready', method: 'GET', controller: 'DefaultHealthController', operation: 'getReadiness', secured: false },
+    { key: '/health/ready/details', method: 'GET', controller: 'DefaultHealthController', operation: 'getReadinessDetails', secured: true, permission: 'system.health.readiness.view' },
     { key: '/file/data', method: 'POST', controller: 'DefaultFileController', operation: 'getFileContent', secured: true, permission: 'system.file.read' },
     { key: '/file/download', method: 'POST', controller: 'DefaultFileController', operation: 'downloadFile', secured: true, permission: 'system.file.download' },
     { key: '/import/init', method: 'POST', controller: 'DefaultImportController', operation: 'importInitData', secured: true, permission: 'import.init.run' },
@@ -47,6 +48,8 @@ const expectedRoutes = [
 const routes = assertRouteContracts(routerConfig, expectedRoutes);
 const livenessRoute = routes.find(route => route.key === '/health/live' && route.method === 'GET');
 assert.strictEqual(livenessRoute.publicProbe, true, 'Liveness route must bypass enterprise/tenant request pipeline resolution');
+const readinessRoute = routes.find(route => route.key === '/health/ready' && route.method === 'GET');
+assert.strictEqual(readinessRoute.publicProbe, true, 'Readiness probe must bypass human authentication and tenant resolution');
 ['/contract/openapi', '/contract/swagger', '/contract/swagger/asset/:assetName'].forEach((key) => {
     const route = routes.find(item => item.key === key && item.method === 'GET');
     assert.strictEqual(route.publicAccess, true, key + ' must be browser-accessible when openApiContract exposure is enabled');

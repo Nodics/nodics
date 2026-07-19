@@ -10,6 +10,7 @@
 - `gFramework/nConfig/test/loggerRedactionContract.test.js`
 - `gFramework/nConfig/test/nonRuntimePackageDiscovery.test.js`
 - `gFramework/nConfig/test/routerOverrideGovernance.test.js`
+- `gFramework/nConfig/test/runtimeLifecycleService.test.js`
 - `gFramework/nConfig/test/runtimeOverrideGovernance.test.js`
 - `gFramework/nConfig/test/schemaOverrideGovernance.test.js`
 

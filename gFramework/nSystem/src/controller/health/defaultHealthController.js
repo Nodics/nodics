@@ -65,7 +65,7 @@ module.exports = {
     },
 
     /**
-     * Returns the secured readiness response for runtime dependency probes.
+     * Returns the public low-disclosure readiness response for traffic probes.
      *
      * @param {Object} request Nodics request context.
      * @param {Function} [callback] Optional Node-style callback used by controller pipeline execution.
@@ -80,6 +80,19 @@ module.exports = {
             });
         } else {
             return FACADE.DefaultHealthFacade.getReadiness(request);
+        }
+    },
+
+    /** Returns secured sanitized readiness details for operations users. */
+    getReadinessDetails: function (request, callback) {
+        if (callback) {
+            FACADE.DefaultHealthFacade.getReadinessDetails(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultHealthFacade.getReadinessDetails(request);
         }
     }
 };

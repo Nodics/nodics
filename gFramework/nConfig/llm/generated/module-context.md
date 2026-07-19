@@ -26,10 +26,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 14 |
-| Test files | 8 |
+| Source files | 15 |
+| Test files | 9 |
 | Data files | 0 |
-| All module-owned files | 33 |
+| All module-owned files | 35 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -55,8 +55,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 29 |
-| Partially documented | 0 |
+| Documented | 30 |
+| Partially documented | 1 |
 | Undocumented | 0 |
 | Inventory only | 4 |
 
@@ -92,6 +92,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nConfig/src/router/routers.js` | `src` | `documented` | 0/0 | Reserved nConfig router definition file. nConfig does not expose direct API routes by default, but this file preserves the standard layered router extension point for project or environment modules. |  |
 | `gFramework/nConfig/src/service/DefaultFrameworkInitializerService.js` | `src` | `documented` | 67/67 | Core Nodics startup coordinator. It resolves the active module hierarchy, validates environment/server/node topology, loads layered configuration, initializes global registries, loads services/pipelines/facades/controllers, and executes entity lifecycle hooks in module index order. |  |
 | `gFramework/nConfig/src/service/DefaultLoggerService.js` | `src` | `documented` | 17/17 | Central logger factory for Nodics runtime entities. It creates and registers Winston loggers using layered configuration and supports console, file, and Elasticsearch transports. Sensitive values are redacted before they are serialized to supported transports. |  |
+| `gFramework/nConfig/src/service/DefaultRuntimeLifecycleService.js` | `src` | `documented` | 17/17 | Owns process-wide Nodics lifecycle state, signal handling, and ordered drain/shutdown contributors without introducing provider-specific behavior into the foundational runtime. |  |
 | `gFramework/nConfig/src/service/DefaultScriptsHandlerService.js` | `src` | `documented` | 6/6 | Loads and executes layered Nodics pre-scripts and post-scripts from active modules. Scripts provide startup extension points without modifying framework code. |  |
 | `gFramework/nConfig/src/service/defaultClassesHandlerService.js` | `src` | `documented` | 5/5 | Loads class exports from active module `src/lib` folders into the global `CLASSES` registry and executes class generalization scripts. |  |
 | `gFramework/nConfig/src/service/defaultEnumService.js` | `src` | `documented` | 4/4 | Loads layered enum definitions from active modules and creates runtime Enum instances in the global `ENUMS` registry. |  |
@@ -108,6 +109,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nConfig/test/loggerRedactionContract.test.js` | `test` | `documented` | 0/0 | Verifies that central logger serialization redacts sensitive tokens, credentials, and secret-bearing fields before logs reach transports. |  |
 | `gFramework/nConfig/test/nonRuntimePackageDiscovery.test.js` | `test` | `documented` | 0/0 | Verifies that setup and other explicitly non-runtime packages are excluded from Nodics runtime module discovery while canonical capability modules remain discoverable. |  |
 | `gFramework/nConfig/test/routerOverrideGovernance.test.js` | `test` | `documented` | 4/4 | Verifies additive and replacement router merging across ordered module layers, including route removal, breaking-change warnings, and contribution trace metadata. |  |
+| `gFramework/nConfig/test/runtimeLifecycleService.test.js` | `test` | `partially-documented` | 0/0 | Validates deterministic state, contributor ordering, idempotency, timeout isolation, and signal ownership for the Nodics runtime lifecycle. | add @override |
 | `gFramework/nConfig/test/runtimeOverrideGovernance.test.js` | `test` | `documented` | 0/0 | Verifies that persisted runtime schema and router contributions obey the same additive, replacement, removal, warning, and traceability rules as file-based module layers. |  |
 | `gFramework/nConfig/test/schemaOverrideGovernance.test.js` | `test` | `documented` | 4/4 | Verifies additive and replacement schema merging across ordered module layers, including property removal, type-change warnings, and contribution trace metadata. |  |
 

@@ -13,6 +13,7 @@
 - `gFramework/nRouter/test/requestPipelineResponseContract.test.js`
 - `gFramework/nRouter/test/routeActionAuthorization.test.js`
 - `gFramework/nRouter/test/routerContractTestUtils.js`
+- `gFramework/nRouter/test/routerRuntimeLifecycle.test.js`
 - `gFramework/nRouter/test/textResponseHandlerContract.test.js`
 
 ## Generated Tests

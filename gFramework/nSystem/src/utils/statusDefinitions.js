@@ -17,6 +17,18 @@
  * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
  */
 module.exports = {
+    SUC_SYS_HEALTH_LIVE: {
+        code: '200',
+        message: 'Runtime process is live'
+    },
+    SUC_SYS_HEALTH_READY: {
+        code: '200',
+        message: 'Runtime is ready to receive traffic'
+    },
+    SUC_SYS_HEALTH_NOT_READY: {
+        code: '503',
+        message: 'Runtime is not ready to receive traffic'
+    },
     SUC_SYS_00001: {
         code: '200',
         message: 'OpenAPI contract resolved successfully'

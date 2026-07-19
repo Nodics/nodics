@@ -28,9 +28,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 22 |
-| Test files | 10 |
+| Test files | 11 |
 | Data files | 0 |
-| All module-owned files | 40 |
+| All module-owned files | 41 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -58,7 +58,7 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 33 |
-| Partially documented | 0 |
+| Partially documented | 1 |
 | Undocumented | 3 |
 | Inventory only | 4 |
 
@@ -104,7 +104,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nRouter/src/service/request/defaultSecuredRequestPipelineService.js` | `src` | `documented` | 18/18 | Secured API request pipeline that validates credentials, authorizes API keys or bearer tokens, resolves active tenant context, checks route access groups, and optionally checks action-level route permissions before controller execution. |  |
 | `gFramework/nRouter/src/service/router/defaultRouterInitializerService.js` | `src` | `documented` | 1/1 | Initializes Express application and router instances for router-enabled modules according to the selected consolidated or modular runtime topology. |  |
 | `gFramework/nRouter/src/service/router/defaultRouterOperationService.js` | `src` | `documented` | 9/9 | Bridges effective Nodics router definitions to Express operations. It binds HTTP methods and delegates incoming requests to the request handler service. |  |
-| `gFramework/nRouter/src/service/router/defaultRouterService.js` | `src` | `documented` | 14/14 | Builds and starts Nodics API routing from the effective module hierarchy. It prepares module server configuration, generates schema-driven default routers, registers common and module-specific routers, and starts HTTP/HTTPS listeners for consolidated or modular runtime topologies. |  |
+| `gFramework/nRouter/src/service/router/defaultRouterService.js` | `src` | `documented` | 16/16 | Builds and starts Nodics API routing from the effective module hierarchy. It prepares module server configuration, generates schema-driven default routers, registers common and module-specific routers, and starts HTTP/HTTPS listeners for consolidated or modular runtime topologies. |  |
 | `gFramework/nRouter/src/service/tooling/defaultOpenapiContractGeneratorService.js` | `src` | `documented` | 0/0 | Generates an OpenAPI contract from the effective layered router and schema definitions for a selected Nodics server or node. |  |
 | `gFramework/nRouter/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared router enum definition exports. |  |
 | `gFramework/nRouter/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Status and error definitions for router help, route governance, and override validation. |  |
@@ -118,6 +118,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nRouter/test/requestPipelineResponseContract.test.js` | `test` | `documented` | 0/0 | Verifies that the Nodics request pipeline validates request data, resolves non-secured enterprise/tenant context, hands the request to the selected controller, and returns standard JSON response objects for success and error flows. |  |
 | `gFramework/nRouter/test/routeActionAuthorization.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nRouter/test/routerContractTestUtils.js` | `test` | `documented` | 0/0 | Shared router test helpers for flattening nested route definitions and asserting route contract fields. |  |
+| `gFramework/nRouter/test/routerRuntimeLifecycle.test.js` | `test` | `partially-documented` | 0/0 | Validates listener readiness ownership and lifecycle draining without opening real network ports. | add @override |
 | `gFramework/nRouter/test/textResponseHandlerContract.test.js` | `test` | `documented` | 0/0 | Verifies the text response handler can return plain text and structured textual artifacts with route-owned content type metadata. |  |
 
 ## Extension Contract

@@ -36,19 +36,35 @@ module.exports = {
                 }
             },
             getReadiness: {
-                secured: true,
+                secured: false,
                 accessGroups: ['userGroup'],
-                permission: 'system.health.readiness.view',
+                publicProbe: true,
                 apiExposure: 'operationalHealth',
                 key: '/health/ready',
                 method: 'GET',
                 controller: 'DefaultHealthController',
                 operation: 'getReadiness',
                 help: {
-                    requestType: 'secured',
-                    message: 'Authorization: Bearer <token> header is preferred. Returns sanitized runtime readiness without secrets or provider endpoints.',
+                    requestType: 'public',
+                    message: 'Low-disclosure traffic readiness probe. Returns only UP or DOWN.',
                     method: 'GET',
                     url: 'http://host:port/nodics/system/health/ready'
+                }
+            },
+            getReadinessDetails: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'system.health.readiness.view',
+                apiExposure: 'operationalHealth',
+                key: '/health/ready/details',
+                method: 'GET',
+                controller: 'DefaultHealthController',
+                operation: 'getReadinessDetails',
+                help: {
+                    requestType: 'secured',
+                    message: 'Returns sanitized runtime and dependency readiness details without secrets or provider endpoints.',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/system/health/ready/details'
                 }
             }
         },

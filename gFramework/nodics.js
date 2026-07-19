@@ -185,14 +185,23 @@ module.exports = {
                     });
                 }
                 NODICS.setEndTime(new Date());
-                NODICS.setServerState('started');
-                NODICS.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
+                SERVICE.DefaultRuntimeLifecycleService.markStarted({ reason: 'startup' }).then(() => {
+                    NODICS.LOG.info('Nodics started successfully in (', NODICS.getStartDuration(), ') ms \n');
+                }).catch(error => {
+                    NODICS.LOG.error('Runtime ready contributor failed', error);
+                });
                 //this.initTestRuner();
             }).catch(error => {
                 NODICS.LOG.error('Nodics server error : ', error);
+                SERVICE.DefaultRuntimeLifecycleService.transition('failed');
+                process.exit(CONFIG.get('errorExitCode'));
             });
         }).catch(error => {
             console.error('Nodics server not started properly : ', error);
+            if (typeof SERVICE !== 'undefined' && SERVICE.DefaultRuntimeLifecycleService &&
+                NODICS.getServerState() !== 'failed') {
+                SERVICE.DefaultRuntimeLifecycleService.transition('failed');
+            }
             process.exit(1);
         });
     },

@@ -55,12 +55,17 @@ module.exports = {
     },
 
     /**
-     * Returns the secured readiness response.
+     * Returns the public low-disclosure readiness response.
      *
      * @param {Object} request Nodics request context.
      * @returns {Promise<Object>} Promise resolving to a Nodics response envelope.
      */
     getReadiness: function (request) {
         return SERVICE.DefaultHealthService.getReadiness(request);
+    },
+
+    /** Returns secured sanitized readiness details. */
+    getReadinessDetails: function (request) {
+        return SERVICE.DefaultHealthService.getReadinessDetails(request);
     }
 };

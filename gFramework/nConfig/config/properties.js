@@ -23,6 +23,15 @@
 module.exports = {
     errorExitCode: 1,
 
+    runtimeLifecycle: {
+        enabled: true,
+        installSignalHandlers: true,
+        handleFatalErrors: true,
+        exitOnSignal: true,
+        contributorTimeoutMs: 10000,
+        shutdownTimeoutMs: 30000
+    },
+
     /*
         If the system is running as multiple cluster nodes, this property must be configured.
         Two different systems cannot run with the same node id.

@@ -17,5 +17,9 @@
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {
-
+    readiness: {
+        contributorTimeoutMs: 1000,
+        cacheTtlMs: 1000,
+        degradedIsReady: false
+    }
 };

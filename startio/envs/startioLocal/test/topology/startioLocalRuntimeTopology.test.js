@@ -109,14 +109,16 @@ function requestModuleEndpoint(options) {
                 body += chunk.toString();
             });
             response.on('end', () => {
-                if (response.statusCode === 200) {
+                let expectedStatus = options.expectedStatus || 200;
+                if (response.statusCode === expectedStatus) {
                     resolve({
                         statusCode: response.statusCode,
                         body: body,
                         url: 'http://127.0.0.1:' + port + requestPath
                     });
                 } else {
-                    reject(new Error('Unexpected status ' + response.statusCode + ' from ' + requestPath + ': ' + body));
+                    reject(new Error('Unexpected status ' + response.statusCode + ' from ' + requestPath +
+                        '; expected ' + expectedStatus + ': ' + body));
                 }
             });
         });
@@ -246,7 +248,8 @@ async function runConsolidatedSmoke() {
         assertRuntimeContract(runtime);
         return {
             runtime: runtime,
-            communication: await runConsolidatedCommunicationSmoke()
+            communication: await runConsolidatedCommunicationSmoke(),
+            readiness: await runRuntimeReadinessSmoke([runtime])
         };
     } finally {
         await stopServer(runtime);
@@ -263,7 +266,8 @@ async function runModularSmoke() {
         }
         return {
             runtimes: runtimes.slice(),
-            communication: await runModularCommunicationSmoke()
+            communication: await runModularCommunicationSmoke(),
+            readiness: await runRuntimeReadinessSmoke(runtimes)
         };
     } finally {
         for (let runtime of runtimes.reverse()) {
@@ -294,6 +298,26 @@ async function runConsolidatedCommunicationSmoke() {
     return results;
 }
 
+async function runRuntimeReadinessSmoke(runtimes) {
+    let results = [];
+    for (let runtime of runtimes) {
+        results.push(await requestModuleEndpoint({
+            server: runtime.serverName,
+            node: runtime.nodeName,
+            moduleName: 'system',
+            path: '/v0/health/ready'
+        }));
+        results.push(await requestModuleEndpoint({
+            server: runtime.serverName,
+            node: runtime.nodeName,
+            moduleName: 'system',
+            path: '/v0/health/ready/details',
+            expectedStatus: 400
+        }));
+    }
+    return results;
+}
+
 (async function () {
     console.log('Runtime topology smoke passed');
     console.log('Mode:', TOPOLOGY_MODE);
@@ -302,6 +326,7 @@ async function runConsolidatedCommunicationSmoke() {
         let consolidated = await runConsolidatedSmoke();
         console.log('Consolidated:', consolidated.runtime.label + ':' + consolidated.runtime.port);
         console.log('Consolidated communication:', consolidated.communication.map(item => item.url + ' -> ' + item.statusCode).join(', '));
+        console.log('Consolidated readiness:', consolidated.readiness.map(item => item.url + ' -> ' + item.statusCode).join(', '));
     }
 
     if (TOPOLOGY_MODE === 'all' || TOPOLOGY_MODE === 'modular') {
@@ -309,6 +334,7 @@ async function runConsolidatedCommunicationSmoke() {
         assert.deepStrictEqual(modular.runtimes.map(item => item.label), SERVER_ORDER);
         console.log('Modular:', modular.runtimes.map(item => item.label + ':' + item.port).join(', '));
         console.log('Communication:', modular.communication.map(item => item.url + ' -> ' + item.statusCode).join(', '));
+        console.log('Readiness:', modular.readiness.map(item => item.url + ' -> ' + item.statusCode).join(', '));
     }
 })().catch(error => {
     console.error(error.message || error);

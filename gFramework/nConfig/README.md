@@ -145,6 +145,13 @@ Startup script changes must describe:
 - diagnostics;
 - tests or startup evidence.
 
+## Runtime Lifecycle And Resilience
+
+Process startup, readiness, draining, shutdown, and provider cleanup follow the
+[runtime lifecycle and resilience contract](docs/runtime-lifecycle-resilience-contract.md).
+`nConfig` owns the single signal coordinator; later modules contribute bounded
+hooks instead of installing parallel process handlers.
+
 ## Runtime Hierarchy
 
 Nodics runtime hierarchy is metadata-driven. Directory names and naming suffixes
