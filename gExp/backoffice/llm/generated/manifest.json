@@ -14,12 +14,12 @@
     "description": "Backend registry, discovery, catalogue, and bootstrap capability for the Nodics Axis administration experience."
   },
   "sourceFiles": 26,
-  "testFiles": 15,
+  "testFiles": 16,
   "dataFiles": 0,
-  "ownedFiles": 47,
-  "sourceFingerprint": "9bd9884a98710aa45589979e71e93f8421b5d59483d0107542fdfd50ed910b24",
+  "ownedFiles": 48,
+  "sourceFingerprint": "1405c1913cb5e139c2218b169830b362790c0a1f732417bb4355b9c27a1f8120",
   "documentation": {
-    "documented": 33,
+    "documented": 34,
     "partially-documented": 9,
     "undocumented": 1,
     "inventory-only": 4

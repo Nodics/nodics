@@ -12,6 +12,7 @@
 - `gExp/backoffice/test/backofficeContractRepositoryService.test.js`
 - `gExp/backoffice/test/backofficeDiscoveryService.test.js`
 - `gExp/backoffice/test/backofficeDistributedRegistryStore.test.js`
+- `gExp/backoffice/test/backofficeDistributedRegistryStoreLive.test.js`
 - `gExp/backoffice/test/backofficeModuleBoundaryContract.test.js`
 - `gExp/backoffice/test/backofficeOperationalReadinessService.test.js`
 - `gExp/backoffice/test/backofficePerformanceContract.test.js`

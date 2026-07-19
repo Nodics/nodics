@@ -29,9 +29,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 10 |
-| Test files | 3 |
+| Test files | 4 |
 | Data files | 0 |
-| All module-owned files | 21 |
+| All module-owned files | 22 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 15 |
+| Documented | 16 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -103,6 +103,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/redisCache/test/cacheRedisLive.test.js` | `test` | `documented` | 0/0 | Optionally verifies the complete Redis cache adapter contract against an explicitly supplied isolated Redis endpoint, or fails closed for release gates. |  |
 | `gFramework/nCache/redisCache/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nCache test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nCache/redisCache/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nCache test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nCache/redisCache/test/support/liveRedisClientFactory.js` | `test` | `documented` | 1/1 | Owns Redis SDK construction for guarded cross-module live-provider contract tests without moving provider authority outside nCache. |  |
 
 ## Extension Contract
 

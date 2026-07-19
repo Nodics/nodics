@@ -34,9 +34,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 26 |
-| Test files | 15 |
+| Test files | 16 |
 | Data files | 0 |
-| All module-owned files | 47 |
+| All module-owned files | 48 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -69,7 +69,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 33 |
+| Documented | 34 |
 | Partially documented | 9 |
 | Undocumented | 1 |
 | Inventory only | 4 |
@@ -134,6 +134,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/test/backofficeContractRepositoryService.test.js` | `test` | `partially-documented` | 0/0 | Validates durable history, automatic activation, pending decisions, replica CAS conflicts, rollback, retention, and restart recovery. | add @override |
 | `gExp/backoffice/test/backofficeDiscoveryService.test.js` | `test` | `partially-documented` | 0/0 | Validates bounded OpenAPI normalization, authority filtering, hashing, change classification, and safe snapshot preservation. | add @override |
 | `gExp/backoffice/test/backofficeDistributedRegistryStore.test.js` | `test` | `partially-documented` | 0/0 | Validates shared TTL storage, replica visibility, expiry, deletion, diagnostics, and provider failure behavior. | add @override |
+| `gExp/backoffice/test/backofficeDistributedRegistryStoreLive.test.js` | `test` | `documented` | 0/0 | Optionally validates the BackOffice distributed lease-store contract against an explicitly configured isolated Redis endpoint. |  |
 | `gExp/backoffice/test/backofficeModuleBoundaryContract.test.js` | `test` | `documented` | 0/0 | Verifies the gExp group and BackOffice capability metadata preserve the approved backend-only experience boundary and composition contract. |  |
 | `gExp/backoffice/test/backofficeOperationalReadinessService.test.js` | `test` | `partially-documented` | 0/0 | Validates deployment configuration invariants and stable READY, DEGRADED, and NOT_READY operational assessment. | add @override |
 | `gExp/backoffice/test/backofficePerformanceContract.test.js` | `test` | `documented` | 0/0 | Provides deterministic scale-path evidence for registration, registry scans, availability deduplication/concurrency, and refresh idempotency. |  |

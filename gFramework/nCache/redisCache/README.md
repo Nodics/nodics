@@ -87,6 +87,12 @@ Projects may customize Redis behavior by:
 
 The generic cache adapter contract verifies Redis operation parity through a mocked Redis client. `cacheRedisLive.test.js` verifies the same behavior against a real Redis endpoint when `NODICS_CACHE_REDIS_URL` is supplied.
 
+Cross-module live-provider tests must obtain Redis clients through
+`test/support/liveRedisClientFactory.js`. This keeps direct Redis SDK ownership
+inside `redisCache` while allowing consumers to validate contracts against
+independent nCache-owned provider clients. The factory is test-only and must
+never become a production connection path.
+
 Run:
 
 ```bash

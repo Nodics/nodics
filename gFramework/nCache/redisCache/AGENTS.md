@@ -22,3 +22,6 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
 - Review router/API-response cache and DAO/schema/search cache together for behavior changes.
 - Cache activation must come only from layered configuration: cache.enabled, engine.enabled, and channel.enabled. Connection URLs are values, not activation switches.
 - Preserve tenant isolation, TTL semantics, response envelopes, invalidation, diagnostics, and fail-closed behavior for security-sensitive cache paths.
+- Keep direct Redis SDK imports inside the redisCache ownership boundary.
+  Cross-module live-provider tests use the test-only client factory; never
+  promote that bridge into a production connection path.

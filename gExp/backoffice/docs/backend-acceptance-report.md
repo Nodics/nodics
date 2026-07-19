@@ -6,10 +6,11 @@ The BackOffice backend capability is accepted for continued integration and
 environment validation. It is not yet approved for production deployment.
 Nodics Axis remains outside this acceptance boundary.
 
-This decision is based on the repository state validated on 2026-07-19. The
-formal clean-checkout gate passed after correcting local build composition so
-the authoritative consolidated environment includes `gExp` and therefore
-regenerates BackOffice schema services used by modular runtimes.
+This decision is based on the repository state validated through 2026-07-20.
+The formal clean-checkout gate passed under supported Node 24.18.0 after
+correcting local build composition so the authoritative consolidated environment
+includes `gExp` and therefore regenerates BackOffice schema services used by
+modular runtimes.
 
 ## Evidence collected
 
@@ -23,6 +24,8 @@ regenerates BackOffice schema services used by modular runtimes.
 | Registration and recovery | 419 active leases, 80 registered modules, contract discovery, CMS restart reconciliation, BackOffice restart recovery, and availability recovery | Passed |
 | Clean-build regression | BackOffice boundary test requires `gExp` in the consolidated build authority; modular topology proves generated persistence services are usable after clean/build | Passed |
 | Generated contracts | Schema/API generated tests, OpenAPI generation, documentation governance, and module LLM validation included in the release gate | Passed |
+| Live Redis adapter | Existing guarded nCache Redis contract executed against the local provider | Passed on 2026-07-20 |
+| Live distributed lease store | Two independent Redis clients proved shared visibility, TTL expiry, atomic stale-delete rejection, interruption failure, restored-client recovery, isolated scanning, and scoped cleanup | Passed on 2026-07-20 |
 
 Counts are observations from this validation run, not production sizing
 guarantees. They may change as the active module composition evolves.
@@ -50,20 +53,18 @@ integration, and regression behavior for the implemented backend scope:
 The following gates were not proven by this local acceptance run and remain
 mandatory before production approval:
 
-1. Rerun the full release gate on a governed supported Node major. This run used
-   Node 25.2.1; repository dependency governance supports Node 22 and 24 and
-   marks Node 25 unsupported.
-2. Exercise the selected real distributed cache provider, including atomic
-   compare/delete, TTL renewal, incremental scan, provider interruption, and
-   recovery. A configured live Redis contract was not executed here.
-3. Run true multi-process and multi-replica BackOffice reconciliation against
-   that provider and the production database topology.
-4. Execute deployment-sized registration, renewal, discovery, availability,
+1. Repeat the live Redis contracts against the selected deployment provider
+   using governed TLS, credentials, network policy, and the final nCache
+   configuration. Local Redis evidence does not qualify that infrastructure.
+2. Run true multi-process and multi-replica BackOffice runtimes against that
+   provider and the production database topology. The local live contract used
+   independent clients but not complete application processes.
+3. Execute deployment-sized registration, renewal, discovery, availability,
    administrative scan, and refresh load with accepted latency and saturation
    budgets.
-5. Prove external sanitized audit delivery, alert routing, dashboards, and
+4. Prove external sanitized audit delivery, alert routing, dashboards, and
    operator acknowledgement using the environment integrations.
-6. Complete security review of environment secrets, TLS, network policy,
+5. Complete security review of environment secrets, TLS, network policy,
    origin exposure, database access, retention, and operational permissions.
 
 ## Release posture

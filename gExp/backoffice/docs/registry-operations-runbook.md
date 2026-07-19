@@ -94,4 +94,14 @@ Route stable alert codes to the environment monitoring system:
 
 Use `npm run test:topology:modular` for governed local registration, CMS restart
 reconciliation, and BackOffice durable-pointer restart recovery. Use the guarded
-Redis live test in an isolated environment before production release.
+Redis live test in an isolated environment before production release:
+
+```sh
+NODICS_CACHE_REDIS_URL=redis://isolated-host:6379 npm run test:backoffice:redis:release
+```
+
+The live gate uses a unique key namespace, two independent provider clients,
+and scoped cleanup. It validates replica visibility, provider TTL, atomic stale
+delete protection, fail-closed interruption, and restored-client recovery. It
+does not replace deployment-topology load, TLS, network-policy, or secret
+validation.

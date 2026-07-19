@@ -75,5 +75,8 @@
 - Use existing Nodics lifecycle, module registry, service communication,
   schema/router governance, audit, and generated-artifact paths. Do not add a
   parallel loader, runtime activation mechanism, or authorization path.
+- Live provider tests must consume provider clients through the owning nCache
+  test bridge. BackOffice tests must not import a restricted provider SDK or
+  create a production connection authority.
 - Every new extension point requires positive, negative, boundary, security,
   consolidated/modular topology, and later-loaded override tests as applicable.
