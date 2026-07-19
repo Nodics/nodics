@@ -70,7 +70,7 @@ async function run() {
 
     await service.register({ body: registration, authData: identity });
     store._instances.get('cms:cms-1').expiresAt = Date.now() - 1;
-    service.expireStale();
+    await service.expireStale();
     assert.strictEqual(store._instances.size, 0);
     assert.strictEqual(service._metrics.expirations, 1);
 

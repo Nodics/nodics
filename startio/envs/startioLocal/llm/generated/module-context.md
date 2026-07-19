@@ -85,7 +85,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `startio/envs/startioLocal/nodics.js` | `module` | `documented` | 2/2 | Registers the envs module lifecycle hooks and module-level startup behavior. |  |
 | `startio/envs/startioLocal/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `startio/envs/startioLocal/test/data/startioLocalTestTenantDataCatalog.test.js` | `test` | `documented` | 0/0 | Verifies startioLocal environment-owned init data headers and records for dedicated test tenant bootstrap. |  |
-| `startio/envs/startioLocal/test/topology/runtimeContractProbe.js` | `test` | `documented` | 4/4 | Emits a sanitized runtime-readiness snapshot from a spawned Nodics server so topology tests can prove startup, module loading, tenant activation, internal authentication, and mandatory profile data without adding a production diagnostics route. |  |
+| `startio/envs/startioLocal/test/topology/runtimeContractProbe.js` | `test` | `documented` | 6/6 | Emits a sanitized runtime-readiness snapshot from a spawned Nodics server so topology tests can prove startup, module loading, tenant activation, internal authentication, and mandatory profile data without adding a production diagnostics route. |  |
 | `startio/envs/startioLocal/test/topology/startioLocalRuntimeTopology.test.js` | `test` | `documented` | 0/0 | Starts the configured consolidated and modular startioLocal servers and proves runtime readiness, metadata-driven module activation, tenant and internal-auth initialization, mandatory profile data, route availability, and cross-process communication. |  |
 
 ## Extension Contract

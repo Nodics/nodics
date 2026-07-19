@@ -24,6 +24,7 @@ module.exports = {
      * @returns {NodeJS.Timeout} Polling handle.
      */
     watch: function (options = {}) {
+        this.installMessageHandler();
         const intervalMs = Number(options.intervalMs || 100);
         let collecting = false;
         const timer = setInterval(async () => {
@@ -43,6 +44,45 @@ module.exports = {
             }
         }, intervalMs);
         return timer;
+    },
+
+    /** Installs the test-only IPC request handler used for post-startup registry reconciliation assertions. */
+    installMessageHandler: function () {
+        if (this._messageHandler || typeof process.on !== 'function') return false;
+        this._messageHandler = async message => {
+            if (!message || message.type !== 'nodics-runtime-registry-request') return;
+            try {
+                this.send({
+                    type: 'nodics-runtime-registry-response',
+                    correlationId: message.correlationId,
+                    snapshot: await this.collectRegistry()
+                });
+            } catch (error) {
+                this.send({
+                    type: 'nodics-runtime-registry-response',
+                    correlationId: message.correlationId,
+                    error: error.message || String(error)
+                });
+            }
+        };
+        process.on('message', this._messageHandler);
+        return true;
+    },
+
+    /** Collects sanitized observed registry leases directly over test IPC without adding a production route. */
+    collectRegistry: async function () {
+        let registry = typeof SERVICE !== 'undefined' && SERVICE.DefaultBackofficeRegistryService;
+        if (!registry) return { available: false, instances: [] };
+        let entries = await registry.getStore().values();
+        return {
+            available: true,
+            instances: entries.map(entry => ({
+                moduleName: entry.value.moduleName,
+                instanceId: entry.value.instanceId,
+                clientCallable: entry.value.clientCallable === true
+            })),
+            diagnostics: (await registry.diagnostics()).data
+        };
     },
 
     /** Collects runtime facts and mandatory profile-data availability without returning credentials. */

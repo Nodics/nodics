@@ -35,9 +35,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 49 |
-| Test files | 46 |
+| Test files | 47 |
 | Data files | 17 |
-| All module-owned files | 88 |
+| All module-owned files | 89 |
 | Local schema definitions | 11 |
 
 ## Ownership And Dependencies
@@ -72,7 +72,7 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 73 |
-| Partially documented | 1 |
+| Partially documented | 2 |
 | Undocumented | 8 |
 | Inventory only | 6 |
 
@@ -181,6 +181,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/test/profileControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileInitRequiredDetection.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/profile/test/profileRuntimeBoundInternalToken.test.js` | `test` | `partially-documented` | 0/0 | Validates runtime-bound service-token issuance from HTTP headers and rejects malformed or duplicate module declarations. | add @override |
 | `gCore/profile/test/userGroupPermissionResolution.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 
 ## Extension Contract

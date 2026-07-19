@@ -23,6 +23,12 @@ module.exports = {
         sweepIntervalMs: 5000,
         maxModulesPerRegistration: 512,
         requireBoundServiceIdentity: true,
+        store: {
+            mode: 'memory',
+            moduleName: 'backoffice',
+            engineName: 'redis',
+            keyPrefix: 'registry:lease:'
+        },
         modulePermissions: {},
         compatibility: {
             registryContractVersion: 1,

@@ -14,19 +14,27 @@ instance identity, renewed before lease expiry, and removed during graceful
 drain when possible. BackOffice unavailability never blocks traffic startup.
 Stale leases expire when processes crash or cannot deregister.
 
-`DefaultBackofficeRegistryStoreService` is the single replaceable lease-store
-boundary. Its default process-memory implementation supports local development
-and reconciles after BackOffice restart through runtime heartbeats. A
-multi-replica production deployment must replace that store service with a
-shared TTL-capable implementation; it must not replace the registry service or
-add a second registration path. Replica behavior is tested against one shared
-store contract.
+`DefaultBackofficeRegistryStoreService` is the single asynchronous lease-store
+boundary. Memory mode supports local and single-instance deployments.
+Distributed mode obtains the configured engine client from nCache, applies the
+lease TTL at provider write time, and enumerates leases using bounded incremental
+SCAN. It never creates a Redis client, loader, signal handler, or lifecycle path.
+A production multi-replica deployment enables the nCache distributed engine and
+sets `backofficeRegistry.store.mode` to `distributed`. Replica behavior is
+tested against one shared store contract.
 
 Registration and deregistration require a service token whose declared runtime
 instance matches the request and whose module claims contain every module in a
 registration batch. Human username/password sessions never register modules.
 Production deployments may replace service-token issuance with workload
 identity, but must preserve these claims and route permissions.
+
+Profile validates bounded, unique, syntactically valid module declarations. It
+does not compare a caller's module composition with Profile's own active-module
+list because server composition is local runtime state, not Profile authority.
+The authenticated workload credential is responsible for who may request those
+claims; production should use per-runtime credentials or infrastructure
+workload identity rather than one shared bootstrap credential.
 
 Discovery returns only configured client-safe fields. Tokens, credentials,
 secret references, internal headers, request bodies, private topology settings,
@@ -35,3 +43,9 @@ Discovery filters modules using the authenticated caller's permissions. The
 bootstrap route returns that same authorized catalogue plus contract-version
 metadata and an observed availability summary; it is not authoritative health,
 topology, activation, or business configuration.
+
+The modular topology contract starts every configured runtime composition,
+waits for all active modules to appear, restarts the CMS runtime, and proves the
+old process lease disappears while the new process identity registers. The
+probe uses child-process IPC only and does not add a production diagnostics
+route.

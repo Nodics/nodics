@@ -31,6 +31,7 @@ const environmentProperties = require(path.join(LOCAL_ENV, 'config/properties.js
 const STARTUP_TIMEOUT_MS = Number(process.env.NODICS_TOPOLOGY_TIMEOUT_MS || 60000);
 const CONTRACT_TIMEOUT_MS = Number(process.env.NODICS_TOPOLOGY_CONTRACT_TIMEOUT_MS || STARTUP_TIMEOUT_MS);
 const SHUTDOWN_TIMEOUT_MS = 5000;
+const REGISTRY_TIMEOUT_MS = Number(process.env.NODICS_TOPOLOGY_REGISTRY_TIMEOUT_MS || 30000);
 const TOPOLOGY_MODE = getTopologyMode();
 const TOPOLOGY_CONFIG = _.get(environmentProperties, 'test.runtimeTopology', {});
 const CONSOLIDATED_SERVER = TOPOLOGY_CONFIG.consolidatedServer;
@@ -242,6 +243,36 @@ function stopServer(runtime) {
     });
 }
 
+function requestRegistrySnapshot(runtime) {
+    let correlationId = 'registry-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+    return new Promise((resolve, reject) => {
+        let timeout = setTimeout(() => {
+            runtime.child.removeListener('message', listener);
+            reject(new Error(runtime.label + ' registry probe timed out'));
+        }, 3000);
+        function listener(message) {
+            if (!message || message.type !== 'nodics-runtime-registry-response' || message.correlationId !== correlationId) return;
+            clearTimeout(timeout);
+            runtime.child.removeListener('message', listener);
+            if (message.error) reject(new Error(message.error));
+            else resolve(message.snapshot);
+        }
+        runtime.child.on('message', listener);
+        runtime.child.send({ type: 'nodics-runtime-registry-request', correlationId: correlationId });
+    });
+}
+
+async function waitForRegistry(runtime, predicate, description) {
+    let startedAt = Date.now();
+    let lastSnapshot;
+    while (Date.now() - startedAt < REGISTRY_TIMEOUT_MS) {
+        lastSnapshot = await requestRegistrySnapshot(runtime);
+        if (predicate(lastSnapshot)) return lastSnapshot;
+        await new Promise(resolve => setTimeout(resolve, 250));
+    }
+    throw new Error('BackOffice registry did not satisfy ' + description + ': ' + JSON.stringify(lastSnapshot));
+}
+
 async function runConsolidatedSmoke() {
     let runtime = await startServer(CONSOLIDATED_SERVER);
     try {
@@ -264,10 +295,32 @@ async function runModularSmoke() {
             assertRuntimeContract(runtime);
             runtimes.push(runtime);
         }
+        let backofficeRuntime = runtimes.find(runtime => runtime.serverName === 'startioLocalBackofficeServer');
+        let expectedModules = Array.from(new Set(runtimes.flatMap(runtime => runtime.contract.activeModules)));
+        let initialRegistry = await waitForRegistry(backofficeRuntime, snapshot => {
+            let observed = snapshot.instances.map(instance => instance.moduleName);
+            return expectedModules.every(moduleName => observed.includes(moduleName));
+        }, 'registration of every active module');
+
+        let cmsIndex = runtimes.findIndex(runtime => runtime.serverName === 'startioLocalCmsServer');
+        let previousCmsRuntime = runtimes[cmsIndex];
+        let previousCmsInstance = initialRegistry.instances.find(instance => instance.moduleName === 'cms').instanceId;
+        await stopServer(previousCmsRuntime);
+        let restartedCmsRuntime = await startServer('startioLocalCmsServer');
+        assertRuntimeContract(restartedCmsRuntime);
+        runtimes[cmsIndex] = restartedCmsRuntime;
+        let reconciledRegistry = await waitForRegistry(backofficeRuntime, snapshot => snapshot.instances.some(instance =>
+            instance.moduleName === 'cms' && instance.instanceId !== previousCmsInstance) &&
+            !snapshot.instances.some(instance => instance.instanceId === previousCmsInstance), 'CMS restart reconciliation');
         return {
             runtimes: runtimes.slice(),
             communication: await runModularCommunicationSmoke(),
-            readiness: await runRuntimeReadinessSmoke(runtimes)
+            readiness: await runRuntimeReadinessSmoke(runtimes),
+            registry: {
+                activeInstances: reconciledRegistry.diagnostics.activeInstances,
+                registeredModules: Array.from(new Set(reconciledRegistry.instances.map(instance => instance.moduleName))).length,
+                cmsRestartReconciled: true
+            }
         };
     } finally {
         for (let runtime of runtimes.reverse()) {
@@ -335,6 +388,7 @@ async function runRuntimeReadinessSmoke(runtimes) {
         console.log('Modular:', modular.runtimes.map(item => item.label + ':' + item.port).join(', '));
         console.log('Communication:', modular.communication.map(item => item.url + ' -> ' + item.statusCode).join(', '));
         console.log('Readiness:', modular.readiness.map(item => item.url + ' -> ' + item.statusCode).join(', '));
+        console.log('Registry reconciliation:', JSON.stringify(modular.registry));
     }
 })().catch(error => {
     console.error(error.message || error);

@@ -130,6 +130,13 @@ composition. Do not describe a fixed set of configured servers as the platform
 module model. Discovery records which module capabilities are observed on each
 runtime instance; server and node metadata are deployment coordinates only.
 
+An identity provider may validate the shape and authenticated authority of a
+runtime's declared module claims, but it must not use its own local
+active-module composition as authority for another runtime. Production module
+claims should be bound to per-runtime credentials or infrastructure workload
+identity. Shared bootstrap credentials are development compatibility, not the
+target production trust model.
+
 ## Security, Redaction, Audit, Diagnostics, And Rollback
 
 Every integration must preserve platform security contracts:

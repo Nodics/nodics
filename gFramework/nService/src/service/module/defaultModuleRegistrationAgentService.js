@@ -44,8 +44,15 @@ module.exports = {
     start: function () {
         let config = this.getConfiguration();
         if (config.enabled === false || this._timer) return false;
-        this.runRegistration().catch(() => {});
-        this._timer = setInterval(() => this.runRegistration().catch(() => {}), Number(config.heartbeatIntervalMs || 10000));
+        let schedule = () => this.runRegistration().then(success => {
+            let delay = Number(success ? config.heartbeatIntervalMs || 10000 : config.retryIntervalMs || 5000);
+            this._timer = setTimeout(schedule, delay);
+            if (this._timer.unref) this._timer.unref();
+        }).catch(() => {
+            this._timer = setTimeout(schedule, Number(config.retryIntervalMs || 5000));
+            if (this._timer.unref) this._timer.unref();
+        });
+        this._timer = setTimeout(schedule, 0);
         if (this._timer.unref) this._timer.unref();
         return true;
     },

@@ -73,6 +73,10 @@ exists. Client discovery filters the observed module registry to effective,
 authorized, client-callable capabilities while target modules retain final
 authorization.
 
+Runtime module claims must be bound to authenticated workload identity and a
+specific runtime instance. Identity validation must not treat Profile's local
+active-module list as authority for another runtime's module composition.
+
 ## Source Of Truth
 
 Behavior must come from Nodics source-of-truth artifacts:

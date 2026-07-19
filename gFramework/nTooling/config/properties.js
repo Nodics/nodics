@@ -193,6 +193,7 @@ module.exports = {
                 { tool: ['test:capability-behavior', '--area=system'] },
                 { suite: 'import' },
                 { suite: 'profile' },
+                { suite: 'backoffice' },
                 { suite: 'cache' },
                 { suite: 'cronjob' },
                 { suite: 'ems' },
@@ -347,7 +348,15 @@ module.exports = {
                 { node: 'gCore/profile/test/identityGovernanceContract.test.js' },
                 { node: 'gCore/profile/test/identityGovernanceP1Contract.test.js' },
                 { node: 'gCore/profile/test/profileAuthenticationServiceContract.test.js' },
+                { node: 'gCore/profile/test/profileRuntimeBoundInternalToken.test.js' },
                 { tool: ['test:capability-behavior', '--area=profile'] }
+            ],
+            backoffice: [
+                { node: 'gExp/backoffice/test/backofficeModuleBoundaryContract.test.js' },
+                { node: 'gExp/backoffice/test/backofficeRegistryRouteContract.test.js' },
+                { node: 'gExp/backoffice/test/backofficeRegistryService.test.js' },
+                { node: 'gExp/backoffice/test/backofficeDistributedRegistryStore.test.js' },
+                { node: 'gFramework/nService/test/moduleRegistrationAgent.test.js' }
             ],
             cache: [
                 { node: 'gFramework/nCache/cache/test/cacheIsolationAndCorrectnessContract.test.js' },

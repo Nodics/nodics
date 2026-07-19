@@ -77,6 +77,12 @@ sources, not the capability unit. Registration tests must cover API and non-API
 modules, multiple instances of one module, identity mismatch, lease expiry,
 restart reconciliation, and authorized client filtering.
 
+For module registration changes, the modular topology gate must inspect
+observed registry state through a test-only mechanism, wait for asynchronous
+reconciliation, and restart at least one runtime process. It must prove the old
+runtime identity is removed or expires and the replacement identity registers;
+it must not expose a production test or bypass route.
+
 When adding a provider or server/node responsibility, add or update readiness
 checks through the owning module or a later project module. Do not expose
 credentials, provider URLs, private file paths, tenant data, or raw diagnostics

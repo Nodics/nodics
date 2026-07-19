@@ -50,13 +50,15 @@ module.exports = {
                     reject(new CLASSES.NodicsError('ERR_AUTH_00003', 'Cross-tenant internal token access is not permitted'));
                     return;
                 }
-                let headers = request.headers || {};
+                let headers = request.headers || request.httpRequest && request.httpRequest.headers || {};
                 let runtimeInstanceId = headers['x-nodics-runtime-instance'];
                 let requestedModules = String(headers['x-nodics-modules'] || '').split(',').map(value => value.trim()).filter(Boolean);
                 if (runtimeInstanceId && requestedModules.length > 0) {
-                    let unknownModules = requestedModules.filter(moduleName => !NODICS.getRawModule(moduleName));
-                    if (unknownModules.length > 0) {
-                        reject(new CLASSES.NodicsError('ERR_AUTH_00003', 'Unknown module identity requested'));
+                    let uniqueModules = Array.from(new Set(requestedModules));
+                    let moduleNamePattern = new RegExp(policy.moduleNamePattern || '^[A-Za-z][A-Za-z0-9_-]{0,127}$');
+                    if (uniqueModules.length !== requestedModules.length || uniqueModules.length > Number(policy.maxDeclaredModules || 512) ||
+                        uniqueModules.some(moduleName => !moduleNamePattern.test(moduleName))) {
+                        reject(new CLASSES.NodicsError('ERR_AUTH_00003', 'Invalid module identity declaration'));
                         return;
                     }
                     let principal = authData.person || {};
@@ -65,7 +67,7 @@ module.exports = {
                         tenant: request.tenant,
                         serviceId: authData.serviceId || principal.loginId || principal.code || 'nodics-runtime',
                         runtimeInstanceId: runtimeInstanceId,
-                        modules: requestedModules,
+                        modules: uniqueModules,
                         authVersion: authData.authVersion || principal.authVersion || 1,
                         userGroups: authData.userGroups || [],
                         permissions: authData.permissions || []

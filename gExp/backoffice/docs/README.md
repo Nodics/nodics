@@ -7,3 +7,8 @@ are implemented.
 
 The separate Nodics Axis frontend is a consumer of these APIs and is not part of
 this runtime module.
+
+- `module-registry-contract.md` defines ownership, identity, leases, discovery,
+  storage, and reconciliation behavior.
+- `registry-operations-runbook.md` defines production configuration,
+  diagnostics, failure behavior, rollout, and recovery checks.

@@ -29,6 +29,14 @@ module.exports = {
                 shutdown: () => this.stopSweeper()
             });
         }
+        if (SERVICE.DefaultHealthService) {
+            SERVICE.DefaultHealthService.registerReadinessContributor('backofficeRegistryStore', {
+                required: true,
+                order: 390,
+                description: 'Configured BackOffice registry store is available',
+                check: () => this.getStore().diagnostics().available
+            });
+        }
         return Promise.resolve(true);
     },
 
@@ -59,20 +67,20 @@ module.exports = {
     },
 
     /** Creates or renews an idempotent observed module-instance lease. */
-    register: function (request) {
+    register: async function (request) {
         let registration = request.body || request;
         if (!request._identityValidated && !this.validateServiceIdentity(request, registration)) {
             this._metrics.rejected++;
-            return Promise.reject(new CLASSES.NodicsError('ERR_AUTH_00003', 'Module registration identity mismatch'));
+            throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Module registration identity mismatch');
         }
         if (Array.isArray(registration.registrations)) return this.registerBatch(registration, request.authData);
         if (!this.validateRegistration(registration)) {
             this._metrics.rejected++;
-            return Promise.reject(new CLASSES.NodicsError('ERR_BOF_00000', 'Invalid module registration'));
+            throw new CLASSES.NodicsError('ERR_BOF_00000', 'Invalid module registration');
         }
         let key = registration.moduleName + ':' + registration.instanceId;
         let store = this.getStore();
-        let existing = store.get(key);
+        let existing = await store.get(key);
         let now = Date.now();
         let leaseTtlMs = Math.max(1000, Number(registration.leaseTtlMs || this.getConfiguration().leaseTtlMs || 30000));
         let observed = {
@@ -89,9 +97,9 @@ module.exports = {
             lastSeenAt: new Date(now).toISOString(),
             expiresAt: now + leaseTtlMs
         };
-        store.set(key, observed);
+        await store.set(key, observed, leaseTtlMs);
         existing ? this._metrics.renewals++ : this._metrics.registrations++;
-        return Promise.resolve({ code: 'SUC_BOF_00000', data: this.projectClientSafe(observed) });
+        return { code: 'SUC_BOF_00000', data: this.projectClientSafe(observed) };
     },
 
     /** Registers one bounded runtime-instance batch while preserving per-module leases. */
@@ -120,35 +128,39 @@ module.exports = {
     },
 
     /** Removes matching observed leases during graceful process drain. */
-    deregister: function (request) {
+    deregister: async function (request) {
         let instanceId = request.params && request.params.instanceId || request.instanceId;
         let moduleName = request.body && request.body.moduleName || request.moduleName;
         if (this.getConfiguration().requireBoundServiceIdentity !== false &&
             (!request.authData || request.authData.tokenType !== 'service' || request.authData.runtimeInstanceId !== instanceId)) {
             this._metrics.rejected++;
-            return Promise.reject(new CLASSES.NodicsError('ERR_AUTH_00003', 'Module deregistration identity mismatch'));
+            throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Module deregistration identity mismatch');
         }
         let removed = 0;
-        this.getStore().forEach((value, key) => {
+        let entries = await this.getStore().values();
+        await Promise.all(entries.map(async entry => {
+            let value = entry.value;
             if (value.instanceId === instanceId && (!moduleName || value.moduleName === moduleName)) {
-                this.getStore().delete(key);
+                await this.getStore().delete(entry.key);
                 removed++;
             }
-        });
+        }));
         this._metrics.deregistrations += removed;
-        return Promise.resolve({ code: 'SUC_BOF_00001', data: { removed: removed } });
+        return { code: 'SUC_BOF_00001', data: { removed: removed } };
     },
 
     /** Returns active leases grouped by module using client-safe projection. */
-    list: function (request) {
-        this.expireStale();
+    list: async function (request) {
+        await this.expireStale();
         let modules = {};
-        this.getStore().forEach(instance => {
+        let entries = await this.getStore().values();
+        entries.forEach(entry => {
+            let instance = entry.value;
             if (!instance.clientCallable || !this.isModuleAuthorized(instance.moduleName, request && request.authData)) return;
             modules[instance.moduleName] = modules[instance.moduleName] || [];
             modules[instance.moduleName].push(this.projectClientSafe(instance));
         });
-        return Promise.resolve({ code: 'SUC_BOF_00002', data: { modules: modules } });
+        return { code: 'SUC_BOF_00002', data: { modules: modules } };
     },
 
     /** Determines whether the caller may discover a configured module capability. */
@@ -184,12 +196,18 @@ module.exports = {
     },
 
     /** Returns sanitized registry size and lifecycle counters. */
-    diagnostics: function () {
-        this.expireStale();
-        return Promise.resolve({
+    diagnostics: async function () {
+        await this.expireStale();
+        let activeModuleLeases = await this.getStore().size();
+        return {
             code: 'SUC_BOF_00003',
-            data: { activeInstances: this.getStore().size(), metrics: Object.assign({}, this._metrics) }
-        });
+            data: {
+                activeModuleLeases: activeModuleLeases,
+                activeInstances: activeModuleLeases,
+                metrics: Object.assign({}, this._metrics),
+                store: this.getStore().diagnostics()
+            }
+        };
     },
 
     /** Projects only configured fields approved for BackOffice clients. */
@@ -200,21 +218,25 @@ module.exports = {
     },
 
     /** Removes every lease whose bounded expiry time has elapsed. */
-    expireStale: function () {
+    expireStale: async function () {
         let now = Date.now();
-        this.getStore().forEach((instance, key) => {
+        let entries = await this.getStore().values();
+        await Promise.all(entries.map(async entry => {
+            let instance = entry.value;
             if (instance.expiresAt <= now) {
-                this.getStore().delete(key);
+                await this.getStore().delete(entry.key);
                 this._metrics.expirations++;
             }
-        });
+        }));
     },
 
     /** Starts the single unreferenced background lease expiry timer. */
     startSweeper: function () {
         if (this._sweepTimer) return this._sweepTimer;
         let interval = Number(this.getConfiguration().sweepIntervalMs || 5000);
-        this._sweepTimer = setInterval(() => this.expireStale(), interval);
+        this._sweepTimer = setInterval(() => this.expireStale().catch(error => {
+            if (this.LOG && this.LOG.error) this.LOG.error('BackOffice registry lease sweep failed', error);
+        }), interval);
         if (this._sweepTimer.unref) this._sweepTimer.unref();
         return this._sweepTimer;
     },

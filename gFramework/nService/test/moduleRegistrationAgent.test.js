@@ -11,7 +11,7 @@
 
 /**
  * @module nService/test/moduleRegistrationAgent
- * @description Validates non-blocking lifecycle registration, router-module filtering, service-token use, and graceful deregistration.
+ * @description Validates non-blocking lifecycle registration, all-active-module batching, service-token use, adaptive retry, and graceful deregistration.
  * @layer test
  * @owner nService
  * @override Project registration agents must preserve startup isolation and service identity boundaries.
@@ -50,7 +50,7 @@ async function run() {
     await service.init();
     assert(contributor, 'registration agent must use the central lifecycle');
     assert.strictEqual(contributor.ready(), true, 'ready hook must not await BackOffice network traffic');
-    await new Promise(resolve => setImmediate(resolve));
+    await new Promise(resolve => setTimeout(resolve, 5));
     assert.strictEqual(requests.length, 1, 'one bounded runtime batch should register all active modules');
     assert.strictEqual(requests[0].header.Authorization, 'Bearer service-token');
     assert(requests[0].header['Idempotency-Key']);

@@ -43,6 +43,13 @@ plus runtime-instance identity. Non-API modules may register ownership and
 capability metadata without a callable endpoint. Client discovery exposes only
 modules whose effective metadata and policy make them client-callable.
 
+Runtime-bound service tokens may declare the active modules hosted by the
+requesting runtime. The identity provider validates declaration shape, bounds,
+and authenticated workload authority; it must not compare that declaration to
+the identity provider's own active-module composition. Production deployments
+should bind declarations to per-runtime credentials or infrastructure workload
+identity.
+
 ## Default Tenant And Active Tenant
 
 Default tenant is used during startup and system bootstrap when all tenants may not yet be initialized.

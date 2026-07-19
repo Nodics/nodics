@@ -14,13 +14,13 @@
     "description": "Identity and profile module for enterprises, tenants, users, customers, employees, user groups, permissions, authentication boundaries, API keys, and mandatory identity bootstrap."
   },
   "sourceFiles": 49,
-  "testFiles": 46,
+  "testFiles": 47,
   "dataFiles": 17,
-  "ownedFiles": 88,
-  "sourceFingerprint": "8cc662ed59f4962c8bd15537d287dc232a50beaa9359ac6712c9599faed63820",
+  "ownedFiles": 89,
+  "sourceFingerprint": "8831922d20432c0a0fa58e17b8289792d8c2b57046555fd8abc9575bbf3e6b93",
   "documentation": {
     "documented": 73,
-    "partially-documented": 1,
+    "partially-documented": 2,
     "undocumented": 8,
     "inventory-only": 6
   },

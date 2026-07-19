@@ -66,7 +66,9 @@ module.exports = {
         internalToken: {
             routePermission: 'auth.internal.token.read',
             crossTenantPermissions: ['auth.internal.token.read.anyTenant'],
-            crossTenantGroups: []
+            crossTenantGroups: [],
+            maxDeclaredModules: 512,
+            moduleNamePattern: '^[A-Za-z][A-Za-z0-9_-]{0,127}$'
         },
         compatibility: {
             allowInsecureDevelopmentSecret: false,
@@ -125,6 +127,9 @@ module.exports = {
             'runtime.config.rollback',
             'runtime.config.cleanup.preview',
             'runtime.config.cleanup.execute',
+            'backoffice.registry.view',
+            'backoffice.bootstrap.view',
+            'backoffice.registry.diagnostics.view',
             'cache.flush',
             'cache.configuration.router.update',
             'cache.configuration.item.update',
@@ -169,6 +174,8 @@ module.exports = {
                         'runtime.config.history.view',
                         'runtime.config.summary.view',
                         'runtime.config.request.view',
+                        'backoffice.registry.view',
+                        'backoffice.bootstrap.view',
                         'system.health.readiness.view',
                         'system.contract.openapi.view',
                         'system.contract.swagger.view'
@@ -194,6 +201,7 @@ module.exports = {
                     parentGroups: ['runtimeConfigOperatorUserGroup', 'runtimeConfigApproverUserGroup'],
                     permissions: [
                         'runtime.config.cleanup.execute',
+                        'backoffice.registry.diagnostics.view',
                         'identity.migration.preview',
                         'identity.migration.apply',
                         'identity.migration.rollback',

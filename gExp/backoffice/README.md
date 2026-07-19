@@ -36,11 +36,15 @@ Module registration uses the separate Nodics service-to-service identity path.
 Registration must be idempotent, environment-bound, auditable, retryable with
 bounded backoff, and safe when BackOffice is unavailable.
 
-The default implementation stores observed leases in process memory. This is
-intentional: configuration and runtime activation remain authoritative in
-Nodics, while modules reconcile automatically through periodic renewal after a
-BackOffice restart. Multi-replica deployments may replace the same-name registry
-service with a shared lease store without changing route or client contracts.
+The store defaults to process memory for local and single-instance operation.
+Production replicas configure `backofficeRegistry.store.mode` as `distributed`;
+the same store service then uses the configured nCache-owned distributed engine
+with provider TTL leases and incremental key scanning. BackOffice never creates
+or owns a second Redis connection. Modules reconcile automatically after
+BackOffice or module restart through bounded retry and periodic renewal.
+
+See [the registry contract](docs/module-registry-contract.md) and
+[the operations runbook](docs/registry-operations-runbook.md).
 
 ## Customization
 

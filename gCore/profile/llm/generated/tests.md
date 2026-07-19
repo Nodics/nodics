@@ -17,6 +17,7 @@
 - `gCore/profile/test/profileControllerRequestMapping.test.js`
 - `gCore/profile/test/profileInitRequiredDetection.test.js`
 - `gCore/profile/test/profileRouteContract.test.js`
+- `gCore/profile/test/profileRuntimeBoundInternalToken.test.js`
 - `gCore/profile/test/userGroupPermissionResolution.test.js`
 
 ## Generated Tests
