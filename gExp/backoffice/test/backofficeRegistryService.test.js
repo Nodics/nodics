@@ -32,10 +32,15 @@ let store = Object.assign({}, storeDefinition, { _instances: new Map() });
 let contractService = require('../src/service/contract/defaultBackofficeContractService');
 let auditEvents = [];
 let discoveryAuthData = [];
+let diagnosticsAuthData;
 global.SERVICE = {
     DefaultBackofficeRegistryStoreService: store,
     DefaultBackofficeContractService: contractService,
     DefaultBackofficeAuditService: { record: event => { auditEvents.push(event); return Promise.resolve(event); } },
+    DefaultBackofficeContractRepositoryService: { getOperationalDiagnostics: request => {
+        diagnosticsAuthData = request && request.authData;
+        return Promise.resolve({ persistenceStatus: 'AVAILABLE', pendingApprovals: 1, activeSelections: 2 });
+    } },
     DefaultBackofficeDiscoveryService: {
         scheduleDiscovery: (registration, authData) => { discoveryAuthData.push(authData); return Promise.resolve(true); },
         getSnapshot: moduleName => moduleName === 'cms' ? { moduleName: 'cms', hash: 'contract-hash', operations: [] } : undefined,
@@ -106,7 +111,10 @@ async function run() {
         [['serviceAccountUserGroup'], ['serviceAccountUserGroup']], 'batch discovery must preserve authenticated service groups');
     list = await service.list({ authData: { permissions: ['cms.backoffice.view'] } });
     assert.strictEqual(list.data.modules.workflowCore, undefined, 'non-API modules must not appear in client discovery');
-    assert.strictEqual((await service.diagnostics()).data.activeInstances, 2, 'diagnostics must retain all active module leases');
+    let diagnostics = await service.diagnostics({ authData: { userGroups: ['runtimeConfigAdminUserGroup'] } });
+    assert.strictEqual(diagnostics.data.activeInstances, 2, 'diagnostics must retain all active module leases');
+    assert.strictEqual(diagnostics.data.contracts.pendingApprovals, 1);
+    assert.deepStrictEqual(diagnosticsAuthData.userGroups, ['runtimeConfigAdminUserGroup']);
     let bootstrap = await service.bootstrap({ authData: { permissions: ['cms.backoffice.view'] },
         headers: { 'x-nodics-client-contract-version': '1' } });
     assert.strictEqual(bootstrap.data.compatibility.registryContractVersion, 1);

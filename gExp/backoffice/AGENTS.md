@@ -40,6 +40,9 @@
   permissioned, reasoned, revision-protected decisions.
 - Retention must protect active and pending observations. Rollback selects a
   retained safe observation; it never edits or deploys a target-module contract.
+- Repair partial decision failures from the durable activation pointer using
+  snapshot revisions. Diagnostics may expose bounded counts and stable failure
+  codes, never persisted documents, provider details, or database messages.
 - UI-composition providers declare non-executable defaults. Provider selection
   may be layered, but BackOffice must not proxy CMS data-plane traffic or return
   executable code.

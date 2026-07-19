@@ -17,6 +17,8 @@
  * @override Projects may replace persistence while preserving target-contract authority, immutable hashes, tenant isolation, CAS activation, retention, and audit semantics.
  */
 module.exports = {
+    _metrics: { reconciliationAttempts: 0, reconciliationRepairs: 0, reconciliationFailures: 0,
+        retentionRuns: 0, retentionRemoved: 0, lastReconciledAt: null, lastReconciliationFailureAt: null },
     /** Initializes the contract repository. */
     init: function () { return Promise.resolve(true); },
     /** Completes repository initialization. */
@@ -25,6 +27,12 @@ module.exports = {
     getConfiguration: function () { return (CONFIG.get('backofficeRegistry') || {}).contractHistory || {}; },
     /** Resolves the tenant used for BackOffice-owned operational observations. */
     getTenant: function (request) { return request && request.tenant || CONFIG.get('defaultTenant') || 'default'; },
+    /** Builds the governed system request used only for pointer-authoritative state repair. */
+    getReconciliationRequest: function (request) {
+        let identity = SERVICE.DefaultIdentityGovernanceService;
+        let authData = identity && typeof identity.getSystemAuthData === 'function' ? identity.getSystemAuthData() : request && request.authData;
+        return { tenant: this.getTenant(request), authData: authData };
+    },
     /** Returns the generated schema services without bypassing Nodics persistence pipelines. */
     getServices: function () {
         let snapshot = SERVICE.DefaultBackofficeContractSnapshotService;
@@ -76,10 +84,63 @@ module.exports = {
     },
     /** Returns the active normalized snapshot selected by the durable pointer. */
     getActiveSnapshot: async function (moduleName, request) {
+        await this.reconcileModule(moduleName, request);
         let activation = await this.getActivation(moduleName, request);
         if (!activation) return undefined;
         let snapshot = await this.getSnapshot(moduleName, activation.activeHash, request);
         return snapshot ? Object.assign({}, snapshot, { activationRevision: activation.revision }) : undefined;
+    },
+    /** Repairs denormalized snapshot states from the durable active-pointer authority after partial failures. */
+    reconcileModule: async function (moduleName, request) {
+        this._metrics.reconciliationAttempts++;
+        try {
+            let persistenceRequest = this.getReconciliationRequest(request);
+            let activation = await this.getActivation(moduleName, persistenceRequest);
+            if (!activation) return { moduleName: moduleName, activeHash: null, repairs: 0 };
+            let active = await this.getSnapshot(moduleName, activation.activeHash, persistenceRequest);
+            if (!active) throw new CLASSES.NodicsError('ERR_BOF_00000', 'Active contract snapshot is missing');
+            let configuration = this.getConfiguration();
+            let limit = Math.max(Number(configuration.historyLimit || 50), Number(configuration.retentionPerModule || 25)) + 100;
+            let history = await this.getHistory(moduleName, Object.assign({}, persistenceRequest, { limit: limit }));
+            let repairs = 0;
+            for (let snapshot of history) {
+                let desired = snapshot.contractHash === activation.activeHash ? 'ACTIVE' :
+                    snapshot.state === 'ACTIVE' ? 'SUPERSEDED' : snapshot.state;
+                if (desired !== snapshot.state) {
+                    await this.updateSnapshotState(snapshot, desired, persistenceRequest);
+                    repairs++;
+                }
+            }
+            this._metrics.reconciliationRepairs += repairs;
+            this._metrics.lastReconciledAt = new Date().toISOString();
+            return { moduleName: moduleName, activeHash: activation.activeHash, activationRevision: activation.revision, repairs: repairs };
+        } catch (error) {
+            this._metrics.reconciliationFailures++;
+            this._metrics.lastReconciliationFailureAt = new Date().toISOString();
+            throw error;
+        }
+    },
+    /** Returns sanitized contract-history operational counters and bounded persisted state counts. */
+    getOperationalDiagnostics: async function (request) {
+        let result = { metrics: Object.assign({}, this._metrics), pendingApprovals: null, activeSelections: null,
+            persistenceStatus: 'AUTH_CONTEXT_REQUIRED' };
+        if (!request || !request.authData || !Array.isArray(request.authData.userGroups)) return result;
+        let limit = Math.max(1, Number(this.getConfiguration().diagnosticsLimit || 1000));
+        try {
+            let services = this.getServices();
+            let pending = await services.snapshot.get({ tenant: this.getTenant(request), authData: request.authData,
+                query: { state: 'PENDING_APPROVAL' }, searchOptions: { limit: limit } });
+            let activations = await services.activation.get({ tenant: this.getTenant(request), authData: request.authData,
+                query: {}, searchOptions: { limit: limit } });
+            result.pendingApprovals = this.getItems(pending).length;
+            result.activeSelections = this.getItems(activations).length;
+            result.persistenceStatus = 'AVAILABLE';
+            result.countsCappedAt = limit;
+        } catch (error) {
+            result.persistenceStatus = 'UNAVAILABLE';
+            result.lastFailureCode = error.code || error.name || 'PERSISTENCE_FAILED';
+        }
+        return result;
     },
     /** Saves one immutable observation idempotently. */
     saveSnapshot: async function (snapshot, state, request) {
@@ -157,11 +218,8 @@ module.exports = {
         if (!requiresApproval) {
             let previous = await this.getActiveSnapshot(snapshot.moduleName, request);
             await this.activateHash(snapshot.moduleName, snapshot.hash, Object.assign({}, request, { reason: 'safe-discovery' }));
-            if (previous && previous.contractHash !== snapshot.hash && previous.state === 'ACTIVE') {
-                await this.updateSnapshotState(previous, 'SUPERSEDED', request).catch(() => false);
-            }
-            if (persisted.state !== 'ACTIVE') persisted = await this.updateSnapshotState(persisted, 'ACTIVE', request).catch(() =>
-                Object.assign({}, persisted, { state: 'ACTIVE' }));
+            await this.reconcileModule(snapshot.moduleName, request);
+            persisted = await this.getSnapshot(snapshot.moduleName, snapshot.hash, request);
         }
         await this.enforceRetention(snapshot.moduleName, request);
         return persisted;
@@ -173,8 +231,17 @@ module.exports = {
         if (!request || !request.reason) throw new CLASSES.NodicsError('ERR_BOF_00000', 'Approval reason is required');
         let previous = await this.getActiveSnapshot(moduleName, request);
         let activation = await this.activateHash(moduleName, hash, request);
-        if (previous && previous.contractHash !== hash && previous.state === 'ACTIVE') await this.updateSnapshotState(previous, 'SUPERSEDED', request).catch(() => false);
-        let approved = await this.updateSnapshotState(candidate, 'ACTIVE', request, { reason: request.reason });
+        let approved;
+        try {
+            approved = await this.updateSnapshotState(candidate, 'ACTIVE', request, { reason: request.reason });
+        } catch (error) {
+            await this.reconcileModule(moduleName, request);
+            approved = await this.getSnapshot(moduleName, hash, request);
+            if (!approved || approved.state !== 'ACTIVE') throw error;
+        }
+        await this.reconcileModule(moduleName, request);
+        if (previous && previous.contractHash !== hash) previous = await this.getSnapshot(moduleName, previous.contractHash, request);
+        await this.enforceRetention(moduleName, request);
         return { snapshot: approved, activation: activation };
     },
     /** Rejects a pending candidate using its optimistic snapshot revision. */
@@ -186,7 +253,9 @@ module.exports = {
         if (!activation || Number(request.expectedRevision) !== Number(activation.revision)) {
             throw new CLASSES.NodicsError('ERR_BOF_00000', 'Contract activation revision conflict');
         }
-        return this.updateSnapshotState(candidate, 'REJECTED', request, { reason: request.reason });
+        let rejected = await this.updateSnapshotState(candidate, 'REJECTED', request, { reason: request.reason });
+        await this.enforceRetention(moduleName, request);
+        return rejected;
     },
     /** Selects a retained historical snapshot as a new active pointer revision. */
     rollback: async function (moduleName, hash, request) {
@@ -195,17 +264,27 @@ module.exports = {
         if (!request || !request.reason) throw new CLASSES.NodicsError('ERR_BOF_00000', 'Rollback reason is required');
         let previous = await this.getActiveSnapshot(moduleName, request);
         let activation = await this.activateHash(moduleName, hash, request);
-        if (previous && previous.contractHash !== hash && previous.state === 'ACTIVE') await this.updateSnapshotState(previous, 'SUPERSEDED', request).catch(() => false);
-        if (target.state !== 'ACTIVE') target = await this.updateSnapshotState(target, 'ACTIVE', request, { reason: request.reason });
+        try {
+            if (target.state !== 'ACTIVE') target = await this.updateSnapshotState(target, 'ACTIVE', request, { reason: request.reason });
+        } catch (error) {
+            await this.reconcileModule(moduleName, request);
+            target = await this.getSnapshot(moduleName, hash, request);
+            if (!target || target.state !== 'ACTIVE') throw error;
+        }
+        await this.reconcileModule(moduleName, request);
+        if (previous && previous.contractHash !== hash) previous = await this.getSnapshot(moduleName, previous.contractHash, request);
+        await this.enforceRetention(moduleName, request);
         return { snapshot: target, activation: activation };
     },
     /** Removes only old inactive history beyond configured retention while protecting active and pending records. */
     enforceRetention: async function (moduleName, request) {
+        this._metrics.retentionRuns++;
         let retention = Math.max(2, Number(this.getConfiguration().retentionPerModule || 25));
         let history = await this.getHistory(moduleName, Object.assign({}, request, { limit: retention + 100 }));
         let removable = history.slice(retention).filter(item => !['ACTIVE', 'PENDING_APPROVAL'].includes(item.state));
         await Promise.all(removable.map(item => this.getServices().snapshot.remove({ tenant: this.getTenant(request),
             authData: request && request.authData, query: { code: item.code, revision: item.revision } }).catch(() => false)));
+        this._metrics.retentionRemoved += removable.length;
         return removable.length;
     }
 };

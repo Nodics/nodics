@@ -97,8 +97,10 @@ Durable BackOffice contract-history changes must additionally test generated
 persistence integration, immutable/idempotent observations, automatic safe
 activation, pending breaking candidates, action-specific route authorization,
 invalid coordinates and bounds, stale and concurrent pointer revisions,
-rejection, rollback restrictions, retention protection, restart recovery, and
-modular runtime discovery.
+interrupted state-write reconciliation, rejection, rollback restrictions,
+retention protection, sanitized diagnostics, repository restart recovery, and
+modular runtime discovery. The modular gate must restart BackOffice and preserve
+the active contract hash and activation revision across process-cache recovery.
 
 When adding a provider or server/node responsibility, add or update readiness
 checks through the owning module or a later project module. Do not expose

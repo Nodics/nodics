@@ -20,7 +20,7 @@ module.exports = {
     backoffice: {
         backofficeContractSnapshot: {
             super: 'base',
-            accessGroups: { adminGroup: 10, runtimeConfigAdminUserGroup: 10, serviceAccountUserGroup: 10 },
+            accessGroups: { adminGroup: 10, runtimeConfigViewerUserGroup: 10, runtimeConfigAdminUserGroup: 10, serviceAccountUserGroup: 10 },
             model: true,
             service: { enabled: true },
             event: { enabled: false },
@@ -52,7 +52,7 @@ module.exports = {
         },
         backofficeContractActivation: {
             super: 'base',
-            accessGroups: { adminGroup: 10, runtimeConfigAdminUserGroup: 10, serviceAccountUserGroup: 10 },
+            accessGroups: { adminGroup: 10, runtimeConfigViewerUserGroup: 10, runtimeConfigAdminUserGroup: 10, serviceAccountUserGroup: 10 },
             model: true,
             service: { enabled: true },
             event: { enabled: false },

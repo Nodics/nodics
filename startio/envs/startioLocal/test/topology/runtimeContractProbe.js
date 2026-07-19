@@ -77,6 +77,19 @@ module.exports = {
         let discovery = SERVICE.DefaultBackofficeDiscoveryService;
         let moduleNames = Array.from(new Set(entries.map(entry => entry.value.moduleName)));
         let snapshots = discovery ? discovery.getSnapshots(moduleNames) : {};
+        let repository = SERVICE.DefaultBackofficeContractRepositoryService;
+        let systemIdentity = SERVICE.DefaultIdentityGovernanceService && SERVICE.DefaultIdentityGovernanceService.getSystemAuthData ?
+            SERVICE.DefaultIdentityGovernanceService.getSystemAuthData() : undefined;
+        let discoverableModules = Array.from(new Set(entries.filter(entry => entry.value.backoffice && entry.value.backoffice.discovery)
+            .map(entry => entry.value.moduleName)));
+        let durableContracts = [];
+        if (repository && systemIdentity) {
+            for (let moduleName of discoverableModules) {
+                let active = await repository.getActiveSnapshot(moduleName, { authData: systemIdentity });
+                if (active) durableContracts.push({ moduleName: moduleName, hash: active.contractHash,
+                    activationRevision: active.activationRevision, state: active.state });
+            }
+        }
         return {
             available: true,
             instances: entries.map(entry => ({
@@ -93,6 +106,7 @@ module.exports = {
             contractPersistenceServices: Object.keys(SERVICE).filter(name => /Backoffice/i.test(name)).sort(),
             contractPersistenceModels: Object.keys(NODICS.getModels('backoffice', CONFIG.get('defaultTenant') || 'default') || {})
                 .filter(name => /Contract(Snapshot|Activation)/i.test(name)).sort(),
+            durableContracts: durableContracts.sort((left, right) => left.moduleName.localeCompare(right.moduleName)),
             diagnostics: (await registry.diagnostics()).data
         };
     },

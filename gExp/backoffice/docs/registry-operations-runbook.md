@@ -42,7 +42,9 @@ client or the provider client reports `isReady === false`.
 
 The secured registry diagnostics response exposes only active module-lease
 counts; registration lifecycle counters; store mode and availability; store
-operation counters; and last success/error timestamps. It never returns
+operation counters; contract reconciliation and retention counters; bounded
+pending-approval and active-selection counts; and last success/error timestamps.
+It never returns
 provider URLs, credentials, keys, stored lease bodies, tokens, or headers.
 
 ## Failure and Recovery
@@ -56,6 +58,9 @@ provider URLs, credentials, keys, stored lease bodies, tokens, or headers.
 - Crash leases disappear through provider TTL even when no sweeper runs.
 - BackOffice restart recovers shared leases immediately in distributed mode;
   memory mode reconciles through module retries and heartbeats.
+- Contract history always recovers from its durable active pointer. Active reads
+  repair stale denormalized `ACTIVE`/`SUPERSEDED` states left by an interrupted
+  decision without changing the target module's authoritative contract.
 
 ## Rollout Verification
 
@@ -65,7 +70,9 @@ provider URLs, credentials, keys, stored lease bodies, tokens, or headers.
 4. Restart one module runtime and confirm its old identity is replaced.
 5. Kill a disposable runtime without drain and confirm expiry after lease TTL.
 6. Restart one BackOffice replica and confirm other replicas retain leases.
+7. Confirm the restarted replica reports the same active contract hash and
+   activation revision and that reconciliation failures remain zero.
 
-Use `npm run test:topology:modular` for governed local registration and CMS
-restart reconciliation. Use the guarded Redis live test in an isolated
-environment before production release.
+Use `npm run test:topology:modular` for governed local registration, CMS restart
+reconciliation, and BackOffice durable-pointer restart recovery. Use the guarded
+Redis live test in an isolated environment before production release.

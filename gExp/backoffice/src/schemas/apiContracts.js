@@ -166,6 +166,12 @@ module.exports = {
         availability: { type: 'object' }, uiComposition: uiCompositionSelection
     } },
     diagnosticsData: { type: 'object', required: ['activeModuleLeases', 'metrics', 'store'], properties: {
-        activeModuleLeases: { type: 'integer', minimum: 0 }, metrics: { type: 'object' }, store: { type: 'object' }
+        activeModuleLeases: { type: 'integer', minimum: 0 }, metrics: { type: 'object' }, store: { type: 'object' },
+        discovery: { type: 'object' }, contracts: { type: 'object', properties: {
+            persistenceStatus: { enum: ['AVAILABLE', 'UNAVAILABLE', 'AUTH_CONTEXT_REQUIRED'] },
+            pendingApprovals: { type: 'integer', nullable: true, minimum: 0 },
+            activeSelections: { type: 'integer', nullable: true, minimum: 0 },
+            countsCappedAt: { type: 'integer', minimum: 1 }, lastFailureCode: { type: 'string' }, metrics: { type: 'object' }
+        } }
     } }
 };

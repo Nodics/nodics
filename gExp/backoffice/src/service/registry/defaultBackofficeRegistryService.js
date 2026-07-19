@@ -304,9 +304,10 @@ module.exports = {
     },
 
     /** Returns sanitized registry size and lifecycle counters. */
-    diagnostics: async function () {
+    diagnostics: async function (request) {
         await this.expireStale();
         let activeModuleLeases = await this.getStore().size();
+        let repository = SERVICE.DefaultBackofficeContractRepositoryService;
         return {
             code: 'SUC_BOF_00003',
             data: {
@@ -314,7 +315,9 @@ module.exports = {
                 activeInstances: activeModuleLeases,
                 metrics: Object.assign({}, this._metrics),
                 store: this.getStore().diagnostics(),
-                discovery: SERVICE.DefaultBackofficeDiscoveryService ? SERVICE.DefaultBackofficeDiscoveryService.getDiagnostics() : undefined
+                discovery: SERVICE.DefaultBackofficeDiscoveryService ? SERVICE.DefaultBackofficeDiscoveryService.getDiagnostics() : undefined,
+                contracts: repository && typeof repository.getOperationalDiagnostics === 'function' ?
+                    await repository.getOperationalDiagnostics(request) : undefined
             }
         };
     },

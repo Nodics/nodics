@@ -53,6 +53,7 @@ module.exports = {
             enabled: true,
             historyLimit: 50,
             retentionPerModule: 25,
+            diagnosticsLimit: 1000,
             automaticClassifications: ['INITIAL', 'UNCHANGED', 'NON_BREAKING'],
             approvalClassifications: ['POTENTIALLY_BREAKING', 'BREAKING']
         },

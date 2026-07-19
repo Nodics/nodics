@@ -278,6 +278,7 @@ async function waitForRegistry(runtime, predicate, description) {
         discoveries: lastSnapshot.discoveries,
         contractPersistenceServices: lastSnapshot.contractPersistenceServices,
         contractPersistenceModels: lastSnapshot.contractPersistenceModels,
+        durableContracts: lastSnapshot.durableContracts,
         discoveryDiagnostics: lastSnapshot.diagnostics && lastSnapshot.diagnostics.discovery
     };
     throw new Error('BackOffice registry did not satisfy ' + description + ': ' + JSON.stringify(summary));
@@ -323,15 +324,32 @@ async function runModularSmoke() {
         let reconciledRegistry = await waitForRegistry(backofficeRuntime, snapshot => snapshot.instances.some(instance =>
             instance.moduleName === 'cms' && instance.instanceId !== previousCmsInstance) &&
             !snapshot.instances.some(instance => instance.instanceId === previousCmsInstance), 'CMS restart reconciliation');
+        let durableCms = reconciledRegistry.durableContracts.find(contract => contract.moduleName === 'cms');
+        assert(durableCms && durableCms.hash && durableCms.activationRevision > 0, 'CMS durable contract pointer must be observable before restart');
+
+        let backofficeIndex = runtimes.findIndex(runtime => runtime.serverName === 'startioLocalBackofficeServer');
+        await stopServer(backofficeRuntime);
+        let restartedBackofficeRuntime = await startServer('startioLocalBackofficeServer');
+        assertRuntimeContract(restartedBackofficeRuntime);
+        runtimes[backofficeIndex] = restartedBackofficeRuntime;
+        backofficeRuntime = restartedBackofficeRuntime;
+        let recoveredRegistry = await waitForRegistry(backofficeRuntime, snapshot => {
+            let observed = snapshot.instances.map(instance => instance.moduleName);
+            let recoveredCms = snapshot.durableContracts.find(contract => contract.moduleName === 'cms');
+            return expectedModules.every(moduleName => observed.includes(moduleName)) && recoveredCms &&
+                recoveredCms.hash === durableCms.hash && recoveredCms.activationRevision === durableCms.activationRevision &&
+                snapshot.discoveries.some(discovery => discovery.moduleName === 'cms' && discovery.hash === durableCms.hash);
+        }, 'BackOffice restart durable contract recovery');
         return {
             runtimes: runtimes.slice(),
             communication: await runModularCommunicationSmoke(),
             readiness: await runRuntimeReadinessSmoke(runtimes),
             registry: {
-                activeInstances: reconciledRegistry.diagnostics.activeInstances,
-                registeredModules: Array.from(new Set(reconciledRegistry.instances.map(instance => instance.moduleName))).length,
-                discoveredModules: reconciledRegistry.discoveries.length,
-                cmsRestartReconciled: true
+                activeInstances: recoveredRegistry.diagnostics.activeInstances,
+                registeredModules: Array.from(new Set(recoveredRegistry.instances.map(instance => instance.moduleName))).length,
+                discoveredModules: recoveredRegistry.discoveries.length,
+                cmsRestartReconciled: true,
+                backofficeRestartRecovered: true
             }
         };
     } finally {

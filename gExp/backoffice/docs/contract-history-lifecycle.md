@@ -26,6 +26,15 @@ the pointer compare-and-set and the denormalized snapshot-state update. Reads of
 the current contract therefore resolve the pointer and then its immutable
 snapshot.
 
+Every active read and post-activation decision reconciles denormalized snapshot
+states from the pointer. The pointed snapshot becomes `ACTIVE`; any other stale
+`ACTIVE` snapshot becomes `SUPERSEDED`. Reconciliation uses each snapshot's
+revision and fails if the pointer references a missing immutable snapshot. If a
+state write is interrupted after the pointer commits, the decision path repairs
+the state and returns the pointer-authoritative result. Repair writes use
+Nodics' governed system identity; a human viewer's read permission is never
+elevated into repair authority.
+
 Approval and rollback advance the pointer with optimistic compare-and-set using
 the caller's expected activation revision. Rejection also verifies that
 revision, preventing a stale review from deciding a candidate after another
@@ -63,6 +72,13 @@ and discovery remain asynchronous to module readiness. Persistence failure is
 reported in discovery diagnostics and never causes a breaking observation to
 replace the last durable safe pointer.
 
+Secured registry diagnostics include sanitized contract-history counters,
+reconciliation attempts, repairs and failures, retention runs and removals,
+last reconciliation timestamps, and bounded counts of pending approvals and
+active selections. Counts are capped by `contractHistory.diagnosticsLimit`.
+Persistence errors expose a stable failure code only, never database messages,
+documents, connection details, or credentials.
+
 ## Required validation
 
 Changes to this contract require positive, negative, boundary, contract,
@@ -70,4 +86,6 @@ integration, and regression coverage. At minimum test deterministic snapshots,
 safe automatic activation, pending breaking changes, authorization routes,
 invalid coordinates and limits, stale and concurrent revisions, rejection,
 rollback restrictions, bounded retention, repository restart recovery, and
-modular runtime discovery with generated persistence services.
+modular runtime discovery with generated persistence services. The modular gate
+must restart BackOffice and prove that a durable contract hash and activation
+revision survive while process-memory leases and discovery caches reconcile.
