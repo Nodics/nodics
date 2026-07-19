@@ -178,7 +178,20 @@ module.exports = {
     } },
     diagnosticsData: { type: 'object', required: ['activeModuleLeases', 'metrics', 'store'], properties: {
         activeModuleLeases: { type: 'integer', minimum: 0 }, metrics: { type: 'object' }, store: { type: 'object' },
-        discovery: { type: 'object' }, availability: { type: 'object' }, contracts: { type: 'object', properties: {
+        discovery: { type: 'object' }, availability: { type: 'object', properties: {
+            trackedInstances: { type: 'integer', minimum: 0 }, trackedModules: { type: 'integer', minimum: 0 },
+            inflight: { type: 'integer', minimum: 0 }, inflightTransitions: { type: 'integer', minimum: 0 },
+            metrics: { type: 'object', properties: {
+                attempts: { type: 'integer', minimum: 0 }, successes: { type: 'integer', minimum: 0 },
+                failures: { type: 'integer', minimum: 0 }, readinessFailures: { type: 'integer', minimum: 0 },
+                transportFailures: { type: 'integer', minimum: 0 }, timeouts: { type: 'integer', minimum: 0 },
+                staleReads: { type: 'integer', minimum: 0 }, suppressedRefreshes: { type: 'integer', minimum: 0 },
+                inflightDeduplications: { type: 'integer', minimum: 0 }, transitions: { type: 'integer', minimum: 0 },
+                publicationAttempts: { type: 'integer', minimum: 0 }, publicationSuccesses: { type: 'integer', minimum: 0 },
+                publicationFailures: { type: 'integer', minimum: 0 }, totalDurationMs: { type: 'integer', minimum: 0 },
+                maxDurationMs: { type: 'integer', minimum: 0 }, lastDurationMs: { type: 'integer', minimum: 0 }
+            } }
+        } }, contracts: { type: 'object', properties: {
             persistenceStatus: { enum: ['AVAILABLE', 'UNAVAILABLE', 'AUTH_CONTEXT_REQUIRED'] },
             pendingApprovals: { type: 'integer', nullable: true, minimum: 0 },
             activeSelections: { type: 'integer', nullable: true, minimum: 0 },

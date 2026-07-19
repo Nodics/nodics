@@ -97,6 +97,12 @@ public readiness, not a second health authority. Missing or stale evidence is
 unknown; aggregation must preserve multi-instance partial availability without
 exposing raw target diagnostics.
 
+Operational availability events must publish through the existing Nodics event
+capability, only on normalized state changes, with low-disclosure runtime
+coordinates and stable reason codes. Initial and unchanged results must be
+governed to prevent restart or polling storms, and publication failure must not
+block registration or module traffic.
+
 ## Source Of Truth
 
 Behavior must come from Nodics source-of-truth artifacts:

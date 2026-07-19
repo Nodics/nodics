@@ -107,6 +107,9 @@ async function run() {
 
     let batch = await service.register({ body: {
         instanceId: 'runtime-1',
+        environment: 'local',
+        server: 'cms-server',
+        node: 'cms-node',
         registrations: [
             { moduleName: 'cms', instanceId: 'runtime-1', endpoint: 'http://cms/nodics/cms', clientCallable: true,
                 backoffice: registration.backoffice },
@@ -115,6 +118,9 @@ async function run() {
     }, authData: { tokenType: 'service', runtimeInstanceId: 'runtime-1', modules: ['cms', 'workflowCore'],
         userGroups: ['serviceAccountUserGroup'] } });
     assert.strictEqual(batch.data.registeredModules, 2);
+    assert.deepStrictEqual({ environment: store._instances.get('cms:runtime-1').environment,
+        server: store._instances.get('cms:runtime-1').server, node: store._instances.get('cms:runtime-1').node },
+    { environment: 'local', server: 'cms-server', node: 'cms-node' }, 'runtime coordinates must remain available for sanitized telemetry');
     assert.deepStrictEqual(discoveryAuthData.slice(-2).map(authData => authData.userGroups),
         [['serviceAccountUserGroup'], ['serviceAccountUserGroup']], 'batch discovery must preserve authenticated service groups');
     assert(availabilitySchedules.includes('runtime-1'), 'client-callable batch registration must schedule availability observation');

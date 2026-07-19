@@ -55,6 +55,8 @@ retention, and replica concurrency follow
 [the contract history lifecycle](docs/contract-history-lifecycle.md).
 Runtime readiness observation and multi-instance availability aggregation follow
 [the availability observation contract](docs/availability-observation-contract.md).
+The same contract governs deduplicated state-transition events and sanitized
+probe/publication metrics through Nodics' existing event capability.
 
 ## Customization
 

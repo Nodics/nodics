@@ -19,7 +19,14 @@
 module.exports = {
     _observations: new Map(),
     _inflight: new Map(),
-    _metrics: { attempts: 0, successes: 0, failures: 0, transitions: 0, lastSuccessAt: null, lastFailureAt: null, lastFailureCode: null },
+    _moduleStates: new Map(),
+    _moduleTransitions: new Map(),
+    _instanceModules: new Map(),
+    _moduleRegistrations: new Map(),
+    _metrics: { attempts: 0, successes: 0, failures: 0, readinessFailures: 0, transportFailures: 0,
+        timeouts: 0, staleReads: 0, suppressedRefreshes: 0, inflightDeduplications: 0, transitions: 0,
+        publicationAttempts: 0, publicationSuccesses: 0, publicationFailures: 0, totalDurationMs: 0,
+        maxDurationMs: 0, lastDurationMs: 0, lastSuccessAt: null, lastFailureAt: null, lastFailureCode: null },
 
     /** Initializes the availability observer. */
     init: function () { return Promise.resolve(true); },
@@ -37,6 +44,7 @@ module.exports = {
         this._metrics.attempts++;
         let previous = this._observations.get(key);
         let attemptedAt = new Date().toISOString();
+        let startedAt = Date.now();
         try {
             let endpointPolicy = SERVICE.DefaultBackofficeDiscoveryService;
             if (!endpointPolicy || typeof endpointPolicy.buildObservedUrl !== 'function') throw new Error('BackOffice endpoint policy is unavailable');
@@ -46,54 +54,168 @@ module.exports = {
             let response = await SERVICE.DefaultModuleService.fetch(request);
             let data = response && response.data || response;
             let state = data && data.status === 'UP' ? 'UP' : 'UNAVAILABLE';
-            let observation = { instanceId: key, state: state, attemptedAt: attemptedAt, observedAt: new Date().toISOString() };
-            this.recordTransition(previous, observation);
+            let observation = { moduleName: String(registration.moduleName), instanceId: key, state: state,
+                attemptedAt: attemptedAt, observedAt: new Date().toISOString(),
+                failureCode: state === 'UP' ? undefined : 'READINESS_NOT_UP' };
             this._observations.set(key, observation);
+            this.recordTransition(previous, observation, registration);
             if (state === 'UP') {
                 this._metrics.successes++;
                 this._metrics.lastSuccessAt = observation.observedAt;
             } else {
                 this._metrics.failures++;
+                this._metrics.readinessFailures++;
                 this._metrics.lastFailureAt = observation.observedAt;
                 this._metrics.lastFailureCode = 'READINESS_NOT_UP';
             }
             return observation;
         } catch (error) {
-            let observation = { instanceId: key, state: 'UNAVAILABLE', attemptedAt: attemptedAt, observedAt: new Date().toISOString(),
-                failureCode: error.code || error.name || 'HEALTH_OBSERVATION_FAILED' };
-            this.recordTransition(previous, observation);
+            let failureCode = this.normalizeFailureCode(error);
+            let observation = { moduleName: String(registration.moduleName), instanceId: key, state: 'UNAVAILABLE',
+                attemptedAt: attemptedAt, observedAt: new Date().toISOString(),
+                failureCode: failureCode };
             this._observations.set(key, observation);
+            this.recordTransition(previous, observation, registration);
             this._metrics.failures++;
+            this._metrics.transportFailures++;
+            if (failureCode === 'OBSERVATION_TIMEOUT') this._metrics.timeouts++;
             this._metrics.lastFailureAt = observation.observedAt;
             this._metrics.lastFailureCode = observation.failureCode;
             return observation;
+        } finally {
+            let durationMs = Math.max(0, Date.now() - startedAt);
+            this._metrics.lastDurationMs = durationMs;
+            this._metrics.totalDurationMs += durationMs;
+            this._metrics.maxDurationMs = Math.max(this._metrics.maxDurationMs, durationMs);
         }
     },
-    /** Counts state transitions without exposing target responses or endpoints. */
-    recordTransition: function (previous, current) {
-        if (previous && previous.state !== current.state) this._metrics.transitions++;
+    /** Converts transport failures into bounded operational codes. */
+    normalizeFailureCode: function (error) {
+        let code = String(error && (error.code || error.name) || '').toUpperCase();
+        return code.includes('TIMEOUT') || code === 'ETIMEDOUT' ? 'OBSERVATION_TIMEOUT' : 'HEALTH_OBSERVATION_FAILED';
+    },
+    /** Schedules serialized module aggregation after an instance observation. */
+    recordTransition: function (previous, current, registration) {
+        let key = this.getKey(registration);
+        let modules = this._instanceModules.get(key) || new Set([String(registration && registration.moduleName || '')]);
+        modules.forEach(moduleName => {
+            if (!moduleName) return;
+            let effectiveRegistration = this._moduleRegistrations.get(moduleName) && this._moduleRegistrations.get(moduleName).get(key) || registration;
+            let prior = this._moduleTransitions.get(moduleName) || Promise.resolve();
+            let pending = prior.then(() => this.evaluateModuleTransition(effectiveRegistration)).catch(() => false)
+                .finally(() => { if (this._moduleTransitions.get(moduleName) === pending) this._moduleTransitions.delete(moduleName); });
+            this._moduleTransitions.set(moduleName, pending);
+        });
+        return true;
+    },
+    /** Aggregates current leases and publishes only genuine module-state changes. */
+    evaluateModuleTransition: async function (registration) {
+        let moduleName = String(registration.moduleName);
+        let instances = [registration];
+        let registry = SERVICE.DefaultBackofficeRegistryService;
+        if (registry && typeof registry.getStore === 'function') {
+            let entries = await registry.getStore().values();
+            instances = entries.map(entry => entry.value).filter(value => value.moduleName === moduleName);
+        }
+        let current = this.getModuleAvailability(instances);
+        let trigger = this._observations.get(this.getKey(registration));
+        if (trigger && trigger.failureCode) current.failureCode = trigger.failureCode;
+        let previous = this._moduleStates.get(moduleName);
+        this._moduleStates.set(moduleName, current);
+        let events = this.getConfiguration().events || {};
+        let changed = previous ? previous.state !== current.state : events.emitInitialState === true;
+        if (!changed) return false;
+        this._metrics.transitions++;
+        return this.publishTransition(registration, previous, current);
+    },
+    /** Publishes one sanitized operational transition through the configured Nodics event capability. */
+    publishTransition: async function (registration, previous, current) {
+        let events = this.getConfiguration().events || {};
+        if (events.enabled === false) return false;
+        let publisher = SERVICE[events.publisherService || 'DefaultEventService'];
+        if (!publisher || typeof publisher.publish !== 'function') return false;
+        let data = {
+            moduleName: String(registration && registration.moduleName || ''),
+            instanceId: this.getKey(registration),
+            environment: registration && registration.environment,
+            server: registration && registration.server,
+            node: registration && registration.node,
+            previousState: previous ? previous.state : 'UNKNOWN',
+            currentState: current.state,
+            reasonCode: current.failureCode,
+            activeInstances: current.activeInstances,
+            healthyInstances: current.healthyInstances,
+            unavailableInstances: current.unavailableInstances,
+            unknownInstances: current.unknownInstances,
+            observedAt: new Date().toISOString()
+        };
+        Object.keys(data).forEach(key => { if (data[key] === undefined || data[key] === null || data[key] === '') delete data[key]; });
+        this._metrics.publicationAttempts++;
+        try {
+            await publisher.publish({ tenant: CONFIG.get('defaultTenant') || 'default', active: true,
+                event: events.eventName || 'backoffice.availability.changed', sourceName: 'backoffice',
+                sourceId: typeof NODICS !== 'undefined' && NODICS.getNodeName ? NODICS.getNodeName() || 'default' : 'default',
+                target: events.target || 'backoffice', state: 'NEW', type: events.type || 'ASYNC',
+                targetType: typeof ENUMS !== 'undefined' && ENUMS.TargetType && ENUMS.TargetType.MODULE ? ENUMS.TargetType.MODULE.key : 'MODULE', data: data });
+            this._metrics.publicationSuccesses++;
+            return true;
+        } catch (error) {
+            this._metrics.publicationFailures++;
+            if (this.LOG && this.LOG.warn) this.LOG.warn('BackOffice availability transition publication failed', {
+                moduleName: data.moduleName, instanceId: data.instanceId, code: 'AVAILABILITY_EVENT_PUBLICATION_FAILED'
+            });
+            return false;
+        }
     },
     /** Schedules one deduplicated refresh without delaying registration or module traffic. */
     scheduleObservation: function (registration) {
         let policy = this.getConfiguration();
         if (policy.enabled === false || !registration || !registration.clientCallable) return Promise.resolve(false);
         let key = this.getKey(registration);
+        if (!this._instanceModules.has(key)) this._instanceModules.set(key, new Set());
+        let moduleName = String(registration.moduleName || '');
+        this._instanceModules.get(key).add(moduleName);
+        if (!this._moduleRegistrations.has(moduleName)) this._moduleRegistrations.set(moduleName, new Map());
+        this._moduleRegistrations.get(moduleName).set(key, Object.assign({}, registration));
         let previous = this._observations.get(key);
         let refreshIntervalMs = Math.max(1, Number(policy.refreshIntervalMs || 10000));
-        if (previous && Date.now() - Date.parse(previous.attemptedAt) < refreshIntervalMs) return Promise.resolve(false);
-        if (this._inflight.has(key)) return this._inflight.get(key);
+        if (previous && Date.now() - Date.parse(previous.attemptedAt) < refreshIntervalMs) {
+            this._metrics.suppressedRefreshes++;
+            return Promise.resolve(false);
+        }
+        if (this._inflight.has(key)) {
+            this._metrics.inflightDeduplications++;
+            return this._inflight.get(key);
+        }
         let promise = Promise.resolve().then(() => this.observe(registration)).finally(() => this._inflight.delete(key));
         this._inflight.set(key, promise);
         return promise;
     },
     /** Removes process-instance state after its final lease is removed or expires. */
-    removeInstance: function (instanceId) { return this._observations.delete(String(instanceId || '')); },
+    removeInstance: function (instanceId) {
+        let key = String(instanceId || '');
+        let removed = this._observations.delete(key);
+        let modules = this._instanceModules.get(key) || new Set();
+        this._instanceModules.delete(key);
+        modules.forEach(moduleName => {
+            if (this._moduleRegistrations.has(moduleName)) {
+                this._moduleRegistrations.get(moduleName).delete(key);
+                if (this._moduleRegistrations.get(moduleName).size === 0) this._moduleRegistrations.delete(moduleName);
+            }
+            if (!Array.from(this._instanceModules.values()).some(names => names.has(moduleName))) this._moduleStates.delete(moduleName);
+        });
+        return removed;
+    },
     /** Returns one fresh instance state, treating missing or stale observations as unknown. */
     getInstanceState: function (instanceId) {
         let observation = this._observations.get(String(instanceId || ''));
         if (!observation) return 'UNKNOWN';
         let staleAfterMs = Math.max(1, Number(this.getConfiguration().staleAfterMs || 30000));
-        return Date.now() - Date.parse(observation.observedAt) > staleAfterMs ? 'UNKNOWN' : observation.state;
+        if (Date.now() - Date.parse(observation.observedAt) > staleAfterMs) {
+            this._metrics.staleReads++;
+            return 'UNKNOWN';
+        }
+        return observation.state;
     },
     /** Aggregates module state across currently valid observed runtime instances. */
     getModuleAvailability: function (instances) {
@@ -108,6 +230,7 @@ module.exports = {
     },
     /** Returns low-disclosure counters for secured BackOffice diagnostics. */
     getDiagnostics: function () {
-        return { trackedInstances: this._observations.size, inflight: this._inflight.size, metrics: Object.assign({}, this._metrics) };
+        return { trackedInstances: this._observations.size, trackedModules: this._moduleStates.size,
+            inflight: this._inflight.size, inflightTransitions: this._moduleTransitions.size, metrics: Object.assign({}, this._metrics) };
     }
 };

@@ -51,7 +51,15 @@ module.exports = {
             staleAfterMs: 30000,
             maxResponseBytes: 65536,
             allowRedirects: false,
-            allowedHosts: []
+            allowedHosts: [],
+            events: {
+                enabled: true,
+                emitInitialState: false,
+                publisherService: 'DefaultEventService',
+                eventName: 'backoffice.availability.changed',
+                target: 'backoffice',
+                type: 'ASYNC'
+            }
         },
         uiComposition: {
             enabled: true,

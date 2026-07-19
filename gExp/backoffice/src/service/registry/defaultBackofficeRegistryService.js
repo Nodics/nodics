@@ -101,6 +101,9 @@ module.exports = {
         let observed = {
             moduleName: String(registration.moduleName),
             instanceId: String(registration.instanceId),
+            environment: request._runtimeCoordinates && request._runtimeCoordinates.environment,
+            server: request._runtimeCoordinates && request._runtimeCoordinates.server,
+            node: request._runtimeCoordinates && request._runtimeCoordinates.node,
             version: String(registration.version || 'unknown'),
             moduleKind: String(registration.moduleKind || 'unknown'),
             capabilities: Array.isArray(registration.capabilities) ? registration.capabilities.map(String) : [],
@@ -133,7 +136,8 @@ module.exports = {
         }
         let outcomes = [];
         return Promise.all(registrations.map(item => this.register({ body: item, _identityValidated: true,
-            _batchRegistration: true, _batchOutcomes: outcomes, authData: authData })))
+            _batchRegistration: true, _batchOutcomes: outcomes, authData: authData,
+            _runtimeCoordinates: { environment: batch.environment, server: batch.server, node: batch.node } })))
             .then(results => this.audit({ eventType: 'backoffice.registry.registration',
                 outcome: outcomes.every(outcome => outcome === 'renewed') ? 'renewed' :
                     outcomes.every(outcome => outcome === 'registered') ? 'registered' : 'reconciled',

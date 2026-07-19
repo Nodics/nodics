@@ -107,6 +107,10 @@ timeouts and response bounds, deduplication by runtime instance, freshness,
 failure isolation, all aggregate states, lease removal, sanitized diagnostics,
 fallback provider selection, and module and BackOffice restart reconciliation.
 
+Availability telemetry changes must additionally test transition and recovery
+events, unchanged-state suppression, initial-state policy, publisher failure
+isolation, redaction, stable failure codes, counters, and duration boundaries.
+
 When adding a provider or server/node responsibility, add or update readiness
 checks through the owning module or a later project module. Do not expose
 credentials, provider URLs, private file paths, tenant data, or raw diagnostics
