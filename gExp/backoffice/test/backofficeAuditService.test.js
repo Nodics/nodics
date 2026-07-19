@@ -16,7 +16,7 @@
  * @owner backoffice
  */
 const assert = require('assert');
-let configuration = { audit: { enabled: true, publisherService: 'AuditPublisher' } };
+let configuration = { audit: { enabled: true, failClosed: true, requireAcknowledgement: true, publisherService: 'AuditPublisher' } };
 let published;
 global.CONFIG = { get: key => key === 'backofficeRegistry' ? configuration : undefined };
 global.SERVICE = { AuditPublisher: { record: event => { published = event; return Promise.resolve(event); } } };
@@ -29,6 +29,10 @@ async function run() {
     assert.strictEqual(published.token, undefined);
     assert.strictEqual(published.credential, undefined);
     assert(published.occurredAt);
+    global.SERVICE.AuditPublisher.record = () => Promise.resolve(false);
+    await assert.rejects(service.record({ eventType: 'unacknowledged' }), error => error.code === 'AUDIT_DELIVERY_UNACKNOWLEDGED');
+    delete global.SERVICE.AuditPublisher;
+    await assert.rejects(service.record({ eventType: 'unavailable' }), /publisher is unavailable/);
     configuration.audit.enabled = false;
     assert.strictEqual(await service.record({ eventType: 'ignored' }), false);
     console.log('BackOffice audit service validated');

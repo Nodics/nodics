@@ -16,6 +16,12 @@ tunes workload-specific thresholds without embedding provider secrets:
 ```js
 module.exports = {
     backofficeRegistry: {
+        audit: {
+            enabled: true,
+            failClosed: true,
+            requireAcknowledgement: true,
+            publisherService: 'EnvironmentBackofficeAuditPublisher'
+        },
         store: {
             mode: 'distributed',
             moduleName: 'backoffice',
@@ -24,6 +30,19 @@ module.exports = {
         },
         operations: {
             requireDistributedStore: true,
+            production: {
+                enabled: true,
+                requireHttpsOnly: true,
+                requireHostAllowlists: true,
+                requireStrictAudit: true,
+                requireStrictAlerts: true
+            },
+            alerts: {
+                enabled: true,
+                failClosed: true,
+                requireAcknowledgement: true,
+                publisherService: 'EnvironmentBackofficeAlertPublisher'
+            },
             minimumSamples: 20,
             thresholds: {
                 availabilityFailurePercent: 20,
@@ -37,6 +56,11 @@ module.exports = {
     }
 };
 ```
+
+Production configuration must also set strict acknowledged audit delivery and
+environment-owned discovery/availability host allowlists. Publisher service
+names are extension points implemented by the environment integration module;
+BackOffice does not own a second monitoring transport.
 
 Provider URLs and credentials belong in governed secret/external configuration.
 Validate lease/sweep, readiness timeout/freshness, probe concurrency/queue,

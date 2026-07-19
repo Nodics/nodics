@@ -42,8 +42,16 @@ module.exports = {
         if (this.LOG && this.LOG.info) this.LOG.info('BackOffice audit event', sanitized);
         let publisherName = configuration.publisherService;
         if (publisherName && SERVICE[publisherName] && typeof SERVICE[publisherName].record === 'function') {
-            return Promise.resolve(SERVICE[publisherName].record(sanitized));
+            return Promise.resolve(SERVICE[publisherName].record(sanitized)).then(acknowledgement => {
+                if (configuration.requireAcknowledgement === true && !acknowledgement) {
+                    let error = new Error('BackOffice audit publisher did not acknowledge delivery');
+                    error.code = 'AUDIT_DELIVERY_UNACKNOWLEDGED';
+                    throw error;
+                }
+                return acknowledgement;
+            });
         }
+        if (configuration.failClosed === true && publisherName) return Promise.reject(new Error('BackOffice audit publisher is unavailable'));
         return Promise.resolve(sanitized);
     }
 };

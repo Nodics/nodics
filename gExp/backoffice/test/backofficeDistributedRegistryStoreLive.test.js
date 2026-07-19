@@ -10,6 +10,8 @@
  */
 
 const assert = require('assert');
+const path = require('path');
+const { spawn } = require('child_process');
 const liveRedisClientFactory = require('../../../gFramework/nCache/redisCache/test/support/liveRedisClientFactory');
 
 /**
@@ -39,6 +41,9 @@ async function run() {
     await Promise.all([clientOne.connect(), clientTwo.connect()]);
 
     const prefix = 'nodics-backoffice-live-' + process.pid + '-' + Date.now() + ':';
+    const loadLeases = readPositiveInteger('NODICS_BACKOFFICE_LOAD_LEASES', 256);
+    const loadConcurrency = readPositiveInteger('NODICS_BACKOFFICE_LOAD_CONCURRENCY', 32);
+    const maxLoadMs = readPositiveInteger('NODICS_BACKOFFICE_LOAD_MAX_MS', 30000);
     global.CONFIG = { get: name => name === 'backofficeRegistry' ? { store: {
         mode: 'distributed', moduleName: 'backoffice', engineName: 'redis', keyPrefix: prefix
     } } : undefined };
@@ -91,7 +96,31 @@ async function run() {
             'the store must recover through the restored nCache-owned client');
         assert(replicaOne.diagnostics().metrics.errors > 0);
 
-        console.log('BackOffice Redis live contract validated');
+        const processLease = { moduleName: 'workflow', instanceId: 'process-runtime', expiresAt: Date.now() + 10000 };
+        await runReplicaWorker({ operation: 'set', key: 'workflow:process-runtime', value: processLease, ttlMs: 10000 }, url, prefix);
+        assert.deepStrictEqual((await runReplicaWorker({ operation: 'get', key: 'workflow:process-runtime' }, url, prefix)).result,
+            processLease, 'a separate BackOffice store process must observe the shared lease');
+        const processRenewed = Object.assign({}, processLease, { expiresAt: processLease.expiresAt + 10000 });
+        await runReplicaWorker({ operation: 'set', key: 'workflow:process-runtime', value: processRenewed, ttlMs: 20000 }, url, prefix);
+        assert.strictEqual((await runReplicaWorker({ operation: 'deleteIfExpiresAt', key: 'workflow:process-runtime',
+            expiresAt: processLease.expiresAt }, url, prefix)).result, false,
+        'a stale BackOffice process must not delete another process renewal');
+
+        const loadStarted = process.hrtime.bigint();
+        for (let offset = 0; offset < loadLeases; offset += loadConcurrency) {
+            await Promise.all(Array.from({ length: Math.min(loadConcurrency, loadLeases - offset) }, (_, index) => {
+                const sequence = offset + index;
+                const value = { moduleName: 'load-module-' + (sequence % 64), instanceId: 'load-' + sequence,
+                    expiresAt: Date.now() + 30000 };
+                return replicaOne.set(value.moduleName + ':' + value.instanceId, value, 30000);
+            }));
+        }
+        const loadMs = Number(process.hrtime.bigint() - loadStarted) / 1000000;
+        assert(loadMs <= maxLoadMs, 'live Redis lease load exceeded the environment-owned latency budget');
+        assert((await replicaTwo.size()) >= loadLeases, 'live Redis scan must observe the qualified lease workload');
+
+        console.log('BackOffice Redis live contract validated: processes=2, leases=' + loadLeases +
+            ', concurrency=' + loadConcurrency + ', writeMs=' + loadMs.toFixed(3) + ', maxMs=' + maxLoadMs);
     } finally {
         await cleanup(clientOne).catch(() => false);
         await cleanup(clientTwo).catch(() => false);
@@ -100,4 +129,31 @@ async function run() {
             clientTwo && clientTwo.isOpen ? clientTwo.quit().catch(() => false) : false
         ]);
     }
+}
+
+function readPositiveInteger(name, fallback) {
+    const value = Number(process.env[name] || fallback);
+    assert(Number.isInteger(value) && value > 0, name + ' must be a positive integer');
+    return value;
+}
+
+function runReplicaWorker(request, url, prefix) {
+    const worker = path.resolve(__dirname, 'support/backofficeRedisReplicaWorker.js');
+    return new Promise((resolve, reject) => {
+        const child = spawn(process.execPath, [worker, JSON.stringify(request)], {
+            env: Object.assign({}, process.env, {
+                NODICS_CACHE_REDIS_URL: url,
+                NODICS_BACKOFFICE_TEST_KEY_PREFIX: prefix
+            }), stdio: ['ignore', 'pipe', 'pipe']
+        });
+        let output = '';
+        let errorOutput = '';
+        child.stdout.on('data', data => { output += data.toString(); });
+        child.stderr.on('data', data => { errorOutput += data.toString(); });
+        child.once('error', reject);
+        child.once('exit', code => {
+            if (code !== 0) reject(new Error('BackOffice replica worker failed: ' + errorOutput));
+            else resolve(JSON.parse(output));
+        });
+    });
 }

@@ -34,9 +34,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 26 |
-| Test files | 16 |
+| Test files | 17 |
 | Data files | 0 |
-| All module-owned files | 48 |
+| All module-owned files | 49 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -70,7 +70,7 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 34 |
-| Partially documented | 9 |
+| Partially documented | 10 |
 | Undocumented | 1 |
 | Inventory only | 4 |
 
@@ -119,7 +119,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/src/service/contract/defaultBackofficeContractService.js` | `src` | `documented` | 8/8 | Validates BackOffice registration and module-owned catalogue metadata against the authoritative API contracts. |  |
 | `gExp/backoffice/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Reserves the standard BackOffice service lifecycle and documents the mergeable service override shape. |  |
 | `gExp/backoffice/src/service/discovery/defaultBackofficeDiscoveryService.js` | `src` | `documented` | 18/18 | Discovers effective Nodics contracts through existing System APIs and maintains normalized, client-safe observed snapshots. |  |
-| `gExp/backoffice/src/service/operations/defaultBackofficeOperationalReadinessService.js` | `src` | `documented` | 5/5 | Validates layered BackOffice deployment policy and derives low-disclosure operational readiness and alert codes from owning diagnostics. |  |
+| `gExp/backoffice/src/service/operations/defaultBackofficeOperationalReadinessService.js` | `src` | `documented` | 6/6 | Validates layered BackOffice deployment policy and derives low-disclosure operational readiness and alert codes from owning diagnostics. |  |
 | `gExp/backoffice/src/service/registry/defaultBackofficeRegistryService.js` | `src` | `documented` | 28/28 | Owns ephemeral observed module-instance leases for BackOffice discovery without becoming topology or activation authority. |  |
 | `gExp/backoffice/src/service/registry/defaultBackofficeRegistryStoreService.js` | `src` | `documented` | 15/15 | Provides the single asynchronous memory or nCache-owned distributed lease-store boundary used by BackOffice. |  |
 | `gExp/backoffice/src/service/security/defaultBackofficeAdministrativeSecurityService.js` | `src` | `documented` | 11/11 | Enforces human/service separation, tenant consistency, refresh throttling, idempotency, and audit correlation for BackOffice administration. |  |
@@ -140,6 +140,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/test/backofficePerformanceContract.test.js` | `test` | `documented` | 0/0 | Provides deterministic scale-path evidence for registration, registry scans, availability deduplication/concurrency, and refresh idempotency. |  |
 | `gExp/backoffice/test/backofficeRegistryRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gExp/backoffice/test/backofficeRegistryService.test.js` | `test` | `documented` | 0/0 | Validates idempotent leases, safe discovery projection, expiry, deregistration, and invalid registration rejection. |  |
+| `gExp/backoffice/test/support/backofficeRedisReplicaWorker.js` | `test` | `partially-documented` | 0/0 | Runs one isolated BackOffice lease-store operation in a separate process for guarded multi-process Redis qualification. | add @override |
 
 ## Extension Contract
 

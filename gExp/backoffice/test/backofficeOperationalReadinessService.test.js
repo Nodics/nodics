@@ -18,7 +18,10 @@ const assert = require('assert');
 let registry = require('../config/properties').backofficeRegistry;
 global.CONFIG = { get: key => key === 'backofficeRegistry' ? registry : undefined };
 let readinessContributor;
-global.SERVICE = { DefaultHealthService: { registerReadinessContributor: (name, contributor) => {
+let publishedAlerts = [];
+global.SERVICE = { AuditPublisher: { record: () => Promise.resolve(true) },
+    AlertPublisher: { record: event => { publishedAlerts.push(event); return Promise.resolve(true); } },
+    DefaultHealthService: { registerReadinessContributor: (name, contributor) => {
     assert.strictEqual(name, 'backofficeOperationalConfiguration'); readinessContributor = contributor;
 } } };
 const service = require('../src/service/operations/defaultBackofficeOperationalReadinessService');
@@ -49,4 +52,35 @@ let originalThreshold = registry.operations.thresholds.availabilityFailurePercen
 registry.operations.thresholds.availabilityFailurePercent = 101;
 assert(service.validateConfiguration().failures.includes('OPERATION_THRESHOLD_INVALID'));
 registry.operations.thresholds.availabilityFailurePercent = originalThreshold;
-console.log('BackOffice operational readiness service validated');
+
+async function validateDeliveryAndProductionPolicy() {
+    registry.operations.alerts = { enabled: true, failClosed: true, requireAcknowledgement: true,
+        publisherService: 'AlertPublisher' };
+    service._lastPublishedSignature = null;
+    assert.strictEqual(await service.publishAssessment(degraded), true);
+    assert.strictEqual(publishedAlerts.length, 1);
+    assert.deepStrictEqual(Object.keys(publishedAlerts[0]).sort(), ['alerts', 'checkedAt', 'eventType', 'state']);
+    assert.strictEqual(await service.publishAssessment(degraded), false, 'unchanged alert state must be deduplicated');
+    global.SERVICE.AlertPublisher.record = () => Promise.resolve(false);
+    service._lastPublishedSignature = null;
+    await assert.rejects(service.publishAssessment(degraded), error => error.code === 'ALERT_DELIVERY_UNACKNOWLEDGED');
+
+    registry.operations.production.enabled = true;
+    let productionFailures = service.validateConfiguration().failures;
+    assert(productionFailures.includes('PRODUCTION_DISTRIBUTED_STORE_REQUIRED'));
+    assert(productionFailures.includes('PRODUCTION_HTTPS_REQUIRED'));
+    assert(productionFailures.includes('PRODUCTION_HOST_ALLOWLIST_REQUIRED'));
+    assert(productionFailures.includes('PRODUCTION_AUDIT_DELIVERY_REQUIRED'));
+    registry.store.mode = 'distributed';
+    registry.allowedSchemes = ['https'];
+    registry.discovery.allowedHosts = ['modules.internal.example'];
+    registry.availability.allowedHosts = ['modules.internal.example'];
+    registry.audit = { enabled: true, failClosed: true, requireAcknowledgement: true,
+        publisherService: 'AuditPublisher' };
+    assert.strictEqual(service.validateConfiguration().valid, true,
+        'complete production security and delivery policy must qualify');
+    registry.operations.production.enabled = false;
+    console.log('BackOffice operational readiness service validated');
+}
+
+validateDeliveryAndProductionPolicy().catch(error => { console.error(error); process.exit(1); });

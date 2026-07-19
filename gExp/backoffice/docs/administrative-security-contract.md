@@ -48,3 +48,10 @@ Changes require human success, service-token rejection, missing-principal,
 cross-tenant, permission-route, rate-boundary, independent-principal,
 idempotency replay/in-flight, bounded-state, correlation-redaction, integration,
 topology, and regression tests.
+
+When `backofficeRegistry.operations.production.enabled` is true, operational
+configuration also requires HTTPS-only module coordinates, non-empty discovery
+and availability host allowlists, distributed registry storage, strict audit
+and alert delivery acknowledgements, service-token rejection, and stable human
+principals. These checks validate configuration posture without replacing the
+target module, Profile, network, secret, or deployment authorities.

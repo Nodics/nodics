@@ -26,6 +26,10 @@ modular runtimes.
 | Generated contracts | Schema/API generated tests, OpenAPI generation, documentation governance, and module LLM validation included in the release gate | Passed |
 | Live Redis adapter | Existing guarded nCache Redis contract executed against the local provider | Passed on 2026-07-20 |
 | Live distributed lease store | Two independent Redis clients proved shared visibility, TTL expiry, atomic stale-delete rejection, interruption failure, restored-client recovery, isolated scanning, and scoped cleanup | Passed on 2026-07-20 |
+| Multi-process lease coordination | Separate Node.js processes proved shared visibility and stale-process protection through the nCache-owned Redis bridge | Passed on 2026-07-20 |
+| Live provider load | 5,000 leases at concurrency 64, complete cross-client scan, and environment-owned latency enforcement | Passed locally in 30.541 ms on 2026-07-20 |
+| Audit and alert delivery contract | Strict acknowledgement, unavailable/unacknowledged failure, sanitized payload, and unchanged-state deduplication | Passed with test publishers |
+| Production security posture | Fail-closed validation for distributed storage, HTTPS, host allowlists, human administration, and strict audit/alert publishers | Passed with layered contract fixtures |
 
 Counts are observations from this validation run, not production sizing
 guarantees. They may change as the active module composition evolves.
@@ -56,14 +60,16 @@ mandatory before production approval:
 1. Repeat the live Redis contracts against the selected deployment provider
    using governed TLS, credentials, network policy, and the final nCache
    configuration. Local Redis evidence does not qualify that infrastructure.
-2. Run true multi-process and multi-replica BackOffice runtimes against that
-   provider and the production database topology. The local live contract used
-   independent clients but not complete application processes.
+2. Run complete multi-replica BackOffice application runtimes against that
+   provider and the production database topology. Local evidence covers
+   independent clients, separate lease-store processes, and application restart
+   recovery, but not the final orchestrated deployment.
 3. Execute deployment-sized registration, renewal, discovery, availability,
    administrative scan, and refresh load with accepted latency and saturation
    budgets.
-4. Prove external sanitized audit delivery, alert routing, dashboards, and
-   operator acknowledgement using the environment integrations.
+4. Execute the acknowledged audit and alert contracts using the selected
+   external adapters, then prove routing, dashboards, and operator
+   acknowledgement. Local evidence uses contract test publishers.
 5. Complete security review of environment secrets, TLS, network policy,
    origin exposure, database access, retention, and operational permissions.
 

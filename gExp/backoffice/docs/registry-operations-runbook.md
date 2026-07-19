@@ -101,7 +101,14 @@ NODICS_CACHE_REDIS_URL=redis://isolated-host:6379 npm run test:backoffice:redis:
 ```
 
 The live gate uses a unique key namespace, two independent provider clients,
-and scoped cleanup. It validates replica visibility, provider TTL, atomic stale
-delete protection, fail-closed interruption, and restored-client recovery. It
-does not replace deployment-topology load, TLS, network-policy, or secret
-validation.
+separate OS-process operations, and scoped cleanup. It validates replica
+visibility, provider TTL, atomic stale-delete protection, fail-closed
+interruption, restored-client recovery, configurable concurrent lease load, and
+incremental scan completeness. It does not replace complete application-replica
+testing, TLS, network-policy, secret, or production-database validation.
+
+Production mode is enabled only from the deployment environment layer. It
+requires distributed storage, HTTPS-only target endpoints, discovery and
+availability host allowlists, strict human administration, and acknowledged
+fail-closed audit and alert publishers. Invalid production policy makes
+BackOffice operational readiness `NOT_READY`.

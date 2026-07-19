@@ -34,3 +34,18 @@ add sustained registration/renewal, real distributed-store, slow readiness,
 replica restart, and store degradation tests sized for their topology. Raw
 endpoints, credentials, tenant data, or provider diagnostics must not appear in
 reports.
+
+The guarded Redis release gate accepts environment-owned live workload budgets:
+
+```sh
+NODICS_CACHE_REDIS_URL=redis://isolated-host:6379 \
+NODICS_BACKOFFICE_LOAD_LEASES=5000 \
+NODICS_BACKOFFICE_LOAD_CONCURRENCY=64 \
+NODICS_BACKOFFICE_LOAD_MAX_MS=30000 \
+npm run test:backoffice:redis:release
+```
+
+The gate fails when values are not positive integers, the latency budget is
+exceeded, or the second provider client cannot scan the complete workload.
+Environment owners must size these values from expected module instances,
+replicas, renewal frequency, and recovery bursts.

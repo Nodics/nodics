@@ -18,6 +18,7 @@
 - `gExp/backoffice/test/backofficePerformanceContract.test.js`
 - `gExp/backoffice/test/backofficeRegistryRouteContract.test.js`
 - `gExp/backoffice/test/backofficeRegistryService.test.js`
+- `gExp/backoffice/test/support/backofficeRedisReplicaWorker.js`
 
 ## Generated Tests
 

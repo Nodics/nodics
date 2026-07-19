@@ -407,8 +407,10 @@ module.exports = {
                 SERVICE.DefaultBackofficeAdministrativeSecurityService.getDiagnostics() : undefined,
             contracts: repository && typeof repository.getOperationalDiagnostics === 'function' ?
                 await repository.getOperationalDiagnostics(request) : undefined };
-        data.operations = SERVICE.DefaultBackofficeOperationalReadinessService ?
-            SERVICE.DefaultBackofficeOperationalReadinessService.assess(data) : undefined;
+        if (SERVICE.DefaultBackofficeOperationalReadinessService) {
+            data.operations = SERVICE.DefaultBackofficeOperationalReadinessService.assess(data);
+            await SERVICE.DefaultBackofficeOperationalReadinessService.publishAssessment(data.operations);
+        }
         return { code: 'SUC_BOF_00003', data: data };
     },
 

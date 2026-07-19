@@ -81,7 +81,8 @@ module.exports = {
         audit: {
             enabled: true,
             failClosed: false,
-            publisherService: undefined
+            publisherService: undefined,
+            requireAcknowledgement: false
         },
         administration: {
             rejectServiceTokens: true,
@@ -104,6 +105,19 @@ module.exports = {
         operations: {
             requireDistributedStore: false,
             minimumSamples: 10,
+            production: {
+                enabled: false,
+                requireHttpsOnly: true,
+                requireHostAllowlists: true,
+                requireStrictAudit: true,
+                requireStrictAlerts: true
+            },
+            alerts: {
+                enabled: false,
+                failClosed: false,
+                requireAcknowledgement: false,
+                publisherService: undefined
+            },
             thresholds: {
                 availabilityFailurePercent: 25,
                 availabilityQueuePercent: 80,

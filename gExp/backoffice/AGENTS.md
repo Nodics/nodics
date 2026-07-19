@@ -72,6 +72,9 @@
 - Operational readiness may aggregate only stable low-disclosure diagnostics
   from owning services. Environment layers decide whether distributed storage
   is mandatory and own real alert thresholds, provider secrets, and load gates.
+- Production mode must fail closed on weak storage, endpoint, host-allowlist,
+  human-administration, audit-delivery, or alert-delivery policy. Publisher
+  adapters remain environment-owned and must acknowledge sanitized delivery.
 - Use existing Nodics lifecycle, module registry, service communication,
   schema/router governance, audit, and generated-artifact paths. Do not add a
   parallel loader, runtime activation mechanism, or authorization path.
