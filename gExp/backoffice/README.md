@@ -50,6 +50,9 @@ compatibility, and audit behavior is defined by
 configuration follows [the environment deployment contract](docs/environment-deployment-contract.md).
 Module capability discovery, safe snapshot behavior, and CMS provider selection
 follow [the capability discovery contract](docs/capability-discovery-contract.md).
+Durable observation history, breaking-change approval, rejection, rollback,
+retention, and replica concurrency follow
+[the contract history lifecycle](docs/contract-history-lifecycle.md).
 
 ## Customization
 

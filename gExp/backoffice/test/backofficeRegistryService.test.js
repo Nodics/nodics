@@ -31,12 +31,13 @@ let storeDefinition = require('../src/service/registry/defaultBackofficeRegistry
 let store = Object.assign({}, storeDefinition, { _instances: new Map() });
 let contractService = require('../src/service/contract/defaultBackofficeContractService');
 let auditEvents = [];
+let discoveryAuthData = [];
 global.SERVICE = {
     DefaultBackofficeRegistryStoreService: store,
     DefaultBackofficeContractService: contractService,
     DefaultBackofficeAuditService: { record: event => { auditEvents.push(event); return Promise.resolve(event); } },
     DefaultBackofficeDiscoveryService: {
-        scheduleDiscovery: () => Promise.resolve(true),
+        scheduleDiscovery: (registration, authData) => { discoveryAuthData.push(authData); return Promise.resolve(true); },
         getSnapshot: moduleName => moduleName === 'cms' ? { moduleName: 'cms', hash: 'contract-hash', operations: [] } : undefined,
         getDiagnostics: () => ({ attempts: 1, successes: 1 })
     }
@@ -61,7 +62,7 @@ async function run() {
                 defaultPage: 'backofficeDashboard', fallbackMode: 'STATIC_RECOVERY_SHELL' },
             requiredPermissions: ['cms.backoffice.view'] }
     };
-    let identity = { tokenType: 'service', runtimeInstanceId: 'cms-1', modules: ['cms'] };
+    let identity = { tokenType: 'service', runtimeInstanceId: 'cms-1', modules: ['cms'], userGroups: ['serviceAccountUserGroup'] };
     let first = await service.register({ body: registration, authData: identity });
     assert.strictEqual(first.data.moduleName, 'cms');
     assert.strictEqual(first.data.backoffice.capabilityId, 'content-management');
@@ -98,8 +99,11 @@ async function run() {
                 backoffice: registration.backoffice },
             { moduleName: 'workflowCore', instanceId: 'runtime-1', clientCallable: false, capabilities: ['service'] }
         ]
-    }, authData: { tokenType: 'service', runtimeInstanceId: 'runtime-1', modules: ['cms', 'workflowCore'] } });
+    }, authData: { tokenType: 'service', runtimeInstanceId: 'runtime-1', modules: ['cms', 'workflowCore'],
+        userGroups: ['serviceAccountUserGroup'] } });
     assert.strictEqual(batch.data.registeredModules, 2);
+    assert.deepStrictEqual(discoveryAuthData.slice(-2).map(authData => authData.userGroups),
+        [['serviceAccountUserGroup'], ['serviceAccountUserGroup']], 'batch discovery must preserve authenticated service groups');
     list = await service.list({ authData: { permissions: ['cms.backoffice.view'] } });
     assert.strictEqual(list.data.modules.workflowCore, undefined, 'non-API modules must not appear in client discovery');
     assert.strictEqual((await service.diagnostics()).data.activeInstances, 2, 'diagnostics must retain all active module leases');

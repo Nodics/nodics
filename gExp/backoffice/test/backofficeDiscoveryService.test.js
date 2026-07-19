@@ -63,6 +63,14 @@ async function run() {
     assert.strictEqual(expanded.changeClassification, 'NON_BREAKING');
     let acceptedHash = expanded.hash;
 
+    let afterPermissionChange = await service.discover(registration, document({
+        '/nodics/cms/v0/page': { get: operation('cms_page_get', 'get', ['cms.page.read']), post: operation('cms_page_post', 'save') },
+        '/nodics/cms/v0/site': { get: operation('cms_site_get', 'get') }
+    }));
+    assert.strictEqual(afterPermissionChange.hash, acceptedHash, 'permission changes must remain pending and preserve the safe snapshot');
+    assert.strictEqual(afterPermissionChange.latestChangeClassification, 'POTENTIALLY_BREAKING');
+    assert(afterPermissionChange.candidateHash && afterPermissionChange.candidateHash !== acceptedHash);
+
     let afterBreaking = await service.discover(registration, document({
         '/nodics/cms/v0/page': { get: operation('cms_page_get', 'get') }
     }));

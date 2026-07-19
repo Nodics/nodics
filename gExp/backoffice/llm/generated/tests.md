@@ -6,6 +6,8 @@
 
 - `gExp/backoffice/test/backofficeApiContract.test.js`
 - `gExp/backoffice/test/backofficeAuditService.test.js`
+- `gExp/backoffice/test/backofficeContractLifecycleService.test.js`
+- `gExp/backoffice/test/backofficeContractRepositoryService.test.js`
 - `gExp/backoffice/test/backofficeDiscoveryService.test.js`
 - `gExp/backoffice/test/backofficeDistributedRegistryStore.test.js`
 - `gExp/backoffice/test/backofficeModuleBoundaryContract.test.js`
@@ -14,7 +16,8 @@
 
 ## Generated Tests
 
-- No generated tests were found. Run `npm run build` when schema/router generation is expected.
+- `gExp/backoffice/test/gen/schema/backofficeContractActivationSchemaContract.test.js`
+- `gExp/backoffice/test/gen/schema/backofficeContractSnapshotSchemaContract.test.js`
 
 ## Testing Rules
 

@@ -18,8 +18,16 @@ assert.strictEqual(routers.registryDiscovery.bootstrap.permission, 'backoffice.b
 assert.strictEqual(routers.registryControl.register.requestBody.required, true);
 assert(routers.registryDiscovery.bootstrap.help.parameters.some(parameter => parameter.name === 'x-nodics-client-contract-version'));
 assert.strictEqual(routers.registryDiscovery.diagnostics.permission, 'backoffice.registry.diagnostics.view');
+assert.strictEqual(routers.contractHistory.current.permission, 'backoffice.contract.view');
+assert.strictEqual(routers.contractHistory.history.permission, 'backoffice.contract.view');
+assert.strictEqual(routers.contractHistory.approve.permission, 'backoffice.contract.approve');
+assert.strictEqual(routers.contractHistory.reject.permission, 'backoffice.contract.reject');
+assert.strictEqual(routers.contractHistory.rollback.permission, 'backoffice.contract.rollback');
+assert.strictEqual(routers.contractHistory.approve.requestBody.required, true);
+Object.values(routers.contractHistory).forEach(route => assert(route.responses['200']));
+assert(routers.contractHistory.history.help.parameters.some(parameter => parameter.name === 'limit'));
 [routers.registryControl.register, routers.registryControl.deregister, routers.registryDiscovery.list, routers.registryDiscovery.bootstrap,
-    routers.registryDiscovery.diagnostics].forEach(route => {
+    routers.registryDiscovery.diagnostics, ...Object.values(routers.contractHistory)].forEach(route => {
     assert.strictEqual(route.secured, true);
     assert.strictEqual(route.apiExposure, 'serviceRegistry');
 });

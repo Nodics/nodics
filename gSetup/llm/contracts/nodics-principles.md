@@ -80,7 +80,9 @@ replace the target module's API authorization.
 BackOffice capability discovery consumes the effective contracts already owned
 by target modules and Nodics System. Normalized hashes and snapshots are
 observations, not editable authority; breaking candidates must not displace the
-last safe active observation.
+last safe active observation. Durable history must use ordinary Nodics-owned
+persistence contracts. A revision-protected active-observation pointer, not a
+process cache or editable catalogue, governs concurrent approval and rollback.
 
 Runtime module claims must be bound to authenticated workload identity and a
 specific runtime instance. Identity validation must not treat Profile's local

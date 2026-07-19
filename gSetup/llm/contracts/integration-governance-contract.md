@@ -150,6 +150,14 @@ authority. Discovery is asynchronous to readiness, exact-origin, timeout and
 response-size bounded, redirect governed, auditable, and safe on invalid or
 breaking input.
 
+When normalized discovery history is durable, immutable hashes identify
+observations and a compare-and-set pointer selects the current safe observation.
+Breaking approval, rejection, and rollback require action-specific permission,
+a bounded reason, authenticated audit identity, and the expected pointer
+revision. Retention must protect active and pending observations. Persistence
+must use existing Nodics schema and generated-service paths rather than a custom
+loader, database connection, or editable contract store.
+
 Environment-specific provider selection, namespaces, endpoints, credentials,
 timeouts, lease policy, alert integration, and audit publishers belong in the
 existing group modules below `envs`. Reusable integrations must not encode a

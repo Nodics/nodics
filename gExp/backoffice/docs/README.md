@@ -19,3 +19,6 @@ this runtime module.
 - `capability-discovery-contract.md` defines module-owned provider roles,
   bounded OpenAPI discovery, normalized snapshots, change classification, and
   CMS UI-composition provider selection.
+- `contract-history-lifecycle.md` defines durable immutable observations,
+  activation-pointer concurrency, approval, rejection, rollback, retention,
+  authorization, recovery, and validation behavior.

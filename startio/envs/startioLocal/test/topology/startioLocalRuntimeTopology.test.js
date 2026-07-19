@@ -209,6 +209,8 @@ function assertRuntimeContract(runtime) {
     assert(contract.indexedModules.every(moduleObject => moduleObject.name && moduleObject.kind), runtime.label + ' modules require metadata kind');
     assert(contract.activeTenants.includes('default'), runtime.label + ' must activate the default tenant');
     assert.strictEqual(contract.internalAuthReady, true, runtime.label + ' must initialize its internal auth token');
+    assert.strictEqual(contract.apiContract.available, true, runtime.label + ' must expose its effective API contract: ' +
+        JSON.stringify(contract.apiContract));
     if (contract.profileActive) {
         assert.deepStrictEqual(contract.mandatoryData, {
             enterprise: true,
@@ -270,7 +272,15 @@ async function waitForRegistry(runtime, predicate, description) {
         if (predicate(lastSnapshot)) return lastSnapshot;
         await new Promise(resolve => setTimeout(resolve, 250));
     }
-    throw new Error('BackOffice registry did not satisfy ' + description + ': ' + JSON.stringify(lastSnapshot));
+    let summary = lastSnapshot && {
+        activeInstances: lastSnapshot.instances && lastSnapshot.instances.length,
+        registeredModules: lastSnapshot.instances && new Set(lastSnapshot.instances.map(instance => instance.moduleName)).size,
+        discoveries: lastSnapshot.discoveries,
+        contractPersistenceServices: lastSnapshot.contractPersistenceServices,
+        contractPersistenceModels: lastSnapshot.contractPersistenceModels,
+        discoveryDiagnostics: lastSnapshot.diagnostics && lastSnapshot.diagnostics.discovery
+    };
+    throw new Error('BackOffice registry did not satisfy ' + description + ': ' + JSON.stringify(summary));
 }
 
 async function runConsolidatedSmoke() {

@@ -81,7 +81,8 @@ module.exports = {
             'runtime.config.request.view',
             'system.contract.openapi.view',
             'backoffice.registry.view',
-            'backoffice.bootstrap.view'
+            'backoffice.bootstrap.view',
+            'backoffice.contract.view'
         ]
     },
     record8: {
@@ -149,6 +150,9 @@ module.exports = {
             'dynamo.class.update',
             'dynamo.class.execute',
             'backoffice.registry.diagnostics.view',
+            'backoffice.contract.approve',
+            'backoffice.contract.reject',
+            'backoffice.contract.rollback',
             'profile.backoffice.view',
             'cms.backoffice.view',
             'cronjob.backoffice.view',

@@ -34,6 +34,12 @@
   Normalize and hash client-safe observations; never add a parallel schema or
   router loader, retain arbitrary source documents, or let BackOffice edit a
   target module's contract.
+- Persist normalized observations through BackOffice-owned Nodics schemas and
+  generated services. The durable activation pointer is current-selection and
+  replica-concurrency authority; breaking candidates require explicit,
+  permissioned, reasoned, revision-protected decisions.
+- Retention must protect active and pending observations. Rollback selects a
+  retained safe observation; it never edits or deploys a target-module contract.
 - UI-composition providers declare non-executable defaults. Provider selection
   may be layered, but BackOffice must not proxy CMS data-plane traffic or return
   executable code.

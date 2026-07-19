@@ -93,6 +93,54 @@ module.exports = {
                     schema: successEnvelope(contracts.diagnosticsData)
                 } } } }
             }
+        },
+        contractHistory: {
+            current: {
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.view', apiExposure: 'serviceRegistry',
+                key: '/contracts/:moduleName/current', method: 'GET', controller: 'DefaultBackofficeContractController', operation: 'current',
+                responses: { '200': { description: 'Current durable safe contract observation', content: { 'application/json': {
+                    schema: successEnvelope(contracts.contractCurrentData)
+                } } } }
+            },
+            history: {
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.view', apiExposure: 'serviceRegistry',
+                key: '/contracts/:moduleName/history', method: 'GET', controller: 'DefaultBackofficeContractController', operation: 'history',
+                help: { parameters: [{ name: 'limit', in: 'query', required: false, schema: { type: 'integer', minimum: 1 } }] },
+                responses: { '200': { description: 'Bounded durable contract observation history', content: { 'application/json': {
+                    schema: successEnvelope(contracts.contractHistoryData)
+                } } } }
+            },
+            compare: {
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.view', apiExposure: 'serviceRegistry',
+                key: '/contracts/:moduleName/:hash/compare', method: 'POST', controller: 'DefaultBackofficeContractController', operation: 'compare',
+                responses: { '200': { description: 'Candidate comparison with the active observation', content: { 'application/json': {
+                    schema: successEnvelope(contracts.contractComparisonData)
+                } } } }
+            },
+            approve: {
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.approve', apiExposure: 'serviceRegistry',
+                key: '/contracts/:moduleName/:hash/approve', method: 'POST', controller: 'DefaultBackofficeContractController', operation: 'approve',
+                requestBody: { required: true, content: { 'application/json': { schema: contracts.contractDecision } } },
+                responses: { '200': { description: 'Approved contract observation', content: { 'application/json': {
+                    schema: successEnvelope(contracts.contractDecisionData)
+                } } } }
+            },
+            reject: {
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.reject', apiExposure: 'serviceRegistry',
+                key: '/contracts/:moduleName/:hash/reject', method: 'POST', controller: 'DefaultBackofficeContractController', operation: 'reject',
+                requestBody: { required: true, content: { 'application/json': { schema: contracts.contractDecision } } },
+                responses: { '200': { description: 'Rejected contract observation', content: { 'application/json': {
+                    schema: successEnvelope(contracts.contractDecisionData)
+                } } } }
+            },
+            rollback: {
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.rollback', apiExposure: 'serviceRegistry',
+                key: '/contracts/:moduleName/:hash/rollback', method: 'POST', controller: 'DefaultBackofficeContractController', operation: 'rollback',
+                requestBody: { required: true, content: { 'application/json': { schema: contracts.contractDecision } } },
+                responses: { '200': { description: 'Rolled-back active contract observation', content: { 'application/json': {
+                    schema: successEnvelope(contracts.contractDecisionData)
+                } } } }
+            }
         }
     }
 };

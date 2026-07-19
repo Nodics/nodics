@@ -20,7 +20,7 @@ const crypto = require('crypto');
 module.exports = {
     _snapshots: new Map(),
     _inflight: new Map(),
-    _metrics: { attempts: 0, successes: 0, failures: 0, breakingChanges: 0, lastSuccessAt: null, lastFailureAt: null },
+    _metrics: { attempts: 0, successes: 0, failures: 0, breakingChanges: 0, lastSuccessAt: null, lastFailureAt: null, lastFailureCode: null },
 
     /** Initializes the discovery service. */
     init: function () { return Promise.resolve(true); },
@@ -130,9 +130,18 @@ module.exports = {
         }
         return 'NON_BREAKING';
     },
+    /** Converts a durable persistence record back to the normalized in-memory projection. */
+    fromPersistedSnapshot: function (snapshot) {
+        if (!snapshot) return undefined;
+        return {
+            moduleName: snapshot.moduleName, contractType: snapshot.contractType, contractVersion: snapshot.contractVersion,
+            operations: snapshot.operations || [], schemas: snapshot.schemas || [], hash: snapshot.contractHash,
+            discoveredAt: snapshot.discoveredAt, changeClassification: snapshot.changeClassification
+        };
+    },
 
     /** Discovers, validates, hashes, classifies, and conditionally activates one observed module contract. */
-    discover: async function (registration, suppliedDocument) {
+    discover: async function (registration, suppliedDocument, context) {
         this._metrics.attempts++;
         let state = this._snapshots.get(registration.moduleName) || {};
         state.lastAttemptAt = new Date().toISOString();
@@ -141,10 +150,25 @@ module.exports = {
             let normalized = this.normalizeOpenApi(registration, document);
             normalized.hash = this.hashContract(normalized);
             normalized.discoveredAt = new Date().toISOString();
+            let repository = SERVICE.DefaultBackofficeContractRepositoryService;
+            let historyPolicy = (CONFIG.get('backofficeRegistry') || {}).contractHistory || {};
+            if (historyPolicy.enabled === true && !repository) throw new Error('Durable BackOffice contract repository is unavailable');
+            if (!state.active && repository) {
+                state.active = this.fromPersistedSnapshot(await repository.getActiveSnapshot(registration.moduleName, {
+                    tenant: CONFIG.get('defaultTenant') || 'default', authData: context && context.authData
+                }));
+            }
             let classification = this.classifyChange(state.active, normalized);
             normalized.changeClassification = classification;
-            if (classification === 'BREAKING') {
-                this._metrics.breakingChanges++;
+            let persisted;
+            if (repository) persisted = await repository.recordDiscovery(normalized, {
+                tenant: CONFIG.get('defaultTenant') || 'default', sourceInstanceId: registration.instanceId,
+                authData: context && context.authData
+            });
+            let requiresApproval = persisted ? persisted.state === 'PENDING_APPROVAL' :
+                ['POTENTIALLY_BREAKING', 'BREAKING'].includes(classification);
+            if (requiresApproval) {
+                if (classification === 'BREAKING') this._metrics.breakingChanges++;
                 state.candidate = normalized;
                 state.lastChangeClassification = classification;
             } else {
@@ -162,6 +186,7 @@ module.exports = {
             this._snapshots.set(registration.moduleName, state);
             this._metrics.failures++;
             this._metrics.lastFailureAt = new Date().toISOString();
+            this._metrics.lastFailureCode = error.code || error.name || 'DISCOVERY_FAILED';
             await this.audit({ eventType: 'backoffice.registry.discovery', outcome: 'rejected',
                 moduleName: registration.moduleName, reasonCode: error.code || 'DISCOVERY_FAILED' });
             throw error;
@@ -169,7 +194,7 @@ module.exports = {
     },
 
     /** Schedules deduplicated asynchronous discovery without delaying module registration or traffic readiness. */
-    scheduleDiscovery: function (registration) {
+    scheduleDiscovery: function (registration, authData) {
         let policy = this.getConfiguration();
         if (policy.enabled === false || !registration.clientCallable || !registration.backoffice || !registration.backoffice.discovery) {
             return Promise.resolve(false);
@@ -180,7 +205,7 @@ module.exports = {
         }
         let key = registration.moduleName + ':' + registration.instanceId;
         if (this._inflight.has(key)) return this._inflight.get(key);
-        let promise = Promise.resolve().then(() => this.discover(registration)).catch(error => {
+        let promise = Promise.resolve().then(() => this.discover(registration, undefined, { authData: authData })).catch(error => {
             if (this.LOG && this.LOG.warn) this.LOG.warn('BackOffice contract discovery failed', {
                 moduleName: registration.moduleName, code: error.code || 'DISCOVERY_FAILED'
             });

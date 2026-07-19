@@ -49,6 +49,13 @@ module.exports = {
             providerRole: 'UI_COMPOSITION_PROVIDER',
             preferredModule: undefined
         },
+        contractHistory: {
+            enabled: true,
+            historyLimit: 50,
+            retentionPerModule: 25,
+            automaticClassifications: ['INITIAL', 'UNCHANGED', 'NON_BREAKING'],
+            approvalClassifications: ['POTENTIALLY_BREAKING', 'BREAKING']
+        },
         audit: {
             enabled: true,
             failClosed: false,

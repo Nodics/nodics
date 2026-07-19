@@ -130,6 +130,10 @@ module.exports = {
             'backoffice.registry.view',
             'backoffice.bootstrap.view',
             'backoffice.registry.diagnostics.view',
+            'backoffice.contract.view',
+            'backoffice.contract.approve',
+            'backoffice.contract.reject',
+            'backoffice.contract.rollback',
             'profile.backoffice.view',
             'cms.backoffice.view',
             'cronjob.backoffice.view',
@@ -184,6 +188,7 @@ module.exports = {
                         'runtime.config.request.view',
                         'backoffice.registry.view',
                         'backoffice.bootstrap.view',
+                        'backoffice.contract.view',
                         'system.health.readiness.view',
                         'system.contract.openapi.view',
                         'system.contract.swagger.view'
@@ -210,6 +215,9 @@ module.exports = {
                     permissions: [
                         'runtime.config.cleanup.execute',
                         'backoffice.registry.diagnostics.view',
+                        'backoffice.contract.approve',
+                        'backoffice.contract.reject',
+                        'backoffice.contract.rollback',
                         'profile.backoffice.view',
                         'cms.backoffice.view',
                         'cronjob.backoffice.view',

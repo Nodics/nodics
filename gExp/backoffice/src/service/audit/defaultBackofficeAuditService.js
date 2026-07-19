@@ -28,7 +28,8 @@ module.exports = {
         let source = event || {};
         let sanitized = {};
         ['eventType', 'outcome', 'reasonCode', 'moduleName', 'instanceId', 'moduleCount', 'operation',
-            'storeMode', 'compatibilityStatus', 'changeClassification', 'principalId', 'tokenType', 'traceId', 'correlationId', 'requestId']
+            'storeMode', 'compatibilityStatus', 'changeClassification', 'activeHash', 'candidateHash', 'targetHash',
+            'principalId', 'tokenType', 'traceId', 'correlationId', 'requestId']
             .forEach(key => { if (source[key] !== undefined && source[key] !== null) sanitized[key] = source[key]; });
         sanitized.occurredAt = source.occurredAt || new Date().toISOString();
         return sanitized;

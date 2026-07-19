@@ -41,9 +41,13 @@ Changes are classified as `INITIAL`, `UNCHANGED`, `NON_BREAKING`,
 `POTENTIALLY_BREAKING`, or `BREAKING`. Removed operations and changed operation
 paths or methods are breaking. Permission changes are potentially breaking.
 Added operations are non-breaking. A breaking candidate never replaces the last
-safe active snapshot. Durable history, approval, and rollback are later
-capabilities; the current snapshot cache is observed runtime state and rebuilds
-through registration reconciliation.
+safe active snapshot. Every normalized observation is persisted through the
+BackOffice-owned generated model services. The durable active-hash pointer is
+the current-selection and replica-concurrency authority; the process snapshot
+cache is rebuilt from it and registration reconciliation. Breaking candidates
+require explicit revision-protected approval, and retained safe snapshots may
+be selected through audited rollback as defined by the
+[contract history lifecycle](contract-history-lifecycle.md).
 
 ## UI composition provider
 

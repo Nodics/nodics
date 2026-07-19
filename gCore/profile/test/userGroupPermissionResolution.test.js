@@ -45,7 +45,7 @@ const employeeData = require('../data/init/data/user/defaultEmployeeData');
 
 let groupTree = [{
     code: 'runtimeConfigAdminUserGroup',
-    permissions: ['runtime.config.cleanup.execute'],
+    permissions: ['runtime.config.cleanup.execute', 'backoffice.contract.approve', 'backoffice.contract.reject', 'backoffice.contract.rollback'],
     parentGroups: [{
         code: 'runtimeConfigOperatorUserGroup',
         permissions: [
@@ -67,7 +67,8 @@ let groupTree = [{
                     'runtime.config.request.view',
                     'system.contract.openapi.view',
                     'backoffice.registry.view',
-                    'backoffice.bootstrap.view'
+                    'backoffice.bootstrap.view',
+                    'backoffice.contract.view'
                 ]
             }]
         }]
@@ -88,6 +89,8 @@ assert(permissions.includes('runtime.config.request.view'));
 assert(permissions.includes('system.contract.openapi.view'));
 assert(permissions.includes('backoffice.registry.view'));
 assert(permissions.includes('backoffice.bootstrap.view'));
+assert(permissions.includes('backoffice.contract.view'));
+assert(permissions.includes('backoffice.contract.approve'));
 assert(permissions.includes('runtime.config.request.approve'));
 assert.strictEqual(permissions.filter(permission => permission === 'runtime.config.request.view').length, 1);
 
@@ -97,6 +100,9 @@ assert(runtimeAdminGroup, 'Default runtime config admin group should be seeded')
 assert(runtimeViewerGroup.permissions.includes('system.contract.openapi.view'));
 assert(runtimeAdminGroup.permissions.includes('runtime.config.cleanup.execute'));
 assert(runtimeAdminGroup.permissions.includes('backoffice.registry.diagnostics.view'));
+assert(runtimeViewerGroup.permissions.includes('backoffice.contract.view'));
+['backoffice.contract.approve', 'backoffice.contract.reject', 'backoffice.contract.rollback'].forEach(permission =>
+    assert(runtimeAdminGroup.permissions.includes(permission), 'Runtime admin must include ' + permission));
 ['profile.backoffice.view', 'cms.backoffice.view', 'cronjob.backoffice.view', 'workflow.backoffice.view'].forEach(permission =>
     assert(runtimeAdminGroup.permissions.includes(permission), 'Runtime admin must include ' + permission));
 let contentGroup = Object.values(userGroupsData).find(group => group.code === 'contentUserGroup');

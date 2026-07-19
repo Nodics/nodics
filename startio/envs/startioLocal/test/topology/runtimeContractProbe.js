@@ -90,6 +90,9 @@ module.exports = {
                 operations: snapshots[moduleName].operations.length,
                 changeClassification: snapshots[moduleName].latestChangeClassification
             })),
+            contractPersistenceServices: Object.keys(SERVICE).filter(name => /Backoffice/i.test(name)).sort(),
+            contractPersistenceModels: Object.keys(NODICS.getModels('backoffice', CONFIG.get('defaultTenant') || 'default') || {})
+                .filter(name => /Contract(Snapshot|Activation)/i.test(name)).sort(),
             diagnostics: (await registry.diagnostics()).data
         };
     },
@@ -99,6 +102,15 @@ module.exports = {
         const defaultTenant = CONFIG.get('defaultTenant') || 'default';
         const profileModule = CONFIG.get('profileModuleName') || 'profile';
         const profileActive = NODICS.isModuleActive(profileModule);
+        let apiContract = { available: false };
+        if (SERVICE.DefaultApiContractService && typeof SERVICE.DefaultApiContractService.getOpenApiContract === 'function') {
+            try {
+                let response = await SERVICE.DefaultApiContractService.getOpenApiContract({ tenant: defaultTenant });
+                apiContract = { available: Boolean(response && response.data && response.data.paths) };
+            } catch (error) {
+                apiContract = { available: false, code: error.code || error.name, message: error.message || String(error) };
+            }
+        }
         return {
             serverState: NODICS.getServerState(),
             serverName: NODICS.getServerName(),
@@ -113,6 +125,7 @@ module.exports = {
             }),
             activeTenants: NODICS.getActiveTenants(),
             internalAuthReady: Boolean(NODICS.getInternalAuthToken(defaultTenant)),
+            apiContract: apiContract,
             profileActive: profileActive,
             mandatoryData: profileActive ? {
                 enterprise: await this.hasRecord(profileModule, defaultTenant, 'EnterpriseModel', 'default'),

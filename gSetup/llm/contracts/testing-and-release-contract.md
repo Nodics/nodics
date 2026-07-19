@@ -93,6 +93,13 @@ filtering, safe URL construction, timeout and response bounds, deterministic
 hashing, all change classifications, preservation of the last safe snapshot,
 authorized provider selection, fallback behavior, and asynchronous registration.
 
+Durable BackOffice contract-history changes must additionally test generated
+persistence integration, immutable/idempotent observations, automatic safe
+activation, pending breaking candidates, action-specific route authorization,
+invalid coordinates and bounds, stale and concurrent pointer revisions,
+rejection, rollback restrictions, retention protection, restart recovery, and
+modular runtime discovery.
+
 When adding a provider or server/node responsibility, add or update readiness
 checks through the owning module or a later project module. Do not expose
 credentials, provider URLs, private file paths, tenant data, or raw diagnostics

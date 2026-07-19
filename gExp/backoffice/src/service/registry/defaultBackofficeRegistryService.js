@@ -114,7 +114,7 @@ module.exports = {
             expiresAt: now + leaseTtlMs
         };
         await store.set(key, observed, leaseTtlMs);
-        if (SERVICE.DefaultBackofficeDiscoveryService) SERVICE.DefaultBackofficeDiscoveryService.scheduleDiscovery(observed);
+        if (SERVICE.DefaultBackofficeDiscoveryService) SERVICE.DefaultBackofficeDiscoveryService.scheduleDiscovery(observed, request.authData);
         existing ? this._metrics.renewals++ : this._metrics.registrations++;
         if (request._batchOutcomes) request._batchOutcomes.push(existing ? 'renewed' : 'registered');
         if (!request._batchRegistration) await this.audit({ eventType: 'backoffice.registry.registration',
@@ -132,7 +132,7 @@ module.exports = {
         }
         let outcomes = [];
         return Promise.all(registrations.map(item => this.register({ body: item, _identityValidated: true,
-            _batchRegistration: true, _batchOutcomes: outcomes })))
+            _batchRegistration: true, _batchOutcomes: outcomes, authData: authData })))
             .then(results => this.audit({ eventType: 'backoffice.registry.registration',
                 outcome: outcomes.every(outcome => outcome === 'renewed') ? 'renewed' :
                     outcomes.every(outcome => outcome === 'registered') ? 'registered' : 'reconciled',

@@ -58,6 +58,31 @@ const uiCompositionSelection = {
         defaultPage: { type: 'string' }, fallbackMode: { enum: ['STATIC_RECOVERY_SHELL'] }
     }
 };
+const contractDecision = {
+    type: 'object', additionalProperties: false, required: ['reason', 'expectedRevision'], properties: {
+        reason: { type: 'string', minLength: 1, maxLength: 1024 }, expectedRevision: { type: 'integer', minimum: 0 }
+    }
+};
+const contractHistorySnapshot = {
+    type: 'object', additionalProperties: false,
+    required: ['moduleName', 'contractType', 'contractVersion', 'contractHash', 'operations', 'schemas', 'state', 'changeClassification', 'revision', 'discoveredAt'],
+    properties: {
+        moduleName: moduleName, contractType: { enum: ['OPENAPI'] }, contractVersion: { type: 'integer', minimum: 1 },
+        contractHash: { type: 'string', pattern: '^[a-f0-9]{64}$' }, operations: { type: 'array', items: capabilityOperation },
+        schemas: { type: 'array', uniqueItems: true, items: { type: 'string' } },
+        state: { enum: ['DISCOVERED', 'ACTIVE', 'PENDING_APPROVAL', 'REJECTED', 'SUPERSEDED'] },
+        changeClassification: { enum: ['INITIAL', 'UNCHANGED', 'NON_BREAKING', 'POTENTIALLY_BREAKING', 'BREAKING'] },
+        revision: { type: 'integer', minimum: 0 }, activationRevision: { type: 'integer', minimum: 1 },
+        discoveredAt: { type: 'string', format: 'date-time' }, decidedAt: { type: 'string', format: 'date-time' },
+        decidedBy: { type: 'string' }, decisionReason: { type: 'string', maxLength: 1024 }
+    }
+};
+const contractActivation = {
+    type: 'object', required: ['moduleName', 'activeHash', 'revision'], properties: {
+        moduleName: moduleName, activeHash: { type: 'string', pattern: '^[a-f0-9]{64}$' },
+        previousHash: { type: 'string', pattern: '^[a-f0-9]{64}$' }, revision: { type: 'integer', minimum: 1 }
+    }
+};
 const backofficeMetadata = {
     type: 'object', additionalProperties: false,
     properties: {
@@ -101,6 +126,24 @@ module.exports = {
     capabilityOperation: capabilityOperation,
     capabilitySnapshot: capabilitySnapshot,
     uiCompositionSelection: uiCompositionSelection,
+    contractDecision: contractDecision,
+    contractHistorySnapshot: contractHistorySnapshot,
+    contractActivation: contractActivation,
+    contractCurrentData: { type: 'object', required: ['snapshot'], properties: {
+        snapshot: Object.assign({}, contractHistorySnapshot, { nullable: true })
+    } },
+    contractHistoryData: { type: 'object', required: ['moduleName', 'snapshots'], properties: {
+        moduleName: moduleName, snapshots: { type: 'array', items: contractHistorySnapshot }
+    } },
+    contractComparisonData: { type: 'object', required: ['moduleName', 'activeHash', 'candidateHash', 'changeClassification', 'addedOperations', 'removedOperations'], properties: {
+        moduleName: moduleName, activeHash: { type: 'string', nullable: true, pattern: '^[a-f0-9]{64}$' },
+        candidateHash: { type: 'string', pattern: '^[a-f0-9]{64}$' },
+        changeClassification: { enum: ['INITIAL', 'UNCHANGED', 'NON_BREAKING', 'POTENTIALLY_BREAKING', 'BREAKING'] },
+        addedOperations: { type: 'array', items: { type: 'string' } }, removedOperations: { type: 'array', items: { type: 'string' } }
+    } },
+    contractDecisionData: { type: 'object', required: ['snapshot'], properties: {
+        snapshot: contractHistorySnapshot, activation: contractActivation
+    } },
     backofficeMetadata: backofficeMetadata,
     registration: registration,
     registrationBatch: {

@@ -13,7 +13,7 @@
     "version": "0.0.1",
     "description": "Generate services for all defined items"
   },
-  "sourceFiles": 81,
+  "sourceFiles": 83,
   "testFiles": 5,
   "dataFiles": 0,
   "ownedFiles": 36,
