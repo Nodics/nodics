@@ -34,7 +34,12 @@ module.exports = {
             registryContractVersion: 1,
             minimumClientContractVersion: 1
         },
+        audit: {
+            enabled: true,
+            failClosed: false,
+            publisherService: undefined
+        },
         allowedSchemes: ['http', 'https'],
-        clientSafeMetadata: ['moduleName', 'instanceId', 'version', 'moduleKind', 'capabilities', 'endpoint', 'healthPath', 'state', 'lastSeenAt']
+        clientSafeMetadata: ['moduleName', 'instanceId', 'version', 'moduleKind', 'capabilities', 'endpoint', 'healthPath', 'state', 'lastSeenAt', 'backoffice']
     }
 };

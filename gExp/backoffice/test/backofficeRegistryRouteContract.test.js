@@ -15,6 +15,8 @@ assert.strictEqual(routers.registryControl.register.permissionConfig, 'authSecur
 assert.strictEqual(routers.registryControl.deregister.permissionConfig, 'authSecurity.internalToken.routePermission');
 assert.strictEqual(routers.registryDiscovery.list.permission, 'backoffice.registry.view');
 assert.strictEqual(routers.registryDiscovery.bootstrap.permission, 'backoffice.bootstrap.view');
+assert.strictEqual(routers.registryControl.register.requestBody.required, true);
+assert(routers.registryDiscovery.bootstrap.help.parameters.some(parameter => parameter.name === 'x-nodics-client-contract-version'));
 assert.strictEqual(routers.registryDiscovery.diagnostics.permission, 'backoffice.registry.diagnostics.view');
 [routers.registryControl.register, routers.registryControl.deregister, routers.registryDiscovery.list, routers.registryDiscovery.bootstrap,
     routers.registryDiscovery.diagnostics].forEach(route => {

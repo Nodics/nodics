@@ -26,6 +26,13 @@
 - Return only client-safe public connection metadata. Never return internal
   tokens, credentials, private keys, secret references, or unapproved internal
   endpoints to the frontend.
+- Optional catalogue and navigation metadata must be declared by the owning
+  module in `package.json#nodics.backoffice`. BackOffice validates and
+  permission-filters that metadata; it must not maintain a duplicated manual
+  module catalogue.
+- Environment-specific provider, namespace, lease, audit, readiness, and
+  workload-identity settings belong in the established group modules below
+  `envs`. Never hardcode a named environment in reusable BackOffice behavior.
 - Every sensitive route requires an action-specific permission or governed
   `permissionConfig`; topology-sensitive routes also require `apiExposure`.
 - Use existing Nodics lifecycle, module registry, service communication,

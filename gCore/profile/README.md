@@ -25,6 +25,11 @@ pipeline can resolve the active tenant before credentials are validated.
 Module-to-module communication remains a separate secured capability using API
 keys and internal service tokens.
 
+Profile owns its optional BackOffice catalogue declaration in `package.json`.
+The declaration identifies the identity capability, navigation hint, contract
+version, and discovery permission; it does not transfer authentication or
+authorization authority to BackOffice.
+
 User-group save and update interceptors validate parent existence, active
 parents, acyclic inheritance, and permission catalog membership. Principal
 interceptors validate principal type, active group assignment, and service-only

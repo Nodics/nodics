@@ -44,7 +44,10 @@ or owns a second Redis connection. Modules reconcile automatically after
 BackOffice or module restart through bounded retry and periodic renewal.
 
 See [the registry contract](docs/module-registry-contract.md) and
-[the operations runbook](docs/registry-operations-runbook.md).
+[the operations runbook](docs/registry-operations-runbook.md). API, catalogue,
+compatibility, and audit behavior is defined by
+[the API catalogue contract](docs/api-catalogue-contract.md); deployment
+configuration follows [the environment deployment contract](docs/environment-deployment-contract.md).
 
 ## Customization
 

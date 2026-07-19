@@ -37,6 +37,29 @@
             "router": true,
             "publish": false,
             "web": false
+        },
+        "backoffice": {
+            "enabled": true,
+            "capabilityId": "workflow-management",
+            "displayName": "Workflows",
+            "category": "operations",
+            "icon": "workflow",
+            "contractVersion": 1,
+            "minimumClientContractVersion": 1,
+            "requiredPermissions": [
+                "workflow.backoffice.view"
+            ],
+            "navigation": [
+                {
+                    "id": "workflow",
+                    "label": "Workflows",
+                    "route": "/workflows",
+                    "order": 400,
+                    "requiredPermissions": [
+                        "workflow.backoffice.view"
+                    ]
+                }
+            ]
         }
     }
 }

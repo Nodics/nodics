@@ -53,9 +53,20 @@ module.exports = {
         return store;
     },
 
+    /** Records one sanitized registry audit event under configured fail-open or fail-closed policy. */
+    audit: function (event) {
+        let service = SERVICE.DefaultBackofficeAuditService;
+        if (!service || typeof service.record !== 'function') return Promise.resolve(false);
+        return service.record(event).catch(error => {
+            if ((this.getConfiguration().audit || {}).failClosed === true) throw error;
+            if (this.LOG && this.LOG.error) this.LOG.error('BackOffice audit publication failed', error);
+            return false;
+        });
+    },
+
     /** Validates required identity fields and an approved endpoint scheme. */
     validateRegistration: function (registration) {
-        if (!registration || !registration.moduleName || !registration.instanceId) return false;
+        if (!SERVICE.DefaultBackofficeContractService.validateRegistration(registration)) return false;
         if (registration.clientCallable !== true) return !registration.endpoint;
         if (!registration.endpoint) return false;
         try {
@@ -71,11 +82,15 @@ module.exports = {
         let registration = request.body || request;
         if (!request._identityValidated && !this.validateServiceIdentity(request, registration)) {
             this._metrics.rejected++;
+            await this.audit({ eventType: 'backoffice.registry.registration', outcome: 'rejected', reasonCode: 'IDENTITY_MISMATCH',
+                instanceId: registration.instanceId, tokenType: request.authData && request.authData.tokenType });
             throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Module registration identity mismatch');
         }
         if (Array.isArray(registration.registrations)) return this.registerBatch(registration, request.authData);
         if (!this.validateRegistration(registration)) {
             this._metrics.rejected++;
+            await this.audit({ eventType: 'backoffice.registry.registration', outcome: 'rejected', reasonCode: 'CONTRACT_INVALID',
+                moduleName: registration && registration.moduleName, instanceId: registration && registration.instanceId });
             throw new CLASSES.NodicsError('ERR_BOF_00000', 'Invalid module registration');
         }
         let key = registration.moduleName + ':' + registration.instanceId;
@@ -90,6 +105,7 @@ module.exports = {
             moduleKind: String(registration.moduleKind || 'unknown'),
             capabilities: Array.isArray(registration.capabilities) ? registration.capabilities.map(String) : [],
             clientCallable: registration.clientCallable === true,
+            backoffice: registration.backoffice ? JSON.parse(JSON.stringify(registration.backoffice)) : undefined,
             endpoint: registration.endpoint ? String(registration.endpoint) : undefined,
             healthPath: String(registration.healthPath || '/nodics/system/v0/health/ready'),
             state: 'UP',
@@ -99,6 +115,9 @@ module.exports = {
         };
         await store.set(key, observed, leaseTtlMs);
         existing ? this._metrics.renewals++ : this._metrics.registrations++;
+        if (request._batchOutcomes) request._batchOutcomes.push(existing ? 'renewed' : 'registered');
+        if (!request._batchRegistration) await this.audit({ eventType: 'backoffice.registry.registration',
+            outcome: existing ? 'renewed' : 'registered', moduleName: observed.moduleName, instanceId: observed.instanceId, moduleCount: 1 });
         return { code: 'SUC_BOF_00000', data: this.projectClientSafe(observed) };
     },
 
@@ -106,15 +125,19 @@ module.exports = {
     registerBatch: function (batch, authData) {
         let registrations = batch.registrations || [];
         let limit = Number(this.getConfiguration().maxModulesPerRegistration || 512);
-        if (!batch.instanceId || registrations.length === 0 || registrations.length > limit ||
-            registrations.some(item => item.instanceId !== batch.instanceId)) {
+        if (!SERVICE.DefaultBackofficeContractService.validateRegistrationBatch(batch, limit)) {
             this._metrics.rejected++;
             return Promise.reject(new CLASSES.NodicsError('ERR_BOF_00000', 'Invalid module registration batch'));
         }
-        return Promise.all(registrations.map(item => this.register(Object.assign({ _identityValidated: true }, item)))).then(results => ({
-            code: 'SUC_BOF_00000',
-            data: { instanceId: batch.instanceId, registeredModules: results.length }
-        }));
+        let outcomes = [];
+        return Promise.all(registrations.map(item => this.register({ body: item, _identityValidated: true,
+            _batchRegistration: true, _batchOutcomes: outcomes })))
+            .then(results => this.audit({ eventType: 'backoffice.registry.registration',
+                outcome: outcomes.every(outcome => outcome === 'renewed') ? 'renewed' :
+                    outcomes.every(outcome => outcome === 'registered') ? 'registered' : 'reconciled',
+                instanceId: batch.instanceId, moduleCount: results.length }).then(() => ({
+                    code: 'SUC_BOF_00000', data: { instanceId: batch.instanceId, registeredModules: results.length }
+                })));
     },
 
     /** Validates that a service token is bound to the runtime instance and every declared module. */
@@ -134,6 +157,8 @@ module.exports = {
         if (this.getConfiguration().requireBoundServiceIdentity !== false &&
             (!request.authData || request.authData.tokenType !== 'service' || request.authData.runtimeInstanceId !== instanceId)) {
             this._metrics.rejected++;
+            await this.audit({ eventType: 'backoffice.registry.deregistration', outcome: 'rejected', reasonCode: 'IDENTITY_MISMATCH',
+                instanceId: instanceId, tokenType: request.authData && request.authData.tokenType });
             throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Module deregistration identity mismatch');
         }
         let removed = 0;
@@ -146,6 +171,8 @@ module.exports = {
             }
         }));
         this._metrics.deregistrations += removed;
+        await this.audit({ eventType: 'backoffice.registry.deregistration', outcome: 'removed', instanceId: instanceId,
+            moduleName: moduleName, moduleCount: removed });
         return { code: 'SUC_BOF_00001', data: { removed: removed } };
     },
 
@@ -156,7 +183,7 @@ module.exports = {
         let entries = await this.getStore().values();
         entries.forEach(entry => {
             let instance = entry.value;
-            if (!instance.clientCallable || !this.isModuleAuthorized(instance.moduleName, request && request.authData)) return;
+            if (!instance.clientCallable || !this.isModuleAuthorized(instance.moduleName, request && request.authData, instance)) return;
             modules[instance.moduleName] = modules[instance.moduleName] || [];
             modules[instance.moduleName].push(this.projectClientSafe(instance));
         });
@@ -164,8 +191,9 @@ module.exports = {
     },
 
     /** Determines whether the caller may discover a configured module capability. */
-    isModuleAuthorized: function (moduleName, authData) {
-        let required = (this.getConfiguration().modulePermissions || {})[moduleName];
+    isModuleAuthorized: function (moduleName, authData, instance) {
+        let required = (this.getConfiguration().modulePermissions || {})[moduleName] ||
+            instance && instance.backoffice && instance.backoffice.requiredPermissions;
         if (!required) return true;
         let permissions = authData && authData.permissions || [];
         return permissions.includes('*') || [].concat(required).every(permission => permissions.includes(permission));
@@ -183,16 +211,76 @@ module.exports = {
         return availability;
     },
 
+    /** Resolves a positive client contract version from the request or configured minimum. */
+    getClientContractVersion: function (request) {
+        let headers = request && (request.headers || request.httpRequest && request.httpRequest.headers) || {};
+        let configured = this.getConfiguration().compatibility || {};
+        let value = headers['x-nodics-client-contract-version'] || configured.minimumClientContractVersion || 1;
+        let version = Number(value);
+        if (!Number.isInteger(version) || version < 1) throw new CLASSES.NodicsError('ERR_BOF_00000', 'Invalid client contract version');
+        return version;
+    },
+
+    /** Evaluates one module catalogue contract against the requesting client version. */
+    evaluateCompatibility: function (metadata, clientContractVersion) {
+        let moduleContractVersion = Number(metadata && metadata.contractVersion || 1);
+        let minimumClientContractVersion = Number(metadata && metadata.minimumClientContractVersion || 1);
+        let status = clientContractVersion < minimumClientContractVersion ? 'INCOMPATIBLE' :
+            clientContractVersion < moduleContractVersion ? 'DEGRADED' : 'COMPATIBLE';
+        return { clientContractVersion, moduleContractVersion, minimumClientContractVersion, status };
+    },
+
+    /** Aggregates authorized module-owned catalogue metadata without becoming its source of truth. */
+    buildCatalogue: function (modules, clientContractVersion) {
+        let catalogue = {};
+        Object.keys(modules).forEach(moduleName => {
+            let instances = modules[moduleName];
+            let metadata = instances.map(instance => instance.backoffice).find(value => value && value.enabled !== false);
+            if (!metadata) return;
+            catalogue[moduleName] = Object.assign({}, metadata, {
+                moduleName: moduleName,
+                activeModuleLeases: instances.length,
+                compatibility: this.evaluateCompatibility(metadata, clientContractVersion)
+            });
+        });
+        return catalogue;
+    },
+
+    /** Returns the most restrictive compatibility state from an authorized catalogue. */
+    getOverallCompatibilityStatus: function (catalogue) {
+        let statuses = Object.keys(catalogue).map(moduleName => catalogue[moduleName].compatibility.status);
+        if (statuses.includes('INCOMPATIBLE')) return 'INCOMPATIBLE';
+        if (statuses.includes('DEGRADED')) return 'DEGRADED';
+        return 'COMPATIBLE';
+    },
+
     /** Returns the authorized module catalogue and compatibility metadata required to bootstrap a BackOffice client. */
-    bootstrap: function (request) {
-        return this.list(request).then(result => ({
+    bootstrap: async function (request) {
+        let clientContractVersion = this.getClientContractVersion(request);
+        let result = await this.list(request);
+        let catalogue = this.buildCatalogue(result.data.modules, clientContractVersion);
+        let configured = this.getConfiguration().compatibility || {};
+        let status = this.getOverallCompatibilityStatus(catalogue);
+        if (status !== 'COMPATIBLE') {
+            await this.audit({
+                eventType: 'backoffice.registry.compatibility',
+                outcome: 'evaluated',
+                compatibilityStatus: status,
+                moduleCount: Object.keys(catalogue).length
+            });
+        }
+        return {
             code: 'SUC_BOF_00004',
             data: {
-                compatibility: Object.assign({}, this.getConfiguration().compatibility || {}),
+                compatibility: Object.assign({}, configured, {
+                    clientContractVersion: clientContractVersion,
+                    status: status
+                }),
                 modules: result.data.modules,
+                catalogue: catalogue,
                 availability: this.buildAvailability(result.data.modules)
             }
-        }));
+        };
     },
 
     /** Returns sanitized registry size and lifecycle counters. */
@@ -221,13 +309,16 @@ module.exports = {
     expireStale: async function () {
         let now = Date.now();
         let entries = await this.getStore().values();
+        let expired = 0;
         await Promise.all(entries.map(async entry => {
             let instance = entry.value;
             if (instance.expiresAt <= now) {
                 await this.getStore().delete(entry.key);
                 this._metrics.expirations++;
+                expired++;
             }
         }));
+        if (expired > 0) await this.audit({ eventType: 'backoffice.registry.expiry', outcome: 'expired', moduleCount: expired });
     },
 
     /** Starts the single unreferenced background lease expiry timer. */

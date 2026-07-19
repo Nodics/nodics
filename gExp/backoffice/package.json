@@ -12,13 +12,15 @@
         "loadableByNodicsModuleLoader": true,
         "owns": [
             "configuration",
-            "event",
-            "pipeline",
-            "router",
             "schema",
-            "search",
-            "interceptor",
+            "router",
+            "controller",
+            "facade",
             "service",
+            "pipeline",
+            "interceptor",
+            "event",
+            "search",
             "utility",
             "test",
             "llm"
@@ -28,6 +30,29 @@
             "router": true,
             "publish": false,
             "web": false
+        },
+        "backoffice": {
+            "enabled": true,
+            "capabilityId": "backoffice-registry",
+            "displayName": "BackOffice Registry",
+            "category": "platform",
+            "icon": "registry",
+            "contractVersion": 1,
+            "minimumClientContractVersion": 1,
+            "requiredPermissions": [
+                "backoffice.registry.view"
+            ],
+            "navigation": [
+                {
+                    "id": "registry",
+                    "label": "Module Registry",
+                    "route": "/registry",
+                    "order": 900,
+                    "requiredPermissions": [
+                        "backoffice.registry.view"
+                    ]
+                }
+            ]
         }
     },
     "scripts": {},

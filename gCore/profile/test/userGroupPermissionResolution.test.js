@@ -97,6 +97,10 @@ assert(runtimeAdminGroup, 'Default runtime config admin group should be seeded')
 assert(runtimeViewerGroup.permissions.includes('system.contract.openapi.view'));
 assert(runtimeAdminGroup.permissions.includes('runtime.config.cleanup.execute'));
 assert(runtimeAdminGroup.permissions.includes('backoffice.registry.diagnostics.view'));
+['profile.backoffice.view', 'cms.backoffice.view', 'cronjob.backoffice.view', 'workflow.backoffice.view'].forEach(permission =>
+    assert(runtimeAdminGroup.permissions.includes(permission), 'Runtime admin must include ' + permission));
+let contentGroup = Object.values(userGroupsData).find(group => group.code === 'contentUserGroup');
+assert(contentGroup.permissions.includes('cms.backoffice.view'));
 [
     'system.file.read',
     'system.file.download',

@@ -23,13 +23,19 @@ global.CONFIG = { get: key => key === 'backofficeRegistry' ? {
     sweepIntervalMs: 1000,
     allowedSchemes: ['http', 'https'],
     requireBoundServiceIdentity: true,
-    modulePermissions: { cms: 'cms.backoffice.view' },
+    modulePermissions: {},
     compatibility: { registryContractVersion: 1, minimumClientContractVersion: 1 },
-    clientSafeMetadata: ['moduleName', 'instanceId', 'endpoint', 'state', 'lastSeenAt']
+    clientSafeMetadata: ['moduleName', 'instanceId', 'endpoint', 'state', 'lastSeenAt', 'backoffice']
 } : undefined };
 let storeDefinition = require('../src/service/registry/defaultBackofficeRegistryStoreService');
 let store = Object.assign({}, storeDefinition, { _instances: new Map() });
-global.SERVICE = { DefaultBackofficeRegistryStoreService: store };
+let contractService = require('../src/service/contract/defaultBackofficeContractService');
+let auditEvents = [];
+global.SERVICE = {
+    DefaultBackofficeRegistryStoreService: store,
+    DefaultBackofficeContractService: contractService,
+    DefaultBackofficeAuditService: { record: event => { auditEvents.push(event); return Promise.resolve(event); } }
+};
 global.CLASSES = { NodicsError: class NodicsError extends Error {} };
 
 const definition = require('../src/service/registry/defaultBackofficeRegistryService');
@@ -42,12 +48,14 @@ const service = Object.assign({}, definition, {
 async function run() {
     let registration = {
         moduleName: 'cms', instanceId: 'cms-1', endpoint: 'http://cms:3040/nodics/cms',
-        version: '1.0.0', capabilities: ['router'], clientCallable: true, secret: 'must-not-leak', leaseTtlMs: 20
+        version: '1.0.0', capabilities: ['router'], clientCallable: true, leaseTtlMs: 1000,
+        backoffice: { enabled: true, capabilityId: 'content-management', displayName: 'Content', category: 'content',
+            contractVersion: 2, minimumClientContractVersion: 1, requiredPermissions: ['cms.backoffice.view'] }
     };
     let identity = { tokenType: 'service', runtimeInstanceId: 'cms-1', modules: ['cms'] };
     let first = await service.register({ body: registration, authData: identity });
     assert.strictEqual(first.data.moduleName, 'cms');
-    assert.strictEqual(first.data.secret, undefined);
+    assert.strictEqual(first.data.backoffice.capabilityId, 'content-management');
     await service.register({ body: registration, authData: identity });
     assert.strictEqual(store._instances.size, 1, 'lease renewal must be idempotent');
     assert.strictEqual(service._metrics.renewals, 1);
@@ -77,7 +85,8 @@ async function run() {
     let batch = await service.register({ body: {
         instanceId: 'runtime-1',
         registrations: [
-            { moduleName: 'cms', instanceId: 'runtime-1', endpoint: 'http://cms/nodics/cms', clientCallable: true },
+            { moduleName: 'cms', instanceId: 'runtime-1', endpoint: 'http://cms/nodics/cms', clientCallable: true,
+                backoffice: registration.backoffice },
             { moduleName: 'workflowCore', instanceId: 'runtime-1', clientCallable: false, capabilities: ['service'] }
         ]
     }, authData: { tokenType: 'service', runtimeInstanceId: 'runtime-1', modules: ['cms', 'workflowCore'] } });
@@ -85,9 +94,17 @@ async function run() {
     list = await service.list({ authData: { permissions: ['cms.backoffice.view'] } });
     assert.strictEqual(list.data.modules.workflowCore, undefined, 'non-API modules must not appear in client discovery');
     assert.strictEqual((await service.diagnostics()).data.activeInstances, 2, 'diagnostics must retain all active module leases');
-    let bootstrap = await service.bootstrap({ authData: { permissions: ['cms.backoffice.view'] } });
+    let bootstrap = await service.bootstrap({ authData: { permissions: ['cms.backoffice.view'] },
+        headers: { 'x-nodics-client-contract-version': '1' } });
     assert.strictEqual(bootstrap.data.compatibility.registryContractVersion, 1);
+    assert.strictEqual(bootstrap.data.compatibility.status, 'DEGRADED');
+    assert.strictEqual(bootstrap.data.catalogue.cms.compatibility.status, 'DEGRADED');
+    assert.strictEqual(service.evaluateCompatibility({ contractVersion: 2, minimumClientContractVersion: 2 }, 1).status, 'INCOMPATIBLE');
+    assert.strictEqual(service.evaluateCompatibility({ contractVersion: 2, minimumClientContractVersion: 1 }, 2).status, 'COMPATIBLE');
     assert.strictEqual(bootstrap.data.availability.cms.activeInstances, 1);
+    await assert.rejects(() => Promise.resolve().then(() => service.bootstrap({ authData: { permissions: [] },
+        headers: { 'x-nodics-client-contract-version': 'invalid' } })));
+    assert(auditEvents.some(event => event.eventType === 'backoffice.registry.registration'));
 
     let sharedStoreDefinition = require('../src/service/registry/defaultBackofficeRegistryStoreService');
     let sharedStore = Object.assign({}, sharedStoreDefinition, { _instances: new Map() });

@@ -7,6 +7,10 @@ Cron scheduling participates in the central runtime lifecycle. Drain stops new
 job acquisition and every process-owned schedule before connection shutdown.
 Persisted job ownership remains authoritative after hard termination.
 
+CronJob owns its optional BackOffice catalogue declaration in `package.json`.
+The declaration advertises discovery and navigation metadata only; every job
+operation remains protected and executed by CronJob itself.
+
 ## Configuration
 
 Defaults live under `config/`; project, environment, server, and node modules may

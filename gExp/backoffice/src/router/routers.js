@@ -16,6 +16,11 @@
  * @owner backoffice
  * @override Later active modules may extend or replace this registry through Nodics layering.
  */
+const contracts = require('../schemas/apiContracts');
+const successEnvelope = dataSchema => ({
+    type: 'object', required: ['code', 'data'], properties: { code: { type: 'string' }, data: dataSchema }
+});
+
 module.exports = {
     backoffice: {
         registryControl: {
@@ -27,7 +32,13 @@ module.exports = {
                 key: '/registry/instances',
                 method: 'PUT',
                 controller: 'DefaultBackofficeRegistryController',
-                operation: 'register'
+                operation: 'register',
+                requestBody: { required: true, content: { 'application/json': { schema: contracts.registrationBatch } } },
+                responses: { '200': { description: 'Runtime module leases registered', content: { 'application/json': {
+                    schema: successEnvelope({ type: 'object', required: ['instanceId', 'registeredModules'], properties: {
+                        instanceId: { type: 'string' }, registeredModules: { type: 'integer', minimum: 1 }
+                    } })
+                } } } }
             },
             deregister: {
                 secured: true,
@@ -49,7 +60,10 @@ module.exports = {
                 key: '/registry/modules',
                 method: 'GET',
                 controller: 'DefaultBackofficeRegistryController',
-                operation: 'list'
+                operation: 'list',
+                responses: { '200': { description: 'Authorized client-safe module leases', content: { 'application/json': {
+                    schema: successEnvelope(contracts.discoveryData)
+                } } } }
             },
             bootstrap: {
                 secured: true,
@@ -59,7 +73,12 @@ module.exports = {
                 key: '/bootstrap',
                 method: 'GET',
                 controller: 'DefaultBackofficeRegistryController',
-                operation: 'bootstrap'
+                operation: 'bootstrap',
+                help: { parameters: [{ name: 'x-nodics-client-contract-version', in: 'header', required: false,
+                    description: 'Positive BackOffice client contract version; defaults to the configured minimum.', schema: { type: 'integer', minimum: 1 } }] },
+                responses: { '200': { description: 'Authorized BackOffice client bootstrap', content: { 'application/json': {
+                    schema: successEnvelope(contracts.bootstrapData)
+                } } } }
             },
             diagnostics: {
                 secured: true,
@@ -69,7 +88,10 @@ module.exports = {
                 key: '/registry/diagnostics',
                 method: 'GET',
                 controller: 'DefaultBackofficeRegistryController',
-                operation: 'diagnostics'
+                operation: 'diagnostics',
+                responses: { '200': { description: 'Sanitized registry diagnostics', content: { 'application/json': {
+                    schema: successEnvelope(contracts.diagnosticsData)
+                } } } }
             }
         }
     }

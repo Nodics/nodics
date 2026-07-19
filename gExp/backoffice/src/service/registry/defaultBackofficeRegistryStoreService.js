@@ -47,7 +47,10 @@ module.exports = {
         }).catch(error => {
             this._metrics.errors++;
             this._metrics.lastErrorAt = new Date().toISOString();
-            throw error;
+            let audit = SERVICE.DefaultBackofficeAuditService;
+            let event = { eventType: 'backoffice.registry.store', outcome: 'failure', reasonCode: 'STORE_OPERATION_FAILED',
+                operation: operation, storeMode: this.getConfiguration().mode || 'memory' };
+            return Promise.resolve(audit && audit.record ? audit.record(event) : false).catch(() => false).then(() => { throw error; });
         });
     },
     /** Returns one observed lease by its stable module-instance key. */

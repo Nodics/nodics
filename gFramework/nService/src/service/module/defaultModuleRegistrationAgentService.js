@@ -73,6 +73,7 @@ module.exports = {
         let metadata = rawModule.metaData || {};
         let nodicsMetadata = metadata.nodics || {};
         let runtime = nodicsMetadata.runtime || {};
+        let backoffice = nodicsMetadata.backoffice;
         let config = this.getConfiguration();
         let registration = {
             moduleName: moduleName,
@@ -89,6 +90,7 @@ module.exports = {
             healthPath: config.healthPath,
             leaseTtlMs: config.leaseTtlMs
         };
+        if (backoffice && backoffice.enabled !== false) registration.backoffice = JSON.parse(JSON.stringify(backoffice));
         if (registration.clientCallable) registration.endpoint = SERVICE.DefaultRouterService.prepareUrl({ moduleName: moduleName });
         return registration;
     },

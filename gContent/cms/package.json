@@ -36,6 +36,29 @@
             "router": true,
             "publish": false,
             "web": false
+        },
+        "backoffice": {
+            "enabled": true,
+            "capabilityId": "content-management",
+            "displayName": "Content Management",
+            "category": "content",
+            "icon": "content",
+            "contractVersion": 1,
+            "minimumClientContractVersion": 1,
+            "requiredPermissions": [
+                "cms.backoffice.view"
+            ],
+            "navigation": [
+                {
+                    "id": "cms",
+                    "label": "Content",
+                    "route": "/content",
+                    "order": 200,
+                    "requiredPermissions": [
+                        "cms.backoffice.view"
+                    ]
+                }
+            ]
         }
     }
 }

@@ -73,9 +73,17 @@ exists. Client discovery filters the observed module registry to effective,
 authorized, client-callable capabilities while target modules retain final
 authorization.
 
+Client catalogue metadata is optional module-owned metadata. Aggregators may
+validate and filter it but must not duplicate it as configuration or use it to
+replace the target module's API authorization.
+
 Runtime module claims must be bound to authenticated workload identity and a
 specific runtime instance. Identity validation must not treat Profile's local
 active-module list as authority for another runtime's module composition.
+
+Deployment-specific BackOffice settings belong in the established `envs`
+module-group hierarchy. Framework and capability modules must remain neutral to
+named environments.
 
 ## Source Of Truth
 

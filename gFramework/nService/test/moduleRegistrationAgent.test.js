@@ -26,7 +26,9 @@ global.CONFIG = { get: key => ({
 }[key]) };
 global.NODICS = {
     getActiveModules: () => ['cms', 'utility'],
-    getRawModule: name => ({ metaData: { version: '1.0.0', nodics: { runtime: { router: name === 'cms' }, owns: ['router'] } } }),
+    getRawModule: name => ({ metaData: { version: '1.0.0', nodics: { runtime: { router: name === 'cms' }, owns: ['router'],
+        backoffice: name === 'cms' ? { enabled: true, capabilityId: 'content-management', contractVersion: 1,
+            minimumClientContractVersion: 1, requiredPermissions: ['cms.backoffice.view'] } : undefined } } }),
     getEnvironmentName: () => 'local', getServerName: () => 'cmsServer', getNodeName: () => null,
     getInternalAuthToken: () => 'service-token'
 };
@@ -56,6 +58,7 @@ async function run() {
     assert(requests[0].header['Idempotency-Key']);
     assert.deepStrictEqual(requests[0].requestBody.registrations.map(item => item.moduleName), ['cms', 'utility']);
     assert.strictEqual(requests[0].requestBody.registrations[0].clientCallable, true);
+    assert.strictEqual(requests[0].requestBody.registrations[0].backoffice.capabilityId, 'content-management');
     assert.strictEqual(requests[0].requestBody.registrations[1].clientCallable, false);
     assert.strictEqual(requests[0].requestBody.registrations[1].endpoint, undefined);
     await contributor.drain();

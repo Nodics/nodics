@@ -33,10 +33,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 15 |
-| Test files | 4 |
+| Source files | 18 |
+| Test files | 6 |
 | Data files | 0 |
-| All module-owned files | 27 |
+| All module-owned files | 32 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -44,13 +44,15 @@
 **Owned extension areas**
 
 - `configuration`
-- `event`
-- `pipeline`
-- `router`
 - `schema`
-- `search`
-- `interceptor`
+- `router`
+- `controller`
+- `facade`
 - `service`
+- `pipeline`
+- `interceptor`
+- `event`
+- `search`
 - `utility`
 - `test`
 - `llm`
@@ -67,8 +69,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 21 |
-| Partially documented | 1 |
+| Documented | 24 |
+| Partially documented | 3 |
 | Undocumented | 1 |
 | Inventory only | 4 |
 
@@ -105,14 +107,19 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Pipeline definition registry for this boundary. |  |
 | `gExp/backoffice/src/router/appConfig.js` | `src` | `documented` | 0/0 | Router application configuration registry for this boundary. |  |
 | `gExp/backoffice/src/router/routers.js` | `src` | `documented` | 0/0 | Router definition registry for this boundary. |  |
+| `gExp/backoffice/src/schemas/apiContracts.js` | `src` | `documented` | 0/0 | Defines provider-neutral JSON API schemas for registration, discovery, bootstrap, compatibility, and diagnostics. |  |
 | `gExp/backoffice/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Schema definition registry for this boundary. |  |
 | `gExp/backoffice/src/search/indexes.js` | `src` | `documented` | 0/0 | Search index definition registry for this boundary. |  |
+| `gExp/backoffice/src/service/audit/defaultBackofficeAuditService.js` | `src` | `documented` | 5/5 | Records sanitized BackOffice registry, compatibility, identity, expiry, and store lifecycle audit events. |  |
+| `gExp/backoffice/src/service/contract/defaultBackofficeContractService.js` | `src` | `documented` | 8/8 | Validates BackOffice registration and module-owned catalogue metadata against the authoritative API contracts. |  |
 | `gExp/backoffice/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Reserves the standard BackOffice service lifecycle and documents the mergeable service override shape. |  |
-| `gExp/backoffice/src/service/registry/defaultBackofficeRegistryService.js` | `src` | `documented` | 18/18 | Owns ephemeral observed module-instance leases for BackOffice discovery without becoming topology or activation authority. |  |
+| `gExp/backoffice/src/service/registry/defaultBackofficeRegistryService.js` | `src` | `documented` | 23/23 | Owns ephemeral observed module-instance leases for BackOffice discovery without becoming topology or activation authority. |  |
 | `gExp/backoffice/src/service/registry/defaultBackofficeRegistryStoreService.js` | `src` | `documented` | 14/14 | Provides the single asynchronous memory or nCache-owned distributed lease-store boundary used by BackOffice. |  |
 | `gExp/backoffice/src/utils/enums.js` | `src` | `documented` | 0/0 | Enum definition registry for this boundary. |  |
 | `gExp/backoffice/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Status and error definition registry for this boundary. |  |
 | `gExp/backoffice/src/utils/utils.js` | `src` | `documented` | 0/0 | Utility function registry for this boundary. |  |
+| `gExp/backoffice/test/backofficeApiContract.test.js` | `test` | `partially-documented` | 0/0 | Validates registration schemas, route OpenAPI contracts, module-owned catalogue metadata, and compatibility boundaries. | add @override |
+| `gExp/backoffice/test/backofficeAuditService.test.js` | `test` | `partially-documented` | 0/0 | Validates BackOffice audit field allowlisting, secret redaction, publisher delegation, and disabled behavior. | add @override |
 | `gExp/backoffice/test/backofficeDistributedRegistryStore.test.js` | `test` | `partially-documented` | 0/0 | Validates shared TTL storage, replica visibility, expiry, deletion, diagnostics, and provider failure behavior. | add @override |
 | `gExp/backoffice/test/backofficeModuleBoundaryContract.test.js` | `test` | `documented` | 0/0 | Verifies the gExp group and BackOffice capability metadata preserve the approved backend-only experience boundary and composition contract. |  |
 | `gExp/backoffice/test/backofficeRegistryRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

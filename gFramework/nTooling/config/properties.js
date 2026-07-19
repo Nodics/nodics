@@ -354,6 +354,8 @@ module.exports = {
             backoffice: [
                 { node: 'gExp/backoffice/test/backofficeModuleBoundaryContract.test.js' },
                 { node: 'gExp/backoffice/test/backofficeRegistryRouteContract.test.js' },
+                { node: 'gExp/backoffice/test/backofficeApiContract.test.js' },
+                { node: 'gExp/backoffice/test/backofficeAuditService.test.js' },
                 { node: 'gExp/backoffice/test/backofficeRegistryService.test.js' },
                 { node: 'gExp/backoffice/test/backofficeDistributedRegistryStore.test.js' },
                 { node: 'gFramework/nService/test/moduleRegistrationAgent.test.js' }

@@ -55,7 +55,8 @@ module.exports = {
         code: 'contentUserGroup',
         name: 'contentUserGroup',
         active: true,
-        parentGroups: ['employeeUserGroup']
+        parentGroups: ['employeeUserGroup'],
+        permissions: ['cms.backoffice.view']
     },
     record5: {
         code: 'contentCreatorUserGroup',
@@ -147,7 +148,11 @@ module.exports = {
             'dynamo.class.snapshot.view',
             'dynamo.class.update',
             'dynamo.class.execute',
-            'backoffice.registry.diagnostics.view'
+            'backoffice.registry.diagnostics.view',
+            'profile.backoffice.view',
+            'cms.backoffice.view',
+            'cronjob.backoffice.view',
+            'workflow.backoffice.view'
         ]
     },
     record12: {

@@ -137,6 +137,17 @@ claims should be bound to per-runtime credentials or infrastructure workload
 identity. Shared bootstrap credentials are development compatibility, not the
 target production trust model.
 
+Client-facing catalogue contributions must be declared by the owning module in
+authoritative module metadata and validated through a versioned contract.
+BackOffice or another aggregator may permission-filter and negotiate those
+contributions but must not create a manually duplicated catalogue, proxy target
+operations, or become target authorization authority.
+
+Environment-specific provider selection, namespaces, endpoints, credentials,
+timeouts, lease policy, alert integration, and audit publishers belong in the
+existing group modules below `envs`. Reusable integrations must not encode a
+named environment.
+
 ## Security, Redaction, Audit, Diagnostics, And Rollback
 
 Every integration must preserve platform security contracts:

@@ -43,12 +43,22 @@ plus runtime-instance identity. Non-API modules may register ownership and
 capability metadata without a callable endpoint. Client discovery exposes only
 modules whose effective metadata and policy make them client-callable.
 
+Optional BackOffice catalogue metadata belongs to the declaring module's
+authoritative module metadata. BackOffice may validate, observe, aggregate,
+permission-filter, and negotiate that metadata, but it must not maintain a
+second manually authored catalogue or infer target-module permissions.
+
 Runtime-bound service tokens may declare the active modules hosted by the
 requesting runtime. The identity provider validates declaration shape, bounds,
 and authenticated workload authority; it must not compare that declaration to
 the identity provider's own active-module composition. Production deployments
 should bind declarations to per-runtime credentials or infrastructure workload
 identity.
+
+Named environment behavior belongs to the existing group modules below
+`envs`. Reusable capabilities expose layered configuration contracts and must
+not hardcode environment names, endpoints, credentials, namespaces, or rollout
+policy.
 
 ## Default Tenant And Active Tenant
 

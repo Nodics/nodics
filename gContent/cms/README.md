@@ -6,6 +6,10 @@ Use this module for reusable content structures and content lifecycle behavior. 
 
 Content definitions remain schema-driven and tenant-aware so projects can extend CMS behavior without changing shared module code.
 
+CMS owns its optional BackOffice catalogue declaration in `package.json`.
+BackOffice may expose that client-safe metadata to authorized users, while CMS
+remains authoritative for content schemas, permissions, and operations.
+
 ## CMS Capability Model
 
 CMS owns reusable content structures such as sites, pages, components,

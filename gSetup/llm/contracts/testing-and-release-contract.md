@@ -83,6 +83,11 @@ reconciliation, and restart at least one runtime process. It must prove the old
 runtime identity is removed or expires and the replacement identity registers;
 it must not expose a production test or bypass route.
 
+Catalogue and bootstrap changes must test source-schema reuse in OpenAPI,
+unknown-field rejection, secret-field rejection, module-owned metadata,
+permission filtering, compatible/degraded/incompatible negotiation, sanitized
+auditing, and the absence of named-environment coupling.
+
 When adding a provider or server/node responsibility, add or update readiness
 checks through the owning module or a later project module. Do not expose
 credentials, provider URLs, private file paths, tenant data, or raw diagnostics

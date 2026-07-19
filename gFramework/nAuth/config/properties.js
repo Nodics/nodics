@@ -130,6 +130,10 @@ module.exports = {
             'backoffice.registry.view',
             'backoffice.bootstrap.view',
             'backoffice.registry.diagnostics.view',
+            'profile.backoffice.view',
+            'cms.backoffice.view',
+            'cronjob.backoffice.view',
+            'workflow.backoffice.view',
             'cache.flush',
             'cache.configuration.router.update',
             'cache.configuration.item.update',
@@ -168,6 +172,10 @@ module.exports = {
             groupTargets: {
                 userGroup: { parentGroups: [] },
                 adminGroup: { parentGroups: ['userGroup'] },
+                contentUserGroup: {
+                    parentGroups: ['employeeUserGroup'],
+                    permissions: ['cms.backoffice.view']
+                },
                 runtimeConfigViewerUserGroup: {
                     parentGroups: ['employeeUserGroup'],
                     permissions: [
@@ -202,6 +210,10 @@ module.exports = {
                     permissions: [
                         'runtime.config.cleanup.execute',
                         'backoffice.registry.diagnostics.view',
+                        'profile.backoffice.view',
+                        'cms.backoffice.view',
+                        'cronjob.backoffice.view',
+                        'workflow.backoffice.view',
                         'identity.migration.preview',
                         'identity.migration.apply',
                         'identity.migration.rollback',
