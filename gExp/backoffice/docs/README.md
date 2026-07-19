@@ -22,3 +22,6 @@ this runtime module.
 - `contract-history-lifecycle.md` defines durable immutable observations,
   activation-pointer concurrency, approval, rejection, rollback, retention,
   authorization, recovery, and validation behavior.
+- `availability-observation-contract.md` defines bounded public readiness
+  observation, freshness, multi-instance aggregation, security, recovery, and
+  diagnostics behavior.

@@ -41,11 +41,13 @@ secret references, internal headers, request bodies, private topology settings,
 and registration expiry internals are never returned to the frontend.
 Discovery filters modules using the authenticated caller's permissions. The
 bootstrap route returns that same authorized catalogue plus contract-version
-metadata and an observed availability summary; it is not authoritative health,
-topology, activation, or business configuration.
+metadata and a freshness-bounded observation of target-owned public readiness;
+it is not authoritative health, topology, activation, or business configuration.
 
 The modular topology contract starts every configured runtime composition,
-waits for all active modules to appear, restarts the CMS runtime, and proves the
-old process lease disappears while the new process identity registers. The
+waits for all active modules and readiness observations to appear, restarts the
+CMS runtime, and proves the old process lease disappears while the new process
+identity registers. It then restarts BackOffice and proves leases, readiness
+observations, discovery cache, and the durable contract pointer recover. The
 probe uses child-process IPC only and does not add a production diagnostics
 route.

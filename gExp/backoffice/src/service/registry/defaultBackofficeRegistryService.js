@@ -115,6 +115,7 @@ module.exports = {
         };
         await store.set(key, observed, leaseTtlMs);
         if (SERVICE.DefaultBackofficeDiscoveryService) SERVICE.DefaultBackofficeDiscoveryService.scheduleDiscovery(observed, request.authData);
+        if (SERVICE.DefaultBackofficeAvailabilityService) SERVICE.DefaultBackofficeAvailabilityService.scheduleObservation(observed);
         existing ? this._metrics.renewals++ : this._metrics.registrations++;
         if (request._batchOutcomes) request._batchOutcomes.push(existing ? 'renewed' : 'registered');
         if (!request._batchRegistration) await this.audit({ eventType: 'backoffice.registry.registration',
@@ -171,6 +172,9 @@ module.exports = {
                 removed++;
             }
         }));
+        if (SERVICE.DefaultBackofficeAvailabilityService && !(await this.getStore().values()).some(entry => entry.value.instanceId === instanceId)) {
+            SERVICE.DefaultBackofficeAvailabilityService.removeInstance(instanceId);
+        }
         this._metrics.deregistrations += removed;
         await this.audit({ eventType: 'backoffice.registry.deregistration', outcome: 'removed', instanceId: instanceId,
             moduleName: moduleName, moduleCount: removed });
@@ -200,13 +204,14 @@ module.exports = {
         return permissions.includes('*') || [].concat(required).every(permission => permissions.includes(permission));
     },
 
-    /** Builds a non-authoritative availability summary from currently valid observed leases. */
+    /** Builds a non-authoritative availability summary from leases and fresh normalized runtime readiness observations. */
     buildAvailability: function (modules) {
         let availability = {};
         Object.keys(modules).forEach(moduleName => {
-            availability[moduleName] = {
-                state: modules[moduleName].length > 0 ? 'AVAILABLE' : 'UNAVAILABLE',
-                activeInstances: modules[moduleName].length
+            let service = SERVICE.DefaultBackofficeAvailabilityService;
+            availability[moduleName] = service ? service.getModuleAvailability(modules[moduleName]) : {
+                state: 'UNKNOWN', activeInstances: modules[moduleName].length, healthyInstances: 0,
+                unavailableInstances: 0, unknownInstances: modules[moduleName].length
             };
         });
         return availability;
@@ -258,7 +263,7 @@ module.exports = {
     },
 
     /** Selects one authorized compatible UI-composition provider from module-owned metadata and layered preference. */
-    selectUiComposition: function (catalogue) {
+    selectUiComposition: function (catalogue, availability) {
         let config = this.getConfiguration().uiComposition || {};
         let fallback = { enabled: false, fallbackMode: 'STATIC_RECOVERY_SHELL' };
         if (config.enabled === false) return fallback;
@@ -266,7 +271,8 @@ module.exports = {
         let providers = Object.keys(catalogue).filter(moduleName => {
             let metadata = catalogue[moduleName];
             return Array.isArray(metadata.roles) && metadata.roles.includes(role) && metadata.uiComposition &&
-                metadata.compatibility.status !== 'INCOMPATIBLE';
+                metadata.compatibility.status !== 'INCOMPATIBLE' && availability &&
+                ['UP', 'DEGRADED'].includes((availability[moduleName] || {}).state);
         }).sort();
         let providerModule = config.preferredModule && providers.includes(config.preferredModule) ? config.preferredModule : providers[0];
         if (!providerModule) return fallback;
@@ -278,6 +284,7 @@ module.exports = {
         let clientContractVersion = this.getClientContractVersion(request);
         let result = await this.list(request);
         let catalogue = this.buildCatalogue(result.data.modules, clientContractVersion);
+        let availability = this.buildAvailability(result.data.modules);
         let configured = this.getConfiguration().compatibility || {};
         let status = this.getOverallCompatibilityStatus(catalogue);
         if (status !== 'COMPATIBLE') {
@@ -297,8 +304,8 @@ module.exports = {
                 }),
                 modules: result.data.modules,
                 catalogue: catalogue,
-                availability: this.buildAvailability(result.data.modules),
-                uiComposition: this.selectUiComposition(catalogue)
+                availability: availability,
+                uiComposition: this.selectUiComposition(catalogue, availability)
             }
         };
     },
@@ -316,6 +323,7 @@ module.exports = {
                 metrics: Object.assign({}, this._metrics),
                 store: this.getStore().diagnostics(),
                 discovery: SERVICE.DefaultBackofficeDiscoveryService ? SERVICE.DefaultBackofficeDiscoveryService.getDiagnostics() : undefined,
+                availability: SERVICE.DefaultBackofficeAvailabilityService ? SERVICE.DefaultBackofficeAvailabilityService.getDiagnostics() : undefined,
                 contracts: repository && typeof repository.getOperationalDiagnostics === 'function' ?
                     await repository.getOperationalDiagnostics(request) : undefined
             }
@@ -343,6 +351,11 @@ module.exports = {
             }
         }));
         if (expired > 0) await this.audit({ eventType: 'backoffice.registry.expiry', outcome: 'expired', moduleCount: expired });
+        if (expired > 0 && SERVICE.DefaultBackofficeAvailabilityService) {
+            let remaining = await this.getStore().values();
+            let activeInstanceIds = new Set(remaining.map(entry => entry.value.instanceId));
+            entries.forEach(entry => { if (!activeInstanceIds.has(entry.value.instanceId)) SERVICE.DefaultBackofficeAvailabilityService.removeInstance(entry.value.instanceId); });
+        }
     },
 
     /** Starts the single unreferenced background lease expiry timer. */

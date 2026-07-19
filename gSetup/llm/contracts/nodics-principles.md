@@ -92,6 +92,11 @@ Deployment-specific BackOffice settings belong in the established `envs`
 module-group hierarchy. Framework and capability modules must remain neutral to
 named environments.
 
+BackOffice availability is a freshness-bounded observation of target-owned
+public readiness, not a second health authority. Missing or stale evidence is
+unknown; aggregation must preserve multi-instance partial availability without
+exposing raw target diagnostics.
+
 ## Source Of Truth
 
 Behavior must come from Nodics source-of-truth artifacts:

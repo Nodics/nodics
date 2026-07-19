@@ -53,6 +53,8 @@ follow [the capability discovery contract](docs/capability-discovery-contract.md
 Durable observation history, breaking-change approval, rejection, rollback,
 retention, and replica concurrency follow
 [the contract history lifecycle](docs/contract-history-lifecycle.md).
+Runtime readiness observation and multi-instance availability aggregation follow
+[the availability observation contract](docs/availability-observation-contract.md).
 
 ## Customization
 

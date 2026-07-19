@@ -33,6 +33,7 @@ let contractService = require('../src/service/contract/defaultBackofficeContract
 let auditEvents = [];
 let discoveryAuthData = [];
 let diagnosticsAuthData;
+let availabilitySchedules = [];
 global.SERVICE = {
     DefaultBackofficeRegistryStoreService: store,
     DefaultBackofficeContractService: contractService,
@@ -41,6 +42,13 @@ global.SERVICE = {
         diagnosticsAuthData = request && request.authData;
         return Promise.resolve({ persistenceStatus: 'AVAILABLE', pendingApprovals: 1, activeSelections: 2 });
     } },
+    DefaultBackofficeAvailabilityService: {
+        scheduleObservation: registration => { availabilitySchedules.push(registration.instanceId); return Promise.resolve(true); },
+        getModuleAvailability: instances => ({ state: 'UP', activeInstances: instances.length, healthyInstances: instances.length,
+            unavailableInstances: 0, unknownInstances: 0 }),
+        getDiagnostics: () => ({ trackedInstances: 1, inflight: 0, metrics: {} }),
+        removeInstance: () => true
+    },
     DefaultBackofficeDiscoveryService: {
         scheduleDiscovery: (registration, authData) => { discoveryAuthData.push(authData); return Promise.resolve(true); },
         getSnapshot: moduleName => moduleName === 'cms' ? { moduleName: 'cms', hash: 'contract-hash', operations: [] } : undefined,
@@ -109,6 +117,7 @@ async function run() {
     assert.strictEqual(batch.data.registeredModules, 2);
     assert.deepStrictEqual(discoveryAuthData.slice(-2).map(authData => authData.userGroups),
         [['serviceAccountUserGroup'], ['serviceAccountUserGroup']], 'batch discovery must preserve authenticated service groups');
+    assert(availabilitySchedules.includes('runtime-1'), 'client-callable batch registration must schedule availability observation');
     list = await service.list({ authData: { permissions: ['cms.backoffice.view'] } });
     assert.strictEqual(list.data.modules.workflowCore, undefined, 'non-API modules must not appear in client discovery');
     let diagnostics = await service.diagnostics({ authData: { userGroups: ['runtimeConfigAdminUserGroup'] } });
@@ -123,6 +132,7 @@ async function run() {
     assert.strictEqual(service.evaluateCompatibility({ contractVersion: 2, minimumClientContractVersion: 2 }, 1).status, 'INCOMPATIBLE');
     assert.strictEqual(service.evaluateCompatibility({ contractVersion: 2, minimumClientContractVersion: 1 }, 2).status, 'COMPATIBLE');
     assert.strictEqual(bootstrap.data.availability.cms.activeInstances, 1);
+    assert.strictEqual(bootstrap.data.availability.cms.state, 'UP');
     assert.strictEqual(bootstrap.data.catalogue.cms.contract.hash, 'contract-hash');
     assert.strictEqual(bootstrap.data.uiComposition.providerModule, 'cms');
     assert.strictEqual(bootstrap.data.uiComposition.fallbackMode, 'STATIC_RECOVERY_SHELL');

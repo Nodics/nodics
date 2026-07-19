@@ -32,6 +32,8 @@ assert(contracts.registrationBatch.required.includes('registrations'));
 assert(contracts.capabilitySnapshot.required.includes('hash'));
 assert(contracts.capabilitySnapshot.properties.changeClassification.enum.includes('BREAKING'));
 assert(contracts.bootstrapData.properties.uiComposition.required.includes('fallbackMode'));
+assert.deepStrictEqual(contracts.moduleAvailability.properties.state.enum, ['UP', 'DEGRADED', 'UNAVAILABLE', 'UNKNOWN']);
+assert(contracts.moduleAvailability.required.includes('unknownInstances'));
 assert(routers.registryControl.register.requestBody.required, 'registration body schema must be required');
 assert(routers.registryControl.register.responses['200'], 'registration response schema must be declared');
 assert(routers.registryDiscovery.bootstrap.responses['200'], 'bootstrap response schema must be declared');
@@ -54,6 +56,7 @@ assert(service.validateRegistration(registration));
 assert(service.validateRegistrationBatch({ instanceId: 'runtime-1', environment: 'resolvedByEnvModule',
     server: 'runtimeComposition', node: null, registrations: [registration] }, 10));
 assert.strictEqual(service.validateRegistration(Object.assign({}, registration, { credential: 'must-not-be-accepted' })), false);
+assert.strictEqual(service.validateRegistration(Object.assign({}, registration, { healthPath: 'https://evil.example/ready' })), false);
 assert.strictEqual(service.validateBackofficeMetadata(Object.assign({}, registration.backoffice, { secret: 'invalid' })), false);
 assert.strictEqual(service.validateBackofficeMetadata(Object.assign({}, registration.backoffice, { roles: ['UNKNOWN_PROVIDER'] })), false);
 assert.strictEqual(service.validateBackofficeMetadata(Object.assign({}, registration.backoffice, {

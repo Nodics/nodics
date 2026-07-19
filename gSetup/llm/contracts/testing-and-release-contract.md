@@ -102,6 +102,11 @@ retention protection, sanitized diagnostics, repository restart recovery, and
 modular runtime discovery. The modular gate must restart BackOffice and preserve
 the active contract hash and activation revision across process-cache recovery.
 
+BackOffice availability changes must test exact-origin public readiness,
+timeouts and response bounds, deduplication by runtime instance, freshness,
+failure isolation, all aggregate states, lease removal, sanitized diagnostics,
+fallback provider selection, and module and BackOffice restart reconciliation.
+
 When adding a provider or server/node responsibility, add or update readiness
 checks through the owning module or a later project module. Do not expose
 credentials, provider URLs, private file paths, tenant data, or raw diagnostics

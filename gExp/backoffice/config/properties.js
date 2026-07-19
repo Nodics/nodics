@@ -44,6 +44,15 @@ module.exports = {
             allowRedirects: false,
             allowedHosts: []
         },
+        availability: {
+            enabled: true,
+            timeoutMs: 1000,
+            refreshIntervalMs: 10000,
+            staleAfterMs: 30000,
+            maxResponseBytes: 65536,
+            allowRedirects: false,
+            allowedHosts: []
+        },
         uiComposition: {
             enabled: true,
             providerRole: 'UI_COMPOSITION_PROVIDER',

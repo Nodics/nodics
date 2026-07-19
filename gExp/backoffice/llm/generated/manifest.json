@@ -13,14 +13,14 @@
     "version": "0.0.1",
     "description": "Backend registry, discovery, catalogue, and bootstrap capability for the Nodics Axis administration experience."
   },
-  "sourceFiles": 23,
-  "testFiles": 11,
+  "sourceFiles": 24,
+  "testFiles": 12,
   "dataFiles": 0,
-  "ownedFiles": 40,
-  "sourceFingerprint": "cc11ce3c1449a91a46730b1d3f589e39bcb3649407d94579432f2b904998f37f",
+  "ownedFiles": 42,
+  "sourceFingerprint": "0041168654efbd11ef6f0b1559d645d54d6b42ebb77fd5c6d9db4500063cac2e",
   "documentation": {
-    "documented": 29,
-    "partially-documented": 6,
+    "documented": 30,
+    "partially-documented": 7,
     "undocumented": 1,
     "inventory-only": 4
   },

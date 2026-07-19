@@ -46,6 +46,9 @@
 - UI-composition providers declare non-executable defaults. Provider selection
   may be layered, but BackOffice must not proxy CMS data-plane traffic or return
   executable code.
+- Availability is a freshness-bounded observation of the target's existing
+  public readiness contract. Deduplicate by runtime instance, retain no raw
+  response, and never turn BackOffice into target health or readiness authority.
 - Environment-specific provider, namespace, lease, audit, readiness, and
   workload-identity settings belong in the established group modules below
   `envs`. Never hardcode a named environment in reusable BackOffice behavior.

@@ -47,18 +47,22 @@ module.exports = {
         return crypto.createHash('sha256').update(this.stableStringify(contract)).digest('hex');
     },
 
-    /** Builds an exact-origin contract URL from the authenticated registration and module-owned relative path. */
-    buildContractUrl: function (registration) {
-        let metadata = registration.backoffice || {};
-        let path = metadata.discovery && metadata.discovery.openApiPath;
+    /** Builds an exact-origin URL from registered coordinates and a governed relative path. */
+    buildObservedUrl: function (registration, path, allowedHosts) {
         if (!registration.endpoint || !path || !path.startsWith('/') || path.startsWith('//')) throw new Error('Safe discovery endpoint is required');
         let endpoint = new URL(registration.endpoint);
         if (endpoint.username || endpoint.password || endpoint.hash) throw new Error('Discovery endpoint credentials and fragments are not allowed');
         let allowedSchemes = ((CONFIG.get('backofficeRegistry') || {}).allowedSchemes || ['http', 'https']);
         if (!allowedSchemes.includes(endpoint.protocol.replace(':', ''))) throw new Error('Discovery endpoint scheme is not allowed');
-        let allowedHosts = this.getConfiguration().allowedHosts || [];
+        allowedHosts = allowedHosts || [];
         if (allowedHosts.length > 0 && !allowedHosts.includes(endpoint.hostname)) throw new Error('Discovery endpoint host is not allowed');
         return endpoint.origin + path;
+    },
+    /** Builds an exact-origin contract URL from the authenticated registration and module-owned relative path. */
+    buildContractUrl: function (registration) {
+        let metadata = registration.backoffice || {};
+        let path = metadata.discovery && metadata.discovery.openApiPath;
+        return this.buildObservedUrl(registration, path, this.getConfiguration().allowedHosts || []);
     },
 
     /** Fetches the existing System-owned OpenAPI artifact through the shared Nodics transport. */

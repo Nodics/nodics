@@ -71,6 +71,8 @@ module.exports = {
         return !Object.keys(registration).some(key => !allowed.includes(key)) &&
             contracts.moduleName.pattern && new RegExp(contracts.moduleName.pattern).test(registration.moduleName || '') &&
             this.isString(registration.instanceId, 512) && typeof registration.clientCallable === 'boolean' &&
+            (registration.healthPath === undefined || this.isString(registration.healthPath, 512) &&
+                registration.healthPath.startsWith('/') && !registration.healthPath.startsWith('//')) &&
             (registration.capabilities === undefined || this.isStringList(registration.capabilities, 256)) &&
             (registration.leaseTtlMs === undefined || Number.isInteger(registration.leaseTtlMs) && registration.leaseTtlMs >= 1000) &&
             (registration.runtime === undefined || registration.runtime && typeof registration.runtime === 'object' &&

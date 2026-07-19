@@ -58,6 +58,15 @@ const uiCompositionSelection = {
         defaultPage: { type: 'string' }, fallbackMode: { enum: ['STATIC_RECOVERY_SHELL'] }
     }
 };
+const moduleAvailability = {
+    type: 'object', additionalProperties: false,
+    required: ['state', 'activeInstances', 'healthyInstances', 'unavailableInstances', 'unknownInstances'],
+    properties: {
+        state: { enum: ['UP', 'DEGRADED', 'UNAVAILABLE', 'UNKNOWN'] },
+        activeInstances: { type: 'integer', minimum: 0 }, healthyInstances: { type: 'integer', minimum: 0 },
+        unavailableInstances: { type: 'integer', minimum: 0 }, unknownInstances: { type: 'integer', minimum: 0 }
+    }
+};
 const contractDecision = {
     type: 'object', additionalProperties: false, required: ['reason', 'expectedRevision'], properties: {
         reason: { type: 'string', minLength: 1, maxLength: 1024 }, expectedRevision: { type: 'integer', minimum: 0 }
@@ -103,7 +112,8 @@ const registration = {
     properties: {
         moduleName: moduleName, instanceId: { type: 'string', minLength: 1 }, version: { type: 'string' },
         moduleKind: { type: 'string' }, capabilities: { type: 'array', uniqueItems: true, items: { type: 'string' } },
-        clientCallable: { type: 'boolean' }, endpoint: { type: 'string' }, healthPath: { type: 'string' },
+        clientCallable: { type: 'boolean' }, endpoint: { type: 'string' },
+        healthPath: { type: 'string', maxLength: 512, pattern: '^/(?!/)' },
         leaseTtlMs: { type: 'integer', minimum: 1000 }, runtime: { type: 'object', additionalProperties: false, properties: {
             router: { type: 'boolean' }, publish: { type: 'boolean' }, web: { type: 'boolean' }
         } }, backoffice: backofficeMetadata
@@ -126,6 +136,7 @@ module.exports = {
     capabilityOperation: capabilityOperation,
     capabilitySnapshot: capabilitySnapshot,
     uiCompositionSelection: uiCompositionSelection,
+    moduleAvailability: moduleAvailability,
     contractDecision: contractDecision,
     contractHistorySnapshot: contractHistorySnapshot,
     contractActivation: contractActivation,
@@ -163,11 +174,11 @@ module.exports = {
     } },
     bootstrapData: { type: 'object', required: ['compatibility', 'modules', 'catalogue', 'availability', 'uiComposition'], properties: {
         compatibility: { type: 'object' }, modules: { type: 'object' }, catalogue: { type: 'object' },
-        availability: { type: 'object' }, uiComposition: uiCompositionSelection
+        availability: { type: 'object', additionalProperties: moduleAvailability }, uiComposition: uiCompositionSelection
     } },
     diagnosticsData: { type: 'object', required: ['activeModuleLeases', 'metrics', 'store'], properties: {
         activeModuleLeases: { type: 'integer', minimum: 0 }, metrics: { type: 'object' }, store: { type: 'object' },
-        discovery: { type: 'object' }, contracts: { type: 'object', properties: {
+        discovery: { type: 'object' }, availability: { type: 'object' }, contracts: { type: 'object', properties: {
             persistenceStatus: { enum: ['AVAILABLE', 'UNAVAILABLE', 'AUTH_CONTEXT_REQUIRED'] },
             pendingApprovals: { type: 'integer', nullable: true, minimum: 0 },
             activeSelections: { type: 'integer', nullable: true, minimum: 0 },

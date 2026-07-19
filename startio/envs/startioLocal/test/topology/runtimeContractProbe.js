@@ -75,6 +75,7 @@ module.exports = {
         if (!registry) return { available: false, instances: [] };
         let entries = await registry.getStore().values();
         let discovery = SERVICE.DefaultBackofficeDiscoveryService;
+        let availabilityService = SERVICE.DefaultBackofficeAvailabilityService;
         let moduleNames = Array.from(new Set(entries.map(entry => entry.value.moduleName)));
         let snapshots = discovery ? discovery.getSnapshots(moduleNames) : {};
         let repository = SERVICE.DefaultBackofficeContractRepositoryService;
@@ -90,6 +91,11 @@ module.exports = {
                     activationRevision: active.activationRevision, state: active.state });
             }
         }
+        let availability = moduleNames.sort().map(moduleName => {
+            let instances = entries.filter(entry => entry.value.moduleName === moduleName && entry.value.clientCallable).map(entry => entry.value);
+            return instances.length > 0 && availabilityService ? Object.assign({ moduleName: moduleName },
+                availabilityService.getModuleAvailability(instances)) : undefined;
+        }).filter(Boolean);
         return {
             available: true,
             instances: entries.map(entry => ({
@@ -107,6 +113,7 @@ module.exports = {
             contractPersistenceModels: Object.keys(NODICS.getModels('backoffice', CONFIG.get('defaultTenant') || 'default') || {})
                 .filter(name => /Contract(Snapshot|Activation)/i.test(name)).sort(),
             durableContracts: durableContracts.sort((left, right) => left.moduleName.localeCompare(right.moduleName)),
+            availability: availability,
             diagnostics: (await registry.diagnostics()).data
         };
     },

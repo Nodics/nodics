@@ -356,6 +356,7 @@ module.exports = {
                 { node: 'gExp/backoffice/test/backofficeRegistryRouteContract.test.js' },
                 { node: 'gExp/backoffice/test/backofficeApiContract.test.js' },
                 { node: 'gExp/backoffice/test/backofficeDiscoveryService.test.js' },
+                { node: 'gExp/backoffice/test/backofficeAvailabilityService.test.js' },
                 { node: 'gExp/backoffice/test/backofficeContractRepositoryService.test.js' },
                 { node: 'gExp/backoffice/test/backofficeContractLifecycleService.test.js' },
                 { node: 'gExp/backoffice/test/backofficeAuditService.test.js' },
