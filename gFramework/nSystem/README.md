@@ -1,9 +1,22 @@
-# system
+# nSystem
+
+`nSystem` is the operational control plane exposed by a running Nodics
+application. It provides governed health, contract, configuration, file, data,
+diagnostic, and test operations for infrastructure, administrators, support
+tools, and trusted internal clients.
 
 The system capability exposes Nodics operational APIs for configuration, files,
 imports, exports, diagnostics, contracts, and tests. It is a control-plane
 module: project modules may override its routers, controllers, facades, and
 services through the normal later-loaded hierarchy.
+
+## When To Use This Module
+
+Use `nSystem` when an operation observes or administers the running platform
+rather than performing a business capability. Business APIs remain in their
+owning modules. BackOffice, CLI, Postman, MCP, or AI tooling may consume system
+contracts, but none of those clients becomes a second authority for health,
+OpenAPI, runtime configuration, files, imports, exports, logs, or tests.
 
 ## Control-plane route permissions
 
@@ -128,6 +141,22 @@ reachable path.
 System route and behavior contracts live under `test/`. Runtime governance
 behavior is covered by nDynamo's `test:runtime-overrides` suite.
 
+Run:
+
+```bash
+node gFramework/nSystem/test/systemRouteContract.test.js
+node gFramework/nSystem/test/systemHealthService.test.js
+node gFramework/nSystem/test/systemApiContractService.test.js
+node gFramework/nSystem/test/systemConfigurationCapabilityBehavior.test.js
+npm run test:runtime-overrides
+npm run quality:docs
+```
+
+Verify public liveness disclosure, secured readiness, disabled exposure
+categories, missing permission, internal contract access, unavailable generated
+contract fallback, runtime request governance, invalid file paths, data
+operation permissions, and sanitized failures.
+
 ## Logging And Diagnostics
 
 Logging is a platform capability with console, file, and provider-backed logger
@@ -139,3 +168,33 @@ overrides.
 Diagnostics and logs must be sanitized. Never expose passwords, tokens, API
 keys, cache keys, private keys, credentials, or secrets in logs, audit output,
 or operational responses.
+
+## Performance And Operational Boundaries
+
+Liveness must remain cheap and independent of optional downstream providers.
+Readiness may aggregate required dependencies but should use bounded checks and
+return a safe summary. Detailed diagnostics, contract generation, file access,
+imports, exports, tests, and runtime mutations are control-plane work and must
+not run implicitly on customer request paths.
+
+Use caching or pre-generated contracts through the existing OpenAPI service
+when appropriate. Do not create another contract store, health registry, or
+unbounded diagnostic endpoint.
+
+## Common Mistakes
+
+- Treating `publicProbe` as a general unsecured business-route flag.
+- Returning module lists, paths, provider endpoints, tenant details, or secrets
+  from public liveness.
+- Relying on permission alone while leaving a sensitive exposure category
+  enabled unnecessarily.
+- Mounting Swagger, files, or tests through hidden Express middleware.
+- Mutating tenant configuration directly instead of using `nDynamo` lifecycle.
+- Allowing a client bridge to become the operational source of truth.
+
+## Continue
+
+- Runtime governance: [nDynamo](../nDynamo/README.md)
+- Router exposure and authorization: [nRouter](../nRouter/README.md)
+- Run and debug: [How To Run And Debug Nodics](../../gDocs/operations/how-to-run-and-debug-nodics.md)
+- Production operations: [Production Operating Model](../../gDocs/operations/production-operating-model.md)

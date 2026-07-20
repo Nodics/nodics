@@ -1,8 +1,25 @@
 # nValidator
 
+`nValidator` applies reusable checks before or after important operations. A
+validator can be selected by capability type, target item, lifecycle trigger,
+tenant, and order, allowing projects to add policy without copying the
+framework service that performs the operation.
+
 `nValidator` owns the framework validation capability. It provides the persisted `validator.validator` schema, generated validator model/service/API contracts, tenant-aware validator loading, validator configuration storage, script execution support, update pipelines, and change listeners.
 
 Use this module when validation behavior must be reusable across schemas, imports, exports, search, workflow, or scheduled jobs. Domain-specific validation rules should be contributed through validator records, handler services, scripts, or later project modules instead of being hardcoded into framework services.
+
+## When To Use A Handler Or Script
+
+Prefer a loader-visible handler service for business rules, external calls,
+complex branching, reusable logic, or behavior that needs mocks and focused
+tests. Use a script only for a small, trusted expression whose allowed context,
+execution limits, ownership, and failure behavior are explicit.
+
+Persisted scripts are executable behavior, not ordinary data. Production
+deployments must treat authoring and mutation as a privileged control-plane
+operation and qualify the configured script execution boundary. Do not assume
+that validation alone makes arbitrary script text safe.
 
 ## Capability
 
@@ -55,6 +72,22 @@ Use handler services for business behavior that must be testable and overrideabl
 
 Do not create parallel validator configuration files. Validator defaults belong in `config/properties.js`; validator runtime records belong in the validator model/data path.
 
+## Security, Isolation, And Failure Behavior
+
+- Resolve validators within the active tenant and supported type/trigger
+  catalog.
+- Restrict validator creation and updates with action-specific permissions and
+  the runtime exposure policy appropriate to the deployment.
+- Do not expose secrets, credentials, or unrestricted request objects to a
+  script context.
+- Define whether a validator failure rejects the operation, records a warning,
+  or triggers compensation; security and data-integrity checks should fail
+  closed.
+- Bound execution count and duration so a validator cannot silently create an
+  unbounded high-volume path.
+- Preserve validator identity, type, item, trigger, order, tenant, correlation,
+  handler, duration, and safe failure classification in diagnostics.
+
 ## Tests
 
 The module owns generated schema/API/CRUD tests and focused service coverage:
@@ -80,3 +113,18 @@ Avoid:
 - hiding complex validation behavior in scripts when a service handler is needed;
 - changing validator ordering without contract tests;
 - treating generated validator artifacts as the source of truth.
+
+## Operations And Common Mistakes
+
+Monitor load failures, invalid records, execution duration, rejection counts,
+script/handler failures, and change-event refresh results. Avoid embedding
+customer rules in framework source, using scripts as hidden services, allowing
+ambiguous duplicate order, or mutating the runtime validator registry outside
+its model/event contract.
+
+## Continue
+
+- Application functionality: [How To Create Application Functionality](../../gDocs/development/how-to-create-application-functionality.md)
+- Data contracts: [How To Work With Data](../../gDocs/data/how-to-work-with-data.md)
+- Runtime governance: [nDynamo](../nDynamo/README.md)
+- Framework map: [gFramework](../README.md)

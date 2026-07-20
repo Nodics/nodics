@@ -1,8 +1,37 @@
 # nAuth
 
+`nAuth` answers the question, “Who or what is making this request, and can that
+identity still be trusted?” It supplies the framework security contracts used
+to issue and validate bounded credentials while keeping people, internal
+services, and API-key principals distinct.
+
 `nAuth` owns the framework authentication security contract. It provides JWT
 issuance, bounded token defaults, secret validation, and extension points used
 by `nService`, `nRouter`, and profile authentication implementations.
+
+## Credential Boundaries
+
+Nodics has separate credential purposes:
+
+| Credential flow | Intended caller | Important boundary |
+| --- | --- | --- |
+| Username/password login | A human user | Profile owns login and principal lookup; credentials must not be reused by modules or jobs. |
+| Human access token | An authenticated person | Authorization and tenant context still apply at every target route. |
+| Internal service token | A module or controlled scheduled process | Issued through service identity, bounded, tenant-aware, and authorized by internal route permissions. |
+| API key | A governed service principal | Stored as a keyed digest with scoped policy; never place raw keys in tokens, logs, or audit. |
+| Refresh token/session | A human session rotation flow | Profile persistence plus atomic single-use cache consumption prevents concurrent replay. |
+
+Authentication proves an identity. Authorization decides whether that identity
+may perform an action. API exposure decides whether the route family exists in
+the active topology. These are related but separate gates.
+
+## When To Use This Module
+
+Change `nAuth` when the reusable JWT, API-key, security-stamp, service-token,
+identity-governance, replay, revocation, or distributed authentication-state
+contract changes. Keep login workflows and persisted people in `gCore/profile`;
+keep generic token mechanics in `nToken`; keep route authorization metadata in
+the owning router module.
 
 ## Configuration
 
@@ -119,3 +148,48 @@ marker.
    rotation and authorization.
 9. Roll back only through the audited change set. Rollback intentionally does
    not restore plaintext credentials; affected service keys must be rotated.
+
+## Failure, Observability, And Performance
+
+- Fail closed when secrets, distributed atomic state, tenant context, stamp
+  state, scope, or required permission cannot be trusted.
+- Record safe reason codes, tenant, principal identity, credential type,
+  correlation, cache/provider state, and decision outcome without recording
+  usable credentials.
+- Keep access-token checks bounded and cache-backed where the strict contract
+  requires shared revocation state.
+- Treat cache unavailability and partial migration as security events, not as a
+  reason to enable an in-memory fallback in strict deployments.
+- Monitor invalid credentials, replay attempts, stamp mismatches, API-key
+  expiry/revocation, authorization denial, and migration failures.
+
+## Verification
+
+```bash
+node gFramework/nAuth/test/authSecurityContract.test.js
+npm run test:suite -- --suite=auth-p2
+npm run quality:docs
+```
+
+Before a production release, run `npm run test:auth-p2:release` with an isolated
+Redis endpoint. Verify positive access, invalid signature, expiry, replay,
+revocation, cross-tenant denial, missing permission, service identity, audit
+redaction, and shared-state behavior.
+
+## Common Mistakes
+
+- Reusing username/password login for modules, cron jobs, or BackOffice
+  registration.
+- Treating a valid token as permission to perform every action.
+- Enabling local auth-cache fallback in a strict modular deployment.
+- Logging tokens, API keys, refresh sessions, cache keys, or bootstrap secrets.
+- Hardcoding a project role or internal permission in a framework route.
+- Deploying dependent modules before the profile/service-identity boundary is
+  ready and verified.
+
+## Continue
+
+- Public security guide: [How Users, Tenants, And Permissions Work](../../gDocs/security/how-users-tenants-and-permissions-work.md)
+- Human and service principals: [profile](../../gCore/profile/README.md)
+- Generic token lifecycle: [nToken](../nToken/README.md)
+- HTTP authorization: [nRouter](../nRouter/README.md)

@@ -1,8 +1,19 @@
 # nOtp
 
+`nOtp` creates and checks a short-lived one-time password for a specific
+operation. It builds on `nToken` and deliberately does not decide how the code
+is delivered or what business journey the challenge unlocks.
+
 `nOtp` owns one-time-password capability support on top of the generic `nToken` lifecycle. It provides secured OTP routes, controller and facade mapping, OTP generation and validation services, OTP token configuration, and the default OTP handler.
 
 Use this module for framework-level OTP mechanics. Customer-specific challenge flows, delivery channels, identity flows, notification templates, and policy tuning should be contributed through project modules and layered configuration.
+
+## When To Use This Module
+
+Use `nOtp` when an application needs a numeric, short-lived challenge behind a
+secured API. Use `nToken` directly for a different reusable token type. Keep
+email, SMS, push, messaging, templates, consent, and identity recovery in their
+own capability or project modules.
 
 ## Capability
 
@@ -73,6 +84,25 @@ Projects may customize OTP behavior by:
 
 Do not put one customer delivery workflow into the framework default. OTP generation and validation are framework capabilities; delivery and business challenge flow are application concerns.
 
+## Security And Production Qualification
+
+The default secured routes and attempt/expiry behavior are only part of a
+production OTP solution. The owning application must define:
+
+- who is allowed to request and validate a challenge;
+- operation, tenant, subject, and session binding;
+- request throttling and abuse detection across relevant identity, address,
+  device, and destination signals;
+- resend/cooldown rules and concurrent-request behavior;
+- delivery-provider security, privacy, retry, and failure handling;
+- whether a successful validation is consumed atomically;
+- audit and user notification for sensitive account actions.
+
+Do not expose the generated OTP in logs, metrics, audit, error responses, or a
+production API response. If local development needs display behavior, keep it
+behind an explicit non-production override and test that production-like
+topologies reject it.
+
 ## Tests
 
 Run focused OTP coverage with:
@@ -102,3 +132,18 @@ Avoid:
 - bypassing `nToken` token lifecycle behavior;
 - logging generated OTP values in production diagnostics;
 - changing OTP policy without configuration and tests.
+
+## Observability And Failure Behavior
+
+Observe safe counts and latency for generation, validation, expiry, exhausted
+attempts, throttling, delivery outcome, and provider failure. Avoid sensitive
+destinations and token values in metric labels. Provider failure must not leave
+an apparently delivered challenge without a traceable outcome; repeated
+requests must follow the application's resend and idempotency policy.
+
+## Continue
+
+- Generic lifecycle: [nToken](../nToken/README.md)
+- Authentication boundary: [nAuth](../nAuth/README.md)
+- Public security guide: [How Users, Tenants, And Permissions Work](../../gDocs/security/how-users-tenants-and-permissions-work.md)
+- Framework map: [gFramework](../README.md)

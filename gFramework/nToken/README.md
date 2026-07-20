@@ -1,5 +1,10 @@
 # nToken
 
+`nToken` manages short-lived values that prove a specific operation, such as an
+OTP challenge. It is not the human-login or JWT identity provider. It supplies
+the reusable generation, expiry, attempt, validation, and deactivation engine
+that a capability can use behind its own secured boundary.
+
 `nToken` owns the generic token lifecycle capability. It provides the token schema, generated token persistence contracts, token generation and validation pipelines, token handler delegation, validity checks, and the extension path used by capabilities such as OTP.
 
 Use this module when changing token mechanics that are independent of one application workflow. Authentication policy, login semantics, and delivery channels belong to their owning modules; `nToken` owns reusable token generation, lookup, expiry, validation, and persistence behavior.
@@ -74,6 +79,19 @@ module.exports = {
 
 Token type-specific values such as numeric range, expiration, handler service, retry limit, or single-use policy belong under the token type namespace in `config/properties.js`.
 
+## Security And Abuse Boundaries
+
+- Token lookup, validation, attempt state, and expiry must remain tenant-aware.
+- A token value must be scoped to its key, operation, and type; possession must
+  not grant unrelated capability access.
+- Single-use behavior must deactivate or consume the accepted token before a
+  replay can succeed under the selected persistence contract.
+- Attempt limits are challenge controls, not a complete public rate-limiting or
+  bot-abuse system. The owning API and deployment must also apply route,
+  identity, address/device, and delivery controls appropriate to the risk.
+- Never return or log token values through generic diagnostics, persistence
+  administration, audit, or error responses.
+
 ## Secret-Safe Diagnostics
 
 Token services may log token type, operation, tenant, correlation id, expiry
@@ -118,3 +136,21 @@ Avoid:
 - changing token persistence without generated schema tests;
 - bypassing `DefaultTokenService` from OTP or other token consumers;
 - storing secrets or credentials in token values.
+
+## Operations And Observability
+
+Monitor generation volume, reuse, validation success/failure, expiry,
+deactivation, exhausted attempts, handler errors, and persistence latency using
+safe labels. Do not use the token value, submitted value, email address, phone
+number, or another sensitive subject as an unrestricted metric label.
+
+Production qualification should test concurrent validation/replay, clock
+boundaries, expiry cleanup, datastore failure, tenant isolation, and the
+consumer capability's delivery and abuse policy.
+
+## Continue
+
+- OTP consumer: [nOtp](../nOtp/README.md)
+- Authentication boundary: [nAuth](../nAuth/README.md)
+- Public security guide: [How Users, Tenants, And Permissions Work](../../gDocs/security/how-users-tenants-and-permissions-work.md)
+- Framework map: [gFramework](../README.md)
