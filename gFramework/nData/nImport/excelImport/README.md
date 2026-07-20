@@ -1,5 +1,9 @@
 # excelImport Module
 
+**Maturity: Production-ready format capability** when used through the shared
+governed import lifecycle. External source/transport maturity is evaluated
+separately.
+
 `excelImport` provides spreadsheet-oriented import support for the `nData/nImport` capability. It registers Excel file extensions with the shared import engine, reads workbook rows through `exceljs`, maps row values by the header row, and sends parsed records into the import data handler selected by the import header.
 
 Use this module for Excel-specific parsing behavior. Shared import orchestration, tenant dispatch, diagnostics, run history, access policy, validation-only execution, rollback hooks, and remote-source governance belong to `nData/nImport/import`.
@@ -96,3 +100,14 @@ Avoid:
 - documenting parser options that the service does not implement;
 - treating Excel files as trusted production data without diagnostics;
 - editing generated import artifacts manually.
+
+## Operations And Boundaries
+
+Large workbooks require explicit size, row, sheet, batching, and memory limits. A future streaming implementation must preserve the same header, tenant, validation, diagnostics, and dispatch contracts.
+
+## Continue
+
+- Import family: [nImport](../README.md)
+- Shared engine: [import](../import/README.md)
+- Data processing: [dataCore](../../dataCore/README.md)
+- Public data guide: [How To Work With Data](../../../../gDocs/data/how-to-work-with-data.md)

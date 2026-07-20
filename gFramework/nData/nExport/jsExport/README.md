@@ -1,5 +1,8 @@
 # jsExport Module
 
+**Maturity: Placeholder or scaffold.** The module owns the future format
+boundary but does not yet provide a production writer.
+
 `jsExport` is the JavaScript-oriented export format module under `nData/nExport`. It contributes the format-specific runtime surface used when export definitions need executable JavaScript transformation or rendering behavior.
 
 Use this module for JavaScript export adapters, script execution contracts, and format-specific export defaults. Keep export orchestration, access policy, run history, and shared lifecycle behavior in `nData/nExport/export`.
@@ -59,3 +62,14 @@ Avoid:
 - hiding delivery behavior inside JavaScript processors;
 - hardcoding customer contracts in framework processors;
 - treating smoke tests as release coverage for executable export behavior.
+
+## Production Completion Boundary
+
+Executable transformation must come only from trusted active modules with bounded execution and sanitized failures; never execute request-supplied code.
+
+## Continue
+
+- Export family: [nExport](../README.md)
+- Shared fail-closed engine: [export](../export/README.md)
+- Maturity matrix: [Provider And Capability Maturity Matrix](../../../../gDocs/reference/provider-capability-maturity-matrix.md)
+- Public data guide: [How To Work With Data](../../../../gDocs/data/how-to-work-with-data.md)

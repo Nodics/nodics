@@ -1,5 +1,9 @@
 # csvImport Module
 
+**Maturity: Production-ready format capability** when used through the shared
+governed import lifecycle. External source/transport maturity is evaluated
+separately.
+
 `csvImport` provides CSV-specific import support for the `nData/nImport` capability. It registers `.csv` files with the shared import engine, parses CSV rows into model objects, chunks records by configured buffer size, and sends each chunk into the import data handler selected by the import header.
 
 Use this module for CSV-only parsing and preprocessing behavior. Shared import orchestration, tenant dispatch, diagnostics, run history, access policy, validation-only execution, rollback hooks, and remote-source governance belong to `nData/nImport/import`.
@@ -91,3 +95,14 @@ Avoid:
 - changing parser defaults without tests;
 - treating CSV string booleans as trusted target types without conversion or validation;
 - editing generated import artifacts manually.
+
+## Operations And Boundaries
+
+Define encoding, size, record-count, malformed-input, batching, and partial-failure behavior for production workloads.
+
+## Continue
+
+- Import family: [nImport](../README.md)
+- Shared engine: [import](../import/README.md)
+- Data processing: [dataCore](../../dataCore/README.md)
+- Public data guide: [How To Work With Data](../../../../gDocs/data/how-to-work-with-data.md)

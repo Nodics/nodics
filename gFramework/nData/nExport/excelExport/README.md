@@ -1,5 +1,8 @@
 # excelExport Module
 
+**Maturity: Placeholder or scaffold.** The module owns the future format
+boundary but does not yet provide a production writer.
+
 `excelExport` provides spreadsheet-oriented export support for the `nData/nExport` family. It owns Excel-specific output conventions, workbook/sheet mapping behavior, and adapter wiring used by the shared export engine.
 
 Use this module for spreadsheet format behavior only. Shared export lifecycle, access policy, and orchestration remain owned by `nData/nExport/export`.
@@ -60,3 +63,14 @@ Avoid:
 - assuming every customer uses the same sheet layout;
 - loading unbounded data into memory without a streaming or batch policy;
 - treating smoke tests as release coverage for a production Excel exporter.
+
+## Production Completion Boundary
+
+A complete writer must prove bounded memory or streaming behavior for large workbooks, deterministic sheet/cell contracts, and safe formula handling.
+
+## Continue
+
+- Export family: [nExport](../README.md)
+- Shared fail-closed engine: [export](../export/README.md)
+- Maturity matrix: [Provider And Capability Maturity Matrix](../../../../gDocs/reference/provider-capability-maturity-matrix.md)
+- Public data guide: [How To Work With Data](../../../../gDocs/data/how-to-work-with-data.md)

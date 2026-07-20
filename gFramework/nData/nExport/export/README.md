@@ -1,5 +1,9 @@
 # Export Module
 
+**Maturity: Guarded, fail closed.** It provides the common boundary and access
+policy hook, but intentionally rejects export until a later active module
+supplies a fully governed implementation.
+
 `export` is the executable export engine inside `nData/nExport`. It owns shared export orchestration, export access policy checks, dispatch behavior, and the framework contracts that format modules plug into.
 
 Use this module when changing export lifecycle behavior that applies across CSV, Excel, JSON, JavaScript, or future export formats. Format-specific parsing and rendering belongs in the sibling format modules.
@@ -68,3 +72,10 @@ Avoid:
 - putting CSV, Excel, JSON, or JavaScript rendering logic in the shared engine;
 - bypassing the facade/service override path;
 - returning raw internal errors or credentials in export diagnostics.
+
+## Continue
+
+- Export family and completion gate: [nExport](../README.md)
+- Public data guide: [How To Work With Data](../../../../gDocs/data/how-to-work-with-data.md)
+- Data access policy: [database](../../../nDatabase/database/README.md)
+- Maturity matrix: [Provider And Capability Maturity Matrix](../../../../gDocs/reference/provider-capability-maturity-matrix.md)

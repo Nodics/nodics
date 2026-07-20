@@ -1,5 +1,8 @@
 # csvExport Module
 
+**Maturity: Placeholder or scaffold.** The module owns the future format
+boundary but does not yet provide a production writer.
+
 `csvExport` provides CSV-specific export support for the `nData/nExport` family. It owns CSV formatting defaults, delimiter/header conventions, and adapter wiring used by the shared export engine.
 
 Use this module for CSV-only behavior. Export lifecycle, policy enforcement, and shared run handling belong in `nData/nExport/export`.
@@ -59,3 +62,14 @@ Avoid:
 - assuming one delimiter or header contract for every customer;
 - accepting arbitrary file paths from API requests;
 - treating smoke tests as release coverage for a production CSV exporter.
+
+## Production Completion Boundary
+
+A complete writer must prove deterministic rendering, bounded memory or streaming, schema/access-policy filtering, edge cases, and delivery handoff.
+
+## Continue
+
+- Export family: [nExport](../README.md)
+- Shared fail-closed engine: [export](../export/README.md)
+- Maturity matrix: [Provider And Capability Maturity Matrix](../../../../gDocs/reference/provider-capability-maturity-matrix.md)
+- Public data guide: [How To Work With Data](../../../../gDocs/data/how-to-work-with-data.md)

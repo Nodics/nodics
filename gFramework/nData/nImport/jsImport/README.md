@@ -1,5 +1,9 @@
 # jsImport Module
 
+**Maturity: Production-ready format capability** when used through the shared
+governed import lifecycle. External source/transport maturity is evaluated
+separately.
+
 `jsImport` provides JavaScript data-definition import support for the `nData/nImport` capability. It registers `.js` files with the shared import engine, loads trusted module-owned JavaScript data objects, merges them, and sends the resulting model list into the import data handler selected by the import header.
 
 Use this module for trusted JavaScript import definitions that live inside active Nodics modules. Do not use it as an upload or remote-pull mechanism for arbitrary external JavaScript.
@@ -81,3 +85,14 @@ Avoid:
 - bypassing tenant, schema, validation, diagnostics, or access-policy behavior;
 - changing JS import trust boundaries without security review and tests;
 - editing generated import artifacts manually.
+
+## Operations And Boundaries
+
+Only trusted definitions from active modules may execute. Request payloads, uploaded files, remote sources, and user-provided module paths must never become executable JavaScript.
+
+## Continue
+
+- Import family: [nImport](../README.md)
+- Shared engine: [import](../import/README.md)
+- Data processing: [dataCore](../../dataCore/README.md)
+- Public data guide: [How To Work With Data](../../../../gDocs/data/how-to-work-with-data.md)

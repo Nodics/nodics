@@ -1,5 +1,9 @@
 # nData
 
+`nData` is the governed data-movement capability group. It helps data enter,
+move through, and leave Nodics without turning one-off scripts, file paths, or
+external credentials into hidden platform authorities.
+
 `nData` groups data import, data export, and data-core capabilities.
 
 Data import/export guidance must be driven by source code and module contracts.
@@ -120,3 +124,29 @@ Avoid:
 - mixing import format parsing into generic data core;
 - exporting data before schema/property access policies are applied;
 - leaving data movement without run history and diagnostics.
+
+## Choose A Data Capability
+
+| Need | Owner | Current maturity |
+| --- | --- | --- |
+| Shared processing, validation, interception, finalization, and writing contracts | [dataCore](dataCore/README.md) | Production-ready supporting capability |
+| Governed init, core, sample, local, and remote import lifecycle | [nImport](nImport/README.md) and [import](nImport/import/README.md) | Production-ready capability; remote transport remains guarded |
+| Governed outbound export lifecycle | [nExport](nExport/README.md) and [export](nExport/export/README.md) | Guarded, fail-closed capability |
+| CSV, Excel, JSON, and trusted JavaScript import parsing | Import format modules | Production-ready through shared import lifecycle evidence |
+| CSV, Excel, JSON, and trusted JavaScript export rendering | Export format modules | Placeholder or scaffold until writers and contract tests exist |
+
+## Operations And Data Governance
+
+Define classification, retention, lineage, schema/version compatibility,
+encryption, access policy, tenant boundaries, throughput, batching, retry,
+idempotency, quarantine, rollback, reconciliation, and deletion for every data
+flow. Observability should record safe source aliases, definition/header,
+tenant, run id, counts, bytes, checksum, duration, target, and reason codes—not
+raw credentials or unrestricted sensitive records.
+
+## Continue
+
+- Public data guide: [How To Work With Data](../../gDocs/data/how-to-work-with-data.md)
+- Data-as-a-Service pattern: [How To Use Nodics As Data As A Service](../../gDocs/data/how-to-use-nodics-as-data-as-a-service.md)
+- Import family: [nImport](nImport/README.md)
+- Export family: [nExport](nExport/README.md)

@@ -1,5 +1,9 @@
 # dataCore
 
+`dataCore` is the provider-neutral processing layer shared by import and export.
+It runs governed processors, interceptors, validators, filters, finalizers, and
+writers after orchestration has established the tenant and data contract.
+
 `dataCore` owns shared data movement contracts used by import and export
 modules.
 
@@ -85,3 +89,19 @@ Avoid:
 - processing tenant data without tenant context;
 - hiding diagnostics failures;
 - hardcoding customer mappings or storage paths.
+
+## Performance, Failure, And Recovery
+
+Processing must define batch size, memory limits, record-level versus run-level
+failure, stop/continue policy, repeated-execution safety, finalizer behavior,
+and recovery evidence. Avoid loading unbounded files or model sets into memory.
+Keep processor order deterministic and preserve per-stage counts and errors so
+operators can distinguish parsing, validation, transformation, dispatch, and
+finalization failures.
+
+## Continue
+
+- Data family: [nData](../README.md)
+- Import lifecycle: [nImport](../nImport/README.md)
+- Export lifecycle: [nExport](../nExport/README.md)
+- Public data guide: [How To Work With Data](../../../gDocs/data/how-to-work-with-data.md)

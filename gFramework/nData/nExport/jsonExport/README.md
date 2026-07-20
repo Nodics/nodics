@@ -1,5 +1,8 @@
 # jsonExport Module
 
+**Maturity: Placeholder or scaffold.** The module owns the future format
+boundary but does not yet provide a production writer.
+
 `jsonExport` provides JSON-specific export support for the `nData/nExport` family. It owns JSON serialization defaults, JSON export adapter wiring, and format-specific contracts used by the shared export engine.
 
 Keep cross-format export orchestration in `nData/nExport/export`. This module should only contain behavior that is specific to JSON payload shape, encoding, schema mapping, or JSON export configuration.
@@ -60,3 +63,14 @@ Avoid:
 - accepting arbitrary delivery URLs or credentials from requests;
 - placing JSON-specific mapping in the shared export engine;
 - treating smoke tests as release coverage for a production JSON exporter.
+
+## Production Completion Boundary
+
+A complete writer must prove deterministic rendering, bounded memory or streaming, schema/access-policy filtering, edge cases, and delivery handoff.
+
+## Continue
+
+- Export family: [nExport](../README.md)
+- Shared fail-closed engine: [export](../export/README.md)
+- Maturity matrix: [Provider And Capability Maturity Matrix](../../../../gDocs/reference/provider-capability-maturity-matrix.md)
+- Public data guide: [How To Work With Data](../../../../gDocs/data/how-to-work-with-data.md)

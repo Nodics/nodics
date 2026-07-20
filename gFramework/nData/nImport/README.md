@@ -1,5 +1,8 @@
 # nImport
 
+`nImport` is the import capability group. It turns approved files or governed
+remote sources into tenant-scoped Nodics models through one auditable lifecycle.
+
 `nImport` owns data import orchestration and import-specific extension points.
 
 Import behavior must remain definition-driven, tenant-aware, auditable, and overrideable by project modules.
@@ -140,3 +143,19 @@ Avoid:
 - placing customer-specific mappings in framework source;
 - skipping import run diagnostics and history;
 - editing generated import artifacts manually.
+
+## Format Selection And Maturity
+
+CSV, Excel, JSON, and trusted active-module JavaScript definitions are
+production-ready format capabilities when used through the shared import
+lifecycle and its tests. Format maturity does not qualify an external remote
+transport. SFTP, object storage, partner APIs, or HTTPS retrieval remain guarded
+until a project/provider owns named-source configuration, credentials, live
+integration tests, operations, and release gates.
+
+## Continue
+
+- Shared import engine: [import](import/README.md)
+- Data processing: [dataCore](../dataCore/README.md)
+- Public data guide: [How To Work With Data](../../../gDocs/data/how-to-work-with-data.md)
+- Provider maturity: [Provider And Capability Maturity Matrix](../../../gDocs/reference/provider-capability-maturity-matrix.md)

@@ -1,5 +1,9 @@
 # nExport Module
 
+**Maturity: Guarded capability.** The shared boundary and fail-closed default
+are implemented, but the format writers and delivery providers remain
+incomplete and must not be presented as production exporters.
+
 `nExport` is the data export module family under `nData`. It defines the export capability boundary, the shared executable export engine, and the format-specific adapter modules used to move governed Nodics data out of the platform.
 
 Use this module family when implementing outbound data flows such as catalog feeds, tenant-specific content exports, reporting extracts, integration handoff files, or Data-as-a-Service delivery contracts. Keep export behavior definition-driven, tenant-aware, auditable, and safe for operational use.
@@ -97,3 +101,19 @@ node gFramework/nData/nExport/export/test/dataExportCapabilityBehavior.test.js
 npm run test:export
 npm run quality:docs
 ```
+
+## Production Completion Gate
+
+A production export requires source-backed definitions, tenant and schema
+access policy, deterministic format rendering, governed destination aliases,
+streaming/batching limits, run history, checksums where applicable, retry and
+idempotency, partial-failure handling, retention/cleanup, sanitized diagnostics,
+and live delivery-provider tests. Keep the base service fail closed until those
+contracts are active.
+
+## Continue
+
+- Shared engine: [export](export/README.md)
+- Data family: [nData](../README.md)
+- Public data guide: [How To Work With Data](../../../gDocs/data/how-to-work-with-data.md)
+- Maturity matrix: [Provider And Capability Maturity Matrix](../../../gDocs/reference/provider-capability-maturity-matrix.md)
