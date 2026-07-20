@@ -1,5 +1,25 @@
 # profile
 
+`profile` is the identity and tenancy system of record for a Nodics
+application. In simple terms, it answers who a person or service is, which
+enterprise and tenant they belong to, which groups and permissions they have,
+and whether their credentials and sessions remain valid.
+
+## Who Uses Profile
+
+| Persona or caller | Typical workflow | Security boundary |
+| --- | --- | --- |
+| Customer | Register, sign in, maintain owned profile/contact/address data | Pre-authentication login followed by tenant-scoped bearer access and record ownership |
+| Employee or administrator | Sign in and manage permitted enterprise data | Pre-authentication login followed by group and permission checks on every target route |
+| Module or scheduled job | Obtain or use governed internal credentials | Secured service-token/API-key flow; never the human username/password route |
+| Identity operator | Bootstrap, migrate, rotate, audit, or recover identity state | Explicit administrative permissions, versioned audit, redaction, and fail-closed recovery |
+| BackOffice client | Discover allowed Profile operations and invoke Profile APIs | Profile stays authoritative; BackOffice receives no credential or authorization ownership |
+
+**Maturity: Production-ready capability.** Production deployment still
+requires governed bootstrap secrets, tenant-specific identity planning, and a
+strict distributed authentication cache where multiple processes or nodes can
+serve requests.
+
 The profile capability owns tenant-scoped people, employees, customers,
 service principals, credentials, user groups, addresses, contacts, enterprises,
 tenants, and authentication state.
@@ -9,6 +29,20 @@ and authentication lookups receive a layered trusted service context; ordinary
 authenticated users do not receive generated CRUD access to identity records.
 Customer registration forces the configured customer group and removes caller-
 supplied API keys, permissions, and privileged group assignments.
+
+## Request And Authority Boundaries
+
+```text
+human credentials -> Profile login -> human access/refresh tokens
+service identity   -> secured internal-token contract -> module/cron access
+authenticated call -> target module route -> target permission and data policy
+```
+
+Profile validates identity and issues identity evidence. It does not authorize
+every business operation centrally: each target module remains responsible for
+its route permissions, schema access policy, tenant rules, and business data.
+`nAuth`, `nToken`, `nCache`, and `nService` retain their framework security,
+token, cache, and communication responsibilities.
 
 Internal authentication token retrieval is a secured service capability. The
 route permission is resolved from `authSecurity.internalToken.routePermission`,
@@ -70,6 +104,27 @@ and nodes. Strict startup validation rejects an unsafe local-cache deployment.
 Principal stamp targets are resolved from persisted records and registered only
 after successful updates. Group updates traverse descendant groups so inherited
 permission changes invalidate every affected session.
+
+## Deployment, Performance, And Operations
+
+- Deploy Profile independently or in a consolidated runtime without changing
+  its module contract. Other modules must tolerate temporary Profile
+  unavailability through their owned startup and communication policy.
+- Use a shared strict authentication cache for multi-process or multi-node
+  deployments. A local cache is a development/reference choice, not a
+  distributed session-invalidation solution.
+- Keep password hashing, credential lookup, permission expansion, group
+  traversal, and cache operations bounded. Test large group hierarchies and
+  concurrent login/session invalidation against project service objectives.
+- Rate-limit and monitor login, refresh, internal-token, migration, rotation,
+  and administrative endpoints at the appropriate gateway and module layers.
+- Observe authentication outcome/reason, tenant-safe principal identity,
+  latency, lockout, token refresh/revocation, security-stamp propagation,
+  migration, and bootstrap health. Never place passwords, API keys, raw tokens,
+  or sensitive profile data in logs, metrics, traces, or generated context.
+- Back up identity data and migration audits under project retention rules;
+  rehearse restore, credential rotation, cache recovery, and rollback without
+  restoring revoked plaintext credentials.
 
 ## Mandatory identity bootstrap
 
@@ -164,3 +219,22 @@ When adding or changing groups, document:
 Customer registration must not allow callers to assign privileged groups,
 permissions, API keys, or service-only state. Those changes require governed
 administrative or service flows.
+
+## Verification And Release Evidence
+
+Run `npm run test:profile` for focused identity behavior. Changes must cover the
+relevant positive, negative, boundary, contract, integration, and regression
+cases, including wrong credentials, lockout, inactive identities, tenant
+isolation, cross-tenant denial, group cycles, permission inheritance, session
+invalidation, token refresh/logout, service-token permission, bootstrap,
+migration, rotation, audit redaction, failure recovery, and distributed-cache
+requirements. Run generated-context and release gates before changing maturity
+or deploying security-sensitive changes.
+
+## Continue
+
+- Core capability family: [gCore](../README.md)
+- Authentication framework: [nAuth](../../gFramework/nAuth/README.md)
+- Token lifecycle: [nToken](../../gFramework/nToken/README.md)
+- Cache and distributed state: [nCache](../../gFramework/nCache/README.md)
+- Capability maturity: [Provider And Capability Maturity Matrix](../../gDocs/reference/provider-capability-maturity-matrix.md)
