@@ -14,7 +14,15 @@ The root README is the public entry point. Keep it short, friendly, and easy to 
 
 **Public documentation**
 
-The `gDocs` folder contains user and developer guides.
+The `gDocs` module contains permanent public business, user, developer,
+architecture, security, operations, and reference documentation.
+
+**Temporary root documentation workspace**
+
+The root `docs/` folder is an untracked, non-runtime workspace for temporary
+inventories, checklists, audits, and drafts. It is not the Nodics documentation
+module or a source of runtime truth. Promote approved permanent material into
+`gDocs`, a module `README.md`, or a module `docs/` folder.
 
 **Module README files**
 
@@ -38,7 +46,7 @@ Use the right documentation layer for the right audience.
 | Documentation | Audience | Purpose |
 | --- | --- | --- |
 | Root `README.md` | New visitors, evaluators, and developers | Explain what Nodics is, why it exists, and where to start. |
-| `gDocs` | Users, application developers, framework developers, and technical leads | Provide task-based guides such as setup, APIs, data, jobs, security, testing, and deployment. |
+| `gDocs` | Business owners, evaluators, users, application developers, framework developers, operators, and technical leads | Provide business decision journeys and task-based guides such as setup, APIs, data, jobs, security, testing, and deployment. |
 | Module `README.md` files | Developers working inside one capability | Explain module purpose, owned schemas/routes/services/data/tests, configuration, extension paths, and verification. |
 | Module `docs/` folders | Developers needing deeper module detail | Hold permanent module documentation that belongs with the product. |
 | `gDocs/reference/module-documentation-index.md` | Users and developers moving from guide pages to module details | Maps task-based documentation to the module README and module docs that own exact capability behavior. |
@@ -105,6 +113,31 @@ Every page explains:
 - Generated artifacts that must be regenerated.
 - AI/developer rules that must be preserved.
 
+## Navigation Contract
+
+The root README must provide short, visible journeys for business evaluators,
+beginners, builders, architects, operators, and readers seeking module detail.
+
+Every permanent `gDocs` page must be reachable from the root README through
+`gDocs/README.md` or another visible public guide. A task guide should end with
+a small **Continue** section containing the most useful previous or next step,
+related capability documentation, and the documentation home. Do not add links
+merely to satisfy a count; each link must help the reader make a decision or
+complete the next task.
+
+The module documentation index provides a curated task-to-capability map. The
+complete module catalog provides exhaustive package-to-README reachability.
+Package metadata and the module README remain authoritative for module identity
+and behavior.
+
+Documentation quality validation must check:
+
+- local Markdown link targets and path case;
+- reachability of permanent `gDocs` pages from the public entry point;
+- reachability of package-defined module READMEs through the module catalog;
+- required business, beginner, glossary, maturity, and module-index entry pages;
+- navigation out of task guides so readers are not left at dead ends.
+
 ## Updating Documentation With Code
 
 When code changes, ask:
@@ -143,3 +176,9 @@ npm run llm:validate
 ```
 
 Use documentation review as part of feature review, not as a cleanup task after the feature is finished.
+
+## Continue
+
+- Publishing: [How To Publish Documentation On GitHub](how-to-publish-documentation-on-github.md)
+- Module catalog: [Complete Module Catalog](../reference/module-catalog.md)
+- Documentation home: [Nodics Documentation](../README.md)

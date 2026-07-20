@@ -175,3 +175,9 @@ When a test fails:
 
 Do not hide a failing test by weakening the assertion unless the product
 contract intentionally changed and the documentation also explains that change.
+
+## Continue
+
+- Previous: [How To Create Application Functionality](../development/how-to-create-application-functionality.md)
+- Operations: [How To Run And Debug Nodics](../operations/how-to-run-and-debug-nodics.md)
+- Documentation home: [Nodics Documentation](../README.md)

@@ -345,3 +345,10 @@ Avoid:
 - using cache as the only copy of business data;
 - changing runtime behavior through direct cache events when the change needs approval and rollback;
 - adding policy logic in random routers or DAOs instead of `DefaultCachePolicyService` or configured policy handlers.
+
+## Continue
+
+- Related capabilities: [How Platform Capabilities Work](how-platform-capabilities-work.md)
+- Owning modules: [Module Documentation Index](../reference/module-documentation-index.md)
+- Maturity: [Provider And Capability Maturity Matrix](../reference/provider-capability-maturity-matrix.md)
+- Documentation home: [Nodics Documentation](../README.md)

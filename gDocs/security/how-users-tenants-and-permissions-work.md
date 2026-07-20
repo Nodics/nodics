@@ -308,3 +308,10 @@ Avoid:
 | API exists locally but not in another server | `apiExposure` disabled in that topology | Environment/server/node properties |
 | Security cache looks stale | User/group/token changed but cache was not invalidated | Auth cache invalidation and diagnostics |
 - Adding runtime mutation paths without audit and rollback.
+
+## Continue
+
+- Operations: [Production Operating Model](../operations/production-operating-model.md)
+- Testing: [How To Test Nodics Changes](../testing/how-to-test-nodics-changes.md)
+- Owning modules: [Module Documentation Index](../reference/module-documentation-index.md)
+- Documentation home: [Nodics Documentation](../README.md)

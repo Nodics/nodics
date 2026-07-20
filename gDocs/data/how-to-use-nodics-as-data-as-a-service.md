@@ -379,3 +379,9 @@ Avoid:
 - [How Platform Capabilities Work](../platform/how-platform-capabilities-work.md)
 - [How Configuration Works](../configuration/how-configuration-works.md)
 - [How Users, Tenants, And Permissions Work](../security/how-users-tenants-and-permissions-work.md)
+
+## Continue
+
+- Previous: [How To Work With Data](how-to-work-with-data.md)
+- Owning modules: [Module Documentation Index](../reference/module-documentation-index.md)
+- Documentation home: [Nodics Documentation](../README.md)

@@ -364,3 +364,10 @@ Nodics reduces deployment effort by keeping:
 - tests aligned with module ownership;
 - runtime changes governed with audit and rollback;
 - provider choices behind configuration and provider modules.
+
+## Continue
+
+- Previous: [How To Create Application Functionality](how-to-create-application-functionality.md)
+- Next: [Common Implementation Examples](common-implementation-examples.md)
+- Owning modules: [Module Documentation Index](../reference/module-documentation-index.md)
+- Documentation home: [Nodics Documentation](../README.md)

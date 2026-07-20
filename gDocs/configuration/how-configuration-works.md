@@ -242,3 +242,10 @@ npm run test:basic
 ```
 
 For runtime or tenant-sensitive changes, also verify behavior in the target environment or topology.
+
+## Continue
+
+- Previous: [How Nodics Is Organized](../architecture/how-nodics-is-organized.md)
+- Next: [Build Your First Nodics Capability](../getting-started/build-your-first-capability.md)
+- Owning modules: [Module Documentation Index](../reference/module-documentation-index.md)
+- Documentation home: [Nodics Documentation](../README.md)

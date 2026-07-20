@@ -13,6 +13,11 @@ before selecting a provider or external adapter. It shows whether a capability
 is production-ready, guarded, sample/reference, scaffolded, or parked for later
 work.
 
+This page is a task-oriented capability map. Use the
+[Complete Module Catalog](module-catalog.md) when you need to find every
+package-defined module, including application, environment, server, and node
+composition modules that are not appropriate in a short capability map.
+
 ## How To Use This Index
 
 1. Start with the task guide that matches what you want to do.
@@ -138,3 +143,9 @@ module's `README.md` or `docs/` folder.
 
 If a page defines rules that AI tools and developers must follow while changing
 code, it belongs in `AGENTS.md` or `gSetup/llm`.
+
+## Continue
+
+- Complete inventory: [Complete Module Catalog](module-catalog.md)
+- Terminology: [Nodics Glossary](glossary.md)
+- Documentation home: [Nodics Documentation](../README.md)

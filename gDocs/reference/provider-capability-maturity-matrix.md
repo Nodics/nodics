@@ -131,3 +131,9 @@ To demote a capability:
 - update public documentation and AI/developer contracts;
 - add a backlog item for the missing work.
 
+## Continue
+
+- Business capabilities: [Business Capabilities And Outcomes](../business/business-capabilities-and-outcomes.md)
+- Terminology: [Nodics Glossary](glossary.md)
+- Module ownership: [Module Documentation Index](module-documentation-index.md)
+- Documentation home: [Nodics Documentation](../README.md)

@@ -387,3 +387,10 @@ Avoid:
 - creating background processes with no owner or diagnostics;
 - adding platform helpers outside loader-visible module paths;
 - changing framework code when a provider or project module can own the customization.
+
+## Continue
+
+- Cache detail: [How Cache Works](how-cache-works.md)
+- Owning modules: [Module Documentation Index](../reference/module-documentation-index.md)
+- Maturity: [Provider And Capability Maturity Matrix](../reference/provider-capability-maturity-matrix.md)
+- Documentation home: [Nodics Documentation](../README.md)

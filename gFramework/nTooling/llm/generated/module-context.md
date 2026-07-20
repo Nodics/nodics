@@ -24,10 +24,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 29 |
-| Test files | 17 |
+| Source files | 30 |
+| Test files | 18 |
 | Data files | 0 |
-| All module-owned files | 55 |
+| All module-owned files | 57 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -53,7 +53,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 51 |
+| Documented | 53 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -111,10 +111,12 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/src/service/quality/defaultDesignPrincipleAuditService.js` | `src` | `documented` | 0/0 | Runs a repeatable static audit over Nodics principle, governance, LLM, command, generated-context, and report-location contracts so periodic platform reviews can detect drift before broader manual or test-suite review. |  |
 | `gFramework/nTooling/src/service/quality/defaultDocumentationCoverageQualityService.js` | `src` | `documented` | 0/0 | Collects project-scoped source documentation coverage by module, layer, contract scope, test inclusion, and generated-artifact policy. |  |
 | `gFramework/nTooling/src/service/quality/defaultDocumentationGatesQualityService.js` | `src` | `documented` | 0/0 | Applies project-overridable documentation governance configuration to enforced and report-only coverage gates. |  |
+| `gFramework/nTooling/src/service/quality/defaultDocumentationNavigationQualityService.js` | `src` | `documented` | 0/0 | Validates public documentation links, path case, entry-point reachability, page continuation, and exhaustive module README navigation. |  |
 | `gFramework/nTooling/src/service/quality/defaultStructureComplianceQualityService.js` | `src` | `documented` | 0/0 | Audits Nodics module, project, environment, server, and node structure against the canonical structure matrix without mutating source files. |  |
 | `gFramework/nTooling/test/copyrightHeaderGovernance.test.js` | `test` | `documented` | 0/0 | Validates Nodics copyright header detection and normalization. |  |
 | `gFramework/nTooling/test/dependencyOwnershipContract.test.js` | `test` | `documented` | 0/0 | Verifies package dependency ownership so external providers, runtime frameworks, and shared utilities remain declared by their owning Nodics capability modules while the root package remains the install aggregator for the repository. |  |
 | `gFramework/nTooling/test/dependencyRuntimeContract.test.js` | `test` | `documented` | 0/0 | Verifies the repository declares supported Node.js/npm versions, package-lock ownership, and release dependency validation commands. |  |
+| `gFramework/nTooling/test/documentationNavigationQuality.test.js` | `test` | `documented` | 0/0 | Proves positive, negative, boundary, reachability, path-case, continuation, and exhaustive module-catalog documentation contracts. |  |
 | `gFramework/nTooling/test/fullTestSuiteCoverageContract.test.js` | `test` | `documented` | 0/0 | Guards the full Nodics test command surface so import, workflow, cron, NEMS, tenant, and distributed-communication coverage remains wired into executable package gates instead of living only as documentation. |  |
 | `gFramework/nTooling/test/llmChangeAcceptanceContract.test.js` | `test` | `documented` | 0/0 | Prevents the mandatory Nodics hierarchy, customization, and test-coverage contract from disappearing from canonical LLM guidance. |  |
 | `gFramework/nTooling/test/mcpReadOnlyGovernanceContract.test.js` | `test` | `documented` | 0/0 | Verifies the first MCP governance slice remains read-only and reports workspace, module, AGENTS, generated-context, and change-impact guidance from existing Nodics contracts. |  |

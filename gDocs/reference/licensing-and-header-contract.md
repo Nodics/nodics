@@ -101,3 +101,7 @@ npm run llm:validate
 Run broader gates when the change also affects generators, generated artifacts,
 module structure, or release contracts.
 
+## Continue
+
+- Documentation maintenance: [Documentation Maintenance Guide](../documentation/how-to-maintain-documentation.md)
+- Documentation home: [Nodics Documentation](../README.md)

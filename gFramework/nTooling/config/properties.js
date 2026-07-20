@@ -38,6 +38,26 @@ module.exports = {
         },
         documentationGovernance: {
             description: 'Documentation gates owned by non-runtime Nodics quality tooling. Add a gate only after that module/layer is fully documented.',
+            navigation: {
+                entryPoint: 'README.md',
+                publicRoot: 'gDocs',
+                publicIndex: 'gDocs/README.md',
+                moduleCatalog: 'gDocs/reference/module-catalog.md',
+                excludedPublicPages: [
+                    'gDocs/assets/images/README.md'
+                ],
+                requiredEntryPoints: [
+                    'gDocs/business/why-businesses-choose-nodics.md',
+                    'gDocs/business/business-capabilities-and-outcomes.md',
+                    'gDocs/business/how-nodics-compares.md',
+                    'gDocs/business/evaluation-checklist.md',
+                    'gDocs/getting-started/build-your-first-capability.md',
+                    'gDocs/reference/glossary.md',
+                    'gDocs/reference/module-documentation-index.md',
+                    'gDocs/reference/module-catalog.md',
+                    'gDocs/reference/provider-capability-maturity-matrix.md'
+                ]
+            },
             enforcedGates: [
                 {
                     name: 'nRouter complete routing contract',
@@ -223,6 +243,7 @@ module.exports = {
             tooling: [
                 { node: 'gFramework/nTooling/test/toolingCommandOverride.test.js' },
                 { node: 'gFramework/nTooling/test/repositoryToolingBoundary.test.js' },
+                { node: 'gFramework/nTooling/test/documentationNavigationQuality.test.js' },
                 { node: 'gFramework/nTooling/test/dependencyRuntimeContract.test.js' },
                 { node: 'gFramework/nTooling/test/dependencyOwnershipContract.test.js' },
                 { node: 'gFramework/nTooling/test/releaseCheckCommandContract.test.js' },

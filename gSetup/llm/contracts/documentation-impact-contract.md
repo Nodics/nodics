@@ -33,3 +33,12 @@ changes.
 Not every change updates every file. Every change must make an explicit
 documentation-impact decision. Generated documentation and generated LLM context
 must be recreated from source definitions.
+
+Permanent public documentation belongs in `gDocs`; root `docs/` is temporary,
+untracked, and non-runtime unless material is explicitly promoted. The root
+README is the public entry point and must provide reachable journeys for
+business evaluators, beginners, builders, architects, security reviewers, and
+operators. Public task pages must link to their next useful action and owning
+module detail. Run `npm run quality:docs` to validate links, path case,
+reachability, page continuation, required entry points, and module-catalog
+coverage through the existing documentation-governance authority.

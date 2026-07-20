@@ -313,3 +313,10 @@ Avoid:
 - editing generated artifacts manually;
 - adding behavior without tests;
 - updating public behavior without updating documentation and generated LLM context.
+
+## Continue
+
+- Previous: [How To Customize And Extend Nodics](how-to-customize-and-extend-nodics.md)
+- Next: [How To Create APIs](how-to-create-apis.md)
+- Terminology: [Nodics Glossary](../reference/glossary.md)
+- Documentation home: [Nodics Documentation](../README.md)

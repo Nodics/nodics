@@ -85,7 +85,7 @@ Nodics provides:
 - **Testing as architecture evidence:** generated schema, CRUD, API contract, and API scenario tests make framework behavior verifiable instead of implied.
 - **AI-ready learning context:** generated LLM context and implementation contracts teach AI tools the same module, service, configuration, and extension rules expected from human developers.
 
-For example, the current generated governance report for the sample local server records 64 schemas, 154 routes, 651 governed artifacts, and 364 generated files. The checked Postman collection contains 188 API examples across 34 functional folders. Those numbers matter because they show Nodics is already structured as a platform surface, not a single demo application.
+The repository produces governance reports, generated API contracts, generated tests, and API examples from the active application definition. Use those generated outputs when you need current counts; this README intentionally avoids copying numbers that become stale as capabilities evolve.
 
 ## What You Can Build
 
@@ -109,13 +109,40 @@ You can also use AI tools more safely because Nodics gives them explicit contrac
 
 ## Start Here
 
-Read the public documentation:
+Choose the route that best matches why you are here.
+
+### I Am Evaluating Nodics For A Business
+
+- [Why Businesses Choose Nodics](gDocs/business/why-businesses-choose-nodics.md)
+- [Business Capabilities And Outcomes](gDocs/business/business-capabilities-and-outcomes.md)
+- [How Nodics Compares With Other Approaches](gDocs/business/how-nodics-compares.md)
+- [Business And Technical Evaluation Checklist](gDocs/business/evaluation-checklist.md)
+
+These pages explain business value, delivery speed, long-term operating risk,
+fit, trade-offs, and the questions to validate before adopting Nodics. They do
+not require detailed software-framework knowledge.
+
+### I Am New To Nodics
 
 - [Nodics Documentation](gDocs/README.md)
 - [What Nodics Is](gDocs/overview/what-is-nodics.md)
 - [How To Set Up Nodics](gDocs/getting-started/how-to-setup-nodics.md)
+- [Build Your First Nodics Capability](gDocs/getting-started/build-your-first-capability.md)
+
+### I Am Designing, Building, Or Operating An Application
+
 - [How Nodics Is Organized](gDocs/architecture/how-nodics-is-organized.md)
 - [How Configuration Works](gDocs/configuration/how-configuration-works.md)
+- [How To Create Application Functionality](gDocs/development/how-to-create-application-functionality.md)
+- [How To Test Nodics Changes](gDocs/testing/how-to-test-nodics-changes.md)
+- [How To Run And Debug Nodics](gDocs/operations/how-to-run-and-debug-nodics.md)
+
+### I Need Exact Capability Details
+
+- [Module Documentation Index](gDocs/reference/module-documentation-index.md)
+- [Complete Module Catalog](gDocs/reference/module-catalog.md)
+- [Nodics Glossary](gDocs/reference/glossary.md)
+- [Provider And Capability Maturity Matrix](gDocs/reference/provider-capability-maturity-matrix.md)
 
 ## Common Commands
 
@@ -177,9 +204,9 @@ npm run release:check -- --execute --full
 
 ## Documentation Map
 
-- Public user and developer guides: [gDocs](gDocs/README.md)
-- Module-specific guides: each module `README.md`
-- AI and implementation rules: `AGENTS.md` and `gSetup/llm`
+- Public business, user, and developer guides: [gDocs](gDocs/README.md)
+- Module-specific guides: [Module Documentation Index](gDocs/reference/module-documentation-index.md) and each module `README.md`
+- AI and implementation rules: [AGENTS.md](AGENTS.md) and [gSetup/llm](gSetup/llm/README.md)
 - Generated API documentation: generated during build
 - Generated AI context: generated with `npm run llm:generate`
 

@@ -254,3 +254,10 @@ Use this public documentation for user guides and task-based explanations.
 Use module README files for module-specific behavior.
 
 Use AI/developer contracts only for implementation rules. Do not make public users read AI governance material just to understand how to build a feature.
+
+## Continue
+
+- Previous: [What Nodics Is](../overview/what-is-nodics.md)
+- Next: [How Configuration Works](../configuration/how-configuration-works.md)
+- Terminology: [Nodics Glossary](../reference/glossary.md)
+- Documentation home: [Nodics Documentation](../README.md)

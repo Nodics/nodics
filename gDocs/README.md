@@ -4,10 +4,13 @@ Welcome to the Nodics documentation.
 
 Nodics is an enterprise application factory for building modular, governed, API-driven business platforms. It is designed for teams that need MVP speed, AI-assisted development, customization, tenant-aware behavior, runtime control, and long-term maintainability in the same framework.
 
-This documentation is written for two kinds of readers:
+This documentation is written for several kinds of readers:
 
-- People who are new to Nodics and need step-by-step guidance.
-- Experienced developers who need exact extension points, configuration rules, and verification commands.
+- Business owners and decision makers evaluating value, fit, risk, and time to market.
+- People who are new to Nodics or enterprise application frameworks and need plain-language, step-by-step guidance.
+- Application developers who need task-based implementation guidance.
+- Experienced developers and architects who need exact extension points, configuration rules, and verification commands.
+- Operators and security reviewers who need deployment, runtime, access, and evidence guidance.
 
 Nodics gives you a framework, runtime structure, generated APIs, layered configuration, tenant-aware behavior, scheduled jobs, import/export, search indexing, catalog and content capabilities, messaging, caching, testing, and deployment patterns that can be extended by projects without changing framework source code.
 
@@ -15,31 +18,52 @@ It is also built for AI-assisted development. A developer can work through a com
 
 ## How To Read This Documentation
 
-Start with the first two sections if you are new. Use the task guides when you already know what you want to build.
+You do not need to read every page in order. Choose the journey that matches
+your goal.
+
+### Business Owner Or Decision Maker
+
+1. [Why Businesses Choose Nodics](business/why-businesses-choose-nodics.md)
+2. [Business Capabilities And Outcomes](business/business-capabilities-and-outcomes.md)
+3. [How Nodics Compares With Other Approaches](business/how-nodics-compares.md)
+4. [Business And Technical Evaluation Checklist](business/evaluation-checklist.md)
+
+### Beginner Or First-Time Evaluator
 
 1. [What Nodics Is](overview/what-is-nodics.md)
 2. [How To Set Up Nodics](getting-started/how-to-setup-nodics.md)
 3. [How Nodics Is Organized](architecture/how-nodics-is-organized.md)
 4. [How Configuration Works](configuration/how-configuration-works.md)
-5. [How To Create Application Functionality](development/how-to-create-application-functionality.md)
-6. [How To Customize And Extend Nodics](development/how-to-customize-and-extend-nodics.md)
-7. [Common Implementation Examples](development/common-implementation-examples.md)
-8. [How To Create APIs](development/how-to-create-apis.md)
-9. [How To Work With Data](data/how-to-work-with-data.md)
-10. [How To Use Nodics As Data As A Service](data/how-to-use-nodics-as-data-as-a-service.md)
-11. [How To Create Scheduled Jobs](jobs/how-to-create-scheduled-jobs.md)
-12. [How Platform Capabilities Work](platform/how-platform-capabilities-work.md)
-13. [How Cache Works](platform/how-cache-works.md)
-14. [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md)
-15. [How To Test Nodics Changes](testing/how-to-test-nodics-changes.md)
-16. [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md)
-17. [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md)
-18. [Production Operating Model](operations/production-operating-model.md)
-19. [How To Publish Documentation On GitHub](documentation/how-to-publish-documentation-on-github.md)
-20. [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md)
-21. [Module Documentation Index](reference/module-documentation-index.md)
-22. [Provider And Capability Maturity Matrix](reference/provider-capability-maturity-matrix.md)
-23. [Licensing And Header Contract](reference/licensing-and-header-contract.md)
+5. [Build Your First Nodics Capability](getting-started/build-your-first-capability.md)
+
+### Application Developer
+
+1. [How To Create Application Functionality](development/how-to-create-application-functionality.md)
+2. [How To Customize And Extend Nodics](development/how-to-customize-and-extend-nodics.md)
+3. [Common Implementation Examples](development/common-implementation-examples.md)
+4. [How To Create APIs](development/how-to-create-apis.md)
+5. [How To Work With Data](data/how-to-work-with-data.md)
+6. [How To Create Scheduled Jobs](jobs/how-to-create-scheduled-jobs.md)
+7. [How To Test Nodics Changes](testing/how-to-test-nodics-changes.md)
+
+### Architect, Security Reviewer, Or Operator
+
+1. [How Platform Capabilities Work](platform/how-platform-capabilities-work.md)
+2. [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md)
+3. [How Cache Works](platform/how-cache-works.md)
+4. [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md)
+5. [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md)
+6. [Production Operating Model](operations/production-operating-model.md)
+
+### Reference And Documentation Contributors
+
+- [Module Documentation Index](reference/module-documentation-index.md)
+- [Complete Module Catalog](reference/module-catalog.md)
+- [Nodics Glossary](reference/glossary.md)
+- [Provider And Capability Maturity Matrix](reference/provider-capability-maturity-matrix.md)
+- [Licensing And Header Contract](reference/licensing-and-header-contract.md)
+- [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md)
+- [How To Publish Documentation On GitHub](documentation/how-to-publish-documentation-on-github.md)
 
 ## Documentation Principles
 
@@ -76,7 +100,9 @@ Use this map when you are not sure where to start.
 | Need | Read |
 | --- | --- |
 | Understand what Nodics is and why it exists | [What Nodics Is](overview/what-is-nodics.md) |
+| Decide whether Nodics fits a business or product | [Why Businesses Choose Nodics](business/why-businesses-choose-nodics.md), [How Nodics Compares](business/how-nodics-compares.md), and [Evaluation Checklist](business/evaluation-checklist.md) |
 | Install, build, and start the framework | [How To Set Up Nodics](getting-started/how-to-setup-nodics.md) |
+| Follow one complete beginner journey | [Build Your First Nodics Capability](getting-started/build-your-first-capability.md) |
 | Understand projects, modules, environments, servers, and nodes | [How Nodics Is Organized](architecture/how-nodics-is-organized.md) |
 | Add new application behavior | [How To Create Application Functionality](development/how-to-create-application-functionality.md) |
 | Customize or generalize framework behavior safely | [How To Customize And Extend Nodics](development/how-to-customize-and-extend-nodics.md) |
@@ -92,7 +118,9 @@ Use this map when you are not sure where to start.
 | Run, debug, deploy, or operate Nodics | [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md), [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md), and [Production Operating Model](operations/production-operating-model.md) |
 | Maintain public and module documentation | [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md) |
 | Find module-specific capability documentation | [Module Documentation Index](reference/module-documentation-index.md) |
+| Browse every package-defined module | [Complete Module Catalog](reference/module-catalog.md) |
+| Understand Nodics terminology | [Nodics Glossary](reference/glossary.md) |
 | Check whether a provider or capability is production-ready, guarded, sample, scaffolded, or parked | [Provider And Capability Maturity Matrix](reference/provider-capability-maturity-matrix.md) |
 | Understand which files require the Nodics source header and how the copyright year is enforced | [Licensing And Header Contract](reference/licensing-and-header-contract.md) |
 
-For module-specific details, read the owning module `README.md`. For implementation contracts used by AI tools and developers, read root `AGENTS.md` and `gSetup/llm`.
+For module-specific details, read the owning module `README.md`. For implementation contracts used by AI tools and developers, read root [AGENTS.md](../AGENTS.md) and [gSetup/llm](../gSetup/llm/README.md).

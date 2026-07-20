@@ -14,6 +14,7 @@ const path = require('path');
 const _ = require('lodash');
 const defaultProperties = require('../../../config/properties');
 const documentationCoverage = require('./defaultDocumentationCoverageQualityService');
+const documentationNavigation = require('./defaultDocumentationNavigationQualityService');
 
 /**
  * @module nTooling/service/quality/defaultDocumentationGatesQualityService
@@ -109,6 +110,12 @@ function run(args) {
     reportOnlyGates.forEach(gate => {
         runGate('REPORT ONLY', gate, false, rootDir);
     });
+
+    const navigationReport = documentationNavigation.collectNavigationReport(rootDir, governance.navigation || {});
+    documentationNavigation.printReport(navigationReport);
+    if (documentationNavigation.hasFailures(navigationReport)) {
+        hasFailure = true;
+    }
 
     if (hasFailure) {
         console.error('\nDocumentation governance failed. Fix the enforced gate regressions before building.');

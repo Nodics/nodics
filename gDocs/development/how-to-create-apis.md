@@ -254,3 +254,10 @@ Avoid:
 - Returning inconsistent response shapes.
 - Editing generated route files manually.
 - Mixing human login and internal service access rules.
+
+## Continue
+
+- Previous: [Common Implementation Examples](common-implementation-examples.md)
+- Data: [How To Work With Data](../data/how-to-work-with-data.md)
+- Owning modules: [Module Documentation Index](../reference/module-documentation-index.md)
+- Documentation home: [Nodics Documentation](../README.md)

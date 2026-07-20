@@ -191,3 +191,10 @@ Use this checklist:
 - Tenant behavior is explicit when data, cache, search, files, jobs, or events are involved.
 - Generated artifacts were regenerated when schemas, routes, OpenAPI, tests, or LLM context changed.
 - Documentation explains where future developers or AI tools should customize the behavior.
+
+## Continue
+
+- Beginner journey: [Build Your First Nodics Capability](../getting-started/build-your-first-capability.md)
+- Next: [How To Customize And Extend Nodics](how-to-customize-and-extend-nodics.md)
+- Testing: [How To Test Nodics Changes](../testing/how-to-test-nodics-changes.md)
+- Documentation home: [Nodics Documentation](../README.md)

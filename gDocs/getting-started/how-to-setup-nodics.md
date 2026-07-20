@@ -354,3 +354,10 @@ If you are new to Nodics, use this order:
 5. Find that module's schemas, routes, services, and tests.
 6. Run a focused test for that capability.
 7. Change only a project or sample module first, not framework source.
+
+## Continue
+
+- Previous: [What Nodics Is](../overview/what-is-nodics.md)
+- Next: [Build Your First Nodics Capability](build-your-first-capability.md)
+- Troubleshooting and runtime: [How To Run And Debug Nodics](../operations/how-to-run-and-debug-nodics.md)
+- Documentation home: [Nodics Documentation](../README.md)

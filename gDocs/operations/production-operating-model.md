@@ -246,3 +246,10 @@ Avoid:
 - using sample bootstrap credentials in production;
 - relying on manual database changes for rollback;
 - allowing scheduled jobs to run on every node without ownership rules.
+
+## Continue
+
+- Previous: [How To Prepare For Deployment](how-to-prepare-for-deployment.md)
+- Security: [How Users, Tenants, And Permissions Work](../security/how-users-tenants-and-permissions-work.md)
+- Business evaluation: [Business And Technical Evaluation Checklist](../business/evaluation-checklist.md)
+- Documentation home: [Nodics Documentation](../README.md)

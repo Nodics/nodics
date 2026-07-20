@@ -251,3 +251,10 @@ Avoid:
 | Startup creates duplicates | Initializer is not idempotent | Job code uniqueness and startup tests |
 | Job succeeds but data is wrong | Business logic is hidden in handler or lacks tenant context | Move behavior to service and test tenant behavior |
 | Failure is invisible | Error was swallowed | Logs, result state, diagnostics, failure propagation |
+
+## Continue
+
+- Platform behavior: [How Platform Capabilities Work](../platform/how-platform-capabilities-work.md)
+- Owning modules: [Module Documentation Index](../reference/module-documentation-index.md)
+- Testing: [How To Test Nodics Changes](../testing/how-to-test-nodics-changes.md)
+- Documentation home: [Nodics Documentation](../README.md)

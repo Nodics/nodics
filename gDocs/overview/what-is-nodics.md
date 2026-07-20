@@ -813,3 +813,10 @@ That combination allows teams to move fast without giving up control.
 If you are new, continue with [How To Set Up Nodics](../getting-started/how-to-setup-nodics.md).
 
 If you already have Nodics running, read [How Nodics Is Organized](../architecture/how-nodics-is-organized.md).
+
+## Continue
+
+- Business view: [Why Businesses Choose Nodics](../business/why-businesses-choose-nodics.md)
+- Next: [How To Set Up Nodics](../getting-started/how-to-setup-nodics.md)
+- Terminology: [Nodics Glossary](../reference/glossary.md)
+- Documentation home: [Nodics Documentation](../README.md)
