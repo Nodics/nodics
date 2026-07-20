@@ -1,7 +1,14 @@
 # nDatabase
 
-`nDatabase` owns database configuration, schema loading, model construction,
-validators, interceptors, model middleware, and generated persistence contracts.
+`nDatabase` is the database capability group. It organizes the generic
+persistence contract and its provider modules. The child
+[database](database/README.md) module owns schema-driven persistence,
+tenant/module database configuration, connection lifecycle, generated models,
+CRUD pipelines, access-policy enforcement, and provider extension points.
+
+Provider modules such as [mongodb](mongodb/README.md) and
+[cassandradb](cassandradb/README.md) implement provider-specific behavior. The
+group itself must not become a second persistence implementation.
 
 Developer guidance for this module covers schema definition, nested schema
 design, model middleware, validators, generated model/service behavior, DAO
@@ -10,7 +17,8 @@ the owning source files, active configuration, and tests.
 
 ## Ownership
 
-`nDatabase` is responsible for:
+The `nDatabase` group is responsible for capability composition and shared
+navigation. The `database` child capability is responsible for:
 
 - loading schema definitions from active modules;
 - merging schema extensions through module hierarchy;
@@ -21,6 +29,15 @@ the owning source files, active configuration, and tests.
   permits them;
 - preserving tenant-aware database resolution;
 - keeping database behavior overrideable by later modules.
+
+## When To Use Each Module
+
+| Need | Module |
+| --- | --- |
+| Understand generic schema, model, connection, CRUD, tenant, and access-policy behavior | [database](database/README.md) |
+| Configure or implement MongoDB behavior | [mongodb](mongodb/README.md) |
+| Configure or implement Cassandra behavior | [cassandradb](cassandradb/README.md) |
+| Evaluate another database adapter | Start with the generic [database provider checklist](database/README.md#provider-adapter-checklist), then create an owned provider module. |
 
 ## Schema Contract
 
@@ -144,3 +161,48 @@ The implementation path is:
 Provider endpoints, credentials, schema spaces, database names, service names,
 wallet paths, or cluster topology must come from configuration or governed
 secret/runtime layers. They must not be hardcoded in framework modules.
+
+## Security, Performance, And Operations
+
+- Resolve every database handle by both module and tenant where the contract
+  requires isolation.
+- Validate provider configuration before opening clients or building models.
+- Keep secrets outside source and safe diagnostics.
+- Apply schema read/write access policy before persistence behavior.
+- Treat pool size, deadlines, indexes, query shape, retry behavior, and
+  connection cleanup as provider-qualified operational concerns.
+- Do not claim a provider is production-ready without live contract,
+  performance, failure, recovery, and isolation evidence for the target use.
+
+## Verification
+
+The group has no independent persistence runtime. Verify the generic child and
+the selected provider:
+
+```bash
+node gFramework/nDatabase/database/test/tenantDatabaseConfigurationValidation.test.js
+node gFramework/nDatabase/database/test/schemaReadAccessPolicyService.test.js
+node gFramework/nDatabase/database/test/schemaWriteAccessPolicyService.test.js
+node gFramework/nDatabase/database/test/modelSaveInitializerPipelineContract.test.js
+npm run quality:docs
+npm run test:basic
+```
+
+Provider changes also require provider-specific invalid configuration,
+connection, query, tenant isolation, failure, cleanup, and live integration
+tests where external infrastructure is involved.
+
+## Common Mistakes
+
+- Adding provider-specific branches to generic DAO or generated CRUD code.
+- Treating the `nDatabase` group as the runtime persistence implementation.
+- Sharing a connection or model across tenants without an explicit contract.
+- Bypassing schema access policy through a convenience query path.
+- Editing generated models instead of source schema definitions.
+
+## Continue
+
+- Public data guide: [How To Work With Data](../../gDocs/data/how-to-work-with-data.md)
+- Generic persistence capability: [database](database/README.md)
+- Provider maturity: [Provider And Capability Maturity Matrix](../../gDocs/reference/provider-capability-maturity-matrix.md)
+- Framework map: [gFramework](../README.md)

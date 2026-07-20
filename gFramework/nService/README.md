@@ -1,5 +1,10 @@
 # nService
 
+`nService` is where reusable application behavior is performed. In a simple
+request, a route accepts the call, a controller translates it, and a service
+does the meaningful work. Services can also be called by jobs, events,
+pipelines, workflows, or other modules without going through HTTP controllers.
+
 `nService` owns shared service-layer contracts used by framework and project
 modules, including module communication, tenant/enterprise handling,
 authentication-provider cache access, authorization helpers, and status/log
@@ -10,6 +15,14 @@ credential material. Invalidation callbacks may emit structured observability
 and audit context such as reason code, tenant, enterprise, principal, source,
 and token type, but must never log or persist bearer tokens, refresh tokens,
 API keys, or auth cache keys.
+
+## When To Use This Module
+
+Use this group for shared service mechanics, generated service contracts,
+tenant and enterprise context, authorization helpers, and the one governed
+module communication client. Put domain behavior in the module that owns the
+domain. Use [vService](vService/README.md) only for a deliberate service variant,
+not as a second home for base behavior.
 
 ## Service Model
 
@@ -107,3 +120,45 @@ Avoid:
 - using direct HTTP clients outside `DefaultModuleService` for module communication;
 - logging tokens, API keys, auth cache keys, or credentials;
 - adding service files outside `src/service`, where the Nodics loader will not discover them consistently.
+
+## Integration And Contract Boundaries
+
+Services consume schemas, models, pipelines, configuration, tenant context, and
+provider contracts. They may emit events or call another module, but the data
+contract and failure behavior must remain owned and documented.
+
+Human username/password authentication is separate from internal
+module-to-module and scheduled access. Internal communication uses service
+identity and `DefaultModuleService`; it must not reuse a person's credentials.
+BackOffice self-registration remains asynchronous control-plane work so module
+startup and high-volume request paths do not synchronously depend on registry
+availability.
+
+## Observability, Performance, And Resilience
+
+- Keep timeouts bounded and connections reusable.
+- Retry safe reads or explicitly idempotent writes only.
+- Open the circuit according to configured transport policy rather than
+  allowing repeated dependency failures to consume request capacity.
+- Preserve correlation, tenant, target module, operation, attempt, duration,
+  and sanitized failure classification.
+- Never log authorization headers, tokens, API keys, credentials, or arbitrary
+  response bodies.
+- Close pooled transport resources through the runtime lifecycle coordinator.
+
+## Common Mistakes
+
+- Creating a direct HTTP client for one module or cron job.
+- Retrying an unsafe write without an idempotency contract.
+- Mixing human login credentials with internal service identity.
+- Resolving a remote URL from hardcoded source instead of `servers.*` and the
+  router/module service contract.
+- Copying a generated service to customize one method instead of using the
+  layered service override mechanism.
+
+## Continue
+
+- Build application behavior: [How To Create Application Functionality](../../gDocs/development/how-to-create-application-functionality.md)
+- Module communication and APIs: [How To Create APIs](../../gDocs/development/how-to-create-apis.md)
+- Service variant: [vService](vService/README.md)
+- Framework map: [gFramework](../README.md)

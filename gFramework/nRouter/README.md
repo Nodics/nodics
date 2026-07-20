@@ -1,10 +1,23 @@
 # nRouter
 
+`nRouter` is the controlled front door to Nodics APIs. It decides which URL and
+HTTP method exist, how a request enters the platform, whether that API category
+is enabled, and which authentication and permission rules apply before
+business behavior runs.
+
 `nRouter` owns request routing, secured request pipelines, route action
 authorization, OpenAPI generation, and route metadata governance.
 
 Detailed router framework documentation is maintained in
 [docs/router-framework.md](docs/router-framework.md).
+
+## When To Use This Module
+
+Use `nRouter` for framework-wide route loading, Express binding, request
+pipeline behavior, HTTP hardening, route authorization, API exposure policy,
+OpenAPI generation, and response contracts. Put a business API definition in
+the business module that owns it; use the router framework contract rather than
+moving that route into `nRouter`.
 
 Routes may define literal `permission` or `permissions` values for fixed
 platform actions. When a permission is expected to vary by project,
@@ -141,3 +154,60 @@ as a built-in router step. Router customization should use route metadata,
 `src/router/appConfig.js`, request pipeline definitions, request pipeline
 services, controllers, or downstream capability interceptors depending on where
 the behavior belongs.
+
+## Integration Map
+
+| Layer | Responsibility |
+| --- | --- |
+| Route definition | Declares method, path, controller/action, security, permissions, exposure, cache, and API metadata. |
+| Controller | Maps HTTP input and output into Nodics request/response context. |
+| Facade | Coordinates several services when orchestration is needed. |
+| Service | Owns reusable business and integration behavior. |
+| Schema | Supplies data, validation, access, and generated API contracts. |
+| `nAuth` and `nToken` | Establish authenticated identity and token behavior; router authorization consumes that identity. |
+| `nSystem` | Exposes governed contract, health, and selected control-plane APIs. |
+
+## Observability, Performance, And Failure Behavior
+
+Requests should retain correlation, tenant, module, route, action, and safe
+status context through success and failure paths. Do not include tokens,
+credentials, or uncontrolled response bodies in diagnostics.
+
+Body limits, rate limits, CORS, headers, proxy trust, caching, and exposure
+policy must be resolved before expensive business work. A disabled API category
+or unauthorized request must fail before controller or service execution.
+Per-process rate limiting is a guardrail, not a substitute for a distributed
+gateway policy when a deployment requires global enforcement.
+
+## Verification
+
+```bash
+node gFramework/nRouter/test/httpHardeningContract.test.js
+node gFramework/nRouter/test/routeActionAuthorization.test.js
+node gFramework/nRouter/test/controlPlaneRouteContract.test.js
+node gFramework/nRouter/test/requestPipelineResponseContract.test.js
+node gFramework/nRouter/test/openapiContractGeneration.test.js
+npm run docs:openapi
+npm run quality:docs
+```
+
+For a changed business route, also run the owning module's positive,
+unauthorized, forbidden, invalid-input, boundary, generated API, scenario, and
+integration tests.
+
+## Common Mistakes
+
+- Putting business or database behavior in a route definition.
+- Marking a human login route and an internal service route with the same
+  credential assumptions.
+- Using only a broad user group for a sensitive control-plane operation.
+- Enabling a sensitive API in production merely because the caller has a
+  permission; exposure and authorization are separate gates.
+- Editing generated routes or OpenAPI output directly.
+
+## Continue
+
+- Public API guide: [How To Create APIs](../../gDocs/development/how-to-create-apis.md)
+- Security guide: [How Users, Tenants, And Permissions Work](../../gDocs/security/how-users-tenants-and-permissions-work.md)
+- Detailed framework: [Router Framework](docs/router-framework.md)
+- Framework map: [gFramework](../README.md)

@@ -1,11 +1,26 @@
 # nConfig
 
+`nConfig` starts Nodics in a predictable way. It answers four beginner
+questions before other modules run: which modules are active, in what order,
+which configuration wins, and which runtime composition is being started.
+
 `nConfig` owns Nodics startup configuration, active module discovery, metadata
 validation, layered property loading, and startup script orchestration.
 
 `nConfig` prepares application, environment, server, node, and property state
 before the rest of the platform starts. Runtime selection must come from active
 module metadata and layered configuration, not hardcoded project names.
+
+## When To Use This Module
+
+Read or change `nConfig` when you are working on module discovery, package
+metadata, configuration precedence, environment/server/node selection, startup
+scripts, generated build lifecycle, logging bootstrap, readiness, draining, or
+shutdown coordination.
+
+Do not put business rules here. Business behavior belongs to its capability
+module; `nConfig` only ensures that the correct modules and configuration are
+available to that behavior.
 
 ## Ownership
 
@@ -249,3 +264,57 @@ When adding configuration behavior, document:
 - tenant/request behavior;
 - validation and failure mode;
 - tests proving default and later-layer override behavior.
+
+## Integration Map
+
+| Consumer or collaborator | Relationship |
+| --- | --- |
+| Every active module | Supplies metadata, properties, lifecycle scripts, and source contributions loaded in deterministic order. |
+| `nCommon` | Uses the prepared runtime to provide shared helpers and error/trace contracts. |
+| `nRouter`, `nDatabase`, `nPipeline` | Consume effective definitions and properties after configuration has established the active hierarchy. |
+| Environment/server/node modules | Select topology and contribute progressively narrower configuration. |
+| `nDynamo` | Governs supported persisted runtime configuration; it does not replace normal startup configuration authority. |
+| `nTooling` | Uses configuration-owned command and governance properties for non-runtime build and validation workflows. |
+
+## Security, Performance, And Operations
+
+- Treat configuration and diagnostics as potentially sensitive; redact secrets
+  and do not print usable credentials.
+- Keep discovery and merge order deterministic so startup behavior can be
+  reproduced and audited.
+- Keep startup hooks idempotent and bounded. A mandatory failure should stop
+  readiness rather than leave a partially trusted runtime.
+- Register lifecycle work through the single coordinator instead of installing
+  parallel process signal handlers.
+- Keep local module activation (`activeModules`) separate from remote endpoint
+  coordinates (`servers.*`).
+
+## Verification
+
+```bash
+node gFramework/nConfig/test/configurationValidation.test.js
+node gFramework/nConfig/test/layeredCustomizationContract.test.js
+node gFramework/nConfig/test/nonRuntimePackageDiscovery.test.js
+node gFramework/nConfig/test/runtimeLifecycleService.test.js
+node gFramework/nConfig/test/loggerRedactionContract.test.js
+npm run quality:docs
+```
+
+Also validate schema/router override governance when changing composition and
+run `npm run test:basic` before release or shared-branch publication.
+
+## Common Mistakes
+
+- Inferring module kind from a folder name instead of `package.json.nodics`.
+- Creating another configuration or governance file when `properties.js` owns
+  the value.
+- Treating endpoint coordinates as local module activation.
+- Hiding business work in startup scripts.
+- Running generated-context generation and validation concurrently.
+
+## Continue
+
+- Public guide: [How Configuration Works](../../gDocs/configuration/how-configuration-works.md)
+- Runtime structure: [How Nodics Is Organized](../../gDocs/architecture/how-nodics-is-organized.md)
+- Lifecycle detail: [Runtime Lifecycle And Resilience Contract](docs/runtime-lifecycle-resilience-contract.md)
+- Framework map: [gFramework](../README.md)

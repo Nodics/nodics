@@ -1,5 +1,9 @@
 # nCommon
 
+`nCommon` is the shared toolbox used by several Nodics capabilities. It contains
+small platform-wide building blocks that would otherwise be copied between
+modules. It is deliberately not a home for any code that merely feels reusable.
+
 `nCommon` owns shared utilities, enumerations, reusable runtime helpers, and
 common process/data holders used across Nodics modules.
 
@@ -12,6 +16,14 @@ capability module.
 Those responsibilities belong to `nConfig`. `nCommon` contributes shared
 runtime primitives after `nConfig` has prepared the active module hierarchy and
 effective layered configuration.
+
+## When To Use This Module
+
+Use `nCommon` when a deterministic helper, error/status contract, processor,
+interceptor primitive, or traceability mechanism is genuinely shared across
+several framework capabilities. Keep the behavior in its existing capability
+module when it expresses business meaning, provider behavior, persistence,
+routing, identity, jobs, or workflow.
 
 ## Ownership
 
@@ -86,3 +98,53 @@ specific capability module.
 If a helper needs tenant, request, module, or runtime-governance context, pass
 that context explicitly or call an existing service. Hidden global assumptions
 make later project overrides difficult to reason about.
+
+## Integration And Data Contracts
+
+`nCommon` is widely consumed, so even a small change can affect startup,
+requests, pipelines, imports, jobs, events, and tests. Public helpers must have
+stable input/output and error behavior. Request, tenant, module, correlation,
+and execution context should be passed explicitly rather than recovered from an
+unexplained global.
+
+Shared status definitions provide traceable error identities. Capability-owned
+errors should remain in the capability module and use common formatting and
+trace propagation rather than moving all error meaning into `nCommon`.
+
+## Security, Performance, And Operations
+
+- Never place credentials or secret-bearing convenience helpers in common
+  logging or serialization paths.
+- Prefer deterministic, low-overhead utilities because shared helpers can sit
+  on high-volume paths.
+- Preserve original error cause, correlation, module, tenant, execution layer,
+  and safe diagnostic context.
+- Avoid hidden I/O, network calls, mutable global state, or provider selection
+  in a function presented as a general utility.
+
+## Verification
+
+```bash
+node gFramework/nCommon/test/errorTraceability.test.js
+node gFramework/nCommon/test/executionLayerTraceability.test.js
+npm run quality:docs
+npm run test:basic
+```
+
+Add focused positive, invalid-input, boundary, error-propagation, and consumer
+regression tests when a shared contract changes.
+
+## Common Mistakes
+
+- Moving code here only to shorten an import path.
+- Creating a second utility or status registry.
+- Returning ambiguous error objects that lose the original cause.
+- Reading tenant or request state from an implicit global.
+- Adding a capability-specific enum as a framework-wide contract.
+
+## Continue
+
+- Error and trace terminology: [Nodics Glossary](../../gDocs/reference/glossary.md)
+- Framework map: [gFramework](../README.md)
+- Ordered execution: [nPipeline](../nPipeline/README.md)
+- Public documentation: [Nodics Documentation](../../gDocs/README.md)

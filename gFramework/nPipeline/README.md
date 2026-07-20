@@ -1,5 +1,10 @@
 # nPipeline
 
+`nPipeline` runs a named sequence of technical processing steps. It is useful
+when an operation must pass through an ordered, configurable lifecycle—for
+example validation, initialization, persistence, or post-processing—while
+allowing a later module to replace or reorder specific steps.
+
 `nPipeline` owns configurable execution pipelines used to compose ordered
 runtime behavior.
 
@@ -12,6 +17,14 @@ pipeline and workflow terminology in different places, so verify the owning
 source before moving behavior. Pipeline behavior belongs here when it is
 framework-level ordered execution; business workflow belongs in workflow
 modules.
+
+## When To Use A Pipeline
+
+Use a pipeline when the sequence itself is part of the platform or capability
+contract and needs named steps, shared context, error traceability, and layered
+overrides. Use an ordinary service for a small cohesive behavior. Use workflow
+modules when the business process has durable state, carriers, actions,
+waiting, human decisions, retries across time, or business-visible lifecycle.
 
 ## Ownership
 
@@ -93,6 +106,12 @@ npm run docs:coverage:source -- --limit=20
 
 When changing runtime pipeline behavior, add focused tests that prove default execution, error enrichment, dynamic update/removal, and later-module overrides.
 
+The current repository also exercises pipeline contracts through consumer
+modules such as generated database save/get/update/remove pipelines, search,
+workflow, cronjob, and runtime schema governance. A change to the generic engine
+must run those consumer regressions because they are part of the effective
+contract.
+
 ## What To Avoid
 
 Avoid:
@@ -102,3 +121,29 @@ Avoid:
 - putting business workflow state machines into generic pipelines;
 - mutating global `PIPELINE` from random services;
 - changing pipeline contracts without tests for default and override behavior.
+
+## Integration, Observability, And Performance
+
+Pipeline request and response objects are contracts shared with their caller.
+Each node must document required input, output mutation, side effects, tenant
+and authorization assumptions, and whether retry or repeated execution is safe.
+
+Trace failures with pipeline name/id, node, module, tenant, correlation, and the
+original safe cause. Do not swallow errors or log secret-bearing request data.
+Keep synchronous nodes bounded; move long-running or durable business work to
+the appropriate job, event, messaging, or workflow capability.
+
+## Common Mistakes
+
+- Using a pipeline as an unstructured list of hidden service calls.
+- Using a processor as a second pipeline controller.
+- Storing business workflow state only in in-memory pipeline context.
+- Mutating the global registry outside its loader/event contract.
+- Adding a node without defining error and repeated-execution behavior.
+
+## Continue
+
+- Detailed framework: [Pipeline Framework](docs/pipeline-framework.md)
+- Public platform guide: [How Platform Capabilities Work](../../gDocs/platform/how-platform-capabilities-work.md)
+- Business workflow modules: [workflow](../../gCore/workflow/README.md)
+- Framework map: [gFramework](../README.md)
