@@ -1,5 +1,8 @@
 # nodeCache
 
+**Maturity: Sample or reference.** The adapter is implemented and tested for
+process-local behavior, but it does not provide distributed consistency.
+
 The `nodeCache` module implements the supported process-local cache adapter using `node-cache`.
 
 Use this module when a cache channel should be local to one Node.js process. It is useful for fast local reads and isolated development/test behavior, but it is not a distributed cache. When multiple Nodics nodes run the same capability, invalidation must be propagated through Nodics cache events and topology behavior.
@@ -83,3 +86,21 @@ Avoid:
 - bypassing tenant-aware storage key generation;
 - hardcoding local cache selection in framework or project services;
 - disabling invalidation events when multiple nodes can serve the same capability.
+
+## Operations And Performance
+
+Local cache consumes the memory of each Node.js process. Bound entry count,
+payload size, and TTL for the target workload; monitor heap use, eviction,
+hit/miss rate, clone cost, and invalidation failures. A process restart clears
+the cache and must not lose authoritative state.
+
+Do not use a local benchmark as evidence for multi-node correctness. Validate
+the selected topology, especially when several nodes can serve the same tenant
+or capability.
+
+## Continue
+
+- Generic cache contract: [cache](../cache/README.md)
+- Distributed cache: [redisCache](../redisCache/README.md)
+- Provider selection: [nCache](../README.md)
+- Public guide: [How Cache Works](../../../gDocs/platform/how-cache-works.md)

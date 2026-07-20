@@ -1,5 +1,9 @@
 # elastic Module
 
+**Maturity: Guarded provider.** The adapter has deterministic connection and
+operation contracts, but production use requires a configured external cluster
+and guarded live qualification.
+
 `elastic` is the Elasticsearch engine adapter for `nSearch`. It owns Elasticsearch-specific configuration, schemas, route wiring, and pipeline hooks used by the provider-neutral search capability.
 
 Use this module for Elastic connection and engine behavior only. Shared search APIs, cache policy, fallback semantics, and index lifecycle contracts belong in `nSearch/search`.
@@ -77,3 +81,22 @@ Avoid:
 - bypassing search model and pipeline contracts;
 - returning raw provider errors that expose connection details;
 - assuming Elastic type semantics are valid for every future search engine.
+
+## Operations, Recovery, And Performance
+
+Define cluster health thresholds, TLS/authentication, timeouts, retry/backoff,
+index templates/mappings, aliases, refresh, shard/replica policy, capacity,
+snapshot/restore, reindex, and version compatibility. Monitor cluster health,
+query/bulk latency, rejected operations, indexing lag, mapping conflicts,
+connection retries, and index growth by safe tenant-aware dimensions.
+
+Test startup with unavailable and degraded clusters, index creation races,
+mapping changes, bulk partial failure, query errors, reconnect, alias migration,
+tenant isolation, and cleanup in an isolated provider environment.
+
+## Continue
+
+- Generic contract: [search](../search/README.md)
+- Provider selection: [nSearch](../README.md)
+- Maturity matrix: [Provider And Capability Maturity Matrix](../../../gDocs/reference/provider-capability-maturity-matrix.md)
+- Public platform guide: [How Platform Capabilities Work](../../../gDocs/platform/how-platform-capabilities-work.md)

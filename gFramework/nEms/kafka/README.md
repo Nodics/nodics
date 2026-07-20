@@ -1,5 +1,8 @@
 # kafka Module
 
+**Maturity: Guarded provider.** Deterministic publish behavior is covered, but
+production use requires live broker, consumer, failure, and recovery evidence.
+
 `kafka` is the Kafka provider adapter for the `nEms` messaging family. It owns Kafka-specific connection defaults, producer/consumer wiring, and provider pipeline hooks.
 
 Use this module for Kafka behavior only. Shared EMS client APIs, active publisher selection, tenant resolution, and message route contracts belong in `nEms/emsClient`.
@@ -69,3 +72,23 @@ Avoid:
 - serializing messages without preserving the configured EMS payload contract;
 - logging failed consumed messages without tenant context;
 - enabling production Kafka without live-provider validation and sanitized diagnostics.
+
+## Operations And Qualification
+
+Define topic ownership, partitions, keys and ordering, replication, retention,
+consumer groups, offset/acknowledgement policy, retry/backoff, dead-letter or
+failed-message policy, schema compatibility, TLS/SASL, capacity, and recovery.
+Monitor broker connectivity, publish latency, consumer lag, rebalance, retries,
+duplicates, deserialization failure, and poison messages.
+
+Guarded live tests should cover topic creation policy, publish/consume,
+partition ordering assumptions, consumer restart/rebalance, duplicate delivery,
+handler failure, offset behavior, unavailable broker, reconnect, and cleanup in
+an isolated cluster.
+
+## Continue
+
+- Provider-neutral contract: [emsClient](../emsClient/README.md)
+- Messaging family: [nEms](../README.md)
+- Maturity matrix: [Provider And Capability Maturity Matrix](../../../gDocs/reference/provider-capability-maturity-matrix.md)
+- Event execution: [nEvent](../../nEvent/README.md)

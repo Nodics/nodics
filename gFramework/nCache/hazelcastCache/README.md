@@ -1,5 +1,8 @@
 # hazelcastCache
 
+**Maturity: Placeholder or scaffold.** It is intentionally unusable until a
+real adapter replaces the fail-closed services and proves the full contract.
+
 The bundled `hazelcastCache` module is an unsupported, fail-closed Hazelcast adapter boundary. It is present so projects have a clear provider slot, but the framework does not ship a working Hazelcast client implementation.
 
 Use this module only as the override target for a real project-owned or provider-owned Hazelcast adapter. The bundled services reject activation and cache operations by design.
@@ -65,3 +68,10 @@ Avoid:
 - claiming atomic consume, TTL, serialization, or invalidation behavior that is not implemented;
 - hardcoding cluster endpoints or credentials in source code;
 - bypassing the generic cache adapter contract.
+
+## Continue
+
+- Generic cache contract: [cache](../cache/README.md)
+- Provider selection: [nCache](../README.md)
+- Maturity rules: [Provider And Capability Maturity Matrix](../../../gDocs/reference/provider-capability-maturity-matrix.md)
+- Public guide: [How Cache Works](../../../gDocs/platform/how-cache-works.md)

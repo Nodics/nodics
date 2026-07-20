@@ -1,5 +1,8 @@
 # nSearch
 
+`nSearch` is the search capability group. It separates the business meaning of
+an index and query from the external engine that stores and searches documents.
+
 Initialized search providers contribute optional readiness and close their
 unique connections through the central runtime lifecycle contract. Provider
 modules retain connection ownership; the lifecycle service only orders hooks.
@@ -9,6 +12,17 @@ modules retain connection ownership; the lifecycle service only orders hooks.
 Use this root module for family-level search ownership and defaults. Provider-neutral search behavior belongs in `nSearch/search`; engine-specific integration belongs in adapter modules such as `nSearch/elastic`.
 
 Search must remain schema-driven, tenant-aware, and governed by configuration. Projects can replace engines or tune policies without changing framework source.
+
+## Choose A Search Module
+
+| Module | Role | Current maturity |
+| --- | --- | --- |
+| [search](search/README.md) | Provider-neutral schemas, routes, indexing, query, cache, and error contract | Production-ready capability |
+| [elastic](elastic/README.md) | Elasticsearch client and operation adapter | Guarded provider |
+
+Another engine such as OpenSearch or Solr belongs in its own provider module
+behind the `search` contract. Do not place its client calls in the group or
+generic capability.
 
 ## Module Family
 
@@ -135,3 +149,22 @@ Avoid:
 - caching search results without the centralized cacheability policy;
 - creating search routes that are not secured;
 - editing generated search artifacts manually.
+
+## Operations And Qualification
+
+Search is usually a derived view of authoritative data. Define reindex,
+reconciliation, alias/version migration, refresh, backup, recovery, outage,
+fallback, and stale-result behavior. Monitor indexing lag, rejected documents,
+query and bulk latency, error rate, cache effects, index size, and tenant
+isolation.
+
+Provider-neutral deterministic tests do not qualify an external cluster. Run
+guarded live tests for connection, health, indexing, querying, failure,
+recovery, and cleanup before production enablement.
+
+## Continue
+
+- Generic search contract: [search](search/README.md)
+- Elasticsearch provider: [elastic](elastic/README.md)
+- Provider maturity: [Provider And Capability Maturity Matrix](../../gDocs/reference/provider-capability-maturity-matrix.md)
+- Public platform guide: [How Platform Capabilities Work](../../gDocs/platform/how-platform-capabilities-work.md)

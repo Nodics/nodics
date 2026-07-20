@@ -1,11 +1,24 @@
 # nEms
 
+`nEms` is the enterprise-messaging capability group. Messaging moves work or
+facts between processes through a broker; it is different from an in-process
+event listener and must assume delay, duplication, reordering, and failure.
+
 `nEms` owns enterprise messaging integration contracts and adapter modules.
 
 Messaging guidance covers producer and consumer flows plus configuration
 examples for providers such as Tibco, ActiveMQ, and Kafka. Implementations must
 keep provider-specific behavior behind adapter modules and layered
 configuration.
+
+## Choose A Messaging Module
+
+| Module | Role | Current maturity |
+| --- | --- | --- |
+| [emsClient](emsClient/README.md) | Provider-neutral publish, consume, tenant resolution, processing, and failed-message contract | Production-ready capability |
+| [kafka](kafka/README.md) | Kafka adapter | Guarded provider |
+| [activemq](activemq/README.md) | ActiveMQ/STOMP adapter boundary | Placeholder or scaffold |
+| [nEvent](../nEvent/README.md) | In-platform listener execution after a local or translated message event | Production-ready capability |
 
 ## Module Family
 
@@ -123,3 +136,22 @@ Avoid:
 - publishing consumed messages into events without validation and handler translation;
 - exposing raw broker errors or credentials in diagnostics;
 - treating provider smoke tests as release coverage for a production broker.
+
+## Delivery Semantics And Operations
+
+Every publisher and consumer must define message identity, schema/version,
+ordering, idempotency, retry, backoff, dead-letter or failed-message handling,
+tenant resolution, acknowledgement, retention, replay, and poison-message
+behavior. “Exactly once” must not be claimed unless the complete business side
+effect and broker contract prove it.
+
+Monitor publish/consume latency, backlog/lag, retries, duplicates, failures,
+dead-letter volume, reconnects, handler duration, and tenant-resolution errors
+without exposing sensitive payloads.
+
+## Continue
+
+- Provider-neutral client: [emsClient](emsClient/README.md)
+- In-platform events: [nEvent](../nEvent/README.md)
+- Provider maturity: [Provider And Capability Maturity Matrix](../../gDocs/reference/provider-capability-maturity-matrix.md)
+- Public platform guide: [How Platform Capabilities Work](../../gDocs/platform/how-platform-capabilities-work.md)

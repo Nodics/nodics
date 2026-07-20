@@ -1,5 +1,8 @@
 # redisCache
 
+**Maturity: Guarded provider.** Production use requires explicit connection,
+secret, TLS/topology, isolation, operations, and live release validation.
+
 The `redisCache` module implements the supported distributed cache adapter using Redis 6.2+ semantics.
 
 Use this module when cache state must be shared across Nodics nodes. Redis is the supported distributed cache path for shared item cache, API cache, search cache, auth/session acceleration, and other cross-process cache channels that require one shared backing store.
@@ -111,3 +114,21 @@ Avoid:
 - using Redis without tenant-aware key prefixes;
 - replacing `GETDEL` atomic consume with non-atomic get/delete behavior;
 - using blocking key scans for prefix cleanup.
+
+## Operations, Recovery, And Performance
+
+Define Redis availability, persistence, backup, failover, eviction, memory,
+connection-pool, timeout, retry, TLS, and keyspace-notification expectations for
+the deployment. Monitor connection state, command latency, misses, evictions,
+memory pressure, `SCAN` cleanup duration, subscription failure, and reconnects.
+
+Retries must not turn `consume` into replayable behavior. Test provider outage,
+reconnect, atomic consume, concurrent access, tenant isolation, TTL boundaries,
+prefix cleanup, and restart/failover using an isolated environment.
+
+## Continue
+
+- Generic cache contract: [cache](../cache/README.md)
+- Release qualification: [Provider And Capability Maturity Matrix](../../../gDocs/reference/provider-capability-maturity-matrix.md)
+- Authentication use: [nAuth](../../nAuth/README.md)
+- Public guide: [How Cache Works](../../../gDocs/platform/how-cache-works.md)

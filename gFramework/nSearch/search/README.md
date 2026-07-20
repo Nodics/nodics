@@ -1,5 +1,9 @@
 # search Module
 
+The `search` module is the provider-neutral authority for indexing and search
+behavior. Business modules define what is searchable; this module supplies the
+common lifecycle and delegates engine work to the configured provider.
+
 `search` is the provider-neutral search capability inside `nSearch`. It owns search facades, controllers, route contracts, index definitions, fallback behavior, cache policy integration, and shared search lifecycle rules.
 
 Use this module for search behavior that should apply across engines. Engine-specific connection and query adapter behavior belongs in modules such as `nSearch/elastic`.
@@ -96,3 +100,23 @@ Avoid:
 - caching sensitive search payloads outside the shared cache policy;
 - putting customer-specific ranking, fields, or aliases into framework defaults;
 - editing generated schema search services manually.
+
+## Consistency, Failure, And Performance
+
+Document whether each operation is synchronous or eventually consistent, how
+source changes reach the index, and what happens when indexing or querying is
+unavailable. Fallback-to-database must be explicit, bounded, permission-safe,
+and appropriate to query semantics; it is not a universal replacement for a
+search engine.
+
+Preserve tenant/module/schema/index context in keys, models, logs, and errors.
+Measure indexer lag, batch size, query latency, result size, cache hit rate,
+provider failure, and reconciliation outcome without recording sensitive query
+content as unrestricted telemetry.
+
+## Continue
+
+- Provider selection: [nSearch](../README.md)
+- Elasticsearch adapter: [elastic](../elastic/README.md)
+- Cache policy: [How Cache Works](../../../gDocs/platform/how-cache-works.md)
+- Data guide: [How To Work With Data](../../../gDocs/data/how-to-work-with-data.md)

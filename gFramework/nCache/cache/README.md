@@ -1,5 +1,9 @@
 # cache
 
+The `cache` module is the provider-neutral authority for caching in Nodics. It
+defines what callers may expect regardless of whether the configured engine is
+local memory, Redis, or a future qualified provider.
+
 The `cache` module owns Nodics cache orchestration: layered channel and engine configuration, tenant-partitioned physical keys, API/item/search key creation, adapter dispatch, runtime configuration events, and cross-node invalidation.
 
 Nodics exposes two primary business-cache layers:
@@ -192,3 +196,22 @@ Projects should tune cacheability through layered properties before replacing co
 ```
 
 The handler is a normal layered Nodics service method. It receives `(context, decision, handler)` and may return `{ cacheable: false, reason: 'tenantRuleDenied', reasonCode: 'RSN_TENANTCACHE_00001' }` to reject a write with a project-specific code. Project-specific reason codes should be added to the owning project/module `src/utils/statusDefinitions.js`. Core safety checks run first, so handlers extend accepted decisions and do not bypass built-in binary, sensitive-field, serialization, or payload-size protections unless the layered properties explicitly change those protections. `handlerFailureMode: 'failClosed'` rejects cache writes when a configured handler is missing or throws; set it to `'ignore'` only when the project intentionally prefers cache availability over custom-rule enforcement.
+
+## Selecting A Channel And Provider
+
+Choose a channel by the data and consistency contract, not by provider name.
+Local memory is appropriate only when one process can safely own the cached
+copy or stale copies can be invalidated acceptably. Distributed security state,
+cross-node single use, and shared consistency require a provider that truthfully
+declares and proves those capabilities.
+
+Do not silently fall back from a strict distributed channel to a local engine.
+Fail closed when the required atomicity, distribution, invalidation, or
+serialization contract is unavailable.
+
+## Continue
+
+- Provider selection: [nCache](../README.md)
+- Local provider: [nodeCache](../nodeCache/README.md)
+- Distributed provider: [redisCache](../redisCache/README.md)
+- Public guide: [How Cache Works](../../../gDocs/platform/how-cache-works.md)

@@ -1,5 +1,10 @@
 # nEvent
 
+`nEvent` runs in-platform event listeners. It lets one capability announce that
+something happened without hardcoding every interested module into the
+publisher. Broker transport remains owned by `nEms`; persisted distribution and
+event logs remain owned by `gCore/nems`.
+
 `nEvent` owns the framework event publishing and listener execution contract.
 
 Nodics separates framework event publishing from persisted event distribution:
@@ -88,3 +93,23 @@ Avoid:
 - mixing broker client logic into event listeners;
 - registering listeners outside `src/event/listeners.js` or governed persisted listener models;
 - returning raw internal errors in event diagnostics.
+
+## Delivery, Failure, And Performance
+
+Document whether an event is local, remotely distributed, persisted, replayable,
+or best effort. A local listener call is not durable messaging. Listener side
+effects must define idempotency and failure handling when an upstream broker or
+persisted distributor can redeliver.
+
+Keep listener execution bounded and observable by event, source, target,
+module, tenant, correlation, node, duration, and safe outcome. Do not use full
+payloads or sensitive fields as telemetry labels. Long-running or durable work
+belongs in messaging, jobs, or workflows rather than blocking a local event
+chain.
+
+## Continue
+
+- Broker messaging: [nEms](../nEms/README.md)
+- Persisted event distribution: [nems](../../gCore/nems/README.md)
+- Public platform guide: [How Platform Capabilities Work](../../gDocs/platform/how-platform-capabilities-work.md)
+- Framework map: [gFramework](../README.md)

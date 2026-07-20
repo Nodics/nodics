@@ -1,5 +1,9 @@
 # emsClient Module
 
+The `emsClient` module is the provider-neutral messaging authority. Business
+modules publish to configured logical destinations; provider modules translate
+that contract into Kafka, ActiveMQ, or another qualified broker.
+
 `emsClient` is the shared messaging client capability for `nEms`. It owns the framework-facing APIs and route contracts for publishing messages through the active EMS provider.
 
 Messaging participates in central readiness and shutdown. Drain closes
@@ -97,3 +101,21 @@ Avoid:
 - writing provider-specific broker code in provider-neutral services;
 - logging failed messages without tenant context;
 - returning raw broker credentials or connection details in errors.
+
+## Reliability And Security Boundaries
+
+Publishers must use configured destination names and handlers rather than
+untrusted provider/topic input. Consumers must validate message structure,
+resolve tenant context, preserve message/correlation identity, and define when
+acknowledgement occurs relative to business handling.
+
+Retries require an idempotent consumer or a deduplication contract. Failed
+message persistence is operational evidence, not an automatic replay policy;
+replay needs authorization, audit, ordering, tenant, and side-effect controls.
+
+## Continue
+
+- Messaging family: [nEms](../README.md)
+- Kafka provider: [kafka](../kafka/README.md)
+- ActiveMQ boundary: [activemq](../activemq/README.md)
+- Event execution: [nEvent](../../nEvent/README.md)

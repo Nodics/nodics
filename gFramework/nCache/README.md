@@ -1,5 +1,9 @@
 # nCache
 
+`nCache` is the cache capability group. A cache keeps a temporary copy of data
+to avoid repeating expensive work; it never becomes the authoritative owner of
+that data.
+
 `nCache` groups the cache orchestration module and its Local, Redis, and Hazelcast adapter modules.
 
 - `cache` defines the layered adapter, tenancy, security, and invalidation contracts.
@@ -10,6 +14,15 @@
 - `hazelcastCache` remains unsupported until a real project-provided adapter overrides it.
 
 Applications customize cache behavior through module configuration and service overrides; they do not modify Nodics core code.
+
+## Choose A Cache Module
+
+| Module | Role | Current maturity | Appropriate use |
+| --- | --- | --- | --- |
+| [cache](cache/README.md) | Provider-neutral policy and adapter contract | Production-ready capability | Define channels, keying, cacheability, invalidation, diagnostics, and engine selection. |
+| [nodeCache](nodeCache/README.md) | Process-local provider | Sample or reference | Local development, single-process optimization, or data that does not require cross-node consistency. |
+| [redisCache](redisCache/README.md) | Distributed Redis provider | Guarded provider | Shared cache and strict distributed auth state after live release qualification. |
+| [hazelcastCache](hazelcastCache/README.md) | Fail-closed provider slot | Placeholder or scaffold | Extension target only until a real adapter and live qualification exist. |
 
 ## Cache Layers
 
@@ -87,3 +100,20 @@ The implementation path is:
 
 Connection URLs, credentials, cluster topology, namespaces, and channel choices
 must come from layered configuration or governed runtime layers.
+
+## Operations And Verification
+
+Every cache channel must define hit/miss behavior, source fallback, TTL,
+invalidation, isolation, provider outage behavior, and acceptable staleness.
+Measure hit rate, miss latency, payload size, eviction, invalidation failures,
+provider errors, and recovery without using sensitive cache keys as labels.
+
+Run the generic cache contracts first, then the selected provider's guarded
+live gate when it depends on external infrastructure.
+
+## Continue
+
+- Public cache guide: [How Cache Works](../../gDocs/platform/how-cache-works.md)
+- Generic contract: [cache](cache/README.md)
+- Provider maturity: [Provider And Capability Maturity Matrix](../../gDocs/reference/provider-capability-maturity-matrix.md)
+- Framework map: [gFramework](../README.md)
