@@ -45,6 +45,10 @@ const validRuntimeKeys = new Set([
     'router',
     'web'
 ]);
+const validNodicsKeys = new Set([
+    'kind', 'runtimeModule', 'loadableByNodicsModuleLoader', 'owns', 'runtime',
+    'entrypoints', 'dependencyGovernance'
+]);
 
 const rootPackage = JSON.parse(fs.readFileSync(path.join(rootPath, 'package.json'), 'utf8'));
 const modules = [{
@@ -72,6 +76,10 @@ modules.forEach(module => {
     const meta = module.packageJson;
     const nodics = meta.nodics || {};
     assert.strictEqual(meta.type, undefined, 'Do not use top-level package.json type for Nodics metadata: ' + module.relativePath);
+    assert.strictEqual(meta.runtimeModule, undefined, 'Use package.json.nodics.runtimeModule: ' + module.relativePath);
+    assert.strictEqual(meta.tmpGroup, undefined, 'Obsolete tmpGroup metadata is forbidden: ' + module.relativePath);
+    Object.keys(nodics).forEach(key => assert(validNodicsKeys.has(key),
+        'Invalid package.json.nodics key `' + key + '` for package: ' + module.relativePath));
     assert(nodics.kind, 'Missing nodics.kind for package: ' + module.relativePath);
     assert(validKinds.has(nodics.kind), 'Invalid nodics.kind `' + nodics.kind + '` for package: ' + module.relativePath);
     assert.strictEqual(nodics.moduleType, undefined, 'Do not use nodics.moduleType; use nodics.kind and nodics.runtime: ' + module.relativePath);

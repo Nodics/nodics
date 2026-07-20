@@ -47,6 +47,16 @@ module.exports = {
                     required: true,
                     description: 'Required step code, it could be workflow head code or any of the action code'
                 },
+                carrierDetail: {
+                    type: 'object',
+                    required: false,
+                    description: 'Carrier creation policy, including whether a new carrier is released immediately'
+                },
+                includeProperties: {
+                    type: 'array',
+                    required: false,
+                    description: 'Source model properties copied into workflow items for governed downstream processing'
+                },
                 events: {
                     type: 'object',
                     required: true,

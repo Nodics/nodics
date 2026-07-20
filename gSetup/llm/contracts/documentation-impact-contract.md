@@ -42,3 +42,12 @@ operators. Public task pages must link to their next useful action and owning
 module detail. Run `npm run quality:docs` to validate links, path case,
 reachability, page continuation, required entry points, and module-catalog
 coverage through the existing documentation-governance authority.
+
+Promotion is evidence-based. `gDocs`, module `README.md`, module `docs/`, and
+generated context must describe functionality that exists in authoritative
+source/configuration/runtime contracts and has appropriate validation evidence.
+Keep proposals, future architecture, unresolved decisions, backlogs, and action
+plans under root `docs/` while they remain unimplemented. When implementation
+differs from a plan, update the temporary plan first; promote only the behavior
+that was actually implemented and verified. Do not create permanent public
+documentation merely to preserve a future idea.

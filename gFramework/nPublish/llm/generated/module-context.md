@@ -19,6 +19,7 @@
 - `config`
 - `src/schemas`
 - `src/router`
+- `src/service`
 - `src/pipelines`
 - `src/utils`
 - `test`
@@ -27,11 +28,11 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 7 |
-| Test files | 2 |
+| Source files | 10 |
+| Test files | 8 |
 | Data files | 0 |
-| All module-owned files | 17 |
-| Local schema definitions | 0 |
+| All module-owned files | 24 |
+| Local schema definitions | 2 |
 
 ## Ownership And Dependencies
 
@@ -40,6 +41,7 @@
 - `configuration`
 - `schema`
 - `router`
+- `service`
 - `pipeline`
 - `utility`
 - `test`
@@ -57,9 +59,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 11 |
+| Documented | 14 |
 | Partially documented | 2 |
-| Undocumented | 0 |
+| Undocumented | 4 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -92,11 +94,18 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nPublish/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved application router configuration contribution for publish APIs. |  |
 | `gFramework/nPublish/src/router/routers.js` | `src` | `documented` | 0/0 | Reserved route definition contribution for publish/version promotion APIs. |  |
 | `gFramework/nPublish/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Reserved schema contribution for publish/version promotion models. |  |
+| `gFramework/nPublish/src/service/defaultPublicationAuditReconciliationService.js` | `src` | `documented` | 6/6 | Rebuilds missing audit projections from the tenant-scoped authoritative publication journals. |  |
+| `gFramework/nPublish/src/service/defaultPublicationLifecycleService.js` | `src` | `documented` | 20/20 | Orchestrates the provider-neutral publication lifecycle with governed transitions, CAS revisions, audit, activation, and rollback. |  |
+| `gFramework/nPublish/src/service/defaultPublicationRepositoryService.js` | `src` | `documented` | 13/13 | Persists publication requests with an atomic transition journal and projects audits through generated schema services. |  |
 | `gFramework/nPublish/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared publish enum definition exports. |  |
 | `gFramework/nPublish/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared publish status and error definition exports. |  |
 | `gFramework/nPublish/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility contribution for publish/version promotion helpers. |  |
 | `gFramework/nPublish/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Common sample test scaffold for publish module contracts. | add JSDoc for 7 exported method(s) |
 | `gFramework/nPublish/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Local-environment sample test scaffold for publish module behavior. | add JSDoc for 7 exported method(s) |
+| `gFramework/nPublish/test/publicationAtomicAuditContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nPublish/test/publicationAuditReconciliationService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nPublish/test/publicationAuthorityContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nPublish/test/publicationLifecycleService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 
 ## Extension Contract
 

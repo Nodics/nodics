@@ -18,4 +18,3 @@
 
 - `active` `object` optional
 - `tenant` `string` required: Mandate tenant code
-

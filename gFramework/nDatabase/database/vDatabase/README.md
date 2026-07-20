@@ -1,6 +1,6 @@
 # vDatabase Module
 
-`vDatabase` is the versioned/publish variant for the provider-neutral database capability. It contributes versioned base schema metadata used by runtime flows that need staged, published, or revertible data.
+`vDatabase` is the opt-in versioned variant for the provider-neutral database capability. It contributes schema metadata used by selected runtime models that need staged, published, or revertible data.
 
 Use this module for provider-neutral versioned database contracts. Provider-specific versioned behavior belongs in provider variants such as `mongodb/vMongodb`.
 
@@ -11,9 +11,27 @@ The module contributes schema metadata under `default.versioned`:
 - `versioned: true`;
 - required `versionId`;
 - a unique `versionId` index contribution;
-- `default.base` extending the versioned schema.
+- inheritance from the ordinary `default.base` contract.
 
-This establishes a source definition for versioned data. Business modules can build publish/revert lifecycle behavior on top of this foundation without changing provider-neutral database services.
+This establishes a source definition for versioned data without making every persistent schema versioned. An owning module enables the capability independently on each schema with `isVersionedEnabled: true`. The runtime then composes the versioned contract and exposes the existing internal `schemaModel.versioned` flag consumed by version-aware services and providers.
+
+```js
+module.exports = {
+    catalog: {
+        catalog: {
+            super: 'base',
+            isVersionedEnabled: true,
+            model: true
+        },
+        catalogUserPreference: {
+            super: 'base',
+            model: true
+        }
+    }
+};
+```
+
+Here `catalog.catalog` is versioned, while `catalog.catalogUserPreference` remains an ordinary model. Configuration belongs to the module that owns the schema and remains overrideable through later schema contributions.
 
 ## Source Contracts
 
@@ -26,7 +44,7 @@ This establishes a source definition for versioned data. Business modules can bu
 
 Projects may extend versioned database behavior by:
 
-- adding business schemas that inherit the versioned base contract;
+- setting `isVersionedEnabled: true` only on business schemas that require version history;
 - contributing publish, approval, rollback, or activation services in the owning business module;
 - using provider variants for database-specific version storage behavior;
 - adding tests for version creation, publish state, rollback, tenant isolation, and export behavior.
@@ -50,6 +68,7 @@ Provider-specific behavior should also run provider variant tests, such as the M
 Avoid:
 
 - putting business catalog publish rules into this provider-neutral variant;
+- enabling versioning globally for every schema merely because `vDatabase` is active;
 - making `versionId` behavior provider-specific here;
 - mutating previous versions when history is required;
 - adding generated artifacts manually;

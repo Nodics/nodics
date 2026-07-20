@@ -133,14 +133,16 @@ module.exports = {
      * Prepares a module API base URL for internal module-to-module communication.
      *
      * @param {Object} options URL preparation options.
-     * @param {string} options.moduleName Logical module name.
+     * @param {string} options.moduleName Logical API module name used in the request path.
+     * @param {string} [options.connectionName] Optional server-connection alias used to resolve the endpoint.
      * @param {string|number} [options.nodeId] Optional target node id.
      * @returns {string} API base URL containing context root and module name.
      */
     prepareUrl: function (options) {
         let url = '';
         try {
-            let moduleConfig = this.getModuleServerConfig(options.moduleName);
+            let connectionName = options.connectionName || options.moduleName;
+            let moduleConfig = this.getModuleServerConfig(connectionName);
             let contextRoot = moduleConfig.getOptions().contextRoot || CONFIG.get('servers').options.contextRoot;
             if (options.nodeId === undefined) {
                 url = this.getURL(moduleConfig.getAbstractEndpoint());
@@ -148,7 +150,7 @@ module.exports = {
                 if (moduleConfig.getNode(options.nodeId)) {
                     url = this.getURL(moduleConfig.getNode(options.nodeId));
                 } else {
-                    this.LOG.error('Invalid node id : ' + options.nodeId + ' while preparing URL for module : ' + options.moduleName);
+                    this.LOG.error('Invalid node id : ' + options.nodeId + ' while preparing URL for connection : ' + connectionName);
                 }
             }
             url += '/' + contextRoot + '/' + options.moduleName;

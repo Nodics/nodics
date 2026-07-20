@@ -42,12 +42,12 @@ module.exports = {
             //source: 'sampleLogoComponent',
             target: 'sampleLogoTextComponent',
             active: true,
-            index: 1
+            index: 2
         }, {
             //source: 'sampleLogoComponent',
             target: 'sampleLogoSubTextComponent',
             active: true,
-            index: 1
+            index: 3
         }]
     },
     record2: {

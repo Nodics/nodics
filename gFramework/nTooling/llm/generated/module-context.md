@@ -37,7 +37,6 @@
 - `tooling`
 - `quality`
 - `configuration`
-- `service`
 - `test`
 - `llm`
 

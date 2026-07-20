@@ -42,37 +42,6 @@
             "router": true,
             "publish": false,
             "web": false
-        },
-        "backoffice": {
-            "enabled": true,
-            "capabilityId": "identity-profile",
-            "displayName": "Profiles and Identity",
-            "category": "core",
-            "icon": "identity",
-            "contractVersion": 1,
-            "minimumClientContractVersion": 1,
-            "roles": [
-                "AUTHENTICATION_PROVIDER",
-                "FUNCTIONAL_CAPABILITY_PROVIDER"
-            ],
-            "discovery": {
-                "openApiPath": "/nodics/system/v0/contract/openapi/internal",
-                "contractVersion": 1
-            },
-            "requiredPermissions": [
-                "profile.backoffice.view"
-            ],
-            "navigation": [
-                {
-                    "id": "profile",
-                    "label": "Profiles",
-                    "route": "/profile",
-                    "order": 100,
-                    "requiredPermissions": [
-                        "profile.backoffice.view"
-                    ]
-                }
-            ]
         }
     }
 }

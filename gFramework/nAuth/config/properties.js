@@ -136,6 +136,10 @@ module.exports = {
             'backoffice.contract.rollback',
             'profile.backoffice.view',
             'cms.backoffice.view',
+            'cms.delivery.authenticated.read',
+            'cms.migration.preview',
+            'cms.migration.apply',
+            'cms.migration.rollback',
             'cronjob.backoffice.view',
             'workflow.backoffice.view',
             'cache.flush',
@@ -178,7 +182,7 @@ module.exports = {
                 adminGroup: { parentGroups: ['userGroup'] },
                 contentUserGroup: {
                     parentGroups: ['employeeUserGroup'],
-                    permissions: ['cms.backoffice.view']
+                    permissions: ['cms.backoffice.view', 'cms.delivery.authenticated.read']
                 },
                 runtimeConfigViewerUserGroup: {
                     parentGroups: ['employeeUserGroup'],
@@ -226,6 +230,9 @@ module.exports = {
                         'identity.migration.apply',
                         'identity.migration.rollback',
                         'identity.credential.rotate',
+                        'cms.migration.preview',
+                        'cms.migration.apply',
+                        'cms.migration.rollback',
                         'cache.flush',
                         'cache.configuration.router.update',
                         'cache.configuration.item.update',

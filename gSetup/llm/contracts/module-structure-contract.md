@@ -61,11 +61,10 @@ Runtime artifacts must live where the Nodics loader can discover and merge them:
 - utility registries: `src/utils/utils.js`, `src/utils/enums.js`, and
   `src/utils/statusDefinitions.js`
 
-Every module that has `src/service/` must include
-`src/service/defaultSampleService.js` as the standard service scaffold. It must
-export mergeable `init` and `postInit` functions and use module-specific
-ownership documentation so generated modules have a visible service extension
-shape from the beginning.
+Module generation may create `src/service/defaultSampleService.js` as an empty
+starter placeholder containing only lifecycle hooks. It is not a required
+runtime service and structure validation must not require it after concrete
+services are introduced. Do not add business behavior to the sample placeholder.
 
 Every generated module that has `src/utils/` must include `utils.js`,
 `enums.js`, and `statusDefinitions.js`. These files are required even when they

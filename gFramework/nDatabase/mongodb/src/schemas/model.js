@@ -163,7 +163,9 @@ module.exports = {
                                     success.models = response;
                                     resolve(success);
                                 }).catch(error => {
-                                    reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
+                                    const modelError = new CLASSES.NodicsError(error, null, 'ERR_MDL_00000');
+                                    modelError.errInfo = error && error.errInfo;
+                                    reject(modelError);
                                 });
                             }
                         });
@@ -176,7 +178,9 @@ module.exports = {
                         }).then(success => {
                             resolve(success);
                         }).catch(error => {
-                            reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
+                            const modelError = new CLASSES.NodicsError(error, null, 'ERR_MDL_00000');
+                            modelError.errInfo = error && error.errInfo;
+                            reject(modelError);
                         });
                     }
                 }

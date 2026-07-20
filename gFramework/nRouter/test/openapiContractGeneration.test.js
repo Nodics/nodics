@@ -108,6 +108,7 @@ const defaultRoutes = {
                 accessGroups: ['userGroup'],
                 permission: 'sample.contract.view',
                 permissionConfig: 'sample.contract.routePermission',
+                authTokenTypes: ['service'],
                 key: '/contract',
                 method: 'POST',
                 controller: 'DefaultContractController',
@@ -171,6 +172,7 @@ const configured = document.paths['/nodics/sample/v0/contract'].post;
 assert(configured.parameters.some(parameter => parameter.name === 'dryRun' && parameter.in === 'query'));
 assert.strictEqual(configured['x-nodics'].permission, 'sample.contract.view');
 assert.strictEqual(configured['x-nodics'].permissionConfig, 'sample.contract.routePermission');
+assert.deepStrictEqual(configured['x-nodics'].authTokenTypes, ['service']);
 assert.strictEqual(configured.requestBody.content['application/json'].schema.properties.enabled.type, 'boolean');
 assert(configured.responses.default.$ref);
 assert.strictEqual(document.paths['/nodics/sample/v0/health/live'].get['x-nodics'].publicProbe, true);

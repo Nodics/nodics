@@ -270,7 +270,9 @@ module.exports = {
                 { node: 'gFramework/nDatabase/database/test/modelsSaveInitializerPipelineContract.test.js' },
                 { node: 'gFramework/nDatabase/database/test/modelsRemoveUpdateInitializerPipelineContract.test.js' },
                 { node: 'gFramework/nDatabase/database/test/schemaWriteAccessPolicyService.test.js' },
+                { node: 'gFramework/nDatabase/database/vDatabase/test/versionedSchemaSelectionContract.test.js' },
                 { node: 'gFramework/nDatabase/mongodb/vMongodb/test/versionedModelContract.test.js' },
+                { node: 'gFramework/nPublish/test/publicationLifecycleService.test.js' },
                 { node: 'gFramework/nConfig/test/artifactOverrideTraceability.test.js' }
             ],
             'runtime-overrides': [

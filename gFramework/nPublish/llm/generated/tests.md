@@ -6,10 +6,15 @@
 
 - `gFramework/nPublish/test/common/commonTest.js`
 - `gFramework/nPublish/test/env-local/envTest.js`
+- `gFramework/nPublish/test/publicationAtomicAuditContract.test.js`
+- `gFramework/nPublish/test/publicationAuditReconciliationService.test.js`
+- `gFramework/nPublish/test/publicationAuthorityContract.test.js`
+- `gFramework/nPublish/test/publicationLifecycleService.test.js`
 
 ## Generated Tests
 
-- No generated tests were found. Run `npm run build` when schema/router generation is expected.
+- `gFramework/nPublish/test/gen/schema/publicationAuditSchemaContract.test.js`
+- `gFramework/nPublish/test/gen/schema/publicationRequestSchemaContract.test.js`
 
 ## Testing Rules
 

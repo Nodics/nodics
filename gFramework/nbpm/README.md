@@ -27,6 +27,8 @@ Workflow changes must preserve source-of-truth definitions, validation, auditabi
 - workflow lifecycle pipelines for assigned, released, blocked, paused, resumed, updated, filled, processed, action performed, channel evaluated, and error states;
 - workflow event listeners and event dispatch;
 - source carrier and source item data builders;
+- mapping-controlled carrier release and source-property projection, allowing
+  business processes to assemble versioned change sets before execution;
 - workflow activity interceptors;
 - workflow error handling;
 - local and remote workflow initialization through `DefaultWorkflowService`.

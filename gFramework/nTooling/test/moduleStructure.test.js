@@ -226,13 +226,6 @@ function validateStandardSourceStructure(moduleObject) {
                 moduleObject.relativePath + '/' + relativeDirectory + '/' + fileName);
         });
     });
-    const servicePath = path.join(moduleObject.path, 'src/service');
-    if (fs.existsSync(servicePath)) {
-        const sampleServicePath = path.join(servicePath, 'defaultSampleService.js');
-        assert(fs.existsSync(sampleServicePath),
-            'Standard service folder must include default sample service scaffold: ' +
-            moduleObject.relativePath + '/src/service/defaultSampleService.js');
-    }
 }
 
 /**

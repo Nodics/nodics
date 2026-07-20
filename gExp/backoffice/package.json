@@ -25,41 +25,10 @@
             "test",
             "llm"
         ],
-        "description": "Backend registry, discovery, catalogue, and bootstrap capability for the Nodics Axis administration experience.",
         "runtime": {
             "router": true,
             "publish": false,
             "web": false
-        },
-        "backoffice": {
-            "enabled": true,
-            "capabilityId": "backoffice-registry",
-            "displayName": "BackOffice Registry",
-            "category": "platform",
-            "icon": "registry",
-            "contractVersion": 1,
-            "minimumClientContractVersion": 1,
-            "roles": [
-                "CONTROL_PLANE_PROVIDER"
-            ],
-            "discovery": {
-                "openApiPath": "/nodics/system/v0/contract/openapi/internal",
-                "contractVersion": 1
-            },
-            "requiredPermissions": [
-                "backoffice.registry.view"
-            ],
-            "navigation": [
-                {
-                    "id": "registry",
-                    "label": "Module Registry",
-                    "route": "/registry",
-                    "order": 900,
-                    "requiredPermissions": [
-                        "backoffice.registry.view"
-                    ]
-                }
-            ]
         }
     },
     "scripts": {},

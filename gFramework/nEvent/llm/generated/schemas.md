@@ -6,4 +6,3 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
-

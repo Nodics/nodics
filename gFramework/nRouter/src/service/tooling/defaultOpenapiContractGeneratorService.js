@@ -345,7 +345,8 @@ function addRoute(paths, route) {
             JSON.stringify(existingMetadata.accessGroups || []) === JSON.stringify(incomingMetadata.accessGroups || []) &&
             existingMetadata.permission === incomingMetadata.permission &&
             JSON.stringify(existingMetadata.permissions || []) === JSON.stringify(incomingMetadata.permissions || []) &&
-            JSON.stringify(existingMetadata.permissionConfig || []) === JSON.stringify(incomingMetadata.permissionConfig || []);
+            JSON.stringify(existingMetadata.permissionConfig || []) === JSON.stringify(incomingMetadata.permissionConfig || []) &&
+            JSON.stringify(existingMetadata.authTokenTypes || []) === JSON.stringify(incomingMetadata.authTokenTypes || []);
         if (equivalent) {
             existingMetadata.duplicateDeclarations = existingMetadata.duplicateDeclarations || [];
             existingMetadata.duplicateDeclarations.push({
@@ -393,6 +394,7 @@ function prepareDefaultRoute(options) {
         permission: definition.permission,
         permissions: definition.permissions || [],
         permissionConfig: definition.permissionConfig || [],
+        authTokenTypes: definition.authTokenTypes || [],
         routerAlias: schemaObject.router && schemaObject.router.alias
     };
     return definition;
@@ -428,6 +430,7 @@ function prepareConfiguredRoute(options) {
         permission: definition.permission,
         permissions: definition.permissions || [],
         permissionConfig: definition.permissionConfig || [],
+        authTokenTypes: definition.authTokenTypes || [],
         responseHandler: definition.responseHandler,
         publicProbe: definition.publicProbe === true,
         publicAccess: definition.publicAccess === true

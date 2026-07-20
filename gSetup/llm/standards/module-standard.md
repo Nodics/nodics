@@ -64,7 +64,7 @@ module/                         Module boundary and ownership root.
     interceptors/               Interceptor contribution directory for module-owned lifecycle, validation, and pipeline interception rules.
       interceptors.js           Interceptor definition registry; generate as `module.exports = {}` when no interceptors are defined yet.
     service/                    Loader-visible service implementations and non-runtime tooling services.
-      defaultSampleService.js   Standard sample service scaffold with `init` and `postInit`; generate this file whenever `src/service/` exists.
+      defaultSampleService.js   Optional module-creation placeholder with empty `init` and `postInit`; never a required service or business-logic owner.
     controller/                 Loader-visible request controller implementations.
     facade/                     Loader-visible orchestration and boundary facade implementations.
     utils/                      Utility contribution directory; generate all standard files when creating a module.
@@ -100,6 +100,13 @@ The `n` prefix is a naming convention, not a runtime classifier. Some `n*`
 packages are capability groups, while others are ordinary capabilities or web
 modules. Module kind must always come from `package.json.nodics.kind`, and
 runtime flags must come from `package.json.nodics.runtime`.
+
+Package manifests contain static identity, dependency, composition, loader,
+ownership, and runtime-surface metadata only. Runtime policy, permissions,
+navigation, provider selection, limits, endpoints, feature switches, and
+BackOffice capability presentation belong in layered `config/properties.js`.
+Use the standard top-level `description` as the sole package description and
+`package.json.nodics.runtimeModule` as the sole module-loader enablement flag.
 
 Never rename an established runtime identifier merely to match a folder. Such a
 change requires an explicit compatibility migration for active-module lists,

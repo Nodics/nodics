@@ -30,7 +30,6 @@
             "test",
             "llm"
         ],
-        "description": "Node module that contributes node-level configuration for distributed deployment.",
         "runtime": {
             "router": false,
             "publish": false,

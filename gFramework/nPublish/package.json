@@ -25,6 +25,7 @@
             "configuration",
             "schema",
             "router",
+            "service",
             "pipeline",
             "utility",
             "test",

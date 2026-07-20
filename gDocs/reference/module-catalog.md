@@ -122,6 +122,7 @@ Use the [Module Documentation Index](module-documentation-index.md) when you kno
 - [startioDevServer](../../startio/envs/startioDev/startioDevServer/README.md) — `server`; `startio/envs/startioDev/startioDevServer`
 - [startioLocal](../../startio/envs/startioLocal/README.md) — `group`; `startio/envs/startioLocal`
 - [startioLocalBackofficeServer](../../startio/envs/startioLocal/startioLocalBackofficeServer/README.md) — `server`; `startio/envs/startioLocal/startioLocalBackofficeServer`
+- [startioLocalCmsOnlineServer](../../startio/envs/startioLocal/startioLocalCmsOnlineServer/README.md) — `server`; `startio/envs/startioLocal/startioLocalCmsOnlineServer`
 - [startioLocalCmsServer](../../startio/envs/startioLocal/startioLocalCmsServer/README.md) — `server`; `startio/envs/startioLocal/startioLocalCmsServer`
 - [startioLocalCronServer](../../startio/envs/startioLocal/startioLocalCronServer/README.md) — `server`; `startio/envs/startioLocal/startioLocalCronServer`
 - [startioLocalCronNode0](../../startio/envs/startioLocal/startioLocalCronServer/startioLocalCronNode0/README.md) — `node`; `startio/envs/startioLocal/startioLocalCronServer/startioLocalCronNode0`
@@ -155,4 +156,3 @@ Use the [Module Documentation Index](module-documentation-index.md) when you kno
 - Task-oriented ownership: [Module Documentation Index](module-documentation-index.md)
 - Terminology: [Nodics Glossary](glossary.md)
 - Documentation home: [Nodics Documentation](../README.md)
-

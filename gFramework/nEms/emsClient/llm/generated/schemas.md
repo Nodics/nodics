@@ -11,4 +11,3 @@
 ### `emsClient.emsFailedMessages`
 
 - `active` `object` optional
-

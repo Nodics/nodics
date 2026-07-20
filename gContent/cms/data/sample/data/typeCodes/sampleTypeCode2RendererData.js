@@ -20,26 +20,26 @@ module.exports = {
     record0: {
         code: 'sampleHomePageType',
         active: true,
-        renderer: 'pages/home/sampleHomePage.html'
+        renderer: 'page.home'
     },
     record1: {
         code: 'sampleProductDetailPageType',
         active: true,
-        renderer: 'pages/product/sampleProductDetailPage.html'
+        renderer: 'page.product-detail'
     },
     record2: {
         code: 'sampleProductListingPageType',
         active: true,
-        renderer: 'pages/product/sampleProductListingPage.html'
+        renderer: 'page.product-listing'
     },
     record3: {
         code: 'sampleCartDetailPageType',
         active: true,
-        renderer: 'pages/cart/sampleCartDetailPage.html'
+        renderer: 'page.cart-detail'
     },
     record4: {
         code: 'headerComponentType',
         active: true,
-        renderer: 'pages/components/sampleHeaderComponent.html'
+        renderer: 'component.header'
     }
 };

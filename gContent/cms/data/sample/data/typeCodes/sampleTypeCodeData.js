@@ -19,18 +19,22 @@
 module.exports = {
     record0: {
         code: 'sampleHomePageType',
+        kind: 'PAGE',
         active: true,
     },
     record1: {
         code: 'sampleProductDetailPageType',
+        kind: 'PAGE',
         active: true
     },
     record2: {
         code: 'sampleProductListingPageType',
+        kind: 'PAGE',
         active: true
     },
     record3: {
         code: 'sampleCartDetailPageType',
+        kind: 'PAGE',
         active: true
     }
 };

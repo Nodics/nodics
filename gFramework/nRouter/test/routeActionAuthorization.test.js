@@ -69,12 +69,14 @@ function createRequest(options) {
         authData: {
             entCode: 'defaultEnterprise',
             tenant: 'default',
+            tokenType: options.tokenType,
             userGroups: options.userGroups || ['userGroup'],
             permissions: options.permissions
         },
         router: {
             accessGroups: options.accessGroups || ['userGroup'],
-            permission: options.permission
+            permission: options.permission,
+            authTokenTypes: options.authTokenTypes
         }
     };
 }
@@ -157,6 +159,22 @@ let configuredPermissionDenied = executeCheckAccess({
 });
 assert.strictEqual(configuredPermissionDenied.success, false, 'Configured route permission should deny missing grants');
 assert.strictEqual(configuredPermissionDenied.error.code, 'ERR_AUTH_00003');
+
+let serviceTokenGranted = executeCheckAccess(createRequest({
+    authTokenTypes: ['service'], tokenType: 'service', permissions: []
+}));
+assert.strictEqual(serviceTokenGranted.success, true, 'Service-only routes should accept service tokens');
+
+let humanTokenDenied = executeCheckAccess(createRequest({
+    authTokenTypes: ['service'], tokenType: 'access', permissions: ['*']
+}));
+assert.strictEqual(humanTokenDenied.success, false, 'Human tokens must not impersonate module service tokens');
+assert.strictEqual(humanTokenDenied.error.code, 'ERR_AUTH_00003');
+
+let missingTokenTypeDenied = executeCheckAccess(createRequest({
+    authTokenTypes: ['service'], permissions: ['*']
+}));
+assert.strictEqual(missingTokenTypeDenied.success, false, 'Service-only routes must fail closed when token type is absent');
 
 let capturedAuthorizedRequest;
 global.UTILS = {

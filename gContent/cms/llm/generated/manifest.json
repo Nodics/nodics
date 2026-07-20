@@ -13,15 +13,15 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to cms"
   },
-  "sourceFiles": 12,
-  "testFiles": 24,
+  "sourceFiles": 25,
+  "testFiles": 44,
   "dataFiles": 24,
-  "ownedFiles": 46,
-  "sourceFingerprint": "2315f161f9dfd3eb91f3f3e46816d1df83a0f2c069f140f1216099777e4ad355",
+  "ownedFiles": 62,
+  "sourceFingerprint": "c3bbe40242f4e36bd3a7fc295a19b60a0f25343b76e45558d3078e4b75deeb80",
   "documentation": {
-    "documented": 40,
+    "documented": 53,
     "partially-documented": 2,
-    "undocumented": 0,
+    "undocumented": 3,
     "inventory-only": 4
   },
   "schemaGroups": {
@@ -29,8 +29,15 @@
       "cmsBase",
       "cmsComponent",
       "cmsComponentDetail",
+      "cmsMigrationAudit",
+      "cmsOnlinePublicationPointer",
       "cmsPage",
+      "cmsPageRoute",
+      "cmsPageTemplate",
+      "cmsPublicationDeploymentReceipt",
+      "cmsPublicationManifest",
       "cmsSite",
+      "cmsSlotDefinition",
       "cmsTypeCode",
       "cmsTypeCode2Renderer"
     ]

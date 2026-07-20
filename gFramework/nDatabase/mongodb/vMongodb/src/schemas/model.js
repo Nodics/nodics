@@ -108,6 +108,8 @@ module.exports = {
                         _self.insertOne(model, {}).then(result => {
                             if (result.ops && result.ops.length > 0) {
                                 resolve(result.ops[0]);
+                            } else if (result && result.acknowledged === true && result.insertedId) {
+                                resolve(Object.assign({}, model, { _id: model._id || result.insertedId }));
                             } else {
                                 reject(new CLASSES.NodicsError('ERR_MDL_00002'));
                             }

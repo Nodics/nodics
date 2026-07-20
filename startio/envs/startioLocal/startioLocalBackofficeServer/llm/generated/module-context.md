@@ -37,7 +37,6 @@
 
 **Owned extension areas**
 
-- `composition`
 - `configuration`
 - `router`
 - `service`

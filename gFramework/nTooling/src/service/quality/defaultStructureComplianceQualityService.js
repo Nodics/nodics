@@ -211,6 +211,18 @@ function validateRootFiles(report, moduleObject) {
 function validateMetadata(report, moduleObject) {
     const packageJson = moduleObject.packageJson || {};
     const nodics = packageJson.nodics || {};
+    if (packageJson.runtimeModule !== undefined) {
+        createFinding(report, 'error', moduleObject, 'legacy-runtime-module',
+            'Use `package.json.nodics.runtimeModule`; top-level `runtimeModule` is not authoritative.');
+    }
+    if (packageJson.tmpGroup !== undefined) {
+        createFinding(report, 'error', moduleObject, 'obsolete-temporary-group',
+            'Remove obsolete package metadata `tmpGroup`.');
+    }
+    if (nodics.backoffice !== undefined || nodics.description !== undefined) {
+        createFinding(report, 'error', moduleObject, 'misplaced-package-value',
+            'Runtime BackOffice configuration belongs in properties and package description belongs at top level.');
+    }
     ['name', 'index', 'main', 'version', 'description', 'dependencies', 'nodics'].forEach(fieldName => {
         if (packageJson[fieldName] === undefined) {
             createFinding(report, 'error', moduleObject, 'missing-package-field',
@@ -254,12 +266,6 @@ function validateSourceStructure(report, moduleObject) {
             }
         });
     });
-
-    const servicePath = path.join(moduleObject.path, 'src/service');
-    if (fs.existsSync(servicePath) && !exists(moduleObject.path, 'src/service/defaultSampleService.js')) {
-        createFinding(report, 'error', moduleObject, 'missing-sample-service',
-            '`src/service` must include `defaultSampleService.js`.');
-    }
 
     ['src/service', 'src/controller', 'src/facade'].forEach(relativeDirectory => {
         const directory = path.join(moduleObject.path, relativeDirectory);

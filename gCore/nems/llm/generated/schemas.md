@@ -25,4 +25,3 @@
 ### `nems.eventLog`
 
 - No direct properties defined.
-

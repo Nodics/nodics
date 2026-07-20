@@ -32,7 +32,24 @@ module.exports = {
                 enabled: true
             },
             definition: {
-
+                kind: {
+                    type: 'string',
+                    required: true,
+                    default: 'COMPONENT',
+                    enum: ['PAGE', 'COMPONENT'],
+                    description: 'Declares whether the type classifies pages or components'
+                },
+                contractVersion: {
+                    type: 'int',
+                    required: true,
+                    default: 1,
+                    description: 'Major version of the declarative type contract'
+                },
+                propertySchema: {
+                    type: 'object',
+                    required: false,
+                    description: 'Declarative property contract; executable code is prohibited'
+                }
             }
         },
         cmsTypeCode2Renderer: {
@@ -52,7 +69,13 @@ module.exports = {
                 renderer: {
                     type: 'string',
                     required: true,
-                    description: 'Required renderer, this could be name of js, html file',
+                    description: 'Logical renderer key resolved by an API consumer; never an executable path or URL',
+                },
+                contractVersion: {
+                    type: 'int',
+                    required: true,
+                    default: 1,
+                    description: 'Major renderer contract version understood by compatible API consumers',
                 }
             }
         },
@@ -116,6 +139,7 @@ module.exports = {
 
         cmsComponentDetail: {
             super: 'base',
+            isVersionedEnabled: false,
             model: true,
             service: {
                 enabled: true
@@ -154,6 +178,12 @@ module.exports = {
                     required: true,
                     default: 0,
                     description: 'Required position of this component in the super component',
+                },
+                slot: {
+                    type: 'string',
+                    required: false,
+                    default: 'default',
+                    description: 'Logical template slot containing this ordered component association',
                 }
             },
             indexes: {
@@ -171,6 +201,13 @@ module.exports = {
                         options: {
                             unique: true
                         }
+                    },
+                    slot: {
+                        enabled: true,
+                        name: 'slot',
+                        options: {
+                            unique: true
+                        }
                     }
                 }
             }
@@ -178,6 +215,7 @@ module.exports = {
 
         cmsPage: {
             super: 'cmsBase',
+            isVersionedEnabled: false,
             model: true,
             service: {
                 enabled: true
@@ -237,10 +275,15 @@ module.exports = {
                         enabled: true,
                     }
                 },
+                template: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional page template code defining the available composition slots'
+                },
                 renderer: {
                     type: 'string',
                     required: false,
-                    description: 'Required renderer, this could be name of js, html file, which render required look and feel for this page',
+                    description: 'Optional logical renderer key overriding the type-code renderer mapping',
                 },
                 cmsComponents: {
                     type: 'array',
@@ -254,6 +297,7 @@ module.exports = {
         },
         cmsComponent: {
             super: 'cmsBase',
+            isVersionedEnabled: false,
             model: true,
             service: {
                 enabled: true
@@ -302,8 +346,146 @@ module.exports = {
                 renderer: {
                     type: 'string',
                     required: false,
-                    description: 'Required renderer, this could be name of js, html file, which render required look and feel for this components',
+                    description: 'Optional logical renderer key overriding the type-code renderer mapping',
                 }
+            }
+        },
+        cmsPageRoute: {
+            super: 'cmsBase',
+            isVersionedEnabled: false,
+            model: true,
+            service: { enabled: true },
+            router: { enabled: true },
+            cache: { enabled: true, ttl: 10000 },
+            definition: {
+                site: { type: 'string', required: true, description: 'CMS site code owning the route' },
+                path: { type: 'string', required: true, description: 'Normalized absolute route path' },
+                locale: { type: 'string', required: true, default: 'default', description: 'Locale scope or default fallback' },
+                channel: { type: 'string', required: true, default: 'web', description: 'Delivery channel scope' },
+                page: { type: 'string', required: true, description: 'Target CMS page code' },
+                routeType: { type: 'string', required: true, default: 'PAGE', enum: ['PAGE', 'ALIAS', 'REDIRECT'], description: 'Route resolution behavior' },
+                redirectPath: { type: 'string', required: false, description: 'Safe relative redirect target for REDIRECT routes' },
+                deliveryState: { type: 'string', required: true, default: 'DRAFT', enum: ['DRAFT', 'ONLINE'], description: 'Fail-closed delivery activation state; workflow publishing may govern transition later' },
+                accessMode: { type: 'string', required: true, default: 'AUTHENTICATED', enum: ['PUBLIC', 'AUTHENTICATED'], description: 'Required delivery access boundary' }
+            },
+            indexes: {
+                composite: {
+                    site: { enabled: true, name: 'site', options: { unique: true } },
+                    path: { enabled: true, name: 'path', options: { unique: true } },
+                    locale: { enabled: true, name: 'locale', options: { unique: true } },
+                    channel: { enabled: true, name: 'channel', options: { unique: true } }
+                }
+            }
+        },
+        cmsPageTemplate: {
+            super: 'cmsBase',
+            isVersionedEnabled: false,
+            model: true,
+            service: { enabled: true },
+            router: { enabled: true },
+            refSchema: {
+                slots: { enabled: true, schemaName: 'cmsSlotDefinition', type: 'many', propertyName: 'code', searchEnabled: true }
+            },
+            definition: {
+                name: { type: 'string', required: true, description: 'Human-readable template name' },
+                renderer: { type: 'string', required: true, description: 'Logical renderer key for the template shell' },
+                contractVersion: { type: 'int', required: true, default: 1, description: 'Template contract major version' },
+                slots: { type: 'array', required: false, description: 'Owned slot definitions' }
+            }
+        },
+        cmsSlotDefinition: {
+            super: 'cmsBase',
+            isVersionedEnabled: false,
+            model: true,
+            service: { enabled: true },
+            router: { enabled: false },
+            definition: {
+                template: { type: 'string', required: true, description: 'Owning page template code' },
+                name: { type: 'string', required: true, description: 'Stable logical slot name' },
+                minItems: { type: 'int', required: false, default: 0, description: 'Minimum allowed component count' },
+                maxItems: { type: 'int', required: false, description: 'Maximum allowed component count' },
+                allowedComponentTypes: { type: 'array', required: false, description: 'Optional allowlist of component type codes' }
+            }
+        },
+        cmsMigrationAudit: {
+            super: 'base',
+            model: true,
+            service: { enabled: true },
+            router: { enabled: false },
+            event: { enabled: false },
+            definition: {
+                migrationVersion: { type: 'int', required: true },
+                status: { type: 'string', required: true },
+                tenant: { type: 'string', required: true },
+                requestedBy: { type: 'string', required: false },
+                preview: { type: 'object', required: false },
+                snapshot: { type: 'object', required: false },
+                result: { type: 'object', required: false },
+                correlationId: { type: 'string', required: false }
+            }
+        },
+        cmsPublicationManifest: {
+            super: 'base',
+            isVersionedEnabled: false,
+            model: true,
+            service: { enabled: true },
+            router: { enabled: false },
+            event: { enabled: false },
+            definition: {
+                publicationCode: { type: 'string', required: true, description: 'Owning nPublish request identity' },
+                rootType: { type: 'string', required: true },
+                rootCode: { type: 'string', required: true },
+                sourceVersion: { type: 'string', required: true },
+                dependencies: { type: 'array', required: true, description: 'Frozen schema, code, and version identities' },
+                snapshot: { type: 'object', required: true, description: 'Immutable client-safe CMS delivery graph' },
+                contentHash: { type: 'string', required: true, description: 'Deterministic manifest integrity identifier' },
+                createdBy: { type: 'string', required: false },
+                correlationId: { type: 'string', required: false }
+            }
+        },
+        cmsOnlinePublicationPointer: {
+            super: 'base',
+            isVersionedEnabled: false,
+            model: true,
+            service: { enabled: true },
+            router: { enabled: false },
+            event: { enabled: false },
+            definition: {
+                site: { type: 'string', required: true },
+                path: { type: 'string', required: true },
+                locale: { type: 'string', required: true },
+                channel: { type: 'string', required: true },
+                accessMode: { type: 'string', required: true },
+                manifestCode: { type: 'string', required: true },
+                previousManifestCode: { type: 'string', required: false },
+                revision: { type: 'int', required: true, default: 0 },
+                activatedBy: { type: 'string', required: false },
+                correlationId: { type: 'string', required: false }
+            },
+            indexes: {
+                composite: {
+                    site: { enabled: true, name: 'site', options: { unique: true } },
+                    path: { enabled: true, name: 'path', options: { unique: true } },
+                    locale: { enabled: true, name: 'locale', options: { unique: true } },
+                    channel: { enabled: true, name: 'channel', options: { unique: true } },
+                    accessMode: { enabled: true, name: 'accessMode', options: { unique: true } }
+                }
+            }
+        },
+        cmsPublicationDeploymentReceipt: {
+            super: 'base',
+            isVersionedEnabled: false,
+            model: true,
+            service: { enabled: true },
+            router: { enabled: false },
+            event: { enabled: false },
+            definition: {
+                manifestCode: { type: 'string', required: true },
+                operation: { type: 'string', required: true, enum: ['DEPLOY', 'ROLLBACK'] },
+                status: { type: 'string', required: true, enum: ['ONLINE'] },
+                targetVersion: { type: 'string', required: true },
+                previousOnlineVersion: { type: 'string', required: false },
+                correlationId: { type: 'string', required: false }
             }
         }
     }

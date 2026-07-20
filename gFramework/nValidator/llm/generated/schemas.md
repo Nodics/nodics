@@ -16,4 +16,3 @@
 - `script` `string` optional: Define execution script to be evaluated
 - `trigger` `string` required: Mandate trigger name like, preSave, postSave
 - `type` `object` required: Required value could be only in [schema, import, export, search, workflow, job]
-

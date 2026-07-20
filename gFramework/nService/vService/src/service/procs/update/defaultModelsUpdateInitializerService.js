@@ -66,6 +66,8 @@ module.exports = {
                     };
                     process.nextSuccess(request, response);
                 }).catch(error => {
+                    this.LOG.error(error);
+                    if (error && error.errInfo) this.LOG.error('Versioned model update validation details', error.errInfo);
                     process.error(request, response, {
                         success: false,
                         code: 'ERR_UPD_00000',
@@ -81,6 +83,8 @@ module.exports = {
                     };
                     process.nextSuccess(request, response);
                 }).catch(error => {
+                    this.LOG.error(error);
+                    if (error && error.errInfo) this.LOG.error('Model update validation details', error.errInfo);
                     process.error(request, response, {
                         success: false,
                         code: 'ERR_UPD_00000',

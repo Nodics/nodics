@@ -109,4 +109,3 @@
 - `service` `object` optional: Runtime service generation configuration
 - `super` `string` optional: Optional parent schema within the owning module
 - `tenants` `array` optional: Tenants where this runtime schema is active
-

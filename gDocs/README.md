@@ -45,6 +45,7 @@ your goal.
 5. [How To Work With Data](data/how-to-work-with-data.md)
 6. [How To Create Scheduled Jobs](jobs/how-to-create-scheduled-jobs.md)
 7. [How To Test Nodics Changes](testing/how-to-test-nodics-changes.md)
+8. [How To Approve And Publish Content](content/how-to-approve-and-publish-content.md)
 
 ### Architect, Security Reviewer, Or Operator
 
@@ -109,6 +110,7 @@ Use this map when you are not sure where to start.
 | Follow examples for APIs, schemas, providers, scheduled jobs, and runtime configuration | [Common Implementation Examples](development/common-implementation-examples.md) |
 | Add or change APIs | [How To Create APIs](development/how-to-create-apis.md) |
 | Work with schemas, import, export, and data providers | [How To Work With Data](data/how-to-work-with-data.md) |
+| Approve Staged content and publish it safely to Online | [How To Approve And Publish Content](content/how-to-approve-and-publish-content.md) |
 | Use Nodics as a governed data lake or data hub | [How To Use Nodics As Data As A Service](data/how-to-use-nodics-as-data-as-a-service.md) |
 | Add scheduled jobs | [How To Create Scheduled Jobs](jobs/how-to-create-scheduled-jobs.md) |
 | Understand processes, messaging, logging, and request handling | [How Platform Capabilities Work](platform/how-platform-capabilities-work.md) |

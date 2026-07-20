@@ -1,7 +1,6 @@
 {
     "name": "gSetup",
     "index": "0.5",
-    "runtimeModule": false,
     "description": "Nodics setup, onboarding, and instruction package. This folder is module-like for standard repository organization but is excluded from runtime startup.",
     "homepage": "http://www.nodics.com/",
     "keywords": [
@@ -25,7 +24,6 @@
         "owns": [
             "llm"
         ],
-        "description": "Global LLM and setup guidance package, not loaded by the Nodics runtime module loader.",
         "runtime": {
             "router": false,
             "publish": false,

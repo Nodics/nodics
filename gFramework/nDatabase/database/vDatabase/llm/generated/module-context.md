@@ -30,10 +30,10 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 10 |
-| Test files | 2 |
+| Test files | 3 |
 | Data files | 0 |
-| All module-owned files | 20 |
-| Local schema definitions | 2 |
+| All module-owned files | 21 |
+| Local schema definitions | 1 |
 
 ## Ownership And Dependencies
 
@@ -63,7 +63,7 @@
 | --- | ---: |
 | Documented | 14 |
 | Partially documented | 2 |
-| Undocumented | 0 |
+| Undocumented | 1 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -104,6 +104,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDatabase/database/vDatabase/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nDatabase utility exports for utils. |  |
 | `gFramework/nDatabase/database/vDatabase/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nDatabase test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nDatabase/database/vDatabase/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nDatabase test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nDatabase/database/vDatabase/test/versionedSchemaSelectionContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 
 ## Extension Contract
 

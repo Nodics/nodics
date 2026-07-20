@@ -111,4 +111,3 @@
 - `locked` `bool` required: Flag to check if user is locked
 - `loginId` `string` required: Required unique login id
 - `personId` `objectId` required
-

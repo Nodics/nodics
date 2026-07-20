@@ -124,6 +124,12 @@ module.exports = {
                             finalSchema = _.merge(_.merge({}, moduleRawSchema[runtimeSchema.super]), runtimeSchema);
                         }
                     }
+                    finalSchema = _self.applyVersioningConfiguration({
+                        moduleName: runtimeSchema.moduleName,
+                        schemaName: runtimeSchema.code,
+                        schema: finalSchema,
+                        versionedSchema: moduleRawSchema.versioned
+                    });
                     moduleRawSchema[runtimeSchema.code] = _.merge(moduleRawSchema[runtimeSchema.code] || {}, finalSchema);
                 }
                 resolve(true);
@@ -154,7 +160,54 @@ module.exports = {
                 });
             }
         });
+        Object.keys(mergedSchema).forEach(schemaName => {
+            if (schemaName !== 'versioned') {
+                mergedSchema[schemaName] = _self.applyVersioningConfiguration({
+                    moduleName: options.moduleName,
+                    schemaName: schemaName,
+                    schema: mergedSchema[schemaName],
+                    versionedSchema: mergedSchema.versioned
+                });
+            }
+        });
         return mergedSchema;
+    },
+
+    /**
+     * Composes the active versioned contract into one explicitly enabled schema.
+     *
+     * @param {Object} options Version-selection context.
+     * @param {string} options.moduleName Owning module name.
+     * @param {string} options.schemaName Schema code.
+     * @param {Object} options.schema Resolved ordinary schema.
+     * @param {Object} [options.versionedSchema] Active versioned schema contract.
+     * @returns {Object} Original schema or its effective versioned composition.
+     * @throws {CLASSES.NodicsError} When versioning is enabled without the capability contract.
+     */
+    applyVersioningConfiguration: function (options) {
+        if (options.schema.isVersionedEnabled !== true) {
+            return options.schema;
+        }
+        if (!options.versionedSchema) {
+            throw new CLASSES.NodicsError(
+                'ERR_DBS_00000',
+                'Schema ' + options.moduleName + '.' + options.schemaName +
+                ' enables versioning, but the versioned database contract is not active'
+            );
+        }
+        let parents = (options.schema.parents || []).slice();
+        (options.versionedSchema.parents || []).forEach(parent => {
+            if (!parents.includes(parent)) {
+                parents.push(parent);
+            }
+        });
+        if (!parents.includes('versioned')) {
+            parents.push('versioned');
+        }
+        let schema = _.merge(_.merge({}, options.versionedSchema), options.schema);
+        schema.versioned = true;
+        schema.parents = parents;
+        return schema;
     },
 
     /**

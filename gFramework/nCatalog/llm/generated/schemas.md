@@ -12,4 +12,3 @@
 
 - `accessGroups` `object` optional
 - `subCatalogs` `array` optional: List of sub catalogs if any
-

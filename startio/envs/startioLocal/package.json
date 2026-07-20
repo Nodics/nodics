@@ -26,9 +26,9 @@
             "composition",
             "configuration",
             "data",
+            "test",
             "llm"
         ],
-        "description": "Environment group module that contains server modules for one deployment environment.",
         "runtime": {
             "router": false,
             "publish": false,

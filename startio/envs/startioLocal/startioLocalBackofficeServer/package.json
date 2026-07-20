@@ -11,7 +11,6 @@
         "runtimeModule": true,
         "loadableByNodicsModuleLoader": true,
         "owns": [
-            "composition",
             "configuration",
             "router",
             "service",
@@ -20,7 +19,6 @@
             "test",
             "llm"
         ],
-        "description": "Local modular server composition for the Nodics BackOffice registry capability",
         "runtime": {
             "router": false,
             "publish": false,

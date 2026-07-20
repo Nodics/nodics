@@ -59,4 +59,3 @@
 - `indexName` `string` required: Required index name
 - `lastState` `string` required: State of last execution (SUCESS, ERROR, NEW)
 - `typeName` `string` optional: Required type name, One index could have multiple types
-

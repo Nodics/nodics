@@ -108,7 +108,7 @@ module.exports = {
                 description: packageJson.description || '',
                 index: packageJson.index || '0',
                 kind: nodics.kind || 'unspecified',
-                runtimeModule: packageJson.runtimeModule !== false && nodics.runtimeModule !== false,
+                runtimeModule: nodics.runtimeModule !== false,
                 path: directory,
                 relativePath: this.toRelative(home, directory),
                 owns: nodics.owns || [],

@@ -17,9 +17,14 @@
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {
+    publishEnabled: true,
     activeModules: {
-        groups: ['gContent', 'modules'], // Group 'framework' will be included automatically
+        groups: ['modules'], // Group 'framework' will be included automatically
         modules: [
+            'cms',
+            'wcms',
+            'workflow',
+            'publish',
             'startioLocalCmsServer',
             'startioLocal'
         ]
@@ -43,6 +48,30 @@ module.exports = {
         default: {
             options: {
                 enabled: false
+            }
+        }
+    },
+
+    database: {
+        default: {
+            mongodb: {
+                master: { databaseName: 'startioCmsStaged' },
+                test: { databaseName: 'startioCmsStagedTest' }
+            }
+        }
+    },
+
+    cms: {
+        publication: {
+            enabled: false,
+            runtimeRole: 'STAGED',
+            targetTransportProvider: 'DefaultCmsPublicationModuleTransportService',
+            target: {
+                moduleName: 'cms',
+                connectionName: 'cmsOnline',
+                connectionType: 'server',
+                timeoutMs: 30000,
+                maxAttempts: 3
             }
         }
     },
@@ -141,6 +170,12 @@ module.exports = {
             endpoint: { httpHost: 'localhost', httpPort: 3060, httpsHost: 'localhost', httpsPort: 3061 },
             abstractEndpoint: { httpHost: 'localhost', httpPort: 3060, httpsHost: 'localhost', httpsPort: 3061 },
             nodes: { node0: { httpHost: 'localhost', httpPort: 3060, httpsHost: 'localhost', httpsPort: 3061 } }
+        },
+        cmsOnline: {
+            options: { contextRoot: 'nodics' },
+            endpoint: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 },
+            abstractEndpoint: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 },
+            nodes: { node0: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 } }
         }
     }
 };

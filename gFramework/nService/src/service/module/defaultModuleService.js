@@ -211,6 +211,7 @@ module.exports = {
      *
      * @param {Object} options Module request options.
      * @param {string} options.moduleName Target module name.
+     * @param {string} [options.connectionName] Optional endpoint alias when the remote deployment exposes the target module under another server connection.
      * @param {string} options.apiName API path.
      * @param {string} [options.methodName=GET] HTTP method.
      * @param {Object} [options.requestBody] Request body.
@@ -247,6 +248,7 @@ module.exports = {
             nodicsContext: {
                 layer: 'remote-module',
                 moduleName: options.moduleName,
+                connectionName: options.connectionName || options.moduleName,
                 methodName: options.methodName || 'GET',
                 apiName: options.apiName
             }

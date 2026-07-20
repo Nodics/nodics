@@ -6,6 +6,7 @@
 
 - `gFramework/nDatabase/database/vDatabase/test/common/commonTest.js`
 - `gFramework/nDatabase/database/vDatabase/test/env-local/envTest.js`
+- `gFramework/nDatabase/database/vDatabase/test/versionedSchemaSelectionContract.test.js`
 
 ## Generated Tests
 

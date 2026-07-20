@@ -256,9 +256,10 @@ or overrides an existing one:
   in `src/router/routers.js`; keep app-level router configuration in
   `src/router/appConfig.js`.
 - Services: contribute the smallest necessary method override under
-  `src/service/**/*Service.js`; when a module has `src/service/`, generate
-  `src/service/defaultSampleService.js` with `init` and `postInit` so the service
-  extension shape is explicit even before concrete behavior is added.
+  `src/service/**/*Service.js`. A newly created module may initially receive
+  `src/service/defaultSampleService.js` with empty `init` and `postInit` hooks;
+  this is only a placeholder, is not mandatory after concrete services exist,
+  and must never receive business behavior.
 - Controllers: contribute controller methods under
   `src/controller/**/*Controller.js`.
 - Facades: contribute facade methods under `src/facade/**/*Facade.js`.

@@ -16,7 +16,7 @@ regeneration.
 
 ## Module-Owned Catalogue Metadata
 
-A module may declare `nodics.backoffice` in its own `package.json`:
+A module may contribute `backofficeCapabilities.<moduleName>` from its own layered `config/properties.js`:
 
 - `enabled` controls catalogue contribution, not module activation;
 - `capabilityId`, `displayName`, `category`, and `icon` are client-safe labels;

@@ -13,11 +13,11 @@
     "version": "0.0.1",
     "description": "Generate services for all defined items"
   },
-  "sourceFiles": 83,
+  "sourceFiles": 93,
   "testFiles": 5,
   "dataFiles": 0,
   "ownedFiles": 36,
-  "sourceFingerprint": "d2a8aa73d96b77d7ea5a1599974d4d1a58eed264105f976fae445838b6f0e80b",
+  "sourceFingerprint": "f2b2436b554b3535f4f1227e2d142bbe732b654adfb7df7cee67b2f50136ff58",
   "documentation": {
     "documented": 30,
     "partially-documented": 0,

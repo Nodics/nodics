@@ -37,7 +37,7 @@ module.exports = {
             //source: 'sampleHomePage',
             target: 'samplePageFooterComponent',
             active: true,
-            index: 1
+            index: 3
         }]
     },
     // record1: {

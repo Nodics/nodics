@@ -20,6 +20,24 @@ module.exports = {
     record0: {
         workflowCode: 'cmsPagesApprovalFlowHead',
         schemaName: 'cmsPage',
+        carrierDetail: { isCarrierReleased: false },
+        includeProperties: ['versionId'],
         active: true
+    },
+    record1: {
+        workflowCode: 'cmsPagesApprovalFlowHead', schemaName: 'cmsPageRoute',
+        carrierDetail: { isCarrierReleased: false }, includeProperties: ['versionId'], active: true
+    },
+    record2: {
+        workflowCode: 'cmsPagesApprovalFlowHead', schemaName: 'cmsPageTemplate',
+        carrierDetail: { isCarrierReleased: false }, includeProperties: ['versionId'], active: true
+    },
+    record3: {
+        workflowCode: 'cmsPagesApprovalFlowHead', schemaName: 'cmsSlotDefinition',
+        carrierDetail: { isCarrierReleased: false }, includeProperties: ['versionId'], active: true
+    },
+    record4: {
+        workflowCode: 'cmsPagesApprovalFlowHead', schemaName: 'cmsSite',
+        carrierDetail: { isCarrierReleased: false }, includeProperties: ['versionId'], active: true
     }
 };

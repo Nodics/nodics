@@ -24,4 +24,3 @@
 - `ownerType` `string` optional: Principal category recorded when ownership was assigned
 - `updated` `date` required: Timestamp when this item got updated in database
 - `updatedBy` `string` optional: Principal identifier that last updated this record
-

@@ -17,14 +17,26 @@
   "testFiles": 2,
   "dataFiles": 0,
   "ownedFiles": 19,
-  "sourceFingerprint": "f7df12810a0cfa513f5938cc0453be7da147cb8127528be82a016b820ed49058",
+  "sourceFingerprint": "5e1e538fec961c4211129f35f93507d7120e5c5a3c40b914352088991480f26d",
   "documentation": {
     "documented": 13,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4
   },
-  "schemaGroups": {},
+  "schemaGroups": {
+    "cms": [
+      "cmsComponent",
+      "cmsComponentDetail",
+      "cmsPage",
+      "cmsPageRoute",
+      "cmsPageTemplate",
+      "cmsSite",
+      "cmsSlotDefinition",
+      "cmsTypeCode",
+      "cmsTypeCode2Renderer"
+    ]
+  },
   "schemaLoadError": null,
   "generatedBy": "npm run llm:generate"
 }

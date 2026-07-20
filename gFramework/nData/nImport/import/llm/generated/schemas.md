@@ -31,4 +31,3 @@
 - `tenant` `string` optional: Tenant used for the import run
 - `validationErrorCount` `int` optional: Number of recorded validation errors
 - `validationErrors` `array` optional: Validation errors collected before import processing
-

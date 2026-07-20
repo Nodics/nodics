@@ -18,7 +18,6 @@
             "configuration",
             "llm"
         ],
-        "description": "Backend experience capability group for administration, customer, partner, storefront, mobile, and future client-facing API experiences.",
         "runtime": {
             "router": false,
             "publish": false,

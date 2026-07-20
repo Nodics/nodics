@@ -73,7 +73,7 @@ module.exports = {
         let metadata = rawModule.metaData || {};
         let nodicsMetadata = metadata.nodics || {};
         let runtime = nodicsMetadata.runtime || {};
-        let backoffice = nodicsMetadata.backoffice;
+        let backoffice = (CONFIG.get('backofficeCapabilities') || {})[moduleName];
         let config = this.getConfiguration();
         let registration = {
             moduleName: moduleName,

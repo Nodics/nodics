@@ -17,6 +17,15 @@
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {
+    backofficeCapabilities: {
+        backoffice: {
+            enabled: true, capabilityId: 'backoffice-registry', displayName: 'BackOffice Registry', category: 'platform', icon: 'registry',
+            contractVersion: 1, minimumClientContractVersion: 1, roles: ['CONTROL_PLANE_PROVIDER'],
+            discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
+            requiredPermissions: ['backoffice.registry.view'],
+            navigation: [{ id: 'registry', label: 'Module Registry', route: '/registry', order: 900, requiredPermissions: ['backoffice.registry.view'] }]
+        }
+    },
     backofficeRegistry: {
         enabled: true,
         leaseTtlMs: 30000,

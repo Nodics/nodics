@@ -96,6 +96,11 @@ Use `permission` or `permissions` when the action permission is fixed. Use
 `permissionConfig` when the required permission is configurable by project,
 environment, server, node, tenant, or runtime governance.
 
+Use `authTokenTypes: ['service']` when an API is exclusively module-to-module.
+Token type is a separate boundary from permission: a human access token with a
+broad permission still fails a service-only route. Omit `authTokenTypes` only
+when the route intentionally accepts the normal authenticated credential types.
+
 ## Generated CRUD Routes
 
 `nRouter/src/router/routers.js` contains default CRUD route templates under
@@ -345,6 +350,7 @@ and writes authenticated principal data to `request.authData`.
 
 `checkAccess` enforces:
 
+- optional authenticated token types through `router.authTokenTypes`;
 - route access groups through `router.accessGroups`;
 - action permissions through `router.permission`, `router.permissions`, and
   `router.permissionConfig`;
@@ -506,6 +512,7 @@ For every route:
 - use `permissionConfig` for configurable action permissions;
 - keep login/pre-authentication routes narrow and explicit;
 - keep internal/module-to-module routes secured;
+- declare `authTokenTypes: ['service']` when human access tokens must be rejected;
 - do not hardcode permission values that should vary by project or environment;
 - do not bypass `DefaultAuthorizationProviderService` from controllers;
 - preserve tenant and authenticated principal context;

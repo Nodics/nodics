@@ -6,14 +6,8 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
-| `base` | `versioned` | no | no | no | no | no | no |  | 0 |
-| `versioned` | `super` | no | no | no | no | no | no |  | 1 |
-
-### `default.base`
-
-- No direct properties defined.
+| `versioned` | `base` | no | no | no | no | no | no |  | 1 |
 
 ### `default.versioned`
 
 - `versionId` `int` required: Incremented verison id for staged items
-

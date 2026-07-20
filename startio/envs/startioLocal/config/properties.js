@@ -120,6 +120,7 @@ module.exports = {
                 'startioLocalDeapServer',
                 'startioLocalCronServer',
                 'startioLocalCmsServer',
+                'startioLocalCmsOnlineServer',
                 'startioLocalWorkflowServer',
                 'startioLocalBackofficeServer'
             ],
@@ -138,6 +139,12 @@ module.exports = {
                     server: 'startioLocalCronServer',
                     moduleName: 'cronjob',
                     path: '/v0/ping?help'
+                },
+                {
+                    server: 'startioLocalCmsOnlineServer',
+                    moduleName: 'cms',
+                    path: '/v0/ping?help',
+                    topologies: ['modular']
                 },
                 {
                     server: 'startioLocalWorkflowServer',

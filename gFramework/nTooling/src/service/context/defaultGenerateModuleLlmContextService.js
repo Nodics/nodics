@@ -393,7 +393,7 @@ function createSchemasContext(module, schemaGroups, loadError) {
         });
     });
 
-    return lines.join('\n') + '\n';
+    return lines.join('\n');
 }
 
 function createTestsContext(module, files) {

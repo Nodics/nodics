@@ -20,6 +20,20 @@ module.exports = {
     record0: {
         workflowCode: 'cmsComponentApprovalFlowHead',
         schemaName: 'cmsComponent',
+        carrierDetail: { isCarrierReleased: false },
+        includeProperties: ['versionId'],
         active: true
+    },
+    record1: {
+        workflowCode: 'cmsComponentApprovalFlowHead', schemaName: 'cmsComponentDetail',
+        carrierDetail: { isCarrierReleased: false }, includeProperties: ['versionId'], active: true
+    },
+    record2: {
+        workflowCode: 'cmsComponentApprovalFlowHead', schemaName: 'cmsTypeCode',
+        carrierDetail: { isCarrierReleased: false }, includeProperties: ['versionId'], active: true
+    },
+    record3: {
+        workflowCode: 'cmsComponentApprovalFlowHead', schemaName: 'cmsTypeCode2Renderer',
+        carrierDetail: { isCarrierReleased: false }, includeProperties: ['versionId'], active: true
     }
 };

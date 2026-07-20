@@ -32,7 +32,7 @@ global.UTILS = {
 const baseModel = require('../../src/schemas/model').default;
 const versionedModel = require('../src/schemas/model').default;
 
-function modelWithItems(items) {
+function modelWithItems(items, modernInsertResult) {
     return Object.assign({}, baseModel, versionedModel, {
         primaryKey: 'code',
         find: function () {
@@ -50,7 +50,10 @@ function modelWithItems(items) {
         },
         insertOne: function (model) {
             this.inserted = model;
-            return Promise.resolve({
+            return Promise.resolve(modernInsertResult ? {
+                acknowledged: true,
+                insertedId: 'mongo-id-' + model.code
+            } : {
                 ops: [model]
             });
         },
@@ -62,6 +65,18 @@ function modelWithItems(items) {
             });
         }
     });
+}
+
+async function validateVersionedSaveSupportsCurrentMongoInsertResult() {
+    const schemaModel = modelWithItems([], true);
+    const saved = await schemaModel.saveVersionedItems({
+        query: { code: 'item-modern' },
+        searchOptions: {},
+        model: { code: 'item-modern', name: 'Modern', versionId: 0 }
+    });
+    assert.strictEqual(saved.code, 'item-modern');
+    assert.strictEqual(saved.versionId, 0);
+    assert.strictEqual(saved._id, 'mongo-id-item-modern');
 }
 
 async function validateVersionedSaveUsesGetItemsEnvelope() {
@@ -90,6 +105,7 @@ async function validateVersionedUpdateUsesGetItemsEnvelope() {
 }
 
 validateVersionedSaveUsesGetItemsEnvelope()
+    .then(validateVersionedSaveSupportsCurrentMongoInsertResult)
     .then(validateVersionedUpdateUsesGetItemsEnvelope)
     .then(() => {
         console.log('vMongodb versioned model contract validated');

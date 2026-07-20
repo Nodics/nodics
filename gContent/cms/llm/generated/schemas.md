@@ -8,11 +8,18 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `cmsBase` | `base` | no | no | no | yes | no | no |  | 0 |
 | `cmsComponent` | `cmsBase` | yes | yes | yes | no | no | no |  | 3 |
-| `cmsComponentDetail` | `base` | yes | yes | no | yes | no | no |  | 3 |
-| `cmsPage` | `cmsBase` | yes | yes | yes | no | no | no |  | 5 |
+| `cmsComponentDetail` | `base` | yes | yes | no | yes | no | no |  | 4 |
+| `cmsMigrationAudit` | `base` | yes | yes | no | no | no | no |  | 8 |
+| `cmsOnlinePublicationPointer` | `base` | yes | yes | no | no | no | no |  | 10 |
+| `cmsPage` | `cmsBase` | yes | yes | yes | no | no | no |  | 6 |
+| `cmsPageRoute` | `cmsBase` | yes | yes | yes | yes | no | no |  | 9 |
+| `cmsPageTemplate` | `cmsBase` | yes | yes | yes | no | no | no |  | 4 |
+| `cmsPublicationDeploymentReceipt` | `base` | yes | yes | no | no | no | no |  | 6 |
+| `cmsPublicationManifest` | `base` | yes | yes | no | no | no | no |  | 9 |
 | `cmsSite` | `cmsBase` | yes | yes | yes | no | no | no |  | 2 |
-| `cmsTypeCode` | `base` | yes | yes | yes | yes | no | no |  | 0 |
-| `cmsTypeCode2Renderer` | `base` | yes | yes | yes | yes | no | no |  | 1 |
+| `cmsSlotDefinition` | `cmsBase` | yes | yes | no | no | no | no |  | 5 |
+| `cmsTypeCode` | `base` | yes | yes | yes | yes | no | no |  | 3 |
+| `cmsTypeCode2Renderer` | `base` | yes | yes | yes | yes | no | no |  | 2 |
 
 ### `cms.cmsBase`
 
@@ -20,34 +27,110 @@
 
 ### `cms.cmsComponent`
 
-- `renderer` `string` optional: Required renderer, this could be name of js, html file, which render required look and feel for this components
+- `renderer` `string` optional: Optional logical renderer key overriding the type-code renderer mapping
 - `subComponents` `array` optional: List of sub cmsComponents if any
 - `typeCode` `string` required: Required type code, this is used filter same type of components. like 
 
 ### `cms.cmsComponentDetail`
 
 - `index` `int` required: Required position of this component in the super component
+- `slot` `string` optional: Logical template slot containing this ordered component association
 - `source` `string` required: Required source component, it could be a page or component itself
 - `target` `string` required: Required target component, it will be component
+
+### `cms.cmsMigrationAudit`
+
+- `correlationId` `string` optional
+- `migrationVersion` `int` required
+- `preview` `object` optional
+- `requestedBy` `string` optional
+- `result` `object` optional
+- `snapshot` `object` optional
+- `status` `string` required
+- `tenant` `string` required
+
+### `cms.cmsOnlinePublicationPointer`
+
+- `accessMode` `string` required
+- `activatedBy` `string` optional
+- `channel` `string` required
+- `correlationId` `string` optional
+- `locale` `string` required
+- `manifestCode` `string` required
+- `path` `string` required
+- `previousManifestCode` `string` optional
+- `revision` `int` required
+- `site` `string` required
 
 ### `cms.cmsPage`
 
 - `cmsComponents` `array` required: Required Code of associated cmsComponent. One page could be have multiple cmsComponent
 - `cmsSite` `array` required: Required Code of associated cmsSites. One page could be associated with multiple cmsSites
 - `name` `string` required: Required cms site name
-- `renderer` `string` optional: Required renderer, this could be name of js, html file, which render required look and feel for this page
+- `renderer` `string` optional: Optional logical renderer key overriding the type-code renderer mapping
+- `template` `string` optional: Optional page template code defining the available composition slots
 - `typeCode` `string` required: Required type code, this is used filter same type of pages. like ProductDetailPage
+
+### `cms.cmsPageRoute`
+
+- `accessMode` `string` required: Required delivery access boundary
+- `channel` `string` required: Delivery channel scope
+- `deliveryState` `string` required: Fail-closed delivery activation state; workflow publishing may govern transition later
+- `locale` `string` required: Locale scope or default fallback
+- `page` `string` required: Target CMS page code
+- `path` `string` required: Normalized absolute route path
+- `redirectPath` `string` optional: Safe relative redirect target for REDIRECT routes
+- `routeType` `string` required: Route resolution behavior
+- `site` `string` required: CMS site code owning the route
+
+### `cms.cmsPageTemplate`
+
+- `contractVersion` `int` required: Template contract major version
+- `name` `string` required: Human-readable template name
+- `renderer` `string` required: Logical renderer key for the template shell
+- `slots` `array` optional: Owned slot definitions
+
+### `cms.cmsPublicationDeploymentReceipt`
+
+- `correlationId` `string` optional
+- `manifestCode` `string` required
+- `operation` `string` required
+- `previousOnlineVersion` `string` optional
+- `status` `string` required
+- `targetVersion` `string` required
+
+### `cms.cmsPublicationManifest`
+
+- `contentHash` `string` required: Deterministic manifest integrity identifier
+- `correlationId` `string` optional
+- `createdBy` `string` optional
+- `dependencies` `array` required: Frozen schema, code, and version identities
+- `publicationCode` `string` required: Owning nPublish request identity
+- `rootCode` `string` required
+- `rootType` `string` required
+- `snapshot` `object` required: Immutable client-safe CMS delivery graph
+- `sourceVersion` `string` required
 
 ### `cms.cmsSite`
 
 - `catalog` `string` required: Required Code of associated catalog
 - `name` `string` optional: Required cms site name
 
+### `cms.cmsSlotDefinition`
+
+- `allowedComponentTypes` `array` optional: Optional allowlist of component type codes
+- `maxItems` `int` optional: Maximum allowed component count
+- `minItems` `int` optional: Minimum allowed component count
+- `name` `string` required: Stable logical slot name
+- `template` `string` required: Owning page template code
+
 ### `cms.cmsTypeCode`
 
-- No direct properties defined.
+- `contractVersion` `int` required: Major version of the declarative type contract
+- `kind` `string` required: Declares whether the type classifies pages or components
+- `propertySchema` `object` optional: Declarative property contract; executable code is prohibited
 
 ### `cms.cmsTypeCode2Renderer`
 
-- `renderer` `string` required: Required renderer, this could be name of js, html file
-
+- `contractVersion` `int` required: Major renderer contract version understood by compatible API consumers
+- `renderer` `string` required: Logical renderer key resolved by an API consumer; never an executable path or URL

@@ -1,7 +1,6 @@
 {
     "name": "nTooling",
     "index": "1.98",
-    "runtimeModule": false,
     "description": "Non-runtime Nodics development, quality, generation, and command tooling.",
     "main": "nodics.js",
     "version": "0.0.1",
@@ -19,11 +18,9 @@
             "tooling",
             "quality",
             "configuration",
-            "service",
             "test",
             "llm"
         ],
-        "description": "Framework development and quality tooling package, not loaded by the Nodics runtime module loader.",
         "runtime": {
             "router": false,
             "publish": false,

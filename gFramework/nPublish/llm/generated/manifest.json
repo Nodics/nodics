@@ -13,18 +13,23 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to publish"
   },
-  "sourceFiles": 7,
-  "testFiles": 2,
+  "sourceFiles": 10,
+  "testFiles": 8,
   "dataFiles": 0,
-  "ownedFiles": 17,
-  "sourceFingerprint": "471b0e2f0e8a004b95977bd51d75210252a39161c59da92db236442c4dbddc19",
+  "ownedFiles": 24,
+  "sourceFingerprint": "6a5b4a48d91ff879aafd6f23bdbf8477af5a0c5076a85276851f33ec8cfc2d45",
   "documentation": {
-    "documented": 11,
+    "documented": 14,
     "partially-documented": 2,
-    "undocumented": 0,
+    "undocumented": 4,
     "inventory-only": 4
   },
-  "schemaGroups": {},
+  "schemaGroups": {
+    "publish": [
+      "publicationAudit",
+      "publicationRequest"
+    ]
+  },
   "schemaLoadError": null,
   "generatedBy": "npm run llm:generate"
 }

@@ -30,6 +30,10 @@ if (!String.prototype.toUpperCaseFirstChar) {
 const defaultWorkflowConfig = require('../config/properties').defaultWorkflowConfig;
 const pipelines = require('../src/pipelines/pipelines');
 const workflow2SchemaInterceptor = require('../src/service/interceptors/defaultSaveWorkflow2SchemaInterceptorService');
+const workflow2Schema = require('../src/schemas/schemas').system.workflow2Schema;
+
+assert.strictEqual(workflow2Schema.definition.carrierDetail.type, 'object');
+assert.strictEqual(workflow2Schema.definition.includeProperties.type, 'array');
 
 const pipelineCalls = [];
 

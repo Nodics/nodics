@@ -4,31 +4,51 @@
 
 ## Hand-Authored Tests
 
+- `gContent/cms/test/cmsContentDeliveryContract.test.js`
+- `gContent/cms/test/cmsMigrationContract.test.js`
+- `gContent/cms/test/cmsPublicationManifestContract.test.js`
 - `gContent/cms/test/common/commonTest.js`
 - `gContent/cms/test/env-local/envTest.js`
 
 ## Generated Tests
 
 - `gContent/cms/test/gen/api/cmsComponentApiContract.test.js`
+- `gContent/cms/test/gen/api/cmsComponentTypeApiContract.test.js`
 - `gContent/cms/test/gen/api/cmsPageApiContract.test.js`
+- `gContent/cms/test/gen/api/cmsPageRouteApiContract.test.js`
+- `gContent/cms/test/gen/api/cmsPageTemplateApiContract.test.js`
 - `gContent/cms/test/gen/api/cmsSiteApiContract.test.js`
 - `gContent/cms/test/gen/api/cmsTypeCode2RendererApiContract.test.js`
 - `gContent/cms/test/gen/api/cmsTypeCodeApiContract.test.js`
 - `gContent/cms/test/gen/apiScenario/cmsComponentApiScenario.test.js`
+- `gContent/cms/test/gen/apiScenario/cmsComponentTypeApiScenario.test.js`
 - `gContent/cms/test/gen/apiScenario/cmsPageApiScenario.test.js`
+- `gContent/cms/test/gen/apiScenario/cmsPageRouteApiScenario.test.js`
+- `gContent/cms/test/gen/apiScenario/cmsPageTemplateApiScenario.test.js`
 - `gContent/cms/test/gen/apiScenario/cmsSiteApiScenario.test.js`
 - `gContent/cms/test/gen/apiScenario/cmsTypeCode2RendererApiScenario.test.js`
 - `gContent/cms/test/gen/apiScenario/cmsTypeCodeApiScenario.test.js`
 - `gContent/cms/test/gen/crud/cmsComponentCrudScenario.test.js`
+- `gContent/cms/test/gen/crud/cmsComponentTypeCrudScenario.test.js`
 - `gContent/cms/test/gen/crud/cmsPageCrudScenario.test.js`
+- `gContent/cms/test/gen/crud/cmsPageRouteCrudScenario.test.js`
+- `gContent/cms/test/gen/crud/cmsPageTemplateCrudScenario.test.js`
 - `gContent/cms/test/gen/crud/cmsSiteCrudScenario.test.js`
 - `gContent/cms/test/gen/crud/cmsTypeCode2RendererCrudScenario.test.js`
 - `gContent/cms/test/gen/crud/cmsTypeCodeCrudScenario.test.js`
 - `gContent/cms/test/gen/schema/cmsBaseSchemaContract.test.js`
 - `gContent/cms/test/gen/schema/cmsComponentDetailSchemaContract.test.js`
 - `gContent/cms/test/gen/schema/cmsComponentSchemaContract.test.js`
+- `gContent/cms/test/gen/schema/cmsComponentTypeSchemaContract.test.js`
+- `gContent/cms/test/gen/schema/cmsMigrationAuditSchemaContract.test.js`
+- `gContent/cms/test/gen/schema/cmsOnlinePublicationPointerSchemaContract.test.js`
+- `gContent/cms/test/gen/schema/cmsPageRouteSchemaContract.test.js`
 - `gContent/cms/test/gen/schema/cmsPageSchemaContract.test.js`
+- `gContent/cms/test/gen/schema/cmsPageTemplateSchemaContract.test.js`
+- `gContent/cms/test/gen/schema/cmsPublicationDeploymentReceiptSchemaContract.test.js`
+- `gContent/cms/test/gen/schema/cmsPublicationManifestSchemaContract.test.js`
 - `gContent/cms/test/gen/schema/cmsSiteSchemaContract.test.js`
+- `gContent/cms/test/gen/schema/cmsSlotDefinitionSchemaContract.test.js`
 - `gContent/cms/test/gen/schema/cmsTypeCode2RendererSchemaContract.test.js`
 - `gContent/cms/test/gen/schema/cmsTypeCodeSchemaContract.test.js`
 

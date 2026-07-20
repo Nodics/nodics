@@ -20,6 +20,8 @@
 - `data`
 - `src/schemas`
 - `src/router`
+- `src/controller`
+- `src/facade`
 - `src/service`
 - `src/pipelines`
 - `src/interceptors`
@@ -30,11 +32,11 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 12 |
-| Test files | 24 |
+| Source files | 25 |
+| Test files | 44 |
 | Data files | 24 |
-| All module-owned files | 46 |
-| Local schema definitions | 7 |
+| All module-owned files | 62 |
+| Local schema definitions | 14 |
 
 ## Ownership And Dependencies
 
@@ -44,6 +46,8 @@
 - `data`
 - `schema`
 - `router`
+- `controller`
+- `facade`
 - `service`
 - `pipeline`
 - `interceptor`
@@ -63,9 +67,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 40 |
+| Documented | 53 |
 | Partially documented | 2 |
-| Undocumented | 0 |
+| Undocumented | 3 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -118,18 +122,34 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gContent/cms/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gContent/cms/nodics.js` | `module` | `documented` | 2/2 | CMS module lifecycle entrypoint used by the Nodics module loader. |  |
 | `gContent/cms/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gContent/cms/src/controller/defaultCmsDeliveryController.js` | `src` | `documented` | 3/3 | HTTP boundary for client-safe CMS page delivery. |  |
+| `gContent/cms/src/controller/defaultCmsMigrationController.js` | `src` | `documented` | 4/4 | Maps permissioned CMS migration requests to the layered migration service. |  |
+| `gContent/cms/src/controller/defaultCmsPublicationTargetController.js` | `src` | `documented` | 4/4 | Maps internal authenticated Staged-to-Online release operations to the target-local CMS deployment service. |  |
+| `gContent/cms/src/facade/defaultCmsDeliveryFacade.js` | `src` | `documented` | 3/3 | Replaceable orchestration boundary for resolved CMS delivery. |  |
 | `gContent/cms/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Schema interceptor registrations for CMS component details, renderer enrichment, and content relationship normalization. |  |
 | `gContent/cms/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Reserved CMS pipeline contribution for content-management workflows. |  |
 | `gContent/cms/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved CMS router application configuration contribution. |  |
 | `gContent/cms/src/router/routers.js` | `src` | `documented` | 0/0 | Reserved CMS route contribution for custom CMS APIs beyond generated schema routes. |  |
 | `gContent/cms/src/schemas/schemas.js` | `src` | `documented` | 0/0 | CMS schema contribution defining type codes, renderer mappings, sites, pages, components, and component-detail relationships. |  |
 | `gContent/cms/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements cms default sample service business behavior and extension logic. |  |
+| `gContent/cms/src/service/delivery/defaultCmsDeliveryCacheInvalidationService.js` | `src` | `documented` | 3/3 | Invalidates tenant-scoped resolved delivery responses through the authoritative nCache contract after CMS mutations. |  |
+| `gContent/cms/src/service/delivery/defaultCmsDeliveryService.js` | `src` | `documented` | 14/14 | Resolves a bounded, tenant-aware, client-safe CMS page graph using generated CMS schema services. |  |
 | `gContent/cms/src/service/interceptors/defaultCmsComponentDetailInterceptorService.js` | `src` | `documented` | 5/5 | CMS interceptor service that generates component-detail codes and normalizes page/component relationship sources before save. |  |
 | `gContent/cms/src/service/interceptors/defaultItemRendererInterceptorService.js` | `src` | `documented` | 4/4 | CMS post-load interceptor service that enriches pages and components with renderer names from type-code mappings. |  |
 | `gContent/cms/src/service/interceptors/defaultSubComponentsResolveInterceptorService.js` | `src` | `documented` | 4/4 | CMS post-load interceptor service that resolves active child components for loaded CMS component models. |  |
+| `gContent/cms/src/service/migration/defaultCmsMigrationService.js` | `src` | `documented` | 17/17 | Provides tenant-scoped preview, versioned apply, audit, idempotency, and rollback for CMS contract upgrades. |  |
+| `gContent/cms/src/service/publication/defaultCmsPublicationAdapterService.js` | `src` | `documented` | 15/15 | Resolves and validates immutable CMS page-route dependency graphs for the generic nPublish lifecycle. |  |
+| `gContent/cms/src/service/publication/defaultCmsPublicationManifestOrchestrationService.js` | `src` | `documented` | 12/12 | Builds immutable client-safe CMS manifests and atomically switches tenant-scoped Online pointers. |  |
+| `gContent/cms/src/service/publication/defaultCmsPublicationModuleTransportService.js` | `src` | `documented` | 6/6 | Sends authenticated release operations from Staged CMS to a separately configured Online CMS module runtime. |  |
+| `gContent/cms/src/service/publication/defaultCmsPublicationTargetService.js` | `src` | `documented` | 9/9 | Imports, activates, reports, and rolls back immutable releases inside the independently deployed Online CMS target. |  |
+| `gContent/cms/src/service/publication/defaultCmsPublicationVersionProviderService.js` | `src` | `documented` | 10/10 | Implements the nPublish version-provider contract with CMS immutable manifests and atomic Online pointers. |  |
+| `gContent/cms/src/service/validation/defaultCmsContractValidationService.js` | `src` | `documented` | 7/7 | Validates CMS-owned renderer, route, and ordered-composition contracts before persistence. |  |
 | `gContent/cms/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared cms enum definition exports. |  |
 | `gContent/cms/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared cms status and error definition exports. |  |
 | `gContent/cms/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for CMS-specific helper functions. |  |
+| `gContent/cms/test/cmsContentDeliveryContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gContent/cms/test/cmsMigrationContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gContent/cms/test/cmsPublicationManifestContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gContent/cms/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Reserved common CMS test contribution showing the module-owned test-suite shape for shared CMS behavior. | add JSDoc for 7 exported method(s) |
 | `gContent/cms/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Reserved local-environment CMS test contribution showing how environment-specific test suites can be attached. | add JSDoc for 7 exported method(s) |
 

@@ -33,4 +33,3 @@
 ### `order.shippingstatus`
 
 - No direct properties defined.
-

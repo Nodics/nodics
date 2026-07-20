@@ -14,19 +14,28 @@ Modernization may replace outdated libraries, improve security, refactor existin
 
 ## Architecture Rules
 
-1. Treat Nodics as a configurable enterprise application platform and application factory.
-2. Preserve layered module hierarchy and override behavior.
-3. Keep framework behavior generic; never hardcode customer/project modules into framework logic.
-4. Put source definitions in modules; regenerate derived artifacts during build.
-5. Keep generated artifacts safely removable by clean.
-6. Use service/facade/controller/router boundaries consistently.
-7. Keep runtime artifacts inside Nodics loader radar: services under `src/service/**/*Service.js`, controllers under `src/controller/**/*Controller.js`, facades under `src/facade/**/*Facade.js`, and pipeline definitions in `src/pipelines/pipelines.js`.
-8. Export runtime behavior as mergeable `module.exports = { methodName: function (...) {} }` objects so later modules can override the smallest necessary member.
-9. Use schema-driven models, services, routers, APIs, tests, and documentation where possible.
-10. Preserve multi-tenancy, tenant data placement, and the difference between default tenant and active tenant.
-11. Preserve runtime configuration, audit, rollback, validation, and access-control governance.
-12. Add tests for both consolidated and modular deployment behavior when behavior crosses module/process boundaries.
-13. Treat modules as the unit of capability, ownership, registration, discovery,
+1. Follow the reuse-first sequence: reuse an existing capability or contract;
+   then customize, extend, compose, or override it through the layered module
+   hierarchy; create a new implementation or capability only after a documented
+   repository inspection proves existing authority paths cannot satisfy the
+   requirement.
+2. Run a duplication and parallel-authority check before adding a schema,
+   service, loader, registry, pipeline, governance layer, cache, workflow,
+   publisher, connector abstraction, or runtime authority. Integrate with the
+   existing authoritative owner instead of creating a second source of truth.
+3. Treat Nodics as a configurable enterprise application platform and application factory.
+4. Preserve layered module hierarchy and override behavior.
+5. Keep framework behavior generic; never hardcode customer/project modules into framework logic.
+6. Put source definitions in modules; regenerate derived artifacts during build.
+7. Keep generated artifacts safely removable by clean.
+8. Use service/facade/controller/router boundaries consistently.
+9. Keep runtime artifacts inside Nodics loader radar: services under `src/service/**/*Service.js`, controllers under `src/controller/**/*Controller.js`, facades under `src/facade/**/*Facade.js`, and pipeline definitions in `src/pipelines/pipelines.js`.
+10. Export runtime behavior as mergeable `module.exports = { methodName: function (...) {} }` objects so later modules can override the smallest necessary member.
+11. Use schema-driven models, services, routers, APIs, tests, and documentation where possible.
+12. Preserve multi-tenancy, tenant data placement, and the difference between default tenant and active tenant.
+13. Preserve runtime configuration, audit, rollback, validation, and access-control governance.
+14. Add tests for both consolidated and modular deployment behavior when behavior crosses module/process boundaries.
+15. Treat modules as the unit of capability, ownership, registration, discovery,
     lifecycle, and customization. Environment, server, and node definitions
     compose runtime processes and endpoint coordinates; they are not capability
     boundaries and must not replace module-centric behavior.

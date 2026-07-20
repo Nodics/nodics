@@ -27,7 +27,7 @@
   tokens, credentials, private keys, secret references, or unapproved internal
   endpoints to the frontend.
 - Optional catalogue and navigation metadata must be declared by the owning
-  module in `package.json#nodics.backoffice`. BackOffice validates and
+  module in `config/properties.js#backofficeCapabilities.<moduleName>`. BackOffice validates and
   permission-filters that metadata; it must not maintain a duplicated manual
   module catalogue.
 - Discover effective contracts through existing System/OpenAPI authorities.

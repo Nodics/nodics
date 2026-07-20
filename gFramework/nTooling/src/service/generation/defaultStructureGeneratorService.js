@@ -210,14 +210,14 @@ function defaultSampleService(moduleName) {
     return copyrightHeader + '\n' +
         '/**\n' +
         ' * @module ' + moduleName + '/src/service/defaultSampleService\n' +
-        ' * @description Implements generated sample service lifecycle behavior and documents the standard service override shape.\n' +
+        ' * @description Empty module-creation placeholder that demonstrates the service lifecycle shape until concrete services are added.\n' +
         ' * @layer service\n' +
         ' * @owner generated\n' +
         ' * @override Later active modules may override these methods through the standard service merge path.\n' +
         ' */\n' +
         'module.exports = {\n' +
         '    /**\n' +
-        '     * Initializes the sample service.\n' +
+        '     * Initializes the empty sample placeholder.\n' +
         '     * @param {Object} options Startup options.\n' +
         '     * @returns {Promise<boolean>} Resolves when initialization completes.\n' +
         '     */\n' +
@@ -226,7 +226,7 @@ function defaultSampleService(moduleName) {
         '    },\n' +
         '\n' +
         '    /**\n' +
-        '     * Finalizes the sample service.\n' +
+        '     * Finalizes the empty sample placeholder.\n' +
         '     * @param {Object} options Startup options.\n' +
         '     * @returns {Promise<boolean>} Resolves when post-initialization completes.\n' +
         '     */\n' +
@@ -318,7 +318,6 @@ module.exports = {
                 runtimeModule: true,
                 loadableByNodicsModuleLoader: true,
                 owns: options.owns,
-                description: options.description || 'Generated Nodics ' + options.kind + ' boundary.',
                 runtime: Object.assign({}, runtimeFlags)
             },
             scripts: {},

@@ -17,5 +17,13 @@
  * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
  */
 module.exports = {
-
+    PublicationState: {
+        _options: {
+            name: 'PublicationState', separator: '|', endianness: 'BE', ignoreCase: false, freez: false
+        },
+        definition: [
+            'STAGED', 'VALIDATING', 'VALIDATED', 'PENDING_APPROVAL', 'APPROVED',
+            'REJECTED', 'ACTIVATING', 'ONLINE', 'ROLLING_BACK', 'ROLLED_BACK', 'FAILED'
+        ]
+    }
 };

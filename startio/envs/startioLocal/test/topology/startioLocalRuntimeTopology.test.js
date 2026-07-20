@@ -101,7 +101,8 @@ function requestModuleEndpoint(options) {
         host: '127.0.0.1',
         port: port,
         path: requestPath,
-        method: options.method || 'GET'
+        method: options.method || 'GET',
+        headers: options.headers || {}
     };
     return new Promise((resolve, reject) => {
         let request = http.request(requestOptions, response => {
@@ -124,7 +125,7 @@ function requestModuleEndpoint(options) {
             });
         });
         request.on('error', reject);
-        request.end();
+        request.end(options.body === undefined ? undefined : JSON.stringify(options.body));
     });
 }
 
@@ -190,6 +191,7 @@ function startServer(serverName, nodeName) {
             nodeName: nodeName || null,
             port,
             output: output,
+            getOutput: () => output,
             contract: contractSnapshot
         };
     }).catch(error => {
@@ -264,6 +266,128 @@ function requestRegistrySnapshot(runtime) {
     });
 }
 
+function requestPublicationOperation(runtime, operation, payload) {
+    let correlationId = 'publication-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+    return new Promise((resolve, reject) => {
+        let timeout = setTimeout(() => {
+            runtime.child.removeListener('message', listener);
+            reject(new Error(runtime.label + ' publication probe timed out for ' + operation));
+        }, REGISTRY_TIMEOUT_MS);
+        function listener(message) {
+            if (!message || message.type !== 'nodics-runtime-publication-response' || message.correlationId !== correlationId) return;
+            clearTimeout(timeout);
+            runtime.child.removeListener('message', listener);
+            if (message.error) reject(new Error(operation + ': ' + message.error));
+            else resolve(message.result);
+        }
+        runtime.child.on('message', listener);
+        runtime.child.send({ type: 'nodics-runtime-publication-request', correlationId: correlationId,
+            operation: operation, payload: payload });
+    });
+}
+
+async function runCmsPublicationSmoke(runtimes) {
+    let staged = runtimes.find(runtime => runtime.serverName === 'startioLocalCmsServer');
+    let onlineIndex = runtimes.findIndex(runtime => runtime.serverName === 'startioLocalCmsOnlineServer');
+    let online = runtimes[onlineIndex];
+    assert(staged && online, 'CMS publication smoke requires separate Staged and Online runtimes');
+    let suffix = Date.now().toString(36);
+    let fixture = { tenant: 'default', site: 'runtime-' + suffix, path: '/runtime-' + suffix,
+        pageCode: 'runtime-page-' + suffix, routeCode: 'runtime-route-' + suffix, locale: 'en', channel: 'web' };
+    let publication = version => ({ code: 'runtime-release-' + suffix + '-v' + version, domain: 'cms',
+        rootType: 'pageRoute', rootCode: fixture.routeCode, sourceVersion: String(version) });
+    let carrier = version => ({ tenant: fixture.tenant, carrierCode: 'runtime-carrier-' + suffix + '-v' + version,
+        items: [{ schemaName: 'cmsPageRoute', code: fixture.routeCode, versionId: version },
+            { schemaName: 'cmsPage', code: fixture.pageCode, versionId: version }], publication: publication(version) });
+
+    let roleBoundary = await requestPublicationOperation(staged, 'assertCmsSourceRoleBoundary', fixture);
+    assert.strictEqual(roleBoundary.rejected, true, 'Staged runtime must reject target-side deployment authority');
+    let targetRoutes = await requestPublicationOperation(online, 'inspectCmsPublicationRoutes', fixture);
+    assert(targetRoutes.some(route => route.method === 'post' && route.url.endsWith('/cms/v0/publication/target/deploy')),
+        'Online CMS must register its internal publication deployment route: ' + JSON.stringify(targetRoutes));
+    let unauthenticatedTarget = await requestModuleEndpoint({ server: 'startioLocalCmsOnlineServer', moduleName: 'cms',
+        path: '/v0/publication/target/status', method: 'POST', expectedStatus: 401,
+        headers: { 'content-type': 'application/json' }, body: { tenant: fixture.tenant, scope: fixture } });
+    assert.strictEqual(unauthenticatedTarget.statusCode, 401,
+        'Online publication target routes must reject requests without an internal service token');
+
+    await requestPublicationOperation(staged, 'seedCmsRelease', Object.assign({}, fixture, { version: 0, pageName: 'Runtime page v1' }));
+    let first;
+    try {
+        first = await requestPublicationOperation(staged, 'publishCmsRelease', carrier(0));
+    } catch (error) {
+        throw new Error(error.message + '\nStaged CMS output:\n' + (staged.getOutput ? staged.getOutput() : staged.output) +
+            '\nOnline CMS output:\n' + (online.getOutput ? online.getOutput() : online.output));
+    }
+    assert.strictEqual(first.state, 'ONLINE');
+    let firstOnline = await requestPublicationOperation(online, 'inspectCmsDelivery', fixture);
+    assert.strictEqual(firstOnline.delivery.page.name, 'Runtime page v1');
+    assert.strictEqual(firstOnline.manifestCode, first.targetVersion);
+    assert.strictEqual(firstOnline.pointerCorrelationId, carrier(0).carrierCode,
+        'Online pointer must retain the Staged publication correlation ID: ' + JSON.stringify(firstOnline));
+    assert.strictEqual(firstOnline.receiptCorrelationId, carrier(0).carrierCode,
+        'Online deployment receipt must retain the Staged publication correlation ID: ' + JSON.stringify(firstOnline));
+    let replay = await requestPublicationOperation(staged, 'publishCmsRelease', carrier(0));
+    let replayOnline = await requestPublicationOperation(online, 'inspectCmsDelivery', fixture);
+    assert.strictEqual(replay.targetVersion, first.targetVersion);
+    assert.strictEqual(replayOnline.receiptCount, firstOnline.receiptCount, 'idempotent replay must not duplicate deployment receipts');
+
+    await requestPublicationOperation(staged, 'seedCmsRelease', Object.assign({}, fixture, { version: 1, pageName: 'Runtime page v2' }));
+    let rejected = await requestPublicationOperation(staged, 'rejectCmsRelease', Object.assign({}, fixture, {
+        publication: Object.assign({}, publication(1), { code: publication(1).code + '-rejected' })
+    }));
+    assert.strictEqual(rejected.state, 'REJECTED');
+    let afterRejection = await requestPublicationOperation(online, 'inspectCmsDelivery', fixture);
+    assert.strictEqual(afterRejection.manifestCode, first.targetVersion, 'rejected publication must not change Online content');
+
+    let second = await requestPublicationOperation(staged, 'publishCmsRelease', carrier(1));
+    let secondOnline = await requestPublicationOperation(online, 'inspectCmsDelivery', fixture);
+    assert.strictEqual(secondOnline.delivery.page.name, 'Runtime page v2');
+    assert.strictEqual(secondOnline.previousManifestCode, first.targetVersion);
+
+    await stopServer(online);
+    online = await startServer('startioLocalCmsOnlineServer');
+    assertRuntimeContract(online);
+    runtimes[onlineIndex] = online;
+    let recovered = await requestPublicationOperation(online, 'inspectCmsDelivery', fixture);
+    assert.strictEqual(recovered.manifestCode, second.targetVersion, 'Online pointer must survive target restart');
+
+    let rolledBack = await requestPublicationOperation(staged, 'rollbackCmsRelease', {
+        tenant: fixture.tenant, publicationCode: publication(1).code
+    });
+    assert.strictEqual(rolledBack.state, 'ROLLED_BACK');
+    let restored = await requestPublicationOperation(online, 'inspectCmsDelivery', fixture);
+    assert.strictEqual(restored.manifestCode, first.targetVersion);
+    assert.strictEqual(restored.delivery.page.name, 'Runtime page v1');
+
+    await requestPublicationOperation(staged, 'seedCmsRelease', Object.assign({}, fixture, { version: 2, pageName: 'Runtime page v3' }));
+    await stopServer(online);
+    let outagePublication = Object.assign({}, publication(2), { code: publication(2).code + '-outage' });
+    await assert.rejects(requestPublicationOperation(staged, 'publishCmsRelease', {
+        tenant: fixture.tenant, carrierCode: 'runtime-carrier-' + suffix + '-outage', items: carrier(2).items,
+        publication: outagePublication
+    }), /publication|fetch|connect|ECONNREFUSED|target/i, 'Staged publication must fail closed while Online is unavailable');
+    let failed = await requestPublicationOperation(staged, 'inspectCmsPublication', {
+        tenant: fixture.tenant, publicationCode: outagePublication.code
+    });
+    assert.strictEqual(failed.state, 'FAILED', 'Online outage must leave an auditable failed publication');
+    online = await startServer('startioLocalCmsOnlineServer');
+    assertRuntimeContract(online);
+    runtimes[onlineIndex] = online;
+    let afterOutage = await requestPublicationOperation(online, 'inspectCmsDelivery', fixture);
+    assert.strictEqual(afterOutage.manifestCode, first.targetVersion, 'Online outage must not partially activate a new release');
+    let recoveryPublication = Object.assign({}, publication(2), { code: publication(2).code + '-recovery' });
+    let recoveredPublication = await requestPublicationOperation(staged, 'publishCmsRelease', {
+        tenant: fixture.tenant, carrierCode: 'runtime-carrier-' + suffix + '-recovery', items: carrier(2).items,
+        publication: recoveryPublication
+    });
+    assert.strictEqual(recoveredPublication.state, 'ONLINE');
+    let recoveredDelivery = await requestPublicationOperation(online, 'inspectCmsDelivery', fixture);
+    assert.strictEqual(recoveredDelivery.delivery.page.name, 'Runtime page v3');
+    return { approved: true, rejected: true, unauthenticatedTargetRejected: true, idempotentReplay: true,
+        restartRecovered: true, secondVersion: true, rollback: true, outageFailedClosed: true, outageRecovered: true };
+}
+
 async function waitForRegistry(runtime, predicate, description) {
     let startedAt = Date.now();
     let lastSnapshot;
@@ -329,6 +453,7 @@ async function runModularSmoke() {
             !snapshot.instances.some(instance => instance.instanceId === previousCmsInstance), 'CMS restart reconciliation');
         let durableCms = reconciledRegistry.durableContracts.find(contract => contract.moduleName === 'cms');
         assert(durableCms && durableCms.hash && durableCms.activationRevision > 0, 'CMS durable contract pointer must be observable before restart');
+        let publication = await runCmsPublicationSmoke(runtimes);
 
         let backofficeIndex = runtimes.findIndex(runtime => runtime.serverName === 'startioLocalBackofficeServer');
         await stopServer(backofficeRuntime);
@@ -356,7 +481,8 @@ async function runModularSmoke() {
                 backofficeRestartRecovered: true,
                 availabilityRecovered: recoveredRegistry.availability.some(availability =>
                     availability.moduleName === 'cms' && availability.state === 'UP')
-            }
+            },
+            publication: publication
         };
     } finally {
         for (let runtime of runtimes.reverse()) {
@@ -425,6 +551,7 @@ async function runRuntimeReadinessSmoke(runtimes) {
         console.log('Communication:', modular.communication.map(item => item.url + ' -> ' + item.statusCode).join(', '));
         console.log('Readiness:', modular.readiness.map(item => item.url + ' -> ' + item.statusCode).join(', '));
         console.log('Registry reconciliation:', JSON.stringify(modular.registry));
+        console.log('CMS publication:', JSON.stringify(modular.publication));
     }
 })().catch(error => {
     console.error(error.message || error);

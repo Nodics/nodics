@@ -6,23 +6,47 @@ Use this module for publish capability behavior that is not specific to one prov
 
 Publishing behavior must remain source-of-truth driven, auditable, rollback-aware, and safe for layered overrides across environment, server, node, tenant, and customer layers.
 
-Versioned persistence is currently provided through variant modules such as
-`vDatabase`, `vMongodb`, and `vService`. The broader business lifecycle for
-staged data, validation, approval, publish activation, online visibility, and
-rollback must be defined as a governed publish contract before a project treats
-it as complete runtime behavior.
+Versioned persistence is provided through variant modules such as `vDatabase`,
+`vMongodb`, and `vService`. `nPublish` governs the provider-neutral business
+lifecycle for staged data, validation, approval, activation, online visibility,
+and rollback.
 
 ## Capability Status
 
-The module currently provides:
+The module now provides:
 
-- a standard framework module boundary for publish contracts;
+- authoritative generic `publicationRequest` contract with an atomically stored
+  transition journal and a query-oriented `publicationAudit` projection;
+- governed Staged, validation, approval, activation, Online, failure, and rollback states;
+- layered transition, dependency-bound, event, domain-adapter, version-provider,
+  and workflow-provider configuration;
+- executable lifecycle orchestration for create, validate, approval, activation,
+  failure, and rollback flows;
+- optimistic revision enforcement, idempotent terminal replays, sanitized audit
+  evidence, bounded dependencies, and fail-fast provider resolution;
+- a generated-service-backed repository extension point that atomically applies
+  state, optimistic revision, and immutable transition evidence in one CAS write;
+- bounded, tenant-scoped, idempotent reconciliation of missing audit projections
+  from authoritative publication journals;
 - layered configuration files;
 - router, schema, pipeline, utility, enum, and status extension slots;
 - common and environment-local smoke tests;
 - generated LLM context.
 
-It does not yet implement the full business publish lifecycle by itself. Versioned storage support lives in variant modules, while project/business publishing rules must be added through owning business modules or future framework publish services.
+CMS now supplies the first executable domain adapter and target deployment
+implementation. Additional domains remain extension work. Versioned storage remains owned by provider variants;
+workflow remains owned by `gCore/workflow`; business validation and dependency
+rules remain in owning domain adapters. No business module may introduce a
+parallel publication state machine.
+
+The default deployment contract uses two independent runtime authorities:
+
+- Staged activates publish/version variants and stores editable immutable versions;
+- Online does not activate version variants and stores the deployed target form;
+- an approved workflow invokes the domain adapter, which deploys through an
+  authenticated target transport rather than writing the Online database;
+- each publishable domain, including CMS or a product catalog, contributes its
+  own dependency resolver, validation, manifest/export shape, and target adapter.
 
 ## Publish Lifecycle Direction
 
@@ -65,11 +89,19 @@ npm run quality:docs
 
 Add focused tests before this module owns executable publish behavior beyond scaffold extension slots.
 
+The focused orchestration contract can be run with:
+
+```bash
+node gFramework/nPublish/test/publicationLifecycleService.test.js
+node gFramework/nPublish/test/publicationAtomicAuditContract.test.js
+node gFramework/nPublish/test/publicationAuditReconciliationService.test.js
+```
+
 ## What To Avoid
 
 Avoid:
 
-- treating the current scaffold as a complete publish engine;
+- treating the generic lifecycle as a domain dependency resolver or target adapter;
 - duplicating versioned database behavior already owned by `vDatabase` or provider variants;
 - putting one project's content/product approval rules into the framework module;
 - making publish activation non-auditable or non-revertible;

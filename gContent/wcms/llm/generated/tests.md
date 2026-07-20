@@ -6,6 +6,7 @@
 
 - `gContent/wcms/test/common/commonTest.js`
 - `gContent/wcms/test/env-local/envTest.js`
+- `gContent/wcms/test/wcmsPublicationWorkflowContract.test.js`
 
 ## Generated Tests
 

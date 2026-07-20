@@ -61,35 +61,38 @@ module.exports = {
         code: 'menuLinkComponentType',
         active: true
     },
-    record10: {
+    record11: {
         code: 'navigationalComponentType',
         active: true
     },
-    record11: {
+    record12: {
         code: 'logoComponentType',
         active: true
     },
-    record12: {
-        code: 'loginHomePageType',
-        active: true,
-    },
     record13: {
-        code: 'signUpHomePageType',
+        code: 'loginHomePageType',
+        kind: 'PAGE',
         active: true,
     },
     record14: {
-        code: 'oneHomePageType',
+        code: 'signUpHomePageType',
+        kind: 'PAGE',
         active: true,
     },
     record15: {
-        code: 'titleComponentType',
+        code: 'oneHomePageType',
+        kind: 'PAGE',
         active: true,
     },
     record16: {
-        code: 'buttonComponentType',
+        code: 'titleComponentType',
         active: true,
     },
     record17: {
+        code: 'buttonComponentType',
+        active: true,
+    },
+    record18: {
         code: 'headerStickyComponentType',
         active: true,
     },

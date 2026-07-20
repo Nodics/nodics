@@ -17,6 +17,15 @@
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {
+    backofficeCapabilities: {
+        workflow: {
+            enabled: true, capabilityId: 'workflow-management', displayName: 'Workflows', category: 'operations', icon: 'workflow',
+            contractVersion: 1, minimumClientContractVersion: 1, roles: ['FUNCTIONAL_CAPABILITY_PROVIDER'],
+            discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
+            requiredPermissions: ['workflow.backoffice.view'],
+            navigation: [{ id: 'workflow', label: 'Workflows', route: '/workflows', order: 400, requiredPermissions: ['workflow.backoffice.view'] }]
+        }
+    },
     workflow: {
         defaultEventType: 'SYNC',
         defaultSuccessHandler: 'DefaultWorkflowSuccessActionService.handleSuccessProcess',

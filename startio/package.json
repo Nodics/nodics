@@ -27,15 +27,13 @@
         "owns": [
             "composition",
             "configuration",
-            "test",
             "llm"
         ],
         "runtime": {
             "router": false,
             "publish": false,
             "web": false
-        },
-        "description": "Compliant project module used to validate Nodics project, environment, server, and node generation contracts."
+        }
     },
     "groupName": "nodicsSamples"
 }

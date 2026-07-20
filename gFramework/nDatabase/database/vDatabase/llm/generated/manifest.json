@@ -14,19 +14,18 @@
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to vDatabase"
   },
   "sourceFiles": 10,
-  "testFiles": 2,
+  "testFiles": 3,
   "dataFiles": 0,
-  "ownedFiles": 20,
-  "sourceFingerprint": "12af561918459ee31d0b5468828e7a484dc8c6e46d433e754a078f3812262386",
+  "ownedFiles": 21,
+  "sourceFingerprint": "2325d333b79578b3dfbbc333a4093b29dac0ee7e1df2dbf8567684e710dbf26b",
   "documentation": {
     "documented": 14,
     "partially-documented": 2,
-    "undocumented": 0,
+    "undocumented": 1,
     "inventory-only": 4
   },
   "schemaGroups": {
     "default": [
-      "base",
       "versioned"
     ]
   },

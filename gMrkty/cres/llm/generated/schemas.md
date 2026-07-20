@@ -14,4 +14,3 @@
 - `address.city` `string` required
 - `address.state` `string` required
 - `name` `string` required
-

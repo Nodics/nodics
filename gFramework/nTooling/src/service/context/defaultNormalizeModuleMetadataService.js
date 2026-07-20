@@ -134,27 +134,13 @@ function normalizeModule(module) {
     packageJson.nodics = Object.assign({}, packageJson.nodics || {}, {
         kind: kind,
         runtime: inferRuntime(packageJson, kind),
-        runtimeModule: packageJson.runtimeModule === false ? false : !['setup', 'tooling'].includes(kind),
-        loadableByNodicsModuleLoader: packageJson.runtimeModule === false ? false : !['setup', 'tooling'].includes(kind),
+        runtimeModule: !['setup', 'tooling'].includes(kind),
+        loadableByNodicsModuleLoader: !['setup', 'tooling'].includes(kind),
         owns: inferOwns(module, kind)
     });
     delete packageJson.nodics.moduleType;
     delete packageJson.type;
-    if (kind === 'group') {
-        packageJson.nodics.description = module.relativePath && /Envs[\\/]/.test(module.relativePath) ?
-            'Environment group module that contributes deployment-wide configuration and contains server modules.' :
-            'Container module that composes child modules and may contribute shared configuration.';
-    } else if (kind === 'environment') {
-        packageJson.nodics.description = 'Environment module that contributes environment-level configuration and topology.';
-    } else if (kind === 'server') {
-        packageJson.nodics.description = 'Server module that contributes server-level configuration and startup topology.';
-    } else if (kind === 'node') {
-        packageJson.nodics.description = 'Node module that contributes node-level configuration for distributed deployment.';
-    } else if (kind === 'setup') {
-        packageJson.nodics.description = 'Global LLM and setup guidance package, not loaded by the Nodics runtime module loader.';
-    } else if (kind === 'tooling') {
-        packageJson.nodics.description = 'Framework development and quality tooling package, not loaded by the Nodics runtime module loader.';
-    }
+    delete packageJson.nodics.description;
     fs.writeFileSync(packagePath, JSON.stringify(packageJson, null, 4) + '\n', 'utf8');
 }
 

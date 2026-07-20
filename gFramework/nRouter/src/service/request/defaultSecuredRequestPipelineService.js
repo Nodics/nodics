@@ -27,6 +27,7 @@
  * @property {string[]} request.router.accessGroups Groups allowed to access the selected router.
  * @property {string|string[]} request.router.permission Action permission required by the selected router.
  * @property {string|string[]} request.router.permissionConfig Layered configuration path for route permissions.
+ * @property {string|string[]} request.router.authTokenTypes Authenticated token types allowed to invoke the route.
  */
 module.exports = {
     /**
@@ -180,6 +181,10 @@ module.exports = {
      * @throws Emits `ERR_AUTH_00003` when the principal cannot access the route.
      */
     checkAccess: function (request, response, process) {
+        if (!this.hasAcceptedTokenType(request)) {
+            process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00003', 'authenticated token type cannot execute this action'));
+            return;
+        }
         if (!this.hasAccessGroup(request)) {
             process.error(request, response, new CLASSES.NodicsError('ERR_AUTH_00003', 'current user do not have access to this resource'));
             return;
@@ -189,6 +194,20 @@ module.exports = {
             return;
         }
         process.nextSuccess(request, response);
+    },
+
+    /**
+     * Enforces an optional route-level token-type boundary after token authorization.
+     * Routes without `authTokenTypes` preserve the existing authentication contract.
+     *
+     * @param {Object} request Nodics request context.
+     * @returns {boolean} True when the authenticated token type is accepted by the route.
+     */
+    hasAcceptedTokenType: function (request) {
+        let accepted = this.normalizePermissions(request.router && request.router.authTokenTypes);
+        if (accepted.length === 0) return true;
+        let tokenType = request.authData && request.authData.tokenType;
+        return typeof tokenType === 'string' && accepted.includes(tokenType);
     },
 
     /**

@@ -24,6 +24,16 @@ module.exports = {
         type: ENUMS.WorkflowActionType.MANUAL.key,
         accessGroups: ['workflowUserGroup'],
         allowedDecisions: ['SUCCESS', 'REJECT', 'ERROR'],
-        channels: ['defaultSuccessChannel', 'defaultRejectChannel', 'defaultErrorChannel']
+        channels: ['publishCmsComponentChannel', 'defaultRejectChannel', 'defaultErrorChannel']
+    },
+    record2: {
+        code: 'publishCmsComponentAction',
+        name: 'publishCmsComponentAction',
+        active: true,
+        type: ENUMS.WorkflowActionType.AUTO.key,
+        handler: 'DefaultWcmsPublicationWorkflowService.publish',
+        accessGroups: ['workflowUserGroup'],
+        allowedDecisions: ['SUCCESS', 'ERROR'],
+        channels: ['defaultSuccessChannel', 'defaultErrorChannel']
     }
 };

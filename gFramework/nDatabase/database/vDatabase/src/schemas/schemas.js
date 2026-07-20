@@ -19,7 +19,7 @@
 module.exports = {
     default: {
         versioned: {
-            super: 'super',
+            super: 'base',
             model: false,
             service: {
                 enabled: false
@@ -46,10 +46,6 @@ module.exports = {
                     }
                 }
             }
-        },
-
-        base: {
-            super: 'versioned',
         }
     }
 };

@@ -27,4 +27,3 @@
 
 - `active` `object` optional
 - `jobCode` `string` required
-

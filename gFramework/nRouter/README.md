@@ -27,6 +27,13 @@ environment, server, node, tenant, or runtime governance, prefer
 resolves that value from effective configuration before checking the
 authenticated principal's permissions.
 
+Routes that must accept only a particular authenticated token class may declare
+`authTokenTypes`, for example `authTokenTypes: ['service']` on an internal
+module-to-module operation. This check runs before access-group and permission
+authorization. A human `access` token cannot invoke a service-only route even
+when its principal has the same permission. Routes without this metadata retain
+the normal credential behavior.
+
 Sensitive runtime, diagnostic, file, import, export, test, dynamic class, and
 maintenance APIs must also declare an `apiExposure` category. The request
 handler pipeline checks `apiExposure.categories.<category>.enabled` before route
@@ -200,6 +207,8 @@ integration tests.
 - Putting business or database behavior in a route definition.
 - Marking a human login route and an internal service route with the same
   credential assumptions.
+- Protecting a module-only route with permission alone while omitting
+  `authTokenTypes: ['service']`.
 - Using only a broad user group for a sensitive control-plane operation.
 - Enabling a sensitive API in production merely because the caller has a
   permission; exposure and authorization are separate gates.

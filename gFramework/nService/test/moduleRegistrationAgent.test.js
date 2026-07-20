@@ -22,13 +22,13 @@ let contributor;
 let requests = [];
 global.CONFIG = { get: key => ({
     backofficeRegistration: { enabled: true, moduleName: 'backoffice', heartbeatIntervalMs: 10000, requestTimeoutMs: 20 },
+    backofficeCapabilities: { cms: { enabled: true, capabilityId: 'content-management', contractVersion: 1,
+        minimumClientContractVersion: 1, requiredPermissions: ['cms.backoffice.view'] } },
     defaultTenant: 'default'
 }[key]) };
 global.NODICS = {
     getActiveModules: () => ['cms', 'utility'],
-    getRawModule: name => ({ metaData: { version: '1.0.0', nodics: { runtime: { router: name === 'cms' }, owns: ['router'],
-        backoffice: name === 'cms' ? { enabled: true, capabilityId: 'content-management', contractVersion: 1,
-            minimumClientContractVersion: 1, requiredPermissions: ['cms.backoffice.view'] } : undefined } } }),
+    getRawModule: name => ({ metaData: { version: '1.0.0', nodics: { runtime: { router: name === 'cms' }, owns: ['router'] } } }),
     getEnvironmentName: () => 'local', getServerName: () => 'cmsServer', getNodeName: () => null,
     getInternalAuthToken: () => 'service-token'
 };
@@ -59,6 +59,11 @@ async function run() {
     assert.deepStrictEqual(requests[0].requestBody.registrations.map(item => item.moduleName), ['cms', 'utility']);
     assert.strictEqual(requests[0].requestBody.registrations[0].clientCallable, true);
     assert.strictEqual(requests[0].requestBody.registrations[0].backoffice.capabilityId, 'content-management');
+    CONFIG.get = key => ({ backofficeRegistration: { enabled: true }, backofficeCapabilities: {
+        cms: { enabled: false, capabilityId: 'environment-disabled' }
+    }, defaultTenant: 'default' }[key]);
+    assert.strictEqual(service.buildRegistration('cms').backoffice, undefined,
+        'later layered configuration must be able to disable module BackOffice exposure');
     assert.strictEqual(requests[0].requestBody.registrations[1].clientCallable, false);
     assert.strictEqual(requests[0].requestBody.registrations[1].endpoint, undefined);
     await contributor.drain();

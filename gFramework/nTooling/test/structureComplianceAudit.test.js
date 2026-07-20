@@ -45,8 +45,7 @@ function packageJson(name, kind, owns, extra) {
                 router: false,
                 publish: false,
                 web: false
-            },
-            description: name + ' fixture module'
+            }
         }
     }, extra || {}), null, 2);
 }

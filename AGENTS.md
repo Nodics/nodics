@@ -45,6 +45,20 @@ The expected posture is:
 
 - Before changing code, identify the active module boundary and nearest
   `AGENTS.md`.
+- Apply the reuse-first implementation order for every new requirement:
+  1. reuse an existing Nodics capability or contract when it already satisfies
+     the requirement;
+  2. customize, extend, compose, or override that implementation through the
+     layered module hierarchy when the capability exists but needs different
+     behavior;
+  3. create a new implementation or capability only after inspecting the
+     repository and recording why existing authorities and extension points are
+     insufficient.
+  Before introducing a new schema, service, loader, registry, pipeline,
+  governance layer, cache, workflow, publisher, connector abstraction, or
+  runtime authority, run a duplication and parallel-path check. New work must
+  integrate with the existing authoritative owner rather than create a second
+  source of truth.
 - Write and update documentation for guided adoption. A developer with basic
   programming knowledge and an AI coding tool must be able to understand what
   the capability does, where code belongs, how customization works, which
@@ -106,6 +120,15 @@ Aggregator modules and submodules follow the same convention. For example,
 `docs/`, and `llm/` guidance.
 
 ## Documentation Impact Contract
+
+Permanent repository documentation must describe implemented, source-backed,
+and verified functionality. Future designs, proposed architecture, unresolved
+decisions, implementation backlogs, and action plans belong only in the
+temporary, untracked, non-runtime root `docs/` workspace until implementation
+and validation are complete. Promote only the implemented portions into
+`gDocs`, module `README.md`, module `docs/`, and generated context. Do not link
+temporary plans from public or module documentation in a way that presents
+planned behavior as available capability.
 
 Every functional change must evaluate whether these artifacts need updates:
 

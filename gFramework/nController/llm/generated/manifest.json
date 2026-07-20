@@ -13,7 +13,7 @@
     "version": "0.0.1",
     "description": "Build OOTB controllers for Nodics"
   },
-  "sourceFiles": 69,
+  "sourceFiles": 79,
   "testFiles": 1,
   "dataFiles": 0,
   "ownedFiles": 18,

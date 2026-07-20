@@ -14,4 +14,3 @@
 - `opsType` `object` required: Required value could be only in [CUST_REG, EMP_REG, ORDER]
 - `refId` `string` required: This is unique reference from the source, loke loginId, orderId
 - `type` `object` required: Required value could be only in [MOBILE, EMAIL, DOCS]
-

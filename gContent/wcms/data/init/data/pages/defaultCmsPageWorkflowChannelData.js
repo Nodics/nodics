@@ -26,5 +26,12 @@ module.exports = {
             decision: 'SUCCESS'
         },
         target: 'reviewCmsPageAction'
+    },
+    record1: {
+        code: 'publishCmsPageChannel',
+        name: 'publishCmsPageChannel',
+        active: true,
+        qualifier: { decision: 'SUCCESS' },
+        target: 'publishCmsPageAction'
     }
 };

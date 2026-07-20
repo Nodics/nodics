@@ -17,5 +17,15 @@
  * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
  */
 module.exports = {
-
+    cms: {
+        cmsTypeCode: { isVersionedEnabled: true },
+        cmsTypeCode2Renderer: { isVersionedEnabled: true },
+        cmsSite: { isVersionedEnabled: true },
+        cmsComponentDetail: { isVersionedEnabled: true },
+        cmsPage: { isVersionedEnabled: true },
+        cmsComponent: { isVersionedEnabled: true },
+        cmsPageRoute: { isVersionedEnabled: true },
+        cmsPageTemplate: { isVersionedEnabled: true },
+        cmsSlotDefinition: { isVersionedEnabled: true }
+    }
 };

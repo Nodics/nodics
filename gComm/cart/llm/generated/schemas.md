@@ -22,4 +22,3 @@
 
 - `entCode` `string` required: Enterprise code that order belongs
 - `refCode` `string` required: Merchant unique order code
-

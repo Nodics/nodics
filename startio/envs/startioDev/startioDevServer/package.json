@@ -30,7 +30,6 @@
             "test",
             "llm"
         ],
-        "description": "Server module that contributes server-level configuration and startup topology.",
         "runtime": {
             "router": false,
             "publish": false,

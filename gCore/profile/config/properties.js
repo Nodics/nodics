@@ -17,6 +17,16 @@
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {
+    backofficeCapabilities: {
+        profile: {
+            enabled: true, capabilityId: 'identity-profile', displayName: 'Profiles and Identity', category: 'core', icon: 'identity',
+            contractVersion: 1, minimumClientContractVersion: 1,
+            roles: ['AUTHENTICATION_PROVIDER', 'FUNCTIONAL_CAPABILITY_PROVIDER'],
+            discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
+            requiredPermissions: ['profile.backoffice.view'],
+            navigation: [{ id: 'profile', label: 'Profiles', route: '/profile', order: 100, requiredPermissions: ['profile.backoffice.view'] }]
+        }
+    },
     mandatoryBootstrapServices: {
         profileIdentity: {
             enabled: true,

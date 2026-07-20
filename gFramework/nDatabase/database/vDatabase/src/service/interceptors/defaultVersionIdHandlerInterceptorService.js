@@ -57,9 +57,11 @@ module.exports = {
      */
     updateVersionId: function (request, response) {
         return new Promise((resolve, reject) => {
-            let model = request.model;
+        let model = request.model;
+        if (request.schemaModel && request.schemaModel.versioned) {
             model.versionId = model.versionId || 0;
-            resolve(true);
+        }
+        resolve(true);
         });
     }
 };

@@ -6,12 +6,13 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
-| `workflow2Schema` | `super` | yes | yes | no | no | no | yes |  | 4 |
+| `workflow2Schema` | `super` | yes | yes | no | no | no | yes |  | 6 |
 
 ### `system.workflow2Schema`
 
+- `carrierDetail` `object` optional: Carrier creation policy, including whether a new carrier is released immediately
 - `events` `object` required: Required event configuration for all possible workflow action events
+- `includeProperties` `array` optional: Source model properties copied into workflow items for governed downstream processing
 - `moduleName` `string` required: Required step code, it could be workflow head code or any of the action code
 - `schemaName` `string` required: Required schema name to auto start workflow for the item
 - `workflowCode` `string` required: Required workflow code, which needs to be associated with schema
-

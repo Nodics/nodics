@@ -209,7 +209,7 @@ standard source directories below.
 | `src/schemas/` | The boundary contributes schema definitions. | `schemas.js` |
 | `src/search/` | The boundary contributes search index definitions. | `indexes.js` |
 | `src/interceptors/` | The boundary contributes lifecycle/interceptor definitions. | `interceptors.js` |
-| `src/service/` | The boundary contributes services, tooling services, or service overrides. | `defaultSampleService.js`, plus `**/*Service.js` |
+| `src/service/` | The boundary contributes services, tooling services, or service overrides. | `**/*Service.js`; module creation may add optional blank `defaultSampleService.js` |
 | `src/controller/` | The boundary exposes request controllers. | `**/*Controller.js` |
 | `src/facade/` | The boundary exposes facade/orchestration behavior. | `**/*Facade.js` |
 | `src/utils/` | The boundary contributes utilities, enums, or status definitions. | `utils.js`, `enums.js`, `statusDefinitions.js` |

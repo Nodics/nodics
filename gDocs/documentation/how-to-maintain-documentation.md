@@ -20,9 +20,18 @@ architecture, security, operations, and reference documentation.
 **Temporary root documentation workspace**
 
 The root `docs/` folder is an untracked, non-runtime workspace for temporary
-inventories, checklists, audits, and drafts. It is not the Nodics documentation
-module or a source of runtime truth. Promote approved permanent material into
+inventories, checklists, audits, drafts, proposed architecture, unresolved
+decisions, implementation backlogs, and action plans. It is not the Nodics
+documentation module or a source of runtime truth. Promote only functionality
+that has been implemented in authoritative Nodics contracts and verified into
 `gDocs`, a module `README.md`, or a module `docs/` folder.
+
+Permanent repository documentation describes current implemented behavior. A
+plan may change during implementation, so it must not be linked into the public
+documentation journey or generated module context as though it were available.
+After implementation, reconcile the plan with the delivered source and tests,
+then promote only the implemented sections and leave unresolved work in root
+`docs/`.
 
 **Module README files**
 

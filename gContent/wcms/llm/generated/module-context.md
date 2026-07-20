@@ -30,10 +30,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 9 |
-| Test files | 2 |
+| Source files | 10 |
+| Test files | 3 |
 | Data files | 16 |
-| All module-owned files | 35 |
+| All module-owned files | 37 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -63,9 +63,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 29 |
+| Documented | 30 |
 | Partially documented | 2 |
-| Undocumented | 0 |
+| Undocumented | 1 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -116,11 +116,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gContent/wcms/src/router/routers.js` | `src` | `documented` | 0/0 | Reserved route definition contribution point for WCMS content APIs. |  |
 | `gContent/wcms/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Reserved schema contribution point for WCMS content model extensions. |  |
 | `gContent/wcms/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements wcms default sample service business behavior and extension logic. |  |
+| `gContent/wcms/src/service/publication/defaultWcmsPublicationWorkflowService.js` | `src` | `documented` | 4/4 | Bridges an approved existing WCMS carrier into the authoritative nPublish validation and target-deployment lifecycle. |  |
 | `gContent/wcms/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared wcms enum definition exports. |  |
 | `gContent/wcms/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared wcms status and error definition exports. |  |
 | `gContent/wcms/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility contribution point for WCMS content helper functions. |  |
 | `gContent/wcms/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Common sample test scaffold for WCMS content module contracts. | add JSDoc for 7 exported method(s) |
 | `gContent/wcms/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Local-environment sample test scaffold for WCMS content behavior. | add JSDoc for 7 exported method(s) |
+| `gContent/wcms/test/wcmsPublicationWorkflowContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 
 ## Extension Contract
 

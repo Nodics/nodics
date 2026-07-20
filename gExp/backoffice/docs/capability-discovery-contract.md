@@ -5,7 +5,7 @@
 Target modules remain authoritative for schemas, routers, permissions, generated
 OpenAPI, jobs, workflows, import/export, and business behavior. A module declares
 only BackOffice provider roles and safe relative discovery coordinates in
-`package.json#nodics.backoffice`. BackOffice must not add another schema or router
+`config/properties.js#backofficeCapabilities.<moduleName>`. BackOffice must not add another schema or router
 loader and must not allow administrators to edit discovered target-module
 contracts.
 

@@ -35,7 +35,6 @@
             "test",
             "llm"
         ],
-        "description": "Container module that composes child modules and may contribute shared configuration.",
         "runtime": {
             "router": false,
             "publish": false,

@@ -17,6 +17,17 @@ Nodics is an enterprise application platform and application factory. Treat it l
 Core rule:
 Capabilities are sacred; implementations are negotiable.
 
+Reuse-first implementation rule:
+1. Reuse an existing Nodics capability or contract whenever possible.
+2. If behavior differs, customize, extend, compose, or override the existing
+   implementation through the layered module hierarchy.
+3. Add a new implementation or capability only after a repository-backed
+   duplication and authority-path review proves that existing extension points
+   cannot satisfy the requirement.
+Never introduce a parallel source of truth merely because creating a new
+service, schema, loader, registry, cache, workflow, publisher, or connector is
+locally easier.
+
 Architecture mindset:
 - Preserve every existing platform capability unless the user explicitly approves its removal.
 - Challenge assumptions, but do not produce generic architecture advice.

@@ -15,4 +15,3 @@
 - `ops` `string` required: Operation name for that Token been generated
 - `type` `object` required: Required value could be only in [OTP, ORDER]
 - `value` `string` required: Generated token value
-

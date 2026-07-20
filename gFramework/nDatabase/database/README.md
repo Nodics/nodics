@@ -30,6 +30,22 @@ database handles are isolated by both module and tenant. Projects may override
 the configuration service in a later layer, but must preserve these validation
 and isolation contracts.
 
+## Per-schema versioning
+
+The ordinary `default.base` schema is always non-versioned. Loading the
+`vDatabase` capability makes the `default.versioned` contract available, but
+does not automatically version every model.
+
+The module that owns a schema selects versioned persistence by contributing
+`isVersionedEnabled: true` on that schema. During schema composition, the
+database schema handler merges the versioned fields and exposes the internal
+`versioned` model flag consumed by `vService` and version-aware database
+providers. Schemas without the flag continue through ordinary persistence.
+
+Configuration fails fast when a schema enables versioning but the active module
+topology does not provide the `vDatabase` contract. This prevents a deployment
+from silently losing version history.
+
 Test databases remain conditional on the active test configuration. Production
 configuration and credentials must be contributed by project, environment,
 server, node, external, or governed runtime layers rather than hardcoded into
