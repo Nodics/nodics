@@ -32,7 +32,7 @@
 | Test files | 1 |
 | Data files | 0 |
 | All module-owned files | 17 |
-| Local schema definitions | 12 |
+| Local schema definitions | 38 |
 
 ## Ownership And Dependencies
 

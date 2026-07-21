@@ -29,9 +29,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 10 |
-| Test files | 2 |
+| Test files | 3 |
 | Data files | 0 |
-| All module-owned files | 20 |
+| All module-owned files | 21 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -60,7 +60,7 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 14 |
-| Partially documented | 2 |
+| Partially documented | 3 |
 | Undocumented | 0 |
 | Inventory only | 4 |
 
@@ -94,12 +94,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/hazelcastCache/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
 | `gFramework/nCache/hazelcastCache/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
 | `gFramework/nCache/hazelcastCache/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nCache schema metadata, model contracts, and generated capability settings. |  |
-| `gFramework/nCache/hazelcastCache/src/service/cache/defaultHazelcastCacheService.js` | `src` | `documented` | 8/8 | Fail-closed placeholder for Hazelcast cache operations; it never masquerades as local or distributed storage. |  |
+| `gFramework/nCache/hazelcastCache/src/service/cache/defaultHazelcastCacheService.js` | `src` | `documented` | 6/6 | Implements the nCache adapter contract with Hazelcast distributed maps, JSON serialization, TTL, and governed invalidation. |  |
 | `gFramework/nCache/hazelcastCache/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements hazelcastCache default sample service business behavior and extension logic. |  |
-| `gFramework/nCache/hazelcastCache/src/service/engine/defaultHazelcastCacheEngineService.js` | `src` | `documented` | 6/6 | Fail-closed placeholder for Hazelcast connection handling; projects must provide a real layered adapter before enabling this engine. |  |
+| `gFramework/nCache/hazelcastCache/src/service/engine/defaultHazelcastCacheEngineService.js` | `src` | `documented` | 2/2 | Creates and manages official Hazelcast Node.js clients for enabled nCache engines. |  |
 | `gFramework/nCache/hazelcastCache/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared hazelcastCache enum definition exports. |  |
 | `gFramework/nCache/hazelcastCache/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared hazelcastCache status and error definition exports. |  |
 | `gFramework/nCache/hazelcastCache/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nCache utility exports for utils. |  |
+| `gFramework/nCache/hazelcastCache/test/cacheHazelcastLive.test.js` | `test` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gFramework/nCache/hazelcastCache/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nCache test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nCache/hazelcastCache/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nCache test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 

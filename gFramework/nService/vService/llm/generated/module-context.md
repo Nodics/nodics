@@ -29,9 +29,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 13 |
-| Test files | 2 |
+| Test files | 3 |
 | Data files | 0 |
-| All module-owned files | 23 |
+| All module-owned files | 24 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 17 |
+| Documented | 18 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -105,6 +105,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nService/vService/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for versioned service helper functions. |  |
 | `gFramework/nService/vService/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Common sample test scaffold for versioned service module tests. | add JSDoc for 7 exported method(s) |
 | `gFramework/nService/vService/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Local-environment sample test scaffold for versioned service module behavior. | add JSDoc for 7 exported method(s) |
+| `gFramework/nService/vService/test/versionedSaveResponseContract.test.js` | `test` | `documented` | 0/0 | Verifies the vService save override preserves the standard model-save pipeline response contract for versioned and non-versioned schemas. |  |
 
 ## Extension Contract
 

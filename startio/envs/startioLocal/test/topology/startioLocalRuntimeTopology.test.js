@@ -388,6 +388,81 @@ async function runCmsPublicationSmoke(runtimes) {
         restartRecovered: true, secondVersion: true, rollback: true, outageFailedClosed: true, outageRecovered: true };
 }
 
+async function waitForPricingPublication(runtime, publicationCode, states) {
+    let startedAt = Date.now(), last;
+    while (Date.now() - startedAt < REGISTRY_TIMEOUT_MS) {
+        last = await requestPublicationOperation(runtime, 'inspectPricingPublication', { tenant: 'default', publicationCode: publicationCode });
+        if (last && states.includes(last.state)) return last;
+        await new Promise(resolve => setTimeout(resolve, 150));
+    }
+    throw new Error('Pricing publication did not reach ' + states.join('/') + ': ' + JSON.stringify(last));
+}
+
+async function runPricingPublicationSmoke(runtimes) {
+    let staged = runtimes.find(runtime => runtime.serverName === 'startioLocalCmsServer');
+    let onlineIndex = runtimes.findIndex(runtime => runtime.serverName === 'startioLocalCmsOnlineServer');
+    let online = runtimes[onlineIndex];
+    assert(staged && online, 'Pricing publication smoke requires separate Staged and Online runtimes');
+    let suffix = Date.now().toString(36), fixture = { tenant: 'default', enterpriseCode: 'runtime-enterprise-' + suffix, priceListCode: 'runtime-pricing-' + suffix,
+        assignmentCode: 'runtime-assignment-' + suffix, itemCode: 'runtime-item-' + suffix, currencyCode: 'AED', unitCode: 'piece' };
+    let submissionCode = label => 'runtime-' + label + '-' + suffix, carrierCode = label => 'default::pricingPublication::' + submissionCode(label);
+    let inspect = () => requestPublicationOperation(online, 'inspectPricingOnline', fixture);
+    let roleBoundary = await requestPublicationOperation(staged, 'assertPricingSourceRoleBoundary', fixture);
+    assert.strictEqual(roleBoundary.rejected, true, 'Staged Pricing must reject Online target authority');
+    let targetRoutes = await requestPublicationOperation(online, 'inspectPricingPublicationRoutes', fixture);
+    assert(targetRoutes.some(route => route.method === 'post' && route.url.endsWith('/pricing/v0/publication/target/deploy')), 'Online Pricing must expose its internal deployment route');
+    let unauthenticated = await requestModuleEndpoint({ server: 'startioLocalCmsOnlineServer', moduleName: 'pricing', path: '/v0/publication/target/status', method: 'POST', expectedStatus: 401, headers: { 'content-type': 'application/json' }, body: { scope: fixture } });
+    assert.strictEqual(unauthenticated.statusCode, 401);
+    await requestPublicationOperation(staged, 'ensurePricingWorkflowDefinitions', Object.assign({}, fixture, { modules: ['flowCore', 'units', 'pricing'] }));
+    await requestPublicationOperation(online, 'ensurePricingWorkflowDefinitions', Object.assign({}, fixture, { modules: ['units'] }));
+    await requestPublicationOperation(staged, 'seedPricingUnit', fixture);
+    await requestPublicationOperation(online, 'seedPricingUnit', fixture);
+
+    let stablePriceCode = 'runtime-price-' + suffix;
+    let v1 = await requestPublicationOperation(staged, 'seedPricingRelease', Object.assign({}, fixture, { version: 0, priceCode: stablePriceCode, amount: '10.00' }));
+    let manual = await requestPublicationOperation(staged, 'submitPricingRelease', Object.assign({}, fixture, { submissionCode: submissionCode('manual-v1'), approvalMode: 'MANUAL', decision: 'SUCCESS', sourceVersion: 0, items: v1.items }));
+    let firstPublication = await waitForPricingPublication(staged, manual.carrierCode, ['ONLINE', 'FAILED']);
+    if (firstPublication.state === 'FAILED') {
+        let manifest = await requestPublicationOperation(staged, 'inspectPricingManifest', { tenant: fixture.tenant, publicationCode: manual.carrierCode });
+        let diagnostic = await requestPublicationOperation(online, 'deployPricingManifestDirect', { tenant: fixture.tenant, manifest: manifest });
+        throw new Error('Initial Pricing deployment failed: ' + JSON.stringify(diagnostic));
+    }
+    let firstOnline = await inspect();
+    assert.strictEqual(firstOnline.resolution.amount, '10.00'); assert.strictEqual(firstOnline.manifestCode, firstPublication.targetVersion);
+    let replay = await requestPublicationOperation(staged, 'submitPricingRelease', Object.assign({}, fixture, { submissionCode: submissionCode('manual-v1'), approvalMode: 'MANUAL', sourceVersion: 0, items: v1.items }));
+    assert.strictEqual(replay.idempotent, true, 'Repeated Pricing submission must reuse its durable carrier');
+
+    let v2 = await requestPublicationOperation(staged, 'seedPricingRelease', Object.assign({}, fixture, { version: 1, priceCode: stablePriceCode, amount: '12.00' }));
+    let rejected = await requestPublicationOperation(staged, 'submitPricingRelease', Object.assign({}, fixture, { submissionCode: submissionCode('reject-v2'), approvalMode: 'MANUAL', decision: 'REJECT', sourceVersion: 1, items: v2.items }));
+    let rejectedCarrier = await requestPublicationOperation(staged, 'inspectPricingWorkflow', { tenant: fixture.tenant, carrierCode: rejected.carrierCode });
+    assert(rejectedCarrier.states.includes('FINISHED') || rejectedCarrier.active === false, 'Rejected Pricing workflow must terminate');
+    assert.strictEqual((await inspect()).manifestCode, firstOnline.manifestCode, 'Rejected Pricing workflow must not change Online');
+
+    let automatic = await requestPublicationOperation(staged, 'submitPricingRelease', Object.assign({}, fixture, { submissionCode: submissionCode('automatic-v2'), approvalMode: 'AUTOMATIC', sourceVersion: 1, items: v2.items }));
+    let secondPublication = await waitForPricingPublication(staged, automatic.carrierCode, ['ONLINE']);
+    let secondOnline = await inspect();
+    assert.strictEqual(secondOnline.resolution.amount, '12.00', 'Activation must invalidate the cached prior price');
+    assert.strictEqual(secondOnline.previousManifestCode, firstOnline.manifestCode);
+
+    await stopServer(online); online = await startServer('startioLocalCmsOnlineServer'); assertRuntimeContract(online); runtimes[onlineIndex] = online;
+    let restarted = await inspect(); assert.strictEqual(restarted.manifestCode, secondPublication.targetVersion, 'Online Pricing pointer must survive restart');
+
+    let rollback = await requestPublicationOperation(staged, 'rollbackPricingRelease', { tenant: fixture.tenant, enterpriseCode: fixture.enterpriseCode, publicationCode: automatic.carrierCode });
+    assert.strictEqual(rollback.state, 'ROLLED_BACK');
+    let restored = await inspect(); assert.strictEqual(restored.resolution.amount, '10.00', 'Rollback must invalidate cache and restore prior Pricing data');
+
+    let v3 = await requestPublicationOperation(staged, 'seedPricingRelease', Object.assign({}, fixture, { version: 2, priceCode: stablePriceCode, amount: '15.00' }));
+    await stopServer(online);
+    let outage = await requestPublicationOperation(staged, 'submitPricingRelease', Object.assign({}, fixture, { submissionCode: submissionCode('outage-v3'), approvalMode: 'AUTOMATIC', sourceVersion: 2, items: v3.items }));
+    await waitForPricingPublication(staged, outage.carrierCode, ['FAILED']);
+    online = await startServer('startioLocalCmsOnlineServer'); assertRuntimeContract(online); runtimes[onlineIndex] = online;
+    assert.strictEqual((await inspect()).resolution.amount, '10.00', 'Failed deployment must not partially change Online');
+    let recovery = await requestPublicationOperation(staged, 'submitPricingRelease', Object.assign({}, fixture, { submissionCode: submissionCode('recovery-v3'), approvalMode: 'AUTOMATIC', sourceVersion: 2, items: v3.items }));
+    await waitForPricingPublication(staged, recovery.carrierCode, ['ONLINE']);
+    assert.strictEqual((await inspect()).resolution.amount, '15.00');
+    return { manualApproval: true, automaticApproval: true, rejection: true, idempotentSubmission: true, restartRecovery: true, rollback: true, cacheInvalidation: true, outageFailedClosed: true, outageRecovery: true };
+}
+
 async function waitForRegistry(runtime, predicate, description) {
     let startedAt = Date.now();
     let lastSnapshot;
@@ -454,6 +529,7 @@ async function runModularSmoke() {
         let durableCms = reconciledRegistry.durableContracts.find(contract => contract.moduleName === 'cms');
         assert(durableCms && durableCms.hash && durableCms.activationRevision > 0, 'CMS durable contract pointer must be observable before restart');
         let publication = await runCmsPublicationSmoke(runtimes);
+        let pricingPublication = await runPricingPublicationSmoke(runtimes);
 
         let backofficeIndex = runtimes.findIndex(runtime => runtime.serverName === 'startioLocalBackofficeServer');
         await stopServer(backofficeRuntime);
@@ -482,7 +558,8 @@ async function runModularSmoke() {
                 availabilityRecovered: recoveredRegistry.availability.some(availability =>
                     availability.moduleName === 'cms' && availability.state === 'UP')
             },
-            publication: publication
+            publication: publication,
+            pricingPublication: pricingPublication
         };
     } finally {
         for (let runtime of runtimes.reverse()) {
@@ -552,6 +629,7 @@ async function runRuntimeReadinessSmoke(runtimes) {
         console.log('Readiness:', modular.readiness.map(item => item.url + ' -> ' + item.statusCode).join(', '));
         console.log('Registry reconciliation:', JSON.stringify(modular.registry));
         console.log('CMS publication:', JSON.stringify(modular.publication));
+        console.log('Pricing publication:', JSON.stringify(modular.pricingPublication));
     }
 })().catch(error => {
     console.error(error.message || error);

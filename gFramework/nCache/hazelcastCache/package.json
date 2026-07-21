@@ -15,7 +15,9 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics"
     },
-    "dependencies": {},
+    "dependencies": {
+        "hazelcast-client": "^5.6.0"
+    },
     "nodics": {
         "kind": "capability",
         "runtimeModule": true,

@@ -20,7 +20,7 @@ module.exports = {
     publishEnabled: false,
     activeModules: {
         groups: ['modules'],
-        modules: ['cms', 'startioLocalCmsOnlineServer', 'startioLocal']
+        modules: ['cms', 'units', 'pricing', 'product', 'startioLocalCmsOnlineServer', 'startioLocal']
     },
     log: { level: 'info' },
     database: {
@@ -32,6 +32,20 @@ module.exports = {
         }
     },
     cms: {
+        publication: {
+            enabled: true,
+            runtimeRole: 'ONLINE',
+            targetTransportProvider: null
+        }
+    },
+    pricing: {
+        publication: {
+            enabled: true,
+            runtimeRole: 'ONLINE',
+            targetTransportProvider: null
+        }
+    },
+    product: {
         publication: {
             enabled: true,
             runtimeRole: 'ONLINE',
@@ -50,6 +64,12 @@ module.exports = {
             endpoint: { httpHost: 'localhost', httpPort: 3000, httpsHost: 'localhost', httpsPort: 3001 },
             abstractEndpoint: { httpHost: 'localhost', httpPort: 3000, httpsHost: 'localhost', httpsPort: 3001 },
             nodes: { node0: { httpHost: 'localhost', httpPort: 3000, httpsHost: 'localhost', httpsPort: 3001 } }
+        },
+        nems: {
+            options: { contextRoot: 'nodics' },
+            endpoint: { httpHost: 'localhost', httpPort: 3020, httpsHost: 'localhost', httpsPort: 3021 },
+            abstractEndpoint: { httpHost: 'localhost', httpPort: 3020, httpsHost: 'localhost', httpsPort: 3021 },
+            nodes: { node0: { httpHost: 'localhost', httpPort: 3020, httpsHost: 'localhost', httpsPort: 3021 } }
         },
         backoffice: {
             options: { contextRoot: 'nodics' },

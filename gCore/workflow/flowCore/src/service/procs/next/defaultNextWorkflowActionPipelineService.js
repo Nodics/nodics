@@ -117,7 +117,7 @@ module.exports = {
             },
             model: request.workflowCarrier
         }).then(success => {
-            response.success.workflowCarrier = request.workflowCarrier = success.result;
+            response.success.workflowCarrier = request.workflowCarrier = (success && success.result) || request.workflowCarrier;
             response.success.messages.push('Action:' + request.workflowCarrier.activeAction.code + ' been assign to carrier @: ' + new Date());
             process.nextSuccess(request, response);
         }).catch(error => {

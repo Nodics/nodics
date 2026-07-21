@@ -27,5 +27,28 @@ module.exports = {
         cmsPageRoute: { isVersionedEnabled: true },
         cmsPageTemplate: { isVersionedEnabled: true },
         cmsSlotDefinition: { isVersionedEnabled: true }
+    },
+    pricing: {
+        priceList: { isVersionedEnabled: true },
+        priceListAssignment: { isVersionedEnabled: true },
+        priceGroup: { isVersionedEnabled: true },
+        priceGroupMember: { isVersionedEnabled: true },
+        price: { isVersionedEnabled: true }
+    },
+    product: {
+        productItem: { isVersionedEnabled: true },
+        productIdentifier: { isVersionedEnabled: true },
+        productCategory: { isVersionedEnabled: true },
+        productCategoryAssignment: { isVersionedEnabled: true },
+        productAttributeDefinition: { isVersionedEnabled: true },
+        productAttributeValue: { isVersionedEnabled: true },
+        productClassificationClass: { isVersionedEnabled: true },
+        productClassificationAssignment: { isVersionedEnabled: true },
+        productVariantAxis: { isVersionedEnabled: true },
+        productVariantAssignment: { isVersionedEnabled: true },
+        productRelation: { isVersionedEnabled: true },
+        productBundleEntry: { isVersionedEnabled: true },
+        productPackaging: { isVersionedEnabled: true },
+        productMediaReference: { isVersionedEnabled: true }
     }
 };

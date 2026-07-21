@@ -67,15 +67,12 @@ module.exports = {
                 } else {
                     model.result = success;
                 }
-                response.model = model;
+                response.success = model;
                 process.nextSuccess(request, response);
             }).catch(error => {
                 this.LOG.error(error);
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SAVE_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsError(error,
+                    'Failed saving versioned schema: ' + request.schemaModel.schemaName, 'ERR_SAVE_00000'));
             });
         } else {
             request.schemaModel.saveItems(request).then(success => {
@@ -88,15 +85,12 @@ module.exports = {
                 } else {
                     model.result = success;
                 }
-                response.model = model;
+                response.success = model;
                 process.nextSuccess(request, response);
             }).catch(error => {
                 this.LOG.error(error);
-                process.error(request, response, {
-                    success: false,
-                    code: 'ERR_SAVE_00000',
-                    error: error.toString()
-                });
+                process.error(request, response, new CLASSES.NodicsError(error,
+                    'Failed saving schema: ' + request.schemaModel.schemaName, 'ERR_SAVE_00000'));
             });
         }
     },

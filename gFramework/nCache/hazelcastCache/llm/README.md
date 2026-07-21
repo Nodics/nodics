@@ -12,3 +12,5 @@ Recommended use:
 4. For project-specific overrides, read the later module layer before changing out-of-the-box Nodics code.
 
 Do not hardcode this module into framework behavior. Use active modules, layered configuration, schemas, runtime governance, and tenant context.
+
+The provider uses the official `hazelcast-client`, implements the nCache distributed map/TTL/consume/invalidation contract, and remains disabled by default. The guarded contract passed against a temporary Hazelcast 5.6 member on 2026-07-21; every deployment must repeat it against its target cluster before production activation. Business modules must call `DefaultCacheService`, never this provider directly.

@@ -1,0 +1,51 @@
+{
+  "contextVersion": 3,
+  "moduleName": "product",
+  "path": "gComm/product",
+  "kind": "capability",
+  "runtime": {
+    "router": true,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "40.8",
+    "version": "0.0.1",
+    "description": "Enterprise-scoped Product structure and governed publication capability for Nodics commerce applications."
+  },
+  "sourceFiles": 39,
+  "testFiles": 27,
+  "dataFiles": 6,
+  "ownedFiles": 62,
+  "sourceFingerprint": "a86bcf956f21cba9f40921401ee7d6bbd6e413a84b4f0d2c70d38219ef8d45fc",
+  "documentation": {
+    "documented": 6,
+    "partially-documented": 52,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {
+    "product": [
+      "productAttributeDefinition",
+      "productAttributeValue",
+      "productBundleEntry",
+      "productCategory",
+      "productCategoryAssignment",
+      "productClassificationAssignment",
+      "productClassificationClass",
+      "productIdentifier",
+      "productItem",
+      "productMediaReference",
+      "productOnlinePointer",
+      "productPackaging",
+      "productProjectionJob",
+      "productPublicationReceipt",
+      "productRelation",
+      "productReleaseManifest",
+      "productVariantAssignment",
+      "productVariantAxis"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

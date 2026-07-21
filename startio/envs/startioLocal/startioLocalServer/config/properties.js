@@ -19,7 +19,8 @@
 module.exports = {
 
     dynamoEnabled: true,
-    publishEnabled: false,
+    // Keep generic nPublish contracts in the consolidated build; each domain still enables publication independently.
+    publishEnabled: true,
     webEnabled: false,
 
     activeModules: {

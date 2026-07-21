@@ -110,7 +110,7 @@ module.exports = {
             },
             model: request.workflowCarrier
         }).then(success => {
-            response.success.workflowCarrier = request.workflowCarrier = success.result;
+            response.success.workflowCarrier = request.workflowCarrier = (success && success.result) || request.workflowCarrier;
             response.success.messages.push('WorkflowCarrier: ' + request.workflowCarrier.code + ' has been released successfully @: ' + new Date());
             process.nextSuccess(request, response);
         }).catch(error => {

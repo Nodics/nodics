@@ -46,6 +46,20 @@ your goal.
 6. [How To Create Scheduled Jobs](jobs/how-to-create-scheduled-jobs.md)
 7. [How To Test Nodics Changes](testing/how-to-test-nodics-changes.md)
 8. [How To Approve And Publish Content](content/how-to-approve-and-publish-content.md)
+9. [How Warehouse Management Works](commerce/how-to-manage-warehouses.md)
+10. [How Store Management Works](commerce/how-to-manage-stores.md)
+11. [How Units And Land Measurements Work](data/how-to-use-units-and-land-measurements.md)
+12. [How Stock Movements Work](commerce/how-stock-movements-work.md)
+13. [How Stock Pools Work](commerce/how-to-manage-stock-pools.md)
+14. [How Stock Sourcing Works](commerce/how-stock-sourcing-works.md)
+15. [How Stock ON_HAND Availability Works](commerce/how-stock-availability-works.md)
+16. [How to Reserve Stock](commerce/how-to-reserve-stock.md)
+17. [How Stock Allocation Works](commerce/how-stock-allocation-works.md)
+18. [How Stock Transfers Work](commerce/how-stock-transfers-work.md)
+19. [How Inventory Reconciliation Works](commerce/how-inventory-reconciliation-works.md)
+20. [How To Operate And Integrate Inventory](commerce/how-to-operate-and-integrate-inventory.md)
+21. [How To Configure And Operate Pricing](commerce/how-to-configure-and-operate-pricing.md)
+22. [How To Create And Identify Products](commerce/how-to-create-and-identify-products.md)
 
 ### Architect, Security Reviewer, Or Operator
 
@@ -110,7 +124,21 @@ Use this map when you are not sure where to start.
 | Follow examples for APIs, schemas, providers, scheduled jobs, and runtime configuration | [Common Implementation Examples](development/common-implementation-examples.md) |
 | Add or change APIs | [How To Create APIs](development/how-to-create-apis.md) |
 | Work with schemas, import, export, and data providers | [How To Work With Data](data/how-to-work-with-data.md) |
+| Use exact quantities, compound units, and regional land-area conversions | [How Units And Land Measurements Work](data/how-to-use-units-and-land-measurements.md) |
 | Approve Staged content and publish it safely to Online | [How To Approve And Publish Content](content/how-to-approve-and-publish-content.md) |
+| Understand or customize enterprise warehouses and warehouse locations | [How Warehouse Management Works](commerce/how-to-manage-warehouses.md) |
+| Create stores and associate Inventory warehouses | [How Store Management Works](commerce/how-to-manage-stores.md) |
+| Record exact, idempotent on-hand Stock changes | [How Stock Movements Work](commerce/how-stock-movements-work.md) |
+| Group Warehouses for future sourcing without copying Stock | [How Stock Pools Work](commerce/how-to-manage-stock-pools.md) |
+| Select ordered Stock Pools from declarative business context | [How Stock Sourcing Works](commerce/how-stock-sourcing-works.md) |
+| Calculate exact read-only ON_HAND Stock with Warehouse evidence | [How Stock ON_HAND Availability Works](commerce/how-stock-availability-works.md) |
+| Hold Stock for checkout and fulfillment | [How to Reserve Stock](commerce/how-to-reserve-stock.md) |
+| Allocate Order demand across Warehouses | [How Stock Allocation Works](commerce/how-stock-allocation-works.md) |
+| Transfer Stock safely between Warehouses | [How Stock Transfers Work](commerce/how-stock-transfers-work.md) |
+| Detect and repair Inventory inconsistencies | [How Inventory Reconciliation Works](commerce/how-inventory-reconciliation-works.md) |
+| Operate Inventory, reconstruct Stock, or connect WMS/POS | [How To Operate And Integrate Inventory](commerce/how-to-operate-and-integrate-inventory.md) |
+| Configure scoped Price Lists, Price Groups, exact Prices, and Staged-to-Online releases | [How To Configure And Operate Pricing](commerce/how-to-configure-and-operate-pricing.md) |
+| Create enterprise Product Items and alternate identifiers | [How To Create And Identify Products](commerce/how-to-create-and-identify-products.md) |
 | Use Nodics as a governed data lake or data hub | [How To Use Nodics As Data As A Service](data/how-to-use-nodics-as-data-as-a-service.md) |
 | Add scheduled jobs | [How To Create Scheduled Jobs](jobs/how-to-create-scheduled-jobs.md) |
 | Understand processes, messaging, logging, and request handling | [How Platform Capabilities Work](platform/how-platform-capabilities-work.md) |

@@ -114,6 +114,7 @@
         "express": "^4.17.3",
         "flatted": "^3.2.7",
         "fs-extra": "^10.1.0",
+        "hazelcast-client": "^5.6.0",
         "jsonwebtoken": "^9.0.3",
         "kafkajs": "^2.2.4",
         "lodash": "^4.17.21",
@@ -283,6 +284,14 @@
                     ],
                     "restricted": false,
                     "reason": "File-system utility used by shared file, build, import, and data services."
+                },
+                "hazelcast-client": {
+                    "type": "provider",
+                    "owners": [
+                        "gFramework/nCache/hazelcastCache"
+                    ],
+                    "restricted": true,
+                    "reason": "Hazelcast distributed cache provider."
                 },
                 "jsonwebtoken": {
                     "type": "security",

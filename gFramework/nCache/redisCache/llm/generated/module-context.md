@@ -100,7 +100,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/redisCache/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared redisCache enum definition exports. |  |
 | `gFramework/nCache/redisCache/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared redisCache status and error definition exports. |  |
 | `gFramework/nCache/redisCache/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nCache utility exports for utils. |  |
-| `gFramework/nCache/redisCache/test/cacheRedisLive.test.js` | `test` | `documented` | 0/0 | Optionally verifies the complete Redis cache adapter contract against an explicitly supplied isolated Redis endpoint, or fails closed for release gates. |  |
+| `gFramework/nCache/redisCache/test/cacheRedisLive.test.js` | `test` | `documented` | 0/0 | Verifies the complete Redis cache adapter contract against the environment override or authoritative local runtime endpoint, or fails closed when neither exists. |  |
 | `gFramework/nCache/redisCache/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nCache test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nCache/redisCache/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nCache test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nCache/redisCache/test/support/liveRedisClientFactory.js` | `test` | `documented` | 1/1 | Owns Redis SDK construction for guarded cross-module live-provider contract tests without moving provider authority outside nCache. |  |

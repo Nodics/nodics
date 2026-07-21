@@ -9,54 +9,42 @@
 
  */
 
+const { Client } = require('hazelcast-client');
+
 /**
  * @module nCache/hazelcastCache/service/engine/DefaultHazelcastCacheEngineService
- * @description Fail-closed placeholder for Hazelcast connection handling; projects must provide a real layered adapter before enabling this engine.
+ * @description Creates and manages official Hazelcast Node.js clients for enabled nCache engines.
  * @layer service
  * @owner nCache/hazelcastCache
- * @override A project may replace this service with a real Hazelcast client while declaring truthful capabilities and preserving the cache adapter contract.
+ * @override Projects may layer cluster discovery, TLS, credentials, and client properties while preserving readiness and shutdown contracts.
  */
-
 module.exports = {
-    /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
-     */
-    init: function (options) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-        });
+    /** Initializes the engine service. */ init: function () { return Promise.resolve(true); },
+    /** Completes engine-service initialization. */ postInit: function () { return Promise.resolve(true); },
+    /** Converts layered engine options into the official Hazelcast client configuration. */
+    buildClientConfig: function (engineConfig) {
+        let options = Object.assign({}, engineConfig && engineConfig.options || {});
+        let config = { clusterName: options.clusterName || 'dev', network: {
+            clusterMembers: Array.isArray(options.clusterMembers) && options.clusterMembers.length ? options.clusterMembers.slice() : ['127.0.0.1:5701'],
+            connectionTimeout: Number(options.connectionTimeoutMs || 5000)
+        } };
+        if (options.connectionStrategy) config.connectionStrategy = options.connectionStrategy;
+        if (options.properties) config.properties = options.properties;
+        if (options.security) config.security = options.security;
+        if (options.ssl) config.network.ssl = options.ssl;
+        return config;
     },
-
-    /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
-     */
-    postInit: function (options) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-        });
+    /** Connects one enabled module engine to Hazelcast. */
+    initCache: async function (hazelcastCacheConfig, moduleName) {
+        try {
+            this.LOG.info('Initializing Hazelcast cache instance for module: ' + moduleName);
+            let client = await Client.newHazelcastClient(this.buildClientConfig(hazelcastCacheConfig));
+            return { code: 'SUC_CACHE_00000', result: client };
+        } catch (error) {
+            throw new CLASSES.CacheError(error, 'While connecting Hazelcast cache client for module: ' + moduleName);
+        }
     },
-
-    /** Rejects activation until a real distributed Hazelcast implementation overrides this service. */
-    initCache: function (hazelcastCacheConfig, moduleName) {
-        return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00008', 'Bundled Hazelcast adapter is unsupported for module: ' + moduleName));
-    },
-
-    /** Rejects schema-channel activation for the unsupported placeholder. */
-    schema: function (hazelcastCacheConfig, moduleName) {
-        return this.initCache(hazelcastCacheConfig, moduleName);
-    },
-
-    /** Rejects router-channel activation for the unsupported placeholder. */
-    router: function (hazelcastCacheConfig, moduleName) {
-        return this.initCache(hazelcastCacheConfig, moduleName);
-    },
-
-    /** Rejects event registration because no Hazelcast client is active. */
-    registerEvents: function (options) {
-        return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00008', 'Bundled Hazelcast adapter does not support events'));
-    }
+    /** Supports schema-channel initialization through the shared Hazelcast client. */ schema: function (config, moduleName) { return this.initCache(config, moduleName); },
+    /** Supports router-channel initialization through the shared Hazelcast client. */ router: function (config, moduleName) { return this.initCache(config, moduleName); },
+    /** Hazelcast distributed maps require no local event registration. */ registerEvents: function () { return Promise.resolve(true); }
 };

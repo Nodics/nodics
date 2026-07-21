@@ -319,7 +319,7 @@ module.exports = {
             tenant: request.tenant,
             model: actionResponse
         }).then(success => {
-            response.success[request.workflowAction.code] = actionResponse = success.result;
+            response.success[request.workflowAction.code] = actionResponse = (success && success.result) || actionResponse;
             response.success.messages.push('Item: ' + (request.workflowCarrier.activeAction.code) + ', action response saved @: ' + new Date());
             process.nextSuccess(request, response);
         }).catch(error => {
@@ -412,7 +412,7 @@ module.exports = {
             },
             model: request.workflowCarrier
         }).then(success => {
-            response.success.workflowCarrier = request.workflowCarrier = success.result;
+            response.success.workflowCarrier = request.workflowCarrier = (success && success.result) || request.workflowCarrier;
             response.success.messages.push('Carrier: ' + (request.workflowCarrier.code || request.workflowCarrier._id) + ', updated and saved @: ' + new Date());
             let qualifiedChannels = actionResponse.qualifiedChannels;
             if (qualifiedChannels.length <= 0 && request.workflowAction.position === ENUMS.WorkflowActionPosition.END.key) {

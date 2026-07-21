@@ -1,0 +1,20 @@
+/*
+    Nodics - Enterprice Micro-Services Management Framework
+
+    Copyright (c) 2026 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
+/** @module product/service/operations/DefaultProductOperationsService @description Provides bounded human-only Product release diagnostics and projection reconciliation. @layer service @owner product */
+module.exports = {
+    /** Initializes Product operations. */ init: function () { return Promise.resolve(true); },
+    /** Completes operations initialization. */ postInit: function () { return Promise.resolve(true); },
+    /** Extracts generated-service items. */ items: function (response) { return response && Array.isArray(response.result) ? response.result : []; },
+    /** Requires a human operator and resolves Catalog scope. */ context: function (request) { SERVICE.DefaultProductManagementService.authorize(request); let catalogCode = SERVICE.DefaultProductEnterpriseScopeService.validateBusinessCode(request.params && request.params.catalogCode || request.pathParams && request.pathParams.catalogCode || request.catalogCode, 'Catalog'), enterpriseCode = SERVICE.DefaultProductEnterpriseScopeService.resolveEnterpriseCode(request); return { enterpriseCode: enterpriseCode, catalogCode: catalogCode }; },
+    /** Returns active/previous release, manifest integrity metadata, receipts, and projection state. */ diagnostics: async function (request) { let context = this.context(request), query = { enterpriseCode: context.enterpriseCode, catalogCode: context.catalogCode }, pointer = this.items(await SERVICE.DefaultProductOnlinePointerService.get({ tenant: request.tenant, authData: request.authData, query: query, searchOptions: { limit: 2 } }))[0], manifest, jobs = [], receipts = []; if (pointer) { manifest = this.items(await SERVICE.DefaultProductReleaseManifestService.get({ tenant: request.tenant, authData: request.authData, query: { code: pointer.manifestCode }, searchOptions: { limit: 1 } }))[0]; jobs = this.items(await SERVICE.DefaultProductProjectionJobService.get({ tenant: request.tenant, authData: request.authData, query: { enterpriseCode: context.enterpriseCode, catalogCode: context.catalogCode }, searchOptions: { limit: 20, sort: { lastAttemptAt: -1 } } })); receipts = this.items(await SERVICE.DefaultProductPublicationReceiptService.get({ tenant: request.tenant, authData: request.authData, query: { targetVersion: pointer.manifestCode }, searchOptions: { limit: 20 } })); } return { enterpriseCode: context.enterpriseCode, catalogCode: context.catalogCode, activeRelease: pointer && pointer.manifestCode, previousRelease: pointer && pointer.previousManifestCode, pointerRevision: pointer && pointer.revision, manifest: manifest && { code: manifest.code, contentHash: manifest.contentHash, contractVersion: manifest.snapshot && manifest.snapshot.contractVersion, recordCount: manifest.snapshot && manifest.snapshot.records && manifest.snapshot.records.length, correlationId: manifest.correlationId }, projections: jobs.map(job => ({ code: job.code, operation: job.operation, state: job.state, cacheState: job.cacheState, searchState: job.searchState, attempts: job.attempts, lastErrorCode: job.lastErrorCode, correlationId: job.correlationId, lastAttemptAt: job.lastAttemptAt, completedAt: job.completedAt })), receipts: receipts.map(receipt => ({ operation: receipt.operation, status: receipt.status, targetVersion: receipt.targetVersion, correlationId: receipt.correlationId })) }; },
+    /** Retries incomplete durable Product projections for one Catalog. */ reconcile: function (request) { let context = this.context(request); return SERVICE.DefaultProductProjectionOrchestrationService.reconcile(Object.assign({}, request, { catalogCode: context.catalogCode })); }
+};

@@ -1,77 +1,37 @@
-# hazelcastCache
+# Hazelcast Cache
 
-**Maturity: Placeholder or scaffold.** It is intentionally unusable until a
-real adapter replaces the fail-closed services and proves the full contract.
+**Maturity: implemented provider; disabled by default; live-cluster qualification required for production.**
 
-The bundled `hazelcastCache` module is an unsupported, fail-closed Hazelcast adapter boundary. It is present so projects have a clear provider slot, but the framework does not ship a working Hazelcast client implementation.
+The guarded live contract passed locally against a temporary Hazelcast 5.6 member on 2026-07-21. Each deployment must still run the same contract against its target cluster before enabling the provider in production.
 
-Use this module only as the override target for a real project-owned or provider-owned Hazelcast adapter. The bundled services reject activation and cache operations by design.
+`hazelcastCache` implements the provider-neutral `nCache` contract with the official `hazelcast-client` package. It remains disabled by default so deployments select only the provider needed by a channel.
 
-## Capability Status
+## Capabilities
 
-The bundled module:
-
-- does not create a Hazelcast client;
-- does not fall back to local cache;
-- does not claim distributed guarantees;
-- rejects put, get, consume, prefix flush, and key flush operations;
-- rejects schema/router channel activation;
-- rejects event registration.
-
-This fail-closed behavior prevents a project from accidentally believing it has a distributed cache when no real Hazelcast adapter has been qualified.
-
-## Source Contracts
-
-- `src/service/engine/defaultHazelcastCacheEngineService.js` rejects activation with `ERR_CACHE_00008`.
-- `src/service/cache/defaultHazelcastCacheService.js` rejects all cache operations with `ERR_CACHE_00008`.
-- `config/properties.js` is the provider-local configuration contribution point.
-- The provider participates in the generic cache contract owned by `gFramework/nCache/cache`.
-
-## Extension Path
-
-A project may enable Hazelcast only by providing a real adapter in a later active module.
-
-That adapter must:
-
-- provide a real Hazelcast connection service;
-- provide a real cache service for put, get, consume, flush by prefix, and flush by keys;
-- declare truthful capabilities for distribution, TTL, serialization, atomic consume, and invalidation;
-- read endpoints, credentials, cluster names, TLS, namespaces, and retry policy from layered configuration or secrets;
-- preserve tenant-aware keying;
-- include deterministic adapter tests;
-- include guarded live-provider tests before production activation.
+- distributed-map JSON get and put;
+- per-entry TTL and non-expiring entries;
+- atomic consume through map removal;
+- tenant-scoped key and prefix invalidation;
+- connection readiness and central shutdown;
+- no redundant peer event when the selected engine is distributed.
 
 ## Configuration
 
-Do not enable Hazelcast by changing only a flag. A valid implementation needs connection configuration, capability metadata, cache service behavior, event handling, and tests.
+Enable the `hazelcast` engine and point a channel to it through layered `cache` configuration. Under engine `options`, configure `clusterName`, `clusterMembers`, `connectionTimeoutMs`, optional TLS/security/client properties, and `mapNamePrefix`. Keep credentials in the approved secret provider, not source control.
 
-Provider selection must remain layered. A customer project should activate Hazelcast through project/environment/server/node configuration after the adapter is implemented and qualified.
+Do not call this adapter from business modules. They must use `DefaultCacheService`. Do not enable local, Redis, and Hazelcast for the same logical channel.
 
-## Tests
-
-The generic cache adapter contract verifies the bundled module fails closed. A real Hazelcast adapter must add its own deterministic and live-provider tests.
-
-Run the current fail-closed contract with:
+## Verification
 
 ```bash
 node gFramework/nCache/cache/test/cacheAdapterContract.test.js
-npm run quality:docs
+NODICS_CACHE_HAZELCAST_MEMBERS=127.0.0.1:5701 node gFramework/nCache/hazelcastCache/test/cacheHazelcastLive.test.js --require-live
 ```
 
-## What To Avoid
-
-Avoid:
-
-- treating the bundled module as a working distributed cache;
-- replacing fail-closed behavior with a local stand-in;
-- enabling Hazelcast without a real client and live tests;
-- claiming atomic consume, TTL, serialization, or invalidation behavior that is not implemented;
-- hardcoding cluster endpoints or credentials in source code;
-- bypassing the generic cache adapter contract.
+Normal tests use a contract double and skip the guarded live test when no cluster is configured. Production release validation must require a live target matching the deployed Hazelcast version, security, discovery, and topology.
 
 ## Continue
 
 - Generic cache contract: [cache](../cache/README.md)
 - Provider selection: [nCache](../README.md)
-- Maturity rules: [Provider And Capability Maturity Matrix](../../../gDocs/reference/provider-capability-maturity-matrix.md)
 - Public guide: [How Cache Works](../../../gDocs/platform/how-cache-works.md)

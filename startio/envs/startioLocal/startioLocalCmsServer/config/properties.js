@@ -25,6 +25,9 @@ module.exports = {
             'wcms',
             'workflow',
             'publish',
+            'units',
+            'pricing',
+            'product',
             'startioLocalCmsServer',
             'startioLocal'
         ]
@@ -69,6 +72,36 @@ module.exports = {
             target: {
                 moduleName: 'cms',
                 connectionName: 'cmsOnline',
+                connectionType: 'server',
+                timeoutMs: 30000,
+                maxAttempts: 3
+            }
+        }
+    },
+
+    pricing: {
+        publication: {
+            enabled: true,
+            runtimeRole: 'STAGED',
+            targetTransportProvider: 'DefaultPricingPublicationModuleTransportService',
+            target: {
+                moduleName: 'pricing',
+                connectionName: 'pricingOnline',
+                connectionType: 'server',
+                timeoutMs: 30000,
+                maxAttempts: 3
+            }
+        }
+    },
+
+    product: {
+        publication: {
+            enabled: true,
+            runtimeRole: 'STAGED',
+            targetTransportProvider: 'DefaultProductPublicationModuleTransportService',
+            target: {
+                moduleName: 'product',
+                connectionName: 'productOnline',
                 connectionType: 'server',
                 timeoutMs: 30000,
                 maxAttempts: 3
@@ -172,6 +205,18 @@ module.exports = {
             nodes: { node0: { httpHost: 'localhost', httpPort: 3060, httpsHost: 'localhost', httpsPort: 3061 } }
         },
         cmsOnline: {
+            options: { contextRoot: 'nodics' },
+            endpoint: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 },
+            abstractEndpoint: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 },
+            nodes: { node0: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 } }
+        },
+        pricingOnline: {
+            options: { contextRoot: 'nodics' },
+            endpoint: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 },
+            abstractEndpoint: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 },
+            nodes: { node0: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 } }
+        }
+        ,productOnline: {
             options: { contextRoot: 'nodics' },
             endpoint: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 },
             abstractEndpoint: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 },

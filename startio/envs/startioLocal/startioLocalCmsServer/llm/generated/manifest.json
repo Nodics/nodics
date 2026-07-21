@@ -17,7 +17,7 @@
   "testFiles": 2,
   "dataFiles": 0,
   "ownedFiles": 19,
-  "sourceFingerprint": "5e1e538fec961c4211129f35f93507d7120e5c5a3c40b914352088991480f26d",
+  "sourceFingerprint": "e2fad8bacd792cda286b9b647460163d4661c1b9d32526e0a8918a637051d7fe",
   "documentation": {
     "documented": 13,
     "partially-documented": 2,
@@ -35,6 +35,29 @@
       "cmsSlotDefinition",
       "cmsTypeCode",
       "cmsTypeCode2Renderer"
+    ],
+    "pricing": [
+      "price",
+      "priceGroup",
+      "priceGroupMember",
+      "priceList",
+      "priceListAssignment"
+    ],
+    "product": [
+      "productAttributeDefinition",
+      "productAttributeValue",
+      "productBundleEntry",
+      "productCategory",
+      "productCategoryAssignment",
+      "productClassificationAssignment",
+      "productClassificationClass",
+      "productIdentifier",
+      "productItem",
+      "productMediaReference",
+      "productPackaging",
+      "productRelation",
+      "productVariantAssignment",
+      "productVariantAxis"
     ]
   },
   "schemaLoadError": null,

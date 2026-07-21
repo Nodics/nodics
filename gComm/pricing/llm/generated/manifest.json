@@ -1,0 +1,41 @@
+{
+  "contextVersion": 3,
+  "moduleName": "pricing",
+  "path": "gComm/pricing",
+  "kind": "capability",
+  "runtime": {
+    "router": true,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "40.7",
+    "version": "0.0.1",
+    "description": "Enterprise-scoped price-list, price-group, exact-price, and deterministic price-resolution capability."
+  },
+  "sourceFiles": 28,
+  "testFiles": 13,
+  "dataFiles": 6,
+  "ownedFiles": 47,
+  "sourceFingerprint": "44454a884a2eb770a9ad987e724ec0472d7a0de732aa0c17647d6a195b923e5b",
+  "documentation": {
+    "documented": 2,
+    "partially-documented": 38,
+    "undocumented": 3,
+    "inventory-only": 4
+  },
+  "schemaGroups": {
+    "pricing": [
+      "price",
+      "priceGroup",
+      "priceGroupMember",
+      "priceList",
+      "priceListAssignment",
+      "priceOnlinePointer",
+      "pricePublicationManifest",
+      "pricePublicationReceipt"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

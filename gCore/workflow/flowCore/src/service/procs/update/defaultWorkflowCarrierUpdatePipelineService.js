@@ -138,7 +138,7 @@ module.exports = {
                 },
                 model: request.workflowCarrier
             }).then(success => {
-                response.success.workflowCarrier = request.workflowCarrier = success.result;
+                response.success.workflowCarrier = request.workflowCarrier = (success && success.result) || request.workflowCarrier;
                 response.success.messages.push('Carrier: ' + request.workflowCarrier.code + ' has been updated successfully @: ' + new Date());
                 process.nextSuccess(request, response);
             }).catch(error => {

@@ -4,6 +4,7 @@
 
 ## Hand-Authored Tests
 
+- `gFramework/nCache/hazelcastCache/test/cacheHazelcastLive.test.js`
 - `gFramework/nCache/hazelcastCache/test/common/commonTest.js`
 - `gFramework/nCache/hazelcastCache/test/env-local/envTest.js`
 

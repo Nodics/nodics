@@ -10,14 +10,15 @@
  */
 
 const assert = require('assert');
+const path = require('path');
 const redis = require('redis');
 
 /**
  * @module redisCache/test/cacheRedisLive
- * @description Optionally verifies the complete Redis cache adapter contract against an explicitly supplied isolated Redis endpoint, or fails closed for release gates.
+ * @description Verifies the complete Redis cache adapter contract against the environment override or authoritative local runtime endpoint, or fails closed when neither exists.
  * @layer test
  * @owner nCache/redisCache
- * @override CI and deployment pipelines may provide NODICS_CACHE_REDIS_URL for guarded live qualification and use --require-live for release enforcement.
+ * @override CI and deployment pipelines may provide NODICS_CACHE_REDIS_URL; local qualification follows startioLocal runtime configuration.
  */
 
 class CacheError extends Error {
@@ -27,12 +28,20 @@ global.CLASSES = { CacheError };
 const configurationService = require('../../cache/src/service/config/defaultCacheConfigurationService');
 global.SERVICE = { DefaultCacheConfigurationService: configurationService };
 
+function configuredRedisUrl() {
+    if (process.env.NODICS_CACHE_REDIS_URL) return process.env.NODICS_CACHE_REDIS_URL;
+    const properties = require(path.resolve(__dirname, '../../../../startio/envs/startioLocal/config/properties.js'));
+    return properties.cache && properties.cache.default && properties.cache.default.engines &&
+        properties.cache.default.engines.redis && properties.cache.default.engines.redis.options &&
+        properties.cache.default.engines.redis.options.url;
+}
+
 (async function () {
-    const url = process.env.NODICS_CACHE_REDIS_URL;
+    const url = configuredRedisUrl();
     const requireLive = process.argv.includes('--require-live') || process.env.NODICS_CACHE_REQUIRE_LIVE === 'true';
     if (!url) {
-        assert(!requireLive, 'NODICS_CACHE_REDIS_URL is required for the cache Redis release gate');
-        console.log('Redis cache live contract NOT EXECUTED: set NODICS_CACHE_REDIS_URL; use test:cache:release to require it');
+        assert(!requireLive, 'A Redis endpoint is required for the cache Redis release gate');
+        console.log('Redis cache live contract NOT EXECUTED: configure the runtime endpoint or NODICS_CACHE_REDIS_URL');
         return;
     }
     const client = redis.createClient({ url });

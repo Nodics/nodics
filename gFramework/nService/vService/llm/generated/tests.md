@@ -6,6 +6,7 @@
 
 - `gFramework/nService/vService/test/common/commonTest.js`
 - `gFramework/nService/vService/test/env-local/envTest.js`
+- `gFramework/nService/vService/test/versionedSaveResponseContract.test.js`
 
 ## Generated Tests
 

@@ -139,25 +139,26 @@ module.exports = {
                 hazelcast: {
                     enabled: false,
                     contractVersion: 1,
-                    disabledReason: 'The bundled Hazelcast adapter is a placeholder and must not be selected until a real distributed implementation overrides it',
                     connectionHandler: 'DefaultHazelcastCacheEngineService',
                     cacheHandler: 'DefaultHazelcastCacheService',
-                    distributed: false,
-                    atomicConsume: false,
+                    distributed: true,
+                    atomicConsume: true,
                     capabilities: {
-                        distributed: false,
-                        atomicConsume: false,
-                        ttl: false,
-                        nonExpiringTtl: false,
-                        prefixFlush: false,
-                        keyFlush: false,
-                        serialization: 'unsupported'
+                        distributed: true,
+                        atomicConsume: true,
+                        ttl: true,
+                        nonExpiringTtl: true,
+                        prefixFlush: true,
+                        keyFlush: true,
+                        serialization: 'json'
                     },
                     ttl: 100,
                     dbIndex: 0,
                     options: {
-                        host: 'localhost',
-                        port: 6379
+                        clusterName: 'dev',
+                        clusterMembers: ['127.0.0.1:5701'],
+                        connectionTimeoutMs: 5000,
+                        mapNamePrefix: 'nodics'
                     }
                 }
             }

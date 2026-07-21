@@ -66,3 +66,143 @@
 ### `cms.cmsTypeCode2Renderer`
 
 - No direct properties defined.
+
+## `pricing` Schemas
+
+| Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
+| `price` |  | no | no | no | no | no | no |  | 0 |
+| `priceGroup` |  | no | no | no | no | no | no |  | 0 |
+| `priceGroupMember` |  | no | no | no | no | no | no |  | 0 |
+| `priceList` |  | no | no | no | no | no | no |  | 0 |
+| `priceListAssignment` |  | no | no | no | no | no | no |  | 0 |
+| `priceOnlinePointer` |  | no | no | no | no | no | no |  | 0 |
+| `pricePublicationManifest` |  | no | no | no | no | no | no |  | 0 |
+| `pricePublicationReceipt` |  | no | no | no | no | no | no |  | 0 |
+
+### `pricing.price`
+
+- No direct properties defined.
+
+### `pricing.priceGroup`
+
+- No direct properties defined.
+
+### `pricing.priceGroupMember`
+
+- No direct properties defined.
+
+### `pricing.priceList`
+
+- No direct properties defined.
+
+### `pricing.priceListAssignment`
+
+- No direct properties defined.
+
+### `pricing.priceOnlinePointer`
+
+- No direct properties defined.
+
+### `pricing.pricePublicationManifest`
+
+- No direct properties defined.
+
+### `pricing.pricePublicationReceipt`
+
+- No direct properties defined.
+
+## `product` Schemas
+
+| Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
+| `productAttributeDefinition` |  | no | no | no | no | no | no |  | 0 |
+| `productAttributeValue` |  | no | no | no | no | no | no |  | 0 |
+| `productBundleEntry` |  | no | no | no | no | no | no |  | 0 |
+| `productCategory` |  | no | no | no | no | no | no |  | 0 |
+| `productCategoryAssignment` |  | no | no | no | no | no | no |  | 0 |
+| `productClassificationAssignment` |  | no | no | no | no | no | no |  | 0 |
+| `productClassificationClass` |  | no | no | no | no | no | no |  | 0 |
+| `productIdentifier` |  | no | no | no | no | no | no |  | 0 |
+| `productItem` |  | no | no | no | no | no | no |  | 0 |
+| `productMediaReference` |  | no | no | no | no | no | no |  | 0 |
+| `productOnlinePointer` |  | no | no | no | no | no | no |  | 0 |
+| `productPackaging` |  | no | no | no | no | no | no |  | 0 |
+| `productProjectionJob` |  | no | no | no | no | no | no |  | 0 |
+| `productPublicationReceipt` |  | no | no | no | no | no | no |  | 0 |
+| `productRelation` |  | no | no | no | no | no | no |  | 0 |
+| `productReleaseManifest` |  | no | no | no | no | no | no |  | 0 |
+| `productVariantAssignment` |  | no | no | no | no | no | no |  | 0 |
+| `productVariantAxis` |  | no | no | no | no | no | no |  | 0 |
+
+### `product.productAttributeDefinition`
+
+- No direct properties defined.
+
+### `product.productAttributeValue`
+
+- No direct properties defined.
+
+### `product.productBundleEntry`
+
+- No direct properties defined.
+
+### `product.productCategory`
+
+- No direct properties defined.
+
+### `product.productCategoryAssignment`
+
+- No direct properties defined.
+
+### `product.productClassificationAssignment`
+
+- No direct properties defined.
+
+### `product.productClassificationClass`
+
+- No direct properties defined.
+
+### `product.productIdentifier`
+
+- No direct properties defined.
+
+### `product.productItem`
+
+- No direct properties defined.
+
+### `product.productMediaReference`
+
+- No direct properties defined.
+
+### `product.productOnlinePointer`
+
+- No direct properties defined.
+
+### `product.productPackaging`
+
+- No direct properties defined.
+
+### `product.productProjectionJob`
+
+- No direct properties defined.
+
+### `product.productPublicationReceipt`
+
+- No direct properties defined.
+
+### `product.productRelation`
+
+- No direct properties defined.
+
+### `product.productReleaseManifest`
+
+- No direct properties defined.
+
+### `product.productVariantAssignment`
+
+- No direct properties defined.
+
+### `product.productVariantAxis`
+
+- No direct properties defined.

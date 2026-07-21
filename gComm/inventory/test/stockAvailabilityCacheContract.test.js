@@ -1,0 +1,18 @@
+/*
+    Nodics - Enterprice Micro-Services Management Framework
+
+    Copyright (c) 2026 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the
+    terms of the license agreement you entered into with Nodics.
+
+ */
+/** @module inventory/test/stockAvailabilityCacheContract @description Validates cache isolation, evidence revision guards, invalidation, provider fallback, and provider-neutral configuration. @layer test @owner inventory */
+const assert = require('assert'); const properties = require('../config/properties'); const inventory = properties.inventory;
+class NodicsError extends Error { constructor(code, message) { super(message || code); this.code = code; } } global.CLASSES = { NodicsError }; global.CONFIG = { get: key => key === 'inventory' ? inventory : key === 'cache' ? properties.cache : undefined }; global.SERVICE = {};
+SERVICE.DefaultInventoryEnterpriseScopeService = require('../src/service/foundation/defaultInventoryEnterpriseScopeService'); const cache = require('../src/service/availability/defaultStockAvailabilityCacheService'); const interceptors = require('../src/interceptors/interceptors');
+const authData = { tokenType: 'service', enterprise: { code: 'e1' } }; let evaluations = 0; let hit; let puts = []; let flushes = []; let balances = [{ code: 's1', revision: 1 }];
+SERVICE.DefaultStockAvailabilityService = { evaluate: async () => { evaluations++; return { enterpriseCode: 'e1', quantity: '5', evidence: [{ stockCode: 's1', revision: balances[0].revision }] }; } };
+SERVICE.DefaultStockBalanceService = { get: async () => ({ result: balances.slice() }) }; SERVICE.DefaultCacheService = { get: async () => { if (!hit) throw new Error('miss'); return hit; }, put: async options => { puts.push(options); hit = options.value; }, flushCache: async options => { flushes.push(options); } };
+(async () => { let request = { tenant: 't1', authData, context: { countryCode: 'AE' }, item: { itemType: 'SKU', itemCode: 'p1', unitCode: 'EA' } }; let first = await cache.evaluate(request); assert.strictEqual(first.quantity, '5'); assert.strictEqual(evaluations, 1); assert.strictEqual(puts[0].ttl, 15); await cache.evaluate(request); assert.strictEqual(evaluations, 1, 'matching Balance revisions should serve cache'); balances[0].revision = 2; await cache.evaluate(request); assert.strictEqual(evaluations, 2, 'stale evidence must recompute even before peer invalidation arrives'); assert.notStrictEqual(cache.buildKey('e1', request), cache.buildKey('e2', request)); await cache.invalidate(request); assert.strictEqual(flushes[0].internalCacheOperation, true); assert.strictEqual(flushes[0].channelName, 'availability'); ['stockBalancePostSaveInvalidateAvailability', 'stockBalancePostUpdateInvalidateAvailability', 'stockPoolPostSaveInvalidateAvailability', 'stockPoolMemberPostUpdateInvalidateAvailability', 'stockSourcingPolicyPostUpdateInvalidateAvailability', 'stockSourcingRulePostUpdateInvalidateAvailability'].forEach(name => assert(interceptors[name], name)); properties.cache.inventory.channels.availability.engine = 'redis'; assert.strictEqual(properties.cache.inventory.channels.availability.engine, 'redis'); properties.cache.inventory.channels.availability.engine = 'hazelcast'; assert.strictEqual(properties.cache.inventory.channels.availability.engine, 'hazelcast'); properties.cache.inventory.channels.availability.engine = 'local'; console.log('Inventory Stock Availability cache contract validated'); })().catch(error => { console.error(error); process.exit(1); });

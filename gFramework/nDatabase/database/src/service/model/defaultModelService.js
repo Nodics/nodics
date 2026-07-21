@@ -128,8 +128,11 @@ module.exports = {
                                     model[property] = key;
                                 } else {
                                     model[property] = [];
-                                    success.result.forEach(element => {
+                                    success.result.forEach((element, elementIndex) => {
+                                        element = element || models[elementIndex];
+                                        if (!element) throw new CLASSES.NodicsError('ERR_SAVE_00007', 'Nested model save returned an empty result');
                                         let key = (propertyObject.propertyName) ? element[propertyObject.propertyName] : element._id;
+                                        if (key === undefined || key === null) throw new CLASSES.NodicsError('ERR_SAVE_00007', 'Nested model save did not return the configured reference property');
                                         if (UTILS.isObjectId(key)) {
                                             key = key.toString();
                                         }

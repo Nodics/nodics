@@ -14,7 +14,7 @@ const NodeCache = require('node-cache');
 
 /**
  * @module cache/test/cacheAdapterContract
- * @description Verifies adapter capability metadata, TTL semantics, Local/Redis operation parity, and fail-closed Hazelcast activation.
+ * @description Verifies adapter capability metadata, TTL semantics, and Local/Redis/Hazelcast operation parity.
  * @layer test
  * @owner cache
  * @override Projects may contribute custom adapter tests while preserving the versioned capability and operation contract.
@@ -28,6 +28,7 @@ class CacheError extends Error {
 }
 global.CLASSES = { CacheError };
 global.CONFIG = { get: () => undefined };
+global.UTILS = { isBlank: value => value === undefined || value === null };
 
 const properties = require('../config/properties');
 const configurationService = require('../src/service/config/defaultCacheConfigurationService');
@@ -50,9 +51,10 @@ global.SERVICE = {
 
 const engines = properties.cache.default.engines;
 const enabledRedisEngine = Object.assign({}, engines.redis, { enabled: true });
+const enabledHazelcastEngine = Object.assign({}, engines.hazelcast, { enabled: true });
 assert.strictEqual(engineService.validateEngineContract('local', engines.local, 'schema').serialization, 'clone');
 assert.strictEqual(engineService.validateEngineContract('redis', enabledRedisEngine, 'schema').distributed, true);
-assert.throws(() => engineService.validateEngineContract('hazelcast', engines.hazelcast, 'schema'), error => error.code === 'ERR_CACHE_00008');
+assert.strictEqual(engineService.validateEngineContract('hazelcast', enabledHazelcastEngine, 'schema').distributed, true);
 assert.throws(() => engineService.validateEngineContract('redis', Object.assign({}, enabledRedisEngine, { enabled: false }), 'schema'), error => error.code === 'ERR_CACHE_00008');
 
 const ttlChannel = { channelOptions: { ttl: 12 }, engineOptions: { ttl: 20, options: { ttl: 30 } } };
@@ -91,6 +93,18 @@ function redisClient() {
     };
 }
 
+function hazelcastClient() {
+    const values = new Map(); const writes = [];
+    const map = {
+        set: async (key, value, ttl) => { values.set(key, value); writes.push({ key, ttl }); },
+        get: async key => values.has(key) ? values.get(key) : null,
+        remove: async key => { let value = values.has(key) ? values.get(key) : null; values.delete(key); return value; },
+        delete: async key => values.delete(key),
+        keySet: async () => Array.from(values.keys())
+    };
+    return { values, writes, getMap: async () => map };
+}
+
 (async function () {
     const originalConfig = global.CONFIG;
     let initCount = 0;
@@ -117,9 +131,11 @@ function redisClient() {
 
     configurationService.channels = { profile: { router: { enabled: true, engine: 'hazelcast' } } };
     configurationService.engines = { profile: { hazelcast: Object.assign({}, engines.hazelcast, { enabled: true }) } };
+    global.SERVICE.DefaultHazelcastCacheEngineService = { initCache: () => Promise.resolve({ code: 'SUC_CACHE_00000', result: 'hazelcast-client' }) };
     engineService.cacheClients = {};
     engineService.engineClients = {};
-    await assert.rejects(engineService.buildCacheEngines(['profile']), error => error.code === 'ERR_CACHE_00008');
+    await engineService.buildCacheEngines(['profile']);
+    assert.strictEqual(engineService.getEngineClient('profile', 'hazelcast'), 'hazelcast-client');
 
     global.CONFIG = { get: key => key === 'cache' ? { enabled: false } : undefined };
     initCount = 0;
@@ -177,9 +193,21 @@ function redisClient() {
     await redisService.flushByKeys({ channel: redisChannel, keys: ['forever'] });
     assert.strictEqual(redis.values.has('schema_profile_forever'), false);
 
+    const hazelcast = hazelcastClient();
+    const hazelcastChannel = { channelName: 'schema', channelOptions: { ttl: 7 },
+        engineOptions: Object.assign({}, enabledHazelcastEngine, { options: { prefix: 'profile', mapNamePrefix: 'nodics' } }), client: hazelcast };
+    await hazelcastService.put({ moduleName: 'profile', tenant: 'tenant-a', channel: hazelcastChannel, key: 'prefix-a', value: { result: 'h' }, ttl: 4 });
+    assert.strictEqual(hazelcast.writes[0].ttl, 4000);
+    assert.strictEqual((await hazelcastService.get({ moduleName: 'profile', tenant: 'tenant-a', channel: hazelcastChannel, key: 'prefix-a' })).result, 'h');
+    assert.strictEqual((await hazelcastService.consume({ moduleName: 'profile', tenant: 'tenant-a', channel: hazelcastChannel, key: 'prefix-a' })).result, 'h');
+    await assert.rejects(hazelcastService.get({ moduleName: 'profile', tenant: 'tenant-a', channel: hazelcastChannel, key: 'prefix-a' }), error => error.code === 'ERR_CACHE_00001');
+    await hazelcastService.put({ moduleName: 'profile', tenant: 'tenant-a', channel: hazelcastChannel, key: 'prefix-a', value: { result: 1 }, ttl: 3 });
+    await hazelcastService.put({ moduleName: 'profile', tenant: 'tenant-b', channel: hazelcastChannel, key: 'prefix-b', value: { result: 2 }, ttl: 3 });
+    await hazelcastService.flushByPrefix({ moduleName: 'profile', tenant: 'tenant-a', channel: hazelcastChannel, prefix: 'prefix' });
+    assert.strictEqual(hazelcast.values.has('schema_profile_tenant-a_prefix-a'), false);
+    assert.strictEqual(hazelcast.values.has('schema_profile_tenant-b_prefix-b'), true);
+
     assert.throws(() => cacheService.assertCapability({ engineOptions: { capabilities: { atomicConsume: false } } }, 'atomicConsume'), error => error.code === 'ERR_CACHE_00009');
-    await assert.rejects(hazelcastService.get({}), error => error.code === 'ERR_CACHE_00008');
-    await assert.rejects(hazelcastEngine.initCache({}, 'profile'), error => error.code === 'ERR_CACHE_00008');
     console.log('Cache adapter contracts validated');
 })().catch(error => {
     console.error(error);

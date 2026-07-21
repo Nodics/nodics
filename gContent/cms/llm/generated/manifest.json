@@ -14,7 +14,7 @@
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to cms"
   },
   "sourceFiles": 25,
-  "testFiles": 44,
+  "testFiles": 40,
   "dataFiles": 24,
   "ownedFiles": 62,
   "sourceFingerprint": "c3bbe40242f4e36bd3a7fc295a19b60a0f25343b76e45558d3078e4b75deeb80",

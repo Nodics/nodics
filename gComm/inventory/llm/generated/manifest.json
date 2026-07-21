@@ -1,0 +1,48 @@
+{
+  "contextVersion": 3,
+  "moduleName": "inventory",
+  "path": "gComm/inventory",
+  "kind": "capability",
+  "runtime": {
+    "router": true,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "40.3",
+    "version": "0.0.1",
+    "description": "Enterprise-scoped warehouse and inventory-management capability for Nodics commerce applications."
+  },
+  "sourceFiles": 57,
+  "testFiles": 34,
+  "dataFiles": 6,
+  "ownedFiles": 90,
+  "sourceFingerprint": "cb1e59dc7039d3c011dc9dd6ef7c118a5891e2fa896e325b46defcc48523897f",
+  "documentation": {
+    "documented": 33,
+    "partially-documented": 40,
+    "undocumented": 13,
+    "inventory-only": 4
+  },
+  "schemaGroups": {
+    "inventory": [
+      "stockAllocation",
+      "stockBalance",
+      "stockMovementCheckpoint",
+      "stockMovementRecord",
+      "stockPool",
+      "stockPoolMember",
+      "stockProviderOperation",
+      "stockReconciliationFinding",
+      "stockReconciliationRun",
+      "stockReservation",
+      "stockSourcingPolicy",
+      "stockSourcingRule",
+      "stockTransfer",
+      "warehouse",
+      "warehouseLocation"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

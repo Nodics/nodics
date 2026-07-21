@@ -49,7 +49,8 @@ module.exports = {
         code: 'customerUserGroup',
         name: 'customerUserGroup',
         active: true,
-        parentGroups: ['userGroup']
+        parentGroups: ['userGroup'],
+        permissions: ['product.online.read']
     },
     record4: {
         code: 'contentUserGroup',
@@ -156,7 +157,15 @@ module.exports = {
             'profile.backoffice.view',
             'cms.backoffice.view',
             'cronjob.backoffice.view',
-            'workflow.backoffice.view'
+            'workflow.backoffice.view',
+            'pricing.backoffice.read',
+            'pricing.backoffice.preview',
+            'pricing.backoffice.manage',
+            'product.backoffice.read',
+            'product.backoffice.manage'
+            ,'product.online.read'
+            ,'product.operations.read'
+            ,'product.operations.manage'
         ]
     },
     record12: {

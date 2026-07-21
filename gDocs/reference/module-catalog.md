@@ -8,7 +8,11 @@ Use the [Module Documentation Index](module-documentation-index.md) when you kno
 
 - [gComm](../../gComm/README.md) — `group`; `gComm`
 - [cart](../../gComm/cart/README.md) — `capability`; `gComm/cart`
+- [inventory](../../gComm/inventory/README.md) — `capability`; `gComm/inventory`
 - [order](../../gComm/order/README.md) — `capability`; `gComm/order`
+- [pricing](../../gComm/pricing/README.md) — `capability`; `gComm/pricing`
+- [product](../../gComm/product/README.md) — `capability`; `gComm/product`
+- [store](../../gComm/store/README.md) — `capability`; `gComm/store`
 ## gContent
 
 - [gContent](../../gContent/README.md) — `group`; `gContent`
@@ -18,6 +22,7 @@ Use the [Module Documentation Index](module-documentation-index.md) when you kno
 
 - [gCore](../../gCore/README.md) — `group`; `gCore`
 - [cronjob](../../gCore/cronjob/README.md) — `capability`; `gCore/cronjob`
+- [units](../../gCore/units/README.md) — `capability`; `gCore/units`
 - [nems](../../gCore/nems/README.md) — `capability`; `gCore/nems`
 - [profile](../../gCore/profile/README.md) — `capability`; `gCore/profile`
 - [quizer](../../gCore/quizer/README.md) — `group`; `gCore/quizer`

@@ -1,0 +1,35 @@
+{
+  "contextVersion": 3,
+  "moduleName": "store",
+  "path": "gComm/store",
+  "kind": "capability",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "40.4",
+    "version": "0.0.1",
+    "description": "Enterprise-scoped retail and digital store foundation for Nodics commerce applications."
+  },
+  "sourceFiles": 15,
+  "testFiles": 5,
+  "dataFiles": 0,
+  "ownedFiles": 26,
+  "sourceFingerprint": "312e2e3aa0a4ef5bea9b1952b8bef13cb17b0d92d8287530c5cb87daa12910cd",
+  "documentation": {
+    "documented": 19,
+    "partially-documented": 0,
+    "undocumented": 3,
+    "inventory-only": 4
+  },
+  "schemaGroups": {
+    "store": [
+      "store",
+      "storeWarehouseAssignment"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

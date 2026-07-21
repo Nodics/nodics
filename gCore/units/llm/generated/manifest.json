@@ -1,0 +1,36 @@
+{
+  "contextVersion": 3,
+  "moduleName": "units",
+  "path": "gCore/units",
+  "kind": "capability",
+  "runtime": {
+    "router": true,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "5.17",
+    "version": "0.0.1",
+    "description": "Shared exact units, unit-of-measure, regional conversion, and compound-dimension capability."
+  },
+  "sourceFiles": 17,
+  "testFiles": 7,
+  "dataFiles": 0,
+  "ownedFiles": 29,
+  "sourceFingerprint": "d9a6c810aa86ee88d59377b13e7e6cbf8327fe549b2dd6a2c245ef6b8a3886b6",
+  "documentation": {
+    "documented": 21,
+    "partially-documented": 1,
+    "undocumented": 3,
+    "inventory-only": 4
+  },
+  "schemaGroups": {
+    "units": [
+      "unitConversion",
+      "unitDimension",
+      "unitOfMeasure"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

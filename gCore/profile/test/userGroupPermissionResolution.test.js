@@ -103,7 +103,7 @@ assert(runtimeAdminGroup.permissions.includes('backoffice.registry.diagnostics.v
 assert(runtimeViewerGroup.permissions.includes('backoffice.contract.view'));
 ['backoffice.contract.approve', 'backoffice.contract.reject', 'backoffice.contract.rollback'].forEach(permission =>
     assert(runtimeAdminGroup.permissions.includes(permission), 'Runtime admin must include ' + permission));
-['profile.backoffice.view', 'cms.backoffice.view', 'cronjob.backoffice.view', 'workflow.backoffice.view'].forEach(permission =>
+['profile.backoffice.view', 'cms.backoffice.view', 'cronjob.backoffice.view', 'workflow.backoffice.view', 'pricing.backoffice.read', 'pricing.backoffice.preview', 'pricing.backoffice.manage'].forEach(permission =>
     assert(runtimeAdminGroup.permissions.includes(permission), 'Runtime admin must include ' + permission));
 let contentGroup = Object.values(userGroupsData).find(group => group.code === 'contentUserGroup');
 assert(contentGroup.permissions.includes('cms.backoffice.view'));

@@ -11,62 +11,57 @@
 
 /**
  * @module nCache/hazelcastCache/service/cache/DefaultHazelcastCacheService
- * @description Fail-closed placeholder for Hazelcast cache operations; it never masquerades as local or distributed storage.
+ * @description Implements the nCache adapter contract with Hazelcast distributed maps, JSON serialization, TTL, and governed invalidation.
  * @layer service
  * @owner nCache/hazelcastCache
- * @override A project may replace this service with a real Hazelcast adapter that satisfies every declared capability.
+ * @override Projects may replace map naming or serialization while preserving tenant keys, TTL, detached values, and invalidation semantics.
  */
-
 module.exports = {
-    /**
-     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
-     */
-    init: function (options) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-        });
+    /** Initializes the adapter. */ init: function () { return Promise.resolve(true); },
+    /** Completes adapter initialization. */ postInit: function () { return Promise.resolve(true); },
+    /** Returns a deterministic cluster map name for one module and channel. */
+    mapName: function (options) {
+        let engineOptions = options.channel && options.channel.engineOptions || {}; let prefix = engineOptions.options && engineOptions.options.mapNamePrefix || 'nodics';
+        return [prefix, options.moduleName || 'default', options.channel.channelName || options.channelName || 'cache'].join('_').replace(/[^A-Za-z0-9_.-]/g, '_');
     },
-
-    /**
-     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
-     * defined it that with Promise way
-     * @param {*} options 
-     */
-    postInit: function (options) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-        });
+    /** Resolves the distributed map proxy. */ map: function (options) { return options.channel.client.getMap(this.mapName(options)); },
+    /** Stores a JSON value using the effective nCache TTL. */
+    put: async function (options) {
+        try {
+            let map = await this.map(options); let key = SERVICE.DefaultCacheConfigurationService.createStorageKey(options);
+            let ttl = SERVICE.DefaultCacheConfigurationService.resolveTtl(options); let value = JSON.stringify(options.value);
+            await map.set(key, value, ttl > 0 ? ttl * 1000 : 0); return { code: 'SUC_CACHE_00000', result: JSON.parse(value) };
+        } catch (error) { throw error instanceof CLASSES.CacheError ? error : new CLASSES.CacheError(error); }
     },
-
-    /** Rejects writes through the unsupported placeholder. */
-    put: function (options) {
-        return this.unsupported('put');
+    /** Reads and deserializes a detached value or returns the standard miss error. */
+    get: async function (options) {
+        try {
+            let map = await this.map(options); let key = SERVICE.DefaultCacheConfigurationService.createStorageKey(options); let value = await map.get(key);
+            if (value === null || value === undefined) throw new CLASSES.CacheError('ERR_CACHE_00001', 'Could not find Hazelcast value for key: ' + key);
+            return typeof value === 'string' ? JSON.parse(value) : JSON.parse(JSON.stringify(value));
+        } catch (error) { throw error instanceof CLASSES.CacheError ? error : new CLASSES.CacheError(error); }
     },
-
-    /** Rejects reads through the unsupported placeholder. */
-    get: function (options) {
-        return this.unsupported('get');
+    /** Atomically removes and returns one value. */
+    consume: async function (options) {
+        try {
+            let map = await this.map(options); let key = SERVICE.DefaultCacheConfigurationService.createStorageKey(options); let value = await map.remove(key);
+            if (value === null || value === undefined) throw new CLASSES.CacheError('ERR_CACHE_00001', 'Could not consume Hazelcast value for key: ' + key);
+            return typeof value === 'string' ? JSON.parse(value) : JSON.parse(JSON.stringify(value));
+        } catch (error) { throw error instanceof CLASSES.CacheError ? error : new CLASSES.CacheError(error); }
     },
-
-    /** Rejects consume through the unsupported placeholder. */
-    consume: function (options) {
-        return this.unsupported('consume');
+    /** Removes every tenant-partitioned key matching the governed logical prefix. */
+    flushByPrefix: async function (options) {
+        try {
+            let map = await this.map(options); let prefix = SERVICE.DefaultCacheConfigurationService.createStoragePrefix(options) + (options.prefix || '');
+            let keys = (await map.keySet()).filter(key => String(key).startsWith(prefix));
+            await Promise.all(keys.map(key => map.delete(key))); return { code: 'SUC_CACHE_00000', result: keys };
+        } catch (error) { throw error instanceof CLASSES.CacheError ? error : new CLASSES.CacheError(error); }
     },
-
-    /** Rejects prefix invalidation through the unsupported placeholder. */
-    flushByPrefix: function (options) {
-        return this.unsupported('flushByPrefix');
-    },
-
-    /** Rejects key invalidation through the unsupported placeholder. */
-    flushByKeys: function (options) {
-        return this.unsupported('flushByKeys');
-    },
-
-    /** Creates the standard fail-closed rejection for placeholder operations. */
-    unsupported: function (operation) {
-        return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00008', 'Bundled Hazelcast adapter does not support operation: ' + operation));
+    /** Removes explicit tenant-partitioned keys. */
+    flushByKeys: async function (options) {
+        try {
+            let map = await this.map(options); let keys = (options.keys || []).map(key => SERVICE.DefaultCacheConfigurationService.createStorageKey(options, key));
+            await Promise.all(keys.map(key => map.delete(key))); return { code: 'SUC_CACHE_00000', result: keys };
+        } catch (error) { throw error instanceof CLASSES.CacheError ? error : new CLASSES.CacheError(error); }
     }
 };

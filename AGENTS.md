@@ -63,6 +63,21 @@ The expected posture is:
   programming knowledge and an AI coding tool must be able to understand what
   the capability does, where code belongs, how customization works, which
   generated artifacts are affected, and which tests prove the change.
+- Every implemented capability must include detailed, low-level, end-to-end
+  documentation for both business users and developers. Business-user guidance
+  must explain terminology, prerequisites, roles, configuration choices,
+  step-by-step operating workflows, expected results, failure/recovery paths,
+  and practical examples without assuming framework or deep technical
+  knowledge. Developer guidance must explain authoritative ownership, schemas,
+  properties, APIs, services, pipelines, events, extension points, layered OOTB
+  customization, security, tenant behavior, observability, deployment,
+  migration, troubleshooting, and the exact tests that prove the behavior.
+  High-level summaries alone do not satisfy implementation acceptance.
+- OOTB customization documentation must show the smallest supported override or
+  composition path and must explicitly identify what must not be copied,
+  bypassed, or replaced. Examples must preserve existing authorities and avoid
+  creating parallel loaders, state machines, registries, schedulers, or runtime
+  governance paths.
 - Do not hardcode project-specific behavior into reusable framework behavior.
 - Behavior must come from active modules, layered configuration, tenant context,
   schema definitions, routers, services, pipelines, data, and runtime governance.
@@ -81,6 +96,14 @@ The expected posture is:
   overrides.
 - Preserve multi-tenancy, modular deployment, runtime configurability,
   traceability, and layered overrideability.
+- For commercial values, store and compare money and measured quantities as
+  validated exact representations; never base price, tax, promotion, stock, or
+  order decisions on JavaScript floating-point arithmetic. Keep base Pricing,
+  Tax, Promotion, Product, Store, Profile, Units, Inventory, Workflow,
+  publishing, and cache ownership separate and compose their contracts through
+  configured providers. Versioned Staged business data must reach a distinct
+  non-versioned Online runtime only through the existing Workflow and nPublish
+  authorities; do not introduce direct-copy or parallel publication paths.
 - Apply compatibility as a governed release concern, not a blanket pre-production
   constraint. Until Nodics has a production-ready reference project/release,
   prefer clean best-principle implementations over compatibility shims unless
@@ -153,6 +176,23 @@ AI-assisted changes must update AI-facing guidance with the same care as source
 code because future developers and AI tools will depend on it. A change is not
 complete until behavior, tests, human documentation, and AI guidance are
 consistent.
+
+For a new end-to-end capability, documentation acceptance must include all
+applicable audiences and layers:
+
+- a plain-language business overview and decision guide;
+- step-by-step business operating procedures with positive, rejected, failure,
+  retry, rollback, and recovery journeys;
+- administrator configuration and permission guidance;
+- developer architecture, data-contract, API, event, and lifecycle detail;
+- OOTB extension examples using Nodics layering and replaceable providers;
+- deployment, observability, performance, security, migration, backup/restore,
+  and troubleshooting guidance;
+- verification commands and expected positive, negative, boundary, contract,
+  integration, and regression evidence.
+
+If an audience or layer is not applicable, the owning documentation must say
+why rather than silently omit it.
 
 ## Validation Discipline
 

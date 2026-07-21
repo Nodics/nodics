@@ -90,6 +90,90 @@ module.exports = {
     /** Executes a bounded publication operation without exposing an arbitrary service invocation bridge. */
     executePublicationOperation: async function (operation, payload) {
         let request = this.getSystemRequest(payload);
+        if (operation === 'ensurePricingWorkflowDefinitions') {
+            if (!SERVICE.DefaultImportService) throw new Error('Pricing workflow init-data authority is unavailable');
+            let modules = payload.modules || ['pricing'];
+            await SERVICE.DefaultImportService.importInitData({ tenant: request.tenant, authData: request.authData, modules: modules });
+            return { imported: true, modules: modules };
+        }
+        if (operation === 'seedPricingRelease') {
+            let version = Number(payload.version), enterpriseCode = payload.enterpriseCode || 'default';
+            let models = NODICS.getModels('pricing', request.tenant), now = new Date();
+            if (!models || !models.PriceListModel || !models.PriceListAssignmentModel || !models.PriceModel) throw new Error('Pricing test fixture models are unavailable');
+            let base = { active: true, status: 'ACTIVE', enterpriseCode: enterpriseCode, versionId: version, created: now, updated: now, createdBy: 'runtime-contract-probe', updatedBy: 'runtime-contract-probe' };
+            let list = Object.assign({}, base, { code: enterpriseCode + '::priceList::' + payload.priceListCode, priceListCode: payload.priceListCode, name: payload.priceListCode, priority: 100, currencies: [payload.currencyCode], taxMode: 'NET', stackingMode: 'EXCLUSIVE' });
+            let assignment = Object.assign({}, base, { code: enterpriseCode + '::priceListAssignment::' + payload.assignmentCode, assignmentCode: payload.assignmentCode, priceListCode: payload.priceListCode, scopeType: 'ENTERPRISE', scopeCode: enterpriseCode, priority: 100, excluded: false });
+            let price = Object.assign({}, base, { code: enterpriseCode + '::price::' + payload.priceCode, priceCode: payload.priceCode, priceListCode: payload.priceListCode, itemType: 'SKU', itemCode: payload.itemCode, amount: payload.amount, currencyCode: payload.currencyCode, unitCode: payload.unitCode, unitFactor: 1, minimumQuantity: '1' });
+            await models.PriceListModel.saveVersionedItems({ tenant: request.tenant, query: { code: list.code }, searchOptions: {}, model: list });
+            await models.PriceListAssignmentModel.saveVersionedItems({ tenant: request.tenant, query: { code: assignment.code }, searchOptions: {}, model: assignment });
+            await models.PriceModel.saveVersionedItems({ tenant: request.tenant, query: { code: price.code }, searchOptions: {}, model: price });
+            await SERVICE.DefaultPriceResolutionCacheService.invalidate(request);
+            return { version: version, items: [{ schemaName: 'priceList', code: list.code, versionId: version }, { schemaName: 'priceListAssignment', code: assignment.code, versionId: version }, { schemaName: 'price', code: price.code, versionId: version }] };
+        }
+        if (operation === 'seedPricingUnit') {
+            let models = NODICS.getModels('units', request.tenant), now = new Date(), unitCode = payload.unitCode || 'piece';
+            if (!models || !models.UnitOfMeasureModel) throw new Error('Units fixture model is unavailable');
+            let model = { code: 'global::unit::' + unitCode, active: true, unitCode: unitCode, name: 'Piece', symbol: 'pc',
+                dimensionCode: 'COUNT', dimensionVector: { COUNT: 1 }, kind: 'LINEAR', baseUnit: true, components: [],
+                precisionScale: 0, roundingMode: 'UNNECESSARY', status: 'ACTIVE', scopeType: 'GLOBAL', aliases: [],
+                created: now, updated: now, createdBy: 'runtime-contract-probe', updatedBy: 'runtime-contract-probe' };
+            await models.UnitOfMeasureModel.saveItems({ tenant: request.tenant, query: { code: model.code }, searchOptions: {}, model: model });
+            return { unitCode: unitCode };
+        }
+        if (operation === 'inspectPricingPublicationRoutes') {
+            return Object.values(NODICS.getRouters('pricing') || {}).filter(route => route.url).map(route => ({ method: route.method, url: route.url, active: route.active }));
+        }
+        if (operation === 'submitPricingRelease') {
+            let enterpriseCode = payload.enterpriseCode || 'default', human = Object.assign({}, request, { authData: { tokenType: 'access', principalId: 'runtime-pricing-manager', tenant: request.tenant, enterprise: { code: enterpriseCode } }, body: { submissionCode: payload.submissionCode, approvalMode: payload.approvalMode, priceListCode: payload.priceListCode, sourceVersion: payload.sourceVersion, items: payload.items } });
+            let submitted = await SERVICE.DefaultPricingPublicationWorkflowService.submit(human);
+            if (payload.approvalMode === 'MANUAL' && payload.decision) {
+                let startedAt = Date.now(), carrier;
+                while (Date.now() - startedAt < 10000) { carrier = await SERVICE.DefaultWorkflowCarrierService.getWorkflowCarrier({ tenant: request.tenant, carrierCode: submitted.carrierCode, loadInActive: true }); if (carrier.activeAction && carrier.activeAction.code === 'pricingPublicationManualReviewAction') break; await new Promise(resolve => setTimeout(resolve, 100)); }
+                if (!carrier || !carrier.activeAction || carrier.activeAction.code !== 'pricingPublicationManualReviewAction') throw new Error('Pricing manual workflow action did not become ready');
+                await SERVICE.DefaultWorkflowService.performAction({ tenant: request.tenant, authData: human.authData, carrierCode: submitted.carrierCode, actionResponse: { decision: payload.decision, feedback: { message: payload.feedback || 'Runtime topology decision' } } });
+            }
+            return submitted;
+        }
+        if (operation === 'inspectPricingWorkflow') {
+            let carrier = await SERVICE.DefaultWorkflowCarrierService.getWorkflowCarrier({ tenant: request.tenant, carrierCode: payload.carrierCode, loadInActive: true });
+            return { code: carrier.code, active: carrier.active, state: carrier.currentState && carrier.currentState.state, activeAction: carrier.activeAction && carrier.activeAction.code, states: (carrier.states || []).map(state => state.state) };
+        }
+        if (operation === 'inspectPricingPublication') {
+            let publication = await SERVICE.DefaultPublicationRepositoryService.get(payload.publicationCode, request);
+            return publication && { code: publication.code, state: publication.state, revision: publication.revision, targetVersion: publication.targetVersion, previousOnlineVersion: publication.previousOnlineVersion, correlationId: publication.correlationId };
+        }
+        if (operation === 'inspectPricingManifest') {
+            let response = await SERVICE.DefaultPricePublicationManifestService.get({ tenant: request.tenant, authData: request.authData,
+                query: { publicationCode: payload.publicationCode }, searchOptions: { limit: 1 } });
+            return response && Array.isArray(response.result) ? response.result[0] : undefined;
+        }
+        if (operation === 'deployPricingManifestDirect') {
+            let originalFetch = SERVICE.DefaultModuleService && SERVICE.DefaultModuleService.fetch, lastDescriptor;
+            if (originalFetch) SERVICE.DefaultModuleService.fetch = function (descriptor) { lastDescriptor = descriptor; return originalFetch.call(SERVICE.DefaultModuleService, descriptor); };
+            try { return { result: await SERVICE.DefaultPricingPublicationTargetService.deploy(Object.assign({}, request, { body: { manifest: payload.manifest } })) }; }
+            catch (error) { return { error: error.stack || error.message || String(error), code: error.code, errInfo: error.errInfo,
+                hasUnitsService: Boolean(SERVICE.DefaultUnitsReferenceService), unitsPreferLocal: ((CONFIG.get('pricing') || {}).unitsReference || {}).preferLocal,
+                unitsActive: NODICS.isModuleActive && NODICS.isModuleActive('units'), lastDescriptor: lastDescriptor && {
+                    method: lastDescriptor.method, uri: lastDescriptor.uri, nodicsContext: lastDescriptor.nodicsContext
+                } }; }
+            finally { if (originalFetch) SERVICE.DefaultModuleService.fetch = originalFetch; }
+        }
+        if (operation === 'rollbackPricingRelease') {
+            if (payload.enterpriseCode) request.authData = Object.assign({}, request.authData, { enterprise: { code: payload.enterpriseCode } });
+            let current = await SERVICE.DefaultPublicationRepositoryService.get(payload.publicationCode, request);
+            let result = await SERVICE.DefaultPublicationLifecycleService.rollback(Object.assign({}, request, { publicationCode: payload.publicationCode, expectedRevision: current && current.revision, reason: payload.reason || 'Runtime Pricing rollback verification' }));
+            return { code: result.code, state: result.state, targetVersion: result.targetVersion, previousOnlineVersion: result.previousOnlineVersion };
+        }
+        if (operation === 'inspectPricingOnline') {
+            let enterpriseCode = payload.enterpriseCode || 'default', authData = Object.assign({}, request.authData, { tokenType: 'service', enterprise: { code: enterpriseCode } });
+            let resolution = await SERVICE.DefaultPriceResolutionCacheService.resolve({ tenant: request.tenant, authData: authData, body: { item: { itemType: 'SKU', itemCode: payload.itemCode }, quantity: payload.quantity || '1', unitCode: payload.unitCode, currencyCode: payload.currencyCode, context: {} } });
+            let pointer = await SERVICE.DefaultPriceOnlinePointerService.get({ tenant: request.tenant, authData: authData, query: { enterpriseCode: enterpriseCode, priceListCode: payload.priceListCode }, searchOptions: { limit: 1 } });
+            let pointers = pointer && Array.isArray(pointer.result) ? pointer.result : [], receipts = await SERVICE.DefaultPricePublicationReceiptService.get({ tenant: request.tenant, authData: authData, query: { active: true } });
+            return { resolution: resolution, manifestCode: pointers[0] && pointers[0].manifestCode, previousManifestCode: pointers[0] && pointers[0].previousManifestCode, revision: pointers[0] && pointers[0].revision, receiptCount: receipts && Array.isArray(receipts.result) ? receipts.result.length : 0 };
+        }
+        if (operation === 'assertPricingSourceRoleBoundary') {
+            try { await SERVICE.DefaultPricingPublicationTargetService.deploy(Object.assign({}, request, { body: { manifest: {} } })); return { rejected: false }; } catch (error) { return { rejected: true, code: error.code || error.name }; }
+        }
         if (operation === 'inspectCmsPublicationRoutes') {
             return Object.values(NODICS.getRouters('cms') || {}).filter(route => route.url)
                 .map(route => ({ method: route.method, url: route.url, active: route.active }));
@@ -113,7 +197,7 @@ module.exports = {
             return { pageCode: page.code, routeCode: route.code, version: version };
         }
         if (operation === 'publishCmsRelease') {
-            if (!SERVICE.DefaultPublicationRequestService || !SERVICE.DefaultPublicationAuditService) {
+            if (!SERVICE.DefaultPublicationRepositoryService || !SERVICE.DefaultPublicationLifecycleService) {
                 let modelNames = NODICS.getActiveModules().map(moduleName => ({ moduleName: moduleName,
                     names: Object.keys(NODICS.getModels(moduleName, request.tenant) || {}).filter(name => /Publication/i.test(name)) }))
                     .filter(entry => entry.names.length > 0);
