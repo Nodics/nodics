@@ -17,5 +17,6 @@
  * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
  */
 module.exports = {
-
+    ERR_CMS_00080: { code: '401', message: 'CMS Site reference lookup requires service identity' },
+    ERR_CMS_00081: { code: '400', message: 'CMS Site reference input is invalid' }
 };

@@ -48,18 +48,19 @@ your goal.
 8. [How To Approve And Publish Content](content/how-to-approve-and-publish-content.md)
 9. [How Warehouse Management Works](commerce/how-to-manage-warehouses.md)
 10. [How Store Management Works](commerce/how-to-manage-stores.md)
-11. [How Units And Land Measurements Work](data/how-to-use-units-and-land-measurements.md)
-12. [How Stock Movements Work](commerce/how-stock-movements-work.md)
-13. [How Stock Pools Work](commerce/how-to-manage-stock-pools.md)
-14. [How Stock Sourcing Works](commerce/how-stock-sourcing-works.md)
-15. [How Stock ON_HAND Availability Works](commerce/how-stock-availability-works.md)
-16. [How to Reserve Stock](commerce/how-to-reserve-stock.md)
-17. [How Stock Allocation Works](commerce/how-stock-allocation-works.md)
-18. [How Stock Transfers Work](commerce/how-stock-transfers-work.md)
-19. [How Inventory Reconciliation Works](commerce/how-inventory-reconciliation-works.md)
-20. [How To Operate And Integrate Inventory](commerce/how-to-operate-and-integrate-inventory.md)
-21. [How To Configure And Operate Pricing](commerce/how-to-configure-and-operate-pricing.md)
-22. [How To Create And Identify Products](commerce/how-to-create-and-identify-products.md)
+11. [How To Model Stores And Website Experiences](commerce/how-to-model-stores-and-websites.md)
+12. [How Units And Land Measurements Work](data/how-to-use-units-and-land-measurements.md)
+13. [How Stock Movements Work](commerce/how-stock-movements-work.md)
+14. [How Stock Pools Work](commerce/how-to-manage-stock-pools.md)
+15. [How Stock Sourcing Works](commerce/how-stock-sourcing-works.md)
+16. [How Stock ON_HAND Availability Works](commerce/how-stock-availability-works.md)
+17. [How to Reserve Stock](commerce/how-to-reserve-stock.md)
+18. [How Stock Allocation Works](commerce/how-stock-allocation-works.md)
+19. [How Stock Transfers Work](commerce/how-stock-transfers-work.md)
+20. [How Inventory Reconciliation Works](commerce/how-inventory-reconciliation-works.md)
+21. [How To Operate And Integrate Inventory](commerce/how-to-operate-and-integrate-inventory.md)
+22. [How To Configure And Operate Pricing](commerce/how-to-configure-and-operate-pricing.md)
+23. [How To Create And Identify Products](commerce/how-to-create-and-identify-products.md)
 
 ### Architect, Security Reviewer, Or Operator
 
@@ -128,6 +129,7 @@ Use this map when you are not sure where to start.
 | Approve Staged content and publish it safely to Online | [How To Approve And Publish Content](content/how-to-approve-and-publish-content.md) |
 | Understand or customize enterprise warehouses and warehouse locations | [How Warehouse Management Works](commerce/how-to-manage-warehouses.md) |
 | Create stores and associate Inventory warehouses | [How Store Management Works](commerce/how-to-manage-stores.md) |
+| Model different websites, brands, countries, or shared Sites against Stores | [How To Model Stores And Website Experiences](commerce/how-to-model-stores-and-websites.md) |
 | Record exact, idempotent on-hand Stock changes | [How Stock Movements Work](commerce/how-stock-movements-work.md) |
 | Group Warehouses for future sourcing without copying Stock | [How Stock Pools Work](commerce/how-to-manage-stock-pools.md) |
 | Select ordered Stock Pools from declarative business context | [How Stock Sourcing Works](commerce/how-stock-sourcing-works.md) |

@@ -6,9 +6,9 @@ A Store represents the customer-facing business unit through which an enterprise
 
 ## Ownership Boundary
 
-`gComm/store` owns Store identity, lifecycle, descriptive channels/capabilities, and Store-to-Warehouse assignment policy. `gComm/inventory` owns Warehouse identity and lifecycle. An assignment stores only the warehouse business code and validates it through Inventory; it does not copy warehouse details or stock.
+`gComm/store` owns Store identity, lifecycle, descriptive channels/capabilities, Store-to-Warehouse assignment policy, and the commercial association between Stores and CMS Sites. `gComm/inventory` owns Warehouse identity and lifecycle. `gContent/cms` owns Site, content-catalog, page, template, component, and content state. Store records references and validates them through their owning modules; it does not copy Warehouse or CMS state.
 
-Address, geography, product, pricing, stock, availability, reservation, sourcing, POS, and customer-channel authorities are outside this slice. `addressRef` and `channels` are descriptive references only.
+Address, geography, product, stock, availability, reservation, sourcing, POS, and customer-channel authorities are outside this slice. Pricing owns Price Lists and validates Store-scoped assignments through Store. `addressRef`, `channels`, country codes, and locale codes remain references/applicability metadata, not copied master data.
 
 ## Data Contracts
 
@@ -24,6 +24,12 @@ An assignment connects exactly one Store to exactly one Inventory Warehouse in t
 
 Effective dates describe intended validity. They do not start a scheduler. Consumers must apply effective-date rules when that behavior is implemented.
 
+### Store Content Site Binding
+
+A binding connects one CMS-owned Site to a bounded, unique list of Store codes inside one authenticated enterprise. This supports one Store with several country/channel Sites and one shared Site serving several Stores. `cmsSiteCode` is uniquely claimed by one binding in the tenant, so it cannot silently become a cross-enterprise authority path. A primary Store may be selected only from `storeCodes`.
+
+The derived identity is `enterprise::storeSite::bindingCode`. Optional channels, countries, locales, priority, and effective dates describe applicability. Store retirement is rejected while a non-retired Site binding still references that Store. The binding does not select pages or execute templates; CMS and the separate frontend retain those responsibilities.
+
 ## Operating Procedure
 
 1. Confirm the authenticated operator belongs to the target enterprise.
@@ -34,18 +40,20 @@ Effective dates describe intended validity. They do not start a scheduler. Consu
 6. Activate assignments after both endpoints and effective dates are verified.
 7. Suspend an assignment to stop future consumers from considering it without destroying history.
 8. To retire a Store, retire all of its assignments first, then retire the Store.
+9. Create required CMS Sites/catalogs in CMS, then create and activate Store Site bindings.
+10. Retire all live Site bindings before retiring a referenced Store.
 
-Expected rejection cases include missing enterprise claims, cross-enterprise payload/query values, invalid business codes, missing or retired Store/Warehouse targets, unknown purposes, out-of-range priority, reversed effective dates, forbidden lifecycle transitions, identity changes, Store retirement with live assignments, and hard deletion.
+Expected rejection cases include missing enterprise claims, cross-enterprise payload/query values, invalid business codes, missing or retired Store/Warehouse targets, missing CMS Sites, duplicate Site ownership, invalid/duplicate Store lists, an invalid primary Store, unknown purposes, out-of-range priority, reversed effective dates, forbidden lifecycle transitions, identity changes, Store retirement with live dependencies, and hard deletion.
 
 ## Configuration And Customization
 
-Defaults live in `config/properties.js`. Later project, environment, server, node, tenant, or customer layers may extend Store types, assignment purposes, priority boundaries, and lifecycle transitions. Prefer configuration before replacing services.
+Defaults live in `config/properties.js`. Later layers may extend Store types, assignment purposes, priority boundaries, lifecycle transitions, management limits, and local/remote Warehouse reference settings. Prefer configuration before replacing services.
 
-If a project needs a rule configuration cannot express, override the smallest foundation service in a later module. Preserve authenticated enterprise isolation, deterministic identity, Inventory target validation, no-hard-delete behavior, and lifecycle history. Do not copy schemas, loaders, registries, or Warehouse state.
+If a project needs a rule configuration cannot express, override the smallest foundation/provider service in a later module. Preserve enterprise isolation, deterministic identity, owning-module reference validation, no-hard-delete behavior, and lifecycle history. Do not copy schemas, loaders, registries, or Warehouse state. Storefront, not Store, owns website composition.
 
 ## Security And Authorization
 
-These schemas currently expose generated internal services but no public generated routers. Authentication claims are the enterprise authority; model and query enterprise values may only confirm, never override, that claim. Future intent APIs must define explicit permissions and negative security tests before routers are enabled.
+Generated schema routers remain disabled. Explicit `/management/:resource` intent routes accept human access tokens and require `store.backoffice.read` or `store.backoffice.manage`. The `/references/stores/resolve` intent accepts service tokens only. Authentication claims are the enterprise authority; payload/query values may never override them.
 
 Human username/password login remains a Profile concern. Module-to-module authentication must use the existing internal token contract; Store does not create another authentication path.
 
@@ -53,9 +61,9 @@ Human username/password login remains a Profile concern. Module-to-module authen
 
 Composite indexes scope Store codes by enterprise and assignments by enterprise plus Store/Warehouse. Consumers should query with enterprise and business keys, use bounded limits, and avoid scanning all assignments. Foundation errors use `ERR_STORE_*` codes. Do not log authentication tokens or secret external credentials; `externalReferences` is for non-secret identifiers only.
 
-Assignment creation supports both topologies. When Inventory is co-hosted, Store uses the generated Inventory service directly. When Inventory is separately hosted, Store uses Nodics module communication and the Inventory-owned service-token-only reference intent route. The remote request carries the tenant-scoped internal bearer token and authenticated enterprise header, applies configured timeout/retry limits, and accepts only the safe Inventory projection. A failed validation is safe to retry because the lookup is read-only and no association persists before the pre-save interceptor succeeds.
+Warehouse validation supports both topologies. Co-hosted modules use the generated Inventory service locally. Separately hosted modules use Nodics module communication and Inventory's service-token-only reference route. Remote requests carry a tenant-scoped internal bearer token and authenticated enterprise header, use configured timeout/retry limits, and accept bounded projections. No association persists before pre-save validation succeeds.
 
-Configure the target module, API version/path, timeout, maximum attempts, and local preference through `store.warehouseReference` in layered `properties.js`. Tokens and endpoint secrets do not belong in this configuration; Nodics supplies its runtime internal token and resolves the endpoint through `servers` configuration.
+Configure Inventory through `store.warehouseReference`, management limits through `store.management`, and Store reference policy through `store.referenceLookup`. Tokens and endpoint secrets do not belong there; Nodics supplies runtime internal tokens and resolves endpoints through `servers` configuration.
 
 Back up Store and assignment collections with the tenant database. Restore both while preserving derived codes and references. Restore Inventory consistently before revalidating assignments.
 
@@ -64,7 +72,7 @@ Back up Store and assignment collections with the tenant database. Restore both 
 - Enterprise context required: authenticate with an enterprise-bound principal; do not add enterprise ownership only to the payload.
 - Warehouse capability required or warehouse missing: start/configure Inventory and confirm the Warehouse exists in the same tenant and enterprise.
 - Remote lookup unavailable: verify `servers.inventory`, Inventory routing, the internal token, enterprise header, network path, and timeout policy. Never bypass validation or copy Warehouse state into Store.
-- Store cannot retire: list non-retired assignments, retire them, then retry.
+- Store cannot retire: list non-retired Warehouse assignments, retire them, then retry. Storefront references should be handled by the Storefront lifecycle before a Store is retired.
 - Classification rejected: inspect the effective layered Store configuration and add the classification through a later module with tests.
 - Identity immutable: create a replacement record and retire the old record; do not rename identity fields in place.
 
@@ -75,6 +83,7 @@ Run focused tests first:
 ```bash
 node gComm/store/test/storeFoundationSchemaContract.test.js
 node gComm/store/test/storeFoundationService.test.js
+node gComm/store/test/storeManagementContract.test.js
 ```
 
 Then regenerate governed artifacts and run repository gates:
@@ -87,4 +96,4 @@ npm run build
 npm run test:basic
 ```
 
-The tests cover positive creation and association, enterprise isolation, invalid codes, missing warehouses, unsupported purposes, priority boundaries, lifecycle rejection, immutable identity, safe retirement, hard-delete rejection, private routers, schema contracts, and layered classification customization.
+The tests cover positive creation and associations, multi-Store Site binding, enterprise isolation, human/service auth boundaries, bounded projections, invalid codes/lists, missing references, duplicate Site ownership, priority/lifecycle rejection, immutable identity, safe retirement, hard-delete rejection, private generated routers, explicit intent routes, local/remote transport, and layered customization.

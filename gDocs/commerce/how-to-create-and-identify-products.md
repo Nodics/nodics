@@ -168,9 +168,11 @@ references from Pricing, Inventory, orders, and integrations.
 - **Internal reference rejected:** human sessions cannot call module-to-module
   Product lookup; that operation requires a service identity.
 
-Large-Catalog migration utilities and production capacity certification remain
-future release-readiness work. Product data, the active release pointer, and
-accepted manifest remain authoritative over cache and search.
+Dedicated large-Catalog migration utilities and deployment-specific capacity
+certification are outside the implemented Product scope. Product data, the
+active release pointer, and accepted manifest remain authoritative over cache
+and search. Operators should validate representative production volume using
+their selected database, network, cache, and search providers.
 
 Developers and operators can find the complete implemented contract in the
 [Product module guide](../../gComm/product/README.md).

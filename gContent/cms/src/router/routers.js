@@ -57,6 +57,16 @@ module.exports = {
             }
         }
     },
+    cmsReference: {
+        resolveSite: {
+            secured: true, authTokenTypes: ['service'], accessGroups: ['userGroup'],
+            permissionConfig: 'authSecurity.internalToken.routePermission', apiExposure: 'moduleInternal',
+            key: '/references/sites/resolve', method: 'POST', controller: 'DefaultCmsSiteReferenceController', operation: 'resolve',
+            requestBody: { required: true, content: { 'application/json': { schema: { type: 'object', additionalProperties: false,
+                required: ['cmsSiteCode'], properties: { cmsSiteCode: { type: 'string', minLength: 1, maxLength: 128 } } } } } },
+            responses: { '200': { description: 'Bounded active CMS Site reference projection' } }
+        }
+    },
     cmsPublicationTarget: {
         deployPublication: {
             secured: true, authTokenTypes: ['service'], accessGroups: ['userGroup'], permissionConfig: 'authSecurity.internalToken.routePermission',

@@ -9,7 +9,7 @@
 | Module | `store` |
 | Path | `gComm/store` |
 | Kind | `capability` |
-| Runtime | `none` |
+| Runtime | `router` |
 | Index | `40.4` |
 | Version | `0.0.1` |
 | Description | Enterprise-scoped retail and digital store foundation for Nodics commerce applications. |
@@ -19,6 +19,8 @@
 - `config`
 - `src/schemas`
 - `src/router`
+- `src/controller`
+- `src/facade`
 - `src/service`
 - `src/pipelines`
 - `src/interceptors`
@@ -31,10 +33,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 15 |
-| Test files | 5 |
+| Source files | 20 |
+| Test files | 6 |
 | Data files | 0 |
-| All module-owned files | 26 |
+| All module-owned files | 32 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -44,6 +46,8 @@
 - `configuration`
 - `schema`
 - `router`
+- `controller`
+- `facade`
 - `service`
 - `pipeline`
 - `interceptor`
@@ -65,7 +69,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 19 |
+| Documented | 25 |
 | Partially documented | 0 |
 | Undocumented | 3 |
 | Inventory only | 4 |
@@ -96,23 +100,29 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/store/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/store/nodics.js` | `module` | `documented` | 2/2 | Generated Nodics lifecycle entrypoint for store. |  |
 | `gComm/store/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gComm/store/src/controller/defaultStoreManagementController.js` | `src` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
+| `gComm/store/src/controller/defaultStoreReferenceController.js` | `src` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gComm/store/src/event/listeners.js` | `src` | `documented` | 0/0 | Event listener registry for this boundary. |  |
+| `gComm/store/src/facade/defaultStoreReferenceFacade.js` | `src` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gComm/store/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Interceptor definition registry for this boundary. |  |
 | `gComm/store/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Pipeline definition registry for this boundary. |  |
 | `gComm/store/src/router/appConfig.js` | `src` | `documented` | 0/0 | Router application configuration registry for this boundary. |  |
-| `gComm/store/src/router/routers.js` | `src` | `documented` | 0/0 | Router definition registry for this boundary. |  |
+| `gComm/store/src/router/routers.js` | `src` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gComm/store/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Schema definition registry for this boundary. |  |
 | `gComm/store/src/search/indexes.js` | `src` | `documented` | 0/0 | Search index definition registry for this boundary. |  |
 | `gComm/store/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Empty module-creation placeholder that demonstrates the service lifecycle shape until concrete services are added. |  |
 | `gComm/store/src/service/foundation/defaultStoreEnterpriseScopeService.js` | `src` | `documented` | 10/10 | Resolves authenticated enterprise ownership and scopes Store persistence identities and queries. |  |
 | `gComm/store/src/service/foundation/defaultStoreFoundationService.js` | `src` | `documented` | 11/11 | Enforces Store identity, configured classification, lifecycle, effective dates, and safe retirement. |  |
 | `gComm/store/src/service/foundation/defaultStoreWarehouseAssignmentFoundationService.js` | `src` | `documented` | 12/12 | Validates enterprise-safe Store-to-Inventory warehouse associations without owning warehouse state. |  |
+| `gComm/store/src/service/management/defaultStoreManagementService.js` | `src` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
+| `gComm/store/src/service/reference/defaultStoreReferenceService.js` | `src` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gComm/store/src/service/reference/defaultStoreWarehouseReferenceProviderService.js` | `src` | `documented` | 7/7 | Resolves Inventory-owned Warehouse references locally when co-hosted or through secured Nodics module communication when remote. |  |
 | `gComm/store/src/utils/enums.js` | `src` | `documented` | 0/0 | Enum definition registry for this boundary. |  |
 | `gComm/store/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Defines Store foundation validation, reference, identity, lifecycle, and retirement errors. |  |
 | `gComm/store/src/utils/utils.js` | `src` | `documented` | 0/0 | Utility function registry for this boundary. |  |
 | `gComm/store/test/storeFoundationSchemaContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gComm/store/test/storeFoundationService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gComm/store/test/storeManagementContract.test.js` | `test` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gComm/store/test/storeWarehouseReferenceProvider.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 
 ## Extension Contract

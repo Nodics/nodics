@@ -4,4 +4,5 @@ Preserve canonical decimal strings, rational factors, dimension-vector compatibi
 
 - [Foundation contract](contracts/units-foundation-contract.md)
 - [Regional land customization](examples/add-regional-land-unit.md)
+- [Co-hosted conversion consumption](examples/use-cohosted-conversion.md)
 - [Modular conversion consumption](examples/use-modular-conversion.md)

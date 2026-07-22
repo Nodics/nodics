@@ -163,6 +163,10 @@ module.exports = {
             'pricing.backoffice.manage',
             'product.backoffice.read',
             'product.backoffice.manage'
+            ,'store.backoffice.read'
+            ,'store.backoffice.manage'
+            ,'storefront.backoffice.read'
+            ,'storefront.backoffice.manage'
             ,'product.online.read'
             ,'product.operations.read'
             ,'product.operations.manage'

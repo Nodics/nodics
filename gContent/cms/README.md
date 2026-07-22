@@ -18,6 +18,13 @@ The default UI-composition identifiers are deliberately CMS-generic. Consumer
 or project modules contribute their own site, catalog, page, route, template,
 and content data instead of embedding application identity in reusable CMS.
 
+CMS also exposes `POST /references/sites/resolve` as a service-token-only,
+bounded Site reference intent. Store uses this contract when it creates a
+Store-to-Site binding in a modular deployment; co-hosted deployments use the
+same CMS authority through the generated Site service. The projection contains
+only Site code, name, and catalog code. Human login and generic CMS schema
+routes are not an alternative module-authentication path.
+
 ## CMS Capability Model
 
 CMS owns reusable content structures such as sites, pages, components,
@@ -120,7 +127,8 @@ CMS framework behavior.
 
 ## Focused Tests
 
-Run `node gContent/cms/test/cmsContentDeliveryContract.test.js` and
+Run `node gContent/cms/test/cmsContentDeliveryContract.test.js`,
+`node gContent/cms/test/cmsSiteReferenceContract.test.js`, and
 `node gContent/cms/test/cmsPublicationManifestContract.test.js` before broader
 generated and integration suites. CMS contract upgrades use secured
 `/migration/preview`, `/migration/apply`, and `/migration/rollback` operations.

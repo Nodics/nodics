@@ -29,6 +29,7 @@ module.exports = {
         }
     },
     cms: {
+        referenceLookup: { requireServiceToken: true, maximumResultCount: 1 },
         delivery: {
             defaultLocale: 'default',
             defaultChannel: 'web',

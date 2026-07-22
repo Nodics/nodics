@@ -6,6 +6,11 @@ Units supplies exact numbers, dimensions, UOM definitions, conversion factors, r
 
 A polygon-calculated area, surveyed area, registered area, and operator-entered area may differ. Keep each value with its evidence/source and use Units only to normalize or compare it.
 
+Units is normally co-hosted with its consuming business modules. Its separate
+service route is an optional transport choice, not a requirement that every
+Nodics module run on a different server. See
+[Units Deployment And Integration](units-deployment-and-integration.md).
+
 ## Exact Value Contract
 
 Callers provide canonical decimal strings such as `12`, `12.500`, or `-0.25`. Numbers such as JavaScript `0.1` are rejected because they may already contain binary floating-point error. Conversion factors use positive integer `numerator` and `denominator`. The exact service multiplies through BigInt and applies an explicit target scale and rounding mode.
@@ -34,6 +39,11 @@ implemented module-internal route
 canonical quantity, source Unit, target Unit, target scale, optional rounding,
 geography, and effective time. It requires a Nodics service token and returns
 an allow-listed exact result plus selected Unit and conversion evidence.
+
+The implemented module does not expose a human master-data administration API.
+Projects currently contribute governed definitions through existing Nodics
+initialization/import mechanisms or add a narrowly secured later-layer intent.
+Do not enable generic generated CRUD merely to obtain an administration screen.
 
 The same `DefaultUnitsReferenceService.convertInternal` contract is used
 when caller and Units are co-hosted. Separately deployed callers use the

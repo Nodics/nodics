@@ -34,10 +34,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 28 |
-| Test files | 13 |
+| Source files | 29 |
+| Test files | 14 |
 | Data files | 6 |
-| All module-owned files | 47 |
+| All module-owned files | 49 |
 | Local schema definitions | 8 |
 
 ## Ownership And Dependencies
@@ -71,7 +71,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 2 |
+| Documented | 4 |
 | Partially documented | 38 |
 | Undocumented | 3 |
 | Inventory only | 4 |
@@ -131,6 +131,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/pricing/src/service/publication/defaultPricingPublicationVersionProviderService.js` | `src` | `partially-documented` | 9/9 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/src/service/publication/defaultPricingPublicationWorkflowService.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/src/service/reference/defaultPricingReferenceService.js` | `src` | `partially-documented` | 3/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/pricing/src/service/reference/defaultPricingStoreReferenceProviderService.js` | `src` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gComm/pricing/src/service/reference/defaultPricingUnitsReferenceProviderService.js` | `src` | `partially-documented` | 5/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/src/service/resolution/defaultPriceResolutionService.js` | `src` | `partially-documented` | 16/16 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/src/utils/enums.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
@@ -141,6 +142,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/pricing/test/pricingManagementContract.test.js` | `test` | `documented` | 0/0 | Verifies human-only Pricing intents, permissions, bounds, enterprise isolation, projections, retirement, overlap preview, and simulation. |  |
 | `gComm/pricing/test/pricingPublicationContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gComm/pricing/test/pricingPublicationWorkflowContract.test.js` | `test` | `documented` | 0/0 | Verifies manual and automatic Pricing workflow submission, idempotency, associated items, approval evidence, nPublish delegation, and runtime separation. |  |
+| `gComm/pricing/test/pricingStoreReferenceProviderContract.test.js` | `test` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 
 ## Extension Contract
 

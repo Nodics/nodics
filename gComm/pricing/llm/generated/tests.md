@@ -9,6 +9,7 @@
 - `gComm/pricing/test/pricingManagementContract.test.js`
 - `gComm/pricing/test/pricingPublicationContract.test.js`
 - `gComm/pricing/test/pricingPublicationWorkflowContract.test.js`
+- `gComm/pricing/test/pricingStoreReferenceProviderContract.test.js`
 
 ## Generated Tests
 

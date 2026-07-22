@@ -23,3 +23,8 @@ Configure module name, API path, timeout, attempts, and local preference through
 the consuming module's `properties.js`. Do not copy Unit definitions, invoke
 generated Units CRUD remotely, accept JavaScript numbers, or implement a
 second conversion table in the consuming module.
+
+Use remote deployment only when independently deployed consumers require a
+central authority. A module does not need its own server merely because Nodics
+can deploy it independently. For ordinary latency-sensitive compositions,
+prefer the co-hosted provider path.

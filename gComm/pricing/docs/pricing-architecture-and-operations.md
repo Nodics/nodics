@@ -14,7 +14,7 @@ Pricing does not calculate tax, evaluate promotions, convert currency by default
 
 ## Ownership and integration
 
-Pricing owns `priceList`, `priceListAssignment`, `priceGroup`, `priceGroupMember`, and `price`. Store supplies Store identity, Profile supplies enterprise/customer identity, future Product supplies item identity, and Units supplies Unit definitions and conversions. Configured reference providers validate those references without copying master data.
+Pricing owns `priceList`, `priceListAssignment`, `priceGroup`, `priceGroupMember`, and `price`. Store supplies Store identity, Profile supplies enterprise/customer identity, Product supplies item identity, and Units supplies Unit definitions and conversions. Configured reference providers validate those references without copying master data. The implemented Store provider uses the local generated Store service when co-hosted or Store's service-token-only `/references/stores/resolve` intent when modular.
 
 Workflow governs manual and automatic approval actions. `nPublish` owns publication state, audit, activation, rollback, and provider selection. `DefaultCacheService` owns provider-neutral cache access. Human BackOffice login remains separate from service tokens used by resolution and Staged-to-Online transport. BackOffice discovers `pricing-management` from self-registered module metadata, but Pricing remains the API and data authority.
 

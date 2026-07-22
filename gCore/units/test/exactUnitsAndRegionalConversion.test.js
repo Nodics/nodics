@@ -9,7 +9,13 @@
 
  */
 
-/** Validates exact decimal arithmetic, rounding, compound dimensions, and geographically specific land conversion selection. */
+/**
+ * @module units/test/exactUnitsAndRegionalConversion
+ * @description Validates exact decimal arithmetic, rounding, compound dimensions, and geographically specific land conversion selection.
+ * @layer test
+ * @owner units
+ * @override Projects may add scoped conversions while preserving exact arithmetic, dimensional compatibility, and ambiguity rejection.
+ */
 const assert = require('assert');
 const properties = require('../config/properties').units;
 class NodicsError extends Error { constructor(code, message) { super(message || code); this.code = code; } }

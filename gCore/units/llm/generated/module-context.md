@@ -69,9 +69,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 21 |
-| Partially documented | 1 |
-| Undocumented | 3 |
+| Documented | 25 |
+| Partially documented | 0 |
+| Undocumented | 0 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -117,10 +117,10 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/units/src/utils/enums.js` | `src` | `documented` | 0/0 | Enum definition registry for this boundary. |  |
 | `gCore/units/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Status and error definition registry for this boundary. |  |
 | `gCore/units/src/utils/utils.js` | `src` | `documented` | 0/0 | Utility function registry for this boundary. |  |
-| `gCore/units/test/exactUnitsAndRegionalConversion.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/units/test/unitsFoundationContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/units/test/unitsMultiHopConversionContract.test.js` | `test` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
-| `gCore/units/test/unitsReferenceConversionContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gCore/units/test/exactUnitsAndRegionalConversion.test.js` | `test` | `documented` | 0/0 | Validates exact decimal arithmetic, rounding, compound dimensions, and geographically specific land conversion selection. |  |
+| `gCore/units/test/unitsFoundationContract.test.js` | `test` | `documented` | 0/0 | Validates Units schemas, persistence boundaries, enterprise scope, land units, lifecycle, and configuration customization. |  |
+| `gCore/units/test/unitsMultiHopConversionContract.test.js` | `test` | `documented` | 0/0 | Validates optional bounded exact graph conversion, reverse edges, and ambiguous shortest-path rejection. |  |
+| `gCore/units/test/unitsReferenceConversionContract.test.js` | `test` | `documented` | 0/0 | Validates secure exact conversion routing, scope selection, direct and reverse factors, dimensions, and fail-closed boundaries. |  |
 
 ## Extension Contract
 

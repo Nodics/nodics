@@ -1,0 +1,3 @@
+# Storefront Agents
+
+Storefront owns exact-hostname bootstrap resolution and customer-experience composition. CMS owns Sites/content, Store owns Store records, and commerce modules own their domain data. Reuse their reference contracts; never introduce a parallel authority. Human management uses access tokens, public resolution accepts no caller-supplied hostname override, and modular calls use internal service tokens. Keep application settings in `properties.js`, leave `defaultSampleService.js` untouched, and provide beginner documentation plus positive, negative, boundary, contract, integration, and regression tests for every change.

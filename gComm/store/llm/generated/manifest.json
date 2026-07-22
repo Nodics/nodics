@@ -4,7 +4,7 @@
   "path": "gComm/store",
   "kind": "capability",
   "runtime": {
-    "router": false,
+    "router": true,
     "publish": false,
     "web": false
   },
@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Enterprise-scoped retail and digital store foundation for Nodics commerce applications."
   },
-  "sourceFiles": 15,
-  "testFiles": 5,
+  "sourceFiles": 20,
+  "testFiles": 6,
   "dataFiles": 0,
-  "ownedFiles": 26,
-  "sourceFingerprint": "312e2e3aa0a4ef5bea9b1952b8bef13cb17b0d92d8287530c5cb87daa12910cd",
+  "ownedFiles": 32,
+  "sourceFingerprint": "99e685e6110d850cff62b278ab9ffa2dc9dc4165a7d32206be10f8cc7716c4a5",
   "documentation": {
-    "documented": 19,
+    "documented": 25,
     "partially-documented": 0,
     "undocumented": 3,
     "inventory-only": 4

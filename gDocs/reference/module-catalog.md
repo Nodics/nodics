@@ -42,6 +42,7 @@ Use the [Module Documentation Index](module-documentation-index.md) when you kno
 ## gExp
 
 - [gExp](../../gExp/README.md) — `group`; `gExp`
+- [storefront](../../gExp/storefront/README.md) — `capability`; `gExp/storefront`
 - [backoffice](../../gExp/backoffice/README.md) — `capability`; `gExp/backoffice`
 ## gFramework
 

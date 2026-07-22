@@ -17,6 +17,15 @@
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {
+    backofficeCapabilities: {
+        store: {
+            enabled: true, capabilityId: 'store-management', displayName: 'Stores', category: 'commerce', icon: 'store',
+            contractVersion: 1, minimumClientContractVersion: 1, roles: ['FUNCTIONAL_CAPABILITY_PROVIDER'],
+            discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
+            requiredPermissions: ['store.backoffice.read'],
+            navigation: [{ id: 'stores', label: 'Stores', route: '/commerce/stores', order: 410 }]
+        }
+    },
     store: {
         enterpriseScope: { required: true },
         identity: { separator: '::', maxCodeLength: 128, codePattern: '^[A-Za-z0-9][A-Za-z0-9._-]*$' },
@@ -41,6 +50,12 @@ module.exports = {
             requestTimeoutMs: 2000,
             maximumAttempts: 2,
             preferLocal: true
-        }
+        },
+        management: {
+            maximumResultCount: 500,
+            maximumPayloadBytes: 262144,
+            allowedResources: ['stores', 'warehouseAssignments']
+        },
+        referenceLookup: { requireServiceToken: true, maximumResultCount: 1 }
     }
 };

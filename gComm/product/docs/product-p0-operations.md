@@ -321,4 +321,6 @@ Run the focused tests listed in the module README, including
 `productPublicationContract.test.js`, and
 `productOnlineDeliveryAndProjectionContract.test.js`. Then regenerate schema
 artifacts and run generated, configuration, documentation, and basic regression tests at the
-integration boundary.
+integration boundary. The complete positive, negative, boundary, security,
+integration, recovery, and regression mapping is maintained in
+`product-release-readiness.md`.

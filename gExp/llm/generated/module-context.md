@@ -38,6 +38,7 @@
 
 **Required modules**
 
+- `storefront`
 - `backoffice`
 
 **Contained modules**

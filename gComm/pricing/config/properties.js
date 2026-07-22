@@ -44,9 +44,10 @@ module.exports = {
         },
         cache: { enabled: true, moduleName: 'pricing', channelName: 'resolution', keyPrefix: 'priceResolution:', ttlSeconds: 30, maximumKeyLength: 256, cacheExplicitEvaluationTime: false },
         references: {
-            providers: { store: null, customer: null, customerSegment: null, item: null, unit: 'DefaultPricingUnitsReferenceProviderService' },
+            providers: { store: 'DefaultPricingStoreReferenceProviderService', customer: null, customerSegment: null, item: null, unit: 'DefaultPricingUnitsReferenceProviderService' },
             requireValidationWhenConfigured: true
         },
+        storeReference: { moduleName: 'store', apiVersion: 'v0', apiName: '/references/stores/resolve', requestTimeoutMs: 2000, maximumAttempts: 2, preferLocal: true },
         unitsReference: { moduleName: 'units', apiVersion: 'v0', apiName: '/references/units/convert', requestTimeoutMs: 2000, maximumAttempts: 2, preferLocal: true },
         currencyConversion: { enabled: false, provider: null },
         management: {

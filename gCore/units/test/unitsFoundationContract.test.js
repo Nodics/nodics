@@ -9,7 +9,13 @@
 
  */
 
-/** Validates Units schemas, persistence boundaries, enterprise scope, land units, and configuration customization. */
+/**
+ * @module units/test/unitsFoundationContract
+ * @description Validates Units schemas, persistence boundaries, enterprise scope, land units, lifecycle, and configuration customization.
+ * @layer test
+ * @owner units
+ * @override Projects may extend definitions and policies through later layers without exposing generated CRUD or copying Units authority.
+ */
 const assert = require('assert');
 const properties = require('../config/properties').units;
 const schemas = require('../src/schemas/schemas').units;

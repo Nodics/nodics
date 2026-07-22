@@ -9,7 +9,13 @@
 
  */
 
-/** Validates secure exact conversion routing, scope selection, direct/reverse factors, dimensions, and fail-closed boundaries. */
+/**
+ * @module units/test/unitsReferenceConversionContract
+ * @description Validates secure exact conversion routing, scope selection, direct and reverse factors, dimensions, and fail-closed boundaries.
+ * @layer test
+ * @owner units
+ * @override Consumers may replace local or remote transport while retaining one service-token-only Units conversion contract.
+ */
 const assert = require('assert');
 const route = require('../src/router/routers').units.referenceConversion.convert;
 const unitsPolicy = require('../config/properties').units;

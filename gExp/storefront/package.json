@@ -1,0 +1,35 @@
+{
+    "name": "storefront",
+    "index": "60.10",
+    "description": "Backend customer-facing Storefront context, hostname resolution, and owning-module composition capability.",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL-3.0-or-later",
+    "nodics": {
+        "kind": "capability",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "configuration",
+            "schema",
+            "router",
+            "controller",
+            "service",
+            "pipeline",
+            "interceptor",
+            "event",
+            "search",
+            "utility",
+            "test",
+            "llm"
+        ],
+        "runtime": {
+            "router": true,
+            "publish": false,
+            "web": false
+        }
+    },
+    "scripts": {},
+    "dependencies": {}
+}

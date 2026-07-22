@@ -6,6 +6,7 @@
 
 - `gComm/store/test/storeFoundationSchemaContract.test.js`
 - `gComm/store/test/storeFoundationService.test.js`
+- `gComm/store/test/storeManagementContract.test.js`
 - `gComm/store/test/storeWarehouseReferenceProvider.test.js`
 
 ## Generated Tests

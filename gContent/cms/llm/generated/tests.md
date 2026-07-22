@@ -7,6 +7,7 @@
 - `gContent/cms/test/cmsContentDeliveryContract.test.js`
 - `gContent/cms/test/cmsMigrationContract.test.js`
 - `gContent/cms/test/cmsPublicationManifestContract.test.js`
+- `gContent/cms/test/cmsSiteReferenceContract.test.js`
 - `gContent/cms/test/common/commonTest.js`
 - `gContent/cms/test/env-local/envTest.js`
 

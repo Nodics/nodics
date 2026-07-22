@@ -4,7 +4,7 @@ Pricing is Nodics' enterprise-scoped authority for reusable Price Lists, context
 
 A Price List can be assigned to an enterprise, country, site, store, channel, customer segment, or customer without copying its Price records. A Price can target one item or Item Price Group, optionally specialize for a customer or Customer Price Group, define an exact currency amount, unit, unit factor, quantity tier, tax declaration, channel, and validity window.
 
-Pricing does not own stores, customers, products/items, Units, tax calculation, promotions, exchange rates, workflow, publishing, or cache providers. It composes those authorities through stable references and configured providers.
+Pricing does not own Stores, customers, products/items, Units, tax calculation, promotions, exchange rates, workflow, publishing, or cache providers. It composes those authorities through stable references and configured providers. `STORE` assignments now use the Store-owned reference provider locally when co-hosted or through Store's service-token reference intent when separately deployed.
 
 Business changes are created in a versioned Staged runtime and released through Workflow and `nPublish` to a separate non-versioned Online runtime. A separate BackOffice client discovers Pricing through the BackOffice module registry and calls Pricing's human-only management and preview intent APIs directly. Online callers use the service-token-only `POST /references/prices/resolve` intent API. Generated persistence routers are disabled.
 

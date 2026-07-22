@@ -118,10 +118,13 @@ node gComm/product/test/productProviderAndOverrideContract.test.js
 ```
 
 See [Product foundation, Category, Classification, and Variant operations](docs/product-p0-operations.md)
-for business and developer procedures.
+for business and developer procedures and
+[Product release-readiness evidence](docs/product-release-readiness.md) for the
+P4 validation matrix.
 
 ## Not yet implemented
 
-Large-Catalog migration/import tooling, production capacity evidence, and
-backup/restore exercises remain release-readiness work. Binary media, Pricing,
+Dedicated large-Catalog migration/import tooling and deployment-specific
+capacity certification are outside the implemented Product scope. Use existing
+Nodics import/export and database backup authorities; binary media, Pricing,
 and Inventory remain separate authorities.

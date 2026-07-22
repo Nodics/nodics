@@ -2,6 +2,7 @@
     "name": "gExp",
     "index": "60.99",
     "requiredModules": [
+        "storefront",
         "backoffice"
     ],
     "description": "Backend experience capability group for administration, customer, partner, storefront, mobile, and future client-facing API experiences.",

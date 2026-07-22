@@ -32,10 +32,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 25 |
-| Test files | 40 |
+| Source files | 28 |
+| Test files | 41 |
 | Data files | 24 |
-| All module-owned files | 62 |
+| All module-owned files | 66 |
 | Local schema definitions | 14 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 53 |
+| Documented | 57 |
 | Partially documented | 2 |
 | Undocumented | 3 |
 | Inventory only | 4 |
@@ -125,12 +125,15 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gContent/cms/src/controller/defaultCmsDeliveryController.js` | `src` | `documented` | 3/3 | HTTP boundary for client-safe CMS page delivery. |  |
 | `gContent/cms/src/controller/defaultCmsMigrationController.js` | `src` | `documented` | 4/4 | Maps permissioned CMS migration requests to the layered migration service. |  |
 | `gContent/cms/src/controller/defaultCmsPublicationTargetController.js` | `src` | `documented` | 4/4 | Maps internal authenticated Staged-to-Online release operations to the target-local CMS deployment service. |  |
+| `gContent/cms/src/controller/defaultCmsSiteReferenceController.js` | `src` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gContent/cms/src/facade/defaultCmsDeliveryFacade.js` | `src` | `documented` | 3/3 | Replaceable orchestration boundary for resolved CMS delivery. |  |
+| `gContent/cms/src/facade/defaultCmsSiteReferenceFacade.js` | `src` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gContent/cms/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Schema interceptor registrations for CMS component details, renderer enrichment, and content relationship normalization. |  |
 | `gContent/cms/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Reserved CMS pipeline contribution for content-management workflows. |  |
 | `gContent/cms/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved CMS router application configuration contribution. |  |
 | `gContent/cms/src/router/routers.js` | `src` | `documented` | 0/0 | Reserved CMS route contribution for custom CMS APIs beyond generated schema routes. |  |
 | `gContent/cms/src/schemas/schemas.js` | `src` | `documented` | 0/0 | CMS schema contribution defining type codes, renderer mappings, sites, pages, components, and component-detail relationships. |  |
+| `gContent/cms/src/service/defaultCmsSiteReferenceService.js` | `src` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gContent/cms/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements cms default sample service business behavior and extension logic. |  |
 | `gContent/cms/src/service/delivery/defaultCmsDeliveryCacheInvalidationService.js` | `src` | `documented` | 3/3 | Invalidates tenant-scoped resolved delivery responses through the authoritative nCache contract after CMS mutations. |  |
 | `gContent/cms/src/service/delivery/defaultCmsDeliveryService.js` | `src` | `documented` | 14/14 | Resolves a bounded, tenant-aware, client-safe CMS page graph using generated CMS schema services. |  |
@@ -150,6 +153,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gContent/cms/test/cmsContentDeliveryContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gContent/cms/test/cmsMigrationContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gContent/cms/test/cmsPublicationManifestContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gContent/cms/test/cmsSiteReferenceContract.test.js` | `test` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gContent/cms/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Reserved common CMS test contribution showing the module-owned test-suite shape for shared CMS behavior. | add JSDoc for 7 exported method(s) |
 | `gContent/cms/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Reserved local-environment CMS test contribution showing how environment-specific test suites can be attached. | add JSDoc for 7 exported method(s) |
 
