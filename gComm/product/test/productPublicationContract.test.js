@@ -10,7 +10,7 @@
  */
 
 /** @module product/test/ProductPublicationContract @description Proves exact-version Product graph freezing, manifest integrity, Staged/Online separation, internal-token transport, Workflow delegation, and target idempotency boundaries. @layer test @owner product */
-const assert = require('assert'), configuration = require('../config/properties'), stagedSchemas = require('../../../startio/envs/startioLocal/startioLocalCmsServer/src/schemas/schemas').product, onlineSchemas = require('../../../startio/envs/startioLocal/startioLocalCmsOnlineServer/src/schemas/schemas').product;
+const assert = require('assert'), configuration = require('../config/properties'), stagedSchemas = require('../../../startio/envs/startioLocal/cmsStagedServer/src/schemas/schemas').product, onlineSchemas = require('../../../startio/envs/startioLocal/cmsOnlineServer/src/schemas/schemas').product;
 class NodicsError extends Error { constructor(code, message) { super(message || code); this.code = code; } }
 let publishEnabled = true; global.CLASSES = { NodicsError }; global.CONFIG = { get: key => key === 'publishEnabled' ? publishEnabled : configuration[key] }; global.SERVICE = {};
 let root = { code: 'entA::item::retail::PRODUCT::phone', enterpriseCode: 'entA', catalogCode: 'retail', itemType: 'PRODUCT', itemCode: 'phone', status: 'ACTIVE', active: true, versionId: 3 }, records = { productItem: [root] };

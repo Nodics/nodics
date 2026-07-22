@@ -97,10 +97,14 @@ modules.forEach(moduleObject => {
     }
 
     if (nodics.runtimeModule !== false && nodics.kind !== 'template') {
-        assert(!runtimeNames.has(packageJson.name),
-            'Duplicate runtime module name `' + packageJson.name + '` in ' +
-            runtimeNames.get(packageJson.name) + ' and ' + moduleObject.relativePath);
-        runtimeNames.set(packageJson.name, moduleObject.relativePath);
+        let existing = runtimeNames.get(packageJson.name) || [];
+        if (existing.length > 0) {
+            assert(['server', 'node'].includes(nodics.kind) && existing.every(item => item.kind === nodics.kind),
+            'Duplicate runtime module name `' + packageJson.name + '` requires same-kind server/node packages: ' +
+                existing.map(item => item.path).concat([moduleObject.relativePath]).join(', '));
+        }
+        existing.push({ path: moduleObject.relativePath, kind: nodics.kind });
+        runtimeNames.set(packageJson.name, existing);
     }
 
     validateLoaderManagedSource(moduleObject);
@@ -143,7 +147,7 @@ assert.strictEqual(inferKind(nPrefixedCapability), 'capability',
     'Metadata normalization kind must not infer group behavior from an n-prefixed name');
 
 const runtimeBootstrapSource = fs.readFileSync(path.join(__dirname, '../../nConfig/bin/nodics.js'), 'utf8');
-assert(!runtimeBootstrapSource.includes("options.defaultServer || 'startioLocalServer'"),
+assert(!runtimeBootstrapSource.includes("options.defaultServer || 'monoServer'"),
     'Framework bootstrap must not hardcode a project server');
 
 const nToolingSrcPath = path.join(process.cwd(), 'gFramework', 'nTooling', 'src');

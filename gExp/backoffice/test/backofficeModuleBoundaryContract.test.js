@@ -22,7 +22,7 @@ const path = require('path');
 const groupMetadata = require(path.resolve(__dirname, '../../package.json'));
 const moduleMetadata = require(path.resolve(__dirname, '../package.json'));
 const consolidatedProperties = require(path.resolve(__dirname,
-    '../../../startio/envs/startioLocal/startioLocalServer/config/properties.js'));
+    '../../../startio/envs/startioLocal/monoServer/config/properties.js'));
 
 assert.strictEqual(groupMetadata.name, 'gExp');
 assert.strictEqual(groupMetadata.nodics.kind, 'group');

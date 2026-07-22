@@ -29,16 +29,21 @@ const { parseOutput, createReport, parseArgs, resolveServerReportDir } = require
     );
 });
 
-let serverReportDir = resolveServerReportDir('startioLocalServer');
+let serverReportDir = resolveServerReportDir('monoServer');
 assert.strictEqual(serverReportDir, path.join(
     process.cwd(),
-    'startio/envs/startioLocal/startioLocalServer/generated/test-reports'
+    'startio/envs/startioLocal/monoServer/generated/test-reports'
 ));
-let parsedArgs = parseArgs(['--server=startioLocalServer', '--', 'npm', 'test']);
-assert.strictEqual(parsedArgs.serverName, 'startioLocalServer');
+assert.strictEqual(resolveServerReportDir('monoServer', 'startioDev'), path.join(
+    process.cwd(),
+    'startio/envs/startioDev/monoServer/generated/test-reports'
+));
+let parsedArgs = parseArgs(['--server=monoServer', '--', 'npm', 'test']);
+assert.strictEqual(parsedArgs.environmentName, 'startioLocal');
+assert.strictEqual(parsedArgs.serverName, 'monoServer');
 assert.strictEqual(parsedArgs.reportDir, serverReportDir);
 assert.throws(() => parseArgs([
-    '--server=startioLocalServer',
+    '--server=monoServer',
     '--report-dir=temp/test-reports',
     '--',
     'npm',
@@ -55,9 +60,9 @@ let output = [
     'Generated tests passed: 149',
     'Runtime topology smoke passed',
     'Mode: all',
-    'Consolidated: startioLocalServer:3000',
+    'Consolidated: monoServer:3000',
     'Consolidated communication: http://127.0.0.1:3000/nodics/profile/v0/ping?help -> 200',
-    'Modular: startioLocalProfileServer:3000, startioLocalNemsServer:3020',
+    'Modular: profileServer:3000, nemsServer:3020',
     'Communication: http://127.0.0.1:3020/nodics/nems/v0/ping?help -> 200'
 ].join('\n');
 
@@ -69,8 +74,8 @@ assert(parsed.modules.includes('profile'));
 assert(parsed.modules.includes('nems'));
 assert(parsed.modules.includes('generated'));
 assert.strictEqual(parsed.topology.mode, 'all');
-assert.deepStrictEqual(parsed.topology.consolidated, ['startioLocalServer:3000']);
-assert.deepStrictEqual(parsed.topology.modular, ['startioLocalProfileServer:3000', 'startioLocalNemsServer:3020']);
+assert.deepStrictEqual(parsed.topology.consolidated, ['monoServer:3000']);
+assert.deepStrictEqual(parsed.topology.modular, ['profileServer:3000', 'nemsServer:3020']);
 assert.strictEqual(parsed.topology.communication.length, 2);
 
 let importParsed = parseOutput([
@@ -109,17 +114,17 @@ let report = createReport({
     startedAt: new Date('2026-06-16T00:00:00.000Z'),
     endedAt: new Date('2026-06-16T00:00:05.000Z'),
     env: {
-        SERVER: 'startioLocalServer',
+        SERVER: 'monoServer',
         NODE: '/opt/homebrew/bin/node',
-        NODICS_NODE: 'startioLocalNode0',
+        NODICS_NODE: 'monoNode0',
         NODICS_TEST_TENANT: 'nodicsTest'
     }
 });
 
 assert.strictEqual(report.status, 'PASSED');
 assert.strictEqual(report.durationMs, 5000);
-assert.strictEqual(report.environment.server, 'startioLocalServer');
-assert.strictEqual(report.environment.node, 'startioLocalNode0');
+assert.strictEqual(report.environment.server, 'monoServer');
+assert.strictEqual(report.environment.node, 'monoNode0');
 assert.strictEqual(report.environment.tenant, 'nodicsTest');
 
 console.log('Test suite reporter validated');

@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "monoServer",
+  "path": "startio/envs/startioQA/monoServer",
+  "kind": "server",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "3001.31",
+    "version": "0.0.1",
+    "description": "Startio module for monoServer"
+  },
+  "sourceFiles": 8,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "ownedFiles": 18,
+  "sourceFingerprint": "f293f20f0ce86cb7da3d6dd65f1c8f88e2475db738bf708255a93d959679fe2f",
+  "documentation": {
+    "documented": 12,
+    "partially-documented": 2,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

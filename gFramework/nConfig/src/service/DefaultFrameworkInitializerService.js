@@ -507,10 +507,10 @@ module.exports = {
         if (!runtimeTopology) {
             return;
         }
-        if (!runtimeTopology.consolidatedServer) {
-            this.failConfiguration('test.runtimeTopology.consolidatedServer must be defined');
+        if (!runtimeTopology.monoServer) {
+            this.failConfiguration('test.runtimeTopology.monoServer must be defined');
         }
-        this.validateModuleKind(runtimeTopology.consolidatedServer, 'server', 'test.runtimeTopology.consolidatedServer');
+        this.validateModuleKind(runtimeTopology.monoServer, 'server', 'test.runtimeTopology.monoServer');
         this.validateArrayProperty(runtimeTopology.modularServers, 'test.runtimeTopology.modularServers');
         if (runtimeTopology.modularServers.length === 0) {
             this.failConfiguration('test.runtimeTopology.modularServers must define at least one server');
@@ -892,12 +892,12 @@ module.exports = {
         let moduleIndex = {};
         let indexValue = [];
         _.each(NODICS.getRawModules(), (moduleObject, moduleName) => {
-            if (NODICS.isModuleActive(moduleObject.metaData.name)) {
+            if (NODICS.isModuleActive(moduleObject.metaData.name) && NODICS.getRawModule(moduleObject.metaData.name) === moduleObject) {
                 indexValue.push(moduleObject.index);
                 if (!moduleIndex[moduleObject.index]) {
                     moduleIndex[moduleObject.index] = {
                         index: moduleObject.index,
-                        name: moduleName,
+                        name: moduleObject.name,
                         path: moduleObject.path,
                     };
                 } else {

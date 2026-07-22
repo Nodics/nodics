@@ -63,7 +63,7 @@ module.exports = {
                 'x-enterprise-code': CONFIG.get('defaultAuthDetail').entCode
             };
             if (typeof NODICS !== 'undefined' && NODICS && typeof NODICS.getActiveModules === 'function') {
-                header['x-nodics-runtime-instance'] = [NODICS.getEnvironmentName(), NODICS.getServerName(),
+                header['x-nodics-runtime-instance'] = [NODICS.getSelectedEnvironmentName(), NODICS.getServerName(),
                     NODICS.getNodeName() || 'default', process.pid].join(':');
                 header['x-nodics-modules'] = (NODICS.getActiveModules() || []).join(',');
             }

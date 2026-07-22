@@ -1,0 +1,40 @@
+{
+    "name": "monoNode0",
+    "index": "3001.111",
+    "description": "Startio module for monoNode0",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "monoNode0"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {},
+    "nodics": {
+        "kind": "node",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "configuration",
+            "schema",
+            "router",
+            "service",
+            "pipeline",
+            "interceptor",
+            "utility",
+            "test",
+            "llm"
+        ],
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        }
+    }
+}

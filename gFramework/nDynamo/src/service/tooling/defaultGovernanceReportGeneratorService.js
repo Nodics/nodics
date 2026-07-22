@@ -192,7 +192,7 @@ async function run() {
     let activeOutputModule = getActiveOutputModule();
     let report = {
         generatedAt: new Date().toISOString(),
-        environmentName: NODICS.getEnvironmentName(),
+        environmentName: NODICS.getSelectedEnvironmentName ? NODICS.getSelectedEnvironmentName() : NODICS.getEnvironmentName(),
         serverRootName: NODICS.getServerRootName(),
         serverName: NODICS.getServerName(),
         nodeName: NODICS.getNodeName(),

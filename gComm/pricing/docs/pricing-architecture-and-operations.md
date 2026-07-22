@@ -148,5 +148,5 @@ node gComm/pricing/test/pricingStorefrontResolutionContract.test.js
 node gComm/pricing/test/pricingPublicationContract.test.js
 node gComm/pricing/test/pricingManagementContract.test.js
 node gComm/pricing/test/pricingPublicationWorkflowContract.test.js
-node startio/envs/startioLocal/startioLocalCmsOnlineServer/test/publicationTopologyContract.test.js
+node startio/envs/startioLocal/cmsOnlineServer/test/publicationTopologyContract.test.js
 ```

@@ -1,0 +1,39 @@
+{
+    "name": "deapServer",
+    "index": "3001.25",
+    "description": "Startio module for deapServer",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "deapServer"
+    ],
+    "author": "Himkar Dwivedi",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL License",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "dependencies": {},
+    "nodics": {
+        "kind": "server",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "configuration",
+            "schema",
+            "router",
+            "service",
+            "pipeline",
+            "utility",
+            "test",
+            "llm"
+        ],
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        }
+    }
+}

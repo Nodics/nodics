@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "deapServer",
+  "path": "startio/envs/startioLocal/deapServer",
+  "kind": "server",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "3001.15",
+    "version": "0.0.1",
+    "description": "Startio module for deapServer"
+  },
+  "sourceFiles": 8,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "ownedFiles": 18,
+  "sourceFingerprint": "54dff98b745888acd3e89b0e66a3cd673305d0e3a408005260d0a7866d024093",
+  "documentation": {
+    "documented": 12,
+    "partially-documented": 2,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

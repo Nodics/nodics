@@ -23,14 +23,14 @@ const { spawn } = require('child_process');
 
 const rootPath = path.resolve(process.env.NODICS_HOME || process.cwd());
 
-function loadProjectDefaultServer() {
+function loadProjectDefaults() {
     let envPath = path.join(rootPath, 'env.js');
     if (!fs.existsSync(envPath)) {
-        return undefined;
+        return {};
     }
     delete require.cache[require.resolve(envPath)];
     let projectEnv = require(envPath);
-    return projectEnv && projectEnv.defaultOptions ? projectEnv.defaultOptions.defaultServer : undefined;
+    return projectEnv && projectEnv.defaultOptions ? projectEnv.defaultOptions : {};
 }
 
 function findModulePath(moduleName, currentPath) {
@@ -57,12 +57,21 @@ function findModulePath(moduleName, currentPath) {
     return undefined;
 }
 
-function resolveServerModulePath(serverName) {
-    let selectedServer = serverName || process.env.SERVER || process.env.S || loadProjectDefaultServer();
+function resolveServerModulePath(serverName, environmentName) {
+    let defaults = loadProjectDefaults();
+    let selectedServer = serverName || process.env.SERVER || process.env.S || defaults.defaultServer;
+    let selectedEnvironment = environmentName || process.env.ENV || process.env.E || defaults.defaultEnvironment;
     if (!selectedServer) {
         throw new Error('A server must be selected with --server, SERVER, S, or defaultOptions.defaultServer');
     }
-    let serverPath = findModulePath(selectedServer, rootPath);
+    if (!selectedEnvironment) {
+        throw new Error('An environment must be selected with --environment, ENV, E, or defaultOptions.defaultEnvironment');
+    }
+    let environmentPath = findModulePath(selectedEnvironment, rootPath);
+    if (!environmentPath) {
+        throw new Error('Unable to resolve environment module: ' + selectedEnvironment);
+    }
+    let serverPath = findModulePath(selectedServer, environmentPath);
     if (!serverPath) {
         throw new Error('Unable to resolve server module: ' + selectedServer);
     }
@@ -73,12 +82,12 @@ function resolveServerModulePath(serverName) {
     return serverPath;
 }
 
-function resolveServerReportDir(serverName) {
-    return path.join(resolveServerModulePath(serverName), 'generated', 'test-reports');
+function resolveServerReportDir(serverName, environmentName) {
+    return path.join(resolveServerModulePath(serverName, environmentName), 'generated', 'test-reports');
 }
 
-function assertServerOwnedReportDir(reportDir, serverName) {
-    let serverPath = path.resolve(resolveServerModulePath(serverName));
+function assertServerOwnedReportDir(reportDir, serverName, environmentName) {
+    let serverPath = path.resolve(resolveServerModulePath(serverName, environmentName));
     let resolvedReportDir = path.resolve(reportDir);
     if (resolvedReportDir.indexOf(serverPath + path.sep) !== 0) {
         throw new Error('Test reports must be written under the selected server module: ' + serverPath);
@@ -98,6 +107,7 @@ function runCli() {
     let child = spawn(args.command[0], args.command.slice(1), {
         cwd: rootPath,
         env: Object.assign({}, process.env, {
+            ENV: args.environmentName,
             SERVER: args.serverName
         }),
         shell: false
@@ -126,6 +136,7 @@ function runCli() {
             startedAt: startedAt,
             endedAt: endedAt,
             env: Object.assign({}, process.env, {
+                ENV: args.environmentName,
                 SERVER: args.serverName
             })
         });
@@ -142,23 +153,29 @@ function parseArgs(argv) {
     let suiteName = 'test';
     let reportDir;
     let serverName;
+    let environmentName;
 
     optionArgs.forEach(arg => {
         if (arg.startsWith('--suite=')) {
             suiteName = arg.substring('--suite='.length);
         } else if (arg.startsWith('--server=')) {
             serverName = arg.substring('--server='.length);
+        } else if (arg.startsWith('--environment=')) {
+            environmentName = arg.substring('--environment='.length);
         } else if (arg.startsWith('--report-dir=')) {
             reportDir = path.resolve(rootPath, arg.substring('--report-dir='.length));
         }
     });
 
-    serverName = serverName || process.env.SERVER || process.env.S || loadProjectDefaultServer();
-    reportDir = reportDir || process.env.NODICS_TEST_REPORT_DIR || resolveServerReportDir(serverName);
-    reportDir = assertServerOwnedReportDir(reportDir, serverName);
+    let defaults = loadProjectDefaults();
+    serverName = serverName || process.env.SERVER || process.env.S || defaults.defaultServer;
+    environmentName = environmentName || process.env.ENV || process.env.E || defaults.defaultEnvironment;
+    reportDir = reportDir || process.env.NODICS_TEST_REPORT_DIR || resolveServerReportDir(serverName, environmentName);
+    reportDir = assertServerOwnedReportDir(reportDir, serverName, environmentName);
 
     return {
         suiteName: suiteName,
+        environmentName: environmentName,
         serverName: serverName,
         reportDir: reportDir,
         command: command

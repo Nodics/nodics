@@ -34,11 +34,13 @@ const SHUTDOWN_TIMEOUT_MS = 5000;
 const REGISTRY_TIMEOUT_MS = Number(process.env.NODICS_TOPOLOGY_REGISTRY_TIMEOUT_MS || 30000);
 const TOPOLOGY_MODE = getTopologyMode();
 const TOPOLOGY_CONFIG = _.get(environmentProperties, 'test.runtimeTopology', {});
-const CONSOLIDATED_SERVER = TOPOLOGY_CONFIG.consolidatedServer;
+const CONSOLIDATED_SERVER = TOPOLOGY_CONFIG.monoServer;
 const SERVER_ORDER = TOPOLOGY_CONFIG.modularServers || [];
+const REQUIRED_CONSOLIDATED_MODULES = TOPOLOGY_CONFIG.requiredConsolidatedModules || [];
+const REQUIRED_MODULAR_MODULES = TOPOLOGY_CONFIG.requiredModularModules || {};
 const COMMUNICATION_CHECKS = TOPOLOGY_CONFIG.communicationChecks || [];
 
-assert(CONSOLIDATED_SERVER, 'test.runtimeTopology.consolidatedServer is required');
+assert(CONSOLIDATED_SERVER, 'test.runtimeTopology.monoServer is required');
 assert(SERVER_ORDER.length > 0, 'test.runtimeTopology.modularServers must define at least one server');
 
 function loadProperties(serverName) {
@@ -130,7 +132,8 @@ function requestModuleEndpoint(options) {
 }
 
 function startServer(serverName, nodeName) {
-    let args = ['-e', 'require("./nodics").start(); require("./startio/envs/startioLocal/test/topology/runtimeContractProbe").watch()', 'SERVER=' + serverName];
+    let args = ['-e', 'require("./nodics").start(); require("./startio/envs/startioLocal/test/topology/runtimeContractProbe").watch()',
+        'ENV=startioLocal', 'SERVER=' + serverName];
     if (nodeName) {
         args.push('NODE=' + nodeName);
     }
@@ -223,6 +226,12 @@ function assertRuntimeContract(runtime) {
     }
 }
 
+/** Proves that an environment-selected runtime contains every module required by its declared topology role. */
+function assertRequiredModules(runtime, requiredModules) {
+    (requiredModules || []).forEach(moduleName => assert(runtime.contract.activeModules.includes(moduleName),
+        runtime.label + ' must activate required topology module: ' + moduleName));
+}
+
 function stopServer(runtime) {
     return new Promise(resolve => {
         if (!runtime || !runtime.child || runtime.child.killed) {
@@ -287,8 +296,8 @@ function requestPublicationOperation(runtime, operation, payload) {
 }
 
 async function runCmsPublicationSmoke(runtimes) {
-    let staged = runtimes.find(runtime => runtime.serverName === 'startioLocalCmsServer');
-    let onlineIndex = runtimes.findIndex(runtime => runtime.serverName === 'startioLocalCmsOnlineServer');
+    let staged = runtimes.find(runtime => runtime.serverName === 'cmsStagedServer');
+    let onlineIndex = runtimes.findIndex(runtime => runtime.serverName === 'cmsOnlineServer');
     let online = runtimes[onlineIndex];
     assert(staged && online, 'CMS publication smoke requires separate Staged and Online runtimes');
     let suffix = Date.now().toString(36);
@@ -305,7 +314,7 @@ async function runCmsPublicationSmoke(runtimes) {
     let targetRoutes = await requestPublicationOperation(online, 'inspectCmsPublicationRoutes', fixture);
     assert(targetRoutes.some(route => route.method === 'post' && route.url.endsWith('/cms/v0/publication/target/deploy')),
         'Online CMS must register its internal publication deployment route: ' + JSON.stringify(targetRoutes));
-    let unauthenticatedTarget = await requestModuleEndpoint({ server: 'startioLocalCmsOnlineServer', moduleName: 'cms',
+    let unauthenticatedTarget = await requestModuleEndpoint({ server: 'cmsOnlineServer', moduleName: 'cms',
         path: '/v0/publication/target/status', method: 'POST', expectedStatus: 401,
         headers: { 'content-type': 'application/json' }, body: { tenant: fixture.tenant, scope: fixture } });
     assert.strictEqual(unauthenticatedTarget.statusCode, 401,
@@ -346,7 +355,7 @@ async function runCmsPublicationSmoke(runtimes) {
     assert.strictEqual(secondOnline.previousManifestCode, first.targetVersion);
 
     await stopServer(online);
-    online = await startServer('startioLocalCmsOnlineServer');
+    online = await startServer('cmsOnlineServer');
     assertRuntimeContract(online);
     runtimes[onlineIndex] = online;
     let recovered = await requestPublicationOperation(online, 'inspectCmsDelivery', fixture);
@@ -371,7 +380,7 @@ async function runCmsPublicationSmoke(runtimes) {
         tenant: fixture.tenant, publicationCode: outagePublication.code
     });
     assert.strictEqual(failed.state, 'FAILED', 'Online outage must leave an auditable failed publication');
-    online = await startServer('startioLocalCmsOnlineServer');
+    online = await startServer('cmsOnlineServer');
     assertRuntimeContract(online);
     runtimes[onlineIndex] = online;
     let afterOutage = await requestPublicationOperation(online, 'inspectCmsDelivery', fixture);
@@ -399,8 +408,8 @@ async function waitForPricingPublication(runtime, publicationCode, states) {
 }
 
 async function runPricingPublicationSmoke(runtimes) {
-    let staged = runtimes.find(runtime => runtime.serverName === 'startioLocalCmsServer');
-    let onlineIndex = runtimes.findIndex(runtime => runtime.serverName === 'startioLocalCmsOnlineServer');
+    let staged = runtimes.find(runtime => runtime.serverName === 'cmsStagedServer');
+    let onlineIndex = runtimes.findIndex(runtime => runtime.serverName === 'cmsOnlineServer');
     let online = runtimes[onlineIndex];
     assert(staged && online, 'Pricing publication smoke requires separate Staged and Online runtimes');
     let suffix = Date.now().toString(36), fixture = { tenant: 'default', enterpriseCode: 'runtime-enterprise-' + suffix, priceListCode: 'runtime-pricing-' + suffix,
@@ -411,7 +420,7 @@ async function runPricingPublicationSmoke(runtimes) {
     assert.strictEqual(roleBoundary.rejected, true, 'Staged Pricing must reject Online target authority');
     let targetRoutes = await requestPublicationOperation(online, 'inspectPricingPublicationRoutes', fixture);
     assert(targetRoutes.some(route => route.method === 'post' && route.url.endsWith('/pricing/v0/publication/target/deploy')), 'Online Pricing must expose its internal deployment route');
-    let unauthenticated = await requestModuleEndpoint({ server: 'startioLocalCmsOnlineServer', moduleName: 'pricing', path: '/v0/publication/target/status', method: 'POST', expectedStatus: 401, headers: { 'content-type': 'application/json' }, body: { scope: fixture } });
+    let unauthenticated = await requestModuleEndpoint({ server: 'cmsOnlineServer', moduleName: 'pricing', path: '/v0/publication/target/status', method: 'POST', expectedStatus: 401, headers: { 'content-type': 'application/json' }, body: { scope: fixture } });
     assert.strictEqual(unauthenticated.statusCode, 401);
     await requestPublicationOperation(staged, 'ensurePricingWorkflowDefinitions', Object.assign({}, fixture, { modules: ['flowCore', 'units', 'pricing'] }));
     await requestPublicationOperation(online, 'ensurePricingWorkflowDefinitions', Object.assign({}, fixture, { modules: ['units'] }));
@@ -444,7 +453,7 @@ async function runPricingPublicationSmoke(runtimes) {
     assert.strictEqual(secondOnline.resolution.amount, '12.00', 'Activation must invalidate the cached prior price');
     assert.strictEqual(secondOnline.previousManifestCode, firstOnline.manifestCode);
 
-    await stopServer(online); online = await startServer('startioLocalCmsOnlineServer'); assertRuntimeContract(online); runtimes[onlineIndex] = online;
+    await stopServer(online); online = await startServer('cmsOnlineServer'); assertRuntimeContract(online); runtimes[onlineIndex] = online;
     let restarted = await inspect(); assert.strictEqual(restarted.manifestCode, secondPublication.targetVersion, 'Online Pricing pointer must survive restart');
 
     let rollback = await requestPublicationOperation(staged, 'rollbackPricingRelease', { tenant: fixture.tenant, enterpriseCode: fixture.enterpriseCode, publicationCode: automatic.carrierCode });
@@ -455,7 +464,7 @@ async function runPricingPublicationSmoke(runtimes) {
     await stopServer(online);
     let outage = await requestPublicationOperation(staged, 'submitPricingRelease', Object.assign({}, fixture, { submissionCode: submissionCode('outage-v3'), approvalMode: 'AUTOMATIC', sourceVersion: 2, items: v3.items }));
     await waitForPricingPublication(staged, outage.carrierCode, ['FAILED']);
-    online = await startServer('startioLocalCmsOnlineServer'); assertRuntimeContract(online); runtimes[onlineIndex] = online;
+    online = await startServer('cmsOnlineServer'); assertRuntimeContract(online); runtimes[onlineIndex] = online;
     assert.strictEqual((await inspect()).resolution.amount, '10.00', 'Failed deployment must not partially change Online');
     let recovery = await requestPublicationOperation(staged, 'submitPricingRelease', Object.assign({}, fixture, { submissionCode: submissionCode('recovery-v3'), approvalMode: 'AUTOMATIC', sourceVersion: 2, items: v3.items }));
     await waitForPricingPublication(staged, recovery.carrierCode, ['ONLINE']);
@@ -489,6 +498,7 @@ async function runConsolidatedSmoke() {
     let runtime = await startServer(CONSOLIDATED_SERVER);
     try {
         assertRuntimeContract(runtime);
+        assertRequiredModules(runtime, REQUIRED_CONSOLIDATED_MODULES);
         return {
             runtime: runtime,
             communication: await runConsolidatedCommunicationSmoke(),
@@ -505,9 +515,10 @@ async function runModularSmoke() {
         for (let serverName of SERVER_ORDER) {
             let runtime = await startServer(serverName);
             assertRuntimeContract(runtime);
+            assertRequiredModules(runtime, REQUIRED_MODULAR_MODULES[serverName]);
             runtimes.push(runtime);
         }
-        let backofficeRuntime = runtimes.find(runtime => runtime.serverName === 'startioLocalBackofficeServer');
+        let backofficeRuntime = runtimes.find(runtime => runtime.serverName === 'backofficeServer');
         let expectedModules = Array.from(new Set(runtimes.flatMap(runtime => runtime.contract.activeModules)));
         let initialRegistry = await waitForRegistry(backofficeRuntime, snapshot => {
             let observed = snapshot.instances.map(instance => instance.moduleName);
@@ -516,12 +527,13 @@ async function runModularSmoke() {
                 snapshot.availability.some(availability => availability.moduleName === 'cms' && availability.state === 'UP');
         }, 'registration of every active module and CMS capability discovery');
 
-        let cmsIndex = runtimes.findIndex(runtime => runtime.serverName === 'startioLocalCmsServer');
+        let cmsIndex = runtimes.findIndex(runtime => runtime.serverName === 'cmsStagedServer');
         let previousCmsRuntime = runtimes[cmsIndex];
         let previousCmsInstance = initialRegistry.instances.find(instance => instance.moduleName === 'cms').instanceId;
         await stopServer(previousCmsRuntime);
-        let restartedCmsRuntime = await startServer('startioLocalCmsServer');
+        let restartedCmsRuntime = await startServer('cmsStagedServer');
         assertRuntimeContract(restartedCmsRuntime);
+        assertRequiredModules(restartedCmsRuntime, REQUIRED_MODULAR_MODULES.cmsStagedServer);
         runtimes[cmsIndex] = restartedCmsRuntime;
         let reconciledRegistry = await waitForRegistry(backofficeRuntime, snapshot => snapshot.instances.some(instance =>
             instance.moduleName === 'cms' && instance.instanceId !== previousCmsInstance) &&
@@ -531,10 +543,11 @@ async function runModularSmoke() {
         let publication = await runCmsPublicationSmoke(runtimes);
         let pricingPublication = await runPricingPublicationSmoke(runtimes);
 
-        let backofficeIndex = runtimes.findIndex(runtime => runtime.serverName === 'startioLocalBackofficeServer');
+        let backofficeIndex = runtimes.findIndex(runtime => runtime.serverName === 'backofficeServer');
         await stopServer(backofficeRuntime);
-        let restartedBackofficeRuntime = await startServer('startioLocalBackofficeServer');
+        let restartedBackofficeRuntime = await startServer('backofficeServer');
         assertRuntimeContract(restartedBackofficeRuntime);
+        assertRequiredModules(restartedBackofficeRuntime, REQUIRED_MODULAR_MODULES.backofficeServer);
         runtimes[backofficeIndex] = restartedBackofficeRuntime;
         backofficeRuntime = restartedBackofficeRuntime;
         let recoveredRegistry = await waitForRegistry(backofficeRuntime, snapshot => {

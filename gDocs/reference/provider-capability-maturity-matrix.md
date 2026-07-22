@@ -102,7 +102,7 @@ production-ready.
 | Capability | Owner | Current Maturity | Notes And Required Gate |
 | --- | --- | --- | --- |
 | Startio project | `startio` | Sample or reference | Startio is the framework validation project for end-to-end local, environment, server, node, and topology behavior. It proves structure, not customer production policy. |
-| Local consolidated runtime | `startioLocalServer` | Sample or reference | Used for development and deterministic tests. Local API exposure can enable developer/admin categories that production must disable by default. |
+| Local consolidated runtime | `monoServer` | Sample or reference | Used for development and deterministic tests. Local API exposure can enable developer/admin categories that production must disable by default. |
 | Modular multi-server runtime | Startio environment/server/node modules | Guarded provider | Modular topology smoke tests prove basic communication. Production topology requires environment-owned secrets, health checks, service discovery, observability, backup, and deployment rules. |
 | Production operating model | Project/environment/server/node modules | Parked future capability | The operating model still needs deployment topology, observability, audit retention, backup/restore, rollback, disaster recovery, and support diagnostics to be fully defined for a reference production project. |
 

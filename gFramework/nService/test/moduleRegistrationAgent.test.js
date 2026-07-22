@@ -29,7 +29,7 @@ global.CONFIG = { get: key => ({
 global.NODICS = {
     getActiveModules: () => ['cms', 'utility'],
     getRawModule: name => ({ metaData: { version: '1.0.0', nodics: { runtime: { router: name === 'cms' }, owns: ['router'] } } }),
-    getEnvironmentName: () => 'local', getServerName: () => 'cmsServer', getNodeName: () => null,
+    getEnvironmentName: () => 'envs', getSelectedEnvironmentName: () => 'local', getServerName: () => 'cmsServer', getNodeName: () => null,
     getInternalAuthToken: () => 'service-token'
 };
 global.SERVICE = {

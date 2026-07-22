@@ -59,8 +59,8 @@ or Online pointer. Project code should extend these owners.
 Staged and Online must be independent deployments with different databases.
 The supplied local examples are:
 
-- `startioLocalCmsServer` on port `3040`, database `startioCmsStaged`;
-- `startioLocalCmsOnlineServer` on port `3070`, database
+- `cmsStagedServer` on port `3040`, database `startioCmsStaged`;
+- `cmsOnlineServer` on port `3070`, database
   `startioCmsOnline`.
 
 The Staged environment activates the existing publish/version variants:
@@ -227,7 +227,7 @@ Build the Staged server so generated version-aware services match its active
 module set, then run the real modular topology proof:
 
 ```bash
-env SERVER=startioLocalCmsServer npm run build
+env SERVER=cmsStagedServer npm run build
 npm run test:topology:modular
 ```
 

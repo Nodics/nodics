@@ -113,46 +113,60 @@ module.exports = {
     },
     test: {
         runtimeTopology: {
-            consolidatedServer: 'startioLocalServer',
-            modularServers: [
-                'startioLocalProfileServer',
-                'startioLocalNemsServer',
-                'startioLocalDeapServer',
-                'startioLocalCronServer',
-                'startioLocalCmsServer',
-                'startioLocalCmsOnlineServer',
-                'startioLocalWorkflowServer',
-                'startioLocalBackofficeServer'
+            monoServer: 'monoServer',
+            requiredConsolidatedModules: [
+                'profile', 'nems', 'cronjob', 'workflow', 'cms', 'wcms',
+                'dataConsumer', 'dataProcessor', 'dataPublisher', 'backoffice'
             ],
+            modularServers: [
+                'profileServer',
+                'nemsServer',
+                'deapServer',
+                'cronServer',
+                'cmsStagedServer',
+                'cmsOnlineServer',
+                'workflowServer',
+                'backofficeServer'
+            ],
+            requiredModularModules: {
+                profileServer: ['profile'],
+                nemsServer: ['nems'],
+                deapServer: ['dataConsumer', 'dataProcessor', 'dataPublisher'],
+                cronServer: ['cronjob'],
+                cmsStagedServer: ['cms', 'wcms', 'workflow', 'publish'],
+                cmsOnlineServer: ['cms'],
+                workflowServer: ['workflow'],
+                backofficeServer: ['backoffice']
+            },
             communicationChecks: [
                 {
-                    server: 'startioLocalProfileServer',
+                    server: 'profileServer',
                     moduleName: 'profile',
                     path: '/v0/ping?help'
                 },
                 {
-                    server: 'startioLocalNemsServer',
+                    server: 'nemsServer',
                     moduleName: 'nems',
                     path: '/v0/ping?help'
                 },
                 {
-                    server: 'startioLocalCronServer',
+                    server: 'cronServer',
                     moduleName: 'cronjob',
                     path: '/v0/ping?help'
                 },
                 {
-                    server: 'startioLocalCmsOnlineServer',
+                    server: 'cmsOnlineServer',
                     moduleName: 'cms',
                     path: '/v0/ping?help',
                     topologies: ['modular']
                 },
                 {
-                    server: 'startioLocalWorkflowServer',
+                    server: 'workflowServer',
                     moduleName: 'workflow',
                     path: '/v0/ping?help'
                 },
                 {
-                    server: 'startioLocalBackofficeServer',
+                    server: 'backofficeServer',
                     moduleName: 'backoffice',
                     path: '/v0/ping?help',
                     topologies: ['modular']

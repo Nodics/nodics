@@ -708,7 +708,7 @@ function createDocument(input) {
             generatedAt: new Date().toISOString(),
             serverName: NODICS.getServerName(),
             serverRootName: NODICS.getServerRootName(),
-            environmentName: NODICS.getEnvironmentName(),
+            environmentName: NODICS.getSelectedEnvironmentName ? NODICS.getSelectedEnvironmentName() : NODICS.getEnvironmentName(),
             nodeName: NODICS.getNodeName(),
             activeModules: NODICS.getActiveModules(),
             includeRuntimeSchemas: input.options.includeRuntimeSchemas,

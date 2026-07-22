@@ -22,21 +22,29 @@ const initService = require(path.join(repoRoot, 'gFramework/nConfig/src/service/
 
 function getDefaultServerName() {
     let env = require(path.join(repoRoot, 'env.js'));
-    return env.defaultOptions.defaultServer || 'startioLocalServer';
+    return env.defaultOptions.defaultServer || 'monoServer';
+}
+
+function getDefaultEnvironmentName() {
+    let env = require(path.join(repoRoot, 'env'));
+    return env.defaultOptions.defaultEnvironment || 'startioLocal';
 }
 
 function getDefaultServerActiveModules() {
     let serverName = getDefaultServerName();
+    let environmentName = getDefaultEnvironmentName();
     let originalArgv = process.argv.slice();
     global.NODICS = new Nodics();
     global.CONFIG = new Config();
     NODICS.init({
         NODICS_HOME: repoRoot,
+        defaultEnvironment: environmentName,
         defaultServer: serverName
     });
     utils.loadRawModuleList(NODICS.getNodicsHome());
     process.argv = process.argv.slice(0, 2);
     NODICS.initEnvironment({
+        defaultEnvironment: environmentName,
         defaultServer: serverName
     });
     process.argv = originalArgv;

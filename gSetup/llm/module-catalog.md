@@ -72,7 +72,7 @@ This file gives AI agents and developers a first-pass map of important Nodics mo
 | `modules` | Sample application module group under `startio`. |
 | `envs` | Environment grouping folder under `startio`, not a normal startup module. |
 | `startioLocal` | Local environment/server-root group module. |
-| `startioLocalServer` | Default local consolidated server module. |
+| `monoServer` | Default local consolidated server module. |
 
 ## Module Documentation Rule
 

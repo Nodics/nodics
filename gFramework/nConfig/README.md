@@ -219,6 +219,23 @@ activate the module locally. For example, a modular workflow server may define
 `servers.profile` so it can call the profile process without loading the profile
 module into the workflow process.
 
+Server and node names are local to their validated parent topology. Their
+parentage and canonical identity come from the complete physical ancestry
+discovered by the module loader. For example, `cronServer` may exist under both
+`startioLocal` and `startioDev`; the derived canonical identities remain distinct
+without storing handwritten parent or canonical identifiers.
+
+Use explicit environment selection for deterministic execution:
+
+```bash
+ENV=startioLocal SERVER=cronServer NODE=cronNode0 node -e 'require("./nodics").start()'
+```
+
+When an interactive terminal supplies only an ambiguous server name, startup
+offers the discovered environments for selection. CI, containers, services,
+and other non-interactive execution fail with the candidate environment names
+and an explicit command example instead of waiting for input.
+
 ## Environment, Server, And Node Responsibilities
 
 Environment modules own deployment-scope defaults for one runtime environment.

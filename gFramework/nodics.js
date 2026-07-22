@@ -103,7 +103,7 @@ module.exports = {
                                 entCode: defaultAuthDetail.entCode,
                                 tenant: defaultAuthDetail.tenant,
                                 serviceId: defaultAuthDetail.loginId || 'nodics-runtime',
-                                runtimeInstanceId: [NODICS.getEnvironmentName(), NODICS.getServerName(), NODICS.getNodeName() || 'default', process.pid].join(':'),
+                                runtimeInstanceId: [NODICS.getSelectedEnvironmentName(), NODICS.getServerName(), NODICS.getNodeName() || 'default', process.pid].join(':'),
                                 modules: NODICS.getActiveModules(),
                                 authVersion: employee.authVersion || 1,
                                 userGroups: employee.userGroupCodes,

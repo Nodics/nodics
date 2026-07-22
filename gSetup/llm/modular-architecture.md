@@ -34,7 +34,7 @@ Use the layers for different decisions:
   as node identity, node coordinates, scheduler/consumer ownership, diagnostics,
   and capacity choices.
 
-When no server name is provided, the current default may use `startioLocalServer`, but framework logic should not hardcode this outside default startup configuration.
+When no server name is provided, the current default may use `monoServer`, but framework logic should not hardcode this outside default startup configuration.
 
 The runtime hierarchy is metadata-driven:
 

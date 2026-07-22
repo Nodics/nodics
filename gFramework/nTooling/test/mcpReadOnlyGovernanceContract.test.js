@@ -85,11 +85,11 @@ assert.throws(() => validationService.resolveChecks(['npm:unsafe']), /Unsupporte
 
 const runtimeContext = runtimeContextService.createRuntimeContext({
     home: repositoryRoot,
-    server: 'startioLocalServer'
+    server: 'monoServer'
 });
 assert.strictEqual(runtimeContext.runtimeBootstrap, false,
     'MCP runtime context must not bootstrap the runtime');
-assert.strictEqual(runtimeContext.selectedServer.name, 'startioLocalServer',
+assert.strictEqual(runtimeContext.selectedServer.name, 'monoServer',
     'MCP runtime context must resolve the selected server');
 assert(runtimeContext.activeModuleDeclaration.groups.includes('gCore'),
     'MCP runtime context must read active module groups from server properties');

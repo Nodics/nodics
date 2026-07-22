@@ -64,7 +64,7 @@ module.exports = {
 
     /** Builds a process-unique instance identity from selected runtime coordinates. */
     getInstanceId: function () {
-        return [NODICS.getEnvironmentName(), NODICS.getServerName(), NODICS.getNodeName() || 'default', process.pid].join(':');
+        return [NODICS.getSelectedEnvironmentName(), NODICS.getServerName(), NODICS.getNodeName() || 'default', process.pid].join(':');
     },
 
     /** Builds a bounded module registration payload from authoritative runtime metadata. */
@@ -120,7 +120,7 @@ module.exports = {
                 header: Object.assign({ 'Idempotency-Key': this.getInstanceId() }, header),
                 requestBody: {
                     instanceId: this.getInstanceId(),
-                    environment: NODICS.getEnvironmentName(),
+                    environment: NODICS.getSelectedEnvironmentName(),
                     server: NODICS.getServerName(),
                     node: NODICS.getNodeName() || null,
                     registrations: modules.map(moduleName => this.buildRegistration(moduleName))

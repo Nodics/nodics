@@ -96,3 +96,7 @@ Nodics-specific metadata belongs under `package.json.nodics`:
 ```
 
 Do not use top-level `type` for Nodics metadata, and do not add `nodics.moduleType`. `nodics.kind` describes what the package is. `nodics.runtime` describes runtime activation behavior. `nodics.owns` describes owned artifacts and extension points.
+
+Keep server and node names short. Nodics derives parentage and canonical
+identity from the physical hierarchy discovered by the module loader. Do not
+duplicate topology parentage or canonical identity in `package.json`.

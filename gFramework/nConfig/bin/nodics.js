@@ -10,6 +10,7 @@
  */
 
 const _ = require('lodash');
+const fs = require('fs');
 
 /**
  * @module config/bin/NodicsRuntime
@@ -28,6 +29,7 @@ module.exports = function () {
     let _startTime = 0;
     let _entTime = 0;
     let _rawModules = {};
+    let _rawModuleNames = {};
     let _rawModels = {};
     let _serverState = 'starting';
     let _activeChannel = 'master';
@@ -42,6 +44,7 @@ module.exports = function () {
     let _nodicsHome = null;
     let _customHome = null;
     let _serverName = null;
+    let _serverModuleKey = null;
     let _serverPath = null;
     let _serverRootName = null;
     let _serverRootPath = null;
@@ -52,6 +55,7 @@ module.exports = function () {
     let _activeModules = [];
     let _indexedModules = new Map();
     let _nodeName = null;
+    let _nodeModuleKey = null;
     let _nodePath = null;
 
     let _nodics = {
@@ -74,7 +78,11 @@ module.exports = function () {
     };
 
     this.initEnvironment = function (options) {
-        _serverName = process.env.S || process.env.SERVER || options.defaultServer || null;
+        let explicitServer = process.env.S || process.env.SERVER || null;
+        let argumentServerExplicit = false;
+        let argumentEnvironmentExplicit = false;
+        _serverName = explicitServer || options.defaultServer || null;
+        let selectedEnvironment = process.env.E || process.env.ENV || (!explicitServer && options.defaultEnvironment) || null;
         _nodeName = process.env.NODICS_NODE || process.env.N || null;
         if (!_nodeName && process.env.NODE && process.env.NODE.indexOf('/') === -1 && process.env.NODE.indexOf('\\') === -1) {
             _nodeName = process.env.NODE;
@@ -82,33 +90,50 @@ module.exports = function () {
         process.argv.forEach(element => {
             if (element.startsWith('S=')) {
                 _serverName = element.replace('S=', '');
+                argumentServerExplicit = true;
             } else if (element.startsWith('SERVER=')) {
                 _serverName = element.replace('SERVER=', '');
+                argumentServerExplicit = true;
+            } else if (element.startsWith('ENV=')) {
+                selectedEnvironment = element.replace('ENV=', '');
+                argumentEnvironmentExplicit = true;
+            } else if (element.startsWith('E=')) {
+                selectedEnvironment = element.replace('E=', '');
+                argumentEnvironmentExplicit = true;
             } else if (element.startsWith('NODE=')) {
                 _nodeName = element.replace('NODE=', '');
             }
         });
+        if (argumentServerExplicit && !argumentEnvironmentExplicit && !process.env.E && !process.env.ENV) selectedEnvironment = null;
         if (!_serverName) {
             throw new Error('Default server is not configured. Set defaultOptions.defaultServer or pass S=<serverName>');
         }
-        let serverModule = this.getRawModule(_serverName);
+        if (_nodeName && !explicitServer && !argumentServerExplicit) {
+            throw new Error('Node startup requires an explicit SERVER=<serverName> or S=<serverName>');
+        }
+        let serverModule = this.resolveTopologyModule(_serverName, 'server', selectedEnvironment);
         if (!serverModule || !serverModule.path) {
             throw new Error('Invalid server name: ' + _serverName);
         }
+        _serverName = serverModule.name;
+        _serverModuleKey = serverModule.registryKey;
         _serverPath = serverModule.path;
         //_envName = this.getRawModule(_serverName).parent;
         // _envPath = this.getRawModule(_envName).path;
         // -------------------------------------
 
-        _serverRootName = serverModule.parent
-        _serverRootPath = this.getRawModule(_serverRootName).path
+        _serverRootName = serverModule.parent;
+        _serverRootPath = this.getRawModule(serverModule.parentKey || _serverRootName).path;
 
-        _envName = this.getRawModule(_serverRootName).parent
-        _envPath = this.getRawModule(_envName).path
+        _envName = this.getRawModule(serverModule.parentKey || _serverRootName).parent;
+        _envPath = this.getRawModule(_envName).path;
         // -------------------------------------
         if (_nodeName) {
-            if (this.getRawModule(_nodeName)) {
-                _nodePath = this.getRawModule(_nodeName).path;
+            let nodeModule = this.resolveTopologyModule(_nodeName, 'node', _serverRootName, _serverName);
+            if (nodeModule) {
+                _nodeName = nodeModule.name;
+                _nodeModuleKey = nodeModule.registryKey;
+                _nodePath = nodeModule.path;
             } else {
                 throw new Error('Invalid node name: ' + _nodeName);
             }
@@ -138,10 +163,57 @@ module.exports = function () {
 
     this.addRawModules = function (rawModules) {
         _rawModules = rawModules;
+        _rawModuleNames = {};
+        _.each(rawModules, moduleObject => {
+            _rawModuleNames[moduleObject.name] = _rawModuleNames[moduleObject.name] || [];
+            _rawModuleNames[moduleObject.name].push(moduleObject);
+        });
     };
 
     this.getRawModule = function (moduleName) {
-        return _rawModules[moduleName];
+        if (_rawModules[moduleName]) return _rawModules[moduleName];
+        let candidates = _rawModuleNames[moduleName] || [];
+        if (candidates.length === 1) return candidates[0];
+        if (candidates.length > 1) {
+            let selected = candidates.find(candidate => candidate.registryKey === _serverModuleKey ||
+                candidate.registryKey === _nodeModuleKey);
+            if (!selected && _serverRootName) selected = candidates.find(candidate =>
+                candidate.metaData.nodics.kind === 'server' && candidate.parent === _serverRootName);
+            if (!selected && _serverName) selected = candidates.find(candidate =>
+                candidate.metaData.nodics.kind === 'node' && candidate.parent === _serverName);
+            return selected;
+        }
+    };
+
+    /** Resolves a server or node within its selected topology scope and prompts only on an interactive terminal. */
+    this.resolveTopologyModule = function (name, kind, environmentName, serverName) {
+        let candidates = (_rawModuleNames[name] || []).filter(candidate =>
+            candidate.metaData.nodics.kind === kind && (!serverName || candidate.parent === serverName));
+        if (environmentName) candidates = candidates.filter(candidate => kind === 'server' ?
+            candidate.parent === environmentName : this.getRawModule(candidate.parentKey || candidate.parent).parent === environmentName);
+        if (candidates.length === 1) return candidates[0];
+        if (candidates.length === 0) return undefined;
+        if (kind !== 'server') throw new Error('Ambiguous ' + kind + ' name: ' + name);
+        let environments = candidates.map(candidate => candidate.parent);
+        if (typeof _options.environmentSelector === 'function') {
+            let selectedEnvironment = _options.environmentSelector({ serverName: name, environments: environments.slice() });
+            let selectedCandidate = candidates.find(candidate => candidate.parent === selectedEnvironment);
+            if (selectedCandidate) return selectedCandidate;
+            throw new Error('Invalid environment selection for server "' + name + '"');
+        }
+        if (process.stdin.isTTY && process.stdout.isTTY && process.env.CI !== 'true' && process.env.NODICS_NON_INTERACTIVE !== 'true') {
+            process.stdout.write('Server "' + name + '" exists in multiple environments.\n\n' + environments
+                .map((candidate, index) => '  ' + (index + 1) + '. ' + candidate).join('\n') + '\n\nEnvironment: ');
+            let buffer = Buffer.alloc(256);
+            let length = fs.readSync(process.stdin.fd, buffer, 0, buffer.length, null);
+            let answer = buffer.toString('utf8', 0, length).trim();
+            let selected = /^\d+$/.test(answer) ? environments[Number(answer) - 1] : answer;
+            let match = candidates.find(candidate => candidate.parent === selected);
+            if (match) return match;
+            throw new Error('Invalid environment selection for server "' + name + '"');
+        }
+        throw new Error('Ambiguous server "' + name + '". Available environments: ' + environments.join(', ') +
+            '. Specify ENV=<environment> SERVER=' + name);
     };
 
     this.getRawModules = function () {
@@ -222,6 +294,28 @@ module.exports = function () {
 
     this.getEnvironmentName = function () {
         return _envName;
+    };
+
+    /** Returns the concrete selected environment/server-root name, such as startioLocal. */
+    this.getSelectedEnvironmentName = function () {
+        return _serverRootName;
+    };
+
+    /** Returns the organizational environment-group name retained for hierarchy composition. */
+    this.getEnvironmentGroupName = function () {
+        return _envName;
+    };
+
+    /** Returns the runtime-derived canonical identity of the selected server. */
+    this.getServerCanonicalIdentity = function () {
+        let moduleObject = _serverModuleKey && _rawModules[_serverModuleKey];
+        return moduleObject && moduleObject.canonicalIdentity;
+    };
+
+    /** Returns the runtime-derived canonical identity of the selected node. */
+    this.getNodeCanonicalIdentity = function () {
+        let moduleObject = _nodeModuleKey && _rawModules[_nodeModuleKey];
+        return moduleObject && moduleObject.canonicalIdentity;
     };
 
     this.getEnvironmentPath = function () {

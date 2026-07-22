@@ -15,6 +15,9 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
 - Do not hardcode project, environment, server, node, tenant, or customer behavior into reusable framework code.
 - Put configurable behavior in layered configuration, schemas, routers, services, pipelines, data, and runtime governance.
 - Resolve runtime hierarchy from `package.json.nodics.kind`, parent relationships, configured active modules, required modules, runtime flags, and module index order. Never infer behavior from names ending in `Env`, `Server`, `Node`, or from a project prefix.
+- Derive server and node parentage and canonical topology identity from discovered physical ancestry. Do not duplicate that authority in `package.json`.
+- Permit same-name server and node packages only under validated topology parents. Resolve a server inside the selected environment and a node inside the selected server; never select by filesystem scan order.
+- Interactive startup may ask for an environment when a short server name is ambiguous. Non-interactive startup must fail with bounded candidates and require `ENV`; it must never wait for input.
 - Treat environment/server/node configuration as selected-runtime layers: environment group, environment/server-root, server, then optional node.
 - Preserve the selected-runtime sequence as environment group -> environment/server-root -> server -> optional node. Validate parent metadata for the whole chain and concrete environment/server/node index order without assuming environment-group index order.
 - Keep local module activation separate from remote endpoint coordinates: `activeModules` loads modules into the current process, while `servers.*` only describes how to reach local or remote module endpoints.

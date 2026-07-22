@@ -186,13 +186,56 @@ module.exports = {
      */
     loadRawModuleList: function (homePath) {
         let modulesList = {};
-        this.collectModulesList(homePath, modulesList);
-        // Object.keys(modulesList).forEach(moduleName => {
-        //     this.resolveModuleHierarchy(moduleName, modulesList);
-        // });
+        let records = [];
+        this.collectModuleRecords(homePath, records, null);
+        this.indexModuleRecords(records, modulesList);
         if (modulesList && !this.isBlank(modulesList)) {
             NODICS.addRawModules(modulesList);
         }
+    },
+
+    /** Recursively discovers runtime packages without collapsing duplicate topology-local names. */
+    collectModuleRecords: function (folder, records, parentRecord) {
+        let record = null;
+        let metaDataPath = path.join(folder, 'package.json');
+        if (fs.existsSync(metaDataPath)) {
+            let metaData = require(metaDataPath);
+            if (this.isRuntimeModule(metaData)) {
+                record = { name: metaData.name, path: folder, index: metaData.index, metaData: metaData,
+                    physicalParent: parentRecord, children: [] };
+                records.push(record);
+                if (parentRecord) parentRecord.children.push(record);
+                parentRecord = record;
+            }
+        }
+        for (let subFolder of this.subFolders(folder)) this.collectModuleRecords(subFolder, records, parentRecord);
+        return record;
+    },
+
+    /** Builds canonical runtime identities and the compatibility registry after duplicate-safe discovery. */
+    indexModuleRecords: function (records, modulesList) {
+        let counts = {};
+        records.forEach(record => { counts[record.name] = Number(counts[record.name] || 0) + 1; });
+        let canonical = record => {
+            if (!record.canonicalIdentity) record.canonicalIdentity = record.physicalParent ?
+                canonical(record.physicalParent) + '/' + record.name : record.name;
+            return record.canonicalIdentity;
+        };
+        records.forEach(record => {
+            let kind = this.getModuleKind(record.metaData);
+            if (counts[record.name] > 1 && !['server', 'node'].includes(kind)) {
+                throw new Error('Duplicate runtime module name is only supported for scoped server/node packages: ' + record.name);
+            }
+            record.registryKey = counts[record.name] > 1 ? canonical(record) : record.name;
+        });
+        records.forEach(record => {
+            let physicalParentName = record.physicalParent && record.physicalParent.name;
+            modulesList[record.registryKey] = {
+                name: record.name, registryKey: record.registryKey, canonicalIdentity: canonical(record), path: record.path,
+                index: record.index, parent: physicalParentName, parentKey: record.physicalParent && record.physicalParent.registryKey,
+                metaData: record.metaData, modules: record.children.map(child => child.name)
+            };
+        });
     },
 
     /**

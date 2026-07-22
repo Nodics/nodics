@@ -18,6 +18,7 @@
  */
 module.exports = {
     defaultOptions: {
-        defaultServer: 'startioLocalServer'
+        defaultEnvironment: 'startioLocal',
+        defaultServer: 'monoServer'
     }
 };

@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "monoNode0",
+  "path": "startio/envs/startioLocal/monoServer/monoNode0",
+  "kind": "node",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "3001.111",
+    "version": "0.0.1",
+    "description": "Startio module for monoNode0"
+  },
+  "sourceFiles": 9,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "ownedFiles": 19,
+  "sourceFingerprint": "08b962332ce4fa3d56dc859e687ccb93c886f8947738f1a522da0c434bcadb76",
+  "documentation": {
+    "documented": 13,
+    "partially-documented": 2,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

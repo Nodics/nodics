@@ -44,7 +44,7 @@ global.NODICS = {
         return 'startioLocal';
     },
     getServerName: function () {
-        return 'startioLocalServer';
+        return 'monoServer';
     },
     getNodeName: function () {
         return undefined;
@@ -75,7 +75,7 @@ const service = require('../src/service/health/defaultHealthService');
     assert.strictEqual(notReadyResponse.code, 'SUC_SYS_HEALTH_NOT_READY');
     assert.strictEqual(notReadyResponse.data.status, 'DOWN');
     assert.strictEqual(notReadyResponse.data.serverState, 'starting');
-    assert.strictEqual(notReadyResponse.data.topology.server, 'startioLocalServer');
+    assert.strictEqual(notReadyResponse.data.topology.server, 'monoServer');
     assert.strictEqual(notReadyResponse.data.topology.activeModuleCount, 0);
     assert(notReadyResponse.data.checks.some(check => check.name === 'runtimeState' && check.status === 'DOWN'));
     assert(!JSON.stringify(notReadyResponse).includes('/Users/'));
