@@ -137,6 +137,7 @@ module.exports = {
             }
         },
         allowedSchemes: ['http', 'https'],
-        clientSafeMetadata: ['moduleName', 'instanceId', 'version', 'moduleKind', 'capabilities', 'endpoint', 'healthPath', 'state', 'lastSeenAt', 'backoffice']
+        clientSafeMetadata: ['moduleName', 'instanceId', 'environment', 'server', 'node', 'version', 'moduleKind',
+            'capabilities', 'clientCallable', 'endpoint', 'healthPath', 'state', 'lastSeenAt', 'backoffice']
     }
 };

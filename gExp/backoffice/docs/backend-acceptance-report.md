@@ -6,9 +6,9 @@ The BackOffice backend capability is accepted for continued integration and
 environment validation. It is not yet approved for production deployment.
 Nodics Axis remains outside this acceptance boundary.
 
-This decision is based on the repository state validated through 2026-07-20.
+This decision is based on the repository state validated through 2026-07-22.
 The formal clean-checkout gate passed under supported Node 24.18.0 after
-correcting local build composition so the authoritative consolidated environment
+correcting local build composition so the authoritative `monoServer` environment
 includes `gExp` and therefore regenerates BackOffice schema services used by
 modular runtimes.
 
@@ -19,9 +19,13 @@ modular runtimes.
 | Clean dependency and generation flow | `npm run release:check -- --execute --full` ran `npm ci`, clean, build, LLM validation, documentation quality, basic tests, and the full suite | Passed |
 | Dependency audit | `npm ci` audited 521 packages | Passed with zero reported vulnerabilities |
 | BackOffice contracts | Focused module, route, API, registry, discovery, history, availability, security, performance, audit, and operational-readiness tests | Passed |
-| Consolidated runtime | Module communication, public readiness, and protected readiness detail | Passed |
-| Modular runtime | Seven configured module runtimes, direct module communication, public readiness, and protected readiness detail | Passed |
-| Registration and recovery | 419 active leases, 80 registered modules, contract discovery, CMS restart reconciliation, BackOffice restart recovery, and availability recovery | Passed |
+| `monoServer` runtime | Module communication, public/protected readiness, 94 registered active modules, client-safe projection, complete process restart, re-registration, and durable CMS contract recovery | Passed on 2026-07-22 |
+| Human HTTP security journey | Profile employee password login issued a human Bearer token; BackOffice Registry and Bootstrap returned 200; bad password and missing token returned 401; insufficient permission and a service token on the human administration route returned 403 | Passed on 2026-07-22 |
+| Modular runtime | Eight configured module runtimes, direct module communication, public readiness, and protected readiness detail | Passed on 2026-07-22 |
+| Distributed human security | Profile-to-BackOffice HTTP login and Bearer use passed before restart, after Profile restart, and after BackOffice restart; tenant and negative 401/403 boundaries remained enforced | Passed on 2026-07-22 |
+| Registry-derived direct connections | Eight advertised endpoints returned 200; CMS required explicit Staged/Online selection; capability filtering retained schema owners; internal Data Processor and Publisher exposed no endpoint | Passed on 2026-07-22 |
+| Registration and recovery | 497 active leases, 90 registered modules, contract discovery, CMS Staged restart reconciliation, BackOffice restart recovery, and availability recovery | Passed on 2026-07-22 |
+| CMS runtime identity | CMS Staged and CMS Online retained distinct process identities and endpoints, remained visible as two sanitized administrative instances, and aggregated into one CMS catalogue capability | Passed on 2026-07-22 |
 | Clean-build regression | BackOffice boundary test requires `gExp` in the consolidated build authority; modular topology proves generated persistence services are usable after clean/build | Passed |
 | Generated contracts | Schema/API generated tests, OpenAPI generation, documentation governance, and module LLM validation included in the release gate | Passed |
 | Live Redis adapter | Existing guarded nCache Redis contract executed against the local provider | Passed on 2026-07-20 |
@@ -41,9 +45,17 @@ integration, and regression behavior for the implemented backend scope:
 
 - asynchronous authenticated module registration, renewal, expiry, and restart
   reconciliation;
+- `monoServer` registration and whole-process restart recovery without adding an
+  in-process registration shortcut;
 - client-safe inventory and direct-module connection metadata without a
   BackOffice business-operation proxy;
+- environment/server/node coordinates that distinguish observed runtime
+  instances without exposing lease expiry, credentials, or configuration authority;
+- explicit multi-instance endpoint selection and direct calls to module-owned
+  APIs without a BackOffice proxy or invented default route;
 - human administrative identity separation from module/service identity;
+- real local HTTP login, Bearer propagation, missing credential, invalid
+  credential, insufficient permission, and service-token rejection boundaries;
 - tenant and permission enforcement, refresh throttling, and idempotency;
 - bounded discovery, immutable contract history, approval, rejection,
   activation, and rollback behavior;

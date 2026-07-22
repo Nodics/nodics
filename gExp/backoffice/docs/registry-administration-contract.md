@@ -27,11 +27,24 @@ non-client-callable module is rejected rather than reported as successful.
 
 Responses use the configured client-safe lease projection. They never return
 service tokens, credentials, raw readiness responses, stack traces, provider
-messages, or durable contract documents. Refresh is audited with module and
-outcome only. Target APIs remain responsible for final business authorization.
+messages, lease-expiry internals, or durable contract documents. The projection
+includes environment, server, optional node, and `clientCallable` coordinates so
+operators and clients can distinguish safe direct-call instances such as CMS
+Staged and CMS Online. These observed coordinates never become configuration or
+topology authority. Refresh is audited with module and outcome only. Target APIs
+remain responsible for final business authorization.
+
+When several active instances own the same module, consumers select using an
+explicit governed coordinate such as environment and server. For example,
+`cmsStagedServer` and `cmsOnlineServer` are both valid CMS registrations; the
+client chooses authoring or delivery rather than accepting a registry-defined
+default. Non-client-callable modules remain observable but never receive a
+fabricated endpoint.
 
 ## Validation
 
 Changes require route-permission, filter, pagination, invalid-boundary,
 sanitization, missing-module, refresh reuse, audit, OpenAPI, modular topology,
-and regression tests.
+and regression tests. Local modular acceptance also filters by declared
+`schema` capability, rejects ambiguous CMS selection, and calls each selected
+client endpoint directly.

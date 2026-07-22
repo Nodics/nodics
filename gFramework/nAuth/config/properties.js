@@ -191,7 +191,10 @@ module.exports = {
             customerGroup: 'customerUserGroup',
             groupTargets: {
                 userGroup: { parentGroups: [] },
-                adminGroup: { parentGroups: ['userGroup'] },
+                adminGroup: {
+                    parentGroups: ['userGroup'],
+                    permissions: ['backoffice.registry.view', 'backoffice.bootstrap.view', 'backoffice.contract.view']
+                },
                 contentUserGroup: {
                     parentGroups: ['employeeUserGroup'],
                     permissions: ['cms.backoffice.view', 'cms.delivery.authenticated.read']

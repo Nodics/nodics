@@ -122,8 +122,10 @@ const registration = {
 const moduleLease = {
     type: 'object', required: ['moduleName', 'instanceId', 'state', 'lastSeenAt'],
     properties: {
-        moduleName: moduleName, instanceId: { type: 'string' }, version: { type: 'string' }, moduleKind: { type: 'string' },
-        capabilities: { type: 'array', items: { type: 'string' } }, endpoint: { type: 'string' }, healthPath: { type: 'string' },
+        moduleName: moduleName, instanceId: { type: 'string' }, environment: { type: 'string' }, server: { type: 'string' },
+        node: { type: 'string', nullable: true }, version: { type: 'string' }, moduleKind: { type: 'string' },
+        capabilities: { type: 'array', items: { type: 'string' } }, clientCallable: { type: 'boolean' },
+        endpoint: { type: 'string' }, healthPath: { type: 'string' },
         state: { enum: ['UP'] }, lastSeenAt: { type: 'string', format: 'date-time' }, backoffice: backofficeMetadata
     }
 };

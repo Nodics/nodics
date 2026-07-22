@@ -45,15 +45,32 @@ workload identity rather than one shared bootstrap credential.
 Discovery returns only configured client-safe fields. Tokens, credentials,
 secret references, internal headers, request bodies, private topology settings,
 and registration expiry internals are never returned to the frontend.
+Environment, server, and optional node names are safe observed coordinates used
+to distinguish runtime instances such as CMS Staged and CMS Online; they are
+derived from registration and never become topology configuration authority.
 Discovery filters modules using the authenticated caller's permissions. The
 bootstrap route returns that same authorized catalogue plus contract-version
 metadata and a freshness-bounded observation of target-owned public readiness;
 it is not authoritative health, topology, activation, or business configuration.
 
-The modular topology contract starts every configured runtime composition,
-waits for all active modules and readiness observations to appear, restarts the
-CMS runtime, and proves the old process lease disappears while the new process
-identity registers. It then restarts BackOffice and proves leases, readiness
-observations, discovery cache, and the durable contract pointer recover. The
-probe uses child-process IPC only and does not add a production diagnostics
-route.
+The local topology contract first starts `monoServer`, proves every active
+module self-registers with one process identity, validates the client-safe
+projection, restarts the process, and proves registration and durable contract
+selection recover. The modular phase starts every configured runtime, restarts
+Profile, and proves its replacement identity appears without losing unrelated
+leases. A human logs in over HTTP at Profile and uses the returned Bearer token
+directly at BackOffice before restart, after Profile restart, and after
+BackOffice restart; tenant, permission, and human-versus-service boundaries
+remain enforced. It then restarts CMS Staged and proves it remains distinct
+from uninterrupted CMS Online while both aggregate under one CMS capability.
+Finally, BackOffice restart recovers leases, readiness observations, discovery,
+and the durable contract pointer.
+
+The modular contract selects Profile, NEMS, Cronjob, Data Consumer, Workflow,
+CMS Staged, CMS Online, and BackOffice from the registry projection and calls
+their advertised endpoints directly. Multiple CMS instances require an
+explicit server selector; the registry never guesses. Data Processor and Data
+Publisher remain registered internal composition modules without invented
+client endpoints. Capability filtering uses declared ownership metadata and
+never creates a parallel catalogue. Child-process IPC is used only for test
+observation and adds no production diagnostics or routing API.

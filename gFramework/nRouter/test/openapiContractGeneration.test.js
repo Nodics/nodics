@@ -65,6 +65,9 @@ global.NODICS = {
 };
 
 const generator = require('../src/service/tooling/defaultOpenapiContractGeneratorService');
+const defaultOptions = generator.createOptions([]);
+assert.strictEqual(defaultOptions.defaultEnvironment, 'startioLocal');
+assert.strictEqual(defaultOptions.defaultServer, 'monoServer');
 const authProperties = require('../../nAuth/config/properties');
 assert(authProperties.identityGovernance.permissionCatalog.includes('system.contract.openapi.view'));
 assert(authProperties.identityGovernance.permissionCatalog.includes('system.contract.swagger.view'));

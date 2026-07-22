@@ -59,6 +59,7 @@ module.exports = {
         options.state.lastAttempt = new Date();
         return SERVICE.DefaultUserStateService.save({
             tenant: options.tenant,
+            authData: SERVICE.DefaultIdentityGovernanceService.getSystemAuthData(),
             model: options.state
         }).then(success => {
             _self.LOG.debug('State data has been updated with current time');

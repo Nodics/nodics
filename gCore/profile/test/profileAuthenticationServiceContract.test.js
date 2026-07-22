@@ -114,6 +114,11 @@ const customer = {
 };
 
 global.SERVICE = {
+    DefaultIdentityGovernanceService: {
+        getSystemAuthData: function () {
+            return { isSystem: true, userGroups: ['serviceAccountUserGroup'], permissions: [] };
+        }
+    },
     DefaultEnterpriseService: {
         retrieveEnterprise: function (entCode) {
             lookups.push({ service: 'enterprise', entCode });
@@ -203,6 +208,11 @@ function resetCalls() {
     assert.deepStrictEqual(lookups.slice(0, 3).map(item => item.service), ['enterprise', 'employeeLogin', 'userState']);
     assert.deepStrictEqual(lookups[1].request, { tenant: 'tenantA', loginId: 'employee@example.com' });
     assert.strictEqual(stateSaves[0].tenant, 'tenantA');
+    assert.deepStrictEqual(stateSaves[0].authData, {
+        isSystem: true,
+        userGroups: ['serviceAccountUserGroup'],
+        permissions: []
+    });
     assert.strictEqual(stateSaves[0].model.attempts, 0);
     assert.strictEqual(tokenAdds[0].moduleName, 'profile');
     assert.strictEqual(tokenAdds[0].isExpirable, true);
@@ -242,6 +252,7 @@ function resetCalls() {
         type: 'Employee'
     }), error => error.code === 'ERR_AUTH_00002');
     assert.strictEqual(stateSaves[0].model.attempts, 2);
+    assert.strictEqual(stateSaves[0].authData.isSystem, true);
     assert.strictEqual(stateSaves[0].model.locked, true);
     assert(stateSaves[0].model.lockedTime instanceof Date);
     assert.strictEqual(auditEvents[0].eventType, 'password.authentication');

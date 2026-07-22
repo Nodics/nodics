@@ -321,14 +321,14 @@ module.exports = {
         }).filter(Boolean);
         let defaultTenant = CONFIG.get('defaultTenant') || 'default';
         let administrativeProbe = { tenant: defaultTenant, requestId: 'test-runtime-contract-probe',
-            authData: { tokenType: 'access', tenant: defaultTenant, principalId: 'test-runtime-contract-probe' } };
+            authData: { tokenType: 'access', tenant: defaultTenant, principalId: 'test-runtime-contract-probe', permissions: ['*'] } };
+        let bootstrap = await registry.bootstrap(administrativeProbe);
+        let cmsDetail = await registry.adminDetail(Object.assign({}, administrativeProbe, { params: { moduleName: 'cms' } }));
         return {
             available: true,
-            instances: entries.map(entry => ({
-                moduleName: entry.value.moduleName,
-                instanceId: entry.value.instanceId,
-                clientCallable: entry.value.clientCallable === true
-            })),
+            instances: entries.map(entry => registry.projectClientSafe(entry.value)),
+            catalogue: bootstrap.data.catalogue,
+            cmsAdminDetail: cmsDetail.data,
             discoveries: Object.keys(snapshots).sort().map(moduleName => ({
                 moduleName: moduleName,
                 hash: snapshots[moduleName].hash,

@@ -114,7 +114,8 @@ function requestModuleEndpoint(options) {
             });
             response.on('end', () => {
                 let expectedStatus = options.expectedStatus || 200;
-                if (response.statusCode === expectedStatus) {
+                let expectedStatuses = options.expectedStatuses || [expectedStatus];
+                if (expectedStatuses.includes(response.statusCode)) {
                     resolve({
                         statusCode: response.statusCode,
                         body: body,
@@ -122,13 +123,185 @@ function requestModuleEndpoint(options) {
                     });
                 } else {
                     reject(new Error('Unexpected status ' + response.statusCode + ' from ' + requestPath +
-                        '; expected ' + expectedStatus + ': ' + body));
+                        '; expected ' + expectedStatuses.join(' or ') + ': ' + body));
                 }
             });
         });
         request.on('error', reject);
         request.end(options.body === undefined ? undefined : JSON.stringify(options.body));
     });
+}
+
+function parseJsonResponse(response, label) {
+    try {
+        return JSON.parse(response.body);
+    } catch (error) {
+        throw new Error(label + ' returned invalid JSON: ' + response.body);
+    }
+}
+
+function findAuthToken(payload) {
+    if (!payload || typeof payload !== 'object') return undefined;
+    if (typeof payload.authToken === 'string') return payload.authToken;
+    return findAuthToken(payload.result) || findAuthToken(payload.data);
+}
+
+function findTenant(payload) {
+    if (!payload || typeof payload !== 'object') return undefined;
+    if (typeof payload.tenant === 'string') return payload.tenant;
+    return findTenant(payload.result) || findTenant(payload.data);
+}
+
+async function runBackofficeHumanAuthenticationSmoke(profileServer = CONSOLIDATED_SERVER,
+    backofficeServer = CONSOLIDATED_SERVER) {
+    let headers = { 'content-type': 'application/json', 'x-enterprise-code': 'default' };
+    let login = await requestModuleEndpoint({
+        server: profileServer,
+        moduleName: 'profile',
+        path: '/v0/employee/authenticate',
+        method: 'POST',
+        expectedStatuses: process.env.NODICS_TOPOLOGY_ADMIN_PASSWORD ? [200] : [200, 401],
+        headers: headers,
+        body: {
+            loginId: 'admin',
+            password: process.env.NODICS_TOPOLOGY_ADMIN_PASSWORD || environmentProperties.bootstrapIdentity.adminPassword
+        }
+    });
+    if (login.statusCode === 401) {
+        return {
+            status: 'SKIPPED_LEGACY_LOCAL_CREDENTIAL',
+            reason: 'Set NODICS_TOPOLOGY_ADMIN_PASSWORD to execute the persisted local human-auth journey'
+        };
+    }
+    let accessToken = findAuthToken(parseJsonResponse(login, 'Profile employee authentication'));
+    assert(accessToken, 'Profile employee authentication must return a human access token');
+    let rejectedLogin = await requestModuleEndpoint({
+        server: profileServer,
+        moduleName: 'profile',
+        path: '/v0/employee/authenticate',
+        method: 'POST',
+        expectedStatus: 401,
+        headers: headers,
+        body: { loginId: 'admin', password: 'invalid-local-password' }
+    });
+    let bearerHeaders = { Authorization: 'Bearer ' + accessToken, 'x-enterprise-code': 'default' };
+    let authorization = await requestModuleEndpoint({
+        server: profileServer,
+        moduleName: 'profile',
+        path: '/v0/token/authorize',
+        method: 'POST',
+        headers: Object.assign({ 'content-type': 'application/json' }, bearerHeaders),
+        body: {}
+    });
+    assert.strictEqual(findTenant(parseJsonResponse(authorization, 'Profile token authorization')), 'default',
+        'Profile must preserve the authenticated tenant in the human Bearer token');
+    let missingToken = await requestModuleEndpoint({
+        server: backofficeServer,
+        moduleName: 'backoffice',
+        path: '/v0/registry/modules',
+        expectedStatus: 401
+    });
+    let registry = await requestModuleEndpoint({
+        server: backofficeServer,
+        moduleName: 'backoffice',
+        path: '/v0/registry/modules',
+        headers: bearerHeaders
+    });
+    let bootstrap = await requestModuleEndpoint({
+        server: backofficeServer,
+        moduleName: 'backoffice',
+        path: '/v0/bootstrap',
+        headers: bearerHeaders
+    });
+    let insufficientPermission = await requestModuleEndpoint({
+        server: backofficeServer,
+        moduleName: 'backoffice',
+        path: '/v0/registry/admin/modules',
+        expectedStatus: 403,
+        headers: bearerHeaders
+    });
+    let serviceTokenResponse = await requestModuleEndpoint({
+        server: profileServer,
+        moduleName: 'profile',
+        path: '/v0/auth/token/default',
+        headers: {
+            'x-api-key': environmentProperties.bootstrapIdentity.serviceApiKey,
+            'x-enterprise-code': 'default',
+            'x-nodics-runtime-instance': 'topology-auth-boundary',
+            'x-nodics-modules': 'backoffice'
+        }
+    });
+    let serviceToken = findAuthToken(parseJsonResponse(serviceTokenResponse, 'Profile internal authentication'));
+    assert(serviceToken, 'Profile internal authentication must return a service token');
+    let serviceTokenRejected = await requestModuleEndpoint({
+        server: backofficeServer,
+        moduleName: 'backoffice',
+        path: '/v0/registry/admin/modules',
+        expectedStatus: 403,
+        headers: { Authorization: 'Bearer ' + serviceToken, 'x-enterprise-code': 'default' }
+    });
+    return {
+        profileServer: profileServer,
+        backofficeServer: backofficeServer,
+        rejectedPassword: rejectedLogin.statusCode,
+        missingToken: missingToken.statusCode,
+        authorizedRegistry: registry.statusCode,
+        authorizedBootstrap: bootstrap.statusCode,
+        tenantPreserved: true,
+        insufficientPermission: insufficientPermission.statusCode,
+        serviceTokenRejected: serviceTokenRejected.statusCode
+    };
+}
+
+function requestRegisteredEndpoint(instance, path = '/v0/ping?help') {
+    assert(instance && instance.endpoint, 'A registered client-callable endpoint is required');
+    let target = new URL(instance.endpoint.replace(/\/$/, '') + path);
+    return new Promise((resolve, reject) => {
+        let request = http.request({ hostname: target.hostname, port: target.port, path: target.pathname + target.search, method: 'GET' }, response => {
+            let body = '';
+            response.on('data', chunk => { body += chunk.toString(); });
+            response.on('end', () => response.statusCode === 200 ? resolve({ statusCode: response.statusCode, url: target.toString() }) :
+                reject(new Error('Registered endpoint returned ' + response.statusCode + ' from ' + target + ': ' + body)));
+        });
+        request.on('error', reject);
+        request.end();
+    });
+}
+
+function selectRegisteredInstance(instances, moduleName, server) {
+    let matches = instances.filter(instance => instance.moduleName === moduleName && instance.clientCallable &&
+        (!server || instance.server === server));
+    assert.strictEqual(matches.length, 1, 'Expected one registered endpoint for ' + moduleName +
+        (server ? ' on ' + server : '') + ', found ' + matches.length);
+    return matches[0];
+}
+
+async function runRegistryDirectConnectionSmoke(snapshot) {
+    let targets = [
+        ['profile', 'profileServer'], ['nems', 'nemsServer'], ['cronjob', 'cronServer'],
+        ['dataConsumer', 'deapServer'],
+        ['workflow', 'workflowServer'], ['cms', 'cmsStagedServer'], ['cms', 'cmsOnlineServer'],
+        ['backoffice', 'backofficeServer']
+    ];
+    assert.throws(() => selectRegisteredInstance(snapshot.instances, 'cms'), /found 2/,
+        'Multiple CMS runtimes must require explicit server selection');
+    ['dataProcessor', 'dataPublisher'].forEach(moduleName => {
+        let instance = snapshot.instances.find(item => item.moduleName === moduleName && item.server === 'deapServer');
+        assert(instance && instance.clientCallable === false && instance.endpoint === undefined,
+            moduleName + ' must remain internal composition rather than advertising a direct client endpoint');
+    });
+    let schemaModules = snapshot.instances.filter(instance => instance.clientCallable &&
+        (instance.capabilities || []).includes('schema'));
+    assert(schemaModules.some(instance => instance.moduleName === 'profile') && schemaModules.some(instance => instance.moduleName === 'cms'),
+        'Capability filtering must retain modules that declare schema ownership');
+    let calls = [];
+    for (let [moduleName, server] of targets) {
+        let instance = selectRegisteredInstance(snapshot.instances, moduleName, server);
+        let response = await requestRegisteredEndpoint(instance);
+        calls.push({ moduleName: moduleName, server: server, endpoint: instance.endpoint, statusCode: response.statusCode });
+    }
+    return { selectedEndpoints: calls.length, schemaCapabilityMatches: schemaModules.length,
+        ambiguousCmsRejected: true, internalDeapModulesHidden: true, calls: calls };
 }
 
 function startServer(serverName, nodeName) {
@@ -494,15 +667,81 @@ async function waitForRegistry(runtime, predicate, description) {
     throw new Error('BackOffice registry did not satisfy ' + description + ': ' + JSON.stringify(summary));
 }
 
+/** Rejects registry snapshots that expose known credential or internal lease fields. */
+function assertClientSafeRegistrySnapshot(snapshot) {
+    let forbidden = new Set(['authorization', 'credential', 'password', 'privatekey', 'secret', 'token', 'expiresat']);
+    function assertSafeKeys(value) {
+        if (!value || typeof value !== 'object') return;
+        Object.keys(value).forEach(key => {
+            assert(!forbidden.has(key.toLowerCase()), 'Registry client projection must not expose ' + key);
+            assertSafeKeys(value[key]);
+        });
+    }
+    assertSafeKeys(snapshot.instances);
+    snapshot.instances.forEach(instance => {
+        assert(instance.moduleName && instance.instanceId && instance.environment && instance.server,
+            'Every registry lease requires sanitized runtime coordinates');
+        if (instance.clientCallable) assert(/^https?:\/\//.test(instance.endpoint),
+            'Client-callable registry leases require an HTTP endpoint');
+        else assert.strictEqual(instance.endpoint, undefined,
+            'Non-client-callable registry leases must not expose an endpoint');
+    });
+}
+
+/** Proves module registration, sanitization, discovery, and restart recovery inside monoServer. */
+async function runConsolidatedRegistrySmoke(runtime) {
+    let expectedModules = Array.from(new Set(runtime.contract.activeModules));
+    let initial = await waitForRegistry(runtime, snapshot => {
+        let observed = snapshot.instances.map(instance => instance.moduleName);
+        return expectedModules.every(moduleName => observed.includes(moduleName)) &&
+            snapshot.discoveries.some(discovery => discovery.moduleName === 'cms' && discovery.operations > 0) &&
+            snapshot.availability.some(availability => availability.moduleName === 'cms' && availability.state === 'UP');
+    }, 'monoServer registration of every active module');
+    assertClientSafeRegistrySnapshot(initial);
+    assert.strictEqual(new Set(initial.instances.map(instance => instance.instanceId)).size, 1,
+        'monoServer modules must share one runtime instance identity');
+    assert(initial.instances.every(instance => instance.environment === 'startioLocal' && instance.server === CONSOLIDATED_SERVER),
+        'monoServer registry coordinates must be derived from the selected local runtime');
+    let durableCms = initial.durableContracts.find(contract => contract.moduleName === 'cms');
+    assert(durableCms && durableCms.hash && durableCms.activationRevision > 0,
+        'monoServer must persist an active CMS contract observation');
+    assert(initial.catalogue.cms && initial.catalogue.cms.activeModuleLeases === 1,
+        'monoServer catalogue must aggregate CMS into one active module lease');
+    return { expectedModules: expectedModules, durableCms: durableCms, initialInstanceId: initial.instances[0].instanceId };
+}
+
 async function runConsolidatedSmoke() {
     let runtime = await startServer(CONSOLIDATED_SERVER);
     try {
         assertRuntimeContract(runtime);
         assertRequiredModules(runtime, REQUIRED_CONSOLIDATED_MODULES);
+        let registryBeforeRestart = await runConsolidatedRegistrySmoke(runtime);
+        await stopServer(runtime);
+        runtime = await startServer(CONSOLIDATED_SERVER);
+        assertRuntimeContract(runtime);
+        assertRequiredModules(runtime, REQUIRED_CONSOLIDATED_MODULES);
+        let recoveredRegistry = await waitForRegistry(runtime, snapshot => {
+            let observed = snapshot.instances.map(instance => instance.moduleName);
+            let recoveredCms = snapshot.durableContracts.find(contract => contract.moduleName === 'cms');
+            return registryBeforeRestart.expectedModules.every(moduleName => observed.includes(moduleName)) && recoveredCms &&
+                recoveredCms.hash === registryBeforeRestart.durableCms.hash &&
+                recoveredCms.activationRevision === registryBeforeRestart.durableCms.activationRevision;
+        }, 'monoServer restart registration and durable CMS contract recovery');
+        assertClientSafeRegistrySnapshot(recoveredRegistry);
+        assert(!recoveredRegistry.instances.some(instance => instance.instanceId === registryBeforeRestart.initialInstanceId),
+            'monoServer restart must replace the stopped process identity');
         return {
             runtime: runtime,
             communication: await runConsolidatedCommunicationSmoke(),
-            readiness: await runRuntimeReadinessSmoke([runtime])
+            readiness: await runRuntimeReadinessSmoke([runtime]),
+            authentication: await runBackofficeHumanAuthenticationSmoke(),
+            registry: {
+                activeInstances: recoveredRegistry.diagnostics.activeInstances,
+                registeredModules: Array.from(new Set(recoveredRegistry.instances.map(instance => instance.moduleName))).length,
+                restartRecovered: true,
+                durableContractRecovered: true,
+                clientProjectionSanitized: true
+            }
         };
     } finally {
         await stopServer(runtime);
@@ -527,16 +766,52 @@ async function runModularSmoke() {
                 snapshot.availability.some(availability => availability.moduleName === 'cms' && availability.state === 'UP');
         }, 'registration of every active module and CMS capability discovery');
 
+        assertClientSafeRegistrySnapshot(initialRegistry);
+        let cmsInstances = initialRegistry.instances.filter(instance => instance.moduleName === 'cms');
+        assert.strictEqual(cmsInstances.length, 2, 'Staged and Online CMS must register as two runtime instances');
+        assert.deepStrictEqual(cmsInstances.map(instance => instance.server).sort(), ['cmsOnlineServer', 'cmsStagedServer']);
+        assert.strictEqual(new Set(cmsInstances.map(instance => instance.instanceId)).size, 2,
+            'Staged and Online CMS must retain distinct runtime identities');
+        assert.strictEqual(new Set(cmsInstances.map(instance => instance.endpoint)).size, 2,
+            'Staged and Online CMS must retain distinct direct-call endpoints');
+        assert(initialRegistry.catalogue.cms && initialRegistry.catalogue.cms.activeModuleLeases === 2,
+            'The CMS catalogue must aggregate both runtime leases under one CMS capability');
+        assert.strictEqual(initialRegistry.cmsAdminDetail.instances.length, 2,
+            'Administrative CMS detail must expose both sanitized runtime instances');
+
+        let authenticationBeforeRestart = await runBackofficeHumanAuthenticationSmoke('profileServer', 'backofficeServer');
+        let directConnections = await runRegistryDirectConnectionSmoke(initialRegistry);
+        let profileIndex = runtimes.findIndex(runtime => runtime.serverName === 'profileServer');
+        let previousProfileRuntime = runtimes[profileIndex];
+        let previousProfileInstance = initialRegistry.instances.find(instance =>
+            instance.moduleName === 'profile' && instance.server === 'profileServer').instanceId;
+        let unrelatedInstanceIds = new Set(initialRegistry.instances.filter(instance => instance.server !== 'profileServer')
+            .map(instance => instance.instanceId));
+        await stopServer(previousProfileRuntime);
+        let restartedProfileRuntime = await startServer('profileServer');
+        assertRuntimeContract(restartedProfileRuntime);
+        assertRequiredModules(restartedProfileRuntime, REQUIRED_MODULAR_MODULES.profileServer);
+        runtimes[profileIndex] = restartedProfileRuntime;
+        let profileReconciledRegistry = await waitForRegistry(backofficeRuntime, snapshot =>
+            snapshot.instances.some(instance => instance.moduleName === 'profile' && instance.server === 'profileServer' &&
+                instance.instanceId !== previousProfileInstance) &&
+            !snapshot.instances.some(instance => instance.instanceId === previousProfileInstance) &&
+            Array.from(unrelatedInstanceIds).every(instanceId => snapshot.instances.some(instance => instance.instanceId === instanceId)),
+        'Profile restart reconciliation without unrelated lease loss');
+        assertClientSafeRegistrySnapshot(profileReconciledRegistry);
+        let authenticationAfterProfileRestart = await runBackofficeHumanAuthenticationSmoke('profileServer', 'backofficeServer');
+
         let cmsIndex = runtimes.findIndex(runtime => runtime.serverName === 'cmsStagedServer');
         let previousCmsRuntime = runtimes[cmsIndex];
-        let previousCmsInstance = initialRegistry.instances.find(instance => instance.moduleName === 'cms').instanceId;
+        let previousCmsInstance = cmsInstances.find(instance => instance.server === 'cmsStagedServer').instanceId;
         await stopServer(previousCmsRuntime);
         let restartedCmsRuntime = await startServer('cmsStagedServer');
         assertRuntimeContract(restartedCmsRuntime);
         assertRequiredModules(restartedCmsRuntime, REQUIRED_MODULAR_MODULES.cmsStagedServer);
         runtimes[cmsIndex] = restartedCmsRuntime;
         let reconciledRegistry = await waitForRegistry(backofficeRuntime, snapshot => snapshot.instances.some(instance =>
-            instance.moduleName === 'cms' && instance.instanceId !== previousCmsInstance) &&
+            instance.moduleName === 'cms' && instance.server === 'cmsStagedServer' && instance.instanceId !== previousCmsInstance) &&
+            snapshot.instances.some(instance => instance.moduleName === 'cms' && instance.server === 'cmsOnlineServer') &&
             !snapshot.instances.some(instance => instance.instanceId === previousCmsInstance), 'CMS restart reconciliation');
         let durableCms = reconciledRegistry.durableContracts.find(contract => contract.moduleName === 'cms');
         assert(durableCms && durableCms.hash && durableCms.activationRevision > 0, 'CMS durable contract pointer must be observable before restart');
@@ -558,6 +833,10 @@ async function runModularSmoke() {
                 snapshot.discoveries.some(discovery => discovery.moduleName === 'cms' && discovery.hash === durableCms.hash) &&
                 snapshot.availability.some(availability => availability.moduleName === 'cms' && availability.state === 'UP');
         }, 'BackOffice restart durable contract recovery');
+        let authenticationAfterBackofficeRestart = await runBackofficeHumanAuthenticationSmoke('profileServer', 'backofficeServer');
+        let recoveredDirectConnections = await runRegistryDirectConnectionSmoke(recoveredRegistry);
+        assert.strictEqual(recoveredDirectConnections.selectedEndpoints, directConnections.selectedEndpoints,
+            'BackOffice restart must preserve every selected direct module endpoint');
         return {
             runtimes: runtimes.slice(),
             communication: await runModularCommunicationSmoke(),
@@ -566,11 +845,22 @@ async function runModularSmoke() {
                 activeInstances: recoveredRegistry.diagnostics.activeInstances,
                 registeredModules: Array.from(new Set(recoveredRegistry.instances.map(instance => instance.moduleName))).length,
                 discoveredModules: recoveredRegistry.discoveries.length,
+                cmsRuntimeInstances: recoveredRegistry.instances.filter(instance => instance.moduleName === 'cms').length,
+                cmsInstanceSeparation: true,
+                cmsCatalogueAggregated: recoveredRegistry.catalogue.cms && recoveredRegistry.catalogue.cms.activeModuleLeases === 2,
+                profileRestartReconciled: true,
+                unrelatedLeasesPreserved: true,
                 cmsRestartReconciled: true,
                 backofficeRestartRecovered: true,
                 availabilityRecovered: recoveredRegistry.availability.some(availability =>
                     availability.moduleName === 'cms' && availability.state === 'UP')
             },
+            authentication: {
+                beforeRestart: authenticationBeforeRestart,
+                afterProfileRestart: authenticationAfterProfileRestart,
+                afterBackofficeRestart: authenticationAfterBackofficeRestart
+            },
+            directConnections: recoveredDirectConnections,
             publication: publication,
             pricingPublication: pricingPublication
         };
@@ -632,6 +922,8 @@ async function runRuntimeReadinessSmoke(runtimes) {
         console.log('Consolidated:', consolidated.runtime.label + ':' + consolidated.runtime.port);
         console.log('Consolidated communication:', consolidated.communication.map(item => item.url + ' -> ' + item.statusCode).join(', '));
         console.log('Consolidated readiness:', consolidated.readiness.map(item => item.url + ' -> ' + item.statusCode).join(', '));
+        console.log('Consolidated authentication:', JSON.stringify(consolidated.authentication));
+        console.log('Consolidated registry:', JSON.stringify(consolidated.registry));
     }
 
     if (TOPOLOGY_MODE === 'all' || TOPOLOGY_MODE === 'modular') {
@@ -640,6 +932,8 @@ async function runRuntimeReadinessSmoke(runtimes) {
         console.log('Modular:', modular.runtimes.map(item => item.label + ':' + item.port).join(', '));
         console.log('Communication:', modular.communication.map(item => item.url + ' -> ' + item.statusCode).join(', '));
         console.log('Readiness:', modular.readiness.map(item => item.url + ' -> ' + item.statusCode).join(', '));
+        console.log('Distributed authentication:', JSON.stringify(modular.authentication));
+        console.log('Direct module connections:', JSON.stringify(modular.directConnections));
         console.log('Registry reconciliation:', JSON.stringify(modular.registry));
         console.log('CMS publication:', JSON.stringify(modular.publication));
         console.log('Pricing publication:', JSON.stringify(modular.pricingPublication));

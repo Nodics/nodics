@@ -35,6 +35,10 @@ assert(contracts.capabilitySnapshot.properties.changeClassification.enum.include
 assert(contracts.bootstrapData.properties.uiComposition.required.includes('fallbackMode'));
 assert.deepStrictEqual(contracts.moduleAvailability.properties.state.enum, ['UP', 'DEGRADED', 'UNAVAILABLE', 'UNKNOWN']);
 assert(contracts.moduleAvailability.required.includes('unknownInstances'));
+assert(contracts.adminDetailData.properties.instances.items.properties.environment);
+assert(contracts.adminDetailData.properties.instances.items.properties.server);
+assert(contracts.adminDetailData.properties.instances.items.properties.node);
+assert(contracts.adminDetailData.properties.instances.items.properties.clientCallable);
 assert(routers.registryControl.register.requestBody.required, 'registration body schema must be required');
 assert(routers.registryControl.register.responses['200'], 'registration response schema must be declared');
 assert(routers.registryDiscovery.bootstrap.responses['200'], 'bootstrap response schema must be declared');

@@ -720,11 +720,14 @@ function createDocument(input) {
 }
 
 function createOptions(args) {
+    const environmentName = readOption(args, '--environment', null);
     const serverName = readOption(args, '--server', null);
     const nodeName = readOption(args, '--node', null);
+    ensureRuntimeArgument('E', environmentName);
     ensureRuntimeArgument('S', serverName);
     ensureRuntimeArgument('NODE', nodeName);
     return {
+        defaultEnvironment: environmentName || env.defaultOptions.defaultEnvironment,
         defaultServer: serverName || env.defaultOptions.defaultServer,
         includeRuntimeSchemas: readBooleanOption(args, '--runtime-schemas', false),
         outputDir: readOption(args, '--output-dir', null)

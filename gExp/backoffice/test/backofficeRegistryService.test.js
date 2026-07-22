@@ -25,7 +25,8 @@ global.CONFIG = { get: key => key === 'backofficeRegistry' ? {
     requireBoundServiceIdentity: true,
     modulePermissions: {},
     compatibility: { registryContractVersion: 1, minimumClientContractVersion: 1 },
-    clientSafeMetadata: ['moduleName', 'instanceId', 'endpoint', 'state', 'lastSeenAt', 'backoffice']
+    clientSafeMetadata: ['moduleName', 'instanceId', 'environment', 'server', 'node', 'clientCallable', 'endpoint', 'state',
+        'lastSeenAt', 'backoffice']
 } : undefined };
 let storeDefinition = require('../src/service/registry/defaultBackofficeRegistryStoreService');
 let store = Object.assign({}, storeDefinition, { _instances: new Map() });
@@ -134,7 +135,9 @@ async function run() {
     await assert.rejects(() => service.adminList({ query: { limit: '101' } }));
     let adminDetail = await service.adminDetail({ params: { moduleName: 'cms' } });
     assert.strictEqual(adminDetail.data.instances.length, 1);
-    assert.strictEqual(adminDetail.data.instances[0].environment, undefined, 'administrative detail must honor client-safe projection');
+    assert.deepStrictEqual({ environment: adminDetail.data.instances[0].environment, server: adminDetail.data.instances[0].server,
+        node: adminDetail.data.instances[0].node }, { environment: 'local', server: 'cms-server', node: 'cms-node' },
+    'administrative detail must expose only the safe runtime coordinates required to distinguish instances');
     let refreshed = await service.refresh({ params: { moduleName: 'cms' }, authData: { principalId: 'operator' } });
     assert.strictEqual(refreshed.data.refreshedInstances, 1);
     assert(availabilitySchedules.includes('refresh:runtime-1'));

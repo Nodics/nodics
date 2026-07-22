@@ -32,7 +32,8 @@ module.exports = {
         code: 'adminGroup',
         name: 'adminGroup',
         active: true,
-        parentGroups: ['userGroup']
+        parentGroups: ['userGroup'],
+        permissions: ['backoffice.registry.view', 'backoffice.bootstrap.view', 'backoffice.contract.view']
     },
     record1: {
         code: 'userGroup',

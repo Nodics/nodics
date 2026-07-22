@@ -12,13 +12,36 @@ no BackOffice frontend and does not define a cloud deployment.
 Nodics module groups in one process. The topology contract verifies Profile,
 NEMS, Cronjob, Workflow, CMS, WCMS, DEAP data modules, and BackOffice from the
 effective active-module result rather than assuming that a configured group was
-loaded successfully.
+loaded successfully. It also verifies that every active module self-registers
+under one process identity, that the client projection contains no secret or
+lease-internal fields, and that a complete `monoServer` restart reconstructs
+the registry while preserving the durable CMS contract selection. The same
+test performs a real HTTP employee login through Profile and uses that human
+Bearer token against BackOffice. It proves successful Registry and Bootstrap
+access plus rejected password, missing-token, insufficient-permission, and
+service-token-on-human-administration cases.
 
 Run:
 
 ```bash
 npm run test:topology:consolidated
 ```
+
+The test uses the configured local bootstrap administrator password for a new
+local database. If an existing developer database still has an older governed
+administrator credential, supply it only to the test process:
+
+```bash
+NODICS_TOPOLOGY_ADMIN_PASSWORD='<current-local-admin-password>' npm run test:topology:consolidated
+```
+
+Do not put that override in `package.json`, committed properties, command
+history shared with others, or documentation. Rotate legacy local credentials
+through the Profile identity-governance process; startup must not overwrite a
+human password merely to make a test pass. Without the override, a legacy
+credential mismatch is reported as `SKIPPED_LEGACY_LOCAL_CREDENTIAL`; all
+non-login topology checks still run. Acceptance evidence for the human journey
+requires a run that reports the six HTTP outcomes, not the skipped status.
 
 ## Modular mode
 
@@ -53,8 +76,24 @@ Non-interactive execution requires `ENV` and fails rather than guessing.
 The modular contract starts all listed processes, verifies their effective
 module composition and readiness, exercises direct module communication,
 checks BackOffice self-registration and recovery, and proves Staged-to-Online
-publication behavior. A module or BackOffice restart must reconcile without
-blocking unrelated runtime traffic.
+publication behavior. CMS Staged and CMS Online register as distinct runtime
+instances with different direct-call endpoints while the catalogue aggregates
+them under one CMS capability. A module or BackOffice restart must reconcile
+without blocking unrelated runtime traffic.
+
+The distributed security journey logs in through `profileServer` and calls
+`backofficeServer` with the resulting human Bearer token. It repeats after a
+Profile restart and after a BackOffice restart, proving tenant preservation and
+the same 401/403 rejection boundaries as consolidated mode. Profile restart
+replaces only its runtime identity; unrelated registered identities remain.
+
+The registry-derived direct-call journey selects and pings eight advertised
+module endpoints: Profile, NEMS, Cronjob, Data Consumer, dedicated Workflow,
+CMS Staged, CMS Online, and BackOffice. CMS selection without a server role is
+rejected as ambiguous. Data Processor and Data Publisher are registered without
+endpoints because they are internal DEAP composition, not client-callable APIs.
+This prevents the registry from inventing a parallel router or exposing modules
+that do not own an HTTP boundary.
 
 ## CMS Staged and Online boundary
 
@@ -89,3 +128,7 @@ lifecycle, authentication, event, publication, or registry services.
   existing Workflow and nPublish path.
 - A registration delay must recover through the existing asynchronous module
   registration heartbeat; module readiness must not wait for BackOffice.
+- A 401 from the positive Profile login normally means the persistent local
+  administrator credential differs from the current bootstrap sample. Pass the
+  current credential through `NODICS_TOPOLOGY_ADMIN_PASSWORD` or rotate it;
+  never weaken BackOffice authorization or convert human routes to service access.

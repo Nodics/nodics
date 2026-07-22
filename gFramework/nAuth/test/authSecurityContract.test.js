@@ -154,6 +154,11 @@ async function validateAsyncContracts() {
 
     let persistedState;
     global.SERVICE = {
+        DefaultIdentityGovernanceService: {
+            getSystemAuthData: function () {
+                return { isSystem: true, userGroups: ['serviceAccountUserGroup'], permissions: [] };
+            }
+        },
         DefaultUserStateService: {
             save: function (request) {
                 persistedState = request.model;

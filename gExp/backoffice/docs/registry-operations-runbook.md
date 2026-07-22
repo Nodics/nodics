@@ -82,7 +82,9 @@ Route stable alert codes to the environment monitoring system:
 1. Confirm the nCache distributed engine is enabled and ready.
 2. Confirm BackOffice readiness reports the registry-store contributor UP.
 3. Confirm diagnostics report `mode: distributed` and `available: true`.
-4. Restart one module runtime and confirm its old identity is replaced.
+4. Restart one module runtime and confirm its old identity is replaced. For
+   Profile, confirm unrelated leases remain and a new human login reaches
+   BackOffice with the same tenant context.
 5. Kill a disposable runtime without drain and confirm expiry after lease TTL.
 6. Restart one BackOffice replica and confirm other replicas retain leases.
 7. Confirm the restarted replica reports the same active contract hash and
@@ -92,8 +94,13 @@ Route stable alert codes to the environment monitoring system:
 9. Confirm operational assessment returns `READY` after recovery and alert/audit
    payloads contain no credentials, endpoints, or provider messages.
 
-Use `npm run test:topology:modular` for governed local registration, CMS restart
-reconciliation, and BackOffice durable-pointer restart recovery. Use the guarded
+Use `npm run test:topology:consolidated` for governed `monoServer` registration,
+safe-projection, whole-process restart, and durable-pointer recovery. Use
+`npm run test:topology:modular` for CMS Staged/Online identity separation,
+Profile and CMS restart reconciliation, distributed human authentication,
+explicit direct-endpoint selection, and BackOffice durable-pointer recovery.
+If the local administrator predates the bootstrap sample, provide its current
+value only through `NODICS_TOPOLOGY_ADMIN_PASSWORD`; never commit or log it. Use the guarded
 Redis live test in an isolated environment before production release:
 
 ```sh
