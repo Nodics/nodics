@@ -167,6 +167,7 @@ module.exports = {
             ,'store.backoffice.manage'
             ,'storefront.backoffice.read'
             ,'storefront.backoffice.manage'
+            ,'storefront.operations.read'
             ,'product.online.read'
             ,'product.operations.read'
             ,'product.operations.manage'

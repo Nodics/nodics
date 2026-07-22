@@ -214,6 +214,7 @@ module.exports = {
                 { suite: 'import' },
                 { suite: 'profile' },
                 { suite: 'backoffice' },
+                { suite: 'storefront' },
                 { suite: 'cache' },
                 { suite: 'cronjob' },
                 { suite: 'ems' },
@@ -230,6 +231,18 @@ module.exports = {
             full: [
                 { suite: 'basic' },
                 { suite: 'topology-modular' }
+            ],
+            storefront: [
+                { node: 'gExp/storefront/test/storefrontContract.test.js' },
+                { node: 'gExp/storefront/test/storefrontApiContract.test.js' },
+                { node: 'gExp/storefront/test/storefrontContextCacheContract.test.js' },
+                { node: 'gExp/storefront/test/storefrontDownstreamHandoffContract.test.js' },
+                { node: 'gExp/storefront/test/storefrontObservabilityContract.test.js' },
+                { node: 'gExp/storefront/test/storefrontPerformanceContract.test.js' },
+                { node: 'gExp/storefront/test/storefrontProductionHardeningContract.test.js' },
+                { node: 'gExp/storefront/test/storefrontPersistenceIntegration.test.js' },
+                { node: 'gExp/storefront/test/storefrontReferenceTransportContract.test.js' },
+                { node: 'gExp/storefront/test/storefrontTrafficResilienceContract.test.js' }
             ],
             config: [
                 { node: 'gFramework/nConfig/test/configurationValidation.test.js' },

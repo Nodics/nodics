@@ -99,6 +99,16 @@ requireSuiteIncludes('full', [
     'topology-modular'
 ]);
 
+requireSuiteIncludes('storefront', [
+    'storefrontApiContract.test.js',
+    'storefrontContextCacheContract.test.js',
+    'storefrontDownstreamHandoffContract.test.js',
+    'storefrontObservabilityContract.test.js',
+    'storefrontPerformanceContract.test.js',
+    'storefrontReferenceTransportContract.test.js',
+    'storefrontTrafficResilienceContract.test.js'
+]);
+
 requireSuiteIncludes('import', [
     'importTenantPrecedence.test.js',
     'testTenantImportIsolation.test.js',
@@ -151,6 +161,8 @@ requireSuiteIncludes('ems', [
     'gCore/workflow/flowCore/test/workflowSplitAndRetryContract.test.js',
     'gCore/cronjob/test/cronJobRuntimeContainerContract.test.js',
     'gCore/cronjob/test/cronJobEventHandlerContract.test.js',
+    'gExp/storefront/test/storefrontApiContract.test.js',
+    'gExp/storefront/test/storefrontTrafficResilienceContract.test.js',
     'gFramework/nEms/emsClient/test/messageTenantResolution.test.js',
     'gFramework/nEms/emsClient/test/emsMessageProcessContract.test.js',
     'startio/envs/startioLocal/test/topology/startioLocalRuntimeTopology.test.js',

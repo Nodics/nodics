@@ -229,6 +229,9 @@ module.exports = {
         }
         if (counter.count > max) {
             res.statusCode = 429;
+            if (typeof res.setHeader === 'function') {
+                res.setHeader('Retry-After', String(Math.max(1, Math.ceil((counter.resetAt - now) / 1000))));
+            }
             if (typeof res.json === 'function') {
                 res.json({
                     code: 'ERR_RTR_00004',

@@ -159,6 +159,7 @@ let limitedContinued = runMiddleware({
 assert.strictEqual(limitedContinued, false, 'Second request over the limit should stop');
 assert.strictEqual(limitedResponse.statusCode, 429, 'Rate limited request should use HTTP 429');
 assert.strictEqual(limitedResponse.jsonBody.code, 'ERR_RTR_00004', 'Rate limit response should use router status code');
+assert(Number(limitedResponse.headers['Retry-After']) >= 1, 'Rate limited request should tell clients when to retry');
 
 const preflightResponse = createResponse();
 let preflightContinued = runMiddleware({

@@ -32,6 +32,7 @@ const foundation = require('../src/service/foundation/defaultStorefrontFoundatio
 const context = require('../src/service/defaultStorefrontContextService');
 const schemas = require('../src/schemas/schemas').storefront;
 const routers = require('../src/router/routers').storefront;
+const interceptors = require('../src/interceptors/interceptors');
 SERVICE.DefaultStorefrontEnterpriseScopeService = scope;
 SERVICE.DefaultStorefrontEndpointFoundationService = endpointFoundation;
 const auth = { tokenType: 'access', principalId: 'operator', enterpriseCode: 'enterpriseA' };
@@ -96,7 +97,13 @@ SERVICE.DefaultStorefrontCatalogReferenceProviderService = {
     assert.strictEqual(schemas.storefrontEndpoint.indexes.individual.canonicalKey.options.unique, true);
     assert.strictEqual(routers.context.resolve.publicAccess, true);
     assert.strictEqual(routers.context.resolve.cache.enabled, false);
+    assert(interceptors.storefrontPostSaveInvalidateContext);
+    assert(interceptors.storefrontPostUpdateInvalidateContext);
+    assert(interceptors.storefrontEndpointPostSaveInvalidateContext);
+    assert(interceptors.storefrontEndpointPostUpdateInvalidateContext);
     assert.deepStrictEqual(routers.management.create.authTokenTypes, ['access']);
+    assert.strictEqual(routers.operations.diagnostics.permission, 'storefront.operations.read');
+    assert.deepStrictEqual(routers.operations.diagnostics.authTokenTypes, ['access']);
     assert.strictEqual(endpointFoundation.normalizeHostname('Electronics.Nodics.Com.'), 'electronics.nodics.com');
     ['localhost', '10.0.0.1', '*.nodics.com', 'https://nodics.com', 'nodics.com:443'].forEach((host) =>
         assert.throws(

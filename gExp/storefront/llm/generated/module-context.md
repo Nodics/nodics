@@ -32,10 +32,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 21 |
-| Test files | 5 |
+| Source files | 26 |
+| Test files | 12 |
 | Data files | 0 |
-| All module-owned files | 32 |
+| All module-owned files | 44 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 28 |
+| Documented | 40 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -99,17 +99,22 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/storefront/nodics.js` | `module` | `documented` | 2/2 | Generated Nodics lifecycle entrypoint for storefront. |  |
 | `gExp/storefront/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gExp/storefront/src/controller/defaultStorefrontContextController.js` | `src` | `documented` | 3/3 | Maps a public hostname-resolution request to the standard client-safe Storefront response envelope. |  |
-| `gExp/storefront/src/controller/defaultStorefrontManagementController.js` | `src` | `documented` | 8/8 | Maps protected Storefront management routes to bounded human management operations. |  |
+| `gExp/storefront/src/controller/defaultStorefrontManagementController.js` | `src` | `documented` | 9/9 | Maps protected Storefront management routes to bounded human management operations. |  |
 | `gExp/storefront/src/event/listeners.js` | `src` | `documented` | 0/0 | Event listener registry for this boundary. |  |
 | `gExp/storefront/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Interceptor definition registry for this boundary. |  |
 | `gExp/storefront/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Pipeline definition registry for this boundary. |  |
 | `gExp/storefront/src/router/appConfig.js` | `src` | `documented` | 0/0 | Router application configuration registry for this boundary. |  |
 | `gExp/storefront/src/router/routers.js` | `src` | `documented` | 0/0 | Router definition registry for this boundary. |  |
+| `gExp/storefront/src/schemas/apiContracts.js` | `src` | `documented` | 1/1 | Defines public context, secured diagnostics, compatibility, and standard error JSON schemas for generated OpenAPI contracts. |  |
 | `gExp/storefront/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Schema definition registry for this boundary. |  |
 | `gExp/storefront/src/search/indexes.js` | `src` | `documented` | 0/0 | Search index definition registry for this boundary. |  |
 | `gExp/storefront/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Empty module-creation placeholder that demonstrates the service lifecycle shape until concrete services are added. |  |
+| `gExp/storefront/src/service/defaultStorefrontContextCacheService.js` | `src` | `documented` | 8/8 | Caches public hostname resolution through the provider-neutral nCache contract while keeping Storefront persistence authoritative. |  |
 | `gExp/storefront/src/service/defaultStorefrontContextService.js` | `src` | `documented` | 9/9 | Resolves one client-safe active context from the trusted request hostname and authoritative module references. |  |
+| `gExp/storefront/src/service/defaultStorefrontContractService.js` | `src` | `documented` | 9/9 | Negotiates the additive public Storefront contract and applies runtime-configurable cache, version, request-id, ETag, and retry headers. |  |
 | `gExp/storefront/src/service/defaultStorefrontManagementService.js` | `src` | `documented` | 15/15 | Provides bounded human management operations for Storefront definitions and hostname endpoints. |  |
+| `gExp/storefront/src/service/defaultStorefrontObservabilityService.js` | `src` | `documented` | 17/17 | Contributes Storefront readiness and exposes bounded secret-safe resolution and cache diagnostics without replacing nSystem or nCache authority. |  |
+| `gExp/storefront/src/service/defaultStorefrontTrafficService.js` | `src` | `documented` | 13/13 | Coalesces identical hostname resolutions and enforces runtime-configurable concurrency and queue bounds around the authoritative cache/resolver chain. |  |
 | `gExp/storefront/src/service/foundation/defaultStorefrontEndpointFoundationService.js` | `src` | `documented` | 13/13 | Governs exact public hostname mappings stored in the configured bootstrap tenant. |  |
 | `gExp/storefront/src/service/foundation/defaultStorefrontEnterpriseScopeService.js` | `src` | `documented` | 10/10 | Enforces authenticated enterprise ownership and deterministic Storefront identities. |  |
 | `gExp/storefront/src/service/foundation/defaultStorefrontFoundationService.js` | `src` | `documented` | 13/13 | Enforces Storefront composition, authoritative references, lifecycle, and immutable identity. |  |
@@ -119,9 +124,16 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/storefront/src/utils/enums.js` | `src` | `documented` | 0/0 | Enum definition registry for this boundary. |  |
 | `gExp/storefront/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Status and error definition registry for this boundary. |  |
 | `gExp/storefront/src/utils/utils.js` | `src` | `documented` | 0/0 | Utility function registry for this boundary. |  |
+| `gExp/storefront/test/storefrontApiContract.test.js` | `test` | `documented` | 0/0 | Validates generated OpenAPI schemas, client compatibility, delivery headers, ETag revalidation, retry guidance, and response redaction. |  |
+| `gExp/storefront/test/storefrontContextCacheContract.test.js` | `test` | `documented` | 0/0 | Validates provider-neutral hostname caching, safe fallback, tenant partitioning, invalidation, and layered customization. |  |
 | `gExp/storefront/test/storefrontContract.test.js` | `test` | `documented` | 0/0 | Validates Storefront schemas, hostname security, references, lifecycle, and public context resolution. |  |
+| `gExp/storefront/test/storefrontDownstreamHandoffContract.test.js` | `test` | `documented` | 0/0 | Verifies CMS, Product, Pricing, and Inventory receive only client routing hints and retain their own enterprise or tenant authority paths. |  |
+| `gExp/storefront/test/storefrontObservabilityContract.test.js` | `test` | `documented` | 0/0 | Validates readiness contribution, sanitized metrics, alert thresholds, access separation, and nCache diagnostics composition. |  |
+| `gExp/storefront/test/storefrontPerformanceContract.test.js` | `test` | `documented` | 0/0 | Produces repeatable evidence for cached context resolution and sanitized diagnostics within layered performance budgets. |  |
 | `gExp/storefront/test/storefrontPersistenceIntegration.test.js` | `test` | `documented` | 0/0 | Exercises protected management persistence and public hostname resolution through the composed Storefront services. |  |
 | `gExp/storefront/test/storefrontProductionHardeningContract.test.js` | `test` | `documented` | 0/0 | Validates production endpoint governance, canonical uniqueness, lifecycle safety, and modular failure recovery. |  |
+| `gExp/storefront/test/storefrontReferenceTransportContract.test.js` | `test` | `documented` | 0/0 | Verifies CMS and Store remote lookups use the shared timeout, retry, circuit-breaker, response-bound, redirect, and idempotency transport contract. |  |
+| `gExp/storefront/test/storefrontTrafficResilienceContract.test.js` | `test` | `documented` | 0/0 | Validates hostname security, request coalescing, runtime concurrency changes, bounded queues, cleanup, and stable rejection behavior. |  |
 
 ## Extension Contract
 

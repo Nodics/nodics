@@ -17,6 +17,13 @@
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {
+    cache: {
+        storefront: {
+            channels: {
+                context: { enabled: true, fallback: true, engine: 'local', ttl: 60 }
+            }
+        }
+    },
     backofficeCapabilities: {
         storefront: {
             enabled: true,
@@ -55,12 +62,21 @@ module.exports = {
         },
         limits: { maximumStores: 100, maximumContextValues: 100, maximumPayloadBytes: 262144, maximumResultCount: 500 },
         host: { maximumLength: 253, allowedSchemes: ['https'], trustForwardedHost: false },
+        traffic: {
+            enabled: true,
+            requireHttpRateLimit: true,
+            coalescingEnabled: true,
+            maximumConcurrentResolutions: 64,
+            maximumQueuedResolutions: 256,
+            maximumInFlightKeys: 512
+        },
         cmsSiteReference: {
             moduleName: 'cms',
             apiVersion: 'v0',
             apiName: '/references/sites/resolve',
             requestTimeoutMs: 2000,
             maximumAttempts: 2,
+            maximumResponseBytes: 262144,
             preferLocal: true
         },
         storeReference: {
@@ -69,10 +85,46 @@ module.exports = {
             apiName: '/references/stores/resolve',
             requestTimeoutMs: 2000,
             maximumAttempts: 2,
+            maximumResponseBytes: 262144,
             preferLocal: true
         },
         catalogReference: { maximumResults: 2 },
         management: { allowedResources: ['storefronts', 'endpoints'] },
-        contextResolution: { defaultTenant: 'default', validateLiveReferences: true }
+        contextResolution: { defaultTenant: 'default', validateLiveReferences: true },
+        deliveryContract: {
+            contractVersion: 1,
+            minimumClientContractVersion: 1,
+            requestHeader: 'x-nodics-client-contract-version',
+            responseHeader: 'x-nodics-storefront-contract-version',
+            requestIdHeader: 'x-request-id',
+            cacheControl: 'private, max-age=0, must-revalidate',
+            etagEnabled: true,
+            retryAfterSeconds: 1
+        },
+        contextCache: {
+            enabled: true,
+            moduleName: 'storefront',
+            channelName: 'context',
+            keyPrefix: 'storefrontContext:',
+            ttlSeconds: 60,
+            negativeCachingEnabled: true,
+            negativeTtlSeconds: 5,
+            maximumKeyLength: 320,
+            contractVersion: 1
+        },
+        observability: {
+            enabled: true,
+            readiness: { cacheRequired: false, contributorTimeoutMs: 1000 },
+            performance: { cacheHitIterations: 10000, maximumCacheHitBatchMs: 1000, maximumDiagnosticsMs: 100 },
+            thresholds: {
+                minimumSamples: 20,
+                failurePercent: 5,
+                cacheErrorPercent: 10,
+                dependencyFailurePercent: 10,
+                trafficRejected: 1,
+                maximumAverageLatencyMs: 250,
+                maximumObservedLatencyMs: 2000
+            }
+        }
     }
 };

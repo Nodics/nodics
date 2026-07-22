@@ -58,14 +58,17 @@ module.exports = {
                 moduleName: policy.moduleName || 'cms',
                 apiVersion: policy.apiVersion || 'v0',
                 apiName: policy.apiName || '/references/sites/resolve',
-                method: 'POST',
-                body: { cmsSiteCode: code },
+                methodName: 'POST',
+                requestBody: { cmsSiteCode: code },
                 header: {
                     Authorization: 'Bearer ' + token,
                     'x-enterprise-code': SERVICE.DefaultStorefrontEnterpriseScopeService.resolveEnterpriseCode(request)
                 },
-                requestTimeoutMs: Number(policy.requestTimeoutMs || 2000),
-                maximumAttempts: Number(policy.maximumAttempts || 2)
+                timeoutMs: Number(policy.requestTimeoutMs || 2000),
+                maxAttempts: Number(policy.maximumAttempts || 2),
+                maxResponseBytes: Number(policy.maximumResponseBytes || 262144),
+                followRedirects: false,
+                idempotencyKey: 'storefront-cms-site-reference:' + code
             }),
             response = await SERVICE.DefaultModuleService.fetch(descriptor),
             data = response && ((response.data && response.data.data) || response.data);

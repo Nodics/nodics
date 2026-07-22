@@ -16,6 +16,8 @@
  * @owner generated
  * @override Later active modules may extend or replace this registry through Nodics layering.
  */
+const contracts = require('../schemas/apiContracts');
+const errorResponse = description => ({ description: description, content: { 'application/json': { schema: contracts.errorEnvelope } } });
 const human = function (key, method, permission, operation) {
     return {
         secured: true,
@@ -27,7 +29,9 @@ const human = function (key, method, permission, operation) {
         method: method,
         controller: 'DefaultStorefrontManagementController',
         operation: operation,
-        responses: { 200: { description: 'Successful enterprise-scoped Storefront operation' } }
+        responses: { 200: { description: 'Successful enterprise-scoped Storefront operation' },
+            400: errorResponse('Invalid Storefront request'), 401: errorResponse('Human authentication required'),
+            403: errorResponse('Permission denied') }
     };
 };
 module.exports = {
@@ -43,7 +47,22 @@ module.exports = {
                 controller: 'DefaultStorefrontContextController',
                 operation: 'resolve',
                 cache: { enabled: false },
-                responses: { 200: { description: 'Resolved active Storefront context for the request hostname' } }
+                help: { parameters: [{ name: 'x-nodics-client-contract-version', in: 'header', required: false,
+                    description: 'Positive Storefront client major version; defaults to the configured minimum.',
+                    schema: { type: 'integer', minimum: 1 } }, { name: 'If-None-Match', in: 'header', required: false,
+                    description: 'Weak ETag returned by an earlier response.', schema: { type: 'string' } }] },
+                responses: {
+                    200: { description: 'Resolved active Storefront context for the trusted request hostname',
+                        headers: { ETag: { schema: { type: 'string' } }, 'Cache-Control': { schema: { type: 'string' } },
+                            'x-nodics-storefront-contract-version': { schema: { type: 'integer' } }, 'x-request-id': { schema: { type: 'string' } } },
+                        content: { 'application/json': { schema: contracts.successEnvelope(contracts.contextData) } } },
+                    304: { description: 'Client context ETag is still current' },
+                    400: errorResponse('Hostname or contract-version request is invalid'),
+                    404: errorResponse('Active Storefront context was not found'),
+                    426: errorResponse('Client contract version is no longer supported'),
+                    429: Object.assign(errorResponse('HTTP rate limit exceeded'), { headers: { 'Retry-After': { schema: { type: 'integer' } } } }),
+                    503: Object.assign(errorResponse('Storefront resolution capacity is temporarily unavailable'), { headers: { 'Retry-After': { schema: { type: 'integer' } } } })
+                }
             }
         },
         management: {
@@ -57,6 +76,13 @@ module.exports = {
                 'storefront.backoffice.manage',
                 'retire'
             )
+        },
+        operations: {
+            diagnostics: human('/operations/diagnostics', 'GET', 'storefront.operations.read', 'diagnostics')
         }
     }
+};
+module.exports.storefront.operations.diagnostics.responses[200] = {
+    description: 'Sanitized Storefront production diagnostics',
+    content: { 'application/json': { schema: contracts.successEnvelope(contracts.diagnosticsData) } }
 };

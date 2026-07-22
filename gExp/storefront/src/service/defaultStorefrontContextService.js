@@ -35,8 +35,12 @@ module.exports = {
     },
     /** Reads and normalizes the trusted HTTP request hostname. */
     requestHostname: function (request) {
-        let host = request && request.hostname;
-        if (!host && request && request.headers) host = request.headers.host;
+        let policy = this.policy().host || {}, httpRequest = request && request.httpRequest;
+        let host = request && request.host;
+        if (!host && policy.trustForwardedHost === true && httpRequest && httpRequest.headers) host = httpRequest.headers['x-forwarded-host'];
+        if (!host && httpRequest) host = httpRequest.hostname;
+        if (!host) host = request && request.hostname;
+        if (!host && request && request.headers) host = policy.trustForwardedHost === true && request.headers['x-forwarded-host'] || request.headers.host;
         if (typeof host === 'string' && host.includes(':') && !host.startsWith('[')) host = host.split(':')[0];
         return SERVICE.DefaultStorefrontEndpointFoundationService.normalizeHostname(host);
     },
@@ -110,12 +114,21 @@ module.exports = {
                 'ERR_STOREFRONT_00009',
                 'Active Storefront was not found'
             );
-        let item = storefronts[0],
-            site = await SERVICE.DefaultStorefrontCmsSiteReferenceProviderService.resolve(internal, item.cmsSiteCode),
-            store = await SERVICE.DefaultStorefrontStoreReferenceProviderService.resolve(
-                internal,
-                item.defaultStoreCode
-            );
+        let item = storefronts[0], observer = SERVICE.DefaultStorefrontObservabilityService, site, store;
+        try {
+            site = await SERVICE.DefaultStorefrontCmsSiteReferenceProviderService.resolve(internal, item.cmsSiteCode);
+            if (observer) observer.recordDependency('cms', true);
+        } catch (error) {
+            if (observer) observer.recordDependency('cms', false, error);
+            throw error;
+        }
+        try {
+            store = await SERVICE.DefaultStorefrontStoreReferenceProviderService.resolve(internal, item.defaultStoreCode);
+            if (observer) observer.recordDependency('store', true);
+        } catch (error) {
+            if (observer) observer.recordDependency('store', false, error);
+            throw error;
+        }
         return {
             hostname: hostname,
             canonical: endpoint.canonical === true,

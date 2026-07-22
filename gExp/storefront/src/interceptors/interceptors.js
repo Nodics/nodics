@@ -49,6 +49,22 @@ module.exports = {
         index: -100,
         handler: 'DefaultStorefrontFoundationService.rejectHardDelete'
     },
+    storefrontPostSaveInvalidateContext: {
+        type: 'schema',
+        item: 'storefront',
+        trigger: 'postSave',
+        active: 'true',
+        index: 100,
+        handler: 'DefaultStorefrontContextCacheService.invalidate'
+    },
+    storefrontPostUpdateInvalidateContext: {
+        type: 'schema',
+        item: 'storefront',
+        trigger: 'postUpdate',
+        active: 'true',
+        index: 100,
+        handler: 'DefaultStorefrontContextCacheService.invalidate'
+    },
     storefrontEndpointPreSave: {
         type: 'schema',
         item: 'storefrontEndpoint',
@@ -72,5 +88,21 @@ module.exports = {
         active: 'true',
         index: -100,
         handler: 'DefaultStorefrontEndpointFoundationService.rejectHardDelete'
+    },
+    storefrontEndpointPostSaveInvalidateContext: {
+        type: 'schema',
+        item: 'storefrontEndpoint',
+        trigger: 'postSave',
+        active: 'true',
+        index: 100,
+        handler: 'DefaultStorefrontContextCacheService.invalidate'
+    },
+    storefrontEndpointPostUpdateInvalidateContext: {
+        type: 'schema',
+        item: 'storefrontEndpoint',
+        trigger: 'postUpdate',
+        active: 'true',
+        index: 100,
+        handler: 'DefaultStorefrontContextCacheService.invalidate'
     }
 };

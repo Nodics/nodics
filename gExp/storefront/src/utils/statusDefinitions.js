@@ -33,5 +33,7 @@ module.exports = {
     },
     ERR_STOREFRONT_00011: { code: '401', message: 'Storefront management requires a human principal' },
     ERR_STOREFRONT_00012: { code: '400', message: 'Storefront management request is invalid' },
-    ERR_STOREFRONT_00013: { code: '413', message: 'Storefront request exceeds configured bounds' }
+    ERR_STOREFRONT_00013: { code: '413', message: 'Storefront request exceeds configured bounds' },
+    ERR_STOREFRONT_00014: { code: '503', message: 'Storefront resolution capacity is temporarily unavailable' },
+    ERR_STOREFRONT_00015: { code: '426', message: 'Storefront client contract version is no longer supported' }
 };

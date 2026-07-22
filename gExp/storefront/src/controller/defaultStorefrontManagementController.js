@@ -27,7 +27,10 @@ module.exports = {
     },
     /** Invokes an allow-listed management operation and maps its response. */
     invoke: function (operation, request, callback) {
-        let promise = SERVICE.DefaultStorefrontManagementService[operation](request).then((data) => ({
+        let service = operation === 'diagnostics'
+            ? SERVICE.DefaultStorefrontObservabilityService
+            : SERVICE.DefaultStorefrontManagementService;
+        let promise = service[operation](request).then((data) => ({
             code: 'SUC_STOREFRONT_00001',
             data: data
         }));
@@ -52,5 +55,9 @@ module.exports = {
     /** Retires one Storefront management resource. */
     retire: function (request, callback) {
         return this.invoke('retire', request, callback);
+    },
+    /** Returns sanitized Storefront production diagnostics to authorized human operators. */
+    diagnostics: function (request, callback) {
+        return this.invoke('diagnostics', request, callback);
     }
 };

@@ -4,9 +4,16 @@
 
 ## Hand-Authored Tests
 
+- `gExp/storefront/test/storefrontApiContract.test.js`
+- `gExp/storefront/test/storefrontContextCacheContract.test.js`
 - `gExp/storefront/test/storefrontContract.test.js`
+- `gExp/storefront/test/storefrontDownstreamHandoffContract.test.js`
+- `gExp/storefront/test/storefrontObservabilityContract.test.js`
+- `gExp/storefront/test/storefrontPerformanceContract.test.js`
 - `gExp/storefront/test/storefrontPersistenceIntegration.test.js`
 - `gExp/storefront/test/storefrontProductionHardeningContract.test.js`
+- `gExp/storefront/test/storefrontReferenceTransportContract.test.js`
+- `gExp/storefront/test/storefrontTrafficResilienceContract.test.js`
 
 ## Generated Tests
 

@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Backend customer-facing Storefront context, hostname resolution, and owning-module composition capability."
   },
-  "sourceFiles": 21,
-  "testFiles": 5,
+  "sourceFiles": 26,
+  "testFiles": 12,
   "dataFiles": 0,
-  "ownedFiles": 32,
-  "sourceFingerprint": "c557bd8b05393030a109b03335577ac88263db4de2c8d40f20cefd24ebe9991e",
+  "ownedFiles": 44,
+  "sourceFingerprint": "1165a727a365b186d3f2a0539fce9d216fcdc553bf77088af630fa16435e076c",
   "documentation": {
-    "documented": 28,
+    "documented": 40,
     "partially-documented": 0,
     "undocumented": 0,
     "inventory-only": 4
