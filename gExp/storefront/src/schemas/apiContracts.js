@@ -62,7 +62,7 @@ const contextData = {
 };
 const diagnosticsData = {
     type: 'object', additionalProperties: false,
-    required: ['assessment', 'configuration', 'dependencies', 'resolution', 'cache', 'traffic'],
+    required: ['assessment', 'configuration', 'dependencies', 'resolution', 'cache', 'contextAccess', 'contextAudit', 'traffic'],
     properties: {
         assessment: { type: 'object', required: ['state', 'alerts', 'checkedAt'], properties: {
             state: { enum: ['READY', 'DEGRADED', 'NOT_READY'] }, alerts: stringArray, checkedAt: { type: 'string', format: 'date-time' }
@@ -72,6 +72,16 @@ const diagnosticsData = {
             cmsSiteReferenceProvider: { type: 'object' }, storeReferenceProvider: { type: 'object' }, contextCache: { type: 'object' }
         } },
         resolution: { type: 'object' }, cache: { type: 'object' },
+        contextAccess: { type: 'object', additionalProperties: false, required: ['issued', 'refreshed', 'revoked', 'bulkRevoked', 'rejected'], properties: {
+            issued: { type: 'integer', minimum: 0 }, refreshed: { type: 'integer', minimum: 0 },
+            revoked: { type: 'integer', minimum: 0 }, bulkRevoked: { type: 'integer', minimum: 0 }, rejected: { type: 'integer', minimum: 0 }
+        } },
+        contextAudit: { type: 'object', additionalProperties: false,
+            required: ['recorded', 'publisherSuccesses', 'publisherFailures', 'eventSuccesses', 'eventFailures'], properties: {
+                recorded: { type: 'integer', minimum: 0 }, publisherSuccesses: { type: 'integer', minimum: 0 },
+                publisherFailures: { type: 'integer', minimum: 0 }, eventSuccesses: { type: 'integer', minimum: 0 },
+                eventFailures: { type: 'integer', minimum: 0 }
+            } },
         traffic: { type: 'object', additionalProperties: false, required: ['active', 'queued', 'inFlightKeys'], properties: {
             active: { type: 'integer', minimum: 0 }, queued: { type: 'integer', minimum: 0 }, inFlightKeys: { type: 'integer', minimum: 0 }
         } }

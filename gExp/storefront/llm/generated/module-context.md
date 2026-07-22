@@ -32,10 +32,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 27 |
-| Test files | 14 |
+| Source files | 28 |
+| Test files | 17 |
 | Data files | 0 |
-| All module-owned files | 47 |
+| All module-owned files | 51 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -67,8 +67,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 42 |
-| Partially documented | 1 |
+| Documented | 44 |
+| Partially documented | 3 |
 | Undocumented | 0 |
 | Inventory only | 4 |
 
@@ -98,7 +98,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/storefront/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gExp/storefront/nodics.js` | `module` | `documented` | 2/2 | Generated Nodics lifecycle entrypoint for storefront. |  |
 | `gExp/storefront/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gExp/storefront/src/controller/defaultStorefrontContextController.js` | `src` | `documented` | 4/4 | Maps a public hostname-resolution request to the standard client-safe Storefront response envelope. |  |
+| `gExp/storefront/src/controller/defaultStorefrontContextController.js` | `src` | `documented` | 7/7 | Maps a public hostname-resolution request to the standard client-safe Storefront response envelope. |  |
 | `gExp/storefront/src/controller/defaultStorefrontManagementController.js` | `src` | `documented` | 9/9 | Maps protected Storefront management routes to bounded human management operations. |  |
 | `gExp/storefront/src/event/listeners.js` | `src` | `documented` | 0/0 | Event listener registry for this boundary. |  |
 | `gExp/storefront/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Interceptor definition registry for this boundary. |  |
@@ -109,7 +109,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/storefront/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Schema definition registry for this boundary. |  |
 | `gExp/storefront/src/search/indexes.js` | `src` | `documented` | 0/0 | Search index definition registry for this boundary. |  |
 | `gExp/storefront/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Empty module-creation placeholder that demonstrates the service lifecycle shape until concrete services are added. |  |
-| `gExp/storefront/src/service/defaultStorefrontContextAccessService.js` | `src` | `documented` | 7/7 | Issues opaque short-lived Storefront context handles and performs service-authenticated, audience-bound introspection through nCache. |  |
+| `gExp/storefront/src/service/defaultStorefrontContextAccessService.js` | `src` | `documented` | 19/19 | Issues opaque short-lived Storefront context handles and performs service-authenticated, audience-bound introspection through nCache. |  |
+| `gExp/storefront/src/service/defaultStorefrontContextAuditService.js` | `src` | `documented` | 7/7 | Records and optionally publishes sanitized Storefront context lifecycle evidence through existing Nodics audit and event authorities. |  |
 | `gExp/storefront/src/service/defaultStorefrontContextCacheService.js` | `src` | `documented` | 8/8 | Caches public hostname resolution through the provider-neutral nCache contract while keeping Storefront persistence authoritative. |  |
 | `gExp/storefront/src/service/defaultStorefrontContextService.js` | `src` | `documented` | 9/9 | Resolves one client-safe active context from the trusted request hostname and authoritative module references. |  |
 | `gExp/storefront/src/service/defaultStorefrontContractService.js` | `src` | `documented` | 9/9 | Negotiates the additive public Storefront contract and applies runtime-configurable cache, version, request-id, ETag, and retry headers. |  |
@@ -127,7 +128,10 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/storefront/src/utils/utils.js` | `src` | `documented` | 0/0 | Utility function registry for this boundary. |  |
 | `gExp/storefront/test/storefrontApiContract.test.js` | `test` | `documented` | 0/0 | Validates generated OpenAPI schemas, client compatibility, delivery headers, ETag revalidation, retry guidance, and response redaction. |  |
 | `gExp/storefront/test/storefrontContextAccessContract.test.js` | `test` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gExp/storefront/test/storefrontContextAccessPerformanceContract.test.js` | `test` | `documented` | 0/0 | Benchmarks context lifecycle operations and validates refresh, revoke, bulk-revoke, outage, recovery, and audit-sampling races. |  |
+| `gExp/storefront/test/storefrontContextAuditContract.test.js` | `test` | `partially-documented` | 0/0 | Validates lifecycle evidence redaction, optional audit and NEMS delegation, fail-open delivery, and sanitized diagnostics. | add @override |
 | `gExp/storefront/test/storefrontContextCacheContract.test.js` | `test` | `documented` | 0/0 | Validates provider-neutral hostname caching, safe fallback, tenant partitioning, invalidation, and layered customization. |  |
+| `gExp/storefront/test/storefrontContextLifecycleContract.test.js` | `test` | `partially-documented` | 0/0 | Validates one-time rotation, explicit revocation, optional binding, fail-closed cache behavior, and service-identity separation. | add @override |
 | `gExp/storefront/test/storefrontContract.test.js` | `test` | `documented` | 0/0 | Validates Storefront schemas, hostname security, references, lifecycle, and public context resolution. |  |
 | `gExp/storefront/test/storefrontCrossModuleJourneyContract.test.js` | `test` | `documented` | 0/0 | Proves two hostnames in one tenant remain isolated through Storefront issuance and CMS, Product, Pricing, and Inventory consumption in co-hosted and modular transport modes. |  |
 | `gExp/storefront/test/storefrontDownstreamHandoffContract.test.js` | `test` | `documented` | 0/0 | Verifies CMS, Product, Pricing, and Inventory receive only client routing hints and retain their own enterprise or tenant authority paths. |  |

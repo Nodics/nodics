@@ -29,21 +29,27 @@ module.exports = {
         let http = request && request.httpRequest, headers = http && http.headers || request && request.headers || {};
         return typeof http?.get === 'function' ? http.get(name) : headers[name];
     },
+    /** Reads optional Storefront client-binding proof for Storefront introspection. */
+    binding: function (request) {
+        let name = String(this.policy().bindingHeaderName || 'x-nodics-storefront-binding').toLowerCase();
+        let http = request && request.httpRequest, headers = http && http.headers || request && request.headers || {};
+        return typeof http?.get === 'function' ? http.get(name) : headers[name];
+    },
     /** Calls a co-hosted Storefront introspector using a synthetic module identity. */
-    resolveLocal: function (handle) {
+    resolveLocal: function (handle, binding) {
         return SERVICE.DefaultStorefrontContextAccessService.introspect({
             authData: { tokenType: 'service', principalId: 'product-storefront-context' },
-            body: { handle: handle, audience: 'product' }
+            body: Object.assign({ handle: handle, audience: 'product' }, binding === undefined ? {} : { binding: binding })
         });
     },
     /** Calls a separately deployed Storefront module with the existing service-token transport. */
-    resolveRemote: async function (handle) {
+    resolveRemote: async function (handle, binding) {
         let policy = this.policy(), tenant = policy.bootstrapTenant || 'default';
         let token = global.NODICS && NODICS.getInternalAuthToken && NODICS.getInternalAuthToken(tenant);
         if (!token) return { active: false };
         let descriptor = SERVICE.DefaultModuleService.buildRequest({ moduleName: policy.moduleName || 'storefront',
             apiVersion: policy.apiVersion || 'v0', apiName: policy.apiName || '/context/introspect', methodName: 'POST',
-            requestBody: { handle: handle, audience: 'product' }, header: { Authorization: 'Bearer ' + token },
+            requestBody: Object.assign({ handle: handle, audience: 'product' }, binding === undefined ? {} : { binding: binding }), header: { Authorization: 'Bearer ' + token },
             timeoutMs: Number(policy.requestTimeoutMs || 1000), maxAttempts: Number(policy.maximumAttempts || 1),
             maxResponseBytes: Number(policy.maximumResponseBytes || 32768), followRedirects: false });
         let response = await SERVICE.DefaultModuleService.fetch(descriptor);
@@ -51,11 +57,11 @@ module.exports = {
     },
     /** Establishes trusted Product request scope or fails closed on missing, inactive, expired, or unavailable context. */
     apply: async function (request) {
-        let handle = this.handle(request), policy = this.policy(), result;
+        let handle = this.handle(request), binding = this.binding(request), policy = this.policy(), result;
         if (typeof handle !== 'string' || handle.length < 32) throw SERVICE.DefaultProductEnterpriseScopeService.error('ERR_PRODUCT_00067', 'Active Storefront context is required');
         try {
             result = policy.preferLocal !== false && SERVICE.DefaultStorefrontContextAccessService
-                ? await this.resolveLocal(handle) : await this.resolveRemote(handle);
+                ? await this.resolveLocal(handle, binding) : await this.resolveRemote(handle, binding);
         } catch (error) { result = { active: false }; }
         if (!result || result.active !== true || result.audience !== 'product' || !result.context || !result.tenantCode || !result.enterpriseCode)
             throw SERVICE.DefaultProductEnterpriseScopeService.error('ERR_PRODUCT_00067', 'Active Storefront context is required');

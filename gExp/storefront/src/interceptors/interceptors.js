@@ -65,6 +65,14 @@ module.exports = {
         index: 100,
         handler: 'DefaultStorefrontContextCacheService.invalidate'
     },
+    storefrontPreUpdateRevokeContextAccess: {
+        type: 'schema',
+        item: 'storefront',
+        trigger: 'preUpdate',
+        active: 'true',
+        index: -90,
+        handler: 'DefaultStorefrontContextAccessService.revokeForLifecycle'
+    },
     storefrontEndpointPreSave: {
         type: 'schema',
         item: 'storefrontEndpoint',

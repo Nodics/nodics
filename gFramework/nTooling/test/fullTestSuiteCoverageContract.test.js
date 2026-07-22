@@ -102,6 +102,9 @@ requireSuiteIncludes('full', [
 requireSuiteIncludes('storefront', [
     'storefrontApiContract.test.js',
     'storefrontContextCacheContract.test.js',
+    'storefrontContextAuditContract.test.js',
+    'storefrontContextAccessPerformanceContract.test.js',
+    'storefrontContextLifecycleContract.test.js',
     'storefrontCrossModuleJourneyContract.test.js',
     'storefrontDownstreamHandoffContract.test.js',
     'storefrontObservabilityContract.test.js',

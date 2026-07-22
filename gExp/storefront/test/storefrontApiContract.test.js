@@ -42,6 +42,9 @@ const context = {
     [304, 400, 404, 426, 429, 503].forEach(status => assert(routers.context.resolve.responses[status], 'missing response ' + status));
     assert(routers.context.resolve.help.parameters.some(parameter => parameter.name === 'x-nodics-client-contract-version'));
     assert(routers.operations.diagnostics.responses[200].content['application/json'].schema);
+    assert.strictEqual(routers.operations.revokeStorefrontContexts.authTokenTypes[0], 'access');
+    assert.strictEqual(routers.operations.revokeStorefrontContexts.permission, 'storefront.operations.manage');
+    assert.strictEqual(routers.context.revoke.authTokenTypes[0], 'service');
 
     let httpResponse = response(), request = { requestId: 'request-1', headers: {}, httpResponse: httpResponse };
     let decorated = contract.decorate(request, context);

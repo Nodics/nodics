@@ -62,7 +62,7 @@ global.SERVICE = {
     DefaultStorefrontStoreReferenceProviderService: { resolve: (request, code) => Promise.resolve({ storeCode: code }) },
     DefaultCacheService: {
         put: options => { cache.set(options.key, options.value); return Promise.resolve(true); },
-        get: options => cache.has(options.key) ? Promise.resolve(cache.get(options.key)) : Promise.reject(new Error('cache miss'))
+        get: options => cache.has(options.key) ? Promise.resolve(cache.get(options.key)) : Promise.reject(Object.assign(new Error('cache miss'), { code: 'ERR_CACHE_00001' }))
     },
     DefaultStorefrontContextAccessService: contextAccess,
     DefaultModuleService: {

@@ -29,21 +29,27 @@ module.exports = {
         let http = request && request.httpRequest, headers = http && http.headers || request && request.headers || {};
         return http && typeof http.get === 'function' ? http.get(name) : headers[name];
     },
+    /** Reads optional Storefront client-binding proof for Storefront introspection. */
+    binding: function (request) {
+        let name = String(this.policy().bindingHeaderName || 'x-nodics-storefront-binding').toLowerCase();
+        let http = request && request.httpRequest, headers = http && http.headers || request && request.headers || {};
+        return http && typeof http.get === 'function' ? http.get(name) : headers[name];
+    },
     /** Introspects a co-hosted Storefront authority with a synthetic Pricing module identity. */
-    resolveLocal: function (handle) {
+    resolveLocal: function (handle, binding) {
         return SERVICE.DefaultStorefrontContextAccessService.introspect({
             authData: { tokenType: 'service', principalId: 'pricing-storefront-context' },
-            body: { handle: handle, audience: 'pricing' }
+            body: Object.assign({ handle: handle, audience: 'pricing' }, binding === undefined ? {} : { binding: binding })
         });
     },
     /** Introspects a separately deployed Storefront through existing Nodics module transport. */
-    resolveRemote: async function (handle) {
+    resolveRemote: async function (handle, binding) {
         let policy = this.policy(), tenant = policy.bootstrapTenant || 'default';
         let token = global.NODICS && NODICS.getInternalAuthToken && NODICS.getInternalAuthToken(tenant);
         if (!token) return { active: false };
         let descriptor = SERVICE.DefaultModuleService.buildRequest({ moduleName: policy.moduleName || 'storefront',
             apiVersion: policy.apiVersion || 'v0', apiName: policy.apiName || '/context/introspect', methodName: 'POST',
-            requestBody: { handle: handle, audience: 'pricing' }, header: { Authorization: 'Bearer ' + token },
+            requestBody: Object.assign({ handle: handle, audience: 'pricing' }, binding === undefined ? {} : { binding: binding }), header: { Authorization: 'Bearer ' + token },
             timeoutMs: Number(policy.requestTimeoutMs || 1000), maxAttempts: Number(policy.maximumAttempts || 1),
             maxResponseBytes: Number(policy.maximumResponseBytes || 32768), followRedirects: false });
         let response = await SERVICE.DefaultModuleService.fetch(descriptor);
@@ -51,11 +57,11 @@ module.exports = {
     },
     /** Applies trusted Pricing scope while retaining only business inputs owned by the caller. */
     apply: async function (request) {
-        let handle = this.handle(request), policy = this.policy(), result;
+        let handle = this.handle(request), binding = this.binding(request), policy = this.policy(), result;
         if (typeof handle !== 'string' || handle.length < 32) throw this.error();
         try {
             result = policy.preferLocal !== false && SERVICE.DefaultStorefrontContextAccessService
-                ? await this.resolveLocal(handle) : await this.resolveRemote(handle);
+                ? await this.resolveLocal(handle, binding) : await this.resolveRemote(handle, binding);
         } catch (error) { result = { active: false }; }
         if (!result || result.active !== true || result.audience !== 'pricing' || !result.context ||
             !result.context.siteCode || !result.context.storeCode || !result.context.currencyCode ||

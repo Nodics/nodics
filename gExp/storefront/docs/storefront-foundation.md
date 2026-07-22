@@ -98,13 +98,87 @@ Applications should treat the Storefront response as bootstrap context. They pas
 
 Every successful HTTP 200 resolution issues `contextAccess.handle`, its required header name, and its short lifetime. The value is cryptographically random and opaque: it is not a JWT and contains no browser-readable tenant, enterprise, permission, service token, or routing payload. The client sends it as `x-nodics-storefront-context` to a supported direct delivery endpoint. HTTP 304 does not issue a new handle; refresh the Storefront context when the previous handle expires.
 
-The handle is a short-lived bearer reference. Opacity prevents clients from reading or editing its context, but it does not prove which browser currently possesses it. Use TLS, prevent referrer/header logging, avoid durable browser storage, apply edge controls, and keep the lifetime short. A client presenting the Apparel handle always receives Apparel-derived projections even if its payload claims Electronics values; a stolen still-active handle requires expiry or explicit cache revocation before it becomes inactive. Adding device or session binding later would require an explicit trusted binding contract, not inference inside individual domain modules.
+The handle is a short-lived bearer reference. Opacity prevents clients from reading or editing its context, but it does not prove which browser currently possesses it. Use TLS, prevent referrer/header logging, avoid durable browser storage, apply the existing nRouter edge controls, and keep the lifetime short. A client presenting the Apparel handle always receives Apparel-derived projections even if its payload claims Electronics values.
+
+Call public `POST /context/refresh` before expiry to rotate a handle. Rotation atomically consumes the predecessor, so only one concurrent refresh can succeed and the previous handle becomes inactive immediately. If creation of the successor fails after consumption, the client must resolve the hostname again; Storefront chooses denial over restoring ambiguous security state. An authenticated module may call `POST /context/revoke` with its service token and a handle. Exact-key invalidation uses the same `DefaultCacheService` channel and distributed invalidation contract; it does not create a revocation database or second registry.
+
+For a compromised or administratively disabled Storefront, an operations user with `storefront.operations.manage` calls `POST /operations/context-access/revoke-storefront`. Storefront replaces that tenant/enterprise/Storefront generation, making every handle issued under an earlier generation inactive without scanning cache keys. Moving a Storefront to `SUSPENDED` or `RETIRED` invokes the same operation before persistence; if generation storage is unavailable, the lifecycle change fails instead of claiming that immediate revocation succeeded. Reactivation does not restore an older handle. Newly resolved handles use the latest generation.
+
+```http
+POST /nodics/storefront/v0/operations/context-access/revoke-storefront HTTP/1.1
+Authorization: Bearer <human access token>
+Content-Type: application/json
+
+{"storefrontCode":"electronicsWeb","reason":"suspected context theft"}
+```
+
+The route derives tenant and enterprise from the authenticated human request. A service token cannot use this operator route, while the exact-handle internal revocation route continues requiring a service token. This preserves human and module identity separation.
+
+Anonymous clients remain unbound by default. A higher-risk deployment may enable `contextAccess.binding.enabled` and require a client-generated random value of at least 32 characters in `x-nodics-storefront-binding`. The client sends the same value when resolving and calling CMS, Product, Pricing, or Inventory, and supplies it as `binding` when refreshing. Storefront stores only its SHA-256 digest, uses timing-safe comparison, and fails closed on missing or wrong proof. This reduces replay when a handle is stolen without its separate binding value, but it is not device attestation. Never derive the value from IP address, user agent, tenant, or a human access token. Human login/logout and Storefront context remain separate identity lifecycles.
+
+```http
+POST /nodics/storefront/v0/context/refresh HTTP/1.1
+Content-Type: application/json
+
+{"handle":"<current opaque handle>"}
+```
 
 Storefront stores the ephemeral active-state record through `DefaultCacheService`. A target module authenticates itself with the existing module service token and calls `POST /context/introspect` with the handle and its own audience. Storefront returns `active: true` only when the handle exists, is unexpired, permits that audience, and its cache state is readable. It returns only that module's context projection. Invalid syntax, expiry, wrong audience, cache miss, cache outage, and ambiguous state return inactive; the customer request then fails closed.
 
 Product, CMS, Pricing, and Inventory are implemented consumers. Call `GET /online/storefront/items/:itemType/:itemCode` for Product, `GET /delivery/storefront/pages/resolve?path=/home` for CMS, `POST /delivery/storefront/prices/resolve` for Pricing, or `POST /delivery/storefront/stock-availability/evaluate` for Inventory with the handle. Product derives tenant, enterprise, Product Catalog, and locale; CMS derives tenant, enterprise, Site, locale, and channel; Pricing derives tenant, enterprise, Site, Store, currency, and channel; Inventory derives tenant, enterprise, Store, country, and channel. Each replaces or ignores caller scope overrides and retains its own data, identity, bounds, cache, and delivery authority.
 
-For a single Storefront node, the local cache engine is sufficient. Multi-node or autoscaled Storefront deployments must select an enabled shared Redis or supported distributed engine for the `contextAccess` channel; otherwise a handle issued on one node may be inactive on another, safely denying traffic. Never enable cache fallback for this channel: silently moving security state to a different provider would make active-state decisions topology-dependent. Keep TLS, module authentication, rate limits, response bounds, sanitized audit records, and short timeouts enabled on introspection.
+For a single Storefront node, the local cache engine is sufficient. Multi-node or autoscaled Storefront deployments must select an enabled shared Redis or supported distributed engine for the `contextAccess` channel; otherwise issuance, rotation, revocation, and introspection may disagree between nodes and safely deny traffic. The engine must provide TTL, atomic consume, exact-key invalidation, and distributed consistency. Never enable cache fallback for this channel: silently moving security state to a different provider would make active-state decisions topology-dependent. Keep TLS, module authentication, rate limits, response bounds, sanitized audit records, and short timeouts enabled on introspection.
+
+Lifecycle diagnostics expose only aggregate issued, refreshed, individually revoked, bulk-revoked, and rejected counts. They never contain handles, binding values, generations, hashes, tenant codes, or context. Alert on unusual refresh rejection, bulk revocation, or cache error rates, and investigate with request IDs rather than secrets. During a cache incident, introspection and refresh fail closed; clients resolve again after the provider is healthy. During suspected theft, revoke the exact handle or the affected Storefront, rotate relevant client state, and review whether optional binding and a shorter TTL should be enabled.
+
+`generationTtlSeconds` must always exceed `ttlSeconds`; the default is 360 seconds for a 120-second handle. This guarantees that a revocation marker outlives every handle it invalidates. Keep both records in the same non-fallback `contextAccess` channel. Cache eviction or a full security-channel loss also removes active handles, so access fails closed. Do not persist generations in a new database or add a cache-key index.
+
+### Audit evidence and incident response
+
+`DefaultStorefrontContextAuditService` records sanitized outcomes for issuance, refresh rejection and success, individual revocation, bulk revocation, lifecycle-triggered revocation, and security-state write failure. Approved fields are event type, outcome, stable reason code, operation, audience, request correlation, Storefront scope, and timestamp. A human principal ID and token type are included only after an authenticated administrative operation. Handles, bindings, hashes, generations, context data, authorization headers, passwords, cookies, remote payloads, and free-form operator reasons are always discarded.
+
+By default, evidence is written through the module logger and delivery failures do not reverse a completed revocation. Configure `publisherService` only for an existing audit writer exposing `record(event)`. To bridge sanitized events to NEMS, enable `events` and retain `DefaultEventService`; its configured module transport and event delivery remain authoritative. Storefront does not implement a retry queue, audit database, or message broker client.
+
+High-volume successful issuance is deterministically sampled with `issueSuccessSampleRate`, `0.1` by default. A value of `1` records every success and `0` suppresses successful-issuance evidence. Refresh rejection, individual revocation, bulk revocation, lifecycle revocation, and every failure are never sampled. Sampling changes telemetry volume only; it never changes handle issuance, validation, or cache state.
+
+```js
+module.exports = {
+    storefront: {
+        contextAccess: {
+            audit: {
+                enabled: true,
+                publisherService: 'ProjectAuditPublisherService',
+                events: {
+                    enabled: true,
+                    publisherService: 'DefaultEventService',
+                    eventName: 'storefront.context.lifecycle',
+                    target: 'storefront',
+                    type: 'ASYNC'
+                }
+            }
+        },
+        observability: {
+            thresholds: {
+                contextAccessRejected: 20,
+                contextAccessBulkRevoked: 5,
+                contextAuditDeliveryFailures: 1
+            }
+        }
+    }
+};
+```
+
+For an incident, an operator should:
+
+1. Confirm the affected tenant, enterprise, and Storefront from trusted management data—not from a reported handle.
+2. Invoke Storefront-wide revocation with a bounded reason category and retain the request ID.
+3. Verify `bulkRevoked` increased and that older handles introspect as inactive.
+4. Check `contextAudit` delivery counters and the configured audit/NEMS destination using the request ID.
+5. If evidence publication failed, keep the revocation in force and restore the existing audit or event delivery authority; do not reissue old handles.
+6. Shorten handle TTL or enable binding through governed runtime configuration when the risk assessment requires it.
+7. Resolve fresh contexts only after the Storefront and dependent modules are confirmed healthy.
+
+Alerts `CONTEXT_ACCESS_REJECTION_RATE`, `CONTEXT_ACCESS_BULK_REVOCATION_RATE`, and `CONTEXT_AUDIT_DELIVERY_FAILURE` are derived from configurable process counters. They are operational signals, not a durable evidence ledger. Evidence retention, legal hold, backup, access control, encryption, and deletion periods belong to the configured enterprise audit destination.
 
 This design follows the active-state and protected-introspection model of RFC 7662 and the resource-local enforcement principle of zero-trust architecture. It is deliberately not a general OAuth access token and grants no mutation permission.
 
@@ -265,6 +339,32 @@ Default operational alerts are:
 Tune `storefront.observability.thresholds` through environment or server `properties.js`. Evaluate rate alerts only after `minimumSamples`; this prevents noisy alerts during startup. Threshold changes do not require new services, loaders, or metric stores.
 
 `storefrontPerformanceContract.test.js` supplies repeatable process-level evidence for the cache-hit and diagnostics paths. Its iteration count and budgets come from `storefront.observability.performance`, so capacity-test environments can tighten them without editing the test. This micro-benchmark protects accidental hot-path regressions; it does not replace gateway, network, database, cache-cluster, or full workload capacity testing.
+
+`storefrontContextAccessPerformanceContract.test.js` separately measures issuance, introspection, rotation, individual revocation, bulk revocation, and sampled audit dispatch. It also proves that concurrent refresh has exactly one winner, revoke/introspection converges to inactive, a cache outage fails closed, and recovery restores only handles that remain valid. Its iteration count and budgets come from `storefront.contextAccess.performance`.
+
+The default process-level 500-operation budgets are intentionally generous CI regression guards, not production service-level objectives. Establish production values with representative network latency, encryption, Redis or Hazelcast topology, NEMS/audit destinations, payload sizes, tenant counts, and failure injection. Local cache is suitable only for a single Storefront node. Shared Redis or Hazelcast is required for horizontally scaled context access; keep fallback disabled and verify TTL, atomic consume, key invalidation, and shared generation visibility before traffic cutover.
+
+Capacity planning should include at least two reads per successful introspection, one active handle entry per browser context, one generation entry per recently revoked Storefront, refresh read/consume/write traffic, and unsampled failure/revocation audit volume. Start with 120-second handles and a generation TTL at least three times longer. Increase TTL only after evaluating stolen-handle exposure and cache capacity. If generation lookup becomes a measured bottleneck, design a revocation-safe distributed optimization separately; never add an unbounded process-local generation cache that can accept revoked handles.
+
+Example capacity-test override:
+
+```js
+module.exports = {
+    storefront: {
+        contextAccess: {
+            performance: {
+                iterations: 10000,
+                maximumIssueBatchMs: 5000,
+                maximumIntrospectionBatchMs: 5000,
+                maximumRefreshBatchMs: 7500,
+                maximumIndividualRevokeBatchMs: 5000,
+                maximumBulkRevokeBatchMs: 5000,
+                maximumAuditBatchMs: 1000
+            }
+        }
+    }
+};
+```
 
 The standard Nodics basic/full test governance includes the Storefront suite automatically. It verifies public schemas and headers, compatibility boundaries, ETag behavior, target-module handoff ownership, cache and invalidation, dependency transport, observability, resilience, persistence integration, and performance. Developers may run the focused suite through `node gFramework/nTooling/bin/nodics-tool.js test:suite --suite=storefront` before the broader repository regression.
 

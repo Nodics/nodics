@@ -69,8 +69,25 @@ module.exports = {
                 permissionConfig: 'authSecurity.internalToken.routePermission', apiExposure: 'moduleInternal',
                 key: '/context/introspect', method: 'POST', controller: 'DefaultStorefrontContextController', operation: 'introspect',
                 requestBody: { required: true, content: { 'application/json': { schema: { type: 'object', additionalProperties: false,
-                    required: ['handle', 'audience'], properties: { handle: { type: 'string' }, audience: { enum: ['cms', 'product', 'pricing', 'inventory'] } } } } } },
+                    required: ['handle', 'audience'], properties: { handle: { type: 'string' }, binding: { type: 'string' },
+                        audience: { enum: ['cms', 'product', 'pricing', 'inventory'] } } } } } },
                 responses: { 200: { description: 'Audience-bound active-state response for an opaque Storefront context handle' } }
+            },
+            refresh: {
+                secured: false, publicAccess: true, accessGroups: ['userGroup'], apiExposure: 'storefrontDelivery',
+                key: '/context/refresh', method: 'POST', controller: 'DefaultStorefrontContextController', operation: 'refresh', cache: { enabled: false },
+                requestBody: { required: true, content: { 'application/json': { schema: { type: 'object', additionalProperties: false,
+                    required: ['handle'], properties: { handle: { type: 'string' }, binding: { type: 'string' } } } } } },
+                responses: { 200: { description: 'Rotated Storefront context handle; the predecessor is inactive' },
+                    400: errorResponse('Active Storefront context handle is required'), 429: errorResponse('HTTP rate limit exceeded') }
+            },
+            revoke: {
+                secured: true, authTokenTypes: ['service'], accessGroups: ['userGroup'],
+                permissionConfig: 'authSecurity.internalToken.routePermission', apiExposure: 'moduleInternal',
+                key: '/context/revoke', method: 'POST', controller: 'DefaultStorefrontContextController', operation: 'revoke', cache: { enabled: false },
+                requestBody: { required: true, content: { 'application/json': { schema: { type: 'object', additionalProperties: false,
+                    required: ['handle'], properties: { handle: { type: 'string' }, reason: { type: 'string', maxLength: 128 } } } } } },
+                responses: { 200: { description: 'The Storefront context handle is inactive' }, 401: errorResponse('Module service identity required') }
             }
         },
         management: {
@@ -86,7 +103,17 @@ module.exports = {
             )
         },
         operations: {
-            diagnostics: human('/operations/diagnostics', 'GET', 'storefront.operations.read', 'diagnostics')
+            diagnostics: human('/operations/diagnostics', 'GET', 'storefront.operations.read', 'diagnostics'),
+            revokeStorefrontContexts: {
+                secured: true, authTokenTypes: ['access'], accessGroups: ['userGroup'],
+                permission: 'storefront.operations.manage', apiExposure: 'storefrontManagement',
+                key: '/operations/context-access/revoke-storefront', method: 'POST',
+                controller: 'DefaultStorefrontContextController', operation: 'revokeStorefront', cache: { enabled: false },
+                requestBody: { required: true, content: { 'application/json': { schema: { type: 'object', additionalProperties: false,
+                    required: ['storefrontCode'], properties: { storefrontCode: { type: 'string' }, reason: { type: 'string', maxLength: 128 } } } } } },
+                responses: { 200: { description: 'Every earlier context handle for the Storefront is inactive' },
+                    401: errorResponse('Human authentication required'), 403: errorResponse('Permission denied') }
+            }
         }
     }
 };

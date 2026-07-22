@@ -36,5 +36,7 @@ module.exports = {
     ERR_STOREFRONT_00013: { code: '413', message: 'Storefront request exceeds configured bounds' },
     ERR_STOREFRONT_00014: { code: '503', message: 'Storefront resolution capacity is temporarily unavailable' },
     ERR_STOREFRONT_00015: { code: '426', message: 'Storefront client contract version is no longer supported' },
-    ERR_STOREFRONT_00016: { code: '503', message: 'Storefront context access is unavailable' }
+    ERR_STOREFRONT_00016: { code: '503', message: 'Storefront context access is unavailable' },
+    ERR_STOREFRONT_00017: { code: '400', message: 'Valid Storefront context binding is required' },
+    ERR_STOREFRONT_00018: { code: '400', message: 'Active Storefront context handle is required' }
 };

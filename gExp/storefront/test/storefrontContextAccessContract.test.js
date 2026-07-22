@@ -20,7 +20,9 @@ global.SERVICE = {
     DefaultStorefrontEnterpriseScopeService: { error: (code, message) => Object.assign(new Error(message), { code: code }) },
     DefaultCacheService: {
         put: options => { values.set(options.key, options.value); return Promise.resolve(true); },
-        get: options => values.has(options.key) ? Promise.resolve(values.get(options.key)) : Promise.reject(Object.assign(new Error('miss'), { code: 'ERR_CACHE_00001' }))
+        get: options => values.has(options.key) ? Promise.resolve(values.get(options.key)) : Promise.reject(Object.assign(new Error('miss'), { code: 'ERR_CACHE_00001' })),
+        consume: options => { let value = values.get(options.key); values.delete(options.key); return Promise.resolve(value); },
+        flushCache: options => { (options.keys || []).forEach(key => values.delete(key)); return Promise.resolve(true); }
     }
 };
 (async () => {
@@ -35,8 +37,17 @@ global.SERVICE = {
     assert.strictEqual(active.tenantCode, 'tenant-secret');
     assert.strictEqual((await service.introspect({ authData: { tokenType: 'service' }, body: { handle: access.handle, audience: 'unknown' } })).active, false);
     await assert.rejects(service.introspect({ authData: { tokenType: 'access' }, body: { handle: access.handle, audience: 'product' } }), error => error.code === 'ERR_STOREFRONT_00011');
-    values.get(service.key(access.handle)).expiresAt = Date.now() - 1;
+    let rotated = await service.refresh({ body: { handle: access.handle } });
+    assert.notStrictEqual(rotated.handle, access.handle);
     assert.strictEqual((await service.introspect({ authData: { tokenType: 'service' }, body: { handle: access.handle, audience: 'product' } })).active, false);
+    await assert.rejects(service.refresh({ body: { handle: access.handle } }), error => error.code === 'ERR_STOREFRONT_00018');
+    assert.strictEqual((await service.introspect({ authData: { tokenType: 'service' }, body: { handle: rotated.handle, audience: 'product' } })).active, true);
+    await service.revoke({ authData: { tokenType: 'service' }, body: { handle: rotated.handle, reason: 'logout' } });
+    assert.strictEqual((await service.introspect({ authData: { tokenType: 'service' }, body: { handle: rotated.handle, audience: 'product' } })).active, false);
+    await assert.rejects(service.revoke({ authData: { tokenType: 'access' }, body: { handle: rotated.handle } }), error => error.code === 'ERR_STOREFRONT_00011');
+    let expired = await service.issue(resolved);
+    values.get(service.key(expired.handle)).expiresAt = Date.now() - 1;
+    assert.strictEqual((await service.introspect({ authData: { tokenType: 'service' }, body: { handle: expired.handle, audience: 'product' } })).active, false);
     SERVICE.DefaultCacheService.get = () => Promise.reject(new Error('provider down'));
     assert.strictEqual((await service.introspect({ authData: { tokenType: 'service' }, body: { handle: access.handle, audience: 'product' } })).active, false);
     SERVICE.DefaultCacheService.put = () => Promise.reject(new Error('provider down'));

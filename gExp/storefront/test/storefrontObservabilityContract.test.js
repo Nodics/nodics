@@ -91,8 +91,11 @@ const service = require('../src/service/defaultStorefrontObservabilityService');
 
     let original = service.policy;
     service.recordTrafficOutcome('rejected', 'TRAFFIC_QUEUE_FULL');
+    SERVICE.DefaultStorefrontContextAccessService = { diagnostics: () => ({ rejected: 2, bulkRevoked: 2 }) };
+    SERVICE.DefaultStorefrontContextAuditService = { diagnostics: () => ({ publisherFailures: 1, eventFailures: 0 }) };
     service.policy = () => ({ enabled: true, readiness: { cacheRequired: true }, thresholds: {
         minimumSamples: 1, failurePercent: 1, cacheErrorPercent: 1, dependencyFailurePercent: 1, trafficRejected: 1,
+        contextAccessRejected: 2, contextAccessBulkRevoked: 2, contextAuditDeliveryFailures: 1,
         maximumAverageLatencyMs: 1, maximumObservedLatencyMs: 1
     } });
     let degraded = service.assess();
@@ -103,7 +106,12 @@ const service = require('../src/service/defaultStorefrontObservabilityService');
     assert(degraded.alerts.includes('TRAFFIC_CAPACITY_REJECTED'));
     assert(degraded.alerts.includes('AVERAGE_LATENCY_HIGH'));
     assert(degraded.alerts.includes('MAXIMUM_LATENCY_HIGH'));
+    assert(degraded.alerts.includes('CONTEXT_ACCESS_REJECTION_RATE'));
+    assert(degraded.alerts.includes('CONTEXT_ACCESS_BULK_REVOCATION_RATE'));
+    assert(degraded.alerts.includes('CONTEXT_AUDIT_DELIVERY_FAILURE'));
     service.policy = original;
+    SERVICE.DefaultStorefrontContextAccessService = undefined;
+    SERVICE.DefaultStorefrontContextAuditService = undefined;
 
     SERVICE.DefaultStorefrontCmsSiteReferenceProviderService = undefined;
     assert.strictEqual(service.assess().state, 'NOT_READY');

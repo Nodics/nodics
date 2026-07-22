@@ -108,10 +108,30 @@ module.exports = {
             moduleName: 'storefront',
             channelName: 'contextAccess',
             keyPrefix: 'storefrontContextAccess:',
+            generationKeyPrefix: 'storefrontContextGeneration:',
             ttlSeconds: 120,
+            generationTtlSeconds: 360,
+            initialGeneration: '1',
+            revokeOnStatuses: ['SUSPENDED', 'RETIRED'],
+            audit: {
+                enabled: true,
+                issueSuccessSampleRate: 0.1,
+                publisherService: undefined,
+                events: { enabled: false, publisherService: 'DefaultEventService', eventName: 'storefront.context.lifecycle', target: 'storefront', type: 'ASYNC' }
+            },
             tokenBytes: 32,
             maximumHandleLength: 256,
-            audiences: ['cms', 'product', 'pricing', 'inventory']
+            binding: { enabled: false, headerName: 'x-nodics-storefront-binding', minimumLength: 32, maximumLength: 256 },
+            audiences: ['cms', 'product', 'pricing', 'inventory'],
+            performance: {
+                iterations: 500,
+                maximumIssueBatchMs: 500,
+                maximumIntrospectionBatchMs: 500,
+                maximumRefreshBatchMs: 750,
+                maximumIndividualRevokeBatchMs: 500,
+                maximumBulkRevokeBatchMs: 500,
+                maximumAuditBatchMs: 250
+            }
         },
         contextCache: {
             enabled: true,
@@ -134,6 +154,9 @@ module.exports = {
                 cacheErrorPercent: 10,
                 dependencyFailurePercent: 10,
                 trafficRejected: 1,
+                contextAccessRejected: 20,
+                contextAccessBulkRevoked: 5,
+                contextAuditDeliveryFailures: 1,
                 maximumAverageLatencyMs: 250,
                 maximumObservedLatencyMs: 2000
             }

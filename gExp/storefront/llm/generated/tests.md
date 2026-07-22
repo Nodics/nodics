@@ -6,7 +6,10 @@
 
 - `gExp/storefront/test/storefrontApiContract.test.js`
 - `gExp/storefront/test/storefrontContextAccessContract.test.js`
+- `gExp/storefront/test/storefrontContextAccessPerformanceContract.test.js`
+- `gExp/storefront/test/storefrontContextAuditContract.test.js`
 - `gExp/storefront/test/storefrontContextCacheContract.test.js`
+- `gExp/storefront/test/storefrontContextLifecycleContract.test.js`
 - `gExp/storefront/test/storefrontContract.test.js`
 - `gExp/storefront/test/storefrontCrossModuleJourneyContract.test.js`
 - `gExp/storefront/test/storefrontDownstreamHandoffContract.test.js`

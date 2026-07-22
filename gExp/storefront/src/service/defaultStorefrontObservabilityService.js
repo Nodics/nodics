@@ -138,13 +138,30 @@ module.exports = {
     },
     /** Validates Storefront observability and cache invariants without exposing effective secrets or endpoints. */
     validateConfiguration: function () {
-        let storefront = CONFIG.get('storefront') || {}, cache = this.cachePolicy(), traffic = storefront.traffic || {};
+        let storefront = CONFIG.get('storefront') || {}, cache = this.cachePolicy(), traffic = storefront.traffic || {}, access = storefront.contextAccess || {};
         let threshold = this.policy().thresholds || {}, failures = [];
         if (cache.enabled !== false) {
             if (!cache.keyPrefix || Number(cache.maximumKeyLength || 0) < String(cache.keyPrefix || '').length + 64) failures.push('CACHE_KEY_POLICY_INVALID');
             if (!Number.isFinite(Number(cache.ttlSeconds)) || Number(cache.ttlSeconds) <= 0) failures.push('CACHE_TTL_INVALID');
             if (cache.negativeCachingEnabled !== false && (!Number.isFinite(Number(cache.negativeTtlSeconds)) || Number(cache.negativeTtlSeconds) <= 0 || Number(cache.negativeTtlSeconds) > Number(cache.ttlSeconds))) failures.push('NEGATIVE_CACHE_TTL_INVALID');
             if (!Number.isInteger(Number(cache.contractVersion)) || Number(cache.contractVersion) < 1) failures.push('CACHE_CONTRACT_VERSION_INVALID');
+        }
+        if (access.enabled !== false) {
+            let accessTtl = Number(access.ttlSeconds), generationTtl = Number(access.generationTtlSeconds);
+            if (!Number.isInteger(accessTtl) || accessTtl < 1 || !Number.isInteger(generationTtl) || generationTtl <= accessTtl)
+                failures.push('CONTEXT_ACCESS_LIFETIME_INVALID');
+            let binding = access.binding || {};
+            if (binding.enabled === true && (!Number.isInteger(Number(binding.minimumLength)) ||
+                Number(binding.minimumLength) < 16 || Number(binding.maximumLength) < Number(binding.minimumLength)))
+                failures.push('CONTEXT_ACCESS_BINDING_INVALID');
+            let sampleRate = Number((access.audit || {}).issueSuccessSampleRate);
+            if (!Number.isFinite(sampleRate) || sampleRate < 0 || sampleRate > 1) failures.push('CONTEXT_ACCESS_AUDIT_SAMPLING_INVALID');
+            let performance = access.performance || {};
+            if (!Number.isInteger(Number(performance.iterations)) || Number(performance.iterations) < 1) failures.push('CONTEXT_ACCESS_PERFORMANCE_INVALID');
+            ['maximumIssueBatchMs', 'maximumIntrospectionBatchMs', 'maximumRefreshBatchMs',
+                'maximumIndividualRevokeBatchMs', 'maximumBulkRevokeBatchMs', 'maximumAuditBatchMs'].forEach((name) => {
+                if (!Number.isFinite(Number(performance[name])) || Number(performance[name]) <= 0) failures.push('CONTEXT_ACCESS_PERFORMANCE_INVALID');
+            });
         }
         ['maximumConcurrentResolutions', 'maximumInFlightKeys'].forEach((name) => {
             if (!Number.isInteger(Number(traffic[name])) || Number(traffic[name]) < 1) failures.push('TRAFFIC_BOUND_INVALID');
@@ -161,7 +178,10 @@ module.exports = {
             let value = Number(threshold[name]);
             if (!Number.isFinite(value) || value < 1) failures.push('OBSERVABILITY_THRESHOLD_INVALID');
         });
-        if (!Number.isInteger(Number(threshold.trafficRejected)) || Number(threshold.trafficRejected) < 1) failures.push('OBSERVABILITY_THRESHOLD_INVALID');
+        ['trafficRejected', 'contextAccessRejected', 'contextAccessBulkRevoked', 'contextAuditDeliveryFailures'].forEach((name) => {
+            if (threshold[name] !== undefined && (!Number.isInteger(Number(threshold[name])) || Number(threshold[name]) < 1))
+                failures.push('OBSERVABILITY_THRESHOLD_INVALID');
+        });
         return { valid: failures.length === 0, failures: Array.from(new Set(failures)).sort() };
     },
     /** Returns a detached resolution snapshot with derived latency and hit-rate values. */
@@ -196,6 +216,14 @@ module.exports = {
         let cacheAttempts = metrics.cacheHits + metrics.negativeHits + metrics.cacheMisses + metrics.cacheErrors + metrics.contractMisses;
         if (cacheAttempts >= minimum && metrics.cacheErrors * 100 / Math.max(1, cacheAttempts) >= Number(threshold.cacheErrorPercent === undefined ? 10 : threshold.cacheErrorPercent)) alerts.push('CACHE_ERROR_RATE');
         if (metrics.traffic.rejected >= Number(threshold.trafficRejected === undefined ? 1 : threshold.trafficRejected)) alerts.push('TRAFFIC_CAPACITY_REJECTED');
+        let access = SERVICE.DefaultStorefrontContextAccessService && typeof SERVICE.DefaultStorefrontContextAccessService.diagnostics === 'function'
+            ? SERVICE.DefaultStorefrontContextAccessService.diagnostics() : {};
+        let audit = SERVICE.DefaultStorefrontContextAuditService && typeof SERVICE.DefaultStorefrontContextAuditService.diagnostics === 'function'
+            ? SERVICE.DefaultStorefrontContextAuditService.diagnostics() : {};
+        if (Number(access.rejected || 0) >= Number(threshold.contextAccessRejected === undefined ? 20 : threshold.contextAccessRejected)) alerts.push('CONTEXT_ACCESS_REJECTION_RATE');
+        if (Number(access.bulkRevoked || 0) >= Number(threshold.contextAccessBulkRevoked === undefined ? 5 : threshold.contextAccessBulkRevoked)) alerts.push('CONTEXT_ACCESS_BULK_REVOCATION_RATE');
+        if (Number(audit.publisherFailures || 0) + Number(audit.eventFailures || 0) >=
+            Number(threshold.contextAuditDeliveryFailures === undefined ? 1 : threshold.contextAuditDeliveryFailures)) alerts.push('CONTEXT_AUDIT_DELIVERY_FAILURE');
         ['cms', 'store'].forEach((dependency) => {
             let item = metrics.dependencies[dependency];
             if (item.attempts >= minimum && item.failures * 100 / Math.max(1, item.attempts) >= Number(threshold.dependencyFailurePercent === undefined ? 10 : threshold.dependencyFailurePercent)) {
@@ -228,6 +256,11 @@ module.exports = {
             },
             resolution: this.snapshot(),
             cache: this.cacheSnapshot(),
+            contextAccess: SERVICE.DefaultStorefrontContextAccessService && typeof SERVICE.DefaultStorefrontContextAccessService.diagnostics === 'function'
+                ? SERVICE.DefaultStorefrontContextAccessService.diagnostics() : { issued: 0, refreshed: 0, revoked: 0, bulkRevoked: 0, rejected: 0 },
+            contextAudit: SERVICE.DefaultStorefrontContextAuditService && typeof SERVICE.DefaultStorefrontContextAuditService.diagnostics === 'function'
+                ? SERVICE.DefaultStorefrontContextAuditService.diagnostics()
+                : { recorded: 0, publisherSuccesses: 0, publisherFailures: 0, eventSuccesses: 0, eventFailures: 0 },
             traffic: SERVICE.DefaultStorefrontTrafficService && typeof SERVICE.DefaultStorefrontTrafficService.diagnostics === 'function'
                 ? SERVICE.DefaultStorefrontTrafficService.diagnostics() : { active: 0, queued: 0, inFlightKeys: 0 }
         };

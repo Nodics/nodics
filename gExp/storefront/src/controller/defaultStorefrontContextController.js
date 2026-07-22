@@ -33,7 +33,7 @@ module.exports = {
                 ? SERVICE.DefaultStorefrontContractService.decorate(request, data)
                 : { data: data, notModified: false };
             if (delivery.notModified) return { code: 'SUC_STOREFRONT_00001', responseCode: '304', data: undefined };
-            delivery.data.contextAccess = await SERVICE.DefaultStorefrontContextAccessService.issue(data);
+            delivery.data.contextAccess = await SERVICE.DefaultStorefrontContextAccessService.issue(data, request);
             return { code: 'SUC_STOREFRONT_00001', data: delivery.data };
         });
         return callback ? promise.then((value) => callback(null, value)).catch(callback) : promise;
@@ -41,6 +41,24 @@ module.exports = {
     /** Introspects an opaque context handle for an authenticated target module. */
     introspect: function (request, callback) {
         let promise = SERVICE.DefaultStorefrontContextAccessService.introspect(request)
+            .then((data) => ({ code: 'SUC_STOREFRONT_00001', data: data }));
+        return callback ? promise.then((value) => callback(null, value)).catch(callback) : promise;
+    },
+    /** Rotates an active public Storefront context handle. */
+    refresh: function (request, callback) {
+        let promise = SERVICE.DefaultStorefrontContextAccessService.refresh(request)
+            .then((data) => ({ code: 'SUC_STOREFRONT_00001', data: data }));
+        return callback ? promise.then((value) => callback(null, value)).catch(callback) : promise;
+    },
+    /** Revokes a Storefront context handle for an authenticated module operation. */
+    revoke: function (request, callback) {
+        let promise = SERVICE.DefaultStorefrontContextAccessService.revoke(request)
+            .then((data) => ({ code: 'SUC_STOREFRONT_00001', data: data }));
+        return callback ? promise.then((value) => callback(null, value)).catch(callback) : promise;
+    },
+    /** Revokes every active context handle for one authorized Storefront scope. */
+    revokeStorefront: function (request, callback) {
+        let promise = SERVICE.DefaultStorefrontContextAccessService.revokeStorefront(request)
             .then((data) => ({ code: 'SUC_STOREFRONT_00001', data: data }));
         return callback ? promise.then((value) => callback(null, value)).catch(callback) : promise;
     }
