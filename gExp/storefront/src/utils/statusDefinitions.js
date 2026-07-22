@@ -27,7 +27,10 @@ module.exports = {
     ERR_STOREFRONT_00007: { code: '409', message: 'Storefront records must be retired instead of deleted' },
     ERR_STOREFRONT_00008: { code: '400', message: 'Storefront hostname is invalid' },
     ERR_STOREFRONT_00009: { code: '404', message: 'Active Storefront context was not found' },
-    ERR_STOREFRONT_00010: { code: '409', message: 'Storefront hostname or Site is already assigned' },
+    ERR_STOREFRONT_00010: {
+        code: '409',
+        message: 'Storefront endpoint or lifecycle dependency conflicts with the request'
+    },
     ERR_STOREFRONT_00011: { code: '401', message: 'Storefront management requires a human principal' },
     ERR_STOREFRONT_00012: { code: '400', message: 'Storefront management request is invalid' },
     ERR_STOREFRONT_00013: { code: '413', message: 'Storefront request exceeds configured bounds' }

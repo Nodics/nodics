@@ -10,4 +10,6 @@ The module reuses CMS Site and Store reference contracts. Browser clients never 
 
 ```bash
 node gExp/storefront/test/storefrontContract.test.js
+node gExp/storefront/test/storefrontProductionHardeningContract.test.js
+node gExp/storefront/test/storefrontPersistenceIntegration.test.js
 ```

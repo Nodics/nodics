@@ -5,6 +5,8 @@
 ## Hand-Authored Tests
 
 - `gExp/storefront/test/storefrontContract.test.js`
+- `gExp/storefront/test/storefrontPersistenceIntegration.test.js`
+- `gExp/storefront/test/storefrontProductionHardeningContract.test.js`
 
 ## Generated Tests
 

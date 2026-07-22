@@ -44,6 +44,15 @@ module.exports = {
                 RETIRED: []
             }
         },
+        endpointLifecycle: {
+            statuses: ['DRAFT', 'ACTIVE', 'SUSPENDED', 'RETIRED'],
+            allowedTransitions: {
+                DRAFT: ['ACTIVE', 'RETIRED'],
+                ACTIVE: ['SUSPENDED', 'RETIRED'],
+                SUSPENDED: ['ACTIVE', 'RETIRED'],
+                RETIRED: []
+            }
+        },
         limits: { maximumStores: 100, maximumContextValues: 100, maximumPayloadBytes: 262144, maximumResultCount: 500 },
         host: { maximumLength: 253, allowedSchemes: ['https'], trustForwardedHost: false },
         cmsSiteReference: {

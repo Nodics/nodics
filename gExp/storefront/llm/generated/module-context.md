@@ -33,9 +33,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 21 |
-| Test files | 3 |
+| Test files | 5 |
 | Data files | 0 |
-| All module-owned files | 30 |
+| All module-owned files | 32 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 26 |
+| Documented | 28 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -108,11 +108,11 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/storefront/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Schema definition registry for this boundary. |  |
 | `gExp/storefront/src/search/indexes.js` | `src` | `documented` | 0/0 | Search index definition registry for this boundary. |  |
 | `gExp/storefront/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Empty module-creation placeholder that demonstrates the service lifecycle shape until concrete services are added. |  |
-| `gExp/storefront/src/service/defaultStorefrontContextService.js` | `src` | `documented` | 8/8 | Resolves one client-safe active context from the trusted request hostname and authoritative module references. |  |
+| `gExp/storefront/src/service/defaultStorefrontContextService.js` | `src` | `documented` | 9/9 | Resolves one client-safe active context from the trusted request hostname and authoritative module references. |  |
 | `gExp/storefront/src/service/defaultStorefrontManagementService.js` | `src` | `documented` | 15/15 | Provides bounded human management operations for Storefront definitions and hostname endpoints. |  |
-| `gExp/storefront/src/service/foundation/defaultStorefrontEndpointFoundationService.js` | `src` | `documented` | 10/10 | Governs exact public hostname mappings stored in the configured bootstrap tenant. |  |
+| `gExp/storefront/src/service/foundation/defaultStorefrontEndpointFoundationService.js` | `src` | `documented` | 13/13 | Governs exact public hostname mappings stored in the configured bootstrap tenant. |  |
 | `gExp/storefront/src/service/foundation/defaultStorefrontEnterpriseScopeService.js` | `src` | `documented` | 10/10 | Enforces authenticated enterprise ownership and deterministic Storefront identities. |  |
-| `gExp/storefront/src/service/foundation/defaultStorefrontFoundationService.js` | `src` | `documented` | 11/11 | Enforces Storefront composition, authoritative references, lifecycle, and immutable identity. |  |
+| `gExp/storefront/src/service/foundation/defaultStorefrontFoundationService.js` | `src` | `documented` | 13/13 | Enforces Storefront composition, authoritative references, lifecycle, and immutable identity. |  |
 | `gExp/storefront/src/service/reference/defaultStorefrontCatalogReferenceProviderService.js` | `src` | `documented` | 3/3 | Reuses nCatalog to validate Storefront product-catalog references without creating another catalog registry. |  |
 | `gExp/storefront/src/service/reference/defaultStorefrontCmsSiteReferenceProviderService.js` | `src` | `documented` | 6/6 | Validates CMS-owned Site references through the configured local or module transport. |  |
 | `gExp/storefront/src/service/reference/defaultStorefrontStoreReferenceProviderService.js` | `src` | `documented` | 6/6 | Validates Store-owned references through the configured local or module transport. |  |
@@ -120,6 +120,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/storefront/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Status and error definition registry for this boundary. |  |
 | `gExp/storefront/src/utils/utils.js` | `src` | `documented` | 0/0 | Utility function registry for this boundary. |  |
 | `gExp/storefront/test/storefrontContract.test.js` | `test` | `documented` | 0/0 | Validates Storefront schemas, hostname security, references, lifecycle, and public context resolution. |  |
+| `gExp/storefront/test/storefrontPersistenceIntegration.test.js` | `test` | `documented` | 0/0 | Exercises protected management persistence and public hostname resolution through the composed Storefront services. |  |
+| `gExp/storefront/test/storefrontProductionHardeningContract.test.js` | `test` | `documented` | 0/0 | Validates production endpoint governance, canonical uniqueness, lifecycle safety, and modular failure recovery. |  |
 
 ## Extension Contract
 

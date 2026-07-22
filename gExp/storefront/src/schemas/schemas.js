@@ -38,6 +38,7 @@ module.exports = {
                 currencyCodes: { type: 'array', required: false, default: [] },
                 channelCodes: { type: 'array', required: false, default: [] },
                 defaultLocaleCode: { type: 'string', required: false },
+                defaultCountryCode: { type: 'string', required: false },
                 defaultCurrencyCode: { type: 'string', required: false },
                 defaultChannelCode: { type: 'string', required: false },
                 status: { type: 'string', required: true, default: 'DRAFT' },
@@ -67,6 +68,7 @@ module.exports = {
                 storefrontCode: { type: 'string', required: true },
                 enterpriseCode: { type: 'string', required: true },
                 tenantCode: { type: 'string', required: true },
+                canonicalKey: { type: 'string', required: false },
                 canonical: { type: 'bool', required: true, default: false },
                 scheme: { type: 'string', required: true, default: 'https' },
                 status: { type: 'string', required: true, default: 'DRAFT' },
@@ -79,7 +81,10 @@ module.exports = {
                     storefrontCode: { enabled: true, name: 'storefrontCode' },
                     status: { enabled: true, name: 'status' }
                 },
-                individual: { hostname: { enabled: true, name: 'hostname', options: { unique: true } } }
+                individual: {
+                    hostname: { enabled: true, name: 'hostname', options: { unique: true } },
+                    canonicalKey: { enabled: true, name: 'canonicalKey', options: { unique: true, sparse: true } }
+                }
             }
         }
     }

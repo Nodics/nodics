@@ -59,6 +59,24 @@ module.exports = {
             }
         };
     },
+    /** Builds explicit untrusted-client handoff values for each owning delivery module. */
+    downstreamContext: function (item) {
+        return {
+            cms: { site: item.cmsSiteCode, locale: item.defaultLocaleCode, channel: item.defaultChannelCode },
+            product: { catalogCode: item.defaultProductCatalogCode, locale: item.defaultLocaleCode },
+            pricing: {
+                siteCode: item.cmsSiteCode,
+                storeCode: item.defaultStoreCode,
+                currencyCode: item.defaultCurrencyCode,
+                channelCode: item.defaultChannelCode
+            },
+            inventory: {
+                storeCode: item.defaultStoreCode,
+                countryCode: item.defaultCountryCode,
+                channelCode: item.defaultChannelCode
+            }
+        };
+    },
     /** Resolves one active client-safe Storefront context for the request hostname. */
     resolve: async function (request) {
         let hostname = this.requestHostname(request),
@@ -114,10 +132,12 @@ module.exports = {
             currencies: item.currencyCodes || [],
             channels: item.channelCodes || [],
             defaults: {
+                country: item.defaultCountryCode,
                 locale: item.defaultLocaleCode,
                 currency: item.defaultCurrencyCode,
                 channel: item.defaultChannelCode
-            }
+            },
+            downstream: this.downstreamContext(item)
         };
     }
 };

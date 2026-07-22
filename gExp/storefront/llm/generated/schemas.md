@@ -6,8 +6,8 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
-| `storefront` | `base` | yes | yes | no | no | no | no |  | 18 |
-| `storefrontEndpoint` | `base` | yes | yes | no | no | no | no | `default` | 9 |
+| `storefront` | `base` | yes | yes | no | no | no | no |  | 19 |
+| `storefrontEndpoint` | `base` | yes | yes | no | no | no | no | `default` | 10 |
 
 ### `storefront.storefront`
 
@@ -16,6 +16,7 @@
 - `countryCodes` `array` optional
 - `currencyCodes` `array` optional
 - `defaultChannelCode` `string` optional
+- `defaultCountryCode` `string` optional
 - `defaultCurrencyCode` `string` optional
 - `defaultLocaleCode` `string` optional
 - `defaultProductCatalogCode` `string` optional
@@ -33,6 +34,7 @@
 ### `storefront.storefrontEndpoint`
 
 - `canonical` `bool` required
+- `canonicalKey` `string` optional
 - `effectiveFrom` `date` optional
 - `effectiveTo` `date` optional
 - `enterpriseCode` `string` required

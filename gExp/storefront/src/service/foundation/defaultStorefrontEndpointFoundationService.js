@@ -53,6 +53,35 @@ module.exports = {
     bootstrapTenant: function () {
         return (this.policy().contextResolution || {}).defaultTenant || 'default';
     },
+    /** Builds the database-enforced canonical or alias uniqueness key. */
+    canonicalKey: function (model) {
+        if (model.status === 'RETIRED') return ['retired', model.hostname].join('::');
+        return model.canonical === true
+            ? ['canonical', model.enterpriseCode, model.tenantCode, model.storefrontCode].join('::')
+            : ['alias', model.hostname].join('::');
+    },
+    /** Validates endpoint scheme, lifecycle status, and effective dates. */
+    validateClassification: function (model) {
+        let lifecycle = this.policy().endpointLifecycle || {},
+            schemes = (this.policy().host || {}).allowedSchemes || ['https'],
+            from = model.effectiveFrom && new Date(model.effectiveFrom).getTime(),
+            to = model.effectiveTo && new Date(model.effectiveTo).getTime();
+        if (!(lifecycle.statuses || []).includes(model.status) || !schemes.includes(model.scheme))
+            throw SERVICE.DefaultStorefrontEnterpriseScopeService.error(
+                'ERR_STOREFRONT_00003',
+                'Endpoint status or scheme is not allowed by configuration'
+            );
+        if (
+            (model.effectiveFrom && !Number.isFinite(from)) ||
+            (model.effectiveTo && !Number.isFinite(to)) ||
+            (from && to && from > to)
+        )
+            throw SERVICE.DefaultStorefrontEnterpriseScopeService.error(
+                'ERR_STOREFRONT_00003',
+                'Endpoint effective dates are invalid'
+            );
+        return true;
+    },
     /** Validates that the mapped tenant-local Storefront exists. */
     validateStorefront: async function (request, model) {
         let response = await SERVICE.DefaultStorefrontService.get({
@@ -67,6 +96,44 @@ module.exports = {
                 'ERR_STOREFRONT_00005',
                 'Mapped Storefront is unavailable'
             );
+        if (model.status === 'ACTIVE' && items[0].status !== 'ACTIVE')
+            throw SERVICE.DefaultStorefrontEnterpriseScopeService.error(
+                'ERR_STOREFRONT_00005',
+                'An active endpoint requires an active Storefront'
+            );
+        return true;
+    },
+    /** Rejects duplicate hostnames and multiple live canonical endpoints for one Storefront. */
+    validateConflicts: async function (request, model, existingCode) {
+        let base = { tenant: this.bootstrapTenant(), authData: request.authData, searchOptions: { limit: 2 } },
+            response = await SERVICE.DefaultStorefrontEndpointService.get(
+                Object.assign({}, base, { query: { hostname: model.hostname } })
+            ),
+            items = response && Array.isArray(response.result) ? response.result : [];
+        if (items.some((item) => item.code !== existingCode))
+            throw SERVICE.DefaultStorefrontEnterpriseScopeService.error(
+                'ERR_STOREFRONT_00010',
+                'Hostname is already assigned'
+            );
+        if (model.canonical === true && model.status !== 'RETIRED') {
+            response = await SERVICE.DefaultStorefrontEndpointService.get(
+                Object.assign({}, base, {
+                    query: {
+                        enterpriseCode: model.enterpriseCode,
+                        tenantCode: model.tenantCode,
+                        storefrontCode: model.storefrontCode,
+                        canonical: true,
+                        status: { $ne: 'RETIRED' }
+                    }
+                })
+            );
+            items = response && Array.isArray(response.result) ? response.result : [];
+            if (items.some((item) => item.code !== existingCode))
+                throw SERVICE.DefaultStorefrontEnterpriseScopeService.error(
+                    'ERR_STOREFRONT_00010',
+                    'Storefront already has a canonical hostname'
+                );
+        }
         return true;
     },
     /** Normalizes and validates a new hostname endpoint before persistence. */
@@ -90,10 +157,20 @@ module.exports = {
         );
         request.model.scheme = request.model.scheme || 'https';
         request.model.status = request.model.status || 'DRAFT';
+        request.model.canonical = request.model.canonical === true;
+        let canonicalKey = this.canonicalKey(request.model);
+        if (request.model.canonicalKey && request.model.canonicalKey !== canonicalKey)
+            throw SERVICE.DefaultStorefrontEnterpriseScopeService.error(
+                'ERR_STOREFRONT_00006',
+                'Endpoint canonical key is derived'
+            );
+        request.model.canonicalKey = canonicalKey;
         request.model.code = SERVICE.DefaultStorefrontEnterpriseScopeService.buildIdentity(enterpriseCode, 'endpoint', [
             request.model.hostname
         ]);
+        this.validateClassification(request.model);
         await this.validateStorefront(request, request.model);
+        await this.validateConflicts(request, request.model);
         return true;
     },
     /** Loads exactly one enterprise-owned endpoint for update. */
@@ -130,9 +207,20 @@ module.exports = {
                 );
         });
         let candidate = Object.assign({}, existing, patch);
+        candidate.scheme = candidate.scheme || 'https';
+        candidate.canonical = candidate.canonical === true;
+        this.validateClassification(candidate);
+        let transitions = (this.policy().endpointLifecycle || {}).allowedTransitions || {};
+        if (candidate.status !== existing.status && !(transitions[existing.status] || []).includes(candidate.status))
+            throw SERVICE.DefaultStorefrontEnterpriseScopeService.error(
+                'ERR_STOREFRONT_00004',
+                'Endpoint lifecycle transition is invalid'
+            );
         await this.validateStorefront(request, candidate);
+        await this.validateConflicts(request, candidate, existing.code);
         patch.enterpriseCode = existing.enterpriseCode;
         patch.tenantCode = existing.tenantCode;
+        patch.canonicalKey = this.canonicalKey(candidate);
         return true;
     },
     /** Rejects destructive endpoint deletion in favor of retirement. */

@@ -45,6 +45,8 @@ let storefronts = [
         defaultStoreCode: 'electronics',
         productCatalogCodes: ['electronicsProduct'],
         defaultProductCatalogCode: 'electronicsProduct',
+        countryCodes: ['AE'],
+        defaultCountryCode: 'AE',
         localeCodes: ['en-AE'],
         defaultLocaleCode: 'en-AE',
         currencyCodes: ['AED'],
@@ -91,6 +93,7 @@ SERVICE.DefaultStorefrontCatalogReferenceProviderService = {
     assert(schemas.storefront && schemas.storefrontEndpoint);
     assert.strictEqual(schemas.storefront.router.enabled, false);
     assert.deepStrictEqual(schemas.storefrontEndpoint.tenants, ['default']);
+    assert.strictEqual(schemas.storefrontEndpoint.indexes.individual.canonicalKey.options.unique, true);
     assert.strictEqual(routers.context.resolve.publicAccess, true);
     assert.strictEqual(routers.context.resolve.cache.enabled, false);
     assert.deepStrictEqual(routers.management.create.authTokenTypes, ['access']);
@@ -139,6 +142,10 @@ SERVICE.DefaultStorefrontCatalogReferenceProviderService = {
     assert.strictEqual(resolved.cmsSite.catalogCode, 'electronicsContent');
     assert.strictEqual(resolved.defaultStore.storeCode, 'electronics');
     assert.strictEqual(resolved.defaults.currency, 'AED');
+    assert.strictEqual(resolved.downstream.cms.site, 'electronicsSite');
+    assert.strictEqual(resolved.downstream.product.catalogCode, 'electronicsProduct');
+    assert.strictEqual(resolved.downstream.pricing.storeCode, 'electronics');
+    assert.strictEqual(resolved.downstream.inventory.countryCode, 'AE');
     assert.strictEqual(resolved.enterpriseCode, undefined);
     assert.strictEqual(resolved.tenantCode, undefined);
     await assert.rejects(

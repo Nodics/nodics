@@ -36,6 +36,10 @@ electronics.nodics.com
 
 Create CMS Sites and Stores first. Then create Storefront records and exact-hostname endpoints. Review in `DRAFT`, activate the Storefront, then activate its endpoint. Customer `GET /context/resolve` calls derive context from the HTTP hostname; browser query/body input cannot select another hostname, tenant, or enterprise.
 
+One Storefront may have several hostname endpoints, but only one non-retired endpoint can be canonical. Additional aliases are non-canonical. Operators retire endpoints before retiring the Storefront so a live customer hostname never targets a retired experience.
+
+The resolved `downstream` section provides the explicit parameter names used for direct CMS, Product, Pricing, and Inventory requests. Each target module remains responsible for authorization and validation; the browser response never becomes enterprise or tenant authority.
+
 For complete payloads, permissions, lifecycle, security, operations, customization, and tests, use [Storefront Foundation](../../gExp/storefront/docs/storefront-foundation.md).
 
 ## Continue
