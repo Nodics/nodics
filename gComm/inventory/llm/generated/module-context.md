@@ -34,10 +34,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 57 |
-| Test files | 34 |
+| Source files | 58 |
+| Test files | 35 |
 | Data files | 6 |
-| All module-owned files | 90 |
+| All module-owned files | 92 |
 | Local schema definitions | 15 |
 
 ## Ownership And Dependencies
@@ -71,7 +71,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 33 |
+| Documented | 35 |
 | Partially documented | 40 |
 | Undocumented | 13 |
 | Inventory only | 4 |
@@ -112,7 +112,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/inventory/src/controller/defaultInventoryOperationsController.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/src/controller/defaultInventoryWarehouseReferenceController.js` | `src` | `partially-documented` | 1/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/src/controller/defaultStockAllocationIntentController.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
-| `gComm/inventory/src/controller/defaultStockAvailabilityIntentController.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/inventory/src/controller/defaultStockAvailabilityIntentController.js` | `src` | `partially-documented` | 1/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/src/controller/defaultStockMovementCheckpointController.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/src/controller/defaultStockReconciliationController.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/src/controller/defaultStockReservationIntentController.js` | `src` | `partially-documented` | 1/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
@@ -133,8 +133,9 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/inventory/src/search/indexes.js` | `src` | `documented` | 0/0 | Search index definition registry for this boundary. |  |
 | `gComm/inventory/src/service/allocation/defaultStockAllocationIntentService.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/src/service/allocation/defaultStockAllocationOrchestrationService.js` | `src` | `documented` | 3/3 | Owns idempotent demand-to-reservation allocation evidence while Order retains demand authority. |  |
+| `gComm/inventory/src/service/availability/defaultInventoryStorefrontContextProviderService.js` | `src` | `documented` | 8/8 | Validates opaque Storefront context and replaces caller-controlled Inventory sourcing scope before availability evaluation. |  |
 | `gComm/inventory/src/service/availability/defaultStockAvailabilityCacheService.js` | `src` | `partially-documented` | 4/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
-| `gComm/inventory/src/service/availability/defaultStockAvailabilityIntentService.js` | `src` | `partially-documented` | 1/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/inventory/src/service/availability/defaultStockAvailabilityIntentService.js` | `src` | `partially-documented` | 4/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/src/service/availability/defaultStockAvailabilityService.js` | `src` | `documented` | 2/2 | Resolves sourcing Pools into active Warehouses and aggregates exact Stock Balance quantities as read-only ON_HAND evidence. |  |
 | `gComm/inventory/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Empty module-creation placeholder that demonstrates the service lifecycle shape until concrete services are added. |  |
 | `gComm/inventory/src/service/foundation/defaultInventoryEnterpriseScopeService.js` | `src` | `documented` | 10/10 | Resolves authenticated enterprise ownership, creates stable internal identities, and scopes every generated persistence query. |  |
@@ -167,6 +168,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/inventory/src/utils/utils.js` | `src` | `documented` | 0/0 | Utility function registry for this boundary. |  |
 | `gComm/inventory/test/inventoryExternalProviderContract.test.js` | `test` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/test/inventoryOperationsContract.test.js` | `test` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/inventory/test/inventoryStorefrontAvailabilityContract.test.js` | `test` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gComm/inventory/test/inventoryUnitsReferenceProvider.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gComm/inventory/test/inventoryWarehouseFoundationService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gComm/inventory/test/inventoryWarehouseReferenceContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

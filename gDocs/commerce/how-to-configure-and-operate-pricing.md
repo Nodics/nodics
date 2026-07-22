@@ -38,6 +38,26 @@ The BackOffice application obtains the active Pricing endpoint from the BackOffi
 
 `pricing.backoffice.read` permits browsing, `pricing.backoffice.preview` permits validation/conflict/simulation, and `pricing.backoffice.manage` permits create/update/retire. Grant them only to suitable human roles. Hard deletion is unavailable so history is preserved.
 
+## Serving a website price
+
+Suppose Apparel and Electronics are two websites for the same enterprise and tenant. Storefront resolves each hostname to a different Site, Store, currency, and channel. The application sends the returned opaque handle to Pricing:
+
+```http
+POST /nodics/pricing/v0/delivery/storefront/prices/resolve HTTP/1.1
+Content-Type: application/json
+x-nodics-storefront-context: <opaque handle from Storefront>
+
+{
+  "item": { "itemType": "SKU", "itemCode": "IPHONE-17-PRO" },
+  "quantity": "1",
+  "unitCode": "piece"
+}
+```
+
+Pricing asks Storefront whether the handle is active for Pricing, derives the website's tenant, enterprise, Site, Store, currency, and channel, and evaluates the currently published Online Prices. The browser cannot choose another website's scope by adding `currencyCode`, `context`, tenant, enterprise, or customer fields. If the handle expires or Storefront cannot prove it active, refresh the hostname context and retry; do not weaken the failure policy.
+
+This is a delivery API, not a BackOffice API. The existing `/references/prices/resolve` route remains for authenticated module-to-module calls, while people continue using the human management permissions described above.
+
 ### Submitting a release
 
 Choose a stable submission reference, the Price List, its exact Staged version, and the changed versioned items. Select `MANUAL` when a person must approve the commercial change, or `AUTOMATIC` only when the organization's configured policy permits automated approval. Retrying the same submission reference returns the existing carrier rather than creating a duplicate release.
@@ -79,6 +99,7 @@ An approver should confirm affected scopes, item/customer eligibility, currencie
 - Keep `currencyConversion.enabled` false unless an approved exchange-rate provider exists.
 - Configure Store, customer, segment, item, and Unit reference providers as those authorities become available.
 - Grant human access only to the narrow Pricing management permissions. Internal resolution/publication routes continue to use service tokens.
+- Configure `pricing.storefrontContext` only through layered `properties.js`. Keep introspection retries low, responses bounded, and shared Storefront security-state cache available in multi-node deployments.
 
 ## Runtime verification
 

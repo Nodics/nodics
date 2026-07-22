@@ -114,6 +114,7 @@ Choose the route that best matches why you are here.
 ### I Am Evaluating Nodics For A Business
 
 - [Why Businesses Choose Nodics](gDocs/business/why-businesses-choose-nodics.md)
+- [Why Businesses Can Trust Nodics](gDocs/business/security-and-trust.md)
 - [Business Capabilities And Outcomes](gDocs/business/business-capabilities-and-outcomes.md)
 - [How Nodics Compares With Other Approaches](gDocs/business/how-nodics-compares.md)
 - [Business And Technical Evaluation Checklist](gDocs/business/evaluation-checklist.md)
@@ -121,6 +122,9 @@ Choose the route that best matches why you are here.
 These pages explain business value, delivery speed, long-term operating risk,
 fit, trade-offs, and the questions to validate before adopting Nodics. They do
 not require detailed software-framework knowledge.
+
+For security evaluation, continue with the [Security Shared-Responsibility Model](gDocs/security/shared-responsibility-model.md)
+and the expert [Security Evidence Guide](gDocs/security/security-evidence-guide.md).
 
 ### I Am New To Nodics
 

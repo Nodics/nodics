@@ -51,6 +51,10 @@ Follow the root Nodics contract and `gComm/AGENTS.md`.
   tenant-aware resource contract. Product owns search documents but nSearch
   owns indexing. Projection failures persist as retryable Product jobs and must
   not undo successful Online activation.
+- Storefront customer delivery accepts only the opaque Storefront handle and
+  validates it through the Storefront-owned service-token introspection
+  contract. Never decode client assertions locally, trust caller Catalog or
+  enterprise fields, or make Product a second Storefront-context authority.
 - Preserve tenant and authenticated-enterprise scope at API, service, query,
   provider, and persistence boundaries.
 - Every extension point must remain replaceable through later-loaded modules

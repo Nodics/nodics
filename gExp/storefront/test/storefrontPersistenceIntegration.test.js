@@ -38,6 +38,9 @@ Object.assign(SERVICE, {
     DefaultStorefrontEndpointFoundationService: endpointFoundation,
     DefaultStorefrontManagementService: management,
     DefaultStorefrontContextService: context,
+    DefaultStorefrontContextAccessService: {
+        issue: async () => ({ handle: 'a'.repeat(43), header: 'x-nodics-storefront-context', expiresInSeconds: 120 })
+    },
     DefaultStorefrontCmsSiteReferenceProviderService: {
         resolve: async (request, code) => ({ cmsSiteCode: code, catalogCode: 'contentCatalog' })
     },

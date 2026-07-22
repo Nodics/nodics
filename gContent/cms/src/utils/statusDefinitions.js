@@ -18,5 +18,6 @@
  */
 module.exports = {
     ERR_CMS_00080: { code: '401', message: 'CMS Site reference lookup requires service identity' },
-    ERR_CMS_00081: { code: '400', message: 'CMS Site reference input is invalid' }
+    ERR_CMS_00081: { code: '400', message: 'CMS Site reference input is invalid' },
+    ERR_CMS_00082: { code: '401', message: 'Active Storefront context is required' }
 };

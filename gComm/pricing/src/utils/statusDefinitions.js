@@ -55,5 +55,6 @@ module.exports = {
     ERR_PRICE_00061: { code: '409', message: 'Pricing Online pointer revision conflict' },
     ERR_PRICE_00062: { code: '413', message: 'Pricing manifest missing or oversized' },
     ERR_PRICE_00063: { code: '400', message: 'Pricing publication contract unsupported' },
-    ERR_PRICE_00064: { code: '404', message: 'Pricing Online rollback manifest unavailable' }
+    ERR_PRICE_00064: { code: '404', message: 'Pricing Online rollback manifest unavailable' },
+    ERR_PRICE_00065: { code: '401', message: 'Active Storefront context required' }
 };

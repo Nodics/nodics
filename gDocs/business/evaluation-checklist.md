@@ -26,6 +26,9 @@ yes or no.
 
 ## Security And Compliance Fit
 
+- Read [Why Businesses Can Trust Nodics](security-and-trust.md), assign the
+  [Security Shared-Responsibility Model](../security/shared-responsibility-model.md),
+  and validate claims with the [Security Evidence Guide](../security/security-evidence-guide.md).
 - Verify human authentication separately from module-to-module and scheduled
   access.
 - Verify authorization, tenant isolation, validation, secrets handling, audit,
@@ -33,6 +36,10 @@ yes or no.
 - Confirm regulatory, retention, residency, encryption, and evidence needs for
   the intended deployment.
 - Test failure and misuse cases, not only successful access.
+- Record which controls are framework-provided, project-configured,
+  infrastructure-operated, and organization-owned.
+- Do not accept certification or compliance claims without solution-specific
+  evidence and the required independent assessment.
 
 ## Architecture And Integration Fit
 

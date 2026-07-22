@@ -117,6 +117,17 @@ module.exports = {
             defaultScale: 6,
             roundingMode: 'UNNECESSARY'
         },
+        storefrontContext: {
+            headerName: 'x-nodics-storefront-context',
+            moduleName: 'storefront',
+            apiVersion: 'v0',
+            apiName: '/context/introspect',
+            bootstrapTenant: 'default',
+            preferLocal: true,
+            requestTimeoutMs: 1000,
+            maximumAttempts: 1,
+            maximumResponseBytes: 32768
+        },
         stockAvailabilityCache: {
             enabled: true,
             moduleName: 'inventory',

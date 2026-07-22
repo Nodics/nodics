@@ -2,7 +2,9 @@
 
 Pricing owns commercial price selection, not Product, Store, Profile, Units, Tax, Promotion, Workflow, publishing, or cache-provider truth.
 
-Implementations must preserve tenant and authenticated-enterprise isolation, exact decimal-string values, deterministic configurable ranking, bounded queries, fail-closed ambiguity, disabled generated CRUD routers, human-only permissioned management/preview intents, service-token-only resolution and target deployment, immutable publication manifests, distinct Staged and Online runtimes, atomic Online activation, audit evidence, idempotency, and provider-neutral caching.
+Implementations must preserve tenant and authenticated-enterprise isolation, exact decimal-string values, deterministic configurable ranking, bounded queries, fail-closed ambiguity, disabled generated CRUD routers, human-only permissioned management/preview intents, service-token-only internal resolution and target deployment, opaque audience-bound Storefront delivery, immutable publication manifests, distinct Staged and Online runtimes, atomic Online activation, audit evidence, idempotency, and provider-neutral caching.
+
+Public Storefront requests must use the Storefront-issued opaque handle. Pricing introspects it for the `pricing` audience, derives tenant and enterprise identity, and replaces caller Site, Store, currency, and channel scope before calling the existing cached Online resolver. Missing, expired, wrong-audience, incomplete, or unavailable context fails closed. Do not add a browser-owned context authority or a second resolver.
 
 BackOffice discovers Pricing from registry metadata and calls Pricing directly. Pricing derives enterprise scope from the human access identity, rejects service tokens on management APIs, ignores client-owned internal identity fields, projects only allow-listed fields, retires rather than deletes, and reuses generated services, validation interceptors, and the deterministic resolver. The registry is not a Pricing proxy or authority.
 

@@ -13,4 +13,5 @@ Follow the root Nodics contract and `gComm/AGENTS.md`.
 - Online resolution may use `DefaultCacheService` only. Never call NodeCache, Redis, or Hazelcast implementations directly, and invalidate after price changes, activation, and rollback.
 - Do not merge tax calculation or promotion evaluation into base-price resolution. Compose these authorities at Cart/Order boundaries.
 - Keep classifications, ranking, limits, target connections, timeouts, and providers in layered `properties.js`.
+- Public Storefront resolution must introspect an opaque handle for the `pricing` audience, replace caller scope, and delegate to the existing Online resolver and cache; never trust browser tenant, enterprise, Site, Store, currency, channel, or customer qualifiers.
 - Every implementation change requires positive, negative, boundary, contract, integration, regression, business-user, operator, developer, customization, and recovery coverage.

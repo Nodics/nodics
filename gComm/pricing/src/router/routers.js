@@ -38,7 +38,26 @@ module.exports = {
                         context: { type: 'object' }, at: { type: 'string', format: 'date-time' }
                     }
                 } } } }
-            })
+            }),
+            resolveStorefront: {
+                secured: false, publicAccess: true, accessGroups: ['userGroup'], apiExposure: 'pricingDelivery',
+                key: '/delivery/storefront/prices/resolve', method: 'POST', controller: 'DefaultPriceResolutionController', operation: 'resolveStorefront',
+                cache: { enabled: false },
+                help: { requestType: 'public', message: 'Resolve one exact Online Price using an opaque Storefront context.',
+                    parameters: [{ name: 'x-nodics-storefront-context', in: 'header', required: true,
+                        description: 'Opaque short-lived context handle issued by Storefront.', schema: { type: 'string' } }] },
+                requestBody: { required: true, content: { 'application/json': { schema: {
+                    type: 'object', additionalProperties: false, required: ['item', 'quantity', 'unitCode'],
+                    properties: {
+                        item: { type: 'object', additionalProperties: false, required: ['itemType', 'itemCode'],
+                            properties: { itemType: { type: 'string' }, itemCode: { type: 'string' } } },
+                        quantity: { type: 'string' }, unitCode: { type: 'string' }, at: { type: 'string', format: 'date-time' }
+                    }
+                } } } },
+                responses: { '200': { description: 'Storefront-bound exact Online Price' },
+                    '401': { description: 'Storefront context is missing, inactive, expired, or unavailable' },
+                    '404': { description: 'Applicable Online Price is unavailable' } }
+            }
         },
         publicationTarget: {
             deploy: internal('/publication/target/deploy', 'DefaultPricingPublicationTargetController', 'deploy'),

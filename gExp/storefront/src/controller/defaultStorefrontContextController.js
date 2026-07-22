@@ -28,14 +28,20 @@ module.exports = {
     /** Resolves the request hostname and maps the result to the standard response envelope. */
     resolve: function (request, callback) {
         let resolver = SERVICE.DefaultStorefrontTrafficService || SERVICE.DefaultStorefrontContextCacheService || SERVICE.DefaultStorefrontContextService;
-        let promise = resolver.resolve(request).then((data) => {
+        let promise = resolver.resolve(request).then(async (data) => {
             let delivery = SERVICE.DefaultStorefrontContractService
                 ? SERVICE.DefaultStorefrontContractService.decorate(request, data)
                 : { data: data, notModified: false };
-            return delivery.notModified
-                ? { code: 'SUC_STOREFRONT_00001', responseCode: '304', data: undefined }
-                : { code: 'SUC_STOREFRONT_00001', data: delivery.data };
+            if (delivery.notModified) return { code: 'SUC_STOREFRONT_00001', responseCode: '304', data: undefined };
+            delivery.data.contextAccess = await SERVICE.DefaultStorefrontContextAccessService.issue(data);
+            return { code: 'SUC_STOREFRONT_00001', data: delivery.data };
         });
+        return callback ? promise.then((value) => callback(null, value)).catch(callback) : promise;
+    },
+    /** Introspects an opaque context handle for an authenticated target module. */
+    introspect: function (request, callback) {
+        let promise = SERVICE.DefaultStorefrontContextAccessService.introspect(request)
+            .then((data) => ({ code: 'SUC_STOREFRONT_00001', data: data }));
         return callback ? promise.then((value) => callback(null, value)).catch(callback) : promise;
     }
 };

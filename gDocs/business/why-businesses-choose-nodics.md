@@ -75,13 +75,14 @@ first release.
 ## A Fast Decision Path
 
 1. Review [Business Capabilities And Outcomes](business-capabilities-and-outcomes.md).
-2. Compare the architectural approaches in [How Nodics Compares](how-nodics-compares.md).
-3. Use the [Evaluation Checklist](evaluation-checklist.md) with business and technical stakeholders.
-4. Ask the delivery team to build one representative capability using [Build Your First Nodics Capability](../getting-started/build-your-first-capability.md).
-5. Verify security, customization, testing, operations, and deployment—not only the happy-path demonstration.
+2. Review [Why Businesses Can Trust Nodics](security-and-trust.md) with risk and security stakeholders.
+3. Compare the architectural approaches in [How Nodics Compares](how-nodics-compares.md).
+4. Use the [Evaluation Checklist](evaluation-checklist.md) with business and technical stakeholders.
+5. Ask the delivery team to build one representative capability using [Build Your First Nodics Capability](../getting-started/build-your-first-capability.md).
+6. Verify security, customization, testing, operations, and deployment—not only the happy-path demonstration.
 
 ## Continue
 
-- Next: [Business Capabilities And Outcomes](business-capabilities-and-outcomes.md)
+- Next: [Why Businesses Can Trust Nodics](security-and-trust.md)
 - Documentation home: [Nodics Documentation](../README.md)
 - Technical introduction: [What Nodics Is](../overview/what-is-nodics.md)

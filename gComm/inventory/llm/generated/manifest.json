@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Enterprise-scoped warehouse and inventory-management capability for Nodics commerce applications."
   },
-  "sourceFiles": 57,
-  "testFiles": 34,
+  "sourceFiles": 58,
+  "testFiles": 35,
   "dataFiles": 6,
-  "ownedFiles": 90,
-  "sourceFingerprint": "cb1e59dc7039d3c011dc9dd6ef7c118a5891e2fa896e325b46defcc48523897f",
+  "ownedFiles": 92,
+  "sourceFingerprint": "24ba7e012f11cd8a7d111d094f39be418dc23b2a5b14978b44030a7923eec171",
   "documentation": {
-    "documented": 33,
+    "documented": 35,
     "partially-documented": 40,
     "undocumented": 13,
     "inventory-only": 4

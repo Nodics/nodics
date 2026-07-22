@@ -12,6 +12,7 @@
 - `gComm/product/test/productOnlineDeliveryAndProjectionContract.test.js`
 - `gComm/product/test/productProviderAndOverrideContract.test.js`
 - `gComm/product/test/productPublicationContract.test.js`
+- `gComm/product/test/productStorefrontDeliveryContract.test.js`
 - `gComm/product/test/productVariantContract.test.js`
 
 ## Generated Tests

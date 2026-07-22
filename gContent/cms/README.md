@@ -56,17 +56,27 @@ parallel component-type registry.
 
 ## Resolved Page Delivery
 
-CMS provides two versioned delivery routes:
+CMS provides three versioned delivery routes:
 
 - `GET /nodics/cms/delivery/pages/resolve` for explicitly public Online content;
 - `GET /nodics/cms/delivery/pages/resolve/authenticated` for content requiring
-  the `cms.delivery.authenticated.read` permission.
+  the `cms.delivery.authenticated.read` permission;
+- `GET /nodics/cms/delivery/storefront/pages/resolve` for a page path bound to
+  an opaque, active Storefront context.
 
 Both routes require `site` and an absolute application `path`. Optional
 `locale` and `channel` values use layered CMS defaults. Resolution remains
 tenant-aware, disables generic recursive reads, batches each graph level, and
 enforces configurable depth and component-count limits. Responses expose a
 client-safe contract rather than persistence or authoring metadata.
+
+The Storefront route accepts only `path` from the browser. CMS introspects the
+opaque `x-nodics-storefront-context` handle using module service identity and
+derives tenant, enterprise, Site, locale, and channel from the `cms` audience
+projection. Caller attempts to select another Site, locale, channel, tenant,
+or enterprise are ignored. Missing, expired, wrong-audience, unavailable, or
+otherwise inactive context fails closed. CMS still owns route lookup, Online
+publication state, graph bounds, renderer projection, and delivery errors.
 
 Resolved responses use the existing Nodics router-cache authority. Page, route,
 component, and association mutations invalidate the tenant's CMS delivery
@@ -128,6 +138,7 @@ CMS framework behavior.
 ## Focused Tests
 
 Run `node gContent/cms/test/cmsContentDeliveryContract.test.js`,
+`node gContent/cms/test/cmsStorefrontDeliveryContract.test.js`,
 `node gContent/cms/test/cmsSiteReferenceContract.test.js`, and
 `node gContent/cms/test/cmsPublicationManifestContract.test.js` before broader
 generated and integration suites. CMS contract upgrades use secured

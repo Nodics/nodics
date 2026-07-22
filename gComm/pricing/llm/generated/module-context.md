@@ -34,10 +34,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 29 |
-| Test files | 14 |
+| Source files | 30 |
+| Test files | 15 |
 | Data files | 6 |
-| All module-owned files | 49 |
+| All module-owned files | 51 |
 | Local schema definitions | 8 |
 
 ## Ownership And Dependencies
@@ -71,8 +71,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 4 |
-| Partially documented | 38 |
+| Documented | 5 |
+| Partially documented | 39 |
 | Undocumented | 3 |
 | Inventory only | 4 |
 
@@ -108,7 +108,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/pricing/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/pricing/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/pricing/src/controller/defaultPriceResolutionController.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/pricing/src/controller/defaultPriceResolutionController.js` | `src` | `partially-documented` | 4/4 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/src/controller/defaultPricingManagementController.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/src/controller/defaultPricingPublicationTargetController.js` | `src` | `partially-documented` | 1/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/src/event/listeners.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
@@ -134,6 +134,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/pricing/src/service/reference/defaultPricingStoreReferenceProviderService.js` | `src` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gComm/pricing/src/service/reference/defaultPricingUnitsReferenceProviderService.js` | `src` | `partially-documented` | 5/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/src/service/resolution/defaultPriceResolutionService.js` | `src` | `partially-documented` | 16/16 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/pricing/src/service/resolution/defaultPricingStorefrontContextProviderService.js` | `src` | `documented` | 8/8 | Validates opaque Storefront context and replaces caller-controlled Pricing scope before authoritative Online resolution. |  |
 | `gComm/pricing/src/utils/enums.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/src/utils/statusDefinitions.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/src/utils/utils.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
@@ -143,6 +144,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/pricing/test/pricingPublicationContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gComm/pricing/test/pricingPublicationWorkflowContract.test.js` | `test` | `documented` | 0/0 | Verifies manual and automatic Pricing workflow submission, idempotency, associated items, approval evidence, nPublish delegation, and runtime separation. |  |
 | `gComm/pricing/test/pricingStoreReferenceProviderContract.test.js` | `test` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
+| `gComm/pricing/test/pricingStorefrontResolutionContract.test.js` | `test` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 
 ## Extension Contract
 

@@ -11,6 +11,11 @@
   explicit depth/size limits, and a client-safe allowlisted projection.
 - Public delivery requires `publicAccess: true`; authenticated delivery uses the
   normal secured pipeline and a governed permission.
+- Storefront delivery accepts only browser path plus the opaque handle,
+  introspects it with module identity for the `cms` audience, and derives Site,
+  locale, channel, tenant, and enterprise from the active result.
+- Never decode the handle locally, trust browser scope overrides, or bypass CMS
+  Online route/manifest and graph validation after introspection.
 - Consumer-specific sites, catalogs, routes, templates, and content belong in
   later project modules.
 - Extend through layered properties and later schema, route, service, facade,

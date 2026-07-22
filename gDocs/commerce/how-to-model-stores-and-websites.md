@@ -48,6 +48,12 @@ The resolved `downstream` section provides the explicit parameter names used for
 
 Customer applications may send `x-nodics-client-contract-version` to declare the Storefront contract they understand. Storefront returns its contract version and the request correlation ID in response headers. It also supports ETag-based conditional reads, so an unchanged context returns HTTP 304 without retransmitting the payload. An obsolete client receives HTTP 426 and must be upgraded; an overloaded or rate-limited call supplies `Retry-After`. These are delivery safeguards, not new ownership paths: the response still contains routing hints only, while each target module validates trusted identity and business scope itself.
 
+For direct customer Product reads, an HTTP 200 Storefront response also supplies a short-lived opaque context handle. The application sends the handle—not tenant, enterprise, Catalog, permission, or internal-token values—to Product. Product asks Storefront whether the handle is active for the `product` audience and then applies the returned Catalog and locale. If Storefront or its security-state cache cannot prove the handle active, Product denies the request. This makes failure safe and prevents one website from selecting another website's Product Catalog.
+
+The same implemented pattern now covers CMS, Pricing, and Inventory. The repository journey contract proves Apparel and Electronics in one tenant and enterprise remain isolated across Site, Product Catalog, Store, currency, country, and channel in both co-hosted and modular communication. Treat the opaque value as a short-lived bearer reference: send it only over TLS, do not log it, and refresh it after expiry. Caller payload values cannot mix one website handle with another website's scope.
+
+The same handle can be sent to the CMS Storefront delivery endpoint with only a page path. CMS introspects the separate `cms` audience and derives Site, locale, and channel. Consequently, `/home` on Apparel and `/home` on Electronics can resolve different Online CMS publications even though both businesses share the same tenant. Browser-supplied Site, tenant, enterprise, locale, or channel values cannot switch that selection.
+
 For complete payloads, permissions, lifecycle, security, operations, customization, and tests, use [Storefront Foundation](../../gExp/storefront/docs/storefront-foundation.md).
 
 ## Continue

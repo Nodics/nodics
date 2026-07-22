@@ -40,6 +40,9 @@ module.exports = {
             authenticatedAccessGroups: ['userGroup'],
             authenticatedPermission: 'cms.delivery.authenticated.read'
         },
+        storefrontContext: { headerName: 'x-nodics-storefront-context', moduleName: 'storefront', apiVersion: 'v0',
+            apiName: '/context/introspect', bootstrapTenant: 'default', preferLocal: true, requestTimeoutMs: 1000,
+            maximumAttempts: 1, maximumResponseBytes: 32768 },
         renderer: {
             keyPattern: '^[a-z][a-z0-9]*(\\.[a-z][a-z0-9-]*)+$',
             prohibitedSchemes: ['http:', 'https:', 'javascript:', 'data:', 'file:']

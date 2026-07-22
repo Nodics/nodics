@@ -13,5 +13,11 @@ module.exports = {
     /** Initializes the controller. */ init: function () { return Promise.resolve(true); },
     /** Completes controller initialization. */ postInit: function () { return Promise.resolve(true); },
     /** Handles one ON_HAND evaluation. */ evaluate: function (request, callback) { let promise = FACADE.DefaultStockAvailabilityIntentFacade.evaluate(request);
-        return callback ? promise.then(result => callback(null, result)).catch(callback) : promise; }
+        return callback ? promise.then(result => callback(null, result)).catch(callback) : promise; },
+    /** Validates Storefront context and returns a customer-safe ON_HAND evaluation. */
+    evaluateStorefront: function (request, callback) {
+        let promise = SERVICE.DefaultInventoryStorefrontContextProviderService.apply(request)
+            .then(() => FACADE.DefaultStockAvailabilityIntentFacade.evaluateStorefront(request));
+        return callback ? promise.then(result => callback(null, result)).catch(callback) : promise;
+    }
 };

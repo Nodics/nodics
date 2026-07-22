@@ -54,13 +54,17 @@ module.exports = {
     },
     /** Decorates resolved context and applies delivery headers after cache lookup. */
     decorate: function (request, value) {
-        let policy = this.policy(), stable = Object.assign({}, value, { contract: this.compatibility(request) });
+        let policy = this.policy(), publicValue = Object.assign({}, value);
+        delete publicValue._authority;
+        let stableForEtag = Object.assign({}, publicValue);
+        delete stableForEtag.contextAccess;
+        let stable = Object.assign({}, publicValue, { contract: this.compatibility(request) });
         let data = Object.assign({}, stable, { correlationId: request && (request.correlationId || request.requestId) });
         if (data.correlationId === undefined) delete data.correlationId;
         this.setHeader(request, policy.responseHeader || 'x-nodics-storefront-contract-version', data.contract.moduleContractVersion);
         this.setHeader(request, policy.requestIdHeader || 'x-request-id', request && (request.correlationId || request.requestId));
         this.setHeader(request, 'Cache-Control', policy.cacheControl || 'private, max-age=0, must-revalidate');
-        let etag = policy.etagEnabled === false ? null : this.etag(stable);
+        let etag = policy.etagEnabled === false ? null : this.etag(Object.assign({}, stableForEtag, { contract: stable.contract }));
         if (etag) this.setHeader(request, 'ETag', etag);
         return { data: data, etag: etag, notModified: Boolean(etag && this.header(request, 'if-none-match') === etag) };
     },

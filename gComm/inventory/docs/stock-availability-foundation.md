@@ -18,9 +18,17 @@ It creates no Availability table and changes no Stock. Online Inventory remains 
 4. The response returns ON_HAND, reserved, and AVAILABLE_TO_SELL totals, Pool/Warehouse order, balance evidence, revisions, and evaluation time.
 5. A zero result is valid when no Pool, Warehouse, or Balance matches.
 
+### Direct Storefront delivery
+
+An anonymous customer application first resolves its hostname through Storefront and receives a short-lived opaque handle. It calls `POST /nodics/inventory/v0/delivery/storefront/stock-availability/evaluate`, sends that handle in `x-nodics-storefront-context`, and supplies only item type, item code, Unit, optional target scale, and optional evaluation time.
+
+Inventory introspects the handle for the `inventory` audience with its module service identity. The trusted projection supplies tenant, enterprise, Store, country, and channel. Browser-supplied `context`, tenant, enterprise, customer segment, zone, or fulfillment fields are not carried into sourcing. Inventory then invokes the existing cached Availability chain; it does not create another availability calculator or store.
+
+The public projection returns item, ON_HAND, reserved, AVAILABLE_TO_SELL, Unit, type, and evaluation time. It deliberately omits enterprise identity, Pool codes, Warehouse codes, Balance identities, revisions, and evidence. Trusted modules continue using `/references/stock-availability/evaluate` when operational evidence is required. Missing, expired, wrong-audience, incomplete, or unavailable context fails with `ERR_INV_00052` rather than accepting browser scope.
+
 ## Security And Boundaries
 
-The route is module-internal, uses `authSecurity.internalToken.routePermission`, and accepts only service tokens. Enterprise identity comes from authentication. Configured maximum Warehouses, Balances, evidence entries, target scale, and exact rounding prevent unbounded work. Human/BackOffice administration needs a later separately permissioned API.
+The operational route is module-internal, uses `authSecurity.internalToken.routePermission`, and accepts only service tokens. The public Storefront route grants no mutation authority and must complete audience-bound introspection before evaluation. Enterprise identity comes from trusted authentication or introspection, never request JSON. Configured maximum Warehouses, Balances, evidence entries, target scale, and exact rounding prevent unbounded work. Human/BackOffice administration remains separately permissioned.
 
 Availability caching is implemented through `DefaultStockAvailabilityCacheService` and provider-neutral `DefaultCacheService`. Keys include enterprise, item, Unit, scale, and normalized sourcing context while nCache partitions physical storage by tenant. Explicit historical evaluation bypasses cache by default.
 
@@ -30,7 +38,7 @@ Configure `inventory.stockAvailabilityCache` and `cache.inventory.channels.avail
 
 ## Customization And Operations
 
-Layer `inventory.stockAvailability` for bounds, default scale, rounding, and service-token enforcement. Replace `DefaultStockAvailabilityService` only through a later module and preserve sourcing authority, enterprise isolation, Units conversion, exact arithmetic, evidence, and read-only behavior. Never copy balances into another availability store.
+Layer `inventory.stockAvailability` for bounds, default scale, rounding, and service-token enforcement. Layer `inventory.storefrontContext` for introspection module, bootstrap tenant, local preference, timeout, attempts, and response-size bounds. Replace `DefaultStockAvailabilityService` only through a later module and preserve sourcing authority, enterprise isolation, Units conversion, exact arithmetic, evidence, and read-only behavior. A transport override must preserve the `inventory` audience and fail-closed behavior. Never copy balances into another availability store.
 
 Monitor request latency, sourcing latency, Warehouse/Balance counts, conversion failures, evidence-boundary failures, and zero-result rates without logging sensitive customer context. If Units or persistence fails, fail the request rather than return a partial total.
 
@@ -38,6 +46,7 @@ Monitor request latency, sourcing latency, Warehouse/Balance counts, conversion 
 
 ```bash
 node gComm/inventory/test/stockAvailabilityFoundation.test.js
+node gComm/inventory/test/inventoryStorefrontAvailabilityContract.test.js
 npm run build
 npm run test:basic
 ```

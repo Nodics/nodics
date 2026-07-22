@@ -55,6 +55,24 @@ module.exports = {
                 method: 'GET',
                 url: 'http://host:port/nodics/cms/delivery/pages/resolve/authenticated?site=siteCode&path=/account&locale=en&channel=web'
             }
+        },
+        resolveStorefrontPage: {
+            secured: false,
+            publicAccess: true,
+            accessGroups: ['userGroup'],
+            apiExposure: 'cmsDelivery',
+            key: '/delivery/storefront/pages/resolve',
+            method: 'GET',
+            controller: 'DefaultCmsDeliveryController',
+            operation: 'resolveStorefrontPage',
+            cache: { enabled: false },
+            help: { requestType: 'public', message: 'Resolve one Online CMS page from an opaque Storefront context.',
+                parameters: [{ name: 'x-nodics-storefront-context', in: 'header', required: true,
+                    description: 'Opaque short-lived context handle issued by Storefront.', schema: { type: 'string' } },
+                { name: 'path', in: 'query', required: true, schema: { type: 'string' } }] },
+            responses: { '200': { description: 'Storefront-bound Online CMS page graph' },
+                '401': { description: 'Storefront context is missing, inactive, expired, or unavailable' },
+                '404': { description: 'Published CMS route or content is unavailable' } }
         }
     },
     cmsReference: {

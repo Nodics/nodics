@@ -33,10 +33,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 39 |
-| Test files | 27 |
+| Source files | 40 |
+| Test files | 28 |
 | Data files | 6 |
-| All module-owned files | 62 |
+| All module-owned files | 64 |
 | Local schema definitions | 18 |
 
 ## Ownership And Dependencies
@@ -69,8 +69,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 6 |
-| Partially documented | 52 |
+| Documented | 7 |
+| Partially documented | 53 |
 | Undocumented | 0 |
 | Inventory only | 4 |
 
@@ -108,7 +108,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/product/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/product/src/controller/defaultProductItemReferenceController.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/src/controller/defaultProductManagementController.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
-| `gComm/product/src/controller/defaultProductOnlineReadController.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/product/src/controller/defaultProductOnlineReadController.js` | `src` | `partially-documented` | 1/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/src/controller/defaultProductOperationsController.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/src/controller/defaultProductPublicationTargetController.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/src/event/listeners.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
@@ -121,6 +121,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/product/src/service/defaultSampleService.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/src/service/delivery/defaultProductDeliveryCacheService.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/src/service/delivery/defaultProductOnlineReadService.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/product/src/service/delivery/defaultProductStorefrontContextProviderService.js` | `src` | `documented` | 7/7 | Validates opaque Storefront context through the Storefront-owned introspection contract and applies only Product routing scope. |  |
 | `gComm/product/src/service/foundation/defaultProductCategoryService.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/src/service/foundation/defaultProductClassificationService.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/src/service/foundation/defaultProductCompositionService.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
@@ -153,6 +154,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/product/test/productOnlineDeliveryAndProjectionContract.test.js` | `test` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/test/productProviderAndOverrideContract.test.js` | `test` | `documented` | 0/0 | Proves reuse of Catalog and Units authorities and later-layer replacement of Product policy and provider contracts. |  |
 | `gComm/product/test/productPublicationContract.test.js` | `test` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/product/test/productStorefrontDeliveryContract.test.js` | `test` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/test/productVariantContract.test.js` | `test` | `documented` | 0/0 | Proves Product variant axes, canonical combinations, sellable Item references, graph bounds, lifecycle dependencies, and project-layer policy extension. |  |
 
 ## Extension Contract

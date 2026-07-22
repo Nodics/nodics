@@ -54,6 +54,14 @@ The request supplies item, exact quantity, unit, currency, and optional country/
 
 The default scope order is Customer, Customer Segment, Store, Channel, Site, Country, Enterprise. Projects may change the numeric specificity in layered `properties.js` and test the resulting contract.
 
+### Direct Storefront price delivery
+
+An anonymous customer application first resolves its hostname through Storefront and receives a short-lived opaque handle. It then calls `POST /delivery/storefront/prices/resolve` with that handle in `x-nodics-storefront-context` and supplies only the item, exact decimal-string quantity, Unit, and optional evaluation time. Pricing introspects the handle for the `pricing` audience using a module service identity. The trusted projection supplies tenant, enterprise, Site, Store, currency, and channel.
+
+Caller-supplied `currencyCode`, `context`, tenant, enterprise, customer, segment, or contract qualifiers are not carried into resolution. This prevents the Electronics website from selecting an Apparel Price List and prevents an anonymous caller from claiming customer eligibility. Pricing then invokes the same `DefaultPriceResolutionFacade`, deterministic resolver, published Online records, and provider-neutral cache used by internal callers. Missing, expired, wrong-audience, incomplete, or unavailable context fails with `ERR_PRICE_00065`; it never falls back to browser scope.
+
+The existing `POST /references/prices/resolve` route remains service-token-only for trusted modules that already possess an authenticated enterprise and approved resolution context. Human BackOffice management remains separate from both delivery paths.
+
 ## Exact values
 
 `amount`, `minimumQuantity`, and request `quantity` are decimal strings. Scientific notation, negative values, excessive digits, and excessive scale are rejected. `unitFactor` is a bounded positive integer. Runtime comparisons align decimal scales with `BigInt`; JavaScript floating point is not used.
@@ -89,6 +97,7 @@ Configure only through layered `properties.js`:
 - reference providers;
 - exact-currency or explicitly provided conversion policy;
 - cache channel, TTL, and key bounds;
+- Storefront introspection module, bootstrap tenant, timeout, retry, response-size, and local/co-hosted preference;
 - Staged/Online role, target module connection, retries, timeout, size, and manifest contract versions.
 - workflow enablement, allowed modes, default mode, workflow codes, and associated-item bounds.
 
@@ -96,7 +105,7 @@ Never place these runtime settings in `package.json`.
 
 ## Security and data protection
 
-Generated CRUD routers are disabled. Human management routes accept access tokens only and use `pricing.backoffice.read`, `pricing.backoffice.manage`, or `pricing.backoffice.preview`. Price resolution and Online target routes remain module-internal and use `authSecurity.internalToken.routePermission`. Enterprise ownership comes only from authenticated claims. Arbitrary query operators, provider URLs, credentials, and executable rules are not accepted. Target messages carry service authentication and correlation identity; manifests contain commercial configuration, not credentials.
+Generated CRUD routers are disabled. Human management routes accept access tokens only and use `pricing.backoffice.read`, `pricing.backoffice.manage`, or `pricing.backoffice.preview`. Internal price resolution and Online target routes use `authSecurity.internalToken.routePermission`. The public Storefront delivery route grants no mutation authority and requires active audience-bound introspection before Pricing constructs trusted identity and commercial scope. Enterprise ownership never comes from a browser payload. Arbitrary query operators, provider URLs, credentials, and executable rules are not accepted. Target messages carry service authentication and correlation identity; manifests contain commercial configuration, not credentials.
 
 ## Performance and observability
 
@@ -120,6 +129,7 @@ Operations should record request/correlation ID, tenant, enterprise, selected Pr
 - **Rejected workflow**: correct the Staged records and submit a new governed release; no Online deployment occurs.
 - **Workflow unavailable (`ERR_PRICE_00027`)**: verify the Workflow module and Pricing workflow seed data are active on Staged; do not bypass approval with direct publication calls.
 - **Invalid submission (`ERR_PRICE_00026`)**: provide stable submission identity, exact Staged version, and bounded associated versioned items.
+- **Storefront context required (`ERR_PRICE_00065`)**: resolve the current hostname again and send the new opaque handle; verify Storefront, its security-state cache, and service-token introspection rather than accepting caller scope.
 
 ## Customization
 
@@ -134,6 +144,7 @@ Run:
 ```bash
 node gComm/pricing/test/pricingFoundationContract.test.js
 node gComm/pricing/test/priceResolutionContract.test.js
+node gComm/pricing/test/pricingStorefrontResolutionContract.test.js
 node gComm/pricing/test/pricingPublicationContract.test.js
 node gComm/pricing/test/pricingManagementContract.test.js
 node gComm/pricing/test/pricingPublicationWorkflowContract.test.js

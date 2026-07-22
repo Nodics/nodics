@@ -64,9 +64,11 @@ const context = {
 
     SERVICE.DefaultStorefrontContractService = contract;
     SERVICE.DefaultStorefrontTrafficService = { resolve: async () => context };
+    SERVICE.DefaultStorefrontContextAccessService = { issue: async () => ({ handle: 'a'.repeat(43), header: 'x-nodics-storefront-context', expiresInSeconds: 120 }) };
     let firstResponse = response();
     let first = await controller.resolve({ requestId: 'request-2', headers: {}, httpResponse: firstResponse });
     assert.strictEqual(first.data.contract.moduleContractVersion, 1);
+    assert.strictEqual(first.data.contextAccess.handle.length, 43);
     let secondResponse = response();
     let second = await controller.resolve({ requestId: 'request-3', headers: { 'if-none-match': firstResponse.headers.ETag }, httpResponse: secondResponse });
     assert.strictEqual(second.responseCode, '304');

@@ -24,7 +24,13 @@ module.exports = { product: {
         resolve: { secured: true, accessGroups: ['userGroup'], permissionConfig: 'authSecurity.internalToken.routePermission', apiExposure: 'moduleInternal', key: '/references/items/resolve', method: 'POST', controller: 'DefaultProductItemReferenceController', operation: 'resolve', requestBody: { required: true, content: { 'application/json': { schema: { type: 'object', additionalProperties: false, required: ['catalogCode', 'itemType', 'itemCode'], properties: { catalogCode: { type: 'string' }, itemType: { type: 'string' }, itemCode: { type: 'string' } } } } } }, responses: { '200': { description: 'Bounded Product Item reference result' } } }
     },
     online: {
-        readItem: { secured: true, authTokenTypes: ['access'], accessGroups: ['userGroup'], permission: 'product.online.read', apiExposure: 'productDelivery', key: '/online/items/:itemType/:itemCode', method: 'GET', controller: 'DefaultProductOnlineReadController', operation: 'readItem', responses: { '200': { description: 'Active-release Product projection' } } }
+        readItem: { secured: true, authTokenTypes: ['access'], accessGroups: ['userGroup'], permission: 'product.online.read', apiExposure: 'productDelivery', key: '/online/items/:itemType/:itemCode', method: 'GET', controller: 'DefaultProductOnlineReadController', operation: 'readItem', responses: { '200': { description: 'Active-release Product projection' } } },
+        readStorefrontItem: { secured: false, publicAccess: true, accessGroups: ['userGroup'], apiExposure: 'productDelivery',
+            key: '/online/storefront/items/:itemType/:itemCode', method: 'GET', controller: 'DefaultProductOnlineReadController', operation: 'readStorefrontItem',
+            cache: { enabled: false }, help: { parameters: [{ name: 'x-nodics-storefront-context', in: 'header', required: true,
+                description: 'Opaque short-lived context handle issued by Storefront.', schema: { type: 'string' } }] },
+            responses: { '200': { description: 'Storefront-bound active-release Product projection' },
+                '401': { description: 'Storefront context is missing, inactive, expired, or unavailable' } } }
     },
     operations: {
         diagnostics: human('/operations/publication/:catalogCode', 'GET', 'product.operations.read', 'diagnostics', 'DefaultProductOperationsController'),

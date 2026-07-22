@@ -83,6 +83,31 @@ module.exports = {
                     }
                 } } } },
                 responses: { '200': { description: 'Exact ON_HAND, reserved, and AVAILABLE_TO_SELL quantities with Warehouse/Balance evidence' } }
+            },
+            evaluateStorefront: {
+                secured: false,
+                publicAccess: true,
+                accessGroups: ['userGroup'],
+                apiExposure: 'inventoryDelivery',
+                key: '/delivery/storefront/stock-availability/evaluate',
+                method: 'POST',
+                controller: 'DefaultStockAvailabilityIntentController',
+                operation: 'evaluateStorefront',
+                cache: { enabled: false },
+                help: { requestType: 'public', message: 'Evaluate customer-safe Stock availability using an opaque Storefront context.',
+                    parameters: [{ name: 'x-nodics-storefront-context', in: 'header', required: true,
+                        description: 'Opaque short-lived context handle issued by Storefront.', schema: { type: 'string' } }] },
+                requestBody: { required: true, content: { 'application/json': { schema: { type: 'object',
+                    required: ['item'], additionalProperties: false,
+                    properties: {
+                        item: { type: 'object', required: ['itemType', 'itemCode', 'unitCode'], additionalProperties: false,
+                            properties: { itemType: { type: 'string' }, itemCode: { type: 'string' }, unitCode: { type: 'string' },
+                                targetScale: { type: 'integer', minimum: 0, maximum: 18 } } },
+                        at: { type: 'string', format: 'date-time' }
+                    }
+                } } } },
+                responses: { '200': { description: 'Storefront-bound customer-safe exact Stock availability totals' },
+                    '401': { description: 'Storefront context is missing, inactive, expired, incomplete, or unavailable' } }
             }
         },
         stockReservationIntent: {

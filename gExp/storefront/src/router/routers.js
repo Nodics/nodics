@@ -63,6 +63,14 @@ module.exports = {
                     429: Object.assign(errorResponse('HTTP rate limit exceeded'), { headers: { 'Retry-After': { schema: { type: 'integer' } } } }),
                     503: Object.assign(errorResponse('Storefront resolution capacity is temporarily unavailable'), { headers: { 'Retry-After': { schema: { type: 'integer' } } } })
                 }
+            },
+            introspect: {
+                secured: true, authTokenTypes: ['service'], accessGroups: ['userGroup'],
+                permissionConfig: 'authSecurity.internalToken.routePermission', apiExposure: 'moduleInternal',
+                key: '/context/introspect', method: 'POST', controller: 'DefaultStorefrontContextController', operation: 'introspect',
+                requestBody: { required: true, content: { 'application/json': { schema: { type: 'object', additionalProperties: false,
+                    required: ['handle', 'audience'], properties: { handle: { type: 'string' }, audience: { enum: ['cms', 'product', 'pricing', 'inventory'] } } } } } },
+                responses: { 200: { description: 'Audience-bound active-state response for an opaque Storefront context handle' } }
             }
         },
         management: {

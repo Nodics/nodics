@@ -10,6 +10,7 @@
 - `gComm/pricing/test/pricingPublicationContract.test.js`
 - `gComm/pricing/test/pricingPublicationWorkflowContract.test.js`
 - `gComm/pricing/test/pricingStoreReferenceProviderContract.test.js`
+- `gComm/pricing/test/pricingStorefrontResolutionContract.test.js`
 
 ## Generated Tests
 

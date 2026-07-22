@@ -6,6 +6,7 @@
 
 - `gComm/inventory/test/inventoryExternalProviderContract.test.js`
 - `gComm/inventory/test/inventoryOperationsContract.test.js`
+- `gComm/inventory/test/inventoryStorefrontAvailabilityContract.test.js`
 - `gComm/inventory/test/inventoryUnitsReferenceProvider.test.js`
 - `gComm/inventory/test/inventoryWarehouseFoundationService.test.js`
 - `gComm/inventory/test/inventoryWarehouseReferenceContract.test.js`

@@ -49,6 +49,9 @@ module.exports = {
         },
         storeReference: { moduleName: 'store', apiVersion: 'v0', apiName: '/references/stores/resolve', requestTimeoutMs: 2000, maximumAttempts: 2, preferLocal: true },
         unitsReference: { moduleName: 'units', apiVersion: 'v0', apiName: '/references/units/convert', requestTimeoutMs: 2000, maximumAttempts: 2, preferLocal: true },
+        storefrontContext: { headerName: 'x-nodics-storefront-context', moduleName: 'storefront', apiVersion: 'v0',
+            apiName: '/context/introspect', bootstrapTenant: 'default', preferLocal: true, requestTimeoutMs: 1000,
+            maximumAttempts: 1, maximumResponseBytes: 32768 },
         currencyConversion: { enabled: false, provider: null },
         management: {
             maximumResultCount: 500, maximumPreviewRecords: 5000, maximumPayloadBytes: 262144,

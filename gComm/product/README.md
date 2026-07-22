@@ -36,6 +36,8 @@ industry-specific fields into the common model.
 - immutable integrity-checked Product release manifests through `nPublish`;
 - authenticated delivery to a distinct non-versioned Online runtime with
   idempotent receipts, atomic Catalog pointers, and rollback;
+- direct customer Product delivery using an opaque, short-lived Storefront
+  context handle with service-authenticated audience introspection;
 - customer-safe reads resolved exclusively from the active immutable manifest;
 - bounded locale-aware expansion of categories, attributes, classifications,
   variants, relations, bundles, packaging, and media;
@@ -87,6 +89,11 @@ or internal identity fields are discarded or rejected; enterprise scope comes
 from authenticated context.
 
 Online Product delivery requires an access token and `product.online.read`.
+Alternatively, `GET /online/storefront/items/:itemType/:itemCode` accepts only
+the opaque `x-nodics-storefront-context` handle. Product introspects it as the
+`product` audience, derives tenant, enterprise, Catalog, and locale from the
+active Storefront context, and ignores caller overrides for those values.
+Expired, missing, wrong-audience, or unverifiable handles fail closed.
 Operational diagnostics and reconciliation require
 `product.operations.read` and `product.operations.manage`. Publication target
 routes remain service-token-only.
@@ -113,6 +120,7 @@ node gComm/product/test/productVariantContract.test.js
 node gComm/product/test/productCompositionContract.test.js
 node gComm/product/test/productPublicationContract.test.js
 node gComm/product/test/productOnlineDeliveryAndProjectionContract.test.js
+node gComm/product/test/productStorefrontDeliveryContract.test.js
 node gComm/product/test/productManagementAndReferenceContract.test.js
 node gComm/product/test/productProviderAndOverrideContract.test.js
 ```

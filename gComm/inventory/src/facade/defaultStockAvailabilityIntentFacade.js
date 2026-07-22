@@ -12,5 +12,6 @@
 module.exports = {
     /** Initializes the facade. */ init: function () { return Promise.resolve(true); },
     /** Completes facade initialization. */ postInit: function () { return Promise.resolve(true); },
-    /** Evaluates ON_HAND Availability. */ evaluate: function (request) { return SERVICE.DefaultStockAvailabilityIntentService.evaluate(request); }
+    /** Evaluates ON_HAND Availability. */ evaluate: function (request) { return SERVICE.DefaultStockAvailabilityIntentService.evaluate(request); },
+    /** Evaluates customer-safe ON_HAND Availability from trusted Storefront scope. */ evaluateStorefront: function (request) { return SERVICE.DefaultStockAvailabilityIntentService.evaluateStorefront(request); }
 };

@@ -29,5 +29,15 @@ module.exports = {
         let operation = FACADE.DefaultCmsDeliveryFacade.resolvePage(request);
         if (!callback) return operation;
         operation.then(success => callback(null, success)).catch(error => callback(error));
+    },
+
+    /** Resolves a page path only after deriving Site, locale, channel, and authority from Storefront introspection. */
+    resolveStorefrontPage: function (request, callback) {
+        let query = request.httpRequest && request.httpRequest.query ? request.httpRequest.query : request.query || {};
+        request.delivery = { path: query.path };
+        let operation = SERVICE.DefaultCmsStorefrontContextProviderService.apply(request)
+            .then(() => FACADE.DefaultCmsDeliveryFacade.resolvePage(request));
+        if (!callback) return operation;
+        operation.then(success => callback(null, success)).catch(error => callback(error));
     }
 };

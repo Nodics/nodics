@@ -38,7 +38,7 @@ const errorEnvelope = {
 const contextData = {
     type: 'object', additionalProperties: false,
     required: ['hostname', 'canonical', 'scheme', 'storefrontCode', 'name', 'cmsSite', 'stores', 'defaultStore',
-        'productCatalogCodes', 'countries', 'locales', 'currencies', 'channels', 'defaults', 'downstream', 'contract'],
+        'productCatalogCodes', 'countries', 'locales', 'currencies', 'channels', 'defaults', 'downstream', 'contextAccess', 'contract'],
     properties: {
         hostname: { type: 'string', format: 'hostname' }, canonical: { type: 'boolean' }, scheme: { enum: ['https'] },
         storefrontCode: { type: 'string' }, name: { type: 'string' }, cmsSite: reference,
@@ -53,6 +53,9 @@ const contextData = {
             product: { type: 'object', additionalProperties: false, properties: { catalogCode: { type: 'string' }, locale: { type: 'string' } } },
             pricing: { type: 'object', additionalProperties: false, properties: { siteCode: { type: 'string' }, storeCode: { type: 'string' }, currencyCode: { type: 'string' }, channelCode: { type: 'string' } } },
             inventory: { type: 'object', additionalProperties: false, properties: { storeCode: { type: 'string' }, countryCode: { type: 'string' }, channelCode: { type: 'string' } } }
+        } },
+        contextAccess: { type: 'object', additionalProperties: false, required: ['handle', 'header', 'expiresInSeconds'], properties: {
+            handle: { type: 'string' }, header: { type: 'string' }, expiresInSeconds: { type: 'integer', minimum: 1 }
         } },
         contract: compatibility, correlationId: { type: 'string' }
     }

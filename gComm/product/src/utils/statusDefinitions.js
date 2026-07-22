@@ -68,4 +68,5 @@ module.exports = {
     ,ERR_PRODUCT_00064: { code: '400', message: 'Product delivery cache policy invalid' }
     ,ERR_PRODUCT_00065: { code: '503', message: 'Product projection manifest unavailable' }
     ,ERR_PRODUCT_00066: { code: '503', message: 'Product search projection failed' }
+    ,ERR_PRODUCT_00067: { code: '401', message: 'Active Storefront context is required' }
 };

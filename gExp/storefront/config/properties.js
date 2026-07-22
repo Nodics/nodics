@@ -20,7 +20,8 @@ module.exports = {
     cache: {
         storefront: {
             channels: {
-                context: { enabled: true, fallback: true, engine: 'local', ttl: 60 }
+                context: { enabled: true, fallback: true, engine: 'local', ttl: 60 },
+                contextAccess: { enabled: true, fallback: false, engine: 'local', ttl: 120 }
             }
         }
     },
@@ -100,6 +101,17 @@ module.exports = {
             cacheControl: 'private, max-age=0, must-revalidate',
             etagEnabled: true,
             retryAfterSeconds: 1
+        },
+        contextAccess: {
+            enabled: true,
+            headerName: 'x-nodics-storefront-context',
+            moduleName: 'storefront',
+            channelName: 'contextAccess',
+            keyPrefix: 'storefrontContextAccess:',
+            ttlSeconds: 120,
+            tokenBytes: 32,
+            maximumHandleLength: 256,
+            audiences: ['cms', 'product', 'pricing', 'inventory']
         },
         contextCache: {
             enabled: true,

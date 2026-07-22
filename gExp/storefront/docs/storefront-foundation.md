@@ -94,6 +94,42 @@ If-None-Match: "previous-etag"
 
 Applications should treat the Storefront response as bootstrap context. They pass only the documented routing hints to CMS, Product, Pricing, and Inventory; they never forward a tenant, enterprise, permission, human token, or internal service token from this payload. Each target module remains authoritative for trusted identity, access, and business validation.
 
+### Opaque context access for direct module delivery
+
+Every successful HTTP 200 resolution issues `contextAccess.handle`, its required header name, and its short lifetime. The value is cryptographically random and opaque: it is not a JWT and contains no browser-readable tenant, enterprise, permission, service token, or routing payload. The client sends it as `x-nodics-storefront-context` to a supported direct delivery endpoint. HTTP 304 does not issue a new handle; refresh the Storefront context when the previous handle expires.
+
+The handle is a short-lived bearer reference. Opacity prevents clients from reading or editing its context, but it does not prove which browser currently possesses it. Use TLS, prevent referrer/header logging, avoid durable browser storage, apply edge controls, and keep the lifetime short. A client presenting the Apparel handle always receives Apparel-derived projections even if its payload claims Electronics values; a stolen still-active handle requires expiry or explicit cache revocation before it becomes inactive. Adding device or session binding later would require an explicit trusted binding contract, not inference inside individual domain modules.
+
+Storefront stores the ephemeral active-state record through `DefaultCacheService`. A target module authenticates itself with the existing module service token and calls `POST /context/introspect` with the handle and its own audience. Storefront returns `active: true` only when the handle exists, is unexpired, permits that audience, and its cache state is readable. It returns only that module's context projection. Invalid syntax, expiry, wrong audience, cache miss, cache outage, and ambiguous state return inactive; the customer request then fails closed.
+
+Product, CMS, Pricing, and Inventory are implemented consumers. Call `GET /online/storefront/items/:itemType/:itemCode` for Product, `GET /delivery/storefront/pages/resolve?path=/home` for CMS, `POST /delivery/storefront/prices/resolve` for Pricing, or `POST /delivery/storefront/stock-availability/evaluate` for Inventory with the handle. Product derives tenant, enterprise, Product Catalog, and locale; CMS derives tenant, enterprise, Site, locale, and channel; Pricing derives tenant, enterprise, Site, Store, currency, and channel; Inventory derives tenant, enterprise, Store, country, and channel. Each replaces or ignores caller scope overrides and retains its own data, identity, bounds, cache, and delivery authority.
+
+For a single Storefront node, the local cache engine is sufficient. Multi-node or autoscaled Storefront deployments must select an enabled shared Redis or supported distributed engine for the `contextAccess` channel; otherwise a handle issued on one node may be inactive on another, safely denying traffic. Never enable cache fallback for this channel: silently moving security state to a different provider would make active-state decisions topology-dependent. Keep TLS, module authentication, rate limits, response bounds, sanitized audit records, and short timeouts enabled on introspection.
+
+This design follows the active-state and protected-introspection model of RFC 7662 and the resource-local enforcement principle of zero-trust architecture. It is deliberately not a general OAuth access token and grants no mutation permission.
+
+```http
+GET /nodics/product/v0/online/storefront/items/SKU/IPHONE-17 HTTP/1.1
+Host: product.example.internal
+x-nodics-storefront-context: <opaque handle from Storefront>
+```
+
+```http
+POST /nodics/pricing/v0/delivery/storefront/prices/resolve HTTP/1.1
+Content-Type: application/json
+x-nodics-storefront-context: <opaque handle from Storefront>
+
+{"item":{"itemType":"SKU","itemCode":"IPHONE-17"},"quantity":"1","unitCode":"piece"}
+```
+
+```http
+POST /nodics/inventory/v0/delivery/storefront/stock-availability/evaluate HTTP/1.1
+Content-Type: application/json
+x-nodics-storefront-context: <opaque handle from Storefront>
+
+{"item":{"itemType":"SKU","itemCode":"IPHONE-17","unitCode":"piece"}}
+```
+
 The response also provides a `downstream` convenience projection. It maps the same resolved values to the parameter names currently consumed by CMS, Product, Pricing, and Inventory. These values are routing hints, not delegated authority: every target module continues deriving tenant and enterprise through its own trusted request pipeline and validating its own business rules.
 
 ```json
@@ -232,6 +268,8 @@ Tune `storefront.observability.thresholds` through environment or server `proper
 
 The standard Nodics basic/full test governance includes the Storefront suite automatically. It verifies public schemas and headers, compatibility boundaries, ETag behavior, target-module handoff ownership, cache and invalidation, dependency transport, observability, resilience, persistence integration, and performance. Developers may run the focused suite through `node gFramework/nTooling/bin/nodics-tool.js test:suite --suite=storefront` before the broader repository regression.
 
+`storefrontCrossModuleJourneyContract.test.js` resolves Apparel and Electronics in one tenant and enterprise, issues distinct opaque handles, and proves CMS Site, Product Catalog, Pricing Store/currency, and Inventory Store/country/channel isolation. It repeats the four consumers through Nodics modular transport, verifies service authentication and audience binding, replaces hostile payload scope, and fails closed on expiry or security-state cache outage. This is an integration contract over existing authorities; it does not add a backend-for-frontend or compose domain responses.
+
 Back up bootstrap-tenant endpoints and tenant-local Storefront records. Restore tenant dependencies before enabling endpoint traffic. Deployment health should confirm CMS and Store reference contracts when modules are separate.
 
 ## Production activation checklist
@@ -288,6 +326,7 @@ Create or import tenant-local Storefront records first. Create hostname endpoint
 node gExp/storefront/test/storefrontContract.test.js
 node gExp/storefront/test/storefrontApiContract.test.js
 node gExp/storefront/test/storefrontContextCacheContract.test.js
+node gExp/storefront/test/storefrontCrossModuleJourneyContract.test.js
 node gExp/storefront/test/storefrontDownstreamHandoffContract.test.js
 node gExp/storefront/test/storefrontObservabilityContract.test.js
 node gExp/storefront/test/storefrontPerformanceContract.test.js

@@ -13,14 +13,14 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to cms"
   },
-  "sourceFiles": 28,
-  "testFiles": 41,
+  "sourceFiles": 29,
+  "testFiles": 42,
   "dataFiles": 24,
-  "ownedFiles": 66,
-  "sourceFingerprint": "166e10bc0b33706c6922adea507dc484415700fe7ddb82bf66196f9edb22ca2d",
+  "ownedFiles": 68,
+  "sourceFingerprint": "c37dd7386b73dce8d4049a1353dfd54d97e431308f12c299773844907e01a11f",
   "documentation": {
-    "documented": 57,
-    "partially-documented": 2,
+    "documented": 58,
+    "partially-documented": 3,
     "undocumented": 3,
     "inventory-only": 4
   },

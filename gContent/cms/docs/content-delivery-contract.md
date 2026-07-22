@@ -49,6 +49,28 @@ uses the normal secured request pipeline and
 `cms.delivery.authenticated.read`. Neither route is a human login route and
 neither changes module-to-module authentication contracts.
 
+The dedicated Storefront endpoint is public at the HTTP boundary, but it does
+not accept browser-selected Site or tenant scope. The browser supplies an
+absolute application `path` and the opaque `x-nodics-storefront-context`
+handle. `DefaultCmsStorefrontContextProviderService` introspects that handle
+locally or through existing module transport using a service token and the
+`cms` audience. It establishes tenant, enterprise, Site, locale, and channel
+before the normal CMS facade and delivery service execute.
+
+The handle is not decoded by CMS and does not replace CMS authority. Storefront
+decides only whether the short-lived context is active and which CMS routing
+projection it contains. CMS still validates the absolute path, resolves one
+Online route, loads the immutable publication manifest when enabled, enforces
+graph bounds, and projects safe content. Missing handle, wrong audience,
+expiry, cache miss/outage, Storefront outage, missing publication, and
+ambiguous content fail closed.
+
+For modular deployment, configure `cms.storefrontContext` with the Storefront
+module name, API path, bootstrap tenant, timeout, attempt count, and response
+bound. Redirects remain disabled. A later provider override must preserve
+service authentication, audience binding, bounded transport, and override
+rejection.
+
 ## Caching And Invalidation
 
 The routes use Nodics router caching. CMS mutations call the existing
@@ -63,14 +85,16 @@ Later-loaded modules may override schemas, route definitions, layered
 `cms.delivery` and `cms.renderer` properties, controller/facade members,
 resolver methods, validation methods, and cache-invalidation methods. Overrides
 must preserve tenant isolation, safe projection, bounded resolution, explicit
-public access, and secured permission checks.
+public access, Storefront introspection where selected, and secured permission
+checks.
 
 ## Current Boundary
 
-This contract provides the Phase 0 correctness and Phase 1 delivery foundation.
-Draft/Online publication, preview authorization, workflow integration, atomic
-authoring/reorder APIs, structured content, DAM, and dependency-aware selective
-invalidation are not claimed as implemented here.
+This contract provides bounded direct, authenticated, and Storefront-context
+delivery. Staged-to-Online publication uses the separately documented Workflow
+and nPublish manifest contract. Executable frontend rendering and binary DAM
+storage remain outside CMS backend ownership; projects may add specialized
+authoring experiences without bypassing the implemented delivery authorities.
 
 ## Governed Contract Migration
 

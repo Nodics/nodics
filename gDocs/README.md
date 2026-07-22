@@ -24,9 +24,10 @@ your goal.
 ### Business Owner Or Decision Maker
 
 1. [Why Businesses Choose Nodics](business/why-businesses-choose-nodics.md)
-2. [Business Capabilities And Outcomes](business/business-capabilities-and-outcomes.md)
-3. [How Nodics Compares With Other Approaches](business/how-nodics-compares.md)
-4. [Business And Technical Evaluation Checklist](business/evaluation-checklist.md)
+2. [Why Businesses Can Trust Nodics](business/security-and-trust.md)
+3. [Business Capabilities And Outcomes](business/business-capabilities-and-outcomes.md)
+4. [How Nodics Compares With Other Approaches](business/how-nodics-compares.md)
+5. [Business And Technical Evaluation Checklist](business/evaluation-checklist.md)
 
 ### Beginner Or First-Time Evaluator
 
@@ -64,12 +65,15 @@ your goal.
 
 ### Architect, Security Reviewer, Or Operator
 
-1. [How Platform Capabilities Work](platform/how-platform-capabilities-work.md)
-2. [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md)
-3. [How Cache Works](platform/how-cache-works.md)
-4. [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md)
-5. [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md)
-6. [Production Operating Model](operations/production-operating-model.md)
+1. [Why Businesses Can Trust Nodics](business/security-and-trust.md)
+2. [Security Shared-Responsibility Model](security/shared-responsibility-model.md)
+3. [Security Evidence Guide](security/security-evidence-guide.md)
+4. [How Platform Capabilities Work](platform/how-platform-capabilities-work.md)
+5. [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md)
+6. [How Cache Works](platform/how-cache-works.md)
+7. [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md)
+8. [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md)
+9. [Production Operating Model](operations/production-operating-model.md)
 
 ### Reference And Documentation Contributors
 
@@ -116,7 +120,7 @@ Use this map when you are not sure where to start.
 | Need | Read |
 | --- | --- |
 | Understand what Nodics is and why it exists | [What Nodics Is](overview/what-is-nodics.md) |
-| Decide whether Nodics fits a business or product | [Why Businesses Choose Nodics](business/why-businesses-choose-nodics.md), [How Nodics Compares](business/how-nodics-compares.md), and [Evaluation Checklist](business/evaluation-checklist.md) |
+| Decide whether Nodics fits a business or product | [Why Businesses Choose Nodics](business/why-businesses-choose-nodics.md), [Why Businesses Can Trust Nodics](business/security-and-trust.md), [How Nodics Compares](business/how-nodics-compares.md), and [Evaluation Checklist](business/evaluation-checklist.md) |
 | Install, build, and start the framework | [How To Set Up Nodics](getting-started/how-to-setup-nodics.md) |
 | Follow one complete beginner journey | [Build Your First Nodics Capability](getting-started/build-your-first-capability.md) |
 | Understand projects, modules, environments, servers, and nodes | [How Nodics Is Organized](architecture/how-nodics-is-organized.md) |
@@ -146,6 +150,7 @@ Use this map when you are not sure where to start.
 | Understand processes, messaging, logging, and request handling | [How Platform Capabilities Work](platform/how-platform-capabilities-work.md) |
 | Configure, troubleshoot, or customize cache | [How Cache Works](platform/how-cache-works.md) |
 | Understand users, tenants, permissions, and runtime isolation | [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md) |
+| Evaluate security value, responsibilities, limitations, and evidence | [Why Businesses Can Trust Nodics](business/security-and-trust.md), [Security Shared-Responsibility Model](security/shared-responsibility-model.md), and [Security Evidence Guide](security/security-evidence-guide.md) |
 | Verify a change | [How To Test Nodics Changes](testing/how-to-test-nodics-changes.md) |
 | Run, debug, deploy, or operate Nodics | [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md), [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md), and [Production Operating Model](operations/production-operating-model.md) |
 | Maintain public and module documentation | [Documentation Maintenance Guide](documentation/how-to-maintain-documentation.md) |

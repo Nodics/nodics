@@ -32,6 +32,8 @@ Profile authentication supplies tenant and enterprise identity. Inventory does
 not create enterprise, address, store, product, price, order, geography, or unit
 authorities.
 
+Customer applications call `POST /delivery/storefront/stock-availability/evaluate` with the opaque handle issued by Storefront. Inventory introspects it for the `inventory` audience, derives tenant, enterprise, Store, country, and channel, and delegates to the same authoritative sourcing, Stock Balance, Units, exact-arithmetic, and cache chain. The public response contains customer-safe totals only; operational Pool, Warehouse, Balance, revision, and enterprise evidence remains available only through the service-token intent.
+
 Layer `inventory.identity`, `inventory.warehouse`, and `inventory.location`
 properties to customize classifications or hierarchy depth while preserving
 fail-closed scope, stable identities, hierarchy safety, and retirement history.
@@ -49,6 +51,7 @@ node gComm/inventory/test/stockSourcingFoundation.test.js
 node gComm/inventory/test/stockSourcingIntentContract.test.js
 node gComm/inventory/test/stockSourcingCacheContract.test.js
 node gComm/inventory/test/stockAvailabilityFoundation.test.js
+node gComm/inventory/test/inventoryStorefrontAvailabilityContract.test.js
 node gComm/inventory/test/stockReservationFoundation.test.js
 node gComm/inventory/test/stockAllocationFoundation.test.js
 node gComm/inventory/test/stockTransferFoundation.test.js

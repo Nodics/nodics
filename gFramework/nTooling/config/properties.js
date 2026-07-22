@@ -236,13 +236,19 @@ module.exports = {
                 { node: 'gExp/storefront/test/storefrontContract.test.js' },
                 { node: 'gExp/storefront/test/storefrontApiContract.test.js' },
                 { node: 'gExp/storefront/test/storefrontContextCacheContract.test.js' },
+                { node: 'gExp/storefront/test/storefrontContextAccessContract.test.js' },
+                { node: 'gExp/storefront/test/storefrontCrossModuleJourneyContract.test.js' },
                 { node: 'gExp/storefront/test/storefrontDownstreamHandoffContract.test.js' },
                 { node: 'gExp/storefront/test/storefrontObservabilityContract.test.js' },
                 { node: 'gExp/storefront/test/storefrontPerformanceContract.test.js' },
                 { node: 'gExp/storefront/test/storefrontProductionHardeningContract.test.js' },
                 { node: 'gExp/storefront/test/storefrontPersistenceIntegration.test.js' },
                 { node: 'gExp/storefront/test/storefrontReferenceTransportContract.test.js' },
-                { node: 'gExp/storefront/test/storefrontTrafficResilienceContract.test.js' }
+                { node: 'gExp/storefront/test/storefrontTrafficResilienceContract.test.js' },
+                { node: 'gComm/pricing/test/pricingStorefrontResolutionContract.test.js' },
+                { node: 'gComm/inventory/test/inventoryStorefrontAvailabilityContract.test.js' },
+                { node: 'gComm/product/test/productStorefrontDeliveryContract.test.js' },
+                { node: 'gContent/cms/test/cmsStorefrontDeliveryContract.test.js' }
             ],
             config: [
                 { node: 'gFramework/nConfig/test/configurationValidation.test.js' },

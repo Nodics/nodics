@@ -130,6 +130,7 @@ module.exports = {
             throw error;
         }
         return {
+            _authority: { tenantCode: endpoint.tenantCode, enterpriseCode: endpoint.enterpriseCode },
             hostname: hostname,
             canonical: endpoint.canonical === true,
             scheme: endpoint.scheme,

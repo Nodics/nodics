@@ -14,12 +14,18 @@ Traffic resilience reuses nRouter HTTP rate limiting and `DefaultModuleService` 
 
 The public API publishes an explicit versioned delivery contract. Clients may send `x-nodics-client-contract-version`; responses expose the effective Storefront contract version, correlation ID, cache policy, and ETag. Compatible conditional requests receive HTTP 304, while unsupported older clients receive HTTP 426. Capacity and rate-limit responses include `Retry-After`.
 
+Successful HTTP 200 resolution also issues an opaque, short-lived context handle. Customer applications send it in `x-nodics-storefront-context` to supported direct delivery routes. The handle contains no readable tenant, enterprise, token, permission, or routing data. Target modules use the service-token-only `/context/introspect` contract, receive only their audience projection, and keep their own domain validation. Missing, expired, wrong-audience, unavailable-cache, and unavailable-Storefront cases fail closed.
+
+The cross-module journey contract proves that Apparel and Electronics hostnames in one tenant and enterprise retain distinct CMS, Product, Pricing, and Inventory context in co-hosted and modular transport modes. Because the handle is a short-lived bearer reference, protect it with TLS, never log or persist it in application storage, and refresh it after expiry; payload overrides cannot combine one handle with another website's scope.
+
 ## Verification
 
 ```bash
 node gExp/storefront/test/storefrontContract.test.js
 node gExp/storefront/test/storefrontApiContract.test.js
 node gExp/storefront/test/storefrontContextCacheContract.test.js
+node gExp/storefront/test/storefrontContextAccessContract.test.js
+node gExp/storefront/test/storefrontCrossModuleJourneyContract.test.js
 node gExp/storefront/test/storefrontDownstreamHandoffContract.test.js
 node gExp/storefront/test/storefrontObservabilityContract.test.js
 node gExp/storefront/test/storefrontPerformanceContract.test.js
