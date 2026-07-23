@@ -10,7 +10,7 @@
  */
 
 /**
- * @module profile/data/init/DefaultUserGroupsData
+ * @module profile/data/init/DefaultBootstrapUserGroupsData
  * @description Seeds the default user-group hierarchy and narrowly scoped administrative permissions required by profile and control-plane capabilities.
  * @layer data
  * @owner profile
@@ -44,7 +44,8 @@ module.exports = {
         code: 'employeeUserGroup',
         name: 'employeeUserGroup',
         active: true,
-        parentGroups: ['userGroup']
+        parentGroups: ['userGroup'],
+        permissions: ['cms.delivery.authenticated.read']
     },
     record3: {
         code: 'customerUserGroup',
@@ -169,6 +170,7 @@ module.exports = {
             ,'storefront.backoffice.read'
             ,'storefront.backoffice.manage'
             ,'storefront.operations.read'
+            ,'cms.delivery.authenticated.read'
             ,'product.online.read'
             ,'product.operations.read'
             ,'product.operations.manage'

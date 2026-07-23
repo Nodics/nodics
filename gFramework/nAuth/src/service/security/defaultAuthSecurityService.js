@@ -150,7 +150,7 @@ module.exports = {
         const signOptions = _.merge({}, profile.jwtSignOptions || {}, security.jwt.signOptions || {});
         signOptions.algorithm = signOptions.algorithm || security.jwt.algorithms[0];
         signOptions.issuer = signOptions.issuer || security.jwt.issuer;
-        signOptions.audience = signOptions.audience || security.jwt.audience;
+        signOptions.audience = options.audience || signOptions.audience || security.jwt.audience;
         signOptions.jwtid = options.jti || uuid();
         signOptions.subject = options.subject || options.loginId || options.serviceId || tokenType;
         if (options.tokenLife) {
@@ -173,7 +173,8 @@ module.exports = {
      * @param {*} config Layered configuration facade.
      * @returns {Object} JWT verification options.
      */
-    getVerifyOptions: function (config) {
+    getVerifyOptions: function (config, options) {
+        options = options || {};
         const security = this.getSecurityConfiguration(config);
         const profile = this.read(config, 'profile') || {};
         const verifyOptions = _.merge({}, profile.jwtVerifyOptions || {}, security.jwt.verifyOptions || {});
@@ -183,8 +184,28 @@ module.exports = {
         delete verifyOptions.algorithm;
         verifyOptions.algorithms = verifyOptions.algorithms || security.jwt.algorithms;
         verifyOptions.issuer = verifyOptions.issuer || security.jwt.issuer;
-        verifyOptions.audience = verifyOptions.audience || security.jwt.audience;
+        verifyOptions.audience = options.audience || verifyOptions.audience || security.jwt.audience;
         return verifyOptions;
+    },
+
+    /**
+     * Resolves the audience that a browser access token must carry for one
+     * directly called module. This does not apply to service or Cron tokens.
+     *
+     * @param {*} config Layered configuration facade.
+     * @param {string} moduleName Target module name.
+     * @returns {string} Stable module audience.
+     */
+    getBrowserAudience: function (config, moduleName) {
+        const security = this.getSecurityConfiguration(config);
+        const browser = security.browserAccess || {};
+        const normalized = String(moduleName || '').trim();
+        const pattern = new RegExp(browser.moduleNamePattern || '^[A-Za-z][A-Za-z0-9_-]{0,127}$');
+        if (!pattern.test(normalized)) {
+            throw new Error('A valid target module is required for browser access tokens');
+        }
+        const configured = browser.moduleAudiences || {};
+        return configured[normalized] || String(browser.audiencePrefix || 'nodics-module:') + normalized;
     },
 
     /**

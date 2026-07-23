@@ -43,7 +43,7 @@ module.exports = {
         }
         let pageCode = this.codeOf(route.page);
         let page = await this.getSingle(SERVICE.DefaultCmsPageService, request, { code: pageCode, active: true }, 'CMS_PAGE_NOT_FOUND');
-        let graph = await this.resolveGraph(request, [page.code]);
+        let graph = await this.resolveGraph(request, [page.code], isPublic ? 'PUBLIC' : 'AUTHENTICATED');
         return {
             result: {
                 contractVersion: 1,
@@ -84,7 +84,7 @@ module.exports = {
     },
 
     /** Resolves component associations breadth-first within configured bounds. */
-    resolveGraph: async function (request, rootCodes) {
+    resolveGraph: async function (request, rootCodes, accessMode) {
         let settings = this.settings();
         let graph = {};
         let visited = new Set();
@@ -105,6 +105,9 @@ module.exports = {
             let components = targetCodes.length ? await this.getMany(SERVICE.DefaultCmsComponentService, request, {
                 code: { $in: targetCodes }, active: true
             }) : [];
+            if (accessMode === 'PUBLIC' && components.some(component => component.accessMode !== 'PUBLIC')) {
+                throw this.error('CMS_COMPONENT_ACCESS_DENIED', 'public page composition contains protected content');
+            }
             let byCode = components.reduce((result, component) => {
                 result[component.code] = component;
                 return result;

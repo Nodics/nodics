@@ -68,12 +68,13 @@ your goal.
 1. [Why Businesses Can Trust Nodics](business/security-and-trust.md)
 2. [Security Shared-Responsibility Model](security/shared-responsibility-model.md)
 3. [Security Evidence Guide](security/security-evidence-guide.md)
-4. [How Platform Capabilities Work](platform/how-platform-capabilities-work.md)
-5. [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md)
-6. [How Cache Works](platform/how-cache-works.md)
-7. [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md)
-8. [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md)
-9. [Production Operating Model](operations/production-operating-model.md)
+4. [BackOffice Browser Security](security/backoffice-browser-security.md)
+5. [How Platform Capabilities Work](platform/how-platform-capabilities-work.md)
+6. [How Users, Tenants, And Permissions Work](security/how-users-tenants-and-permissions-work.md)
+7. [How Cache Works](platform/how-cache-works.md)
+8. [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md)
+9. [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md)
+10. [Production Operating Model](operations/production-operating-model.md)
 
 ### Reference And Documentation Contributors
 

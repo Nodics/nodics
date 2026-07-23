@@ -28,6 +28,8 @@ assert(Object.values(initialTypes).some(item => item.code === 'navigationalCompo
 });
 assert(schemas.cms.cmsTypeCode.definition.kind, 'existing cmsTypeCode must remain the component/page type authority');
 assert(schemas.cms.cmsTypeCode.definition.propertySchema, 'type authority must support declarative property contracts');
+assert(schemas.cms.cmsComponent.definition.properties, 'component delivery properties must be an explicit schema contract');
+assert.strictEqual(schemas.cms.cmsComponent.definition.accessMode.default, 'AUTHENTICATED');
 assert.strictEqual(routes.cmsDelivery.resolvePublicPage.publicAccess, true);
 assert.strictEqual(routes.cmsDelivery.resolvePublicPage.secured, false);
 assert.strictEqual(routes.cmsDelivery.resolveAuthenticatedPage.secured, true);
@@ -55,7 +57,8 @@ global.SERVICE = {
         routes: [{ site: 'site', path: '/home', locale: 'en', channel: 'web', page: 'home', routeType: 'PAGE', deliveryState: 'ONLINE', accessMode: 'PUBLIC' }],
         pages: [{ code: 'home', name: 'Home', typeCode: 'homePage', renderer: 'page.home', internalNote: 'hidden' }],
         details: [{ code: 'homeHero', source: 'home', target: 'hero', slot: 'main', index: 0, active: true }],
-        components: [{ code: 'hero', typeCode: 'heroType', renderer: 'component.hero', properties: { title: 'Hello' }, secret: 'hidden' }]
+        components: [{ code: 'hero', typeCode: 'heroType', renderer: 'component.hero', accessMode: 'PUBLIC',
+            properties: { title: 'Hello' }, secret: 'hidden' }]
     };
     const matches = (model, query) => Object.keys(query).every(key => {
         if (key === 'active' && model[key] === undefined) return true;
@@ -77,6 +80,11 @@ global.SERVICE = {
     assert.strictEqual(response.result.page.components[0].code, 'hero');
     assert.strictEqual(response.result.page.internalNote, undefined);
     assert.strictEqual(response.result.page.components[0].secret, undefined);
+    data.components[0].accessMode = 'AUTHENTICATED';
+    await assert.rejects(delivery.resolvePage({ tenant: 'tenant-a', authData: {}, options: {}, router: { publicAccess: true },
+        delivery: { site: 'site', path: '/home', locale: 'en', channel: 'web' } }),
+    error => error.code === 'CMS_COMPONENT_ACCESS_DENIED');
+    data.components[0].accessMode = 'PUBLIC';
     data.routes[0].deliveryState = 'DRAFT';
     await assert.rejects(delivery.resolvePage({ tenant: 'tenant-a', router: { publicAccess: true }, delivery: { site: 'site', path: '/home', locale: 'en', channel: 'web' } }), error => error.code === 'CMS_ROUTE_NOT_FOUND');
     data.routes[0].deliveryState = 'ONLINE';

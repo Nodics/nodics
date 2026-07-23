@@ -23,7 +23,7 @@ module.exports = {
                 enabled: true,
                 schemaName: 'userGroup',
                 operation: 'saveAll', //saveAll, update and saveOrUpdate
-                dataFilePrefix: 'defaultUserGroupsData'
+                dataFilePrefix: 'defaultBootstrapUserGroupsData'
             },
             query: {
                 code: '$code'

@@ -78,6 +78,11 @@ assert.strictEqual(authSecurity.validateBootstrapIdentity(configuration({
 assert.throws(() => authSecurity.getSignOptions(secureConfiguration, { lifetime: true }), /Non-expiring/);
 assert.deepStrictEqual(authSecurity.getVerifyOptions(secureConfiguration).algorithms, ['HS256']);
 assert.strictEqual(authSecurity.getVerifyOptions(secureConfiguration).algorithm, undefined);
+assert.strictEqual(authSecurity.getBrowserAudience(secureConfiguration, 'cms'), 'nodics-module:cms');
+assert.strictEqual(authSecurity.getVerifyOptions(secureConfiguration, {
+    audience: 'nodics-module:cms'
+}).audience, 'nodics-module:cms');
+assert.throws(() => authSecurity.getBrowserAudience(secureConfiguration, '../cms'), /valid target module/);
 
 global.CONFIG = secureConfiguration;
 global.CLASSES = {
@@ -117,6 +122,21 @@ assert.strictEqual(payload.refreshToken, undefined);
 assert.strictEqual(payload.apiKey, undefined);
 assert.strictEqual(payload.password, undefined);
 assert.strictEqual(payload.authVersion, 7);
+
+const cmsAccessToken = provider.generateAuthToken({
+    entCode: 'enterprise-a',
+    tenant: 'tenant-a',
+    loginId: 'user-a',
+    principalType: 'human',
+    audience: authSecurity.getBrowserAudience(secureConfiguration, 'cms'),
+    tokenLife: '5m'
+});
+assert.strictEqual(jwt.verify(cmsAccessToken, strongSecret, authSecurity.getVerifyOptions(secureConfiguration, {
+    audience: 'nodics-module:cms'
+})).aud, 'nodics-module:cms');
+assert.throws(() => jwt.verify(cmsAccessToken, strongSecret, authSecurity.getVerifyOptions(secureConfiguration, {
+    audience: 'nodics-module:backoffice'
+})), /audience/);
 
 const serviceToken = provider.generateAuthToken({
     entCode: 'enterprise-a',

@@ -143,6 +143,13 @@ governed project/environment/server/node configuration, external properties, or
 a secret manager. Local sample credentials are accepted only when the active
 environment explicitly enables the local bootstrap compatibility flag.
 
+Initializer identity groups are deliberately discovered before employee
+principals. This preserves fail-closed group and permission validation during a
+clean database bootstrap: an employee cannot be persisted with a missing,
+inactive, or unknown group merely because initialization is in progress.
+Every permission seeded on a group must already exist in the effective
+`identityGovernance.permissionCatalog`.
+
 Projects can replace the service list, override the reconciler in a later module
 layer, extend `identityGovernance.migration.groupTargets`, or disable automatic
 group reconciliation. Missing service principals or credentials are not

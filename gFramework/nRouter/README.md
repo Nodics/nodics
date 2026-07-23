@@ -144,6 +144,13 @@ When exposing generated CRUD behavior, document:
 Request handling must normalize tenant, authentication, authorization,
 correlation, headers, and module context before business behavior runs.
 
+A route may be public while still being tenant-scoped. When a public request
+supplies `x-enterprise-code`, the request pipeline resolves and validates its
+enterprise and tenant before cache lookup or controller dispatch. Truly
+tenant-independent public probes and documentation routes may omit the header
+and continue without tenant resolution. Public visibility must never be used
+as a reason to discard an enterprise context supplied by the caller.
+
 Controllers map request and response concerns. They do not become
 the owner of data access, provider selection, tenant policy, or route
 permission decisions. Those belong to schemas, configuration, services,

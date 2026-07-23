@@ -7,7 +7,7 @@
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `cmsBase` | `base` | no | no | no | yes | no | no |  | 0 |
-| `cmsComponent` | `cmsBase` | yes | yes | yes | no | no | no |  | 3 |
+| `cmsComponent` | `cmsBase` | yes | yes | yes | no | no | no |  | 5 |
 | `cmsComponentDetail` | `base` | yes | yes | no | yes | no | no |  | 4 |
 | `cmsMigrationAudit` | `base` | yes | yes | no | no | no | no |  | 8 |
 | `cmsOnlinePublicationPointer` | `base` | yes | yes | no | no | no | no |  | 10 |
@@ -27,6 +27,8 @@
 
 ### `cms.cmsComponent`
 
+- `accessMode` `string` required: Fail-closed component delivery boundary; public pages may contain only PUBLIC components
+- `properties` `object` optional: Declarative client-safe component properties validated against the component type contract
 - `renderer` `string` optional: Optional logical renderer key overriding the type-code renderer mapping
 - `subComponents` `array` optional: List of sub cmsComponents if any
 - `typeCode` `string` required: Required type code, this is used filter same type of components. like 

@@ -352,8 +352,13 @@ module.exports = {
     redirectRequest: function (request, response, process) {
         this.LOG.debug('Redirecting secured/non-secured request  : ' + request.originalUrl);
         if (this.isPublicRequest(request.router)) {
-            this.LOG.debug('Handling public request');
-            response.targetNode = 'publicRequest';
+            if (request.entCode) {
+                this.LOG.debug('Resolving tenant-scoped public request');
+                response.targetNode = 'nonSecureRequest';
+            } else {
+                this.LOG.debug('Handling tenant-independent public request');
+                response.targetNode = 'publicRequest';
+            }
         } else if (request.secured) {
             this.LOG.debug('Handling secured request');
             response.targetNode = 'securedRequest';

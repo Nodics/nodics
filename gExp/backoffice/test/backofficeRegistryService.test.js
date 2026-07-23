@@ -160,6 +160,12 @@ async function run() {
     assert.strictEqual(bootstrap.data.catalogue.cms.contract.hash, 'contract-hash');
     assert.strictEqual(bootstrap.data.uiComposition.providerModule, 'cms');
     assert.strictEqual(bootstrap.data.uiComposition.fallbackMode, 'STATIC_RECOVERY_SHELL');
+    assert.strictEqual(bootstrap.data.modules.workflowCore, undefined,
+        'bootstrap must never expose modules that are not browser callable');
+    assert.strictEqual(bootstrap.data.catalogue.workflowCore, undefined,
+        'bootstrap catalogue must contain only authorized browser-callable modules');
+    assert.strictEqual(JSON.stringify(bootstrap).includes('expiresAt'), false,
+        'bootstrap must not expose internal lease-expiry state');
     await assert.rejects(() => Promise.resolve().then(() => service.bootstrap({ authData: { permissions: [] },
         headers: { 'x-nodics-client-contract-version': 'invalid' } })));
     assert(auditEvents.some(event => event.eventType === 'backoffice.registry.registration'));

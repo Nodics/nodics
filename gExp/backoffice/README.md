@@ -67,6 +67,9 @@ Backend go-live, monitoring, rollback, and residual-risk gates follow
 [the backend release-readiness checklist](docs/backend-release-readiness.md).
 The current evidence, acceptance decision, and remaining production gates are
 recorded in [the backend acceptance report](docs/backend-acceptance-report.md).
+The module-owned core records for the initial Axis login, employee password
+recovery, and secured dashboard composition are described in
+[the Axis content catalog guide](docs/axis-content-catalog.md).
 
 ## Customization
 
@@ -78,3 +81,9 @@ required; do not copy the whole capability.
 Control-plane registration routes require the governed internal-token
 permission. Human discovery and diagnostics routes require distinct BackOffice
 permissions and return only configured client-safe metadata.
+
+The bootstrap response contains only active `clientCallable` modules permitted
+for the authenticated human and fields selected by
+`backofficeRegistry.clientSafeMetadata`. It does not expose service or Cron
+credentials, registration secrets, or internal lease-expiry state. See
+[`gDocs/security/backoffice-browser-security.md`](../../gDocs/security/backoffice-browser-security.md).

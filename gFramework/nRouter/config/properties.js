@@ -54,6 +54,7 @@ module.exports = {
             headers: {
                 'X-Content-Type-Options': 'nosniff',
                 'X-Frame-Options': 'DENY',
+                'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; object-src 'none'",
                 'Referrer-Policy': 'no-referrer',
                 'Cross-Origin-Resource-Policy': 'same-origin',
                 'X-XSS-Protection': '0'
@@ -63,8 +64,10 @@ module.exports = {
             enabled: false,
             allowedOrigins: [],
             allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-            allowedHeaders: ['Content-Type', 'Authorization', 'X-Nodics-Enterprise', 'X-Nodics-Tenant', 'X-Nodics-Module-Token'],
-            exposedHeaders: [],
+            allowedHeaders: ['Content-Type', 'Authorization', 'Idempotency-Key', 'X-CSRF-Token', 'X-Request-Id',
+                'X-Correlation-Id', 'X-Nodics-Client-Contract-Version', 'X-Nodics-Enterprise', 'X-Nodics-Tenant'],
+            exposedHeaders: ['Retry-After', 'X-Request-Id', 'X-Correlation-Id', 'X-RateLimit-Limit',
+                'X-RateLimit-Remaining', 'X-RateLimit-Reset'],
             allowCredentials: false,
             maxAge: 600
         },

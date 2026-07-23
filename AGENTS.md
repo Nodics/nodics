@@ -45,6 +45,17 @@ The expected posture is:
 
 - Before changing code, identify the active module boundary and nearest
   `AGENTS.md`.
+- Before implementing any capability that involves Nodics Axis or another
+  frontend application, complete a repository-boundary analysis. Identify the
+  authoritative backend behavior, frontend presentation behavior, shared API
+  or schema contract, security boundary, documentation owner, and tests that
+  belong in each repository. Nodics owns business rules, validation,
+  authorization enforcement, persistence, workflows, pipelines, integration
+  execution, secrets, tenant governance, and backend contracts. Frontend
+  repositories own rendering, interaction, responsive/accessibility behavior,
+  and client-side state. Do not add frontend source, browser-specific behavior,
+  or UI component implementations to Nodics. Do not move backend business
+  authority into a frontend merely to simplify a user interface.
 - Apply the reuse-first implementation order for every new requirement:
   1. reuse an existing Nodics capability or contract when it already satisfies
      the requirement;

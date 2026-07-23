@@ -76,6 +76,10 @@ module.exports = {
             method: request.method,
             body: request.body || {}
         };
+        if (response && typeof response.setHeader === 'function') {
+            response.setHeader('X-Request-Id', input.requestId);
+            response.setHeader('X-Correlation-Id', input.parentRequestId || input.requestId);
+        }
         let responseHandler = CONFIG.get('responseHandler')[routerDef.responseHandler || 'jsonResponseHandler'];
         SERVICE.DefaultPipelineService.start('requestHandlerPipeline', input, {}).then(success => {
             SERVICE[responseHandler].handleSuccess(request, response, success);

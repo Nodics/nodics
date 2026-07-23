@@ -106,6 +106,30 @@ assert.strictEqual(schemaAccessHandler.getAccessPoint({ userGroups: ['adminGroup
         principalType: 'service', userGroups: ['serviceAccountUserGroup'], apiKey: 'too-short'
     } }), /at least 32 characters/);
 
+    let groupLookupCount = 0;
+    global.SERVICE.DefaultUserGroupService = {
+        get: request => {
+            groupLookupCount++;
+            return Promise.resolve({ result: request.query.code.$in.map(code => ({ code: code, active: true })) });
+        }
+    };
+    global.SERVICE.DefaultEmployeeService = {
+        get: () => Promise.resolve({ result: [] })
+    };
+    await principalGovernance.validateSave({
+        tenant: 'default',
+        schemaModel: { schemaName: 'employee' },
+        query: { code: 'newEmployee' },
+        model: { code: 'newEmployee', principalType: 'human', userGroups: ['employeeUserGroup'] }
+    });
+    assert.strictEqual(groupLookupCount, 1, 'Save idempotency query must not be treated as a persisted-principal update');
+    await assert.rejects(principalGovernance.validateUpdate({
+        tenant: 'default',
+        schemaModel: { schemaName: 'employee' },
+        query: { code: 'missingEmployee' },
+        model: { userGroups: ['employeeUserGroup'] }
+    }), /requires an existing record/);
+
     let humanRequest = { tenant: 'default', model: { principalType: 'human', loginId: 'human' } };
     await apiKeyInterceptor.generateAPIKey(humanRequest, {});
     assert.strictEqual(humanRequest.model.apiKey, undefined, 'Human updates must not create API keys');

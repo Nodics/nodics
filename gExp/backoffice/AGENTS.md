@@ -46,6 +46,14 @@
 - UI-composition providers declare non-executable defaults. Provider selection
   may be layered, but BackOffice must not proxy CMS data-plane traffic or return
   executable code.
+- BackOffice may package Nodics Axis reference composition as module-owned core
+  data, but nCatalog and CMS remain schema, persistence, delivery, and runtime
+  authorities. Use the existing nData import lifecycle; never import content as
+  a BackOffice startup side effect or add an Axis-specific loader.
+- Axis content is employee-only and fail-closed. Only explicitly classified
+  employee login and recovery routes/components may be public; all post-login
+  page composition is authenticated. A public page may never reference an
+  authenticated component.
 - Availability is a freshness-bounded observation of the target's existing
   public readiness contract. Deduplicate by runtime instance, retain no raw
   response, and never turn BackOffice into target health or readiness authority.

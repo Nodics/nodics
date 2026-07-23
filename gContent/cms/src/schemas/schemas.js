@@ -347,6 +347,18 @@ module.exports = {
                     type: 'string',
                     required: false,
                     description: 'Optional logical renderer key overriding the type-code renderer mapping',
+                },
+                properties: {
+                    type: 'object',
+                    required: false,
+                    description: 'Declarative client-safe component properties validated against the component type contract'
+                },
+                accessMode: {
+                    type: 'string',
+                    required: true,
+                    default: 'AUTHENTICATED',
+                    enum: ['PUBLIC', 'AUTHENTICATED'],
+                    description: 'Fail-closed component delivery boundary; public pages may contain only PUBLIC components'
                 }
             }
         },

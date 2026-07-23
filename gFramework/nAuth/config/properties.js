@@ -45,6 +45,14 @@ module.exports = {
             rotateOnUse: true,
             requireDistributedCache: true
         },
+        browserAccess: {
+            enabled: false,
+            accessTokenExpiresIn: '5m',
+            audiencePrefix: 'nodics-module:',
+            moduleAudiences: {},
+            moduleNamePattern: '^[A-Za-z][A-Za-z0-9_-]{0,127}$',
+            rejectServiceAndCronCredentials: true
+        },
         apiKey: {
             defaultLifetimeSeconds: 60 * 60 * 24 * 90,
             requireScopes: true,
@@ -154,6 +162,7 @@ module.exports = {
             'store.backoffice.manage',
             'storefront.backoffice.read',
             'storefront.backoffice.manage',
+            'storefront.operations.read',
             'cache.flush',
             'cache.configuration.router.update',
             'cache.configuration.item.update',
@@ -194,6 +203,10 @@ module.exports = {
                 adminGroup: {
                     parentGroups: ['userGroup'],
                     permissions: ['backoffice.registry.view', 'backoffice.bootstrap.view', 'backoffice.contract.view']
+                },
+                employeeUserGroup: {
+                    parentGroups: ['userGroup'],
+                    permissions: ['cms.delivery.authenticated.read']
                 },
                 contentUserGroup: {
                     parentGroups: ['employeeUserGroup'],
@@ -239,6 +252,7 @@ module.exports = {
                         'backoffice.contract.rollback',
                         'profile.backoffice.view',
                         'cms.backoffice.view',
+                        'cms.delivery.authenticated.read',
                         'cronjob.backoffice.view',
                         'workflow.backoffice.view',
                         'pricing.backoffice.read',

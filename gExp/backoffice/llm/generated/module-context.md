@@ -17,6 +17,7 @@
 ## Module-Owned Folders
 
 - `config`
+- `data`
 - `src/schemas`
 - `src/router`
 - `src/controller`
@@ -34,9 +35,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 26 |
-| Test files | 17 |
-| Data files | 0 |
-| All module-owned files | 49 |
+| Test files | 18 |
+| Data files | 10 |
+| All module-owned files | 60 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -44,6 +45,7 @@
 **Owned extension areas**
 
 - `configuration`
+- `data`
 - `schema`
 - `router`
 - `controller`
@@ -69,9 +71,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 34 |
-| Partially documented | 10 |
-| Undocumented | 1 |
+| Documented | 35 |
+| Partially documented | 19 |
+| Undocumented | 2 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -97,6 +99,16 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/config/postscripts.js` | `config` | `documented` | 0/0 | Reserves BackOffice post-start contributions for future registration and discovery lifecycle work. |  |
 | `gExp/backoffice/config/prescripts.js` | `config` | `documented` | 0/0 | Reserves BackOffice pre-start contributions for future registration prerequisites. |  |
 | `gExp/backoffice/config/properties.js` | `config` | `documented` | 0/0 | Reserves layered defaults for BackOffice registry, discovery, catalogue, and bootstrap policies. |  |
+| `gExp/backoffice/data/core/data/axis/axisCmsComponentData.js` | `data` | `partially-documented` | 0/0 | Provides client-safe content for initial Axis employee authentication and dashboard components. | add @override |
+| `gExp/backoffice/data/core/data/axis/axisCmsPageData.js` | `data` | `partially-documented` | 0/0 | Composes the initial Axis login, employee recovery, and employee dashboard pages. | add @override |
+| `gExp/backoffice/data/core/data/axis/axisCmsRendererData.js` | `data` | `partially-documented` | 0/0 | Maps Axis content types to trusted logical renderer keys. | add @override |
+| `gExp/backoffice/data/core/data/axis/axisCmsRouteData.js` | `data` | `partially-documented` | 0/0 | Defines public employee-authentication routes and the secured Axis dashboard route. | add @override |
+| `gExp/backoffice/data/core/data/axis/axisCmsSiteData.js` | `data` | `partially-documented` | 0/0 | Binds the Axis CMS site to the Axis content catalog. | add @override |
+| `gExp/backoffice/data/core/data/axis/axisCmsSlotData.js` | `data` | `partially-documented` | 0/0 | Defines stable slots for the initial Axis authentication and dashboard templates. | add @override |
+| `gExp/backoffice/data/core/data/axis/axisCmsTemplateData.js` | `data` | `partially-documented` | 0/0 | Defines the initial Axis authentication and secured dashboard page templates. | add @override |
+| `gExp/backoffice/data/core/data/axis/axisCmsTypeCodeData.js` | `data` | `partially-documented` | 0/0 | Declares non-executable Axis page and component property contracts. | add @override |
+| `gExp/backoffice/data/core/data/axis/axisContentCatalogData.js` | `data` | `partially-documented` | 0/0 | Defines the employee-only Nodics Axis content catalog. | add @override |
+| `gExp/backoffice/data/core/headers/axis/axisContentCatalogHeader.js` | `data` | `documented` | 0/0 | Declares the governed core import contract for the initial Nodics Axis CMS composition. |  |
 | `gExp/backoffice/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gExp/backoffice/nodics.js` | `module` | `documented` | 2/2 | Declares the lifecycle boundary for the BackOffice registry and discovery capability. |  |
 | `gExp/backoffice/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
@@ -126,6 +138,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/src/utils/enums.js` | `src` | `documented` | 0/0 | Enum definition registry for this boundary. |  |
 | `gExp/backoffice/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Status and error definition registry for this boundary. |  |
 | `gExp/backoffice/src/utils/utils.js` | `src` | `documented` | 0/0 | Utility function registry for this boundary. |  |
+| `gExp/backoffice/test/axisContentCatalogDataContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gExp/backoffice/test/backofficeAdministrativeSecurityService.test.js` | `test` | `partially-documented` | 0/0 | Validates human/service separation, tenant isolation, refresh throttling, idempotency, and bounded state. | add @override |
 | `gExp/backoffice/test/backofficeApiContract.test.js` | `test` | `partially-documented` | 0/0 | Validates registration schemas, route OpenAPI contracts, module-owned catalogue metadata, and compatibility boundaries. | add @override |
 | `gExp/backoffice/test/backofficeAuditService.test.js` | `test` | `partially-documented` | 0/0 | Validates BackOffice audit field allowlisting, secret redaction, publisher delegation, and disabled behavior. | add @override |

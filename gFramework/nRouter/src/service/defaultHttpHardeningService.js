@@ -91,6 +91,7 @@ module.exports = {
         }
         app.use((req, res, next) => {
             this.applySecurityHeaders(req, res, policy.securityHeaders);
+            this.applyCorrelationHeaders(req, res);
             if (this.applyCors(req, res, policy.cors)) {
                 return;
             }
@@ -136,6 +137,9 @@ module.exports = {
         }
         let requestOrigin = req.headers && req.headers.origin;
         let allowedOrigin = this.resolveAllowedOrigin(requestOrigin, cors);
+        if (requestOrigin && typeof res.setHeader === 'function') {
+            res.setHeader('Vary', 'Origin');
+        }
         if (allowedOrigin) {
             res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
             if (cors.allowCredentials) {
@@ -155,7 +159,37 @@ module.exports = {
             }
             return true;
         }
+        if (requestOrigin && !allowedOrigin) {
+            res.statusCode = 403;
+            if (typeof res.json === 'function') {
+                res.json({
+                    code: 'ERR_RTR_00003',
+                    responseCode: '403',
+                    message: 'Request origin is not allowed'
+                });
+            } else if (typeof res.end === 'function') {
+                res.end();
+            }
+            return true;
+        }
         return false;
+    },
+
+    /**
+     * Echoes bounded request correlation values as response metadata.
+     *
+     * @param {Object} req Express request.
+     * @param {Object} res Express response.
+     * @returns {void}
+     */
+    applyCorrelationHeaders: function (req, res) {
+        if (!res || typeof res.setHeader !== 'function') return;
+        let headers = req && req.headers || {};
+        let requestId = String(headers['x-request-id'] || headers.requestid || '').trim();
+        let correlationId = String(headers['x-correlation-id'] || headers.correlationid || requestId).trim();
+        let safe = value => /^[A-Za-z0-9._:-]{1,128}$/.test(value);
+        if (safe(requestId)) res.setHeader('X-Request-Id', requestId);
+        if (safe(correlationId)) res.setHeader('X-Correlation-Id', correlationId);
     },
 
     /**

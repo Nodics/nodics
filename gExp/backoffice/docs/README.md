@@ -36,3 +36,5 @@ this runtime module.
 - `backend-acceptance-report.md` records the latest evidence-backed backend
   acceptance decision and separates locally proven behavior from mandatory
   production-environment validation.
+- `axis-content-catalog.md` explains the module-owned core records for the
+  public employee login/recovery pages and authenticated employee dashboard.

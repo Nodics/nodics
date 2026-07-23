@@ -40,8 +40,9 @@ global.UTILS = Object.assign({}, commonUtils, {
     }
 });
 
-const userGroupsData = require('../data/init/data/groups/defaultUserGroupsData');
+const userGroupsData = require('../data/init/data/groups/defaultBootstrapUserGroupsData');
 const employeeData = require('../data/init/data/user/defaultEmployeeData');
+const authProperties = require('../../../gFramework/nAuth/config/properties');
 
 let groupTree = [{
     code: 'runtimeConfigAdminUserGroup',
@@ -128,6 +129,10 @@ assert(contentGroup.permissions.includes('cms.backoffice.view'));
     assert(runtimeAdminGroup.permissions.includes(permission), 'Runtime admin group must include ' + permission);
 });
 assert(!runtimeAdminGroup.permissions.includes('*'), 'Runtime admin data should avoid broad wildcard permissions');
+const permissionCatalog = authProperties.identityGovernance.permissionCatalog;
+Object.values(userGroupsData).forEach(group => (group.permissions || []).forEach(permission => {
+    assert(permissionCatalog.includes(permission), 'Seeded user-group permission must exist in the permission catalog: ' + permission);
+}));
 
 let adminEmployee = employeeData.record0;
 let apiAdminEmployee = employeeData.record1;

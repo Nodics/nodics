@@ -41,6 +41,11 @@ at least 32 characters and must not use the development compatibility switch.
 JWT issuer, audience, algorithms, access-token lifetime, and service-token
 lifetime are independently overrideable beneath `authSecurity.jwt`.
 
+Browser clients use module-specific audiences through
+`DefaultAuthSecurityService.getBrowserAudience`. Browser exchange is disabled
+by default until the Profile-owned cookie session facade is enabled. See
+[`gDocs/security/backoffice-browser-security.md`](../../gDocs/security/backoffice-browser-security.md).
+
 Compatibility flags live under `authSecurity.compatibility`. They are explicit
 migration aids, not production defaults. Projects may replace the provider or
 security utility through the normal layered module hierarchy without changing

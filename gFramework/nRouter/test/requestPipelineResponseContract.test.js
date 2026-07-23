@@ -416,6 +416,27 @@ async function executeRoute(route, headers, body) {
     }]);
 
     controllerCalls = [];
+    let tenantScopedPublicResponse = await executeRoute(Object.assign(createRoute('success'), {
+        publicAccess: true
+    }), {
+        'x-enterprise-code': 'contractEnterprise'
+    });
+
+    assert.strictEqual(tenantScopedPublicResponse.statusCode, 200);
+    assert.deepStrictEqual(tenantScopedPublicResponse.payload.result, {
+        accepted: true,
+        tenant: 'contractTenant',
+        entCode: 'contractEnterprise',
+        body: {}
+    });
+    assert.deepStrictEqual(controllerCalls, [{
+        operation: 'success',
+        tenant: 'contractTenant',
+        entCode: 'contractEnterprise',
+        body: {}
+    }]);
+
+    controllerCalls = [];
     let persistedOpenApiRouteResponse = await executeRoute(Object.assign(createRoute('success'), {
         secured: true,
         apiExposure: 'openApiContract'

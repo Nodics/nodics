@@ -46,10 +46,18 @@ module.exports = {
         if (schemaName === 'customer') return SERVICE.DefaultCustomerService;
         return undefined;
     },
+    /** Validates a create/upsert-save payload without misclassifying an idempotency query as an update. */
+    validateSave: function (request) {
+        return this.validate(request, 'save');
+    },
+    /** Validates a partial update against its required persisted principal. */
+    validateUpdate: function (request) {
+        return this.validate(request, 'update');
+    },
     /** Validates principal type, service groups, credentials, and active group references. */
-    validate: function (request) {
+    validate: function (request, operation) {
         let updates = this.normalizeModels(request.model);
-        let service = request.query && this.getPrincipalService(request);
+        let service = operation === 'update' && request.query && this.getPrincipalService(request);
         let load = service ? service.get({ tenant: request.tenant, authData: SERVICE.DefaultIdentityGovernanceService.getSystemAuthData(), query: request.query, options: { recursive: false } }) : Promise.resolve({ result: [] });
         return load.then(result => {
             let existing = result && result.result || [];
