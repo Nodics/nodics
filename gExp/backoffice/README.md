@@ -14,6 +14,8 @@ bootstrap capability for the separate Nodics Axis administration application.
   package or startup level.
 - Track BackOffice presentation enablement, compatibility, availability, and
   registry/discovery audit history.
+- Persist and project tenant-scoped, client-safe Axis employee experience
+  policy with optimistic operator updates.
 
 ## Explicit Exclusions
 
@@ -31,6 +33,14 @@ The frontend authenticates with Profile, retrieves its authorized registry from
 BackOffice, and then calls registered modules directly. Each target module
 independently validates the Profile-issued human token and authorizes the
 requested operation.
+
+Axis first uses `/bootstrap/public`, which exposes only active Profile/CMS
+endpoints and non-sensitive CMS composition identifiers needed to display
+employee login. After Profile authentication, Axis uses the existing secured
+`/bootstrap` contract for the permission-filtered module catalogue and
+client-safe employee policy. The initial policy supports configured idle
+screen locking; private policy persistence and operator mutation remain owned
+by BackOffice.
 
 Module registration uses the separate Nodics service-to-service identity path.
 Registration must be idempotent, environment-bound, auditable, retryable with
@@ -68,7 +78,7 @@ Backend go-live, monitoring, rollback, and residual-risk gates follow
 The current evidence, acceptance decision, and remaining production gates are
 recorded in [the backend acceptance report](docs/backend-acceptance-report.md).
 The module-owned core records for the initial Axis login, employee password
-recovery, and secured dashboard composition are described in
+recovery, secured screen lock, and dashboard composition are described in
 [the Axis content catalog guide](docs/axis-content-catalog.md).
 
 ## Customization

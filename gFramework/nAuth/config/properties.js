@@ -137,6 +137,8 @@ module.exports = {
             'runtime.config.cleanup.execute',
             'backoffice.registry.view',
             'backoffice.bootstrap.view',
+            'backoffice.axis.policy.view',
+            'backoffice.axis.policy.update',
             'backoffice.registry.diagnostics.view',
             'backoffice.contract.view',
             'backoffice.contract.approve',
@@ -202,7 +204,8 @@ module.exports = {
                 userGroup: { parentGroups: [] },
                 adminGroup: {
                     parentGroups: ['userGroup'],
-                    permissions: ['backoffice.registry.view', 'backoffice.bootstrap.view', 'backoffice.contract.view']
+                    permissions: ['backoffice.registry.view', 'backoffice.bootstrap.view', 'backoffice.contract.view',
+                        'backoffice.axis.policy.view']
                 },
                 employeeUserGroup: {
                     parentGroups: ['userGroup'],
@@ -220,6 +223,7 @@ module.exports = {
                         'runtime.config.request.view',
                         'backoffice.registry.view',
                         'backoffice.bootstrap.view',
+                        'backoffice.axis.policy.view',
                         'backoffice.contract.view',
                         'system.health.readiness.view',
                         'system.contract.openapi.view',
@@ -250,6 +254,7 @@ module.exports = {
                         'backoffice.contract.approve',
                         'backoffice.contract.reject',
                         'backoffice.contract.rollback',
+                        'backoffice.axis.policy.update',
                         'profile.backoffice.view',
                         'cms.backoffice.view',
                         'cms.delivery.authenticated.read',

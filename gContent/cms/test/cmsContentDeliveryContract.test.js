@@ -28,6 +28,11 @@ assert(Object.values(initialTypes).some(item => item.code === 'navigationalCompo
 });
 assert(schemas.cms.cmsTypeCode.definition.kind, 'existing cmsTypeCode must remain the component/page type authority');
 assert(schemas.cms.cmsTypeCode.definition.propertySchema, 'type authority must support declarative property contracts');
+assert.deepStrictEqual(schemas.cms.cmsTypeCode2Renderer.definition.channels.default, ['web']);
+assert.strictEqual(schemas.cms.cmsTypeCode2Renderer.definition.deprecated.type, 'bool',
+    'persistent CMS boolean fields must use the MongoDB BSON bool type');
+assert.strictEqual(schemas.cms.cmsTypeCode2Renderer.definition.deprecated.default, false);
+assert(schemas.cms.cmsTypeCode2Renderer.definition.replacementRenderer);
 assert(schemas.cms.cmsComponent.definition.properties, 'component delivery properties must be an explicit schema contract');
 assert.strictEqual(schemas.cms.cmsComponent.definition.accessMode.default, 'AUTHENTICATED');
 assert.strictEqual(routes.cmsDelivery.resolvePublicPage.publicAccess, true);
@@ -52,13 +57,22 @@ global.SERVICE = {
     await validation.validateAssociation({ tenant: 'tenant-a', model: { source: 'page', target: 'hero', index: 0 }, options: {} });
 
     global._ = require('lodash');
+    global.UTILS = {
+        isObject: value => value !== null && typeof value === 'object' && !Array.isArray(value)
+    };
     global.CONFIG = { get: key => key === 'cms' ? { delivery: { maxDepth: 3, maxComponents: 4 } } : undefined };
     const data = {
         routes: [{ site: 'site', path: '/home', locale: 'en', channel: 'web', page: 'home', routeType: 'PAGE', deliveryState: 'ONLINE', accessMode: 'PUBLIC' }],
-        pages: [{ code: 'home', name: 'Home', typeCode: 'homePage', renderer: 'page.home', internalNote: 'hidden' }],
+        pages: [{ code: 'home', name: 'Home', typeCode: 'homePage', template: 'main', internalNote: 'hidden' }],
         details: [{ code: 'homeHero', source: 'home', target: 'hero', slot: 'main', index: 0, active: true }],
-        components: [{ code: 'hero', typeCode: 'heroType', renderer: 'component.hero', accessMode: 'PUBLIC',
-            properties: { title: 'Hello' }, secret: 'hidden' }]
+        components: [{ code: 'hero', typeCode: 'heroType', accessMode: 'PUBLIC',
+            properties: { title: 'Hello' }, secret: 'hidden' }],
+        templates: [{ code: 'main', renderer: 'template.main', contractVersion: 1 }],
+        rendererMappings: [
+            { code: 'homePage', renderer: 'page.home', contractVersion: 1, channels: ['web'] },
+            { code: 'heroType', renderer: 'component.hero', contractVersion: 2,
+                channels: ['web', 'mobile-webview'], deprecated: true, replacementRenderer: 'component.hero-v2' }
+        ]
     };
     const matches = (model, query) => Object.keys(query).every(key => {
         if (key === 'active' && model[key] === undefined) return true;
@@ -69,15 +83,34 @@ global.SERVICE = {
     global.SERVICE = {
         DefaultCmsPageRouteService: service(data.routes),
         DefaultCmsPageService: service(data.pages),
+        DefaultCmsPageTemplateService: service(data.templates),
         DefaultCmsComponentDetailService: service(data.details),
-        DefaultCmsComponentService: service(data.components)
+        DefaultCmsComponentService: service(data.components),
+        DefaultCmsTypeCode2RendererService: service(data.rendererMappings)
     };
+    const rendererInterceptor = require(path.join(root, 'gContent/cms/src/service/interceptors/defaultItemRendererInterceptorService'));
+    await rendererInterceptor.fatchItemRenderer({ tenant: 'tenant-a', authData: {}, options: {} }, data.pages);
+    await rendererInterceptor.fatchItemRenderer({ tenant: 'tenant-a', authData: {}, options: {} }, data.components);
     const deliveryPath = path.join(root, 'gContent/cms/src/service/delivery/defaultCmsDeliveryService');
     delete require.cache[require.resolve(deliveryPath)];
     const delivery = require(deliveryPath);
     let response = await delivery.resolvePage({ tenant: 'tenant-a', authData: {}, options: {}, router: { publicAccess: true }, delivery: { site: 'site', path: '/home', locale: 'en', channel: 'web' } });
     assert.strictEqual(response.result.contractVersion, 1);
+    assert.strictEqual(response.result.page.renderer, 'page.home');
+    assert.strictEqual(response.result.page.rendererContractVersion, 1);
+    assert.deepStrictEqual(response.result.page.rendererChannels, ['web']);
+    assert.strictEqual(response.result.page.rendererDeprecated, false);
+    assert.deepStrictEqual(response.result.page.templateContract, {
+        code: 'main',
+        renderer: 'template.main',
+        contractVersion: 1
+    });
     assert.strictEqual(response.result.page.components[0].code, 'hero');
+    assert.strictEqual(response.result.page.components[0].renderer, 'component.hero');
+    assert.strictEqual(response.result.page.components[0].rendererContractVersion, 2);
+    assert.deepStrictEqual(response.result.page.components[0].rendererChannels, ['web', 'mobile-webview']);
+    assert.strictEqual(response.result.page.components[0].rendererDeprecated, true);
+    assert.strictEqual(response.result.page.components[0].rendererReplacement, 'component.hero-v2');
     assert.strictEqual(response.result.page.internalNote, undefined);
     assert.strictEqual(response.result.page.components[0].secret, undefined);
     data.components[0].accessMode = 'AUTHENTICATED';

@@ -70,6 +70,12 @@ tenant-aware, disables generic recursive reads, batches each graph level, and
 enforces configurable depth and component-count limits. Responses expose a
 client-safe contract rather than persistence or authoring metadata.
 
+The contract includes authoritative page/component renderer keys with their
+major renderer versions, supported channels, deprecation/replacement metadata,
+and a safe page-template renderer contract. Clients must reject unknown keys,
+unsupported major versions, or unsupported channels and must never download
+renderer code from CMS.
+
 The Storefront route accepts only `path` from the browser. CMS introspects the
 opaque `x-nodics-storefront-context` handle using module service identity and
 derives tenant, enterprise, Site, locale, and channel from the `cms` audience

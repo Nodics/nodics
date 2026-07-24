@@ -64,6 +64,34 @@ module.exports = function () {
         interceptors: {}
     };
 
+    /**
+     * Reads one interactive startup selection.
+     *
+     * npm can leave stdin in non-blocking mode on macOS, causing an immediate
+     * EAGAIN even though the process owns an interactive terminal. Reopening
+     * the controlling terminal gives the startup prompt a blocking descriptor
+     * without changing non-interactive startup behavior.
+     */
+    let readInteractiveSelection = function () {
+        let buffer = Buffer.alloc(256);
+        let terminalFd;
+        try {
+            let length;
+            try {
+                length = fs.readSync(process.stdin.fd, buffer, 0, buffer.length, null);
+            } catch (error) {
+                if (process.platform === 'win32' || (error.code !== 'EAGAIN' && error.code !== 'EWOULDBLOCK')) {
+                    throw error;
+                }
+                terminalFd = fs.openSync('/dev/tty', 'r');
+                length = fs.readSync(terminalFd, buffer, 0, buffer.length, null);
+            }
+            return buffer.toString('utf8', 0, length).trim();
+        } finally {
+            if (terminalFd !== undefined) fs.closeSync(terminalFd);
+        }
+    };
+
     this.init = function (options) {
         if (!options.NODICS_HOME) {
             options.NODICS_HOME = process.env.NODICS_HOME || process.cwd();
@@ -204,9 +232,7 @@ module.exports = function () {
         if (process.stdin.isTTY && process.stdout.isTTY && process.env.CI !== 'true' && process.env.NODICS_NON_INTERACTIVE !== 'true') {
             process.stdout.write('Server "' + name + '" exists in multiple environments.\n\n' + environments
                 .map((candidate, index) => '  ' + (index + 1) + '. ' + candidate).join('\n') + '\n\nEnvironment: ');
-            let buffer = Buffer.alloc(256);
-            let length = fs.readSync(process.stdin.fd, buffer, 0, buffer.length, null);
-            let answer = buffer.toString('utf8', 0, length).trim();
+            let answer = readInteractiveSelection();
             let selected = /^\d+$/.test(answer) ? environments[Number(answer) - 1] : answer;
             let match = candidates.find(candidate => candidate.parent === selected);
             if (match) return match;

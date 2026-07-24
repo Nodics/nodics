@@ -11,7 +11,7 @@
 
 /**
  * @module cms/service/interceptors/DefaultItemRendererInterceptorService
- * @description CMS post-load interceptor service that enriches pages and components with renderer names from type-code mappings.
+ * @description CMS post-load interceptor service that enriches pages and components with renderer names and contract versions from authoritative type-code mappings.
  * @layer interceptor
  * @owner cms
  * @override Project modules may replace this interceptor to resolve renderers from a different mapping source or rendering policy.
@@ -47,7 +47,7 @@ module.exports = {
      *
      * @param {Object} request Nodics request context.
      * @param {Object} response Schema post-get response containing result models.
-     * @returns {Promise<boolean>} Resolves after all models have renderer values where mappings exist.
+     * @returns {Promise<boolean>} Resolves after all models have renderer metadata where mappings exist.
      * @throws Wraps renderer lookup errors in a Nodics error.
      */
     loadItemRenderer: function (request, response) {
@@ -67,17 +67,17 @@ module.exports = {
      * @param {Array<Object>} models CMS page or component models to enrich.
      * @param {number} [counter=0] Current recursive index.
      * @returns {Promise<boolean>} Resolves after renderer lookup completes for all models.
-     * @sideEffects Mutates `model.renderer` when a type-code mapping is found.
+     * @sideEffects Mutates `model.renderer` and `model.rendererContractVersion` when a type-code mapping is found.
      */
     fatchItemRenderer: function (request, models, counter = 0) {
         return new Promise((resolve, reject) => {
             if (models && counter < models.length) {
                 let model = models[counter];
-                if (!model.renderer) {
-                    let typeCode = model.typeCode;
-                    if (UTILS.isObject(typeCode)) {
-                        typeCode = typeCode.code;
-                    }
+                let typeCode = model.typeCode;
+                if (UTILS.isObject(typeCode)) {
+                    typeCode = typeCode.code;
+                }
+                if (typeCode) {
                     SERVICE.DefaultCmsTypeCode2RendererService.get({
                         tenant: request.tenant,
                         authData: request.authData,
@@ -87,7 +87,12 @@ module.exports = {
                         }
                     }).then(success => {
                         if (success.result && success.result.length > 0) {
-                            model.renderer = success.result[0].renderer;
+                            let mapping = success.result[0];
+                            model.renderer = model.renderer || mapping.renderer;
+                            model.rendererContractVersion = mapping.contractVersion || 1;
+                            model.rendererChannels = mapping.channels || ['web'];
+                            model.rendererDeprecated = mapping.deprecated === true;
+                            if (mapping.replacementRenderer) model.rendererReplacement = mapping.replacementRenderer;
                         }
                         this.fatchItemRenderer(request, models, ++counter).then(success => {
                             resolve(success);

@@ -43,6 +43,9 @@ module.exports = {
         }
         let pageCode = this.codeOf(route.page);
         let page = await this.getSingle(SERVICE.DefaultCmsPageService, request, { code: pageCode, active: true }, 'CMS_PAGE_NOT_FOUND');
+        let templateCode = this.codeOf(page.template);
+        let template = templateCode ? await this.getSingle(SERVICE.DefaultCmsPageTemplateService, request,
+            { code: templateCode, active: true }, 'CMS_PAGE_TEMPLATE_NOT_FOUND') : undefined;
         let graph = await this.resolveGraph(request, [page.code], isPublic ? 'PUBLIC' : 'AUTHENTICATED');
         return {
             result: {
@@ -51,7 +54,7 @@ module.exports = {
                 path: context.path,
                 locale: context.locale,
                 channel: context.channel,
-                page: this.projectPage(page, graph[page.code] || [])
+                page: this.projectPage(page, template, graph[page.code] || [])
             }
         };
     },
@@ -145,13 +148,19 @@ module.exports = {
     },
 
     /** Projects safe page fields and resolved components. */
-    projectPage: function (page, components) {
-        return Object.assign(this.pickDefined(page, ['code', 'name', 'typeCode', 'template', 'renderer']), { components: components });
+    projectPage: function (page, template, components) {
+        let result = this.pickDefined(page, ['code', 'name', 'typeCode', 'template', 'renderer', 'rendererContractVersion',
+            'rendererChannels', 'rendererDeprecated', 'rendererReplacement']);
+        if (template) {
+            result.templateContract = this.pickDefined(template, ['code', 'renderer', 'contractVersion']);
+        }
+        return Object.assign(result, { components: components });
     },
 
     /** Projects safe component and association fields. */
     projectComponent: function (component, association) {
-        let result = this.pickDefined(component, ['code', 'typeCode', 'renderer', 'properties']);
+        let result = this.pickDefined(component, ['code', 'typeCode', 'renderer', 'rendererContractVersion',
+            'rendererChannels', 'rendererDeprecated', 'rendererReplacement', 'properties']);
         return Object.assign(result, { slot: association.slot || 'default', index: association.index || 0, components: [] });
     },
 

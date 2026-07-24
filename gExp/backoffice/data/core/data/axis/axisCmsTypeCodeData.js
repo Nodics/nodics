@@ -22,7 +22,7 @@ module.exports = {
         code: 'axisBrandComponentType',
         kind: 'COMPONENT',
         contractVersion: 1,
-        propertySchema: { productName: 'string', tagline: 'string', logoAsset: 'string' },
+        propertySchema: { productName: 'string', tagline: 'string', logoAsset: 'string', displayMode: 'string' },
         active: true
     },
     record3: {
@@ -36,14 +36,16 @@ module.exports = {
         code: 'axisEmployeeLoginFormComponentType',
         kind: 'COMPONENT',
         contractVersion: 1,
-        propertySchema: { title: 'string', usernameLabel: 'string', passwordLabel: 'string', submitLabel: 'string' },
+        propertySchema: { title: 'string', usernameLabel: 'string', usernamePlaceholder: 'string',
+            passwordLabel: 'string', passwordPlaceholder: 'string', submitLabel: 'string' },
         active: true
     },
     record5: {
         code: 'axisEmployeeRecoveryFormComponentType',
         kind: 'COMPONENT',
         contractVersion: 1,
-        propertySchema: { title: 'string', identifierLabel: 'string', submitLabel: 'string', successMessage: 'string' },
+        propertySchema: { title: 'string', identifierLabel: 'string', identifierPlaceholder: 'string',
+            submitLabel: 'string', successMessage: 'string' },
         active: true
     },
     record6: {
@@ -65,6 +67,21 @@ module.exports = {
         kind: 'COMPONENT',
         contractVersion: 1,
         propertySchema: { title: 'string', actions: 'array', placeholder: 'boolean' },
+        active: true
+    },
+    record9: {
+        code: 'axisAuthenticationShowcaseComponentType',
+        kind: 'COMPONENT',
+        contractVersion: 1,
+        propertySchema: { eyebrow: 'string', title: 'string', message: 'string', highlights: 'array' },
+        active: true
+    },
+    record10: {
+        code: 'axisEmployeeLockFormComponentType',
+        kind: 'COMPONENT',
+        contractVersion: 1,
+        propertySchema: { title: 'string', employeeLabel: 'string', passwordLabel: 'string',
+            passwordPlaceholder: 'string', submitLabel: 'string', signOutLabel: 'string' },
         active: true
     }
 };

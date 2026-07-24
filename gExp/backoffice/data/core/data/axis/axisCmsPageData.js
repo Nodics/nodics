@@ -20,6 +20,7 @@ module.exports = {
         code: 'axisLoginPage', name: 'Axis Employee Login', cmsSite: ['axisCmsSite'],
         typeCode: 'axisAuthenticationPageType', template: 'axisAuthenticationPageTemplate', renderer: 'axis.page.authentication',
         cmsComponents: [
+            { target: 'axisAuthenticationShowcaseComponent', slot: 'showcase', index: 5, active: true },
             { target: 'axisBrandComponent', slot: 'brand', index: 10, active: true },
             { target: 'axisLoginIntroductionComponent', slot: 'introduction', index: 20, active: true },
             { target: 'axisEmployeeLoginFormComponent', slot: 'authentication', index: 30, active: true },
@@ -33,6 +34,7 @@ module.exports = {
         code: 'axisForgotPasswordPage', name: 'Axis Employee Password Recovery', cmsSite: ['axisCmsSite'],
         typeCode: 'axisAuthenticationPageType', template: 'axisAuthenticationPageTemplate', renderer: 'axis.page.authentication',
         cmsComponents: [
+            { target: 'axisAuthenticationShowcaseComponent', slot: 'showcase', index: 5, active: true },
             { target: 'axisBrandComponent', slot: 'brand', index: 10, active: true },
             { target: 'axisForgotPasswordIntroductionComponent', slot: 'introduction', index: 20, active: true },
             { target: 'axisEmployeeRecoveryFormComponent', slot: 'authentication', index: 30, active: true },
@@ -51,6 +53,18 @@ module.exports = {
             { target: 'axisDashboardActionsComponent', slot: 'quickActions', index: 40, active: true },
             { target: 'axisDashboardActivityComponent', slot: 'activity', index: 50, active: true },
             { target: 'axisDashboardHelpComponent', slot: 'help', index: 60, active: true }
+        ],
+        active: true
+    },
+    record3: {
+        code: 'axisLockScreenPage', name: 'Axis Employee Lock Screen', cmsSite: ['axisCmsSite'],
+        typeCode: 'axisAuthenticationPageType', template: 'axisAuthenticationPageTemplate', renderer: 'axis.page.authentication',
+        cmsComponents: [
+            { target: 'axisLockShowcaseComponent', slot: 'showcase', index: 5, active: true },
+            { target: 'axisLockBrandComponent', slot: 'brand', index: 10, active: true },
+            { target: 'axisLockIntroductionComponent', slot: 'introduction', index: 20, active: true },
+            { target: 'axisEmployeeLockFormComponent', slot: 'authentication', index: 30, active: true },
+            { target: 'axisLockLegalComponent', slot: 'legal', index: 40, active: true }
         ],
         active: true
     }

@@ -55,6 +55,9 @@ module.exports = {
         let pageCode = route.page && route.page.code || route.page;
         let page = models['cmsPage:' + pageCode];
         if (!page) throw new CLASSES.NodicsError('CMS_PUBLICATION_PAGE_INVALID', 'Frozen CMS page is unavailable');
+        let templateCode = page.template && page.template.code || page.template;
+        let template = templateCode && models['cmsPageTemplate:' + templateCode];
+        if (templateCode && !template) throw new CLASSES.NodicsError('CMS_PUBLICATION_TEMPLATE_MISSING', 'Frozen CMS page template is unavailable');
         let associations = Object.keys(models).filter(key => key.startsWith('cmsComponentDetail:')).map(key => models[key]);
         let components = Object.keys(models).filter(key => key.startsWith('cmsComponent:')).reduce((result, key) => {
             result[models[key].code] = models[key]; return result;
@@ -68,12 +71,18 @@ module.exports = {
                 let component = components[code];
                 if (!component) throw new CLASSES.NodicsError('CMS_PUBLICATION_COMPONENT_MISSING', 'Frozen CMS component is unavailable');
                 return { code: component.code, typeCode: component.typeCode, renderer: component.renderer,
+                    rendererContractVersion: component.rendererContractVersion, rendererChannels: component.rendererChannels,
+                    rendererDeprecated: component.rendererDeprecated, rendererReplacement: component.rendererReplacement,
                     properties: component.properties, slot: item.slot || 'default', index: Number(item.index || 0), components: build(component.code, ancestors) };
             });
         };
         return { contractVersion: 1, site: route.site, path: route.path, locale: route.locale, channel: route.channel,
             accessMode: route.accessMode, page: { code: page.code, name: page.name, typeCode: page.typeCode,
-                template: page.template, renderer: page.renderer, components: build(page.code) } };
+                template: page.template, renderer: page.renderer, rendererContractVersion: page.rendererContractVersion,
+                rendererChannels: page.rendererChannels, rendererDeprecated: page.rendererDeprecated,
+                rendererReplacement: page.rendererReplacement,
+                templateContract: template && { code: template.code, renderer: template.renderer, contractVersion: template.contractVersion },
+                components: build(page.code) } };
     },
     /** Persists one deterministic immutable publication manifest idempotently. */
     persist: async function (publication, request) {

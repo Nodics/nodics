@@ -21,6 +21,10 @@ Workflow and nPublish contracts.
 These test topologies are alternatives and must not be started together because
 the consolidated runtime and modular Profile runtime intentionally share local
 port `3000`. No frontend application is part of this environment boundary.
+The local backend CORS policy nevertheless permits the separate Nodics Axis
+development process at `http://localhost:3100` and
+`http://127.0.0.1:3100`. Higher environments must declare their own exact
+approved frontend origins and must not inherit local development origins.
 
 See [the local backend topology guide](docs/local-backend-runtime-topologies.md)
 for ports, startup commands, expected results, and troubleshooting.

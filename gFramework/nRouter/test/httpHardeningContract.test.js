@@ -21,6 +21,10 @@
  */
 
 const assert = require('assert');
+const defaultPolicy = require('../config/properties').httpHardening;
+
+assert(defaultPolicy.cors.allowedHeaders.includes('X-Enterprise-Code'),
+    'CORS must allow the canonical enterprise header consumed by the request pipeline');
 
 // @nodics-capability-behavior @nodics-area router
 const policy = {
@@ -52,7 +56,7 @@ const policy = {
         enabled: true,
         allowedOrigins: ['http://localhost:5173'],
         allowedMethods: ['GET', 'POST', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-Enterprise-Code'],
         exposedHeaders: ['X-Nodics-Trace'],
         allowCredentials: true,
         maxAge: 120
@@ -148,6 +152,8 @@ assert.strictEqual(firstResponse.headers['Access-Control-Allow-Origin'], 'http:/
 assert.strictEqual(firstResponse.headers['Access-Control-Allow-Credentials'], 'true', 'Credentials policy should be applied');
 assert.strictEqual(firstResponse.headers.Vary, 'Origin', 'Credentialed CORS responses must vary by origin');
 assert.strictEqual(firstResponse.headers['X-RateLimit-Remaining'], '0', 'Rate limit remaining header should be emitted');
+assert(firstResponse.headers['Access-Control-Allow-Headers'].includes('X-Enterprise-Code'),
+    'CORS response must advertise the canonical enterprise header');
 
 const limitedResponse = createResponse();
 let limitedContinued = runMiddleware({

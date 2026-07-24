@@ -76,6 +76,23 @@ module.exports = {
                     required: true,
                     default: 1,
                     description: 'Major renderer contract version understood by compatible API consumers',
+                },
+                channels: {
+                    type: 'array',
+                    required: true,
+                    default: ['web'],
+                    description: 'Delivery channels for which the renderer mapping is supported',
+                },
+                deprecated: {
+                    type: 'bool',
+                    required: true,
+                    default: false,
+                    description: 'Signals that new content should migrate away from this renderer contract',
+                },
+                replacementRenderer: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional logical renderer key recommended when this mapping is deprecated',
                 }
             }
         },

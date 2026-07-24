@@ -25,6 +25,11 @@ global.CONFIG = { get: key => key === 'backofficeRegistry' ? {
     requireBoundServiceIdentity: true,
     modulePermissions: {},
     compatibility: { registryContractVersion: 1, minimumClientContractVersion: 1 },
+    publicBootstrap: {
+        enabled: true, contractVersion: 1, requiredModules: { profile: 'profile', cms: 'cms' },
+        uiComposition: { site: 'axisCmsSite', catalog: 'axisContentCatalog', defaultPublicPage: '/login',
+            defaultAuthenticatedPage: '/dashboard', locale: 'en', channel: 'web', fallbackMode: 'STATIC_RECOVERY_SHELL' }
+    },
     clientSafeMetadata: ['moduleName', 'instanceId', 'environment', 'server', 'node', 'clientCallable', 'endpoint', 'state',
         'lastSeenAt', 'backoffice']
 } : undefined };
@@ -36,6 +41,11 @@ let discoveryAuthData = [];
 let diagnosticsAuthData;
 let availabilitySchedules = [];
 global.SERVICE = {
+    DefaultAxisExperiencePolicyService: {
+        getEffective: () => Promise.resolve({
+            contractVersion: 1, screenLockEnabled: true, idleTimeoutSeconds: 900, revision: 0, source: 'DEFAULT'
+        })
+    },
     DefaultBackofficeAdministrativeSecurityService: { validate: () => true, getAuditContext: () => ({ principalId: 'operator' }),
         executeRefresh: (request, moduleName, executor) => executor() },
     DefaultBackofficeRegistryStoreService: store,
@@ -96,6 +106,10 @@ async function run() {
         body: { moduleName: 'cms', instanceId: 'bad', endpoint: 'file:///secret', clientCallable: true },
         authData: { tokenType: 'service', runtimeInstanceId: 'bad', modules: ['cms'] }
     }));
+    await assert.rejects(service.register({
+        body: { moduleName: 'cms', instanceId: 'bad', endpoint: 'https://user:secret@cms.example/nodics/cms', clientCallable: true },
+        authData: { tokenType: 'service', runtimeInstanceId: 'bad', modules: ['cms'] }
+    }), 'registered endpoints must never contain credentials that public bootstrap could disclose');
     await assert.rejects(service.register({ body: registration, authData: { tokenType: 'service', runtimeInstanceId: 'other', modules: ['cms'] } }));
 
     await assert.rejects(service.deregister({ params: { instanceId: 'cms-1' }, authData: {
@@ -105,6 +119,29 @@ async function run() {
     assert.strictEqual(store._instances.size, 0);
 
     await service.register({ body: registration, authData: identity });
+    let profileRegistration = {
+        moduleName: 'profile', instanceId: 'profile-1', endpoint: 'http://profile:3000/nodics/profile',
+        clientCallable: true, leaseTtlMs: 1000
+    };
+    await service.register({ body: profileRegistration, authData: {
+        tokenType: 'service', runtimeInstanceId: 'profile-1', modules: ['profile'], userGroups: ['serviceAccountUserGroup']
+    } });
+    let publicBootstrap = await service.publicBootstrap({
+        headers: { 'x-nodics-client-contract-version': '1' }
+    });
+    assert.deepStrictEqual(publicBootstrap.data.endpoints, {
+        profile: 'http://profile:3000/nodics/profile',
+        cms: 'http://cms:3040/nodics/cms'
+    });
+    assert.strictEqual(publicBootstrap.data.uiComposition.site, 'axisCmsSite');
+    assert.strictEqual(JSON.stringify(publicBootstrap).includes('instanceId'), false,
+        'public bootstrap must not disclose registry topology');
+    assert.strictEqual(JSON.stringify(publicBootstrap).includes('lastSeenAt'), false,
+        'public bootstrap must not disclose lease metadata');
+    await assert.rejects(service.publicBootstrap({ headers: { 'x-nodics-client-contract-version': '2' } }));
+    store._instances.delete('profile:profile-1');
+    await assert.rejects(service.publicBootstrap({ headers: { 'x-nodics-client-contract-version': '1' } }),
+        'public bootstrap must fail closed when a required module is unavailable');
     store._instances.get('cms:cms-1').expiresAt = Date.now() - 1;
     await service.expireStale();
     assert.strictEqual(store._instances.size, 0);
@@ -160,6 +197,7 @@ async function run() {
     assert.strictEqual(bootstrap.data.catalogue.cms.contract.hash, 'contract-hash');
     assert.strictEqual(bootstrap.data.uiComposition.providerModule, 'cms');
     assert.strictEqual(bootstrap.data.uiComposition.fallbackMode, 'STATIC_RECOVERY_SHELL');
+    assert.strictEqual(bootstrap.data.axisPolicy.idleTimeoutSeconds, 900);
     assert.strictEqual(bootstrap.data.modules.workflowCore, undefined,
         'bootstrap must never expose modules that are not browser callable');
     assert.strictEqual(bootstrap.data.catalogue.workflowCore, undefined,

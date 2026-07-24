@@ -6,8 +6,18 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
+| `backofficeAxisPolicy` | `base` | yes | yes | no | no | no | no |  | 6 |
 | `backofficeContractActivation` | `base` | yes | yes | no | no | no | no | `default` | 7 |
 | `backofficeContractSnapshot` | `base` | yes | yes | no | no | no | no | `default` | 14 |
+
+### `backoffice.backofficeAxisPolicy`
+
+- `contractVersion` `int` required: Version of the client-safe Axis policy contract
+- `idleTimeoutSeconds` `int` required: Inactivity duration in seconds before Axis enters lock mode
+- `revision` `int` required: Optimistic-concurrency revision for operator updates
+- `screenLockEnabled` `bool` required: Whether authenticated Axis sessions lock after inactivity
+- `updatedAt` `date` required: Time the effective persistent policy was last changed
+- `updatedBy` `string` required: Authenticated employee that changed the policy
 
 ### `backoffice.backofficeContractActivation`
 

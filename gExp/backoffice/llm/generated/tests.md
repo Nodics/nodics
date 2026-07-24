@@ -9,6 +9,7 @@
 - `gExp/backoffice/test/backofficeApiContract.test.js`
 - `gExp/backoffice/test/backofficeAuditService.test.js`
 - `gExp/backoffice/test/backofficeAvailabilityService.test.js`
+- `gExp/backoffice/test/backofficeAxisPolicyService.test.js`
 - `gExp/backoffice/test/backofficeContractLifecycleService.test.js`
 - `gExp/backoffice/test/backofficeContractRepositoryService.test.js`
 - `gExp/backoffice/test/backofficeDiscoveryService.test.js`

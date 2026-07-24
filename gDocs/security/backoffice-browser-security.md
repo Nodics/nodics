@@ -95,6 +95,15 @@ The local `monoServer` topology is suitable for initial functional testing. A
 distributed topology is required before release to prove shared refresh,
 revocation, security-stamp, and registry state.
 
+The implemented contract suite verifies successful and failed human
+authentication, wrong audience, expired and revoked access tokens, single-use
+refresh rotation, logout revocation of access and refresh state, cross-tenant
+denial, service-versus-human separation, CORS denial, bootstrap filtering,
+bounded idempotency, correlation, and secret-safe audit projection. CSRF
+cookies are not used by the approved in-memory bearer model; if a project
+introduces cookie authentication, that project must add an explicit CSRF token
+contract and its positive and negative tests before enabling the deployment.
+
 ## Continue
 
 - Identity and permissions: [How Users, Tenants, And Permissions Work](how-users-tenants-and-permissions-work.md)

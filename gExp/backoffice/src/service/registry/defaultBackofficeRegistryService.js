@@ -71,7 +71,8 @@ module.exports = {
         if (!registration.endpoint) return false;
         try {
             let endpoint = new URL(registration.endpoint);
-            return (this.getConfiguration().allowedSchemes || ['http', 'https']).includes(endpoint.protocol.replace(':', ''));
+            return (this.getConfiguration().allowedSchemes || ['http', 'https']).includes(endpoint.protocol.replace(':', '')) &&
+                !endpoint.username && !endpoint.password && !endpoint.search && !endpoint.hash;
         } catch (error) {
             return false;
         }
@@ -378,6 +379,9 @@ module.exports = {
                 moduleCount: Object.keys(catalogue).length
             });
         }
+        let axisPolicy = SERVICE.DefaultAxisExperiencePolicyService ?
+            await SERVICE.DefaultAxisExperiencePolicyService.getEffective(request) : undefined;
+        if (!axisPolicy) throw new CLASSES.NodicsError('ERR_BOF_00000', 'Axis employee policy is unavailable');
         return {
             code: 'SUC_BOF_00004',
             data: {
@@ -388,7 +392,43 @@ module.exports = {
                 modules: result.data.modules,
                 catalogue: catalogue,
                 availability: availability,
-                uiComposition: this.selectUiComposition(catalogue, availability)
+                uiComposition: this.selectUiComposition(catalogue, availability),
+                axisPolicy: axisPolicy
+            }
+        };
+    },
+
+    /**
+     * Returns only the public module endpoints and UI composition required before employee authentication.
+     * The observed registry remains endpoint authority; no module inventory, lease, health, or permission data is disclosed.
+     */
+    publicBootstrap: async function (request) {
+        let policy = this.getConfiguration().publicBootstrap || {};
+        if (policy.enabled !== true) throw new CLASSES.NodicsError('ERR_BOF_00000', 'Public bootstrap is disabled');
+        let clientContractVersion = this.getClientContractVersion(request);
+        let contractVersion = Number(policy.contractVersion || 1);
+        if (clientContractVersion !== contractVersion) {
+            throw new CLASSES.NodicsError('ERR_BOF_00000', 'Unsupported public bootstrap client contract version');
+        }
+        await this.expireStale();
+        let leases = (await this.getStore().values()).map(entry => entry.value)
+            .filter(item => item.clientCallable === true && item.endpoint && item.state === 'UP');
+        let endpoints = {};
+        Object.entries(policy.requiredModules || {}).forEach(entry => {
+            let candidates = leases.filter(item => item.moduleName === entry[1])
+                .sort((left, right) => String(right.lastSeenAt || '').localeCompare(String(left.lastSeenAt || '')));
+            if (candidates.length === 0) {
+                throw new CLASSES.NodicsError('ERR_BOF_00000', 'Required public bootstrap module is unavailable');
+            }
+            endpoints[entry[0]] = candidates[0].endpoint;
+        });
+        return {
+            code: 'SUC_BOF_00014',
+            data: {
+                contractVersion: contractVersion,
+                clientContractVersion: clientContractVersion,
+                endpoints: endpoints,
+                uiComposition: Object.assign({}, policy.uiComposition)
             }
         };
     },

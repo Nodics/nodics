@@ -34,11 +34,11 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 26 |
-| Test files | 18 |
+| Source files | 29 |
+| Test files | 19 |
 | Data files | 10 |
-| All module-owned files | 60 |
-| Local schema definitions | 2 |
+| All module-owned files | 64 |
+| Local schema definitions | 3 |
 
 ## Ownership And Dependencies
 
@@ -71,9 +71,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 35 |
-| Partially documented | 19 |
-| Undocumented | 2 |
+| Documented | 36 |
+| Partially documented | 21 |
+| Undocumented | 3 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -112,9 +112,11 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gExp/backoffice/nodics.js` | `module` | `documented` | 2/2 | Declares the lifecycle boundary for the BackOffice registry and discovery capability. |  |
 | `gExp/backoffice/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gExp/backoffice/src/controller/defaultBackofficeAxisPolicyController.js` | `src` | `partially-documented` | 5/5 | Maps secured Axis policy reads and updates to the owning facade. | add @override |
 | `gExp/backoffice/src/controller/defaultBackofficeContractController.js` | `src` | `documented` | 9/9 | Maps secured BackOffice contract-history routes to their facade operations. |  |
-| `gExp/backoffice/src/controller/defaultBackofficeRegistryController.js` | `src` | `documented` | 11/11 | Maps BackOffice registry HTTP operations to the registry facade with promise and callback support. |  |
+| `gExp/backoffice/src/controller/defaultBackofficeRegistryController.js` | `src` | `documented` | 12/12 | Maps BackOffice registry HTTP operations to the registry facade with promise and callback support. |  |
 | `gExp/backoffice/src/event/listeners.js` | `src` | `documented` | 0/0 | Event listener registry for this boundary. |  |
+| `gExp/backoffice/src/facade/defaultBackofficeAxisPolicyFacade.js` | `src` | `partially-documented` | 2/2 | Delegates secured Axis policy operations to the BackOffice-owned policy service. | add @override |
 | `gExp/backoffice/src/facade/defaultBackofficeContractFacade.js` | `src` | `documented` | 2/2 | Delegates BackOffice contract-history operations to the lifecycle service. |  |
 | `gExp/backoffice/src/facade/defaultBackofficeRegistryFacade.js` | `src` | `documented` | 2/2 | Delegates BackOffice registry API operations to the owning registry service. |  |
 | `gExp/backoffice/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Interceptor definition registry for this boundary. |  |
@@ -132,7 +134,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Reserves the standard BackOffice service lifecycle and documents the mergeable service override shape. |  |
 | `gExp/backoffice/src/service/discovery/defaultBackofficeDiscoveryService.js` | `src` | `documented` | 18/18 | Discovers effective Nodics contracts through existing System APIs and maintains normalized, client-safe observed snapshots. |  |
 | `gExp/backoffice/src/service/operations/defaultBackofficeOperationalReadinessService.js` | `src` | `documented` | 6/6 | Validates layered BackOffice deployment policy and derives low-disclosure operational readiness and alert codes from owning diagnostics. |  |
-| `gExp/backoffice/src/service/registry/defaultBackofficeRegistryService.js` | `src` | `documented` | 28/28 | Owns ephemeral observed module-instance leases for BackOffice discovery without becoming topology or activation authority. |  |
+| `gExp/backoffice/src/service/policy/defaultAxisExperiencePolicyService.js` | `src` | `documented` | 14/14 | Resolves and revision-updates the tenant-scoped persistent policy consumed by authenticated Nodics Axis clients. |  |
+| `gExp/backoffice/src/service/registry/defaultBackofficeRegistryService.js` | `src` | `documented` | 29/29 | Owns ephemeral observed module-instance leases for BackOffice discovery without becoming topology or activation authority. |  |
 | `gExp/backoffice/src/service/registry/defaultBackofficeRegistryStoreService.js` | `src` | `documented` | 15/15 | Provides the single asynchronous memory or nCache-owned distributed lease-store boundary used by BackOffice. |  |
 | `gExp/backoffice/src/service/security/defaultBackofficeAdministrativeSecurityService.js` | `src` | `documented` | 11/11 | Enforces human/service separation, tenant consistency, refresh throttling, idempotency, and audit correlation for BackOffice administration. |  |
 | `gExp/backoffice/src/utils/enums.js` | `src` | `documented` | 0/0 | Enum definition registry for this boundary. |  |
@@ -143,6 +146,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/test/backofficeApiContract.test.js` | `test` | `partially-documented` | 0/0 | Validates registration schemas, route OpenAPI contracts, module-owned catalogue metadata, and compatibility boundaries. | add @override |
 | `gExp/backoffice/test/backofficeAuditService.test.js` | `test` | `partially-documented` | 0/0 | Validates BackOffice audit field allowlisting, secret redaction, publisher delegation, and disabled behavior. | add @override |
 | `gExp/backoffice/test/backofficeAvailabilityService.test.js` | `test` | `partially-documented` | 0/0 | Validates bounded readiness observation, freshness, failure isolation, deduplication, and multi-instance aggregation. | add @override |
+| `gExp/backoffice/test/backofficeAxisPolicyService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gExp/backoffice/test/backofficeContractLifecycleService.test.js` | `test` | `partially-documented` | 0/0 | Validates safe projections, comparisons, bounded decisions, optimistic revision forwarding, and sanitized decision audit. | add @override |
 | `gExp/backoffice/test/backofficeContractRepositoryService.test.js` | `test` | `partially-documented` | 0/0 | Validates durable history, automatic activation, pending decisions, replica CAS conflicts, rollback, retention, and restart recovery. | add @override |
 | `gExp/backoffice/test/backofficeDiscoveryService.test.js` | `test` | `partially-documented` | 0/0 | Validates bounded OpenAPI normalization, authority filtering, hashing, change classification, and safe snapshot preservation. | add @override |

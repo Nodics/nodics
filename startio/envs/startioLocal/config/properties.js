@@ -56,7 +56,14 @@ module.exports = {
     httpHardening: {
         cors: {
             enabled: true,
-            allowedOrigins: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173', 'http://127.0.0.1:5173'],
+            allowedOrigins: [
+                'http://localhost:3000',
+                'http://localhost:3001',
+                'http://localhost:3100',
+                'http://127.0.0.1:3100',
+                'http://localhost:5173',
+                'http://127.0.0.1:5173'
+            ],
             allowCredentials: true
         },
         rateLimit: {

@@ -21,7 +21,7 @@ module.exports = {
         name: 'Axis Authentication Page',
         renderer: 'axis.template.authentication',
         contractVersion: 1,
-        slots: ['axisAuthenticationBrandSlot', 'axisAuthenticationIntroductionSlot', 'axisAuthenticationFormSlot',
+        slots: ['axisAuthenticationShowcaseSlot', 'axisAuthenticationBrandSlot', 'axisAuthenticationIntroductionSlot', 'axisAuthenticationFormSlot',
             'axisAuthenticationAssistanceSlot', 'axisAuthenticationLegalSlot'],
         active: true
     },

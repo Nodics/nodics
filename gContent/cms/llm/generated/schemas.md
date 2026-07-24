@@ -19,7 +19,7 @@
 | `cmsSite` | `cmsBase` | yes | yes | yes | no | no | no |  | 2 |
 | `cmsSlotDefinition` | `cmsBase` | yes | yes | no | no | no | no |  | 5 |
 | `cmsTypeCode` | `base` | yes | yes | yes | yes | no | no |  | 3 |
-| `cmsTypeCode2Renderer` | `base` | yes | yes | yes | yes | no | no |  | 2 |
+| `cmsTypeCode2Renderer` | `base` | yes | yes | yes | yes | no | no |  | 5 |
 
 ### `cms.cmsBase`
 
@@ -134,5 +134,8 @@
 
 ### `cms.cmsTypeCode2Renderer`
 
+- `channels` `array` required: Delivery channels for which the renderer mapping is supported
 - `contractVersion` `int` required: Major renderer contract version understood by compatible API consumers
+- `deprecated` `bool` required: Signals that new content should migrate away from this renderer contract
 - `renderer` `string` required: Logical renderer key resolved by an API consumer; never an executable path or URL
+- `replacementRenderer` `string` optional: Optional logical renderer key recommended when this mapping is deprecated

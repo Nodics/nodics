@@ -72,6 +72,28 @@ const contractDecision = {
         reason: { type: 'string', minLength: 1, maxLength: 1024 }, expectedRevision: { type: 'integer', minimum: 0 }
     }
 };
+const axisPolicy = {
+    type: 'object',
+    additionalProperties: false,
+    required: ['contractVersion', 'screenLockEnabled', 'idleTimeoutSeconds', 'revision', 'source'],
+    properties: {
+        contractVersion: { type: 'integer', minimum: 1 },
+        screenLockEnabled: { type: 'boolean' },
+        idleTimeoutSeconds: { type: 'integer', minimum: 60, maximum: 86400 },
+        revision: { type: 'integer', minimum: 0 },
+        source: { enum: ['DEFAULT', 'PERSISTED'] }
+    }
+};
+const axisPolicyUpdate = {
+    type: 'object',
+    additionalProperties: false,
+    required: ['screenLockEnabled', 'idleTimeoutSeconds', 'expectedRevision'],
+    properties: {
+        screenLockEnabled: { type: 'boolean' },
+        idleTimeoutSeconds: { type: 'integer', minimum: 60, maximum: 86400 },
+        expectedRevision: { type: 'integer', minimum: 0 }
+    }
+};
 const contractHistorySnapshot = {
     type: 'object', additionalProperties: false,
     required: ['moduleName', 'contractType', 'contractVersion', 'contractHash', 'operations', 'schemas', 'state', 'changeClassification', 'revision', 'discoveredAt'],
@@ -131,6 +153,8 @@ const moduleLease = {
 };
 
 module.exports = {
+    axisPolicy: axisPolicy,
+    axisPolicyUpdate: axisPolicyUpdate,
     moduleName: moduleName,
     moduleRole: moduleRole,
     uiComposition: uiComposition,
@@ -188,9 +212,34 @@ module.exports = {
         clientContractVersion: { type: 'integer', minimum: 1 }, moduleContractVersion: { type: 'integer', minimum: 1 },
         minimumClientContractVersion: { type: 'integer', minimum: 1 }, status: { enum: ['COMPATIBLE', 'DEGRADED', 'INCOMPATIBLE'] }
     } },
-    bootstrapData: { type: 'object', required: ['compatibility', 'modules', 'catalogue', 'availability', 'uiComposition'], properties: {
+    publicBootstrapData: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['contractVersion', 'clientContractVersion', 'endpoints', 'uiComposition'],
+        properties: {
+            contractVersion: { type: 'integer', minimum: 1 },
+            clientContractVersion: { type: 'integer', minimum: 1 },
+            endpoints: {
+                type: 'object', additionalProperties: false, required: ['profile', 'cms'],
+                properties: { profile: { type: 'string', format: 'uri' }, cms: { type: 'string', format: 'uri' } }
+            },
+            uiComposition: {
+                type: 'object', additionalProperties: false,
+                required: ['site', 'catalog', 'defaultPublicPage', 'defaultAuthenticatedPage', 'locale', 'channel', 'fallbackMode'],
+                properties: {
+                    site: { type: 'string' }, catalog: { type: 'string' },
+                    defaultPublicPage: { type: 'string', pattern: '^/(?!/)' },
+                    defaultAuthenticatedPage: { type: 'string', pattern: '^/(?!/)' },
+                    locale: { type: 'string' }, channel: { type: 'string' },
+                    fallbackMode: { enum: ['STATIC_RECOVERY_SHELL'] }
+                }
+            }
+        }
+    },
+    bootstrapData: { type: 'object', required: ['compatibility', 'modules', 'catalogue', 'availability', 'uiComposition', 'axisPolicy'], properties: {
         compatibility: { type: 'object' }, modules: { type: 'object' }, catalogue: { type: 'object' },
-        availability: { type: 'object', additionalProperties: moduleAvailability }, uiComposition: uiCompositionSelection
+        availability: { type: 'object', additionalProperties: moduleAvailability }, uiComposition: uiCompositionSelection,
+        axisPolicy: axisPolicy
     } },
     diagnosticsData: { type: 'object', required: ['activeModuleLeases', 'metrics', 'store'], properties: {
         activeModuleLeases: { type: 'integer', minimum: 0 }, metrics: { type: 'object' }, store: { type: 'object' },

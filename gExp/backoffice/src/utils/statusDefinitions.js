@@ -31,5 +31,8 @@ module.exports = {
     SUC_BOF_00011: { code: '200', message: 'Administrative registry inventory returned' },
     SUC_BOF_00012: { code: '200', message: 'Administrative module detail returned' },
     SUC_BOF_00013: { code: '202', message: 'Module observation refresh completed' },
+    SUC_BOF_00014: { code: '200', message: 'Public Axis bootstrap returned' },
+    SUC_BOF_00015: { code: '200', message: 'Axis employee experience policy returned' },
+    SUC_BOF_00016: { code: '200', message: 'Axis employee experience policy updated' },
     ERR_BOF_00000: { code: '400', message: 'Invalid module registration' }
 };

@@ -52,6 +52,21 @@ module.exports = {
             }
         },
         registryDiscovery: {
+            publicBootstrap: {
+                secured: false,
+                publicAccess: true,
+                accessGroups: ['userGroup'],
+                apiExposure: 'serviceRegistry',
+                key: '/bootstrap/public',
+                method: 'GET',
+                controller: 'DefaultBackofficeRegistryController',
+                operation: 'publicBootstrap',
+                help: { parameters: [{ name: 'x-nodics-client-contract-version', in: 'header', required: true,
+                    description: 'Positive Axis client contract version.', schema: { type: 'integer', minimum: 1 } }] },
+                responses: { '200': { description: 'Low-disclosure pre-authentication Axis bootstrap', content: { 'application/json': {
+                    schema: successEnvelope(contracts.publicBootstrapData)
+                } } } }
+            },
             list: {
                 secured: true,
                 accessGroups: ['userGroup'],
@@ -116,6 +131,35 @@ module.exports = {
                 key: '/registry/admin/modules/:moduleName/refresh', method: 'POST', controller: 'DefaultBackofficeRegistryController', operation: 'refresh',
                 responses: { '202': { description: 'Existing availability and discovery observers refreshed', content: { 'application/json': {
                     schema: successEnvelope(contracts.refreshData)
+                } } } }
+            }
+        },
+        axisPolicy: {
+            get: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'backoffice.axis.policy.view',
+                apiExposure: 'serviceRegistry',
+                key: '/axis/policy',
+                method: 'GET',
+                controller: 'DefaultBackofficeAxisPolicyController',
+                operation: 'get',
+                responses: { '200': { description: 'Effective client-safe Axis employee policy', content: { 'application/json': {
+                    schema: successEnvelope(contracts.axisPolicy)
+                } } } }
+            },
+            update: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'backoffice.axis.policy.update',
+                apiExposure: 'serviceRegistry',
+                key: '/axis/policy',
+                method: 'PUT',
+                controller: 'DefaultBackofficeAxisPolicyController',
+                operation: 'update',
+                requestBody: { required: true, content: { 'application/json': { schema: contracts.axisPolicyUpdate } } },
+                responses: { '200': { description: 'Revision-updated persistent Axis employee policy', content: { 'application/json': {
+                    schema: successEnvelope(contracts.axisPolicy)
                 } } } }
             }
         },

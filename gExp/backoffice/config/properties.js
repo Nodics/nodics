@@ -17,6 +17,14 @@
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {
+    backofficeAxisPolicy: {
+        code: 'axisEmployeeExperiencePolicy',
+        contractVersion: 1,
+        screenLockEnabled: true,
+        idleTimeoutSeconds: 900,
+        minimumIdleTimeoutSeconds: 60,
+        maximumIdleTimeoutSeconds: 86400
+    },
     backofficeCapabilities: {
         backoffice: {
             enabled: true, capabilityId: 'backoffice-registry', displayName: 'BackOffice Registry', category: 'platform', icon: 'registry',
@@ -42,6 +50,23 @@ module.exports = {
         compatibility: {
             registryContractVersion: 1,
             minimumClientContractVersion: 1
+        },
+        publicBootstrap: {
+            enabled: true,
+            contractVersion: 1,
+            requiredModules: {
+                profile: 'profile',
+                cms: 'cms'
+            },
+            uiComposition: {
+                site: 'axisCmsSite',
+                catalog: 'axisContentCatalog',
+                defaultPublicPage: '/login',
+                defaultAuthenticatedPage: '/dashboard',
+                locale: 'en',
+                channel: 'web',
+                fallbackMode: 'STATIC_RECOVERY_SHELL'
+            }
         },
         discovery: {
             enabled: true,

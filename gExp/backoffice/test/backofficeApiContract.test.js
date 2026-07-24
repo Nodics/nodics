@@ -19,6 +19,7 @@ const assert = require('assert');
 const contracts = require('../src/schemas/apiContracts');
 const service = require('../src/service/contract/defaultBackofficeContractService');
 const routers = require('../src/router/routers').backoffice;
+const statusDefinitions = require('../src/utils/statusDefinitions');
 
 const capabilities = [
     require('../../../gCore/profile/config/properties').backofficeCapabilities.profile,
@@ -33,6 +34,11 @@ assert(contracts.registrationBatch.required.includes('registrations'));
 assert(contracts.capabilitySnapshot.required.includes('hash'));
 assert(contracts.capabilitySnapshot.properties.changeClassification.enum.includes('BREAKING'));
 assert(contracts.bootstrapData.properties.uiComposition.required.includes('fallbackMode'));
+assert(contracts.bootstrapData.required.includes('axisPolicy'));
+assert.deepStrictEqual(contracts.axisPolicyUpdate.required,
+    ['screenLockEnabled', 'idleTimeoutSeconds', 'expectedRevision']);
+assert.deepStrictEqual(contracts.publicBootstrapData.required,
+    ['contractVersion', 'clientContractVersion', 'endpoints', 'uiComposition']);
 assert.deepStrictEqual(contracts.moduleAvailability.properties.state.enum, ['UP', 'DEGRADED', 'UNAVAILABLE', 'UNKNOWN']);
 assert(contracts.moduleAvailability.required.includes('unknownInstances'));
 assert(contracts.adminDetailData.properties.instances.items.properties.environment);
@@ -42,7 +48,13 @@ assert(contracts.adminDetailData.properties.instances.items.properties.clientCal
 assert(routers.registryControl.register.requestBody.required, 'registration body schema must be required');
 assert(routers.registryControl.register.responses['200'], 'registration response schema must be declared');
 assert(routers.registryDiscovery.bootstrap.responses['200'], 'bootstrap response schema must be declared');
+assert(routers.registryDiscovery.publicBootstrap.responses['200'], 'public bootstrap response schema must be declared');
 assert(routers.registryDiscovery.diagnostics.responses['200'], 'diagnostics response schema must be declared');
+assert(routers.axisPolicy.get.responses['200'], 'Axis policy response schema must be declared');
+assert(routers.axisPolicy.update.responses['200'], 'Axis policy update response schema must be declared');
+['SUC_BOF_00014', 'SUC_BOF_00015', 'SUC_BOF_00016'].forEach(code => {
+    assert(statusDefinitions[code], code + ' must be registered before its controller response is serialized');
+});
 
 capabilities.forEach(metadata => {
     assert(service.validateBackofficeMetadata(metadata), metadata.capabilityId + ' must own valid BackOffice metadata');

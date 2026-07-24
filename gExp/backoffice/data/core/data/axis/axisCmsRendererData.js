@@ -24,5 +24,9 @@ module.exports = {
     record5: { code: 'axisEmployeeRecoveryFormComponentType', renderer: 'axis.component.employee-recovery-form', contractVersion: 1, active: true },
     record6: { code: 'axisLinkComponentType', renderer: 'axis.component.link', contractVersion: 1, active: true },
     record7: { code: 'axisDashboardSummaryComponentType', renderer: 'axis.component.dashboard-summary', contractVersion: 1, active: true },
-    record8: { code: 'axisDashboardActionsComponentType', renderer: 'axis.component.dashboard-actions', contractVersion: 1, active: true }
+    record8: { code: 'axisDashboardActionsComponentType', renderer: 'axis.component.dashboard-actions', contractVersion: 1, active: true },
+    record9: { code: 'axisAuthenticationShowcaseComponentType', renderer: 'axis.component.authentication-showcase',
+        contractVersion: 1, channels: ['web', 'mobile-webview'], deprecated: false, active: true },
+    record10: { code: 'axisEmployeeLockFormComponentType', renderer: 'axis.component.employee-lock-form',
+        contractVersion: 1, channels: ['web', 'mobile-webview'], deprecated: false, active: true }
 };

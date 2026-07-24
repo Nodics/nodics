@@ -279,6 +279,86 @@ async function validateAsyncContracts() {
         authData: { tenant: 'tenant-a', permissions: ['auth.internal.token.read.anyTenant'] }
     });
     assert.strictEqual(allowed.result.authToken, 'internal-token');
+
+    global.CONFIG = secureConfiguration;
+    global.CLASSES = {
+        NodicsError: class NodicsError extends Error {
+            constructor(error, message) {
+                super(message || error && error.message || String(error));
+            }
+        }
+    };
+    global.SERVICE = {
+        DefaultAuthSecurityService: authSecurity,
+        DefaultAuthenticationProviderService: {
+            isTokenRevoked: function () {
+                return Promise.resolve(false);
+            }
+        },
+        DefaultPrincipalSecurityStampService: {
+            validate: function () {
+                return Promise.resolve(true);
+            }
+        }
+    };
+    const authorizationProviderPath = path.join(repositoryRoot, 'gFramework/nService/src/service/authorization/defaultAuthorizationProviderService');
+    delete require.cache[require.resolve(authorizationProviderPath)];
+    const authorizationProvider = require(authorizationProviderPath);
+    const expiredToken = jwt.sign({
+        entCode: 'enterprise-a',
+        tenant: 'tenant-a',
+        loginId: 'user-a',
+        tokenType: 'access',
+        authVersion: 7
+    }, strongSecret, {
+        algorithm: 'HS256',
+        issuer: 'contract-test',
+        audience: 'contract-services',
+        expiresIn: -1,
+        jwtid: 'expired-token-id'
+    });
+    await assert.rejects(
+        authorizationProvider.authorizeToken({ authToken: expiredToken }),
+        /expired/i,
+        'Expired browser access tokens must fail before authorization'
+    );
+
+    global.SERVICE.DefaultAuthenticationProviderService.isTokenRevoked = function () {
+        return Promise.resolve(true);
+    };
+    await assert.rejects(
+        authorizationProvider.authorizeToken({ authToken: accessToken }),
+        /revoked/i,
+        'Revoked browser access tokens must fail before authorization'
+    );
+
+    let revokedAccessToken;
+    let removedRefreshToken;
+    profileProvider.revokeAccessToken = function (authData) {
+        revokedAccessToken = authData.jti;
+        return Promise.resolve(true);
+    };
+    profileProvider.removeToken = function (moduleName, token) {
+        removedRefreshToken = { moduleName: moduleName, token: token };
+        return Promise.resolve(true);
+    };
+    profileProvider.recordAuthEvent = function () {
+        return Promise.resolve(true);
+    };
+    await profileProvider.revokeSession({
+        authData: {
+            jti: 'logout-access-token-id',
+            tenant: 'tenant-a',
+            entCode: 'enterprise-a',
+            loginId: 'user-a'
+        },
+        refreshToken: 'logout-refresh-token'
+    });
+    assert.strictEqual(revokedAccessToken, 'logout-access-token-id');
+    assert.deepStrictEqual(removedRefreshToken, {
+        moduleName: 'profile',
+        token: 'logout-refresh-token'
+    });
 }
 
 function read(relativePath) {

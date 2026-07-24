@@ -40,10 +40,14 @@ assert.strictEqual(properties.publish.providers.versionProviders.cms, 'DefaultCm
 const data = {
     routes: [{ code: 'home-route', versionId: 2, active: true, site: 'site-a', path: '/home', locale: 'en', channel: 'web',
         accessMode: 'PUBLIC', routeType: 'PAGE', page: 'home' }],
-    pages: [{ code: 'home', versionId: 3, active: true, name: 'Home', typeCode: 'homePage', renderer: 'page.home', template: 'main' }],
+    pages: [{ code: 'home', versionId: 3, active: true, name: 'Home', typeCode: 'homePage',
+        renderer: 'page.home', rendererContractVersion: 1, rendererChannels: ['web'],
+        rendererDeprecated: false, template: 'main' }],
     details: [{ code: 'home-hero', versionId: 1, active: true, source: 'home', target: 'hero', slot: 'main', index: 0 }],
-    components: [{ code: 'hero', versionId: 4, active: true, typeCode: 'heroType', renderer: 'component.hero', properties: { title: 'Hello' } }],
-    templates: [{ code: 'main', versionId: 1, active: true, name: 'Main', renderer: 'template.main' }],
+    components: [{ code: 'hero', versionId: 4, active: true, typeCode: 'heroType',
+        renderer: 'component.hero', rendererContractVersion: 1, rendererChannels: ['web', 'mobile-webview'],
+        rendererDeprecated: true, rendererReplacement: 'component.hero-v2', properties: { title: 'Hello' } }],
+    templates: [{ code: 'main', versionId: 1, active: true, name: 'Main', renderer: 'template.main', contractVersion: 1 }],
     slots: [{ code: 'main-main', versionId: 1, active: true, template: 'main', name: 'main' }],
     manifests: [], pointers: [], receipts: []
 };
@@ -117,6 +121,18 @@ const request = { tenant: 'tenant-a', authData: { principalId: 'publisher-a' }, 
     let manifest = await manifests.persist(publication, request);
     assert.strictEqual(manifest.snapshot.page.components[0].code, 'hero');
     assert.strictEqual(manifest.snapshot.page.components[0].properties.title, 'Hello');
+    assert.strictEqual(manifest.snapshot.page.rendererContractVersion, 1);
+    assert.deepStrictEqual(manifest.snapshot.page.rendererChannels, ['web']);
+    assert.strictEqual(manifest.snapshot.page.rendererDeprecated, false);
+    assert.strictEqual(manifest.snapshot.page.components[0].rendererContractVersion, 1);
+    assert.deepStrictEqual(manifest.snapshot.page.components[0].rendererChannels, ['web', 'mobile-webview']);
+    assert.strictEqual(manifest.snapshot.page.components[0].rendererDeprecated, true);
+    assert.strictEqual(manifest.snapshot.page.components[0].rendererReplacement, 'component.hero-v2');
+    assert.deepStrictEqual(manifest.snapshot.page.templateContract, {
+        code: 'main',
+        renderer: 'template.main',
+        contractVersion: 1
+    });
     assert.strictEqual((await manifests.persist(publication, request)).code, manifest.code, 'manifest persistence must be idempotent');
 
     let activated = await provider.activate(publication, request);

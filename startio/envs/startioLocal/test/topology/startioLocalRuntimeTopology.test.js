@@ -42,6 +42,10 @@ const COMMUNICATION_CHECKS = TOPOLOGY_CONFIG.communicationChecks || [];
 
 assert(CONSOLIDATED_SERVER, 'test.runtimeTopology.monoServer is required');
 assert(SERVER_ORDER.length > 0, 'test.runtimeTopology.modularServers must define at least one server');
+assert(environmentProperties.httpHardening.cors.allowedOrigins.includes('http://localhost:3100'),
+    'startioLocal must allow the documented Nodics Axis development origin');
+assert(environmentProperties.httpHardening.cors.allowedOrigins.includes('http://127.0.0.1:3100'),
+    'startioLocal must allow the loopback Nodics Axis development origin');
 
 function loadProperties(serverName) {
     return require(path.join(LOCAL_ENV, serverName, 'config/properties.js'));

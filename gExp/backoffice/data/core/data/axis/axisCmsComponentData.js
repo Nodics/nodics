@@ -16,9 +16,20 @@
  * @owner backoffice
  */
 module.exports = {
+    record15: {
+        code: 'axisAuthenticationShowcaseComponent', typeCode: 'axisAuthenticationShowcaseComponentType', accessMode: 'PUBLIC',
+        properties: {
+            eyebrow: 'Nodics enterprise operations',
+            title: 'One governed workspace for every business capability.',
+            message: 'Discover active modules, operate secure workflows, and keep every action inside its authoritative Nodics contract.',
+            highlights: ['Employee-only access', 'Direct module connectivity', 'Contract-governed operations']
+        },
+        active: true
+    },
     record0: {
         code: 'axisBrandComponent', typeCode: 'axisBrandComponentType', accessMode: 'PUBLIC',
-        properties: { productName: 'Nodics Axis', tagline: 'Business operations, connected.', logoAsset: 'axis-brand-mark' }, active: true
+        properties: { productName: 'Nodics Axis', tagline: 'Business operations, connected.', logoAsset: 'axis-brand-mark',
+            displayMode: 'authentication' }, active: true
     },
     record1: {
         code: 'axisLoginIntroductionComponent', typeCode: 'axisMessageComponentType', accessMode: 'PUBLIC',
@@ -26,7 +37,8 @@ module.exports = {
     },
     record2: {
         code: 'axisEmployeeLoginFormComponent', typeCode: 'axisEmployeeLoginFormComponentType', accessMode: 'PUBLIC',
-        properties: { title: 'Employee sign in', usernameLabel: 'Username', passwordLabel: 'Password', submitLabel: 'Sign in' }, active: true
+        properties: { title: 'Employee sign in', usernameLabel: 'Username', usernamePlaceholder: 'Enter your username',
+            passwordLabel: 'Password', passwordPlaceholder: 'Enter your password', submitLabel: 'Sign in' }, active: true
     },
     record3: {
         code: 'axisForgotPasswordLinkComponent', typeCode: 'axisLinkComponentType', accessMode: 'PUBLIC',
@@ -42,7 +54,8 @@ module.exports = {
     },
     record6: {
         code: 'axisEmployeeRecoveryFormComponent', typeCode: 'axisEmployeeRecoveryFormComponentType', accessMode: 'PUBLIC',
-        properties: { title: 'Forgot password', identifierLabel: 'Employee username or email', submitLabel: 'Send instructions',
+        properties: { title: 'Reset password', identifierLabel: 'Employee username or email',
+            identifierPlaceholder: 'Enter your employee identifier', submitLabel: 'Send recovery instructions',
             successMessage: 'If the account is eligible, recovery instructions will be sent.' }, active: true
     },
     record7: {
@@ -76,5 +89,33 @@ module.exports = {
     record14: {
         code: 'axisDashboardHelpComponent', typeCode: 'axisMessageComponentType', accessMode: 'AUTHENTICATED',
         properties: { title: 'Getting started', message: 'Select an authorized business module from the Axis navigation.', tone: 'information' }, active: true
+    },
+    record16: {
+        code: 'axisLockShowcaseComponent', typeCode: 'axisAuthenticationShowcaseComponentType', accessMode: 'AUTHENTICATED',
+        properties: {
+            eyebrow: 'Protected employee workspace',
+            title: 'Your Axis workspace is locked, not signed out.',
+            message: 'Re-enter your employee password to continue without exposing operational pages while you are away.',
+            highlights: ['Session remains memory-only', 'Profile verifies every unlock', 'Sign out is always available']
+        },
+        active: true
+    },
+    record17: {
+        code: 'axisLockBrandComponent', typeCode: 'axisBrandComponentType', accessMode: 'AUTHENTICATED',
+        properties: { productName: 'Nodics Axis', tagline: 'Secure employee workspace', logoAsset: 'axis-brand-mark',
+            displayMode: 'authentication' }, active: true
+    },
+    record18: {
+        code: 'axisLockIntroductionComponent', typeCode: 'axisMessageComponentType', accessMode: 'AUTHENTICATED',
+        properties: { title: 'Screen locked', message: 'Enter your password to unlock this employee session.', tone: 'default' }, active: true
+    },
+    record19: {
+        code: 'axisEmployeeLockFormComponent', typeCode: 'axisEmployeeLockFormComponentType', accessMode: 'AUTHENTICATED',
+        properties: { title: 'Unlock Axis', employeeLabel: 'Signed in as', passwordLabel: 'Password',
+            passwordPlaceholder: 'Enter your password', submitLabel: 'Unlock', signOutLabel: 'Not you? Sign out' }, active: true
+    },
+    record20: {
+        code: 'axisLockLegalComponent', typeCode: 'axisMessageComponentType', accessMode: 'AUTHENTICATED',
+        properties: { title: 'Protected session', message: 'Unlock attempts are verified by the Profile authentication authority.', tone: 'muted' }, active: true
     }
 };

@@ -39,6 +39,20 @@ The response contract version is `1`. Only explicitly projected delivery
 properties are returned. Internal persistence, audit, authorization, and
 authoring metadata are not copied into the response.
 
+Page and component renderer metadata is resolved from the authoritative
+`cmsTypeCode2Renderer` mapping. Delivery returns the logical `renderer` key and
+its `rendererContractVersion`; a content-record override may change the key but
+does not create another version authority. The mapping also declares supported
+delivery channels, deprecation state, and an optional replacement renderer.
+Delivery projects these as `rendererChannels`, `rendererDeprecated`, and
+`rendererReplacement`, allowing clients to reject unsupported channels and
+teams to migrate content without immediately breaking existing pages. Page
+delivery also preserves the
+template code and adds a client-safe `templateContract` containing only its
+code, logical renderer key, and major contract version. Immutable publication
+manifests project the same fields so direct and published delivery do not
+diverge.
+
 ## Security
 
 The public endpoint uses Nodics' explicit `publicAccess` route category; merely

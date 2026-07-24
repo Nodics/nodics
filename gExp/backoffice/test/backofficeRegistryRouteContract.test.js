@@ -15,12 +15,18 @@ assert.strictEqual(routers.registryControl.register.permissionConfig, 'authSecur
 assert.strictEqual(routers.registryControl.deregister.permissionConfig, 'authSecurity.internalToken.routePermission');
 assert.strictEqual(routers.registryDiscovery.list.permission, 'backoffice.registry.view');
 assert.strictEqual(routers.registryDiscovery.bootstrap.permission, 'backoffice.bootstrap.view');
+assert.strictEqual(routers.registryDiscovery.publicBootstrap.secured, false);
+assert.strictEqual(routers.registryDiscovery.publicBootstrap.publicAccess, true);
+assert.strictEqual(routers.registryDiscovery.publicBootstrap.apiExposure, 'serviceRegistry');
 assert.strictEqual(routers.registryControl.register.requestBody.required, true);
 assert(routers.registryDiscovery.bootstrap.help.parameters.some(parameter => parameter.name === 'x-nodics-client-contract-version'));
 assert.strictEqual(routers.registryDiscovery.diagnostics.permission, 'backoffice.registry.diagnostics.view');
 assert.strictEqual(routers.registryDiscovery.adminList.permission, 'backoffice.registry.admin.view');
 assert.strictEqual(routers.registryDiscovery.adminDetail.permission, 'backoffice.registry.admin.view');
 assert.strictEqual(routers.registryDiscovery.refresh.permission, 'backoffice.registry.refresh');
+assert.strictEqual(routers.axisPolicy.get.permission, 'backoffice.axis.policy.view');
+assert.strictEqual(routers.axisPolicy.update.permission, 'backoffice.axis.policy.update');
+assert.strictEqual(routers.axisPolicy.update.requestBody.required, true);
 assert.strictEqual(routers.contractHistory.current.permission, 'backoffice.contract.view');
 assert.strictEqual(routers.contractHistory.history.permission, 'backoffice.contract.view');
 assert.strictEqual(routers.contractHistory.approve.permission, 'backoffice.contract.approve');
@@ -31,8 +37,10 @@ Object.values(routers.contractHistory).forEach(route => assert(route.responses['
 assert(routers.contractHistory.history.help.parameters.some(parameter => parameter.name === 'limit'));
 [routers.registryControl.register, routers.registryControl.deregister, routers.registryDiscovery.list, routers.registryDiscovery.bootstrap,
     routers.registryDiscovery.diagnostics, routers.registryDiscovery.adminList, routers.registryDiscovery.adminDetail,
-    routers.registryDiscovery.refresh, ...Object.values(routers.contractHistory)].forEach(route => {
+    routers.registryDiscovery.refresh, ...Object.values(routers.axisPolicy), ...Object.values(routers.contractHistory)].forEach(route => {
     assert.strictEqual(route.secured, true);
     assert.strictEqual(route.apiExposure, 'serviceRegistry');
 });
+assert(![routers.registryControl.register, routers.registryControl.deregister, routers.registryDiscovery.list,
+    routers.registryDiscovery.bootstrap, routers.registryDiscovery.diagnostics].includes(routers.registryDiscovery.publicBootstrap));
 console.log('BackOffice registry route security validated');
