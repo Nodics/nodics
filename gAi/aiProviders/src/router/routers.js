@@ -42,6 +42,12 @@ module.exports = {
                 controller: 'DefaultAiTokenLedgerController', operation: 'usage',
                 responses: { '200': { description: 'Bounded immutable AI provider usage evidence' } }
             },
+            ownUsageSummary: {
+                secured: true, accessGroups: ['userGroup'], permission: 'ai.usage.readOwn',
+                apiExposure: 'aiOperations', key: '/operations/ai-ledger/usage/me', method: 'GET',
+                controller: 'DefaultAiTokenLedgerController', operation: 'ownSummary',
+                responses: { '200': { description: 'Client-safe budgets and exact usage totals for the authenticated employee' } }
+            },
             repairRuns: {
                 secured: true, accessGroups: ['userGroup'], permission: 'ai.ledger.read',
                 apiExposure: 'aiOperations', key: '/operations/ai-ledger/repair/runs', method: 'GET',

@@ -27,6 +27,8 @@ module.exports = {
     /** Lists effective budgets. */ budgets: function (request, callback) { return this.invoke('budgets', request, callback); },
     /** Lists reservations. */ reservations: function (request, callback) { return this.invoke('reservations', request, callback); },
     /** Lists usage evidence. */ usage: function (request, callback) { return this.invoke('usage', request, callback); },
+    /** Returns a client-safe summary for the authenticated employee. */
+    ownSummary: function (request, callback) { return this.invoke('ownSummary', request, callback); },
     /** Lists repair runs. */ repairRuns: function (request, callback) { return this.invoke('repairRuns', request, callback); },
     /** Lists repair findings. */ repairFindings: function (request, callback) { return this.invoke('repairFindings', request, callback); },
     /** Updates one budget ceiling. */ updateBudget: function (request, callback) { return this.invoke('updateBudget', request, callback); },

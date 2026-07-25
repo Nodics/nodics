@@ -107,6 +107,14 @@ module.exports = {
         properties: { expectedRevision: { type: 'integer', minimum: 0 },
             argumentsDigest: { type: 'string', pattern: '^[a-f0-9]{64}$' } }
     },
+    rejectConfirmationRequest: {
+        type: 'object', additionalProperties: false, required: ['expectedRevision', 'argumentsDigest'],
+        properties: {
+            expectedRevision: { type: 'integer', minimum: 0 },
+            argumentsDigest: { type: 'string', pattern: '^[a-f0-9]{64}$' },
+            reason: { type: 'string', minLength: 1, maxLength: 256 }
+        }
+    },
     cancelTurnRequest: {
         type: 'object',
         additionalProperties: false,

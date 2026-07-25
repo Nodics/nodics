@@ -36,6 +36,22 @@ module.exports = {
     policy: function () {
         return (CONFIG.get('aiAssistant') || {}).confirmations || {};
     },
+    /** Returns the client-safe confirmation lifecycle projection. */
+    projection: function (model) {
+        const expired = new Date(model.expiresAt).getTime() <= Date.now() &&
+            ['PENDING', 'APPROVED'].includes(model.state);
+        return {
+            confirmationCode: model.confirmationCode,
+            conversationCode: model.conversationCode,
+            operationId: model.operationId,
+            state: expired ? 'EXPIRED' : model.state,
+            argumentsDigest: model.argumentsDigest,
+            revision: model.revision,
+            expiresAt: model.expiresAt,
+            impact: model.impact,
+            workflowCarrierCode: model.workflowCarrierCode
+        };
+    },
     /** Produces a stable digest independent of object insertion order. */
     digest: function (value) {
         const stable = object => object && typeof object === 'object' && !Array.isArray(object) ?
@@ -56,6 +72,11 @@ module.exports = {
         const values = response && Array.isArray(response.result) ? response.result : [];
         if (values.length !== 1) throw fail('ERR_AIA_00001', 'Assistant confirmation not found');
         return { identity: identity, model: values[0] };
+    },
+    /** Retrieves one employee-owned confirmation without disclosing mutation arguments. */
+    get: async function (request) {
+        const loaded = await this.load(request);
+        return { code: 'SUC_AIA_00013', data: { confirmation: this.projection(loaded.model) } };
     },
     /** Creates a pending confirmation from a fixed supported operation identity. */
     create: async function (request) {
@@ -84,7 +105,7 @@ module.exports = {
         const persisted = saved && saved.result !== undefined ? saved.result : saved;
         return {
             code: 'SUC_AIA_00009',
-            data: { confirmation: Array.isArray(persisted) ? persisted[0] : persisted }
+            data: { confirmation: this.projection(Array.isArray(persisted) ? persisted[0] : persisted) }
         };
     },
     /** Approves only the unchanged, unexpired pending confirmation. */
@@ -100,7 +121,39 @@ module.exports = {
             query: { code: model.code, revision: Number(input.expectedRevision) }, model: model
         });
         if (this.affected(saved) !== 1) throw fail('ERR_AIA_00007', 'Assistant confirmation approval conflict');
-        return { code: 'SUC_AIA_00010', data: { confirmation: model } };
+        return { code: 'SUC_AIA_00010', data: { confirmation: this.projection(model) } };
+    },
+    /** Rejects an unchanged pending or approved confirmation before execution begins. */
+    reject: async function (request) {
+        const loaded = await this.load(request);
+        const input = request.body || {}, model = loaded.model;
+        if (new Date(model.expiresAt).getTime() <= Date.now()) {
+            throw fail('ERR_AIA_00008', 'Assistant confirmation has expired');
+        }
+        if (!['PENDING', 'APPROVED'].includes(model.state) ||
+            input.argumentsDigest !== model.argumentsDigest ||
+            Number(input.expectedRevision) !== Number(model.revision)) {
+            throw fail('ERR_AIA_00007', 'Assistant confirmation is stale or changed');
+        }
+        const previousState = model.state;
+        model.state = 'REJECTED';
+        model.rejectedAt = new Date();
+        model.rejectionReason = input.reason;
+        model.revision = Number(model.revision) + 1;
+        const saved = await SERVICE.DefaultAssistantConfirmationService.update({
+            tenant: request.tenant,
+            authData: request.authData,
+            query: {
+                code: model.code,
+                state: previousState,
+                revision: Number(input.expectedRevision)
+            },
+            model: model
+        });
+        if (this.affected(saved) !== 1) {
+            throw fail('ERR_AIA_00007', 'Assistant confirmation rejection conflict');
+        }
+        return { code: 'SUC_AIA_00014', data: { confirmation: this.projection(model) } };
     },
     /** Executes an approved atomic command or hands a durable process to Workflow without duplicating its state. */
     execute: async function (request) {

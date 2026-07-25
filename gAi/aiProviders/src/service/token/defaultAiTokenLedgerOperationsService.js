@@ -19,6 +19,16 @@
 const economics = require('./defaultAiTokenEconomicsService');
 
 module.exports = {
+    /** Resolves the authenticated human principal without accepting a query override. */
+    humanPrincipal: function (request) {
+        const authData = request.authData || {};
+        if (authData.principalType !== 'human') {
+            throw new Error('AI usage summary requires an authenticated human principal');
+        }
+        const principalCode = authData.principalId || authData.userId || authData.loginId;
+        if (!principalCode) throw new Error('AI usage summary requires principal identity');
+        return String(principalCode);
+    },
     /** Resolves a bounded list limit. */
     limit: function (request) {
         const input = request.httpRequest && request.httpRequest.query || request.query || {};
@@ -57,6 +67,56 @@ module.exports = {
         return SERVICE.DefaultAiTokenLedgerRepositoryService.listUsage(
             this.query(request, ['enterpriseCode', 'applicationCode', 'principalCode', 'profileCode',
                 'providerCode', 'modelCode', 'budgetCode']), this.limit(request), request);
+    },
+
+    /**
+     * Returns a bounded, client-safe summary for the authenticated employee.
+     * Provider identities, model identities, reservation references, and ledger
+     * record identifiers intentionally remain undisclosed.
+     */
+    ownSummary: async function (request) {
+        const tenantCode = String(request.tenant || request.tenantCode || '');
+        if (!tenantCode) throw new Error('AI usage summary requires tenant identity');
+        const principalCode = this.humanPrincipal(request);
+        const repository = SERVICE.DefaultAiTokenLedgerRepositoryService;
+        const configuration = SERVICE.DefaultAiTokenLedgerService.configuration(request);
+        const costScale = configuration.tokenOptimization.costScale;
+        const [budgetResponse, usageResponse] = await Promise.all([
+            repository.listBudgets({ tenantCode: tenantCode, principalCode: principalCode }, 50, request),
+            repository.listUsage({ tenantCode: tenantCode, principalCode: principalCode }, 500, request)
+        ]);
+        const values = response => response && Array.isArray(response.result) ? response.result : [];
+        const budgets = values(budgetResponse).map(value => ({
+            period: value.period,
+            windowStart: value.windowStart,
+            windowEnd: value.windowEnd,
+            currencyCode: value.currencyCode,
+            maximumTokens: Number(value.maximumTokens || 0),
+            reservedTokens: Number(value.reservedTokens || 0),
+            consumedTokens: Number(value.consumedTokens || 0),
+            maximumCost: String(value.maximumCost || '0'),
+            reservedCost: String(value.reservedCost || '0'),
+            consumedCost: String(value.consumedCost || '0')
+        }));
+        const totals = new Map();
+        values(usageResponse).forEach(value => {
+            const currencyCode = String(value.currencyCode || '');
+            if (!currencyCode) return;
+            const current = totals.get(currencyCode) || { currencyCode: currencyCode, totalTokens: 0, cost: '0' };
+            const tokens = Number(value.totalTokens || 0);
+            if (!Number.isSafeInteger(tokens) || tokens < 0 ||
+                !Number.isSafeInteger(current.totalTokens + tokens)) {
+                throw new Error('AI usage token total exceeds safe integer boundary');
+            }
+            current.totalTokens += tokens;
+            current.cost = economics.addExact(current.cost, String(value.cost || '0'), costScale);
+            totals.set(currencyCode, current);
+        });
+        return {
+            budgets: budgets,
+            usageByCurrency: Array.from(totals.values()),
+            usageRecordCount: values(usageResponse).length
+        };
     },
 
     /** Lists persistent repair runs. */

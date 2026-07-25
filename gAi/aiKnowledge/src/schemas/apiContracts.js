@@ -43,7 +43,9 @@ const citation = {
         title: { type: 'string', minLength: 1, maxLength: 512 },
         locator: { type: 'string', minLength: 1, maxLength: 2048 },
         section: { type: 'string', maxLength: 512 },
-        version: { type: 'string', maxLength: 64 }
+        version: { type: 'string', maxLength: 64 },
+        navigationType: { enum: ['NONE', 'INTERNAL_ROUTE'] },
+        navigationTarget: { type: 'string', minLength: 1, maxLength: 2048 }
     }
 };
 

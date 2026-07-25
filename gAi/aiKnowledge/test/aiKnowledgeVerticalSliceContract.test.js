@@ -19,6 +19,12 @@ const assert = require('assert');
 const configuration = require('../config/properties').aiKnowledge;
 const ingestion = require('../src/service/ingestion/defaultAiKnowledgeIngestionService');
 const retrieval = require('../src/service/retrieval/defaultAiKnowledgeRetrievalService');
+assert.deepStrictEqual(retrieval.citationNavigation('//evil.example/path'), {
+    navigationType: 'NONE'
+});
+assert.deepStrictEqual(retrieval.citationNavigation('javascript:alert(1)'), {
+    navigationType: 'NONE'
+});
 const lifecycle = require('../src/service/lifecycle/defaultAiKnowledgeIndexLifecycleService');
 const stored = { documents: [], chunks: [], indexed: [] };
 const service = target => ({ save: input => { stored[target].push(input.model); return Promise.resolve(true); } });
@@ -72,6 +78,8 @@ ingestion.ingest(input)
     .then(result => {
         assert.strictEqual(result.sufficientEvidence, true);
         assert.strictEqual(result.evidence[0].citation.locator, '/ai/providers');
+        assert.strictEqual(result.evidence[0].citation.navigationType, 'INTERNAL_ROUTE');
+        assert.strictEqual(result.evidence[0].citation.navigationTarget, '/ai/providers');
         return lifecycle.activate({
             tenant: 'default', authData: {}, configuration: configuration,
             corpusCode: 'nodics', indexVersion: 'candidate-1',

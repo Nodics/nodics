@@ -62,3 +62,12 @@
 - Assistant presentation records belong to BackOffice-owned Axis CMS core
   data. Backend modules contribute non-executable renderer keys; React
   renderers remain in the separate Axis repository.
+- Conversation history must restore client-safe structured interaction state,
+  not only message text. It may expose clarification, stable tool lifecycle,
+  confirmation lifecycle, citations, normalized usage, and reconciliation
+  state, but never mutation arguments, raw tool results, provider details,
+  reservation identifiers, credentials, or target URLs.
+- Confirmation retrieval, approval, rejection, expiry, and execution remain
+  employee-owned persisted lifecycle operations. Reject only unchanged pending
+  or approved records; expired, consumed, rejected, executing, and uncertain
+  records must not be replayed or reopened.

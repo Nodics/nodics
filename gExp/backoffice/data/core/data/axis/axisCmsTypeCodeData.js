@@ -94,7 +94,7 @@ module.exports = {
             newConversationLabel: 'string', noConversationsLabel: 'string',
             loadMoreLabel: 'string', clarificationTitle: 'string',
             clarificationSubmitLabel: 'string', toolPlanTitle: 'string',
-            confirmationTitle: 'string', approveLabel: 'string',
+            confirmationTitle: 'string', approveLabel: 'string', rejectLabel: 'string',
             executeLabel: 'string', confirmationExpiredLabel: 'string',
             confirmationCompletedLabel: 'string', toolPlannedLabel: 'string',
             toolRunningLabel: 'string', toolSucceededLabel: 'string',

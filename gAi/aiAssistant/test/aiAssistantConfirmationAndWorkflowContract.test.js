@@ -22,6 +22,8 @@ const service = require('../src/service/confirmation/defaultAiAssistantConfirmat
 
 assert.strictEqual(routes.createConfirmation.permission, 'ai.assistant.use');
 assert.strictEqual(routes.approveConfirmation.key, '/confirmations/:confirmationCode/approve');
+assert.strictEqual(routes.getConfirmation.method, 'GET');
+assert.strictEqual(routes.rejectConfirmation.key, '/confirmations/:confirmationCode/reject');
 assert.strictEqual(routes.executeConfirmation.method, 'POST');
 assert.strictEqual(schemas.assistantConfirmation.router.enabled, false);
 assert.strictEqual(schemas.assistantConfirmation.definition.argumentsDigest.required, true);

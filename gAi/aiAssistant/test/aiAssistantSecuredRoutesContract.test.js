@@ -21,7 +21,7 @@ const defaults = require('../config/properties').aiAssistant;
 const conversationService = require('../src/service/conversation/defaultAiAssistantConversationService');
 
 const operations = Object.values(routes).flatMap(group => Object.values(group));
-assert.strictEqual(operations.length, 14);
+assert.strictEqual(operations.length, 16);
 operations.filter(route => ![routes.turns.recover, routes.operations.diagnostics].includes(route)).forEach(route => {
     assert.strictEqual(route.secured, true);
     assert.deepStrictEqual(route.accessGroups, ['userGroup']);
@@ -44,6 +44,8 @@ assert.strictEqual(routes.turns.replayEvents.method, 'GET');
 assert.strictEqual(routes.conversations.history.method, 'GET');
 assert.strictEqual(routes.turns.stream.responseHandler, 'aiAssistantSseResponseHandler');
 assert.strictEqual(routes.turns.cancel.method, 'POST');
+assert.strictEqual(routes.confirmations.getConfirmation.permission, 'ai.assistant.read');
+assert.strictEqual(routes.confirmations.rejectConfirmation.method, 'POST');
 
 const store = {
     conversations: [
@@ -64,6 +66,14 @@ const store = {
         {
             eventCode: 'turn-owned-2', conversationCode: 'conversation-owned',
             turnCode: 'turn-owned', tenantCode: 'tenant-a', sequence: 2, eventType: 'STATUS'
+        },
+        {
+            eventCode: 'turn-owned-3', conversationCode: 'conversation-owned',
+            turnCode: 'turn-owned', tenantCode: 'tenant-a', sequence: 3, eventType: 'USAGE',
+            data: {
+                usage: { inputTokens: 10, outputTokens: 5 },
+                reconciliation: { state: 'RECONCILED', reservationId: 'must-not-leak' }
+            }
         }
     ],
     messages: [
@@ -79,7 +89,15 @@ const store = {
             messageCode: 'message-other', conversationCode: 'conversation-other', turnCode: 'turn-other',
             tenantCode: 'tenant-a', principalCode: 'employee-b', role: 'user', content: 'Other secret', sequence: 1
         }
-    ]
+    ],
+    confirmations: [{
+        code: 'confirmation-owned', confirmationCode: 'confirmation-owned',
+        tenantCode: 'tenant-a', principalCode: 'employee-a',
+        conversationCode: 'conversation-owned', operationId: 'profile_createenterprise',
+        state: 'PENDING', argumentsDigest: 'a'.repeat(64), revision: 0,
+        expiresAt: new Date(Date.now() + 60000), impact: { summary: 'Create enterprise' },
+        arguments: { code: 'secret-enterprise' }
+    }]
 };
 
 function matches(value, query) {
@@ -110,7 +128,8 @@ const context = {
     configuration: defaults,
     services: {
         conversations: service('conversations'), turns: service('turns'),
-        events: service('events'), messages: service('messages')
+        events: service('events'), messages: service('messages'),
+        confirmations: service('confirmations')
     }
 };
 const request = {
@@ -133,7 +152,7 @@ conversationService.listOwned(request, context)
         Object.assign({}, request, { query: { afterSequence: 1 } }), context
     ))
     .then(result => {
-        assert.strictEqual(result.items.length, 1);
+        assert.strictEqual(result.items.length, 2);
         assert.strictEqual(result.items[0].sequence, 2);
         return conversationService.historyOwned(
             'conversation-owned', Object.assign({}, request, { query: { page: 1, limit: 20 } }), context
@@ -143,6 +162,10 @@ conversationService.listOwned(request, context)
         assert.strictEqual(result.items.length, 1);
         assert.strictEqual(result.items[0].messages.length, 2);
         assert.strictEqual(result.items[0].messages[0].content, 'Owned request');
+        assert.strictEqual(result.items[0].interactions.length, 1);
+        assert.strictEqual(JSON.stringify(result).includes('must-not-leak'), false);
+        assert.strictEqual(result.confirmations.length, 1);
+        assert.strictEqual(JSON.stringify(result).includes('secret-enterprise'), false);
         assert.strictEqual(JSON.stringify(result).includes('Other secret'), false);
         assert.strictEqual(result.items[0].turn.configurationSnapshot, undefined);
         return conversationService.cancelAcceptedTurn(

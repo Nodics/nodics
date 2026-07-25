@@ -36,6 +36,12 @@ It remains disabled until a deployment selects sources and active dependencies.
 - separate retrieval-strategy (`INDEXED`, `LIVE`, `HYBRID`) and search-mode
   (`LEXICAL`, `VECTOR`, `HYBRID`) contracts;
 - citation-preserving insufficient-evidence refusal.
+
+Retrieved citations classify only validated same-application paths as
+`INTERNAL_ROUTE`. Protocol-relative, scheme-based, backslash, control-character,
+and otherwise untrusted locators remain `NONE` and must be displayed as
+evidence text rather than browser links. Projects may narrow this rule but must
+not move navigation trust decisions into Axis.
 - an inactive OOTB `nodicsDocumentation` corpus and explicit `nodicsGDocs`
   source registration, installed only by the governed init-data import;
 - one nSearch refresh after each completed ingestion batch, so completion means

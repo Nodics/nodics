@@ -109,7 +109,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gAi/aiAssistant/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gAi/aiAssistant/nodics.js` | `module` | `documented` | 2/2 | Generated Nodics lifecycle entrypoint for aiAssistant. |  |
 | `gAi/aiAssistant/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gAi/aiAssistant/src/controller/defaultAiAssistantController.js` | `src` | `partially-documented` | 17/17 | Normalizes secured HTTP input and delegates Assistant operations through the facade. | add @override |
+| `gAi/aiAssistant/src/controller/defaultAiAssistantController.js` | `src` | `partially-documented` | 19/19 | Normalizes secured HTTP input and delegates Assistant operations through the facade. | add @override |
 | `gAi/aiAssistant/src/event/listeners.js` | `src` | `documented` | 0/0 | Event listener registry for this boundary. |  |
 | `gAi/aiAssistant/src/facade/defaultAiAssistantFacade.js` | `src` | `partially-documented` | 2/2 | Delegates secured Assistant HTTP operations to the owning API application service. | add @override |
 | `gAi/aiAssistant/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Interceptor definition registry for this boundary. |  |
@@ -121,7 +121,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gAi/aiAssistant/src/search/indexes.js` | `src` | `documented` | 0/0 | Search index definition registry for this boundary. |  |
 | `gAi/aiAssistant/src/service/api/defaultAiAssistantApiService.js` | `src` | `documented` | 16/16 | Implements the employee-secured, provider-neutral Assistant HTTP application boundary. |  |
 | `gAi/aiAssistant/src/service/config/defaultAiAssistantConfigurationService.js` | `src` | `documented` | 2/2 | Validates effective layered Assistant configuration and creates immutable, secret-safe runtime snapshots. |  |
-| `gAi/aiAssistant/src/service/confirmation/defaultAiAssistantConfirmationService.js` | `src` | `documented` | 7/7 | Owns immutable employee mutation confirmation and delegates execution to Profile or durable work to Workflow. |  |
+| `gAi/aiAssistant/src/service/confirmation/defaultAiAssistantConfirmationService.js` | `src` | `documented` | 10/10 | Owns immutable employee mutation confirmation and delegates execution to Profile or durable work to Workflow. |  |
 | `gAi/aiAssistant/src/service/context/defaultAiAssistantContextService.js` | `src` | `documented` | 2/2 | Builds bounded provider context while preserving security instructions and citations. |  |
 | `gAi/aiAssistant/src/service/context/defaultAiAssistantKnowledgeContextService.js` | `src` | `documented` | 3/3 | Adapts the authoritative AI Knowledge retrieval result into a bounded provider-neutral Assistant context package. |  |
 | `gAi/aiAssistant/src/service/conversation/defaultAiAssistantConversationService.js` | `src` | `documented` | 11/11 | Persists tenant/principal-owned conversations, ordered messages, turns, and replayable events. |  |

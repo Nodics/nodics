@@ -34,6 +34,42 @@ function affected(response) {
     return Number(result.modifiedCount || result.nModified || result.matchedCount || result.n || 0);
 }
 
+function interactionData(event) {
+    const data = event.data || {};
+    if (event.eventType === 'CLARIFICATION') {
+        return {
+            question: data.question,
+            missingFields: data.missingFields,
+            toolId: data.toolId,
+            ownerModule: data.ownerModule,
+            operationId: data.operationId
+        };
+    }
+    if (['TOOL_PLAN', 'TOOL_STARTED', 'TOOL_RESULT'].includes(event.eventType)) {
+        return {
+            toolId: data.toolId,
+            ownerModule: data.ownerModule,
+            operationId: data.operationId,
+            outcome: data.outcome,
+            code: data.code
+        };
+    }
+    if (event.eventType === 'CONFIRMATION_REQUIRED') {
+        return { confirmation: data.confirmation };
+    }
+    if (event.eventType === 'CITATIONS') {
+        return { citations: data.citations };
+    }
+    if (event.eventType === 'USAGE') {
+        return {
+            phase: data.phase,
+            usage: data.usage,
+            reconciliation: data.reconciliation && { state: data.reconciliation.state }
+        };
+    }
+    return {};
+}
+
 function fail(code, message) {
     if (typeof CLASSES !== 'undefined' && CLASSES.NodicsError) return new CLASSES.NodicsError(code, message);
     const error = new Error(message);
@@ -48,7 +84,8 @@ module.exports = {
             conversations: SERVICE.DefaultAssistantConversationService,
             messages: SERVICE.DefaultAssistantMessageService,
             turns: SERVICE.DefaultAssistantTurnService,
-            events: SERVICE.DefaultAssistantTurnEventService
+            events: SERVICE.DefaultAssistantTurnEventService,
+            confirmations: SERVICE.DefaultAssistantConfirmationService
         };
     },
 
@@ -125,6 +162,7 @@ module.exports = {
         const turns = items(turnResult);
         const turnCodes = turns.map(turn => turn.turnCode);
         let messages = [];
+        let events = [];
         if (turnCodes.length) {
             const messageResult = await services.messages.get({
                 tenant: context.identity.tenantCode, authData: request.authData,
@@ -137,8 +175,24 @@ module.exports = {
                 searchOptions: { pageSize: Math.min(100, limit * 2), pageNumber: 1, sort: { sequence: 1 } }
             });
             messages = items(messageResult);
+            const eventResult = await services.events.get({
+                tenant: context.identity.tenantCode, authData: request.authData,
+                query: {
+                    tenantCode: context.identity.tenantCode,
+                    conversationCode: conversationCode,
+                    turnCode: { $in: turnCodes },
+                    eventType: { $in: ['CLARIFICATION', 'TOOL_PLAN', 'TOOL_STARTED',
+                        'TOOL_RESULT', 'CONFIRMATION_REQUIRED', 'CITATIONS', 'USAGE'] }
+                },
+                searchOptions: {
+                    pageSize: Math.min(500, limit * 10), pageNumber: 1,
+                    sort: { sequence: 1 }
+                }
+            });
+            events = items(eventResult);
         }
         const byTurn = new Map();
+        const eventsByTurn = new Map();
         messages.filter(message => ['user', 'assistant'].includes(message.role) &&
             typeof message.content === 'string').forEach(message => {
             if (!byTurn.has(message.turnCode)) byTurn.set(message.turnCode, []);
@@ -147,6 +201,18 @@ module.exports = {
                 content: message.content,
                 sequence: message.sequence,
                 createdAt: message.createdAt
+            });
+        });
+        events.forEach(event => {
+            if (!eventsByTurn.has(event.turnCode)) eventsByTurn.set(event.turnCode, []);
+            eventsByTurn.get(event.turnCode).push({
+                eventCode: event.eventCode,
+                conversationCode: event.conversationCode,
+                turnCode: event.turnCode,
+                eventType: event.eventType,
+                sequence: event.sequence,
+                createdAt: event.createdAt,
+                data: interactionData(event)
             });
         });
         const projected = turns.slice().reverse().map(turn => ({
@@ -158,7 +224,29 @@ module.exports = {
                 completedAt: turn.completedAt,
                 failureCode: turn.failureCode
             },
-            messages: byTurn.get(turn.turnCode) || []
+            messages: byTurn.get(turn.turnCode) || [],
+            interactions: eventsByTurn.get(turn.turnCode) || []
+        }));
+        const confirmationResult = await services.confirmations.get({
+            tenant: context.identity.tenantCode, authData: request.authData,
+            query: {
+                tenantCode: context.identity.tenantCode,
+                principalCode: context.identity.principalCode,
+                conversationCode: conversationCode
+            },
+            searchOptions: { pageSize: 50, pageNumber: 1, sort: { expiresAt: -1 } }
+        });
+        const confirmations = items(confirmationResult).map(value => ({
+            confirmationCode: value.confirmationCode,
+            conversationCode: value.conversationCode,
+            operationId: value.operationId,
+            state: new Date(value.expiresAt).getTime() <= Date.now() &&
+                ['PENDING', 'APPROVED'].includes(value.state) ? 'EXPIRED' : value.state,
+            argumentsDigest: value.argumentsDigest,
+            revision: value.revision,
+            expiresAt: value.expiresAt,
+            impact: value.impact,
+            workflowCarrierCode: value.workflowCarrierCode
         }));
         return {
             conversation: {
@@ -170,7 +258,8 @@ module.exports = {
             },
             page: page,
             limit: limit,
-            items: projected
+            items: projected,
+            confirmations: confirmations
         };
     },
 

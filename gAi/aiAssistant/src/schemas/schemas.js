@@ -114,6 +114,8 @@ module.exports = {
                 arguments: { type: 'object', required: true }, impact: { type: 'object', required: true },
                 state: { type: 'string', required: true }, expiresAt: { type: 'date', required: true },
                 approvedAt: { type: 'date', required: false }, consumedAt: { type: 'date', required: false },
+                rejectedAt: { type: 'date', required: false },
+                rejectionReason: { type: 'string', required: false },
                 workflowCode: { type: 'string', required: false }, workflowCarrierCode: { type: 'string', required: false },
                 idempotencyKey: { type: 'string', required: true }, revision: { type: 'int', required: true, default: 0 }
             },

@@ -92,3 +92,8 @@
   provider-local or AI-specific cache engine.
 - Do not duplicate Assistant orchestration, Knowledge ingestion, nSearch,
   Workflow, target-module authorization, quota ledgers, or business behavior.
+- Employee self-service usage reporting must query the persistent ledger with
+  tenant and authenticated human principal fixed by server identity. Its
+  client-safe projection must omit provider/model identities, record and
+  reservation identifiers, and arbitrary caller scope overrides; exact cost
+  totals remain grouped by currency.

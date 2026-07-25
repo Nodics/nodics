@@ -98,10 +98,14 @@ service-token operation and processes a bounded batch.
 | List budgets | `GET /operations/ai-ledger/budgets` | `ai.ledger.read` |
 | List reservations | `GET /operations/ai-ledger/reservations` | `ai.ledger.read` |
 | List usage | `GET /operations/ai-ledger/usage` | `ai.ledger.read` |
+| My safe summary | `GET /operations/ai-ledger/usage/me` | `ai.usage.readOwn` |
 | Update ceiling | `POST /operations/ai-ledger/budgets/update` | `ai.ledger.manage` |
 | Expire stale reservations | `POST /internal/ai-ledger/reservations/expire` | internal service token |
 
-All list operations are tenant-bound and limited to 1–500 records.
+All list operations are tenant-bound and limited to 1–500 records. The
+self-service summary additionally fixes `principalCode` from the authenticated
+human identity, ignores caller scope overrides, groups exact cost by currency,
+and omits provider/model, reservation, budget, and usage-record identities.
 
 ## Lifecycle and recovery
 

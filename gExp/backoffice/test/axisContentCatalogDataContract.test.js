@@ -102,7 +102,7 @@ const assistantWorkspace = componentByCode.get('axisAssistantWorkspaceComponent'
     'employeeLabel', 'assistantLabel', 'workingLabel', 'cancellingLabel', 'errorLabel']
     .concat(['historyLabel', 'newConversationLabel', 'noConversationsLabel', 'loadMoreLabel'])
     .concat(['clarificationTitle', 'clarificationSubmitLabel', 'toolPlanTitle',
-        'confirmationTitle', 'approveLabel', 'executeLabel',
+        'confirmationTitle', 'approveLabel', 'rejectLabel', 'executeLabel',
         'confirmationExpiredLabel', 'confirmationCompletedLabel'])
     .concat(['toolPlannedLabel', 'toolRunningLabel', 'toolSucceededLabel',
         'toolFailedLabel', 'citationsTitle', 'noCitationsLabel', 'usageTitle',

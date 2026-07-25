@@ -106,6 +106,24 @@ Successful direct execution persists `CONSUMED` only after Profile returns.
 Successful durable handoff persists the Workflow carrier code and leaves the
 configured Workflow responsible for later manual and automatic actions.
 
+Conversation history returns safe structured interactions alongside messages,
+plus employee-owned confirmation lifecycle projections. Axis can therefore
+recover clarification, tool state, citations, usage, and confirmation controls
+after reload without receiving stored mutation arguments, raw tool results, or
+token-ledger reservation identifiers.
+
+Confirmation lifecycle routes are:
+
+- `GET /confirmations/:confirmationCode` with `ai.assistant.read`;
+- `POST /confirmations/:confirmationCode/approve` with `ai.assistant.use`;
+- `POST /confirmations/:confirmationCode/reject` with `ai.assistant.use`;
+- `POST /confirmations/:confirmationCode/execute` with `ai.assistant.use`.
+
+Approval and rejection require the current revision and immutable argument
+digest. Rejection is allowed only while pending or approved. Expired records
+are projected as `EXPIRED`; rejected, consumed, executing, and uncertain
+records cannot be reopened through these routes.
+
 Run the focused contract test:
 
 ```text

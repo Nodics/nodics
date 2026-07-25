@@ -123,6 +123,12 @@ module.exports = {
             }
         },
         confirmations: {
+            getConfirmation: {
+                secured: true, accessGroups: ['userGroup'], permission: 'ai.assistant.read',
+                apiExposure: 'aiAssistant', key: '/confirmations/:confirmationCode', method: 'GET',
+                controller: 'DefaultAiAssistantController', operation: 'getConfirmation',
+                responses: { '200': { description: 'Employee-owned confirmation lifecycle returned' } }
+            },
             createConfirmation: {
                 secured: true, accessGroups: ['userGroup'], permission: 'ai.assistant.use',
                 apiExposure: 'aiAssistant', key: '/confirmations', method: 'POST',
@@ -136,6 +142,13 @@ module.exports = {
                 controller: 'DefaultAiAssistantController', operation: 'approveConfirmation',
                 requestBody: { required: true, content: { 'application/json': { schema: contracts.approveConfirmationRequest } } },
                 responses: { '200': { description: 'Confirmation approved and bound to immutable arguments' } }
+            },
+            rejectConfirmation: {
+                secured: true, accessGroups: ['userGroup'], permission: 'ai.assistant.use',
+                apiExposure: 'aiAssistant', key: '/confirmations/:confirmationCode/reject', method: 'POST',
+                controller: 'DefaultAiAssistantController', operation: 'rejectConfirmation',
+                requestBody: { required: true, content: { 'application/json': { schema: contracts.rejectConfirmationRequest } } },
+                responses: { '200': { description: 'Pending or approved confirmation rejected before execution' } }
             },
             executeConfirmation: {
                 secured: true, accessGroups: ['userGroup'], permission: 'ai.assistant.use',

@@ -153,6 +153,7 @@ module.exports = {
             'ai.assistant.cancel',
             'ai.assistant.operations.read',
             'ai.ledger.read',
+            'ai.usage.readOwn',
             'ai.ledger.manage',
             'ai.ledger.repair.approve',
             'dynamo.class.view',

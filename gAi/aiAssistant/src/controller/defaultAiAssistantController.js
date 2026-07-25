@@ -58,8 +58,12 @@ module.exports = {
     ,
     /** Creates a mutation confirmation. */
     createConfirmation: function (request, callback) { return this.invoke('createConfirmation', request, callback); },
+    /** Retrieves an employee-owned mutation confirmation. */
+    getConfirmation: function (request, callback) { return this.invoke('getConfirmation', request, callback); },
     /** Approves a mutation confirmation. */
     approveConfirmation: function (request, callback) { return this.invoke('approveConfirmation', request, callback); },
+    /** Rejects a pending or approved mutation confirmation. */
+    rejectConfirmation: function (request, callback) { return this.invoke('rejectConfirmation', request, callback); },
     /** Executes or hands off an approved mutation. */
     executeConfirmation: function (request, callback) { return this.invoke('executeConfirmation', request, callback); }
 };

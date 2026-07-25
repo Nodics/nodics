@@ -135,6 +135,7 @@ module.exports = {
             noConversationsLabel: 'No saved conversations yet', loadMoreLabel: 'Load more',
             clarificationTitle: 'More information required', clarificationSubmitLabel: 'Continue',
             toolPlanTitle: 'Proposed governed action', confirmationTitle: 'Review and confirm',
+            rejectLabel: 'Reject',
             approveLabel: 'Approve action', executeLabel: 'Execute approved action',
             confirmationExpiredLabel: 'This confirmation has expired. Submit the request again.',
             confirmationCompletedLabel: 'The approved action completed successfully.',

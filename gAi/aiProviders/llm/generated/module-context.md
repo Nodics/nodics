@@ -29,9 +29,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 25 |
-| Test files | 20 |
+| Test files | 21 |
 | Data files | 2 |
-| All module-owned files | 50 |
+| All module-owned files | 51 |
 | Local schema definitions | 5 |
 
 ## Ownership And Dependencies
@@ -60,7 +60,7 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 27 |
-| Partially documented | 11 |
+| Partially documented | 12 |
 | Undocumented | 8 |
 | Inventory only | 4 |
 
@@ -93,7 +93,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gAi/aiProviders/nodics.js` | `module` | `documented` | 2/2 | Generated Nodics lifecycle entrypoint for aiProviders. |  |
 | `gAi/aiProviders/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gAi/aiProviders/src/controller/defaultAiProviderOperationsController.js` | `src` | `partially-documented` | 1/1 | Exposes secured sanitized AI provider operational diagnostics. | add @override |
-| `gAi/aiProviders/src/controller/defaultAiTokenLedgerController.js` | `src` | `partially-documented` | 1/1 | Maps authorized ledger administration and internal recovery routes to their service owner. | add @override |
+| `gAi/aiProviders/src/controller/defaultAiTokenLedgerController.js` | `src` | `partially-documented` | 2/2 | Maps authorized ledger administration and internal recovery routes to their service owner. | add @override |
 | `gAi/aiProviders/src/router/appConfig.js` | `src` | `partially-documented` | 0/0 | Reserves the application-router configuration boundary for AI Providers. | add @override |
 | `gAi/aiProviders/src/router/routers.js` | `src` | `partially-documented` | 0/0 | Defines secured AI ledger administration and service-token recovery routes. | add @override |
 | `gAi/aiProviders/src/schemas/apiContracts.js` | `src` | `documented` | 0/0 | Defines versioned provider-neutral generation, embedding, capability, result, and usage contracts. |  |
@@ -113,7 +113,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gAi/aiProviders/src/service/token/defaultAiProviderEvidenceReconciliationService.js` | `src` | `documented` | 1/1 | Looks up positive provider usage and delegates uncertain reconciliation to the ledger repair authority. |  |
 | `gAi/aiProviders/src/service/token/defaultAiTokenEconomicsService.js` | `src` | `documented` | 9/9 | Creates fail-closed token plans and reconciles exact AI cost through the persistent ledger contract. |  |
 | `gAi/aiProviders/src/service/token/defaultAiTokenLedgerMetricsService.js` | `src` | `documented` | 3/3 | Records sanitized process-local ledger repair counters while persistent records remain audit authority. |  |
-| `gAi/aiProviders/src/service/token/defaultAiTokenLedgerOperationsService.js` | `src` | `documented` | 14/14 | Provides bounded tenant-scoped ledger administration, reporting, and recovery operations. |  |
+| `gAi/aiProviders/src/service/token/defaultAiTokenLedgerOperationsService.js` | `src` | `documented` | 16/16 | Provides bounded tenant-scoped ledger administration, reporting, and recovery operations. |  |
 | `gAi/aiProviders/src/service/token/defaultAiTokenLedgerRepairService.js` | `src` | `documented` | 10/10 | Scans stale ledger transitions, repairs deterministic state, and reconciles uncertain usage only from provider evidence. |  |
 | `gAi/aiProviders/src/service/token/defaultAiTokenLedgerRepositoryService.js` | `src` | `documented` | 26/26 | Adapts the persistent AI ledger to Nodics-generated model services with revision-guarded writes. |  |
 | `gAi/aiProviders/src/service/token/defaultAiTokenLedgerService.js` | `src` | `documented` | 18/18 | Owns tenant-scoped persistent AI budget reservation, release, reconciliation, uncertainty, expiry, and audit lifecycle. |  |
@@ -125,6 +125,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gAi/aiProviders/test/aiProviderErrorObservabilityContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies safe provider failure normalization without raw response or credential leakage. | add @override |
 | `gAi/aiProviders/test/aiProviderGatewayContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gAi/aiProviders/test/aiProviderOperationalControlsContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gAi/aiProviders/test/aiProviderOwnUsageSummaryContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies employee ownership, exact totals, and low-disclosure usage projection. | add @override |
 | `gAi/aiProviders/test/aiProviderRetryFallbackAccountingContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies every retry/fallback attempt receives independent reservation and usage outcome. | add @override |
 | `gAi/aiProviders/test/aiProviderTelemetryContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies bounded sanitized provider metrics and optional degraded readiness. | add @override |
 | `gAi/aiProviders/test/aiSchemaFrameworkOwnershipContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

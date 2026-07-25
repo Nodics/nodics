@@ -19,6 +19,19 @@
 const contractValues = require('../../utils/contractValues');
 
 module.exports = {
+    /** Classifies only safe same-application paths as navigable citation targets. */
+    citationNavigation: function (locator) {
+        const controlCharacter = typeof locator === 'string' &&
+            Array.from(locator).some(character => {
+                const code = character.charCodeAt(0);
+                return code <= 31 || code === 127;
+            });
+        if (typeof locator !== 'string' || !locator.startsWith('/') ||
+            locator.startsWith('//') || locator.includes('\\') || controlCharacter) {
+            return { navigationType: 'NONE' };
+        }
+        return { navigationType: 'INTERNAL_ROUTE', navigationTarget: locator };
+    },
     /** Creates a status-aware Nodics error while remaining directly unit-testable. */
     error: function (code, message) {
         if (typeof CLASSES !== 'undefined' && CLASSES.NodicsError) {
@@ -107,11 +120,11 @@ module.exports = {
             configuration.retrieval.minimumEvidenceScore).map(value => ({
             evidenceId: value.chunkCode, documentId: value.documentCode, chunkId: value.chunkCode,
             score: Number(value.score), content: value.content,
-            citation: {
+            citation: Object.assign({
                 citationId: value.chunkCode, documentId: value.documentCode,
                 sourceId: value.sourceCode || input.corpusCode, title: value.title,
                 locator: value.locator, section: value.section, version: value.indexVersion
-            }
+            }, this.citationNavigation(value.locator))
         }));
         return {
             contractVersion: 1, mode: mode, searchMode: searchMode, evidence: evidence,

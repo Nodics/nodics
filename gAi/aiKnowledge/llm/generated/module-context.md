@@ -122,7 +122,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gAi/aiKnowledge/src/service/lifecycle/defaultAiKnowledgeIndexLifecycleService.js` | `src` | `documented` | 3/3 | Validates candidate Knowledge versions and atomically changes the corpus-owned active version pointer. |  |
 | `gAi/aiKnowledge/src/service/operations/defaultAiKnowledgeOperationsService.js` | `src` | `partially-documented` | 10/10 | Orchestrates durable ingestion status, lifecycle, retrieval, readiness, and diagnostics. | add @override |
 | `gAi/aiKnowledge/src/service/operations/defaultAiKnowledgeReadinessService.js` | `src` | `partially-documented` | 1/1 | Reports configuration, corpus activation, and nSearch readiness without exposing secrets. | add @override |
-| `gAi/aiKnowledge/src/service/retrieval/defaultAiKnowledgeRetrievalService.js` | `src` | `documented` | 2/2 | Delegates retrieval to nSearch and returns tenant/audience-filtered evidence with citations. |  |
+| `gAi/aiKnowledge/src/service/retrieval/defaultAiKnowledgeRetrievalService.js` | `src` | `documented` | 3/3 | Delegates retrieval to nSearch and returns tenant/audience-filtered evidence with citations. |  |
 | `gAi/aiKnowledge/src/utils/contractValues.js` | `src` | `documented` | 0/0 | Publishes shared closed-set values used by runtime validation and API schemas. |  |
 | `gAi/aiKnowledge/src/utils/enums.js` | `src` | `documented` | 0/0 | Enum definition registry for this boundary. |  |
 | `gAi/aiKnowledge/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Status and error definition registry for this boundary. |  |

@@ -6,7 +6,7 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
-| `assistantConfirmation` | `base` | yes | yes | no | no | no | no |  | 17 |
+| `assistantConfirmation` | `base` | yes | yes | no | no | no | no |  | 19 |
 | `assistantConversation` | `base` | yes | yes | no | no | no | no |  | 12 |
 | `assistantDefinition` | `base` | yes | yes | no | no | no | no |  | 8 |
 | `assistantMessage` | `base` | yes | yes | no | no | no | no |  | 10 |
@@ -28,6 +28,8 @@
 - `impact` `object` required
 - `operationId` `string` required
 - `principalCode` `string` required
+- `rejectedAt` `date` optional
+- `rejectionReason` `string` optional
 - `revision` `int` required
 - `state` `string` required
 - `tenantCode` `string` required

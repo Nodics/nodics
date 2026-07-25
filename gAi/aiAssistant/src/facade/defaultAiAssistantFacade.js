@@ -44,8 +44,12 @@ module.exports = {
     diagnostics: request => SERVICE.DefaultAiAssistantApiService.diagnostics(request),
     /** Delegates mutation confirmation creation. */
     createConfirmation: request => SERVICE.DefaultAiAssistantConfirmationService.create(request),
+    /** Delegates employee-owned mutation confirmation retrieval. */
+    getConfirmation: request => SERVICE.DefaultAiAssistantConfirmationService.get(request),
     /** Delegates mutation confirmation approval. */
     approveConfirmation: request => SERVICE.DefaultAiAssistantConfirmationService.approve(request),
+    /** Delegates mutation confirmation rejection. */
+    rejectConfirmation: request => SERVICE.DefaultAiAssistantConfirmationService.reject(request),
     /** Delegates confirmed execution or Workflow handoff. */
     executeConfirmation: request => SERVICE.DefaultAiAssistantConfirmationService.execute(request)
 };

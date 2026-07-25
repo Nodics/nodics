@@ -85,6 +85,10 @@ catalog. Projects extend these values through normal configuration hierarchy;
 core services consume `DefaultIdentityGovernanceService` rather than embedding
 project role names.
 
+The catalog includes `ai.usage.readOwn` for the aiProviders-owned,
+authenticated-human self-service usage summary. It is distinct from the
+tenant-wide operator permissions `ai.ledger.read` and `ai.ledger.manage`.
+
 Internal-token route authorization is also layered. The default route
 permission is `authSecurity.internalToken.routePermission`, which resolves to
 `auth.internal.token.read`; cross-tenant token access is governed separately by

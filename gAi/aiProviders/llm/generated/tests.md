@@ -12,6 +12,7 @@
 - `gAi/aiProviders/test/aiProviderErrorObservabilityContract.test.js`
 - `gAi/aiProviders/test/aiProviderGatewayContract.test.js`
 - `gAi/aiProviders/test/aiProviderOperationalControlsContract.test.js`
+- `gAi/aiProviders/test/aiProviderOwnUsageSummaryContract.test.js`
 - `gAi/aiProviders/test/aiProviderRetryFallbackAccountingContract.test.js`
 - `gAi/aiProviders/test/aiProviderTelemetryContract.test.js`
 - `gAi/aiProviders/test/aiSchemaFrameworkOwnershipContract.test.js`

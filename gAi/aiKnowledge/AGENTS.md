@@ -35,3 +35,7 @@
   version, and policy choices must be layered, validated configuration.
 - Configuration may narrow access but may not weaken tenant, audience,
   classification, citation, or source-authority boundaries.
+- Citation locators are evidence, not automatically trusted browser links.
+  Only Knowledge may classify a locator as navigable. The default contract
+  permits validated same-application paths and leaves arbitrary, scheme-based,
+  protocol-relative, backslash, and control-character locators non-navigable.

@@ -14,13 +14,13 @@
     "description": "Provider-neutral AI gateway, selection, normalization, resilience, and provider-adapter composition boundary."
   },
   "sourceFiles": 25,
-  "testFiles": 20,
+  "testFiles": 21,
   "dataFiles": 2,
-  "ownedFiles": 50,
-  "sourceFingerprint": "9c8396ae6d36b8ad800f082134f8db9482f641529bcbd2abd8e9eecf7b7fff4b",
+  "ownedFiles": 51,
+  "sourceFingerprint": "c8022edccae5430bf5851d2ab94ab153f82c6e670b930764ff5d99074b5e1c05",
   "documentation": {
     "documented": 27,
-    "partially-documented": 11,
+    "partially-documented": 12,
     "undocumented": 8,
     "inventory-only": 4
   },

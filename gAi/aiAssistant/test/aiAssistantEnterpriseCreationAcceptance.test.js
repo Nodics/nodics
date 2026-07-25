@@ -231,6 +231,45 @@ async function run() {
         })),
         error => error.code === 'ERR_AIA_00008'
     );
+    const expiredProjection = await confirmationService.get(Object.assign({}, request, {
+        confirmationCode: expiring.data.confirmation.confirmationCode
+    }));
+    assert.strictEqual(expiredProjection.data.confirmation.state, 'EXPIRED');
+    assert.strictEqual(expiredProjection.data.confirmation.arguments, undefined);
+
+    const rejected = await mutationService.process(
+        proposal({ code: 'rejected', name: 'Rejected' }),
+        Object.assign({}, turn, { turnCode: 'turn-rejected' }),
+        Object.assign({}, request, { idempotencyKey: 'rejected-turn' }),
+        runtime
+    );
+    const rejectedResult = await confirmationService.reject(Object.assign({}, request, {
+        confirmationCode: rejected.data.confirmation.confirmationCode,
+        body: {
+            expectedRevision: 0,
+            argumentsDigest: rejected.data.confirmation.argumentsDigest,
+            reason: 'Employee cancelled the change'
+        }
+    }));
+    assert.strictEqual(rejectedResult.data.confirmation.state, 'REJECTED');
+    assert.strictEqual(rejectedResult.data.confirmation.revision, 1);
+    assert.strictEqual(rejectedResult.data.confirmation.arguments, undefined);
+    await assert.rejects(
+        confirmationService.reject(Object.assign({}, request, {
+            confirmationCode: rejected.data.confirmation.confirmationCode,
+            body: {
+                expectedRevision: 0,
+                argumentsDigest: rejected.data.confirmation.argumentsDigest
+            }
+        })),
+        error => error.code === 'ERR_AIA_00007'
+    );
+    await assert.rejects(
+        confirmationService.execute(Object.assign({}, request, {
+            confirmationCode: rejected.data.confirmation.confirmationCode
+        })),
+        error => error.code === 'ERR_AIA_00007'
+    );
 
     const duplicate = await mutationService.process(
         proposal({ code: 'acme', name: 'Duplicate Acme' }),
