@@ -3,7 +3,7 @@
 This guide explains the implemented Nodics backend capability from a business
 overview through developer and operator details. The capability is disabled by
 default. Employee-secured JSON APIs and normalized SSE delivery are implemented.
-Nodics supplies the CMS composition contract for the future Axis chat screen;
+Nodics supplies the CMS composition contract for the Axis chat screen;
 rendering remains in the separate `nodicsaxis` repository. Confirmed enterprise
 creation and optional Workflow handoff are implemented.
 
@@ -88,25 +88,49 @@ Messages API.
 
 ## Confirmed Enterprise Creation
 
-1. The employee asks to create an enterprise and supplies its code, name, and
-   optional tenant, parent, and active state.
-2. Assistant creates a `PENDING` confirmation containing a client-safe impact
+1. The employee asks to create an enterprise.
+2. The provider-neutral planner may return `CLARIFICATION` or a
+   `MUTATION_PROPOSAL`; neither is executable.
+3. Assistant resolves the proposal's stable identity against the active tool
+   policy and the current employee-filtered BackOffice observation of Profile.
+   A model-supplied URL, method, permission, credential, or unknown argument is
+   rejected.
+4. Missing `code` or `name` emits structured clarification. It creates no
+   confirmation and performs no Profile call.
+5. When code and name are present, Assistant validates the bounded proposal and
+   creates a `PENDING` confirmation containing a client-safe impact
    summary and SHA-256 argument digest. No enterprise exists yet.
-3. Axis displays the impact. Approval must return the same digest and expected
+6. Axis displays the impact. Approval must return the same digest and expected
    revision before expiry.
-4. Execute atomically claims the confirmation as `EXECUTING`. A concurrent or
+7. Execute atomically claims the confirmation as `EXECUTING`. A concurrent or
    replayed request cannot win the same database claim.
-5. Without `workflowCode`, Assistant forwards the human bearer and idempotency
+8. Without `workflowCode`, Assistant forwards the human bearer and idempotency
    key to Profile. Profile rechecks permission, validates fields, rejects
    duplicates, and persists through its generated enterprise service.
-6. With `workflowCode`, Assistant creates one Workflow carrier. Workflow owns
+9. With `workflowCode`, Assistant creates one Workflow carrier. Workflow owns
    all actions, manual approvals, retries, recovery, and final process state.
-7. Success becomes `CONSUMED`. A target failure after dispatch becomes
+10. Success becomes `CONSUMED`. A target failure after dispatch becomes
    `UNCERTAIN` and is never blindly retried.
 
 Expired or changed confirmations must be recreated. Permission removal is
 enforced by Profile at execution time. Customer and service tokens cannot use
 the employee confirmation routes.
+
+### Offline acceptance
+
+`gAi/aiAssistant/test/aiAssistantEnterpriseCreationAcceptance.test.js`
+exercises the complete provider-neutral business boundary without credentials
+or billable provider traffic. It feeds deterministic structured planner output
+through current-contract resolution, the real confirmation service, approval,
+and the existing Profile module transport. It proves clarification without
+persistence, safe confirmation projection, employee-bearer forwarding,
+successful consumption, stale revision, replay rejection, tenant isolation,
+expiry, duplicate-target rejection, and uncertain target failure.
+
+The acceptance uses injected test output and transport only. It does not
+register a mock production provider, bypass `aiProviders`, or create another
+mutation executor. Live provider wording and model behavior remain a separate
+credentialed local acceptance step.
 
 ## Axis Content and Repository Boundary
 
@@ -114,6 +138,31 @@ BackOffice core data contributes the authenticated `/assistant` page to
 `axisContentCatalog`, including template, slots, safe text properties, and
 logical renderer keys. Core import remains explicit and idempotent; server
 startup never imports this content.
+
+The workspace component owns localized title, welcome, empty state, input
+placeholder, Send, Stop, employee, Assistant, working, cancelling, and failure
+labels. It also owns conversation-history, new-conversation, empty-history,
+pagination, clarification, governed-action, confirmation, approval, execution,
+expiry, and completion labels. Operators change those values through CMS
+content rather than editing Axis source. Axis owns layout and interaction only;
+CMS cannot supply React, HTML, JavaScript, CSS, or event handlers.
+
+Axis renders structured `CLARIFICATION`, `TOOL_PLAN`, and
+`CONFIRMATION_REQUIRED` events as separate accessible components. It never
+derives target URLs, permissions, mutation arguments, digests, or revisions.
+Approval sends the exact persisted digest and revision returned by Assistant;
+execution uses only the confirmation code. Malformed events fail closed, and
+Profile or Workflow remains the final business authority.
+
+Axis also renders the complete safe tool lifecycle (`TOOL_PLAN`,
+`TOOL_STARTED`, and `TOOL_RESULT`), governed citation metadata, normalized
+token categories, and usage-reconciliation state. Raw tool responses,
+arguments, internal target URLs, reservation identifiers, credentials, and
+provider diagnostics do not enter the presentation model. Citation locators
+remain text until an owning backend contract explicitly marks a navigation
+target safe. Axis does not calculate authoritative cost, remaining budget, or
+quota from token counts; those values require an explicit client-safe
+aiProviders projection.
 
 Nodics owns content contracts, authentication, authorization, persistence,
 workflow, provider calls, and SSE APIs. `nodicsaxis` owns React renderers,
@@ -172,8 +221,9 @@ instead of inventing one.
 9. Usage is reconciled and normalized.
 10. Assistant persists the answer and replay events.
 
-The Axis UI is not implemented in this phase. Backend JSON APIs, durable events,
-and authenticated normalized SSE delivery are implemented.
+Axis implements the employee conversation composer, streamed text, progress,
+cancellation, and failure presentation. Backend JSON APIs, durable events, and
+authenticated normalized SSE delivery remain the authority.
 
 ## Employee API workflow
 
@@ -183,15 +233,19 @@ the `aiAssistant` module routes:
 1. `POST /conversations` with a definition code creates an owned conversation.
 2. `GET /conversations` lists only that employee's bounded result page.
 3. `GET /conversations/:conversationCode` loads one owned conversation.
-4. `POST /conversations/:conversationCode/turns` submits a message and
+4. `GET /conversations/:conversationCode/history` returns a bounded,
+   client-safe page of persisted turns and redacted user/Assistant messages.
+   It excludes configuration snapshots, provider identifiers, credentials,
+   leases, and internal execution metadata.
+5. `POST /conversations/:conversationCode/turns` submits a message and
    idempotency key. The enabled Assistant Definition supplies the governed
    prompt and provider-profile codes.
-5. `GET /conversations/:conversationCode/turns/:turnCode` reads status.
-6. `GET /conversations/:conversationCode/turns/:turnCode/events` replays a
+6. `GET /conversations/:conversationCode/turns/:turnCode` reads status.
+7. `GET /conversations/:conversationCode/turns/:turnCode/events` replays a
    bounded ordered page after an optional sequence.
-7. `POST /conversations/:conversationCode/turns/:turnCode/cancel` cancels only
+8. `POST /conversations/:conversationCode/turns/:turnCode/cancel` cancels only
    a queued turn or requests cancellation of active provider execution.
-8. `GET /conversations/:conversationCode/turns/:turnCode/stream` replays missed
+9. `GET /conversations/:conversationCode/turns/:turnCode/stream` replays missed
    events and continues live delivery.
 
 Required permissions are `ai.assistant.use`, `ai.assistant.read`, and

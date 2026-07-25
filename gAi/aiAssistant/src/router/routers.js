@@ -52,6 +52,16 @@ module.exports = {
                 apiExposure: 'aiAssistant', key: '/conversations/:conversationCode', method: 'GET',
                 controller: 'DefaultAiAssistantController', operation: 'getConversation',
                 responses: { '200': { description: 'Employee-owned Assistant conversation' } }
+            },
+            history: {
+                secured: true, accessGroups: ['userGroup'], permission: 'ai.assistant.read',
+                apiExposure: 'aiAssistant', key: '/conversations/:conversationCode/history', method: 'GET',
+                controller: 'DefaultAiAssistantController', operation: 'getConversationHistory',
+                help: { parameters: [
+                    { name: 'page', in: 'query', required: false, schema: { type: 'integer', minimum: 1 } },
+                    { name: 'limit', in: 'query', required: false, schema: { type: 'integer', minimum: 1, maximum: 50 } }
+                ] },
+                responses: { '200': { description: 'Bounded persisted turn and message history owned by the employee' } }
             }
         },
         turns: {

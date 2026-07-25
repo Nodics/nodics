@@ -96,6 +96,7 @@ module.exports = {
             knowledgeOperations: SERVICE.DefaultAiKnowledgeOperationsService,
             toolPolicy: toolPolicy,
             toolExecutor: SERVICE.DefaultAiAssistantToolExecutionService,
+            confirmationService: SERVICE.DefaultAiAssistantConfirmationService,
             toolEventPublisher: (turn, eventType, data, request, context) =>
                 conversationService.appendEvent(turn, eventType, data, request, context)
         };
@@ -121,6 +122,14 @@ module.exports = {
         const context = this.context(request);
         const model = await conversationService.getOwned(request.conversationCode, request, context);
         return this.response('SUC_AIA_00002', { conversation: model });
+    },
+
+    /** Loads a bounded safe projection of persisted turns and messages for one owned conversation. */
+    getConversationHistory: async function (request) {
+        const context = this.context(request);
+        return this.response('SUC_AIA_00012', await conversationService.historyOwned(
+            request.conversationCode, request, context
+        ));
     },
 
     /** Accepts and starts one provider-neutral governed turn without blocking the HTTP request. */

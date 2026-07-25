@@ -50,6 +50,12 @@
   employee, stable operation identity, immutable argument digest, expiry,
   revision, and idempotency. Claim execution atomically before dispatch and
   never automatically replay an uncertain outcome.
+- Provider mutation output is a non-executable proposal. Resolve its stable
+  tool, owner-module, and operation identities against the active policy and
+  current employee-filtered BackOffice contract before creating confirmation.
+  Missing required fields produce structured clarification and must not create
+  a confirmation. Never accept model-supplied URLs, methods, permissions,
+  credentials, unknown arguments, confirmation state, or execution claims.
 - Profile remains enterprise authority. Multi-step or manual confirmed work
   creates one Workflow carrier; Assistant retains only its reference and never
   duplicates Workflow state.

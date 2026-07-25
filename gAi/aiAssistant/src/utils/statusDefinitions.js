@@ -29,6 +29,7 @@ module.exports = {
     SUC_AIA_00009: { code: '200', message: 'AI Assistant confirmation created' },
     SUC_AIA_00010: { code: '200', message: 'AI Assistant confirmation approved' },
     SUC_AIA_00011: { code: '200', message: 'AI Assistant confirmed operation accepted' },
+    SUC_AIA_00012: { code: '200', message: 'AI Assistant conversation history returned' },
     ERR_AIA_00000: { code: '403', message: 'AI Assistant requires an authenticated employee identity' },
     ERR_AIA_00001: { code: '404', message: 'AI Assistant resource was not found' },
     ERR_AIA_00002: { code: '409', message: 'AI Assistant turn state does not allow cancellation' },

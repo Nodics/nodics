@@ -88,6 +88,20 @@ module.exports = {
     record12: {
         code: 'axisAssistantWorkspaceComponentType', kind: 'COMPONENT', contractVersion: 1,
         propertySchema: { title: 'string', welcomeMessage: 'string', inputPlaceholder: 'string',
-            submitLabel: 'string', stopLabel: 'string', emptyState: 'string' }, active: true
+            submitLabel: 'string', stopLabel: 'string', emptyState: 'string',
+            employeeLabel: 'string', assistantLabel: 'string', workingLabel: 'string',
+            cancellingLabel: 'string', errorLabel: 'string', historyLabel: 'string',
+            newConversationLabel: 'string', noConversationsLabel: 'string',
+            loadMoreLabel: 'string', clarificationTitle: 'string',
+            clarificationSubmitLabel: 'string', toolPlanTitle: 'string',
+            confirmationTitle: 'string', approveLabel: 'string',
+            executeLabel: 'string', confirmationExpiredLabel: 'string',
+            confirmationCompletedLabel: 'string', toolPlannedLabel: 'string',
+            toolRunningLabel: 'string', toolSucceededLabel: 'string',
+            toolFailedLabel: 'string', citationsTitle: 'string',
+            noCitationsLabel: 'string', usageTitle: 'string',
+            inputTokensLabel: 'string', outputTokensLabel: 'string',
+            cachedTokensLabel: 'string', reasoningTokensLabel: 'string',
+            embeddingTokensLabel: 'string', reconciliationLabel: 'string' }, active: true
     }
 };

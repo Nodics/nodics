@@ -26,6 +26,8 @@ module.exports = {
     listConversations: request => SERVICE.DefaultAiAssistantApiService.listConversations(request),
     /** Delegates owned conversation lookup. */
     getConversation: request => SERVICE.DefaultAiAssistantApiService.getConversation(request),
+    /** Delegates bounded owned conversation history. */
+    getConversationHistory: request => SERVICE.DefaultAiAssistantApiService.getConversationHistory(request),
     /** Delegates governed turn submission. */
     submitTurn: request => SERVICE.DefaultAiAssistantApiService.submitTurn(request),
     /** Delegates owned turn lookup. */

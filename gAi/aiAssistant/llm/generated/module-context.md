@@ -34,10 +34,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 31 |
-| Test files | 20 |
+| Source files | 32 |
+| Test files | 22 |
 | Data files | 8 |
-| All module-owned files | 59 |
+| All module-owned files | 62 |
 | Local schema definitions | 8 |
 
 ## Ownership And Dependencies
@@ -70,8 +70,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 38 |
-| Partially documented | 16 |
+| Documented | 39 |
+| Partially documented | 18 |
 | Undocumented | 1 |
 | Inventory only | 4 |
 
@@ -101,15 +101,15 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gAi/aiAssistant/data/core/data/jobs/defaultAiAssistantJobsData.js` | `data` | `documented` | 0/0 | Contributes the inactive OOTB Assistant abandoned-turn recovery schedule. |  |
 | `gAi/aiAssistant/data/core/headers/jobs/defaultAiAssistantJobsHeader.js` | `data` | `documented` | 0/0 | Imports inactive Assistant maintenance schedules through the existing CronJob schema authority. |  |
 | `gAi/aiAssistant/data/init/data/assistant/defaultAssistantDefinitionData.js` | `data` | `documented` | 0/0 | Defines the OOTB employee Assistant using only provider-profile, prompt, and Knowledge corpus references. |  |
-| `gAi/aiAssistant/data/init/data/assistant/defaultAssistantPromptDefinitionData.js` | `data` | `documented` | 0/0 | Defines the first approved read-only Axis Assistant prompt. |  |
-| `gAi/aiAssistant/data/init/data/assistant/defaultAssistantToolPolicyData.js` | `data` | `documented` | 0/0 | Defines the inactive OOTB allowlist for the first employee read-only BackOffice operation. |  |
+| `gAi/aiAssistant/data/init/data/assistant/defaultAssistantPromptDefinitionData.js` | `data` | `documented` | 0/0 | Defines the approved Axis Assistant prompt for governed answers, reads, and confirmed proposals. |  |
+| `gAi/aiAssistant/data/init/data/assistant/defaultAssistantToolPolicyData.js` | `data` | `documented` | 0/0 | Defines the inactive OOTB allowlist for governed employee reads and confirmed enterprise creation. |  |
 | `gAi/aiAssistant/data/init/headers/assistant/defaultAssistantDefinitionHeader.js` | `data` | `partially-documented` | 0/0 | Imports the OOTB Axis Assistant definition through its generated schema service. | add @override |
 | `gAi/aiAssistant/data/init/headers/assistant/defaultAssistantPromptDefinitionHeader.js` | `data` | `partially-documented` | 0/0 | Imports the approved versioned Assistant prompt through its generated schema service. | add @override |
 | `gAi/aiAssistant/data/init/headers/assistant/defaultAssistantToolPolicyHeader.js` | `data` | `partially-documented` | 0/0 | Imports the OOTB deny-by-default Assistant tool policy through its generated schema service. | add @override |
 | `gAi/aiAssistant/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gAi/aiAssistant/nodics.js` | `module` | `documented` | 2/2 | Generated Nodics lifecycle entrypoint for aiAssistant. |  |
 | `gAi/aiAssistant/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gAi/aiAssistant/src/controller/defaultAiAssistantController.js` | `src` | `partially-documented` | 16/16 | Normalizes secured HTTP input and delegates Assistant operations through the facade. | add @override |
+| `gAi/aiAssistant/src/controller/defaultAiAssistantController.js` | `src` | `partially-documented` | 17/17 | Normalizes secured HTTP input and delegates Assistant operations through the facade. | add @override |
 | `gAi/aiAssistant/src/event/listeners.js` | `src` | `documented` | 0/0 | Event listener registry for this boundary. |  |
 | `gAi/aiAssistant/src/facade/defaultAiAssistantFacade.js` | `src` | `partially-documented` | 2/2 | Delegates secured Assistant HTTP operations to the owning API application service. | add @override |
 | `gAi/aiAssistant/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Interceptor definition registry for this boundary. |  |
@@ -119,21 +119,22 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gAi/aiAssistant/src/schemas/apiContracts.js` | `src` | `documented` | 0/0 | Defines versioned AI Assistant conversation, streaming, and governed-tool API contracts. |  |
 | `gAi/aiAssistant/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines Assistant conversation, message, turn, event, definition, and prompt authorities. |  |
 | `gAi/aiAssistant/src/search/indexes.js` | `src` | `documented` | 0/0 | Search index definition registry for this boundary. |  |
-| `gAi/aiAssistant/src/service/api/defaultAiAssistantApiService.js` | `src` | `documented` | 15/15 | Implements the employee-secured, provider-neutral Assistant HTTP application boundary. |  |
+| `gAi/aiAssistant/src/service/api/defaultAiAssistantApiService.js` | `src` | `documented` | 16/16 | Implements the employee-secured, provider-neutral Assistant HTTP application boundary. |  |
 | `gAi/aiAssistant/src/service/config/defaultAiAssistantConfigurationService.js` | `src` | `documented` | 2/2 | Validates effective layered Assistant configuration and creates immutable, secret-safe runtime snapshots. |  |
 | `gAi/aiAssistant/src/service/confirmation/defaultAiAssistantConfirmationService.js` | `src` | `documented` | 7/7 | Owns immutable employee mutation confirmation and delegates execution to Profile or durable work to Workflow. |  |
 | `gAi/aiAssistant/src/service/context/defaultAiAssistantContextService.js` | `src` | `documented` | 2/2 | Builds bounded provider context while preserving security instructions and citations. |  |
 | `gAi/aiAssistant/src/service/context/defaultAiAssistantKnowledgeContextService.js` | `src` | `documented` | 3/3 | Adapts the authoritative AI Knowledge retrieval result into a bounded provider-neutral Assistant context package. |  |
-| `gAi/aiAssistant/src/service/conversation/defaultAiAssistantConversationService.js` | `src` | `documented` | 10/10 | Persists tenant/principal-owned conversations, ordered messages, turns, and replayable events. |  |
+| `gAi/aiAssistant/src/service/conversation/defaultAiAssistantConversationService.js` | `src` | `documented` | 11/11 | Persists tenant/principal-owned conversations, ordered messages, turns, and replayable events. |  |
 | `gAi/aiAssistant/src/service/observability/defaultAiAssistantExecutionTelemetryService.js` | `src` | `documented` | 6/6 | Maintains bounded process-local execution and recovery counters without tenant, principal, turn, prompt, or provider labels. |  |
 | `gAi/aiAssistant/src/service/operations/defaultAiAssistantOperationsService.js` | `src` | `documented` | 4/4 | Provides sanitized Assistant execution readiness and bounded operational telemetry. |  |
 | `gAi/aiAssistant/src/service/security/defaultAiAssistantGuardrailService.js` | `src` | `documented` | 2/2 | Enforces employee identity, tenant ownership, bounded input, and configurable redaction. |  |
 | `gAi/aiAssistant/src/service/stream/defaultAiAssistantSseResponseHandlerService.js` | `src` | `partially-documented` | 4/4 | Prevents JSON double-writes after an Assistant SSE controller owns the response. | add @override |
 | `gAi/aiAssistant/src/service/stream/defaultAiAssistantSseService.js` | `src` | `documented` | 3/3 | Delivers authenticated normalized Assistant events with durable replay, heartbeats, and bounded buffering. |  |
 | `gAi/aiAssistant/src/service/stream/defaultAiAssistantTurnCoordinatorService.js` | `src` | `documented` | 5/5 | Coordinates process-local live turn execution, subscribers, and cancellation over durable Assistant state. |  |
-| `gAi/aiAssistant/src/service/tool/defaultAiAssistantToolCatalogueService.js` | `src` | `documented` | 4/4 | Resolves approved Assistant tool identities against the current employee-filtered BackOffice contract catalogue. |  |
+| `gAi/aiAssistant/src/service/tool/defaultAiAssistantMutationPlanningService.js` | `src` | `documented` | 3/3 | Converts a validated provider mutation proposal into clarification or the existing persisted confirmation boundary. |  |
+| `gAi/aiAssistant/src/service/tool/defaultAiAssistantToolCatalogueService.js` | `src` | `documented` | 5/5 | Resolves approved Assistant tool identities against the current employee-filtered BackOffice contract catalogue. |  |
 | `gAi/aiAssistant/src/service/tool/defaultAiAssistantToolExecutionService.js` | `src` | `documented` | 8/8 | Executes one bounded read-only Assistant tool through current BackOffice metadata and standard Nodics module transport. |  |
-| `gAi/aiAssistant/src/service/tool/defaultAiAssistantToolPlanningService.js` | `src` | `documented` | 5/5 | Defines and parses the provider-neutral structured planning envelope used before governed read-only execution. |  |
+| `gAi/aiAssistant/src/service/tool/defaultAiAssistantToolPlanningService.js` | `src` | `documented` | 5/5 | Defines and parses provider-neutral answer, clarification, read-tool, and mutation-proposal envelopes. |  |
 | `gAi/aiAssistant/src/service/turn/defaultAiAssistantTurnExecutionLeaseService.js` | `src` | `documented` | 7/7 | Owns durable compare-and-set Assistant execution leases and mirrors them into nCache for fast distributed visibility. |  |
 | `gAi/aiAssistant/src/service/turn/defaultAiAssistantTurnOrchestrationService.js` | `src` | `documented` | 3/3 | Runs the bounded read-only Assistant turn pipeline over owned conversation, Knowledge, and aiProviders contracts. |  |
 | `gAi/aiAssistant/src/service/turn/defaultAiAssistantTurnRecoveryService.js` | `src` | `documented` | 3/3 | Reconciles bounded abandoned Assistant turns without replaying provider calls whose outcome may be uncertain. |  |
@@ -144,9 +145,11 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gAi/aiAssistant/test/aiAssistantContractAndConfiguration.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gAi/aiAssistant/test/aiAssistantCronRecoveryContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies inactive idempotent core data, CronJob ownership, service-token routing, and timeout propagation. | add @override |
 | `gAi/aiAssistant/test/aiAssistantDistributedCancellationContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies durable ownership, idempotency, heartbeat observation, redaction, and abandoned cancellation recovery. | add @override |
+| `gAi/aiAssistant/test/aiAssistantEnterpriseCreationAcceptance.test.js` | `test` | `partially-documented` | 0/0 | Exercises clarification, current-contract mutation planning, persisted approval, Profile dispatch, replay, isolation, expiry, and uncertain failure. | add @override |
 | `gAi/aiAssistant/test/aiAssistantExecutionObservabilityContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies fixed-cardinality execution metrics, sanitized diagnostics, and optional readiness degradation. | add @override |
 | `gAi/aiAssistant/test/aiAssistantGovernedReadToolContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies policy, catalogue, permission, transport, path, method, and result bounds for read-only Assistant tools. | add @override |
 | `gAi/aiAssistant/test/aiAssistantKnowledgeContextContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies authoritative Knowledge delegation, trusted scope, immutable evidence, bounded token estimates, and failure behavior. | add @override |
+| `gAi/aiAssistant/test/aiAssistantMutationPlanningContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies provider-neutral clarification and mutation proposals compose current-contract resolution with persisted confirmation. | add @override |
 | `gAi/aiAssistant/test/aiAssistantReadOnlyVerticalSliceContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies employee ownership, redaction, prompt governance, Knowledge evidence, provider isolation, and event persistence. | add @override |
 | `gAi/aiAssistant/test/aiAssistantSecuredRoutesContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies secured route metadata, employee ownership, bounded replay, and accepted-turn cancellation. | add @override |
 | `gAi/aiAssistant/test/aiAssistantSseContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies authenticated replay cursors, normalized SSE frames, terminal closure, and streaming transport chunks. | add @override |

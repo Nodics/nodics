@@ -128,6 +128,21 @@ module.exports = {
         accessMode: 'AUTHENTICATED',
         properties: { title: 'How can I help?', welcomeMessage: 'Ask about authorized Nodics business data or operations.',
             inputPlaceholder: 'Describe what you want to do', submitLabel: 'Send', stopLabel: 'Stop',
-            emptyState: 'Responses, tool activity, confirmations, and workflow progress will appear here.' }, active: true
+            emptyState: 'Responses, tool activity, confirmations, and workflow progress will appear here.',
+            employeeLabel: 'You', assistantLabel: 'Axis Assistant', workingLabel: 'Working on your request',
+            cancellingLabel: 'Stopping the current request', errorLabel: 'The request could not be completed',
+            historyLabel: 'Conversations', newConversationLabel: 'New conversation',
+            noConversationsLabel: 'No saved conversations yet', loadMoreLabel: 'Load more',
+            clarificationTitle: 'More information required', clarificationSubmitLabel: 'Continue',
+            toolPlanTitle: 'Proposed governed action', confirmationTitle: 'Review and confirm',
+            approveLabel: 'Approve action', executeLabel: 'Execute approved action',
+            confirmationExpiredLabel: 'This confirmation has expired. Submit the request again.',
+            confirmationCompletedLabel: 'The approved action completed successfully.',
+            toolPlannedLabel: 'Action prepared', toolRunningLabel: 'Action in progress',
+            toolSucceededLabel: 'Action completed', toolFailedLabel: 'Action failed',
+            citationsTitle: 'Sources', noCitationsLabel: 'No sources were supplied for this response.',
+            usageTitle: 'AI usage', inputTokensLabel: 'Input', outputTokensLabel: 'Output',
+            cachedTokensLabel: 'Cached input', reasoningTokensLabel: 'Reasoning',
+            embeddingTokensLabel: 'Embedding', reconciliationLabel: 'Accounting status' }, active: true
     }
 };

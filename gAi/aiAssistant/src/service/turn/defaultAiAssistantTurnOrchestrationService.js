@@ -25,6 +25,7 @@ const conversationService = require('../conversation/defaultAiAssistantConversat
 const executionLeaseService = require('./defaultAiAssistantTurnExecutionLeaseService');
 const executionTelemetry = require('../observability/defaultAiAssistantExecutionTelemetryService');
 const toolPlanningService = require('../tool/defaultAiAssistantToolPlanningService');
+const mutationPlanningService = require('../tool/defaultAiAssistantMutationPlanningService');
 
 function items(result) {
     return result && Array.isArray(result.result) ? result.result : [];
@@ -174,10 +175,42 @@ module.exports = {
                 planningEnabled ? providerContext('plan') : streamingContext,
                 runtime.providerConfiguration
             );
+            let publishFinalUsage = true;
+            let finalUsagePhase = planningEnabled ? 'ANSWER' : 'GENERATION';
             if (planningEnabled) {
                 const decision = toolPlanningService.parse(result.text, configuration);
                 if (decision.type === 'ANSWER') {
                     result = Object.assign({}, result, { text: decision.answer });
+                } else if (decision.type === 'CLARIFICATION') {
+                    finalUsagePhase = 'PLANNING';
+                    await conversationService.appendEvent(turn, 'CLARIFICATION', {
+                        question: decision.question,
+                        missingFields: decision.missingFields
+                    }, request, context);
+                    result = Object.assign({}, result, {
+                        text: decision.question
+                    });
+                } else if (decision.type === 'MUTATION_PROPOSAL') {
+                    publishFinalUsage = false;
+                    executionPhase = 'MUTATION_PROPOSAL';
+                    await conversationService.appendEvent(turn, 'USAGE', {
+                        phase: 'PLANNING',
+                        usage: result.usage,
+                        reconciliation: result.usageReconciliation
+                    }, request, context);
+                    await executionLeaseService.renew(
+                        lease, request, runtime, 'MUTATION_PROPOSAL'
+                    );
+                    if (lease.cancellationRequested) {
+                        throw cancellationError(lease.cancellationReason);
+                    }
+                    const proposal = await mutationPlanningService.process(
+                        decision, turn, request, runtime
+                    );
+                    await conversationService.appendEvent(
+                        turn, proposal.eventType, proposal.data, request, context
+                    );
+                    result = Object.assign({}, result, { text: proposal.text });
                 } else {
                     executionPhase = 'TOOL';
                     await conversationService.appendEvent(turn, 'USAGE', {
@@ -244,10 +277,12 @@ module.exports = {
                     citations: knowledgeContext.citations
                 }, request, context);
             }
-            await conversationService.appendEvent(turn, 'USAGE', {
-                phase: planningEnabled ? 'ANSWER' : 'GENERATION',
-                usage: result.usage, reconciliation: result.usageReconciliation
-            }, request, context);
+            if (publishFinalUsage) {
+                await conversationService.appendEvent(turn, 'USAGE', {
+                    phase: finalUsagePhase,
+                    usage: result.usage, reconciliation: result.usageReconciliation
+                }, request, context);
+            }
             heartbeat.assertOwned();
             const completed = await services.turns.update({
                 tenant: identity.tenantCode, authData: request.authData,

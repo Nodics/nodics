@@ -189,6 +189,16 @@ async function run() {
         assert.deepStrictEqual(tool.requiredPermissions, ['profile.enterprise.search']);
         assert.deepStrictEqual(tool.resultFields, ['page', 'limit', 'count', 'items']);
         assert.strictEqual(tool.inputSchema.properties.queryParameters.additionalProperties, false);
+        const mutation = policy.record0.approvedOperations.find(item =>
+            item.toolId === 'profile.enterprise.create');
+        assert(mutation, 'Enterprise creation must be explicitly allowlisted');
+        assert.strictEqual(mutation.ownerModule, 'profile');
+        assert.strictEqual(mutation.operationId, 'profile_createenterprise');
+        assert.strictEqual(mutation.mode, 'MUTATION');
+        assert.strictEqual(mutation.confirmationRequired, true);
+        assert.deepStrictEqual(mutation.requiredPermissions, ['profile.enterprise.create']);
+        assert.deepStrictEqual(mutation.inputSchema.required, ['code', 'name']);
+        assert.strictEqual(mutation.inputSchema.additionalProperties, false);
     };
     assertPolicy(policyData);
     assertPolicy(localPolicyData);

@@ -97,6 +97,21 @@ assert(pages.find(page => page.code === 'axisLockScreenPage').cmsComponents.ever
     componentByCode.get(association.target).accessMode === 'AUTHENTICATED'));
 assert(pages.find(page => page.code === 'axisAssistantPage').cmsComponents.every(association =>
     componentByCode.get(association.target).accessMode === 'AUTHENTICATED'));
+const assistantWorkspace = componentByCode.get('axisAssistantWorkspaceComponent');
+['title', 'welcomeMessage', 'inputPlaceholder', 'submitLabel', 'stopLabel', 'emptyState',
+    'employeeLabel', 'assistantLabel', 'workingLabel', 'cancellingLabel', 'errorLabel']
+    .concat(['historyLabel', 'newConversationLabel', 'noConversationsLabel', 'loadMoreLabel'])
+    .concat(['clarificationTitle', 'clarificationSubmitLabel', 'toolPlanTitle',
+        'confirmationTitle', 'approveLabel', 'executeLabel',
+        'confirmationExpiredLabel', 'confirmationCompletedLabel'])
+    .concat(['toolPlannedLabel', 'toolRunningLabel', 'toolSucceededLabel',
+        'toolFailedLabel', 'citationsTitle', 'noCitationsLabel', 'usageTitle',
+        'inputTokensLabel', 'outputTokensLabel', 'cachedTokensLabel',
+        'reasoningTokensLabel', 'embeddingTokensLabel', 'reconciliationLabel'])
+    .forEach(property => {
+        assert.strictEqual(typeof assistantWorkspace.properties[property], 'string');
+        assert(assistantWorkspace.properties[property].length > 0);
+    });
 
 const enabledHeaders = Object.values(header).flatMap(group => Object.values(group)).filter(item => item.options.enabled);
 assert.strictEqual(enabledHeaders.length, 9);

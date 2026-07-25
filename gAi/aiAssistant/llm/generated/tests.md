@@ -8,9 +8,11 @@
 - `gAi/aiAssistant/test/aiAssistantContractAndConfiguration.test.js`
 - `gAi/aiAssistant/test/aiAssistantCronRecoveryContract.test.js`
 - `gAi/aiAssistant/test/aiAssistantDistributedCancellationContract.test.js`
+- `gAi/aiAssistant/test/aiAssistantEnterpriseCreationAcceptance.test.js`
 - `gAi/aiAssistant/test/aiAssistantExecutionObservabilityContract.test.js`
 - `gAi/aiAssistant/test/aiAssistantGovernedReadToolContract.test.js`
 - `gAi/aiAssistant/test/aiAssistantKnowledgeContextContract.test.js`
+- `gAi/aiAssistant/test/aiAssistantMutationPlanningContract.test.js`
 - `gAi/aiAssistant/test/aiAssistantReadOnlyVerticalSliceContract.test.js`
 - `gAi/aiAssistant/test/aiAssistantSecuredRoutesContract.test.js`
 - `gAi/aiAssistant/test/aiAssistantSseContract.test.js`

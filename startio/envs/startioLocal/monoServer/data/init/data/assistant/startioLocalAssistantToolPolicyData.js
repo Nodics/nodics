@@ -11,7 +11,7 @@
 
 /**
  * @module monoServer/data/init/data/assistant/StartioLocalAssistantToolPolicyData
- * @description Activates the reviewed BackOffice catalogue and Profile enterprise-search read tools for local monoServer acceptance.
+ * @description Activates reviewed BackOffice, Profile enterprise-search, and confirmed enterprise-creation tools for local acceptance.
  * @layer data
  * @owner monoServer
  * @override Other local server modules may replace this record while retaining policy identity and target authority.
@@ -63,9 +63,29 @@ module.exports = {
                     }
                 }
             }
+        }, {
+            toolId: 'profile.enterprise.create',
+            ownerModule: 'profile',
+            operationId: 'profile_createenterprise',
+            mode: 'MUTATION',
+            confirmationRequired: true,
+            requiredPermissions: ['profile.enterprise.create'],
+            description: 'Propose creating one enterprise through persisted employee confirmation.',
+            inputSchema: {
+                type: 'object',
+                additionalProperties: false,
+                required: ['code', 'name'],
+                properties: {
+                    code: { type: 'string', maxLength: 128 },
+                    name: { type: 'string', maxLength: 256 },
+                    tenantCode: { type: 'string', maxLength: 128 },
+                    superEnterpriseCode: { type: 'string', maxLength: 128 },
+                    active: { type: 'boolean' }
+                }
+            }
         }],
         enabled: true,
-        revision: 1,
+        revision: 2,
         active: true
     }
 };

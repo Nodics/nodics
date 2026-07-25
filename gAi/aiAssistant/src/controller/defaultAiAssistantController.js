@@ -39,6 +39,8 @@ module.exports = {
     listConversations: function (request, callback) { return this.invoke('listConversations', request, callback); },
     /** Handles owned conversation lookup. */
     getConversation: function (request, callback) { return this.invoke('getConversation', request, callback); },
+    /** Handles bounded owned conversation history. */
+    getConversationHistory: function (request, callback) { return this.invoke('getConversationHistory', request, callback); },
     /** Handles governed turn submission. */
     submitTurn: function (request, callback) { return this.invoke('submitTurn', request, callback); },
     /** Handles owned turn lookup. */

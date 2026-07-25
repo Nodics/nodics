@@ -105,6 +105,75 @@ module.exports = {
         return { page: page, limit: limit, items: items(result) };
     },
 
+    /** Returns a bounded client-safe turn/message projection for one owned conversation. */
+    historyOwned: async function (conversationCode, request, context) {
+        const conversation = await this.getOwned(conversationCode, request, context);
+        const services = this.services(context);
+        const query = request.query || {};
+        const configuredMaximum = Math.min(50, Number(context.configuration.api.maximumPageSize || 50));
+        const limit = Math.min(configuredMaximum, Math.max(1, Number(query.limit) || 20));
+        const page = Math.max(1, Number(query.page) || 1);
+        const turnResult = await services.turns.get({
+            tenant: context.identity.tenantCode, authData: request.authData,
+            query: {
+                tenantCode: context.identity.tenantCode,
+                conversationCode: conversationCode,
+                principalCode: context.identity.principalCode
+            },
+            searchOptions: { pageSize: limit, pageNumber: page, sort: { acceptedAt: -1, turnCode: -1 } }
+        });
+        const turns = items(turnResult);
+        const turnCodes = turns.map(turn => turn.turnCode);
+        let messages = [];
+        if (turnCodes.length) {
+            const messageResult = await services.messages.get({
+                tenant: context.identity.tenantCode, authData: request.authData,
+                query: {
+                    tenantCode: context.identity.tenantCode,
+                    conversationCode: conversationCode,
+                    principalCode: context.identity.principalCode,
+                    turnCode: { $in: turnCodes }
+                },
+                searchOptions: { pageSize: Math.min(100, limit * 2), pageNumber: 1, sort: { sequence: 1 } }
+            });
+            messages = items(messageResult);
+        }
+        const byTurn = new Map();
+        messages.filter(message => ['user', 'assistant'].includes(message.role) &&
+            typeof message.content === 'string').forEach(message => {
+            if (!byTurn.has(message.turnCode)) byTurn.set(message.turnCode, []);
+            byTurn.get(message.turnCode).push({
+                role: message.role,
+                content: message.content,
+                sequence: message.sequence,
+                createdAt: message.createdAt
+            });
+        });
+        const projected = turns.slice().reverse().map(turn => ({
+            turn: {
+                turnCode: turn.turnCode,
+                conversationCode: turn.conversationCode,
+                state: turn.state,
+                acceptedAt: turn.acceptedAt,
+                completedAt: turn.completedAt,
+                failureCode: turn.failureCode
+            },
+            messages: byTurn.get(turn.turnCode) || []
+        }));
+        return {
+            conversation: {
+                conversationCode: conversation.conversationCode,
+                definitionCode: conversation.definitionCode,
+                state: conversation.state,
+                title: conversation.title,
+                lastSequence: Number(conversation.lastSequence || 0)
+            },
+            page: page,
+            limit: limit,
+            items: projected
+        };
+    },
+
     /** Loads one turn only after its parent conversation ownership is established. */
     getOwnedTurn: async function (conversationCode, turnCode, request, context) {
         await this.getOwned(conversationCode, request, context);

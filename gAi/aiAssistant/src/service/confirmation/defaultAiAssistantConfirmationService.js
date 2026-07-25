@@ -66,8 +66,9 @@ module.exports = {
         }
         const now = Date.now();
         const ttl = Math.max(60, Math.min(3600, Number(this.policy().ttlSeconds || 600)));
+        const confirmationCode = 'confirmation-' + crypto.randomUUID();
         const model = {
-            code: 'confirmation-' + crypto.randomUUID(), confirmationCode: 'confirmation-' + crypto.randomUUID(),
+            code: confirmationCode, confirmationCode: confirmationCode,
             tenantCode: identity.tenantCode, principalCode: identity.principalCode,
             conversationCode: input.conversationCode, turnCode: input.turnCode,
             operationId: input.operationId, arguments: input.arguments,
@@ -77,11 +78,14 @@ module.exports = {
             state: 'PENDING', expiresAt: new Date(now + ttl * 1000),
             workflowCode: input.workflowCode, idempotencyKey: input.idempotencyKey, revision: 0, active: true
         };
-        model.code = model.confirmationCode;
         const saved = await SERVICE.DefaultAssistantConfirmationService.save({
             tenant: request.tenant, authData: request.authData, model: model
         });
-        return { code: 'SUC_AIA_00009', data: { confirmation: saved.result || saved } };
+        const persisted = saved && saved.result !== undefined ? saved.result : saved;
+        return {
+            code: 'SUC_AIA_00009',
+            data: { confirmation: Array.isArray(persisted) ? persisted[0] : persisted }
+        };
     },
     /** Approves only the unchanged, unexpired pending confirmation. */
     approve: async function (request) {

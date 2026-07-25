@@ -21,7 +21,7 @@ const defaults = require('../config/properties').aiAssistant;
 const conversationService = require('../src/service/conversation/defaultAiAssistantConversationService');
 
 const operations = Object.values(routes).flatMap(group => Object.values(group));
-assert.strictEqual(operations.length, 13);
+assert.strictEqual(operations.length, 14);
 operations.filter(route => ![routes.turns.recover, routes.operations.diagnostics].includes(route)).forEach(route => {
     assert.strictEqual(route.secured, true);
     assert.deepStrictEqual(route.accessGroups, ['userGroup']);
@@ -41,6 +41,7 @@ assert.strictEqual(
     'Browser callers must not choose the governed prompt'
 );
 assert.strictEqual(routes.turns.replayEvents.method, 'GET');
+assert.strictEqual(routes.conversations.history.method, 'GET');
 assert.strictEqual(routes.turns.stream.responseHandler, 'aiAssistantSseResponseHandler');
 assert.strictEqual(routes.turns.cancel.method, 'POST');
 
@@ -65,12 +66,26 @@ const store = {
             turnCode: 'turn-owned', tenantCode: 'tenant-a', sequence: 2, eventType: 'STATUS'
         }
     ],
-    messages: []
+    messages: [
+        {
+            messageCode: 'message-user', conversationCode: 'conversation-owned', turnCode: 'turn-owned',
+            tenantCode: 'tenant-a', principalCode: 'employee-a', role: 'user', content: 'Owned request', sequence: 1
+        },
+        {
+            messageCode: 'message-assistant', conversationCode: 'conversation-owned', turnCode: 'turn-owned',
+            tenantCode: 'tenant-a', principalCode: 'employee-a', role: 'assistant', content: 'Owned response', sequence: 2
+        },
+        {
+            messageCode: 'message-other', conversationCode: 'conversation-other', turnCode: 'turn-other',
+            tenantCode: 'tenant-a', principalCode: 'employee-b', role: 'user', content: 'Other secret', sequence: 1
+        }
+    ]
 };
 
 function matches(value, query) {
     return Object.keys(query || {}).every(key => {
         if (query[key] && query[key].$gt !== undefined) return value[key] > query[key].$gt;
+        if (query[key] && query[key].$in !== undefined) return query[key].$in.includes(value[key]);
         return value[key] === query[key];
     });
 }
@@ -120,6 +135,16 @@ conversationService.listOwned(request, context)
     .then(result => {
         assert.strictEqual(result.items.length, 1);
         assert.strictEqual(result.items[0].sequence, 2);
+        return conversationService.historyOwned(
+            'conversation-owned', Object.assign({}, request, { query: { page: 1, limit: 20 } }), context
+        );
+    })
+    .then(result => {
+        assert.strictEqual(result.items.length, 1);
+        assert.strictEqual(result.items[0].messages.length, 2);
+        assert.strictEqual(result.items[0].messages[0].content, 'Owned request');
+        assert.strictEqual(JSON.stringify(result).includes('Other secret'), false);
+        assert.strictEqual(result.items[0].turn.configurationSnapshot, undefined);
         return conversationService.cancelAcceptedTurn(
             'conversation-owned', 'turn-owned', request, context
         );

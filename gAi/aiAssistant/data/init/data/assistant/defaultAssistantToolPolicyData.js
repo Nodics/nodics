@@ -11,7 +11,7 @@
 
 /**
  * @module aiAssistant/data/init/data/assistant/DefaultAssistantToolPolicyData
- * @description Defines the inactive OOTB allowlist for the first employee read-only BackOffice operation.
+ * @description Defines the inactive OOTB allowlist for governed employee reads and confirmed enterprise creation.
  * @layer data
  * @owner aiAssistant
  * @override Projects may activate a reviewed policy or add separate policies without accepting model-supplied routes or methods.
@@ -61,6 +61,26 @@ module.exports = {
                             limit: { type: 'integer', minimum: 1, maximum: 100 }
                         }
                     }
+                }
+            }
+        }, {
+            toolId: 'profile.enterprise.create',
+            ownerModule: 'profile',
+            operationId: 'profile_createenterprise',
+            mode: 'MUTATION',
+            confirmationRequired: true,
+            requiredPermissions: ['profile.enterprise.create'],
+            description: 'Propose creating one enterprise through persisted employee confirmation.',
+            inputSchema: {
+                type: 'object',
+                additionalProperties: false,
+                required: ['code', 'name'],
+                properties: {
+                    code: { type: 'string', maxLength: 128 },
+                    name: { type: 'string', maxLength: 256 },
+                    tenantCode: { type: 'string', maxLength: 128 },
+                    superEnterpriseCode: { type: 'string', maxLength: 128 },
+                    active: { type: 'boolean' }
                 }
             }
         }],

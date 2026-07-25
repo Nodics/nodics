@@ -90,7 +90,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `startio/envs/startioLocal/monoServer/config/postscripts.js` | `config` | `documented` | 0/0 | Defines default envs configuration used during module startup and layering. |  |
 | `startio/envs/startioLocal/monoServer/config/prescripts.js` | `config` | `documented` | 0/0 | Defines default envs configuration used during module startup and layering. |  |
 | `startio/envs/startioLocal/monoServer/config/properties.js` | `config` | `documented` | 0/0 | Defines default envs configuration used during module startup and layering. |  |
-| `startio/envs/startioLocal/monoServer/data/init/data/assistant/startioLocalAssistantToolPolicyData.js` | `data` | `documented` | 0/0 | Activates the reviewed BackOffice catalogue and Profile enterprise-search read tools for local monoServer acceptance. |  |
+| `startio/envs/startioLocal/monoServer/data/init/data/assistant/startioLocalAssistantToolPolicyData.js` | `data` | `documented` | 0/0 | Activates reviewed BackOffice, Profile enterprise-search, and confirmed enterprise-creation tools for local acceptance. |  |
 | `startio/envs/startioLocal/monoServer/data/init/headers/assistant/startioLocalAssistantToolPolicyHeader.js` | `data` | `documented` | 0/0 | Imports the local monoServer Assistant read-tool activation through the generated Assistant policy service. |  |
 | `startio/envs/startioLocal/monoServer/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `startio/envs/startioLocal/monoServer/nodics.js` | `module` | `documented` | 2/2 | Registers the envs module lifecycle hooks and module-level startup behavior. |  |

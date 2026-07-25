@@ -70,11 +70,57 @@ module.exports = {
             ownerModule: approved.ownerModule,
             operationId: approved.operationId,
             mode: approved.mode,
-            requiredPermissions: Array.from(new Set(currentPermissions.concat(approvedPermissions))),
+            requiredPermissions: Array.from(new Set(
+                currentPermissions.concat(approvedPermissions)
+            )),
             resultFields: Array.isArray(approved.resultFields) ?
                 approved.resultFields.slice() : [],
             method: String(operation.method).toUpperCase(),
             path: operation.path
+        };
+    },
+
+    /** Resolves one policy-approved mutation without disclosing executable coordinates to the provider. */
+    resolveMutation: async function (plan, policy, request, runtime) {
+        const approved = (policy.approvedOperations || []).find(item =>
+            item && item.toolId === plan.toolId &&
+            item.ownerModule === plan.ownerModule &&
+            item.operationId === plan.operationId);
+        if (!approved || approved.mode !== 'MUTATION' ||
+            approved.confirmationRequired !== true) {
+            throw this.error('AI_ASSISTANT_TOOL_NOT_APPROVED');
+        }
+        const bootstrap = await this.load(request, runtime);
+        const moduleContract = bootstrap && bootstrap.catalogue &&
+            bootstrap.catalogue[approved.ownerModule] &&
+            bootstrap.catalogue[approved.ownerModule].contract;
+        const operation = moduleContract && (moduleContract.operations || []).find(item =>
+            item.operationId === approved.operationId);
+        if (!operation || !['POST', 'PUT', 'PATCH', 'DELETE'].includes(
+            String(operation.method).toUpperCase())) {
+            throw this.error('AI_ASSISTANT_TOOL_OPERATION_UNAVAILABLE');
+        }
+        const currentPermissions = [].concat(operation.permissions || []);
+        const approvedPermissions = [].concat(approved.requiredPermissions || []);
+        if (approvedPermissions.some(permission => !currentPermissions.includes(permission))) {
+            throw this.error('AI_ASSISTANT_TOOL_CONTRACT_PERMISSION_DRIFT');
+        }
+        const requiredPermissions = Array.from(new Set(
+            currentPermissions.concat(approvedPermissions)
+        ));
+        const granted = request.authData && request.authData.permissions || [];
+        if (requiredPermissions.some(permission =>
+            !granted.includes('*') && !granted.includes(permission))) {
+            throw this.error('AI_ASSISTANT_TOOL_NOT_AUTHORIZED');
+        }
+        return {
+            toolId: approved.toolId,
+            ownerModule: approved.ownerModule,
+            operationId: approved.operationId,
+            mode: approved.mode,
+            confirmationRequired: true,
+            requiredPermissions: requiredPermissions,
+            inputSchema: approved.inputSchema
         };
     },
 
@@ -89,8 +135,13 @@ module.exports = {
                 bootstrap.catalogue[approved.ownerModule].contract;
             const operation = contract && (contract.operations || []).find(item =>
                 item.operationId === approved.operationId);
-            if (!operation || approved.mode !== 'READ' ||
-                !['GET', 'HEAD', 'OPTIONS'].includes(String(operation.method).toUpperCase())) return result;
+            const method = operation && String(operation.method).toUpperCase();
+            const read = approved.mode === 'READ' &&
+                ['GET', 'HEAD', 'OPTIONS'].includes(method);
+            const mutation = approved.mode === 'MUTATION' &&
+                approved.confirmationRequired === true &&
+                ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method);
+            if (!operation || (!read && !mutation)) return result;
             const requiredPermissions = Array.from(new Set(
                 [].concat(operation.permissions || [], approved.requiredPermissions || [])
             ));
@@ -103,7 +154,8 @@ module.exports = {
                 toolId: approved.toolId,
                 ownerModule: approved.ownerModule,
                 operationId: approved.operationId,
-                mode: 'READ',
+                mode: approved.mode,
+                confirmationRequired: mutation,
                 description: typeof approved.description === 'string' ?
                     approved.description.slice(0, 512) : approved.toolId,
                 requiredPathParameters: pathParameters,
