@@ -26,6 +26,7 @@
 - `gFramework/nDynamo/test/schemaAccessPolicyContractService.test.js`
 - `gFramework/nDynamo/test/schemaAccessPolicyGovernanceLifecycle.test.js`
 - `gFramework/nDynamo/test/schemaAccessPolicyResolverService.test.js`
+- `gFramework/nDynamo/test/schemaTransactionRuntimeGovernanceContract.test.js`
 
 ## Generated Tests
 

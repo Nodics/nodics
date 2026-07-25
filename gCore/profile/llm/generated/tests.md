@@ -5,6 +5,7 @@
 ## Hand-Authored Tests
 
 - `gCore/profile/test/common/profileTest.js`
+- `gCore/profile/test/enterpriseManagementSearchContract.test.js`
 - `gCore/profile/test/enterpriseServiceCapabilityBehavior.test.js`
 - `gCore/profile/test/env/local/localProfileTest.js`
 - `gCore/profile/test/identityGovernanceContract.test.js`

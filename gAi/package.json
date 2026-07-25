@@ -1,0 +1,32 @@
+{
+    "name": "gAi",
+    "index": "70.99",
+    "requiredModules": [
+        "aiAssistant",
+        "aiKnowledge",
+        "aiProviders"
+    ],
+    "description": "Optional cross-cutting AI capability group for orchestration, knowledge retrieval, and provider abstraction.",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL-3.0-or-later",
+    "nodics": {
+        "kind": "group",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "composition",
+            "configuration",
+            "test",
+            "llm"
+        ],
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        }
+    },
+    "scripts": {},
+    "dependencies": {}
+}

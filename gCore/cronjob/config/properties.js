@@ -23,7 +23,7 @@ module.exports = {
             contractVersion: 1, minimumClientContractVersion: 1, roles: ['FUNCTIONAL_CAPABILITY_PROVIDER'],
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             requiredPermissions: ['cronjob.backoffice.view'],
-            navigation: [{ id: 'cronjob', label: 'Scheduled Jobs', route: '/jobs', order: 300, requiredPermissions: ['cronjob.backoffice.view'] }]
+            navigation: [{ id: 'cronjob', label: 'Scheduled Jobs', route: '/jobs', icon: 'cronjob', order: 300, requiredPermissions: ['cronjob.backoffice.view'] }]
         }
     },
 

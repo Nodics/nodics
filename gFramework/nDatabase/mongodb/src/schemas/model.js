@@ -11,6 +11,15 @@
 
 const _ = require('lodash');
 
+function transactionOptions(input, schemaModel) {
+    if (typeof SERVICE === 'undefined' || !SERVICE.DefaultDatabaseTransactionService) {
+        return {};
+    }
+    return SERVICE.DefaultDatabaseTransactionService.operationOptions(
+        input.transactionContext, schemaModel.dataBase, schemaModel
+    );
+}
+
 /**
  * @module gFramework/nDatabase/mongodb/src/schemas/model
  * @description Defines nDatabase schema metadata, model contracts, and generated capability settings.
@@ -29,7 +38,8 @@ module.exports = {
         getItems: function (input) {
             return new Promise((resolve, reject) => {
                 try {
-                    let cursor = this.find(input.query, input.searchOptions);
+                    let operationOptions = transactionOptions(input, this);
+                    let cursor = this.find(input.query, Object.assign({}, input.searchOptions || {}, operationOptions));
                     if (input.searchOptions && input.searchOptions.sort && !UTILS.isBlank(input.searchOptions.sort)) {
                         cursor = cursor.sort(input.searchOptions.sort);
                     }
@@ -69,8 +79,7 @@ module.exports = {
 
         saveItems: function (input) {
             return new Promise((resolve, reject) => {
-                console.log(input.query);
-                console.log(input.model);
+                let operationOptions = transactionOptions(input, this);
                 if (!input.model) {
                     reject(new CLASSES.NodicsError('ERR_MDL_00001'));
                 } else if (input.query && !UTILS.isBlank(input.query)) {
@@ -79,10 +88,10 @@ module.exports = {
                             {
                                 $set: input.model
                             },
-                            this.dataBase.getOptions().modelSaveOptions || {
+                            Object.assign({}, this.dataBase.getOptions().modelSaveOptions || {
                                 upsert: true,
                                 returnDocument: 'after'
-                            }).then(result => {
+                            }, operationOptions)).then(result => {
                                 if (result && result.ok > 0 && result.value) {
                                     resolve(result.value);
                                 } else if (result && result.ok > 0) {
@@ -104,7 +113,7 @@ module.exports = {
                             return SERVICE.DefaultModelValidatorService.validateDataType(input.model, this.rawSchema);
                         }).then((success) => {
                             return new Promise((resolve, reject) => {
-                                this.insertOne(input.model, {}).then(result => {
+                                this.insertOne(input.model, operationOptions).then(result => {
                                     if (result.acknowledged || (result.ops && result.ops.length > 0)) {
                                         input.model._id = result.insertedId;
                                         resolve(input.model);
@@ -141,22 +150,24 @@ module.exports = {
 
         updateItems: function (input) {
             return new Promise((resolve, reject) => {
+                let operationOptions = transactionOptions(input, this);
                 if (!input.model) {
                     reject(new CLASSES.NodicsError('ERR_MDL_00003'));
                 } else if (!input.query || UTILS.isBlank(input.query)) {
                     reject(new CLASSES.NodicsError('ERR_MDL_00003'));
                 } else {
                     if (input.options && input.options.returnModified) {
-                        this.find(input.query, input.searchOptions || {}).toArray((error, response) => {
+                        this.find(input.query, Object.assign({}, input.searchOptions || {},
+                            operationOptions)).toArray((error, response) => {
                             if (error) {
                                 reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                             } else {
                                 this.updateMany(input.query, {
                                     $set: input.model
-                                }, this.dataBase.getOptions().modelUpdateOptions || {
+                                }, Object.assign({}, this.dataBase.getOptions().modelUpdateOptions || {
                                     upsert: false,
                                     returnNewDocument: true
-                                }).then(success => {
+                                }, operationOptions)).then(success => {
                                     response.forEach(element => {
                                         _.merge(element, input.model);
                                     });
@@ -172,10 +183,10 @@ module.exports = {
                     } else {
                         this.updateMany(input.query, {
                             $set: input.model
-                        }, this.dataBase.getOptions().modelUpdateOptions || {
+                        }, Object.assign({}, this.dataBase.getOptions().modelUpdateOptions || {
                             upsert: false,
                             returnNewDocument: true
-                        }).then(success => {
+                        }, operationOptions)).then(success => {
                             resolve(success);
                         }).catch(error => {
                             const modelError = new CLASSES.NodicsError(error, null, 'ERR_MDL_00000');
@@ -201,16 +212,18 @@ module.exports = {
 
         removeItems: function (input) {
             return new Promise((resolve, reject) => {
+                let operationOptions = transactionOptions(input, this);
                 if (input.query && !UTILS.isBlank(input.query)) {
                     if (input.options && input.options.returnModified) {
-                        this.find(input.query, input.searchOptions).toArray((error, response) => {
+                        this.find(input.query, Object.assign({}, input.searchOptions || {},
+                            operationOptions)).toArray((error, response) => {
                             if (error) {
                                 reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                             } else {
                                 this.deleteMany(input.query,
-                                    this.dataBase.getOptions().modelRemoveOptions || {
+                                    Object.assign({}, this.dataBase.getOptions().modelRemoveOptions || {
                                         j: false
-                                    }).then(success => {
+                                    }, operationOptions)).then(success => {
                                         let result = success.result || {};
                                         result.models = response;
                                         resolve(result);
@@ -220,9 +233,9 @@ module.exports = {
                             }
                         });
                     } else {
-                        this.deleteMany(input.query, this.dataBase.getOptions().modelRemoveOptions || {
+                        this.deleteMany(input.query, Object.assign({}, this.dataBase.getOptions().modelRemoveOptions || {
                             j: false
-                        }).then(success => {
+                        }, operationOptions)).then(success => {
                             resolve(success.result);
                         }).catch(error => {
                             reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));

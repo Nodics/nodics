@@ -15,11 +15,11 @@
   },
   "sourceFiles": 8,
   "testFiles": 2,
-  "dataFiles": 0,
-  "ownedFiles": 18,
-  "sourceFingerprint": "10cd9295a4de49c9dbf1ac25c91c0c28657be553c1a7ce77cebaa041cfad0fa3",
+  "dataFiles": 2,
+  "ownedFiles": 20,
+  "sourceFingerprint": "984040d7bfea31021d1c52ec234bd240b8532aa512cb7d4c4a7fc95e7e40f2ad",
   "documentation": {
-    "documented": 12,
+    "documented": 14,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4

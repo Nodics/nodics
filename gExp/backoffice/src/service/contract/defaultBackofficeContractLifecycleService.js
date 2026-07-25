@@ -103,6 +103,9 @@ module.exports = {
         let params = this.validateCoordinates(request, true);
         let decision = this.getDecision(request);
         let result = await this.getRepository().approve(params.moduleName, params.hash, Object.assign({}, request, decision));
+        if (SERVICE.DefaultBackofficeDiscoveryService) {
+            SERVICE.DefaultBackofficeDiscoveryService.synchronizeActiveSnapshot(result.snapshot);
+        }
         await this.auditDecision(Object.assign({ eventType: 'backoffice.contract.decision', operation: 'approve', outcome: 'approved',
             moduleName: params.moduleName, candidateHash: params.hash }, SERVICE.DefaultBackofficeAdministrativeSecurityService.getAuditContext(request)));
         return { code: 'SUC_BOF_00008', data: { snapshot: this.projectSnapshot(result.snapshot), activation: result.activation } };
@@ -123,6 +126,9 @@ module.exports = {
         let params = this.validateCoordinates(request, true);
         let decision = this.getDecision(request);
         let result = await this.getRepository().rollback(params.moduleName, params.hash, Object.assign({}, request, decision));
+        if (SERVICE.DefaultBackofficeDiscoveryService) {
+            SERVICE.DefaultBackofficeDiscoveryService.synchronizeActiveSnapshot(result.snapshot);
+        }
         await this.auditDecision(Object.assign({ eventType: 'backoffice.contract.decision', operation: 'rollback', outcome: 'activated',
             moduleName: params.moduleName, targetHash: params.hash }, SERVICE.DefaultBackofficeAdministrativeSecurityService.getAuditContext(request)));
         return { code: 'SUC_BOF_00010', data: { snapshot: this.projectSnapshot(result.snapshot), activation: result.activation } };

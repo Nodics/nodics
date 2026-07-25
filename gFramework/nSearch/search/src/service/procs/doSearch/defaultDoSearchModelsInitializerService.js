@@ -84,7 +84,17 @@ module.exports = {
 
     buildOptions: function (request, response, process) {
         this.LOG.debug('Building query options');
-        process.nextSuccess(request, response);
+        try {
+            if (request.searchRequest) {
+                request.normalizedSearchRequest = SERVICE.DefaultSearchRequestService.normalize(
+                    request.searchRequest,
+                    request.searchModel.indexDef
+                );
+            }
+            process.nextSuccess(request, response);
+        } catch (error) {
+            process.error(request, response, error);
+        }
     },
 
     /**

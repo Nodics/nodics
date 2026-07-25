@@ -49,6 +49,31 @@ module.exports = {
             return typeof value === 'string' ? JSON.parse(value) : JSON.parse(JSON.stringify(value));
         } catch (error) { throw error instanceof CLASSES.CacheError ? error : new CLASSES.CacheError(error); }
     },
+    /** Atomically increments a bounded distributed counter under a key lock. */
+    incrementBounded: async function (options) {
+        let map; let key; let locked = false;
+        try {
+            map = await this.map(options); key = SERVICE.DefaultCacheConfigurationService.createStorageKey(options);
+            let amount = options.amount === undefined ? 1 : options.amount; let maximum = options.maximum;
+            let ttl = SERVICE.DefaultCacheConfigurationService.resolveTtl(options);
+            if (!Number.isSafeInteger(amount) || amount < 1 ||
+                !Number.isSafeInteger(maximum) || maximum < 1 || ttl < 1) {
+                throw new Error('Bounded increment requires positive amount, maximum, and TTL');
+            }
+            await map.lock(key); locked = true;
+            let stored = await map.get(key); let current = stored === null || stored === undefined ? 0 : Number(stored);
+            let next = current + amount;
+            if (next > maximum) return { allowed: false, value: current, maximum: maximum };
+            await map.set(key, String(next), ttl * 1000);
+            return { allowed: true, value: next, maximum: maximum };
+        } catch (error) {
+            throw error instanceof CLASSES.CacheError ? error : new CLASSES.CacheError(error);
+        } finally {
+            if (map && key !== undefined && locked) {
+                try { await map.unlock(key); } catch (error) { /* lock may not have been acquired */ }
+            }
+        }
+    },
     /** Removes every tenant-partitioned key matching the governed logical prefix. */
     flushByPrefix: async function (options) {
         try {

@@ -12,7 +12,7 @@
 | `pipeline` | `base` | yes | yes | yes | no | no | yes | `default` | 0 |
 | `routerConfiguration` | `base` | yes | yes | yes | no | no | yes | `default` | 12 |
 | `schemaAccessPolicy` | `base` | yes | yes | yes | no | no | yes | `default` | 15 |
-| `schemaConfiguration` | `base` | yes | yes | yes | no | no | yes | `default` | 13 |
+| `schemaConfiguration` | `base` | yes | yes | yes | no | no | yes | `default` | 15 |
 
 ### `dynamo.classConfiguration`
 
@@ -98,6 +98,7 @@
 
 - `$override` `object` optional: Governed override metadata for runtime schema changes
 - `accessGroups` `object` required: User group code for which this user belongs
+- `cache` `object` optional: Runtime cache configuration
 - `definition` `object` optional: Runtime schema property definitions
 - `event` `object` optional: Runtime event configuration
 - `indexes` `object` optional: Runtime database index definitions
@@ -109,3 +110,4 @@
 - `service` `object` optional: Runtime service generation configuration
 - `super` `string` optional: Optional parent schema within the owning module
 - `tenants` `array` optional: Tenants where this runtime schema is active
+- `transaction` `object` optional: Provider-neutral transaction eligibility controlled by nDatabase

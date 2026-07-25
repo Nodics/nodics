@@ -21,6 +21,11 @@ module.exports = {
     defaultPageSize: 10,
     defaultPageNumber: 1,
     queryMaxTimeMS: 1000,
+    databaseTransactions: {
+        enabled: true,
+        failClosed: true,
+        maximumCommitTimeMs: 5000
+    },
 
     externalSchemaLocation: CONFIG.get('externalDataLocation') + '/schema',
     accessPoints: {

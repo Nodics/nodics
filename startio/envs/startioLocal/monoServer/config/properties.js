@@ -30,6 +30,12 @@ module.exports = {
             'nems',
             'cronjob',
             'workflow',
+            // Activate the provider-neutral AI group module. Its required modules
+            // are loaded without implicitly activating every vendor adapter.
+            'gAi',
+            // Activate only the vendor adapter selected by the local
+            // assistantGeneration profile.
+            'openAiProvider',
             'monoServer',
             'startioLocal'
         ]
@@ -47,8 +53,22 @@ module.exports = {
     search: {
         default: {
             options: {
-                enabled: false
+                enabled: true,
+                fallback: false,
+                engine: 'elastic'
             }
+        }
+    },
+
+    aiKnowledge: {
+        enabled: true
+    },
+
+    // Local monoServer acceptance enables only governed read tools. The
+    // reusable Assistant and every non-local environment remain deny-by-default.
+    aiAssistant: {
+        tools: {
+            enabled: true
         }
     },
 

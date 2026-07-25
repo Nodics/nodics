@@ -18,7 +18,7 @@ module.exports = {
             roles: ['FUNCTIONAL_CAPABILITY_PROVIDER'],
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             requiredPermissions: ['pricing.backoffice.read'],
-            navigation: [{ id: 'pricing', label: 'Pricing', route: '/pricing', order: 420, requiredPermissions: ['pricing.backoffice.read'] }]
+            navigation: [{ id: 'pricing', label: 'Pricing', route: '/pricing', icon: 'pricing', order: 420, requiredPermissions: ['pricing.backoffice.read'] }]
         }
     },
     cache: { pricing: { channels: { resolution: { enabled: true, fallback: true, engine: 'local', ttl: 30 } } } },

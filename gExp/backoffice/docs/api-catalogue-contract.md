@@ -26,14 +26,23 @@ A module may contribute `backofficeCapabilities.<moduleName>` from its own layer
 - `discovery` references existing module-owned contract endpoints;
 - `uiComposition` may declare non-executable defaults only for a declared UI
   composition provider;
-- `navigation` contributes identifiers, labels, logical routes, order, and
-  optional permissions.
+- `navigation` contributes identifiers, labels, logical routes, semantic icon
+  keys, order, and optional permissions. A navigation-entry icon overrides the
+  module-level icon for that destination. Clients own the executable/vector
+  rendering and must fall back safely for an unknown key.
 
 BackOffice observes this metadata during module registration. It does not keep
 a manually duplicated catalogue. Target modules remain authoritative for their
 routes, schemas, data, permissions, validation, and business behavior.
 Normalized discovery snapshots and UI-composition selection follow
 `capability-discovery-contract.md`.
+
+OpenAPI normalization preserves both the standard singular
+`x-nodics.permission` value and any plural `x-nodics.permissions` values as one
+deduplicated permission list. This lets employee-filtered clients and governed
+Assistant tools compare the target module's complete permission contract.
+BackOffice reports that metadata; the target route still makes the final
+authorization decision.
 
 ## Compatibility Negotiation
 

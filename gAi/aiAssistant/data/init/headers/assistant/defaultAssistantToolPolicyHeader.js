@@ -1,0 +1,30 @@
+/*
+    Nodics - Enterprice Micro-Services Management Framework
+
+    Copyright (c) 2026 Nodics All rights reserved.
+
+    This software is the confidential and proprietary information of Nodics ("Confidential Information").
+    You shall not disclose such Confidential Information and shall use it only in accordance with the
+    terms of the license agreement you entered into with Nodics.
+
+ */
+
+/**
+ * @module aiAssistant/data/init/headers/assistant/DefaultAssistantToolPolicyHeader
+ * @description Imports the OOTB deny-by-default Assistant tool policy through its generated schema service.
+ * @layer data
+ * @owner aiAssistant
+ */
+module.exports = {
+    aiAssistant: {
+        defaultAssistantToolPolicy: {
+            options: {
+                enabled: true,
+                schemaName: 'assistantToolPolicy',
+                operation: 'saveAll',
+                dataFilePrefix: 'defaultAssistantToolPolicyData'
+            },
+            query: { policyCode: '$policyCode' }
+        }
+    }
+};

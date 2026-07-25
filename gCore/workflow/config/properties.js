@@ -23,7 +23,7 @@ module.exports = {
             contractVersion: 1, minimumClientContractVersion: 1, roles: ['FUNCTIONAL_CAPABILITY_PROVIDER'],
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             requiredPermissions: ['workflow.backoffice.view'],
-            navigation: [{ id: 'workflow', label: 'Workflows', route: '/workflows', order: 400, requiredPermissions: ['workflow.backoffice.view'] }]
+            navigation: [{ id: 'workflow', label: 'Workflows', route: '/workflows', icon: 'workflow', order: 400, requiredPermissions: ['workflow.backoffice.view'] }]
         }
     },
     workflow: {

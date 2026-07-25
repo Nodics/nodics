@@ -1,0 +1,27 @@
+{
+    "name": "openAiProvider",
+    "index": "70.31",
+    "description": "OpenAI protocol and SDK adapter boundary for the provider-neutral aiProviders gateway.",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL-3.0-or-later",
+    "nodics": {
+        "kind": "capability",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "configuration",
+            "service",
+            "test",
+            "llm"
+        ],
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        }
+    },
+    "scripts": {},
+    "dependencies": {}
+}

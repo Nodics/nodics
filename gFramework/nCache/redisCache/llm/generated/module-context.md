@@ -94,7 +94,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/redisCache/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
 | `gFramework/nCache/redisCache/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
 | `gFramework/nCache/redisCache/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nCache schema metadata, model contracts, and generated capability settings. |  |
-| `gFramework/nCache/redisCache/src/service/cache/defaultRedisCacheService.js` | `src` | `documented` | 10/10 | Implements the distributed cache adapter contract using Redis namespacing, TTL, atomic consume, and incremental invalidation. |  |
+| `gFramework/nCache/redisCache/src/service/cache/defaultRedisCacheService.js` | `src` | `documented` | 11/11 | Implements the distributed cache adapter contract using Redis namespacing, TTL, atomic consume, and incremental invalidation. |  |
 | `gFramework/nCache/redisCache/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements redisCache default sample service business behavior and extension logic. |  |
 | `gFramework/nCache/redisCache/src/service/engine/defaultRedisCacheEngineService.js` | `src` | `documented` | 6/6 | Implements nCache default redis cache engine service business behavior and extension logic. |  |
 | `gFramework/nCache/redisCache/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared redisCache enum definition exports. |  |

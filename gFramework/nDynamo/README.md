@@ -51,6 +51,13 @@ Generic CRUD routers for activation requests and activation logs are disabled.
 Their model services remain internal dependencies of the dedicated,
 permissioned control-plane endpoints.
 
+Runtime schema configuration includes the standard `cache`, `event`, and
+`transaction` metadata used by the effective schema. nDynamo persists and
+activates the governed change, but nDatabase validates transaction eligibility.
+A transactional schema must use a generated model and service, declare
+`transaction.enabled: true` with `sideEffects: 'none'`, and keep cache and event
+side effects disabled. Invalid definitions are rejected before activation.
+
 ## Security boundaries
 
 Runtime property governance rejects secret-bearing paths and prototype-mutating

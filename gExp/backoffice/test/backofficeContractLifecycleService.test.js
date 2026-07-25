@@ -23,6 +23,7 @@ const candidate = { moduleName: 'cms', contractType: 'OPENAPI', contractVersion:
     changeClassification: 'BREAKING', revision: 0 };
 let calls = [];
 let audits = [];
+let synchronized = [];
 let historyRequest;
 const repository = {
     getActiveSnapshot: async () => active,
@@ -35,6 +36,7 @@ const repository = {
 };
 global.SERVICE = { DefaultBackofficeContractRepositoryService: repository,
     DefaultBackofficeAdministrativeSecurityService: { validate: () => true, getAuditContext: () => ({ principalId: 'admin', correlationId: 'corr-1' }) },
+    DefaultBackofficeDiscoveryService: { synchronizeActiveSnapshot: snapshot => synchronized.push(snapshot) },
     DefaultBackofficeAuditService: { record: async event => { audits.push(event); return event; } } };
 global.CONFIG = { get: key => key === 'backofficeRegistry' ? { contractHistory: { historyLimit: 50 } } : undefined };
 global.CLASSES = { NodicsError: class NodicsError extends Error {} };
@@ -54,6 +56,7 @@ async function run() {
     await service.reject(request('reject'));
     await service.rollback(request('rollback'));
     assert.strictEqual(calls.length, 3);
+    assert.deepStrictEqual(synchronized, [Object.assign({}, candidate, { state: 'ACTIVE' }), active]);
     assert.strictEqual(calls[0][3].expectedRevision, 4);
     assert.strictEqual(audits.length, 3);
     assert.strictEqual(audits[0].candidateHash, hash);

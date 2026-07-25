@@ -97,6 +97,36 @@ module.exports = {
         });
     },
 
+    /** Atomically increments a bounded Redis counter and sets TTL on creation. */
+    incrementBounded: function (options) {
+        try {
+            let key = this.getKey(options);
+            let ttl = this.getTtl(options);
+            let amount = options.amount === undefined ? 1 : options.amount;
+            let maximum = options.maximum;
+            if (!Number.isSafeInteger(amount) || amount < 1 ||
+                !Number.isSafeInteger(maximum) || maximum < 1 || ttl < 1) {
+                throw new Error('Bounded increment requires positive amount, maximum, and TTL');
+            }
+            let script = [
+                'local current = tonumber(redis.call("GET", KEYS[1]) or "0")',
+                'local next = current + tonumber(ARGV[1])',
+                'if next > tonumber(ARGV[2]) then return {0, current} end',
+                'redis.call("SET", KEYS[1], tostring(next), "EX", tonumber(ARGV[3]))',
+                'return {1, next}'
+            ].join('\n');
+            return Promise.resolve(options.channel.client.eval(script, {
+                keys: [key], arguments: [String(amount), String(maximum), String(ttl)]
+            })).then(result => ({
+                allowed: Number(result[0]) === 1,
+                value: Number(result[1]),
+                maximum: maximum
+            })).catch(error => { throw new CLASSES.CacheError(error); });
+        } catch (error) {
+            return Promise.reject(new CLASSES.CacheError(error));
+        }
+    },
+
     /** Invalidates matching namespaced Redis keys using incremental scanning. */
     flushByPrefix: function (options) {
         try {

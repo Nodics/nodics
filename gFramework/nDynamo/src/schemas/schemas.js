@@ -484,6 +484,16 @@ module.exports = {
                     required: false,
                     description: 'Runtime event configuration'
                 },
+                cache: {
+                    type: 'object',
+                    required: false,
+                    description: 'Runtime cache configuration'
+                },
+                transaction: {
+                    type: 'object',
+                    required: false,
+                    description: 'Provider-neutral transaction eligibility controlled by nDatabase'
+                },
                 tenants: {
                     type: 'array',
                     required: false,

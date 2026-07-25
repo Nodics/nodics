@@ -95,7 +95,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSearch/elastic/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nSearch route registration and HTTP exposure metadata. |  |
 | `gFramework/nSearch/elastic/src/schemas/elasticSearchModel.js` | `src` | `documented` | 14/14 | Defines nSearch schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nSearch/elastic/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nSearch schema metadata, model contracts, and generated capability settings. |  |
-| `gFramework/nSearch/elastic/src/service/connection/defaultElasticSearchEngineConnectionHandlerService.js` | `src` | `documented` | 5/5 | Implements nSearch default elastic search engine connection handler service business behavior and extension logic. |  |
+| `gFramework/nSearch/elastic/src/service/connection/defaultElasticSearchEngineConnectionHandlerService.js` | `src` | `documented` | 7/7 | Implements nSearch default elastic search engine connection handler service business behavior and extension logic. |  |
 | `gFramework/nSearch/elastic/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements elastic default sample service business behavior and extension logic. |  |
 | `gFramework/nSearch/elastic/src/service/schema/defaultElasticSearchSchemaHandlerService.js` | `src` | `documented` | 7/7 | Implements nSearch default elastic search schema handler service business behavior and extension logic. |  |
 | `gFramework/nSearch/elastic/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared elastic enum definition exports. |  |

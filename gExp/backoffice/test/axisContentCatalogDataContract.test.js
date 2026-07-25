@@ -72,7 +72,7 @@ pages.forEach(page => {
     });
 });
 
-assert.deepStrictEqual(routes.map(route => route.path), ['/login', '/forgot-password', '/dashboard', '/lock-screen']);
+assert.deepStrictEqual(routes.map(route => route.path), ['/login', '/forgot-password', '/dashboard', '/lock-screen', '/assistant']);
 routes.forEach(route => {
     const page = pageByCode.get(route.page);
     assert(page, 'Missing route page ' + route.page);
@@ -90,9 +90,12 @@ assert.strictEqual(routes.find(route => route.path === '/login').accessMode, 'PU
 assert.strictEqual(routes.find(route => route.path === '/forgot-password').accessMode, 'PUBLIC');
 assert.strictEqual(routes.find(route => route.path === '/dashboard').accessMode, 'AUTHENTICATED');
 assert.strictEqual(routes.find(route => route.path === '/lock-screen').accessMode, 'AUTHENTICATED');
+assert.strictEqual(routes.find(route => route.path === '/assistant').accessMode, 'AUTHENTICATED');
 assert(pages.find(page => page.code === 'axisDashboardPage').cmsComponents.every(association =>
     componentByCode.get(association.target).accessMode === 'AUTHENTICATED'));
 assert(pages.find(page => page.code === 'axisLockScreenPage').cmsComponents.every(association =>
+    componentByCode.get(association.target).accessMode === 'AUTHENTICATED'));
+assert(pages.find(page => page.code === 'axisAssistantPage').cmsComponents.every(association =>
     componentByCode.get(association.target).accessMode === 'AUTHENTICATED'));
 
 const enabledHeaders = Object.values(header).flatMap(group => Object.values(group)).filter(item => item.options.enabled);

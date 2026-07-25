@@ -59,13 +59,31 @@ pipeline can resolve the active tenant before credentials are validated.
 Module-to-module communication remains a separate secured capability using API
 keys and internal service tokens.
 
-Profile owns its optional BackOffice catalogue declaration in `package.json`.
+Profile owns its optional BackOffice catalogue declaration in
+`config/properties.js#backofficeCapabilities.profile`.
 The declaration identifies the identity capability, navigation hint, contract
 version, and discovery permission; it does not transfer authentication or
 authorization authority to BackOffice.
 Its provider roles and relative OpenAPI discovery coordinate allow BackOffice
 to observe effective Profile operations without creating a second identity or
 route contract.
+
+## Enterprise Search For BackOffice And Assistant
+
+Profile exposes `GET /nodics/profile/v0/enterprises/search` as a narrow,
+employee-only enterprise discovery operation. It requires a human access token
+and `profile.enterprise.search`. The endpoint accepts exact `code`, `name`, and
+`active` filters plus bounded `page` and `limit` values. It returns only the
+configured safe projection; contacts, addresses, credentials, API keys, and
+recursive tenant data are never returned.
+
+This operation reuses the generated `DefaultEnterpriseService` against the
+Profile-owned default-tenant enterprise store. It is not a second search index,
+schema loader, registry, or persistence path. BackOffice discovers it from the
+effective OpenAPI contract, and Assistant may invoke it only when the reviewed
+tool policy also allowlists `profile.enterprise.search` with operation ID
+`profile_searchenterprises`. See
+[Enterprise Management Search](docs/enterprise-management-search.md).
 
 User-group save and update interceptors validate parent existence, active
 parents, acyclic inheritance, and permission catalog membership. Principal
@@ -237,6 +255,13 @@ invalidation, token refresh/logout, service-token permission, bootstrap,
 migration, rotation, audit redaction, failure recovery, and distributed-cache
 requirements. Run generated-context and release gates before changing maturity
 or deploying security-sensitive changes.
+
+For the enterprise-management projection specifically, run:
+
+```text
+node gCore/profile/test/enterpriseManagementSearchContract.test.js
+node gAi/aiAssistant/test/aiAssistantGovernedReadToolContract.test.js
+```
 
 ## Continue
 

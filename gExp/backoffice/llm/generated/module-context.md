@@ -35,7 +35,7 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 29 |
-| Test files | 19 |
+| Test files | 20 |
 | Data files | 10 |
 | All module-owned files | 64 |
 | Local schema definitions | 3 |
@@ -132,7 +132,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/src/service/contract/defaultBackofficeContractRepositoryService.js` | `src` | `documented` | 24/24 | Persists immutable normalized contract observations and selects active hashes through an optimistic compare-and-set pointer. |  |
 | `gExp/backoffice/src/service/contract/defaultBackofficeContractService.js` | `src` | `documented` | 8/8 | Validates BackOffice registration and module-owned catalogue metadata against the authoritative API contracts. |  |
 | `gExp/backoffice/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Reserves the standard BackOffice service lifecycle and documents the mergeable service override shape. |  |
-| `gExp/backoffice/src/service/discovery/defaultBackofficeDiscoveryService.js` | `src` | `documented` | 18/18 | Discovers effective Nodics contracts through existing System APIs and maintains normalized, client-safe observed snapshots. |  |
+| `gExp/backoffice/src/service/discovery/defaultBackofficeDiscoveryService.js` | `src` | `documented` | 19/19 | Discovers effective Nodics contracts through existing System APIs and maintains normalized, client-safe observed snapshots. |  |
 | `gExp/backoffice/src/service/operations/defaultBackofficeOperationalReadinessService.js` | `src` | `documented` | 6/6 | Validates layered BackOffice deployment policy and derives low-disclosure operational readiness and alert codes from owning diagnostics. |  |
 | `gExp/backoffice/src/service/policy/defaultAxisExperiencePolicyService.js` | `src` | `documented` | 14/14 | Resolves and revision-updates the tenant-scoped persistent policy consumed by authenticated Nodics Axis clients. |  |
 | `gExp/backoffice/src/service/registry/defaultBackofficeRegistryService.js` | `src` | `documented` | 29/29 | Owns ephemeral observed module-instance leases for BackOffice discovery without becoming topology or activation authority. |  |

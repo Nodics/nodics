@@ -22,3 +22,21 @@ Use these files for rules that are more specific than root `AGENTS.md` and the m
 - Keep module-to-module access separate: internal token retrieval, cron/job
   service calls, and cross-module API calls must continue to use secured API-key
   or internal-token flows.
+
+## Enterprise management search
+
+- `profile_searchenterprises` is the stable operation identity for the bounded
+  `GET /enterprises/search` management intent.
+- The route requires a human access token and `profile.enterprise.search`.
+  Service tokens must fail even if a caller reaches the service directly.
+- Accept only exact scalar `code`, `name`, and `active` filters and configured
+  positive `page` and `limit` bounds. Reject unknown keys, object/operator
+  filters, invalid booleans, unsafe codes, and out-of-bound pagination.
+- Delegate persistence to `DefaultEnterpriseService` in the configured Profile
+  enterprise tenant with `recursive: false`. Do not add an Assistant,
+  BackOffice, Elasticsearch, or controller-owned search path.
+- Project only the configured client-safe fields. Never expose contacts,
+  addresses, credentials, secrets, API keys, or recursive tenant objects.
+- Assistant policy may reference this operation by logical identity, but must
+  rediscover its current method, path, and permission through BackOffice before
+  every call and forward the employee bearer to Profile.

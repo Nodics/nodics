@@ -34,10 +34,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 49 |
-| Test files | 47 |
+| Source files | 52 |
+| Test files | 48 |
 | Data files | 17 |
-| All module-owned files | 89 |
+| All module-owned files | 93 |
 | Local schema definitions | 11 |
 
 ## Ownership And Dependencies
@@ -71,8 +71,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 73 |
-| Partially documented | 2 |
+| Documented | 76 |
+| Partially documented | 3 |
 | Undocumented | 8 |
 | Inventory only | 6 |
 
@@ -124,12 +124,14 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/src/controller/authorization/defaultAuthorizationProviderController.js` | `src` | `documented` | 1/1 | Exposes request handlers for profile default authorization provider controller operations. |  |
 | `gCore/profile/src/controller/customer/DefaultCustomerController.js` | `src` | `documented` | 4/4 | Exposes request handlers for profile default customer controller operations. |  |
 | `gCore/profile/src/controller/enterprise/defaultEnterpriseController.js` | `src` | `documented` | 1/1 | Exposes request handlers for profile default enterprise controller operations. |  |
+| `gCore/profile/src/controller/enterprise/defaultEnterpriseManagementController.js` | `src` | `documented` | 2/2 | Maps permissioned employee enterprise-search requests to the Profile facade. |  |
 | `gCore/profile/src/controller/identity/defaultIdentityGovernanceController.js` | `src` | `documented` | 5/5 | Maps permissioned identity migration and credential rotation HTTP requests to the layered governance service. |  |
 | `gCore/profile/src/controller/tenant/defaultTenantController.js` | `src` | `documented` | 1/1 | Exposes request handlers for profile default tenant controller operations. |  |
 | `gCore/profile/src/event/listeners.js` | `src` | `documented` | 0/0 | Documents profile listeners module behavior. |  |
 | `gCore/profile/src/facade/authentication/defaultAuthenticationProviderFacade.js` | `src` | `documented` | 2/2 | Coordinates facade-level delegation for profile default authentication provider facade operations. |  |
 | `gCore/profile/src/facade/authentication/defaultInternalAuthenticationProviderFacade.js` | `src` | `documented` | 1/1 | Coordinates facade-level delegation for profile default internal authentication provider facade operations. |  |
 | `gCore/profile/src/facade/customer/DefaultCustomerFacade.js` | `src` | `documented` | 4/4 | Coordinates facade-level delegation for profile default customer facade operations. |  |
+| `gCore/profile/src/facade/enterprise/defaultEnterpriseManagementFacade.js` | `src` | `documented` | 2/2 | Provides the replaceable Profile facade boundary for enterprise management reads. |  |
 | `gCore/profile/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers profile interceptor wiring for pipeline extension points. |  |
 | `gCore/profile/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Defines profile pipeline wiring and execution contracts. |  |
 | `gCore/profile/src/router/appConfig.js` | `src` | `documented` | 7/7 | Defines profile route registration and HTTP exposure metadata. |  |
@@ -144,6 +146,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/src/service/customer/defaultCustomerService.js` | `src` | `documented` | 3/3 | Implements profile default customer service business behavior and extension logic. |  |
 | `gCore/profile/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements profile default sample service business behavior and extension logic. |  |
 | `gCore/profile/src/service/employee/defaultEmployeeService.js` | `src` | `documented` | 2/2 | Implements profile default employee service business behavior and extension logic. |  |
+| `gCore/profile/src/service/enterprise/defaultEnterpriseManagementService.js` | `src` | `documented` | 8/8 | Implements bounded, human-only enterprise discovery over the generated Profile enterprise service. |  |
 | `gCore/profile/src/service/enterprise/defaultEnterpriseService.js` | `src` | `documented` | 1/1 | Implements profile default enterprise service business behavior and extension logic. |  |
 | `gCore/profile/src/service/group/defaultUserGroupGovernanceService.js` | `src` | `documented` | 6/6 | Validates active user-group inheritance, permission catalog membership, and acyclic group graphs before persistence. |  |
 | `gCore/profile/src/service/identity/defaultIdentityGovernanceMigrationService.js` | `src` | `documented` | 17/17 | Provides tenant-scoped preview, apply, audit, rollback, ownership backfill, and recoverable service-key rotation for identity governance upgrades. |  |
@@ -169,6 +172,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared profile utility exports for status definitions. |  |
 | `gCore/profile/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared profile utility exports for utils. |  |
 | `gCore/profile/test/common/profileTest.js` | `test` | `partially-documented` | 7/8 | Defines profile test fixtures or suites for module behavior validation. | add JSDoc for 1 exported method(s) |
+| `gCore/profile/test/enterpriseManagementSearchContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies the bounded, human-only, projected Profile enterprise-search contract and Assistant allowlist identity. | add @override |
 | `gCore/profile/test/enterpriseServiceCapabilityBehavior.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/env/local/localProfileTest.js` | `test` | `documented` | 7/7 | Defines profile test fixtures or suites for module behavior validation. |  |
 | `gCore/profile/test/identityGovernanceContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

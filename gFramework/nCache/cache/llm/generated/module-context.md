@@ -30,9 +30,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 15 |
-| Test files | 10 |
+| Test files | 11 |
 | Data files | 0 |
-| All module-owned files | 33 |
+| All module-owned files | 34 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -63,7 +63,7 @@
 | --- | ---: |
 | Documented | 26 |
 | Partially documented | 2 |
-| Undocumented | 1 |
+| Undocumented | 2 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -98,7 +98,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/cache/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
 | `gFramework/nCache/cache/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
 | `gFramework/nCache/cache/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nCache schema metadata, model contracts, and generated capability settings. |  |
-| `gFramework/nCache/cache/src/service/cache/defaultCacheService.js` | `src` | `documented` | 34/34 | Routes cache operations and runtime cache-configuration changes through the layered engine and event contracts. |  |
+| `gFramework/nCache/cache/src/service/cache/defaultCacheService.js` | `src` | `documented` | 35/35 | Routes cache operations and runtime cache-configuration changes through the layered engine and event contracts. |  |
 | `gFramework/nCache/cache/src/service/config/defaultCacheConfigurationService.js` | `src` | `documented` | 15/15 | Builds layered cache engine/channel configuration and deterministic tenant- and principal-scoped cache keys. |  |
 | `gFramework/nCache/cache/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements cache default sample service business behavior and extension logic. |  |
 | `gFramework/nCache/cache/src/service/engine/defaultCacheEngineService.js` | `src` | `documented` | 17/17 | Builds cache channels from layered configuration and validates adapter capabilities before any connection or fallback is activated. |  |
@@ -109,6 +109,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/cache/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nCache utility exports for utils. |  |
 | `gFramework/nCache/cache/test/cacheAdapterContract.test.js` | `test` | `documented` | 0/0 | Verifies adapter capability metadata, TTL semantics, and Local/Redis/Hazelcast operation parity. |  |
 | `gFramework/nCache/cache/test/cacheBenchmarkContract.test.js` | `test` | `documented` | 0/0 | Provides deterministic lightweight benchmark evidence that router/API and DAO/schema cache hits avoid downstream recomputation. |  |
+| `gFramework/nCache/cache/test/cacheBoundedIncrementContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nCache/cache/test/cacheDiagnosticsContract.test.js` | `test` | `documented` | 0/0 | Verifies process-local cache diagnostics counters for hits, misses, writes, errors, cacheability decisions, invalidation results, filters, and tenant-redaction configuration. |  |
 | `gFramework/nCache/cache/test/cacheInvalidationContract.test.js` | `test` | `documented` | 0/0 | Verifies tenant-partitioned storage, layered resource invalidation, local peer propagation, shared-adapter suppression, and write-pipeline integration. |  |
 | `gFramework/nCache/cache/test/cacheIsolationAndCorrectnessContract.test.js` | `test` | `documented` | 0/0 | Verifies tenant/principal-safe API keys, response-envelope cache hits, mutation-free local storage, custom key flush dispatch, schema configuration compatibility, and event target propagation. |  |

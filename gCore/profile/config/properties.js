@@ -24,7 +24,7 @@ module.exports = {
             roles: ['AUTHENTICATION_PROVIDER', 'FUNCTIONAL_CAPABILITY_PROVIDER'],
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             requiredPermissions: ['profile.backoffice.view'],
-            navigation: [{ id: 'profile', label: 'Profiles', route: '/profile', order: 100, requiredPermissions: ['profile.backoffice.view'] }]
+            navigation: [{ id: 'profile', label: 'Profiles', route: '/profile', icon: 'profile', order: 100, requiredPermissions: ['profile.backoffice.view'] }]
         }
     },
     mandatoryBootstrapServices: {
@@ -38,6 +38,22 @@ module.exports = {
     encryptSaltLength: 10,
     passwordLengthLimit: 25,
     forceAPIKeyGenerate: false,
+
+    enterpriseManagement: {
+        search: {
+            defaultResultCount: 25,
+            maximumResultCount: 100,
+            maximumPageNumber: 10000,
+            maximumCodeLength: 128,
+            maximumNameLength: 256,
+            projectedFields: ['code', 'name', 'active', 'tenant', 'superEnterprise', 'createdAt', 'updatedAt']
+        },
+        create: {
+            maximumCodeLength: 128,
+            maximumNameLength: 256,
+            projectedFields: ['code', 'name', 'active', 'tenant', 'superEnterprise', 'createdAt']
+        }
+    },
 
     profile: {
         jwtSignOptions: {

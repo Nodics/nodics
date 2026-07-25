@@ -122,6 +122,36 @@ Every page explains:
 - Generated artifacts that must be regenerated.
 - AI/developer rules that must be preserved.
 
+## Write For Partial Discovery
+
+Most readers and AI tools will not read the whole documentation site. Write so
+that the nearest module boundary is safe and useful by itself:
+
+1. Put global rules in root `AGENTS.md`.
+2. Put module ownership and prohibitions in the nearest `AGENTS.md`.
+3. Put human capability guidance in the module README and module `docs/`.
+4. Put concise machine-oriented rules and examples in `llm/contracts/` and
+   `llm/examples/`.
+5. Protect critical rules with tests.
+6. Link the public task journey in `gDocs` to the owning module.
+
+Do not force a reader to discover an unrelated planning note before learning a
+security, authority, persistence, or extension rule.
+
+## Required Use Cases
+
+For a significant implemented capability, include:
+
+- the simplest successful journey;
+- an unauthorized or invalid journey and the rejection users should see;
+- a realistic boundary or high-volume journey;
+- a failure, retry, rollback, or recovery journey;
+- a partner customization using a later-loaded module or layered property;
+- the expected result and verification method for every example.
+
+Use real Nodics terminology and source-backed behavior. Clearly mark any
+unimplemented limitation instead of documenting it as an available feature.
+
 ## Navigation Contract
 
 The root README must provide short, visible journeys for business evaluators,

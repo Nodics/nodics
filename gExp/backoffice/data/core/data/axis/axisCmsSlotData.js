@@ -29,5 +29,9 @@ module.exports = {
     record7: { code: 'axisDashboardSummarySlot', template: 'axisDashboardPageTemplate', name: 'summary', minItems: 1, maxItems: 1, allowedComponentTypes: ['axisDashboardSummaryComponentType'], active: true },
     record8: { code: 'axisDashboardActionsSlot', template: 'axisDashboardPageTemplate', name: 'quickActions', minItems: 1, maxItems: 1, allowedComponentTypes: ['axisDashboardActionsComponentType'], active: true },
     record9: { code: 'axisDashboardActivitySlot', template: 'axisDashboardPageTemplate', name: 'activity', minItems: 0, maxItems: 1, allowedComponentTypes: ['axisMessageComponentType'], active: true },
-    record10: { code: 'axisDashboardHelpSlot', template: 'axisDashboardPageTemplate', name: 'help', minItems: 0, maxItems: 2, allowedComponentTypes: ['axisMessageComponentType', 'axisLinkComponentType'], active: true }
+    record10: { code: 'axisDashboardHelpSlot', template: 'axisDashboardPageTemplate', name: 'help', minItems: 0, maxItems: 2, allowedComponentTypes: ['axisMessageComponentType', 'axisLinkComponentType'], active: true },
+    record12: { code: 'axisAssistantHeaderSlot', template: 'axisAssistantPageTemplate', name: 'header',
+        minItems: 1, maxItems: 2, allowedComponentTypes: ['axisBrandComponentType', 'axisMessageComponentType'], active: true },
+    record13: { code: 'axisAssistantWorkspaceSlot', template: 'axisAssistantPageTemplate', name: 'workspace',
+        minItems: 1, maxItems: 1, allowedComponentTypes: ['axisAssistantWorkspaceComponentType'], active: true }
 };

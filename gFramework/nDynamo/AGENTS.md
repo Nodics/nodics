@@ -16,3 +16,7 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
 - Put configurable behavior in layered configuration, schemas, routers, services, pipelines, data, and runtime governance.
 - Update `README.md`, permanent `docs/`, `llm/` guidance, generated context, and tests whenever behavior or extension contracts change.
 - Generated files must be recreated from source definitions; do not hand-maintain generated artifacts as source of truth.
+- Runtime `schemaConfiguration` may expose transaction eligibility, but
+  nDatabase remains the validation and execution authority. Delegate validation
+  to `DefaultDatabaseSchemaHandlerService`; do not duplicate transaction rules
+  or database-provider logic in nDynamo.

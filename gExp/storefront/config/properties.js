@@ -37,7 +37,7 @@ module.exports = {
             roles: ['UI_COMPOSITION_PROVIDER', 'FUNCTIONAL_CAPABILITY_PROVIDER'],
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             requiredPermissions: ['storefront.backoffice.read'],
-            navigation: [{ id: 'storefronts', label: 'Storefronts', route: '/experience/storefronts', order: 300 }]
+            navigation: [{ id: 'storefronts', label: 'Storefronts', route: '/experience/storefronts', icon: 'storefront', order: 300 }]
         }
     },
     storefront: {

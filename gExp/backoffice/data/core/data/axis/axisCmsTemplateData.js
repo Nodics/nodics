@@ -33,5 +33,10 @@ module.exports = {
         slots: ['axisDashboardHeaderSlot', 'axisDashboardWelcomeSlot', 'axisDashboardSummarySlot',
             'axisDashboardActionsSlot', 'axisDashboardActivitySlot', 'axisDashboardHelpSlot'],
         active: true
+    },
+    record2: {
+        code: 'axisAssistantPageTemplate', name: 'Axis Assistant Workspace',
+        renderer: 'axis.template.assistant', contractVersion: 1,
+        slots: ['axisAssistantHeaderSlot', 'axisAssistantWorkspaceSlot'], active: true
     }
 };

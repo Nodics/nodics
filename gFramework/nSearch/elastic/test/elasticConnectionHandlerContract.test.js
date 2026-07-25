@@ -59,6 +59,22 @@ const service = Object.assign({}, require('../src/service/connection/defaultElas
     assert.strictEqual(rawDefinitions[0].engine, 'elastic');
     assert.deepStrictEqual(rawDefinitions[0].definition.default, { marker: 'elastic-definition' });
 
+    assert.deepStrictEqual(service.getClientOptions({
+        hosts: ['http://localhost:9200'],
+        log: 'info',
+        deadTimeout: 1000,
+        maxRetries: 2
+    }, 5000), {
+        nodes: ['http://localhost:9200'],
+        maxRetries: 2,
+        requestTimeout: 5000
+    });
+    assert.deepStrictEqual(service.getClientOptions({
+        node: 'http://localhost:9201'
+    }), {
+        node: 'http://localhost:9201'
+    });
+
     const stateCalls = [];
     const indexes = await service.getIndexes({
         getConnection: function () {

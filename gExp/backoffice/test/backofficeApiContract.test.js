@@ -62,6 +62,16 @@ capabilities.forEach(metadata => {
     assert(metadata.roles.length > 0, metadata.capabilityId + ' metadata must declare BackOffice provider roles');
     assert(metadata.discovery.openApiPath.startsWith('/'), metadata.capabilityId + ' discovery path must remain relative');
 });
+assert(service.validateBackofficeMetadata({
+    enabled: true, capabilityId: 'icon-contract', displayName: 'Icon contract', category: 'platform',
+    icon: 'module', contractVersion: 1, minimumClientContractVersion: 1,
+    roles: ['FUNCTIONAL_CAPABILITY_PROVIDER'], requiredPermissions: ['icon.read'],
+    navigation: [{ id: 'records', label: 'Records', route: '/records', icon: 'registry', order: 1 }]
+}));
+assert.strictEqual(service.validateBackofficeMetadata({
+    enabled: true, capabilityId: 'invalid-icon-contract',
+    navigation: [{ id: 'records', label: 'Records', icon: 'x'.repeat(65) }]
+}), false);
 assert(capabilities[1].roles.includes('UI_COMPOSITION_PROVIDER'));
 assert.strictEqual(capabilities[1].uiComposition.fallbackMode, 'STATIC_RECOVERY_SHELL');
 

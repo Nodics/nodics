@@ -28,5 +28,9 @@ module.exports = {
     record9: { code: 'axisAuthenticationShowcaseComponentType', renderer: 'axis.component.authentication-showcase',
         contractVersion: 1, channels: ['web', 'mobile-webview'], deprecated: false, active: true },
     record10: { code: 'axisEmployeeLockFormComponentType', renderer: 'axis.component.employee-lock-form',
+        contractVersion: 1, channels: ['web', 'mobile-webview'], deprecated: false, active: true },
+    record11: { code: 'axisAssistantPageType', renderer: 'axis.page.assistant',
+        contractVersion: 1, channels: ['web', 'mobile-webview'], deprecated: false, active: true },
+    record12: { code: 'axisAssistantWorkspaceComponentType', renderer: 'axis.component.assistant-workspace',
         contractVersion: 1, channels: ['web', 'mobile-webview'], deprecated: false, active: true }
 };

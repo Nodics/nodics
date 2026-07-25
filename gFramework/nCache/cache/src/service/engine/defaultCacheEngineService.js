@@ -317,6 +317,7 @@ module.exports = {
         let capabilities = SERVICE.DefaultCacheConfigurationService.getEngineCapabilities(engineOptions);
         let required = ['put', 'get'];
         if (capabilities.atomicConsume === true) required.push('consume');
+        if (capabilities.atomicBoundedIncrement === true) required.push('incrementBounded');
         if (capabilities.prefixFlush === true) required.push('flushByPrefix');
         if (capabilities.keyFlush === true) required.push('flushByKeys');
         let missing = required.filter(operation => {

@@ -98,13 +98,15 @@ module.exports = {
                 let operation = document.paths[path][method] || {};
                 let metadata = operation['x-nodics'] || {};
                 if (metadata.moduleName !== registration.moduleName) return;
+                let permissions = [].concat(metadata.permissions || []);
+                if (metadata.permission) permissions.push(metadata.permission);
                 operations.push({
                     operationId: String(operation.operationId || registration.moduleName + '_' + method + '_' + path),
                     path: path,
                     method: method.toUpperCase(),
                     schemaName: metadata.schemaName ? String(metadata.schemaName) : undefined,
                     operation: metadata.operation ? String(metadata.operation) : undefined,
-                    permissions: [].concat(metadata.permissions || []).map(String).sort()
+                    permissions: Array.from(new Set(permissions.map(String))).sort()
                 });
             });
         });
@@ -142,6 +144,18 @@ module.exports = {
             operations: snapshot.operations || [], schemas: snapshot.schemas || [], hash: snapshot.contractHash,
             discoveredAt: snapshot.discoveredAt, changeClassification: snapshot.changeClassification
         };
+    },
+
+    /** Synchronizes the process-local catalogue projection after a governed durable activation decision. */
+    synchronizeActiveSnapshot: function (snapshot) {
+        let active = this.fromPersistedSnapshot(snapshot);
+        if (!active) throw new CLASSES.NodicsError('ERR_BOF_00000', 'Active contract snapshot is required');
+        let state = this._snapshots.get(active.moduleName) || {};
+        state.active = active;
+        state.candidate = null;
+        state.lastChangeClassification = active.changeClassification;
+        this._snapshots.set(active.moduleName, state);
+        return this.getSnapshot(active.moduleName);
     },
 
     /** Discovers, validates, hashes, classifies, and conditionally activates one observed module contract. */

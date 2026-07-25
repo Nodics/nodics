@@ -118,7 +118,7 @@ function inferOwns(module, kind) {
     let owns = listFeatureFolders(module.path)
         .map(folder => generatedFolderToOwnership[folder])
         .filter(Boolean);
-    if (hasChildren(module) && !owns.includes('composition')) {
+    if ((kind === 'group' || hasChildren(module)) && !owns.includes('composition')) {
         owns.unshift('composition');
     }
     if (!owns.includes('llm')) {

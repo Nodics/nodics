@@ -55,6 +55,14 @@ async function run() {
     assert.strictEqual(initial.operations.length, 2, 'normalization must retain only operations owned by the registered module');
     assert.deepStrictEqual(initial.schemas, ['cmsPage']);
     assert.strictEqual(initial.hash.length, 64);
+    let singularPermission = service.normalizeOpenApi(registration, document({
+        '/nodics/cms/v0/page': { get: { operationId: 'cms_page_get', 'x-nodics': {
+            moduleName: 'cms', permission: 'cms.page.read', permissions: ['cms.catalogue.read']
+        } } }
+    }));
+    assert.deepStrictEqual(singularPermission.operations[0].permissions,
+        ['cms.catalogue.read', 'cms.page.read'],
+        'normalization must preserve both singular and plural route permissions');
 
     let expanded = await service.discover(registration, document({
         '/nodics/cms/v0/page': { get: operation('cms_page_get', 'get'), post: operation('cms_page_post', 'save') },

@@ -221,6 +221,7 @@ module.exports = {
                 { suite: 'search' },
                 { suite: 'dynamo' },
                 { suite: 'workflow' },
+                { suite: 'ai' },
                 { node: 'gFramework/nValidator/test/validatorServiceContract.test.js' },
                 { node: 'gFramework/nDatabase/database/test/schemaIndexServiceContract.test.js' },
                 { node: 'gFramework/nDatabase/database/test/schemaIndexControllerRequestMapping.test.js' },
@@ -289,6 +290,9 @@ module.exports = {
                 { node: 'gFramework/nDatabase/database/test/schemaReadAccessPolicyService.test.js' },
                 { node: 'gFramework/nDatabase/database/test/modelsGetInitializerPipelineContract.test.js' },
                 { node: 'gFramework/nDatabase/database/test/modelSaveInitializerPipelineContract.test.js' },
+                { node: 'gFramework/nDatabase/database/test/schemaTransactionGovernanceContract.test.js' },
+                { node: 'gFramework/nDatabase/database/test/databaseTransactionContract.test.js' },
+                { node: 'gFramework/nDatabase/mongodb/test/mongodbTransactionContract.test.js' },
                 { node: 'gFramework/nDatabase/database/test/modelsSaveInitializerPipelineContract.test.js' },
                 { node: 'gFramework/nDatabase/database/test/modelsRemoveUpdateInitializerPipelineContract.test.js' },
                 { node: 'gFramework/nDatabase/database/test/schemaWriteAccessPolicyService.test.js' },
@@ -310,7 +314,8 @@ module.exports = {
                 { node: 'gFramework/nDynamo/test/runtimeConfigurationActivationRequestService.test.js' },
                 { node: 'gFramework/nDynamo/test/runtimePropertyConfigurationGovernance.test.js' },
                 { node: 'gFramework/nDynamo/test/runtimeConfigurationGovernanceSummaryService.test.js' },
-                { node: 'gFramework/nDynamo/test/runtimeConfigurationGovernanceCleanupService.test.js' }
+                { node: 'gFramework/nDynamo/test/runtimeConfigurationGovernanceCleanupService.test.js' },
+                { node: 'gFramework/nDynamo/test/schemaTransactionRuntimeGovernanceContract.test.js' }
             ],
             'schema-access-policy': [
                 { node: 'gFramework/nDynamo/test/schemaAccessPolicyContractService.test.js' },
@@ -482,6 +487,34 @@ module.exports = {
                 { node: 'gCore/workflow/flowCore/test/workflowEventContinuationContract.test.js' },
                 { node: 'gCore/workflow/flowSchema/test/workflowSchemaRouterContract.test.js' },
                 { node: 'gFramework/nbpm/test/workflowLifecyclePipelineContract.test.js' }
+            ],
+            ai: [
+                { node: 'gAi/test/aiGroupOwnershipContract.test.js' },
+                { node: 'gAi/aiAssistant/test/aiAssistantContractAndConfiguration.test.js' },
+                { node: 'gAi/aiAssistant/test/aiAssistantReadOnlyVerticalSliceContract.test.js' },
+                { node: 'gAi/aiAssistant/test/aiAssistantKnowledgeContextContract.test.js' },
+                { node: 'gAi/aiAssistant/test/aiAssistantSecuredRoutesContract.test.js' },
+                { node: 'gAi/aiAssistant/test/aiAssistantSseContract.test.js' },
+                { node: 'gAi/aiKnowledge/test/aiKnowledgeContractAndConfiguration.test.js' },
+                { node: 'gAi/aiKnowledge/test/aiKnowledgeVerticalSliceContract.test.js' },
+                { node: 'gAi/aiKnowledge/test/aiKnowledgeSearchModelAlignmentContract.test.js' },
+                { node: 'gAi/aiKnowledge/test/aiKnowledgeRuntimeOperationsContract.test.js' },
+                { node: 'gAi/aiKnowledge/test/aiKnowledgeRouteSecurityContract.test.js' },
+                { node: 'gAi/aiProviders/test/aiProviderGatewayContract.test.js' },
+                { node: 'gAi/aiProviders/test/aiProviderErrorObservabilityContract.test.js' },
+                { node: 'gAi/aiProviders/test/aiProviderTelemetryContract.test.js' },
+                { node: 'gAi/aiProviders/test/aiProviderCircuitBreakerContract.test.js' },
+                { node: 'gAi/aiProviders/test/aiVendorAdapterConformanceContract.test.js' },
+                { node: 'gAi/aiProviders/test/aiProviderRetryFallbackAccountingContract.test.js' },
+                { node: 'gAi/aiProviders/test/aiProviderOperationalControlsContract.test.js' },
+                { node: 'gAi/aiProviders/test/aiProviderDocumentationContract.test.js' },
+                { node: 'gAi/aiProviders/test/aiTokenEconomicsContract.test.js' },
+                { node: 'gAi/aiProviders/test/aiPersistentTokenLedgerContract.test.js' },
+                { node: 'gAi/aiProviders/test/aiHierarchicalTokenBudgetContract.test.js' },
+                { node: 'gAi/aiProviders/test/aiMongoHierarchyRepositoryContract.test.js' },
+                { node: 'gAi/aiProviders/test/aiTokenLedgerApiContract.test.js' },
+                { node: 'gAi/aiProviders/test/aiTokenLedgerRepairContract.test.js' },
+                { node: 'gAi/aiProviders/test/aiSchemaFrameworkOwnershipContract.test.js' }
             ],
             'topology-consolidated': [
                 { node: 'startio/envs/startioLocal/test/topology/startioLocalRuntimeTopology.test.js', args: ['--mode=consolidated'] }

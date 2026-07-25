@@ -24,6 +24,7 @@
 
 ## Generated Tests
 
+- `gExp/backoffice/test/gen/schema/backofficeAxisPolicySchemaContract.test.js`
 - `gExp/backoffice/test/gen/schema/backofficeContractActivationSchemaContract.test.js`
 - `gExp/backoffice/test/gen/schema/backofficeContractSnapshotSchemaContract.test.js`
 

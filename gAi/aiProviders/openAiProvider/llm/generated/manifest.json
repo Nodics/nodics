@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "openAiProvider",
+  "path": "gAi/aiProviders/openAiProvider",
+  "kind": "capability",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "70.31",
+    "version": "0.0.1",
+    "description": "OpenAI protocol and SDK adapter boundary for the provider-neutral aiProviders gateway."
+  },
+  "sourceFiles": 1,
+  "testFiles": 0,
+  "dataFiles": 0,
+  "ownedFiles": 9,
+  "sourceFingerprint": "0261cdea20fbf68c3fd6db28e2bcb10816ca1b98d08851093e7a3b6af6795def",
+  "documentation": {
+    "documented": 5,
+    "partially-documented": 0,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

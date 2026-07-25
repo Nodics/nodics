@@ -146,3 +146,11 @@ A change is ready only when:
 - generated artifacts can be cleaned and recreated from effective source definitions
 - focused and required platform/topology tests pass
 - module and LLM documentation reflect the final contract
+- the capability remains safely discoverable from its nearest `AGENTS.md`,
+  README, `llm/contracts`, `llm/examples`, generated context, and focused tests
+- business evaluator, business user, administrator/operator, partner
+  developer, framework maintainer, and AI-tool documentation needs are covered
+  or explicitly marked not applicable
+- documentation includes successful, rejected, boundary/scale,
+  failure/recovery, and later-layer customization use cases with expected
+  outcomes

@@ -62,6 +62,8 @@ your goal.
 21. [How To Operate And Integrate Inventory](commerce/how-to-operate-and-integrate-inventory.md)
 22. [How To Configure And Operate Pricing](commerce/how-to-configure-and-operate-pricing.md)
 23. [How To Create And Identify Products](commerce/how-to-create-and-identify-products.md)
+24. [How AI Cost Governance Works](ai/how-ai-cost-governance-works.md)
+25. [Assistant, AI Providers, and Knowledge Guide](ai/assistant-provider-and-knowledge-guide.md)
 
 ### Architect, Security Reviewer, Or Operator
 
@@ -75,6 +77,8 @@ your goal.
 8. [How To Run And Debug Nodics](operations/how-to-run-and-debug-nodics.md)
 9. [How To Prepare For Deployment](operations/how-to-prepare-for-deployment.md)
 10. [Production Operating Model](operations/production-operating-model.md)
+11. [How AI Cost Governance Works](ai/how-ai-cost-governance-works.md)
+12. [Assistant, AI Providers, and Knowledge Guide](ai/assistant-provider-and-knowledge-guide.md)
 
 ### Reference And Documentation Contributors
 
@@ -145,6 +149,8 @@ Use this map when you are not sure where to start.
 | Detect and repair Inventory inconsistencies | [How Inventory Reconciliation Works](commerce/how-inventory-reconciliation-works.md) |
 | Operate Inventory, reconstruct Stock, or connect WMS/POS | [How To Operate And Integrate Inventory](commerce/how-to-operate-and-integrate-inventory.md) |
 | Configure scoped Price Lists, Price Groups, exact Prices, and Staged-to-Online releases | [How To Configure And Operate Pricing](commerce/how-to-configure-and-operate-pricing.md) |
+| Understand tenant-scoped AI token and exact-cost controls | [How AI Cost Governance Works](ai/how-ai-cost-governance-works.md) |
+| Configure the read-only Assistant, providers, and documentation Knowledge flow | [Assistant, AI Providers, and Knowledge Guide](ai/assistant-provider-and-knowledge-guide.md) |
 | Create enterprise Product Items and alternate identifiers | [How To Create And Identify Products](commerce/how-to-create-and-identify-products.md) |
 | Use Nodics as a governed data lake or data hub | [How To Use Nodics As Data As A Service](data/how-to-use-nodics-as-data-as-a-service.md) |
 | Add scheduled jobs | [How To Create Scheduled Jobs](jobs/how-to-create-scheduled-jobs.md) |

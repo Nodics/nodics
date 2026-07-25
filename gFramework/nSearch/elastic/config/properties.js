@@ -41,11 +41,11 @@ module.exports = {
                     },
 
                     saveOptions: {
-                        opType: 'index'
+                        op_type: 'index'
                     },
 
                     bulkOptions: {
-                        opType: 'create'
+                        op_type: 'create'
                     },
 
                     searchOptions: {
@@ -65,12 +65,11 @@ module.exports = {
                     },
 
                     schemaPutOptions: {
-                        includeTypeName: true
                     },
 
                     refreshOptions: {
-                        ignoreUnavailable: false,
-                        expandWildcards: 'all'
+                        ignore_unavailable: false,
+                        expand_wildcards: 'all'
                     }
 
                 },
@@ -99,11 +98,11 @@ module.exports = {
         //             },
 
         //             saveOptions: {
-        //                 opType: 'index'
+        //                 op_type: 'index'
         //             },
 
         //             bulkOptions: {
-        //                 opType: 'create'
+        //                 op_type: 'create'
         //             },
 
         //             searchOptions: {
@@ -127,8 +126,8 @@ module.exports = {
         //             },
 
         //             refreshOptions: {
-        //                 ignoreUnavailable: false,
-        //                 expandWildcards: 'all'
+        //                 ignore_unavailable: false,
+        //                 expand_wildcards: 'all'
         //             }
 
         //         },

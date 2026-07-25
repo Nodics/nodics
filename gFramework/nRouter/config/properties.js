@@ -114,6 +114,9 @@ module.exports = {
             serviceRegistry: {
                 enabled: false
             },
+            aiAssistant: {
+                enabled: false
+            },
             fileAccess: {
                 enabled: false
             },

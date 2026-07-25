@@ -18,7 +18,7 @@
  */
 const moduleName = { type: 'string', pattern: '^[A-Za-z][A-Za-z0-9_-]{0,127}$' };
 const moduleRole = { enum: ['AUTHENTICATION_PROVIDER', 'CONTROL_PLANE_PROVIDER', 'UI_COMPOSITION_PROVIDER',
-    'FUNCTIONAL_CAPABILITY_PROVIDER', 'MONITORING_PROVIDER'] };
+    'FUNCTIONAL_CAPABILITY_PROVIDER', 'MONITORING_PROVIDER', 'ASSISTANT_PROVIDER'] };
 const uiComposition = {
     type: 'object', additionalProperties: false, required: ['site', 'catalog', 'defaultPage', 'fallbackMode'],
     properties: {
@@ -124,7 +124,8 @@ const backofficeMetadata = {
         uiComposition: uiComposition,
         requiredPermissions: { type: 'array', uniqueItems: true, items: { type: 'string' } },
         navigation: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['id', 'label'], properties: {
-            id: { type: 'string' }, label: { type: 'string' }, route: { type: 'string' }, order: { type: 'integer' },
+            id: { type: 'string' }, label: { type: 'string' }, route: { type: 'string' },
+            icon: { type: 'string', maxLength: 64 }, order: { type: 'integer' },
             requiredPermissions: { type: 'array', uniqueItems: true, items: { type: 'string' } }
         } } }
     }

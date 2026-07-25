@@ -6,6 +6,7 @@
 
 - `gFramework/nCache/cache/test/cacheAdapterContract.test.js`
 - `gFramework/nCache/cache/test/cacheBenchmarkContract.test.js`
+- `gFramework/nCache/cache/test/cacheBoundedIncrementContract.test.js`
 - `gFramework/nCache/cache/test/cacheDiagnosticsContract.test.js`
 - `gFramework/nCache/cache/test/cacheInvalidationContract.test.js`
 - `gFramework/nCache/cache/test/cacheIsolationAndCorrectnessContract.test.js`

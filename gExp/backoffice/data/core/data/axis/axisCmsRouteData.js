@@ -31,5 +31,9 @@ module.exports = {
     record3: {
         code: 'axisLockScreenRoute', site: 'axisCmsSite', path: '/lock-screen', locale: 'en', channel: 'web',
         page: 'axisLockScreenPage', routeType: 'PAGE', deliveryState: 'ONLINE', accessMode: 'AUTHENTICATED', active: true
+    },
+    record4: {
+        code: 'axisAssistantRoute', site: 'axisCmsSite', path: '/assistant', locale: 'en', channel: 'web',
+        page: 'axisAssistantPage', routeType: 'PAGE', deliveryState: 'ONLINE', accessMode: 'AUTHENTICATED', active: true
     }
 };

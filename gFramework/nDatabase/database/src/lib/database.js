@@ -31,6 +31,7 @@ module.exports = function () {
     let _collections = [];
     let _colectionList = [];
     let _schema = {};
+    let _capabilities = {};
 
     this.setCollections = function (collections) {
         _collections = collections;
@@ -101,5 +102,24 @@ module.exports = function () {
 
     this.getSchema = function () {
         return _schema;
+    };
+
+    /**
+     * Stores capabilities discovered from the live database connection.
+     *
+     * @param {Object} capabilities Provider-neutral capability snapshot.
+     * @returns {void}
+     */
+    this.setCapabilities = function (capabilities) {
+        _capabilities = capabilities || {};
+    };
+
+    /**
+     * Returns capabilities discovered from the live database connection.
+     *
+     * @returns {Object} Provider-neutral capability snapshot.
+     */
+    this.getCapabilities = function () {
+        return _capabilities;
     };
 };

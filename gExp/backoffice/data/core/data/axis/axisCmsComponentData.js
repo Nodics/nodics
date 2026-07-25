@@ -117,5 +117,17 @@ module.exports = {
     record20: {
         code: 'axisLockLegalComponent', typeCode: 'axisMessageComponentType', accessMode: 'AUTHENTICATED',
         properties: { title: 'Protected session', message: 'Unlock attempts are verified by the Profile authentication authority.', tone: 'muted' }, active: true
+    },
+    record21: {
+        code: 'axisAssistantHeaderComponent', typeCode: 'axisBrandComponentType', accessMode: 'AUTHENTICATED',
+        properties: { productName: 'Axis Assistant', tagline: 'Governed conversational operations',
+            logoAsset: 'axis-brand-mark', displayMode: 'workspace' }, active: true
+    },
+    record22: {
+        code: 'axisAssistantWorkspaceComponent', typeCode: 'axisAssistantWorkspaceComponentType',
+        accessMode: 'AUTHENTICATED',
+        properties: { title: 'How can I help?', welcomeMessage: 'Ask about authorized Nodics business data or operations.',
+            inputPlaceholder: 'Describe what you want to do', submitLabel: 'Send', stopLabel: 'Stop',
+            emptyState: 'Responses, tool activity, confirmations, and workflow progress will appear here.' }, active: true
     }
 };

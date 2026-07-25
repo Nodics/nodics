@@ -30,7 +30,12 @@ Each layer must document what is cached, who owns the cached value, how the key 
 
 ## Adapter contract
 
-Every enabled engine declares `contractVersion`, handlers, and truthful capabilities for distribution, atomic consume, TTL, non-expiring TTL, prefix flush, key flush, and serialization. The existing dispatcher validates these declarations before connecting; projects extend the same path by overriding engine metadata and services in later module layers.
+Every enabled engine declares `contractVersion`, handlers, and truthful capabilities for distribution, atomic consume, atomic bounded increment, TTL, non-expiring TTL, prefix flush, key flush, and serialization. The existing dispatcher validates these declarations before connecting; projects extend the same path by overriding engine metadata and services in later module layers.
+
+`incrementBounded` atomically adds a positive integer only when the resulting
+counter does not exceed its configured maximum. It is the shared primitive for
+fixed-window request limits and similar operational guards. It is not a quota
+ledger or business-data authority.
 
 Cache activation is governed only by layered Nodics configuration. `cache.enabled: false` disables cache startup and runtime cache reads/writes. Enabled engines start during application startup even when no enabled channel currently uses them, so infrastructure readiness is validated early. If an enabled engine cannot connect, startup fails; connection properties such as Redis URLs are values only and must not enable cache behavior by themselves. Enabled channels bind to their configured enabled engine, while disabled channels skip cache reads/writes.
 
@@ -114,6 +119,7 @@ When adding a cache engine:
   provider-neutral;
 - add provider behavior through an adapter module or later project module;
 - declare `contractVersion`, handlers, and truthful capabilities;
+- implement `incrementBounded` when declaring `atomicBoundedIncrement`;
 - configure activation and channel mapping through layered `cache` properties;
 - preserve tenant partitioning, principal isolation, TTL semantics,
   serialization, invalidation, diagnostics, and fail-closed startup behavior;

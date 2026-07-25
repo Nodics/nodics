@@ -114,6 +114,11 @@ execution. Jobs calling another module use governed internal credentials and
 must satisfy that target module's permissions; human username/password login is
 never a module-to-module credential flow.
 
+An internal job may define `jobDetail.internal.timeoutMs`; CronJob passes that
+bound to the existing nService module transport. Transport retry remains
+governed by nService safety and idempotency rules rather than by a second
+CronJob retry implementation.
+
 Do not accept arbitrary service names, URLs, node identifiers, credentials, or
 executable handlers from untrusted request data. Resolve approved definitions
 from active-module source/configuration and preserve audit, redaction, and

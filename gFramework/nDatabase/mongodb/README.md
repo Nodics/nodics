@@ -24,6 +24,19 @@ It also contributes `src/schemas/model.js`, which provides the MongoDB model ope
 - `updateItems`;
 - `removeItems`.
 
+The adapter also implements provider-neutral transactions through
+`MongoClient.startSession()` and `session.withTransaction()`. MongoDB model
+operations translate the opaque Nodics transaction context into `{ session }`
+options for find, insert, update, upsert, and delete.
+
+MongoDB transactions require a replica set or sharded cluster. The default
+standalone `mongodb://127.0.0.1:27017` development topology is not qualified.
+During connection startup the adapter executes MongoDB topology discovery and
+records a fail-closed capability snapshot on the Nodics database wrapper.
+Merely exposing `startSession()` is not treated as transaction support.
+Use a local single-node replica set or a shared development cluster before
+enabling hierarchical AI budgets or another multi-record atomic capability.
+
 ## Runtime Flow
 
 1. The database capability resolves the active database provider from layered configuration.
@@ -65,6 +78,10 @@ module.exports = {
 
 Projects must override connection values through project, environment, server, node, tenant, or secret-governed configuration.
 
+For transaction qualification, verify topology, majority write concern,
+connection stability, commit timeout, rollback behavior, and primary failover.
+Driver session availability alone is insufficient.
+
 ## Extension Path
 
 Projects may customize MongoDB behavior by:
@@ -80,6 +97,14 @@ If a project needs another database such as Oracle, add a provider module that i
 ## Tests
 
 MongoDB participates in the database and generated CRUD test suites. Versioned MongoDB behavior is covered in `mongodb/vMongodb/test/versionedModelContract.test.js`.
+
+Focused transaction tests:
+
+```bash
+node gFramework/nDatabase/database/test/databaseTransactionContract.test.js
+node gFramework/nDatabase/mongodb/test/mongodbTransactionContract.test.js
+node gAi/aiProviders/test/aiMongoHierarchyRepositoryContract.test.js
+```
 
 Run:
 

@@ -25,7 +25,7 @@ module.exports = {
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             uiComposition: { site: 'cmsDefaultSite', catalog: 'cmsDefaultContentCatalog', defaultPage: 'cmsDefaultPage', fallbackMode: 'STATIC_RECOVERY_SHELL' },
             requiredPermissions: ['cms.backoffice.view'],
-            navigation: [{ id: 'cms', label: 'Content', route: '/content', order: 200, requiredPermissions: ['cms.backoffice.view'] }]
+            navigation: [{ id: 'cms', label: 'Content', route: '/content', icon: 'cms', order: 200, requiredPermissions: ['cms.backoffice.view'] }]
         }
     },
     cms: {

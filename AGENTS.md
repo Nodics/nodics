@@ -74,6 +74,17 @@ The expected posture is:
   programming knowledge and an AI coding tool must be able to understand what
   the capability does, where code belongs, how customization works, which
   generated artifacts are affected, and which tests prove the change.
+- Design every module for partial discovery. Contributors and AI tools may read
+  only root guidance and the nearest module files, so critical ownership,
+  dependency, security, persistence, extension, and testing rules must exist in
+  the nearest `AGENTS.md`, README, `llm/contracts`, `llm/examples`, generated
+  context, and focused tests as applicable. Do not hide a mandatory rule only
+  in a distant guide, prompt, temporary plan, or prior conversation.
+- Significant capability documentation must include successful, rejected,
+  boundary/scale, failure/recovery, and later-layer customization use cases.
+  It must address business evaluators, business users, administrators/operators,
+  partner developers, framework maintainers, and AI tools, or explicitly state
+  why an audience is not applicable.
 - Every implemented capability must include detailed, low-level, end-to-end
   documentation for both business users and developers. Business-user guidance
   must explain terminology, prerequisites, roles, configuration choices,

@@ -51,3 +51,58 @@ plans under root `docs/` while they remain unimplemented. When implementation
 differs from a plan, update the temporary plan first; promote only the behavior
 that was actually implemented and verified. Do not create permanent public
 documentation merely to preserve a future idea.
+
+## Distributed Discovery Contract
+
+Nodics cannot assume that a developer or AI tool reads the complete
+documentation set. Every implementation boundary must be safe when discovered
+from the nearest files only.
+
+The minimum local discovery chain is:
+
+1. root `AGENTS.md` defines platform-wide non-negotiable principles;
+2. the nearest module-group and module `AGENTS.md` define ownership,
+   dependencies, invariants, prohibited bypasses, and extension rules;
+3. the module `README.md` explains the capability, configuration, source map,
+   supported customization, and verification entry points;
+4. `llm/contracts/` states executable behavior and placement rules;
+5. `llm/examples/` demonstrates the smallest supported layered customization;
+6. generated module context reports current source-derived ownership and gaps;
+7. focused tests enforce the rules that must not depend on contributor memory.
+
+Do not place a critical rule only in a distant public guide, planning document,
+prompt, or generated summary. Repeat a concise local rule when it is necessary
+to make the module safe in isolation, while linking to the canonical detailed
+contract instead of copying its complete text.
+
+## Capability Documentation Acceptance Matrix
+
+Every implemented end-to-end capability must address these audiences:
+
+| Audience | Required explanation |
+| --- | --- |
+| Business evaluator | Problem, business value, supported decisions, limitations, cost/risk impact, and realistic use cases. |
+| Business user | Prerequisites, terminology, roles, step-by-step happy path, rejected path, failure, retry, recovery, and expected result. |
+| Administrator/operator | Configuration, permissions, secrets, limits, monitoring, alerts, backup/restore, migration, rollback, and troubleshooting. |
+| Application developer/partner | Owning repository/module/layer, contracts, APIs, schemas, events, configuration, extension example, prohibited bypasses, and tests. |
+| Framework maintainer/AI tool | Authority map, dependency direction, loader path, override boundary, generated impact, invariants, and acceptance proof. |
+
+If an audience or concern is not applicable, the owning documentation must say
+why. Silence is not evidence that impact was considered.
+
+## Use-Case And Example Contract
+
+Documentation must teach with concrete, named scenarios rather than only list
+types and methods. Each significant capability needs:
+
+- one smallest successful example;
+- one rejected or unauthorized example;
+- one boundary or scale example;
+- one failure and recovery example;
+- one later-loaded project customization example;
+- exact files, properties, permissions, commands, requests, and expected
+  outcomes where applicable.
+
+Examples must call authoritative APIs and services. They must not normalize
+direct database edits, copied framework services, inline secrets, generated
+file edits, or parallel loaders as customization techniques.

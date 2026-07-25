@@ -101,6 +101,28 @@ module.exports = {
     },
 
     /**
+     * Validates transaction metadata through the nDatabase schema authority.
+     *
+     * @param {Object} request Runtime schema save request.
+     * @param {Object} response Pipeline response.
+     * @returns {Promise<boolean>} Resolves when transaction metadata is safe.
+     */
+    validateTransactionConfiguration: function (request, response) {
+        return new Promise((resolve, reject) => {
+            try {
+                SERVICE.DefaultDatabaseSchemaHandlerService.validateTransactionConfiguration({
+                    moduleName: request.model.moduleName,
+                    schemaName: request.model.code,
+                    schema: request.model
+                });
+                resolve(true);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    },
+
+    /**
 
      * Executes merge existing schema behavior.
 

@@ -130,6 +130,11 @@ module.exports = {
                         schema: finalSchema,
                         versionedSchema: moduleRawSchema.versioned
                     });
+                    _self.validateTransactionConfiguration({
+                        moduleName: runtimeSchema.moduleName,
+                        schemaName: runtimeSchema.code,
+                        schema: finalSchema
+                    });
                     moduleRawSchema[runtimeSchema.code] = _.merge(moduleRawSchema[runtimeSchema.code] || {}, finalSchema);
                 }
                 resolve(true);
@@ -168,9 +173,52 @@ module.exports = {
                     schema: mergedSchema[schemaName],
                     versionedSchema: mergedSchema.versioned
                 });
+                _self.validateTransactionConfiguration({
+                    moduleName: options.moduleName,
+                    schemaName: schemaName,
+                    schema: mergedSchema[schemaName]
+                });
             }
         });
         return mergedSchema;
+    },
+
+    /**
+     * Validates the standard schema transaction participation contract.
+     *
+     * Transaction metadata belongs to the effective Nodics schema. The database
+     * framework validates it for every owning module; consumers and adapters
+     * must not invent module-specific transaction eligibility rules.
+     *
+     * @param {Object} options Validation context.
+     * @param {string} options.moduleName Owning module name.
+     * @param {string} options.schemaName Schema code.
+     * @param {Object} options.schema Effective schema definition.
+     * @returns {Object} The validated schema.
+     * @throws {CLASSES.NodicsError} When transactional schema invariants are unsafe.
+     */
+    validateTransactionConfiguration: function (options) {
+        let transaction = options.schema.transaction;
+        if (transaction === undefined) {
+            return options.schema;
+        }
+        let prefix = 'Schema ' + options.moduleName + '.' + options.schemaName + ' transaction';
+        if (!transaction || typeof transaction !== 'object' ||
+            transaction.enabled !== true || transaction.sideEffects !== 'none') {
+            throw new CLASSES.NodicsError('ERR_DBS_00000',
+                prefix + ' must declare enabled true and sideEffects none');
+        }
+        if (options.schema.model !== true || !options.schema.service ||
+            options.schema.service.enabled !== true) {
+            throw new CLASSES.NodicsError('ERR_DBS_00000',
+                prefix + ' requires generated model and service capabilities');
+        }
+        if ((options.schema.cache && options.schema.cache.enabled === true) ||
+            (options.schema.event && options.schema.event.enabled === true)) {
+            throw new CLASSES.NodicsError('ERR_DBS_00000',
+                prefix + ' requires cache and event side effects to be disabled');
+        }
+        return options.schema;
     },
 
     /**

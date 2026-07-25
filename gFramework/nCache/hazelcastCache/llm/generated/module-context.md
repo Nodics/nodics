@@ -94,7 +94,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/hazelcastCache/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
 | `gFramework/nCache/hazelcastCache/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
 | `gFramework/nCache/hazelcastCache/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nCache schema metadata, model contracts, and generated capability settings. |  |
-| `gFramework/nCache/hazelcastCache/src/service/cache/defaultHazelcastCacheService.js` | `src` | `documented` | 6/6 | Implements the nCache adapter contract with Hazelcast distributed maps, JSON serialization, TTL, and governed invalidation. |  |
+| `gFramework/nCache/hazelcastCache/src/service/cache/defaultHazelcastCacheService.js` | `src` | `documented` | 7/7 | Implements the nCache adapter contract with Hazelcast distributed maps, JSON serialization, TTL, and governed invalidation. |  |
 | `gFramework/nCache/hazelcastCache/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements hazelcastCache default sample service business behavior and extension logic. |  |
 | `gFramework/nCache/hazelcastCache/src/service/engine/defaultHazelcastCacheEngineService.js` | `src` | `documented` | 2/2 | Creates and manages official Hazelcast Node.js clients for enabled nCache engines. |  |
 | `gFramework/nCache/hazelcastCache/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared hazelcastCache enum definition exports. |  |

@@ -142,6 +142,25 @@ customization. The module AGENTS file explains how AI agents and developers must
 work inside that module boundary. Source files document their real contracts.
 Generated context reports factual gaps and must not invent missing intent.
 
+An implemented capability module must remain understandable when only its local
+files are opened. Its maintained documentation must provide:
+
+- a source and authority map naming owned schemas, routers, controllers,
+  facades, services, pipelines, events, data, configuration, and tests;
+- supported and prohibited dependency directions;
+- business, operator, application-developer, framework-maintainer, and AI-tool
+  guidance, or an explicit explanation when one audience is not applicable;
+- successful, rejected, boundary/scale, failure/recovery, and later-layer
+  customization examples;
+- permissions, tenant behavior, observability, performance, deployment,
+  migration, backup/restore, troubleshooting, and verification impact;
+- links from the module README to deeper module docs and from permanent public
+  `gDocs` journeys to the owning module.
+
+Critical invariants must be enforced by focused tests. A sentence in a README
+or `AGENTS.md` is not sufficient proof when source/configuration structure or
+runtime behavior can violate it.
+
 Capabilities require focused behavior tests. Container, topology, setup, and
 template modules may rely on composition or topology tests, but their untested
 status must remain visible in generated context and governance reports.

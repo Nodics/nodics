@@ -1,0 +1,38 @@
+{
+  "contextVersion": 3,
+  "moduleName": "aiKnowledge",
+  "path": "gAi/aiKnowledge",
+  "kind": "capability",
+  "runtime": {
+    "router": true,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "70.20",
+    "version": "0.0.1",
+    "description": "AI knowledge corpus, ingestion, retrieval, evidence, and citation contracts over authoritative Nodics sources and nSearch."
+  },
+  "sourceFiles": 22,
+  "testFiles": 10,
+  "dataFiles": 4,
+  "ownedFiles": 39,
+  "sourceFingerprint": "a35f1144dff12d2c0ef0ce1c45b96d0264c27f1e5333ba024396ee175670cb6b",
+  "documentation": {
+    "documented": 25,
+    "partially-documented": 9,
+    "undocumented": 1,
+    "inventory-only": 4
+  },
+  "schemaGroups": {
+    "aiKnowledge": [
+      "knowledgeChunk",
+      "knowledgeCorpus",
+      "knowledgeDocument",
+      "knowledgeIngestionRun",
+      "knowledgeSource"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

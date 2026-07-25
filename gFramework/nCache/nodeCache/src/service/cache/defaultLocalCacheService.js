@@ -102,6 +102,29 @@ module.exports = {
         });
     },
 
+    /** Atomically increments a bounded process-local integer counter. */
+    incrementBounded: function (options) {
+        return new Promise((resolve, reject) => {
+            try {
+                let key = SERVICE.DefaultCacheConfigurationService.createStorageKey(options);
+                let amount = options.amount === undefined ? 1 : options.amount;
+                let maximum = options.maximum;
+                if (!Number.isSafeInteger(amount) || amount < 1 ||
+                    !Number.isSafeInteger(maximum) || maximum < 1) {
+                    throw new Error('Bounded increment requires positive safe integer amount and maximum');
+                }
+                let current = options.channel.client.get(key) || 0;
+                let next = current + amount;
+                if (next > maximum) return resolve({ allowed: false, value: current, maximum: maximum });
+                let ttl = SERVICE.DefaultCacheConfigurationService.resolveTtl(options);
+                options.channel.client.set(key, next, ttl);
+                resolve({ allowed: true, value: next, maximum: maximum });
+            } catch (error) {
+                reject(new CLASSES.CacheError(error));
+            }
+        });
+    },
+
     /** Invalidates keys within the configured channel and optional prefix scope. */
     flushByPrefix: function (options) {
         let _self = this;

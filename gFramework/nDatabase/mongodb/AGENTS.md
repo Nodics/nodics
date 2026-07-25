@@ -16,3 +16,10 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
 - Put configurable behavior in layered configuration, schemas, routers, services, pipelines, data, and runtime governance.
 - Update `README.md`, permanent `docs/`, `llm/` guidance, generated context, and tests whenever behavior or extension contracts change.
 - Generated files must be recreated from source definitions; do not hand-maintain generated artifacts as source of truth.
+- MongoDB transaction mechanics belong in this adapter; business modules see
+  only the provider-neutral opaque context.
+- Qualify transactions only on a replica set or sharded cluster. A standalone
+  MongoDB process is not transaction-capable even when the driver exposes
+  `startSession`.
+- Preserve snapshot reads, majority writes, bounded commit time, session
+  cleanup, and session propagation to every operation.

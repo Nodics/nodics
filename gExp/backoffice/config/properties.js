@@ -31,7 +31,7 @@ module.exports = {
             contractVersion: 1, minimumClientContractVersion: 1, roles: ['CONTROL_PLANE_PROVIDER'],
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             requiredPermissions: ['backoffice.registry.view'],
-            navigation: [{ id: 'registry', label: 'Module Registry', route: '/registry', order: 900, requiredPermissions: ['backoffice.registry.view'] }]
+            navigation: [{ id: 'registry', label: 'Module Registry', route: '/registry', icon: 'registry', order: 900, requiredPermissions: ['backoffice.registry.view'] }]
         }
     },
     backofficeRegistry: {

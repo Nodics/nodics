@@ -29,7 +29,7 @@ module.exports = {
         }
     },
     search: {
-        requestTimeout: 1000,
+        requestTimeout: 5000,
         defaultPropertyWeight: 0,
         defaultPropertySequence: 0,
         defaultDoSaveOperation: 'doSave',

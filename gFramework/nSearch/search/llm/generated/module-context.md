@@ -32,10 +32,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 43 |
+| Source files | 44 |
 | Test files | 22 |
 | Data files | 0 |
-| All module-owned files | 60 |
+| All module-owned files | 61 |
 | Local schema definitions | 4 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 49 |
+| Documented | 50 |
 | Partially documented | 2 |
 | Undocumented | 5 |
 | Inventory only | 4 |
@@ -136,6 +136,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nSearch/search/src/service/procs/indexer/external/defaultExternalIndexerInitializerService.js` | `src` | `documented` | 11/11 | Implements nSearch default external indexer initializer service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/procs/indexer/internal/defaultInternalIndexerInitializerService.js` | `src` | `documented` | 12/12 | Implements nSearch default internal indexer initializer service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/provider/defaultSearchValueProviderHandlerService.js` | `src` | `documented` | 2/2 | Implements nSearch default search value provider handler service business behavior and extension logic. |  |
+| `gFramework/nSearch/search/src/service/query/defaultSearchRequestService.js` | `src` | `documented` | 1/1 | Validates provider-neutral lexical, vector, and hybrid search requests. |  |
 | `gFramework/nSearch/search/src/service/schema/defaultSearchSchemaHandlerService.js` | `src` | `documented` | 9/9 | Implements nSearch default search schema handler service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/service/virtual/defaultSearchVirtualPropertiesHandlerService.js` | `src` | `documented` | 4/4 | Implements nSearch default search virtual properties handler service business behavior and extension logic. |  |
 | `gFramework/nSearch/search/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared nSearch utility exports for enums. |  |

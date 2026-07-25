@@ -5,3 +5,7 @@ This folder contains permanent human-readable documentation for the `gCore/profi
 Keep architecture, runtime contracts, configuration behavior, operational notes, troubleshooting, and extension decisions here when they are too detailed for the module `README.md`.
 
 Update this folder whenever module behavior, public contracts, security posture, lifecycle, or customization rules change.
+
+- [Enterprise management search](enterprise-management-search.md) explains the
+  bounded Profile-owned API used directly by employees and through the governed
+  Axis Assistant tool path.

@@ -59,8 +59,9 @@ module.exports = {
             metadata.minimumClientContractVersion > metadata.contractVersion) return false;
         return metadata.navigation === undefined || Array.isArray(metadata.navigation) && metadata.navigation.length <= 64 &&
             metadata.navigation.every(item => item && !Object.keys(item).some(key =>
-                !['id', 'label', 'route', 'order', 'requiredPermissions'].includes(key)) && this.isString(item.id) && this.isString(item.label) &&
+                !['id', 'label', 'route', 'icon', 'order', 'requiredPermissions'].includes(key)) && this.isString(item.id) && this.isString(item.label) &&
                 (item.route === undefined || this.isString(item.route)) && (item.order === undefined || Number.isInteger(item.order)) &&
+                (item.icon === undefined || this.isString(item.icon, 64)) &&
                 (item.requiredPermissions === undefined || this.isStringList(item.requiredPermissions)));
     },
     /** Validates one module registration against the bounded API contract. */

@@ -23,7 +23,7 @@ module.exports = {
             contractVersion: 1, minimumClientContractVersion: 1, roles: ['FUNCTIONAL_CAPABILITY_PROVIDER'],
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             requiredPermissions: ['store.backoffice.read'],
-            navigation: [{ id: 'stores', label: 'Stores', route: '/commerce/stores', order: 410 }]
+            navigation: [{ id: 'stores', label: 'Stores', route: '/commerce/stores', icon: 'store', order: 410 }]
         }
     },
     store: {

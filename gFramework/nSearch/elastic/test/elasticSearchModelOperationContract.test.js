@@ -196,8 +196,7 @@ async function assertOperation(operation, input, expectedClientOperation, expect
     }, 'index', {
         refresh: 'wait_for',
         index: 'enterpriseindex',
-        type: 'enterprisetype',
-        body: { code: 'ENT-1', name: 'Enterprise One' },
+        document: { code: 'ENT-1', name: 'Enterprise One' },
         id: 'ENT-1'
     });
 
@@ -240,8 +239,7 @@ async function assertOperation(operation, input, expectedClientOperation, expect
 
     await assertOperation('doGetSchema', {}, 'indices.getMapping', {
         include_type_name: true,
-        index: 'enterpriseindex',
-        type: 'enterprisetype'
+        index: 'enterpriseindex'
     });
 
     await assertOperation('doUpdateSchema', {
@@ -249,8 +247,7 @@ async function assertOperation(operation, input, expectedClientOperation, expect
     }, 'indices.putMapping', {
         timeout: '30s',
         index: 'enterpriseindex',
-        type: 'enterprisetype',
-        body: { properties: { code: { type: 'keyword' } } }
+        properties: { code: { type: 'keyword' } }
     });
 
     await assertOperation('doRemoveIndex', {}, 'indices.delete', {

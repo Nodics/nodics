@@ -28,6 +28,89 @@ const MongoClient = require('mongodb').MongoClient;
  */
 module.exports = {
     /**
+     * Returns transaction capability discovered from the live MongoDB topology.
+     *
+     * @param {Object} database Nodics database wrapper.
+     * @returns {Object} Provider-neutral transaction capability.
+     */
+    transactionCapabilities: function (database) {
+        let capabilities = database && typeof database.getCapabilities === 'function' ?
+            database.getCapabilities() : {};
+        let transaction = capabilities.transaction || {};
+        return {
+            multiRecordAtomic: transaction.multiRecordAtomic === true,
+            contextPropagation: true,
+            contractVersion: 1,
+            reason: transaction.reason
+        };
+    },
+
+    /**
+     * Discovers whether the connected MongoDB topology can support transactions.
+     *
+     * @param {Object} db Connected MongoDB database.
+     * @returns {Promise<Object>} Provider-neutral connection capabilities.
+     */
+    discoverCapabilities: async function (db) {
+        let topology;
+        try {
+            topology = await db.command({ hello: 1 });
+        } catch (error) {
+            try {
+                topology = await db.command({ isMaster: 1 });
+            } catch (fallbackError) {
+                return {
+                    transaction: {
+                        multiRecordAtomic: false,
+                        reason: 'MongoDB topology discovery failed'
+                    }
+                };
+            }
+        }
+        let sessionCapable = Number.isFinite(topology.logicalSessionTimeoutMinutes);
+        let qualifiedTopology = typeof topology.setName === 'string' ||
+            topology.msg === 'isdbgrid';
+        return {
+            transaction: {
+                multiRecordAtomic: sessionCapable && qualifiedTopology,
+                reason: sessionCapable && qualifiedTopology ? undefined :
+                    'MongoDB transactions require logical sessions and a replica set or sharded cluster'
+            }
+        };
+    },
+
+    /** Returns MongoDB operation options without exposing the session to business callers. */
+    transactionOperationOptions: function (adapterContext) {
+        if (!adapterContext || !adapterContext.session) throw new Error('MongoDB transaction session is unavailable');
+        return { session: adapterContext.session };
+    },
+
+    /** Executes one callback in a MongoDB client session transaction. */
+    executeTransaction: async function (database, options, work) {
+        let capability = this.transactionCapabilities(database);
+        if (capability.multiRecordAtomic !== true) {
+            throw new Error(capability.reason || 'MongoDB topology is not qualified for transactions');
+        }
+        const client = database && database.getClient();
+        if (!client || typeof client.startSession !== 'function') {
+            throw new Error('MongoDB client does not support sessions');
+        }
+        const session = client.startSession();
+        let result;
+        try {
+            await session.withTransaction(async () => {
+                result = await work({ session: session });
+            }, {
+                readConcern: { level: 'snapshot' },
+                writeConcern: { w: 'majority' },
+                maxCommitTimeMS: Number(options.maximumCommitTimeMs)
+            });
+            return result;
+        } finally {
+            await session.endSession();
+        }
+    },
+    /**
      * Initializes the MongoDB connection handler.
      *
      * @param {Object} options Startup options supplied by the module initializer.
@@ -69,19 +152,21 @@ module.exports = {
             mongoClient.connect().then(client => {
                 _self.LOG.debug('  connected to: ' + config.URI + '/' + config.databaseName);
                 let db = client.db(config.databaseName);
-                db.listCollections({}, {
-                    nameOnly: true
-                }).toArray((error, collections) => {
+                Promise.all([
+                    db.listCollections({}, { nameOnly: true }).toArray(),
+                    _self.discoverCapabilities(db)
+                ]).then(results => {
+                    let collections = results[0];
+                    let capabilities = results[1];
+                    resolve({
+                        client: mongoClient,
+                        connection: db,
+                        collections: collections,
+                        capabilities: capabilities
+                    });
+                }).catch(error => {
                     if (error) {
-                        // _self.LOG.error('While fetching list of collections: ', error);
-                        // reject('While fetching list of collections: ' + error);
                         reject(new CLASSES.NodicsError(error, 'While fetching list of collections', 'ERR_DBS_00000'));
-                    } else {
-                        resolve({
-                            client: mongoClient,
-                            connection: db,
-                            collections: collections
-                        });
                     }
                 });
             }).catch(error => {

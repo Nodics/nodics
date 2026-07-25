@@ -45,6 +45,15 @@ module.exports = {
         handler: 'DefaultSchemaConfigurationSaveInterceptorService.assignDefaultAccessGroup'
     },
 
+    validateTransactionSchemaConfiguration: {
+        type: 'schema',
+        item: 'schemaConfiguration',
+        trigger: 'preSave',
+        active: 'true',
+        index: 10,
+        handler: 'DefaultSchemaConfigurationSaveInterceptorService.validateTransactionConfiguration'
+    },
+
     checkModuleRouterConfiguration: {
         type: 'schema',
         item: 'routerConfiguration',

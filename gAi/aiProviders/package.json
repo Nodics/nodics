@@ -1,0 +1,31 @@
+{
+    "name": "aiProviders",
+    "index": "70.30",
+    "description": "Provider-neutral AI gateway, selection, normalization, resilience, and provider-adapter composition boundary.",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL-3.0-or-later",
+    "nodics": {
+        "kind": "group",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "composition",
+            "configuration",
+            "schema",
+            "router",
+            "controller",
+            "service",
+            "test",
+            "llm"
+        ],
+        "runtime": {
+            "router": true,
+            "publish": false,
+            "web": false
+        }
+    },
+    "scripts": {},
+    "dependencies": {}
+}

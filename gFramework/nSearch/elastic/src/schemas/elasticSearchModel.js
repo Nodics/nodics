@@ -11,6 +11,22 @@
 
 const _ = require('lodash');
 
+function invokeClient(target, method, parameters) {
+    if (target[method].constructor.name === 'AsyncFunction') {
+        try {
+            return Promise.resolve(target[method](parameters));
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    }
+    return new Promise((resolve, reject) => {
+        target[method](parameters, (error, response) => {
+            if (error) reject(error);
+            else resolve(response);
+        });
+    });
+}
+
 /**
  * @module gFramework/nSearch/elastic/src/schemas/elasticSearchModel
  * @description Defines nSearch schema metadata, model contracts, and generated capability settings.
@@ -52,14 +68,8 @@ module.exports = {
                             index: _self.indexDef.indexName.toLowerCase()
                         });
                         _self.LOG.debug('Creating index for indexName: ' + _self.indexDef.indexName.toLowerCase());
-                        _self.searchEngine.getConnection().indices.create(indexQuery, function (error, response) {
-                            if (error) {
-                                reject(error);
-                            }
-                            else {
-                                resolve(response);
-                            }
-                        });
+                        invokeClient(_self.searchEngine.getConnection().indices, 'create', indexQuery)
+                            .then(resolve).catch(reject);
                     } catch (error) {
                         reject(error);
                     }
@@ -91,14 +101,8 @@ module.exports = {
                         });
                         _self.LOG.debug('Executing refresh command with options:');
                         _self.LOG.debug(refreshQuery);
-                        _self.searchEngine.getConnection().indices.refresh(refreshQuery, function (error, response) {
-                            if (error) {
-                                reject(error);
-                            }
-                            else {
-                                resolve(response);
-                            }
-                        });
+                        invokeClient(_self.searchEngine.getConnection().indices, 'refresh', refreshQuery)
+                            .then(resolve).catch(reject);
                     } catch (error) {
                         reject(error);
                     }
@@ -130,13 +134,8 @@ module.exports = {
                         });
                         _self.LOG.debug('Executing health command with options');
                         _self.LOG.debug(healthCheckQuery);
-                        _self.searchEngine.getConnection().cluster.health(healthCheckQuery, function (error, response) {
-                            if (error) {
-                                reject(error);
-                            } else {
-                                resolve(response);
-                            }
-                        });
+                        invokeClient(_self.searchEngine.getConnection().cluster, 'health', healthCheckQuery)
+                            .then(resolve).catch(reject);
                     } catch (error) {
                         reject(error);
                     }
@@ -241,26 +240,56 @@ module.exports = {
                         let searchQuery = _.merge({}, _self.searchEngine.getOptions().searchOptions || {});
                         searchQuery = _.merge(searchQuery, input.options || {});
                         searchQuery = _.merge(searchQuery, {
-                            index: _self.indexDef.indexName.toLowerCase(),
-                            type: _self.indexDef.typeName.toLowerCase()
+                            index: _self.indexDef.indexName.toLowerCase()
                         });
-                        if (input.q) {
+                        if (input.normalizedSearchRequest) {
+                            const normalized = input.normalizedSearchRequest;
+                            const filters = Object.keys(normalized.filters).map(name => {
+                                const value = normalized.filters[name];
+                                return Array.isArray(value) ?
+                                    { terms: { [name]: value } } :
+                                    { term: { [name]: value } };
+                            });
+                            const lexicalQuery = {
+                                bool: {
+                                    must: [{
+                                        multi_match: {
+                                            query: normalized.text,
+                                            fields: normalized.fields
+                                        }
+                                    }],
+                                    filter: filters
+                                }
+                            };
+                            searchQuery.size = normalized.size;
+                            if (normalized.minimumScore !== undefined) {
+                                searchQuery.min_score = normalized.minimumScore;
+                            }
+                            if (normalized.mode === 'LEXICAL' || normalized.mode === 'HYBRID') {
+                                searchQuery.query = lexicalQuery;
+                            }
+                            if (normalized.mode === 'VECTOR' || normalized.mode === 'HYBRID') {
+                                searchQuery.knn = {
+                                    field: normalized.vectorField,
+                                    query_vector: normalized.vector,
+                                    k: normalized.size,
+                                    num_candidates: Math.max(normalized.size * 10, 100),
+                                    filter: filters
+                                };
+                            }
+                        } else if (input.q) {
+                            searchQuery.type = _self.indexDef.typeName.toLowerCase();
                             searchQuery.q = input.q;
                         } else {
+                            searchQuery.type = _self.indexDef.typeName.toLowerCase();
                             searchQuery.body = {
                                 query: input.query || {}
                             };
                         }
                         _self.LOG.debug('Executing search command with options');
                         _self.LOG.debug(searchQuery);
-                        _self.searchEngine.getConnection().search(searchQuery, function (error, response) {
-                            if (error) {
-                                reject(error);
-                            }
-                            else {
-                                resolve(response);
-                            }
-                        });
+                        invokeClient(_self.searchEngine.getConnection(), 'search', searchQuery)
+                            .then(resolve).catch(reject);
                     } catch (error) {
                         reject(error);
                     }
@@ -289,22 +318,15 @@ module.exports = {
                         putQuery = _.merge(putQuery, input.options || {});
                         putQuery = _.merge(putQuery, {
                             index: _self.indexDef.indexName.toLowerCase(),
-                            type: _self.indexDef.typeName.toLowerCase(),
-                            body: input.model
+                            document: input.model
                         });
                         if (input.model[_self.indexDef.idPropertyName]) {
                             putQuery.id = input.model[_self.indexDef.idPropertyName];
                         }
                         _self.LOG.debug('Executing save command with options');
                         _self.LOG.debug(putQuery);
-                        _self.searchEngine.getConnection().index(putQuery, function (error, response) {
-                            if (error) {
-                                reject(error);
-                            }
-                            else {
-                                resolve(response);
-                            }
-                        });
+                        invokeClient(_self.searchEngine.getConnection(), 'index', putQuery)
+                            .then(resolve).catch(reject);
                     } catch (error) {
                         reject(error);
                     }
@@ -488,16 +510,10 @@ module.exports = {
                         let schemaQuery = _.merge({}, _self.searchEngine.getOptions().schemaGetOptions || {});
                         schemaQuery = _.merge(schemaQuery, input.options || {});
                         schemaQuery = _.merge(schemaQuery, {
-                            index: _self.indexDef.indexName.toLowerCase(),
-                            type: _self.indexDef.typeName.toLowerCase()
+                            index: _self.indexDef.indexName.toLowerCase()
                         });
-                        _self.searchEngine.getConnection().indices.getMapping(schemaQuery, function (error, response) {
-                            if (error) {
-                                reject(error);
-                            } else {
-                                resolve(response);
-                            }
-                        });
+                        invokeClient(_self.searchEngine.getConnection().indices, 'getMapping', schemaQuery)
+                            .then(resolve).catch(reject);
                     } catch (error) {
                         reject(error);
                     }
@@ -526,16 +542,10 @@ module.exports = {
                         schemaQuery = _.merge(schemaQuery, input.options || {});
                         schemaQuery = _.merge(schemaQuery, {
                             index: _self.indexDef.indexName.toLowerCase(),
-                            type: _self.indexDef.typeName.toLowerCase(),
-                            body: input.searchSchema
+                            properties: input.searchSchema.properties
                         });
-                        _self.searchEngine.getConnection().indices.putMapping(schemaQuery, function (error, response) {
-                            if (error) {
-                                reject(error);
-                            } else {
-                                resolve(response);
-                            }
-                        });
+                        invokeClient(_self.searchEngine.getConnection().indices, 'putMapping', schemaQuery)
+                            .then(resolve).catch(reject);
                     } catch (error) {
                         reject(error);
                     }

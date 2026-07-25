@@ -33,9 +33,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 36 |
-| Test files | 41 |
+| Test files | 42 |
 | Data files | 0 |
-| All module-owned files | 66 |
+| All module-owned files | 67 |
 | Local schema definitions | 7 |
 
 ## Ownership And Dependencies
@@ -68,7 +68,7 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 43 |
-| Partially documented | 3 |
+| Partially documented | 4 |
 | Undocumented | 16 |
 | Inventory only | 4 |
 
@@ -124,7 +124,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/src/service/event/defaultSchemaConfigurationChangeListenerService.js` | `src` | `documented` | 3/3 | Implements nDynamo default schema configuration change listener service business behavior and extension logic. |  |
 | `gFramework/nDynamo/src/service/interceptors/defaultClassConfigurationSaveInterceptorService.js` | `src` | `documented` | 4/4 | Implements nDynamo default class configuration save interceptor service business behavior and extension logic. |  |
 | `gFramework/nDynamo/src/service/interceptors/defaultRouterConfigurationSaveInterceptorService.js` | `src` | `documented` | 4/4 | Implements nDynamo default router configuration save interceptor service business behavior and extension logic. |  |
-| `gFramework/nDynamo/src/service/interceptors/defaultSchemaConfigurationSaveInterceptorService.js` | `src` | `documented` | 5/5 | Implements nDynamo default schema configuration save interceptor service business behavior and extension logic. |  |
+| `gFramework/nDynamo/src/service/interceptors/defaultSchemaConfigurationSaveInterceptorService.js` | `src` | `documented` | 6/6 | Implements nDynamo default schema configuration save interceptor service business behavior and extension logic. |  |
 | `gFramework/nDynamo/src/service/pipeline/defaultSchemaActivatedPipelineService.js` | `src` | `documented` | 12/12 | Implements nDynamo default schema activated pipeline service business behavior and extension logic. |  |
 | `gFramework/nDynamo/src/service/pipeline/defaultSchemaDeActivatedPipelineService.js` | `src` | `documented` | 6/6 | Implements nDynamo default schema de activated pipeline service business behavior and extension logic. |  |
 | `gFramework/nDynamo/src/service/pipeline/defaultSchemaUpdatedPipelineService.js` | `src` | `documented` | 5/5 | Implements nDynamo default schema updated pipeline service business behavior and extension logic. |  |
@@ -156,6 +156,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/test/schemaAccessPolicyContractService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/test/schemaAccessPolicyGovernanceLifecycle.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/test/schemaAccessPolicyResolverService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nDynamo/test/schemaTransactionRuntimeGovernanceContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies runtime schema configuration exposes and validates the nDatabase transaction contract. | add @override |
 
 ## Extension Contract
 

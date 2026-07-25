@@ -122,6 +122,30 @@ module.exports = {
         }, 'Error while atomically consuming cache value');
     },
 
+    /**
+     * Atomically increments a bounded integer counter and applies its TTL when
+     * the counter is first created.
+     */
+    incrementBounded: function (options) {
+        return this.observeCacheOperation('incrementBounded', options, () => {
+            let channel = SERVICE.DefaultCacheEngineService.getCacheEngine(options.moduleName, options.channelName);
+            if (!channel) {
+                return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00006',
+                    'Could not found cache client for channel: ' + options.channelName + ', within module: ' + options.moduleName));
+            }
+            this.assertCapability(channel, 'atomicBoundedIncrement');
+            let handler = SERVICE[channel.engineOptions.cacheHandler];
+            let operationName = options.channelName + 'IncrementBounded';
+            if (!handler[operationName] || typeof handler[operationName] !== 'function') operationName = 'incrementBounded';
+            if (!handler[operationName] || typeof handler[operationName] !== 'function') {
+                return Promise.reject(new CLASSES.CacheError('ERR_CACHE_00006',
+                    'Cache engine does not support atomic bounded increment for channel: ' + options.channelName));
+            }
+            options.channel = channel;
+            return handler[operationName](options);
+        }, 'Error while atomically incrementing bounded cache counter');
+    },
+
     /** Selects key-based or prefix-based invalidation from the supplied scope. */
     flushCache: function (options) {
         try {

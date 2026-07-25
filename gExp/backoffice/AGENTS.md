@@ -30,10 +30,17 @@
   module in `config/properties.js#backofficeCapabilities.<moduleName>`. BackOffice validates and
   permission-filters that metadata; it must not maintain a duplicated manual
   module catalogue.
+- Each navigation entry may declare its own bounded semantic `icon` key.
+  Clients map that non-executable key to a client-owned icon and safely fall
+  back to the module-level icon or a generic module mark.
 - Discover effective contracts through existing System/OpenAPI authorities.
   Normalize and hash client-safe observations; never add a parallel schema or
   router loader, retain arbitrary source documents, or let BackOffice edit a
   target module's contract.
+- Preserve both singular `x-nodics.permission` and plural
+  `x-nodics.permissions` declarations when normalizing target operations.
+  Dropping either form weakens employee-filtered discovery and causes governed
+  clients to make decisions from incomplete target metadata.
 - Persist normalized observations through BackOffice-owned Nodics schemas and
   generated services. The durable activation pointer is current-selection and
   replica-concurrency authority; breaking candidates require explicit,

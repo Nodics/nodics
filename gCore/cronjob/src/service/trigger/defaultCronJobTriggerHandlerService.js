@@ -216,6 +216,7 @@ module.exports = {
             apiName: jobDetail.uri,
             requestBody: jobDetail.body || {},
             responseType: true,
+            timeoutMs: jobDetail.timeoutMs,
             header: {
                 Authorization: 'Bearer ' + NODICS.getInternalAuthToken(definition.tenant)
             }

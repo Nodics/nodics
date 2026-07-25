@@ -4,6 +4,16 @@ This catalog makes every package-defined Nodics module reachable from the public
 
 Use the [Module Documentation Index](module-documentation-index.md) when you know the business or platform task. Use this catalog when you know a module, group, environment, server, or node name.
 
+## gAi
+
+- [gAi](../../gAi/README.md) — `group`; `gAi`
+- [aiAssistant](../../gAi/aiAssistant/README.md) — `capability`; `gAi/aiAssistant`
+- [aiKnowledge](../../gAi/aiKnowledge/README.md) — `capability`; `gAi/aiKnowledge`
+- [aiProviders](../../gAi/aiProviders/README.md) — `group`; `gAi/aiProviders`
+- [openAiProvider](../../gAi/aiProviders/openAiProvider/README.md) — `capability`; `gAi/aiProviders/openAiProvider`
+- [anthropicProvider](../../gAi/aiProviders/anthropicProvider/README.md) — `capability`; `gAi/aiProviders/anthropicProvider`
+- [geminiProvider](../../gAi/aiProviders/geminiProvider/README.md) — `capability`; `gAi/aiProviders/geminiProvider`
+
 ## gComm
 
 - [gComm](../../gComm/README.md) — `group`; `gComm`

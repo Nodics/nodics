@@ -94,7 +94,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCache/nodeCache/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
 | `gFramework/nCache/nodeCache/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nCache route registration and HTTP exposure metadata. |  |
 | `gFramework/nCache/nodeCache/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nCache schema metadata, model contracts, and generated capability settings. |  |
-| `gFramework/nCache/nodeCache/src/service/cache/defaultLocalCacheService.js` | `src` | `documented` | 7/7 | Implements the cache adapter contract for process-local storage without mutating caller-owned values. |  |
+| `gFramework/nCache/nodeCache/src/service/cache/defaultLocalCacheService.js` | `src` | `documented` | 8/8 | Implements the cache adapter contract for process-local storage without mutating caller-owned values. |  |
 | `gFramework/nCache/nodeCache/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements nodeCache default sample service business behavior and extension logic. |  |
 | `gFramework/nCache/nodeCache/src/service/engine/defaultLocalCacheEngineService.js` | `src` | `documented` | 6/6 | Implements nCache default local cache engine service business behavior and extension logic. |  |
 | `gFramework/nCache/nodeCache/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared nodeCache enum definition exports. |  |

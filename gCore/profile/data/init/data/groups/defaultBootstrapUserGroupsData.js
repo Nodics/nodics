@@ -148,6 +148,13 @@ module.exports = {
             'import.sample.run',
             'import.local.run',
             'export.run',
+            'ai.assistant.use',
+            'ai.assistant.read',
+            'ai.assistant.cancel',
+            'ai.assistant.operations.read',
+            'ai.ledger.read',
+            'ai.ledger.manage',
+            'ai.ledger.repair.approve',
             'dynamo.class.view',
             'dynamo.class.snapshot.view',
             'dynamo.class.update',
@@ -157,6 +164,8 @@ module.exports = {
             'backoffice.contract.reject',
             'backoffice.contract.rollback',
             'profile.backoffice.view',
+            'profile.enterprise.search',
+            'profile.enterprise.create',
             'cms.backoffice.view',
             'cronjob.backoffice.view',
             'workflow.backoffice.view',
@@ -174,6 +183,8 @@ module.exports = {
             ,'product.online.read'
             ,'product.operations.read'
             ,'product.operations.manage'
+            ,'ai.knowledge.read'
+            ,'ai.knowledge.manage'
         ]
     },
     record12: {

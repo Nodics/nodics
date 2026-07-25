@@ -57,7 +57,8 @@ module.exports = {
     /** Validates principal type, service groups, credentials, and active group references. */
     validate: function (request, operation) {
         let updates = this.normalizeModels(request.model);
-        let service = operation === 'update' && request.query && this.getPrincipalService(request);
+        let effectiveOperation = operation || (request.query ? 'update' : 'save');
+        let service = effectiveOperation === 'update' && request.query && this.getPrincipalService(request);
         let load = service ? service.get({ tenant: request.tenant, authData: SERVICE.DefaultIdentityGovernanceService.getSystemAuthData(), query: request.query, options: { recursive: false } }) : Promise.resolve({ result: [] });
         return load.then(result => {
             let existing = result && result.result || [];

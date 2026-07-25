@@ -71,6 +71,48 @@ module.exports = {
                     method: 'GET',
                     url: 'http://host:port/nodics/profile/tenant/get',
                 }
+            },
+            searchEnterprises: {
+                secured: true,
+                authTokenTypes: ['access'],
+                accessGroups: ['runtimeConfigAdminUserGroup'],
+                permission: 'profile.enterprise.search',
+                apiExposure: 'profileManagement',
+                key: '/enterprises/search',
+                method: 'GET',
+                controller: 'DefaultEnterpriseManagementController',
+                operation: 'search',
+                summary: 'Search enterprises through a bounded administrative projection',
+                description: 'Returns a bounded, client-safe enterprise list. Profile remains the identity and persistence authority.',
+                parameters: [
+                    { name: 'code', in: 'query', required: false, schema: { type: 'string', maxLength: 128 } },
+                    { name: 'name', in: 'query', required: false, schema: { type: 'string', maxLength: 256 } },
+                    { name: 'active', in: 'query', required: false, schema: { type: 'boolean' } },
+                    { name: 'page', in: 'query', required: false, schema: { type: 'integer', minimum: 1 } },
+                    { name: 'limit', in: 'query', required: false, schema: { type: 'integer', minimum: 1, maximum: 100 } }
+                ],
+                responses: {
+                    '200': { description: 'Bounded enterprise search result' }
+                }
+            },
+            createEnterprise: {
+                secured: true, authTokenTypes: ['access'],
+                accessGroups: ['runtimeConfigAdminUserGroup'],
+                permission: 'profile.enterprise.create', apiExposure: 'profileManagement',
+                key: '/enterprises', method: 'POST',
+                controller: 'DefaultEnterpriseManagementController', operation: 'create',
+                summary: 'Create one enterprise after governed confirmation',
+                description: 'Profile validates and persists the enterprise; callers may not bypass target authorization.',
+                requestBody: { required: true, content: { 'application/json': { schema: {
+                    type: 'object', additionalProperties: false, required: ['code', 'name', 'idempotencyKey'],
+                    properties: {
+                        code: { type: 'string', maxLength: 128 }, name: { type: 'string', maxLength: 256 },
+                        tenantCode: { type: 'string', maxLength: 128 },
+                        superEnterpriseCode: { type: 'string', maxLength: 128 },
+                        active: { type: 'boolean' }, idempotencyKey: { type: 'string', minLength: 8, maxLength: 256 }
+                    }
+                } } } },
+                responses: { '200': { description: 'Created client-safe enterprise result' } }
             }
         },
 

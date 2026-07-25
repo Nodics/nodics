@@ -5,6 +5,7 @@
 ## Hand-Authored Tests
 
 - `gFramework/nDatabase/database/test/common/commonTest.js`
+- `gFramework/nDatabase/database/test/databaseTransactionContract.test.js`
 - `gFramework/nDatabase/database/test/env-local/envTest.js`
 - `gFramework/nDatabase/database/test/modelSaveInitializerPipelineContract.test.js`
 - `gFramework/nDatabase/database/test/modelsGetInitializerPipelineContract.test.js`
@@ -13,6 +14,7 @@
 - `gFramework/nDatabase/database/test/schemaIndexControllerRequestMapping.test.js`
 - `gFramework/nDatabase/database/test/schemaIndexServiceContract.test.js`
 - `gFramework/nDatabase/database/test/schemaReadAccessPolicyService.test.js`
+- `gFramework/nDatabase/database/test/schemaTransactionGovernanceContract.test.js`
 - `gFramework/nDatabase/database/test/schemaWriteAccessPolicyService.test.js`
 - `gFramework/nDatabase/database/test/tenantDatabaseConfigurationValidation.test.js`
 

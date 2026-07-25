@@ -8,6 +8,60 @@ Existing module/tenant handles contribute required readiness without opening
 probe connections. Central shutdown closes registered handles through their
 configured adapter services.
 
+## Provider-neutral transactions
+
+`DefaultDatabaseTransactionService` is the only provider-neutral entry point
+for multi-record atomic work. It resolves the registered module/tenant
+database, requires a truthful `multiRecordAtomic` capability, and gives the
+callback an opaque context that generated operations propagate to the adapter.
+
+Contexts are callback- and database-scoped. Cross-database, expired, and
+unsupported-adapter use fails closed. Business modules must never import a
+provider driver to obtain a native transaction.
+
+Transaction participation is also schema-owned and explicit. A participating
+schema must declare:
+
+```js
+transaction: {
+    enabled: true,
+    sideEffects: 'none'
+},
+cache: {
+    enabled: false
+},
+event: {
+    enabled: false
+}
+```
+
+The framework rejects transaction contexts for schemas that do not meet this
+contract. This protects atomicity because generated cache or event side effects
+could otherwise be emitted before the database transaction commits. A domain
+module still owns the schema and business invariant; nService and nDatabase own
+generated CRUD execution, transaction-context validation, connections, and
+provider adapters.
+
+The same validation runs while static schemas are composed and while nDynamo
+activates a runtime `schemaConfiguration`. Transaction eligibility is therefore
+one standard schema contract, not a consumer-specific convention.
+
+Database adapters report capabilities discovered from the live connection.
+The generic `Database` wrapper stores that provider-neutral snapshot. The
+transaction service must not infer deployment capability merely because an
+adapter implements transaction methods.
+
+```js
+databaseTransactions: {
+    enabled: true,
+    failClosed: true,
+    maximumCommitTimeMs: 5000
+}
+```
+
+Adapters supporting this contract must prove commit, forced rollback,
+context isolation, concurrency conflict, and live deployment topology.
+
 ## Tenant and module configuration
 
 Database configuration is resolved from the effective layered `database`
@@ -79,6 +133,8 @@ Use this checklist when adding a new database adapter such as Oracle:
   provider-specific options;
 - implement the connection handler and model/query adapter behind the generic
   database service contract;
+- declare transaction capability honestly and implement transaction adapter
+  methods when multi-record atomic work is supported;
 - keep generated DAO/model CRUD behavior provider-neutral;
 - preserve tenant/module keying for registered connections and models;
 - preserve schema read/write access policy, interceptors, middleware,

@@ -33,6 +33,15 @@ function requireClauses(relativePath, clauses) {
     });
 }
 
+requireClauses('AGENTS.md', [
+    'Design every module for partial discovery',
+    'nearest `AGENTS.md`, README, `llm/contracts`, `llm/examples`, generated',
+    'Do not hide a mandatory rule only',
+    'successful, rejected,',
+    'boundary/scale, failure/recovery, and later-layer customization use cases',
+    'business evaluators, business users, administrators/operators'
+]);
+
 requireClauses('gSetup/llm/nodics-principles.md', [
     '## Change Acceptance Contract',
     'every modification and every new source file',
@@ -237,7 +246,25 @@ requireClauses('gSetup/llm/standards/module-standard.md', [
     'src/                          Module-owned source definitions and implementation files; not mandatory for pure group modules',
     'search/                     Search index contribution directory for module-owned index definitions',
     'indexes.js                Search index definition registry',
-    'test/                         Module-owned tests proving default behavior and override/customization behavior; not mandatory for pure group modules'
+    'test/                         Module-owned tests proving default behavior and override/customization behavior; not mandatory for pure group modules',
+    'An implemented capability module must remain understandable when only its local',
+    'successful, rejected, boundary/scale, failure/recovery, and later-layer',
+    'Critical invariants must be enforced by focused tests'
+]);
+
+requireClauses('gSetup/llm/contracts/documentation-impact-contract.md', [
+    '## Distributed Discovery Contract',
+    'minimum local discovery chain',
+    '## Capability Documentation Acceptance Matrix',
+    'Business evaluator',
+    'Administrator/operator',
+    'Framework maintainer/AI tool',
+    '## Use-Case And Example Contract',
+    'one smallest successful example',
+    'one rejected or unauthorized example',
+    'one boundary or scale example',
+    'one failure and recovery example',
+    'one later-loaded project customization example'
 ]);
 
 requireClauses('gSetup/llm/contracts/integration-governance-contract.md', [

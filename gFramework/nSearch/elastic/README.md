@@ -20,6 +20,10 @@ The module contributes:
 - schema handler wiring through `DefaultElasticSearchSchemaHandlerService`;
 - Elastic operation defaults for exists, health, save, bulk, search, remove, schema, refresh, and index lifecycle behavior;
 - raw search model definition loading from `src/schemas/elasticSearchModel.js`;
+- current promise-based Elasticsearch client invocation while retaining
+  callback compatibility for project adapters and focused tests;
+- normalization of the historic Nodics `hosts` property to the current client
+  `nodes` option without creating a second configuration authority;
 - Elastic model operation implementations for create index, refresh, health, exists, get, search, save, bulk, update, remove, remove by query, get schema, update schema, and remove index.
 
 The adapter maps Nodics search model operations to the active Elasticsearch client. Provider-neutral services should not know which client is active.
@@ -46,6 +50,10 @@ Elastic configuration belongs in layered properties or governed runtime/secret l
 - tenant/index naming policy.
 
 The framework default points to a local Elastic endpoint for development shape only. Customer, environment, server, node, tenant, and production values must override this through governed configuration.
+
+Current client query options use Elasticsearch wire names such as `op_type`,
+`ignore_unavailable`, and `expand_wildcards`. Request timeout is a client
+transport option and must not be sent as an API query parameter.
 
 ## Extension Path
 

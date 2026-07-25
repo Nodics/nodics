@@ -173,6 +173,7 @@ module.exports = {
                             masterDatabase.setConnection(success.connection);
                             masterDatabase.setCollections(success.collections);
                             masterDatabase.setClient(success.client);
+                            masterDatabase.setCapabilities(success.capabilities);
                             if (testConfig.enabled && testConfig.uTest.enabled) {
                                 testDatabase = new CLASSES.Database();
                                 if (dbConfig.test) {
@@ -184,6 +185,7 @@ module.exports = {
                                         testDatabase.setConnection(success.connection);
                                         testDatabase.setCollections(success.collections);
                                         testDatabase.setClient(success.client);
+                                        testDatabase.setCapabilities(success.capabilities);
                                         SERVICE.DefaultDatabaseConfigurationService.addTenantDatabase(moduleName, tntCode, {
                                             master: masterDatabase,
                                             test: testDatabase

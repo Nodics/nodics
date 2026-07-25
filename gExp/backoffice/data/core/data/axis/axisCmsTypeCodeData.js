@@ -83,5 +83,11 @@ module.exports = {
         propertySchema: { title: 'string', employeeLabel: 'string', passwordLabel: 'string',
             passwordPlaceholder: 'string', submitLabel: 'string', signOutLabel: 'string' },
         active: true
+    },
+    record11: { code: 'axisAssistantPageType', kind: 'PAGE', contractVersion: 1, active: true },
+    record12: {
+        code: 'axisAssistantWorkspaceComponentType', kind: 'COMPONENT', contractVersion: 1,
+        propertySchema: { title: 'string', welcomeMessage: 'string', inputPlaceholder: 'string',
+            submitLabel: 'string', stopLabel: 'string', emptyState: 'string' }, active: true
     }
 };

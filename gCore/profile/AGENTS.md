@@ -23,3 +23,7 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
   pre-authentication routes: they must resolve enterprise/tenant context before
   credential validation without requiring an existing bearer token or API key.
   Do not weaken module-to-module internal token routes when changing them.
+- Enterprise management APIs must remain Profile-owned, human-access-token
+  protected, action-permissioned, bounded, and explicitly projected. Reuse the
+  generated enterprise service; do not expose generic schema CRUD to an AI
+  tool, add a parallel search/index path, or return recursive identity data.

@@ -67,5 +67,14 @@ module.exports = {
             { target: 'axisLockLegalComponent', slot: 'legal', index: 40, active: true }
         ],
         active: true
+    },
+    record4: {
+        code: 'axisAssistantPage', name: 'Axis Assistant', cmsSite: ['axisCmsSite'],
+        typeCode: 'axisAssistantPageType', template: 'axisAssistantPageTemplate', renderer: 'axis.page.assistant',
+        cmsComponents: [
+            { target: 'axisAssistantHeaderComponent', slot: 'header', index: 10, active: true },
+            { target: 'axisAssistantWorkspaceComponent', slot: 'workspace', index: 20, active: true }
+        ],
+        active: true
     }
 };

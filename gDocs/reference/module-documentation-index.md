@@ -115,6 +115,9 @@ the extension path from source code alone.
 
 | Capability | Module Documentation | Use When |
 | --- | --- | --- |
+| AI provider governance and token ledger | [aiProviders](../../gAi/aiProviders/README.md) and [Persistent AI Token Ledger Guide](../../gAi/aiProviders/docs/persistent-token-ledger-guide.md) | You need provider-neutral AI selection, exact token/cost planning, persistent budgets, reservations, usage evidence, or AI ledger administration. |
+| AI Assistant read-only backend | [aiAssistant](../../gAi/aiAssistant/README.md) | You need employee-owned conversations, approved prompts, redaction, read-only provider orchestration, or replay events. |
+| AI Knowledge documentation slice | [aiKnowledge](../../gAi/aiKnowledge/README.md) | You need explicit documentation ingestion, derived chunks, nSearch retrieval, evidence, and citations. |
 | Catalogs | [nCatalog](../../gFramework/nCatalog/README.md) | You need catalog modeling, catalog hierarchy, or product/content catalog behavior. |
 | Publishing | [nPublish](../../gFramework/nPublish/README.md) | You need publish lifecycle support. |
 | System capability | [nSystem](../../gFramework/nSystem/README.md) | You need system-level schemas, utilities, or platform records. |
@@ -133,6 +136,8 @@ Use this quick map from common `gDocs` pages to module references.
 | [How Users, Tenants, And Permissions Work](../security/how-users-tenants-and-permissions-work.md) | [nAuth](../../gFramework/nAuth/README.md), [nToken](../../gFramework/nToken/README.md), [nOtp](../../gFramework/nOtp/README.md), [nRouter](../../gFramework/nRouter/README.md), [nDynamo](../../gFramework/nDynamo/README.md) |
 | [How To Test Nodics Changes](../testing/how-to-test-nodics-changes.md) | [nTest](../../gFramework/nTest/README.md), [nTooling](../../gFramework/nTooling/README.md), module-specific test sections |
 | [How Configuration Works](../configuration/how-configuration-works.md) | [nConfig](../../gFramework/nConfig/README.md), [nDynamo](../../gFramework/nDynamo/README.md), [nTooling](../../gFramework/nTooling/README.md) |
+| [How AI Cost Governance Works](../ai/how-ai-cost-governance-works.md) | [aiProviders](../../gAi/aiProviders/README.md), [AI Token Economics](../../gAi/aiProviders/docs/token-economics-and-optimization.md), [Persistent AI Token Ledger](../../gAi/aiProviders/docs/persistent-token-ledger-guide.md) |
+| [Assistant, AI Providers, and Knowledge Guide](../ai/assistant-provider-and-knowledge-guide.md) | [aiAssistant](../../gAi/aiAssistant/README.md), [aiKnowledge](../../gAi/aiKnowledge/README.md), and [aiProviders](../../gAi/aiProviders/README.md) |
 
 ## Documentation Ownership Rule
 
