@@ -82,6 +82,7 @@ module.exports = {
             enabled: true,
             timeoutMs: 1000,
             refreshIntervalMs: 10000,
+            failureRetryIntervalMs: 5000,
             maxConcurrentObservations: 32,
             maxQueuedObservations: 10000,
             failureBackoffMultiplier: 2,

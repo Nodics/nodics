@@ -6,6 +6,9 @@
 - Frontend registry output contains only approved client-safe metadata.
 - Self-registration must be idempotent, environment-bound, auditable, retryable,
   and safe during BackOffice outages.
+- Availability retries use registration renewal, a short configured first
+  failure interval, and bounded repeated-failure backoff; do not add another
+  scheduler or health authority.
 - Reuse Nodics loaders and governance paths; never introduce parallel authority.
 - Axis reference composition is BackOffice-owned core data imported through
   nData into nCatalog/CMS-owned schemas; it is never a startup write side effect.

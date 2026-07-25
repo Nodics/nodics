@@ -423,11 +423,12 @@ module.exports = {
      * @returns {undefined}
      */
     invalidateRouterCache: function (request, response, process) {
+        let invalidation = Promise.resolve();
         try {
             let schemaModel = request.schemaModel;
             if (response.success) {
                 this.LOG.debug('Invalidating router cache for modified model');
-                SERVICE.DefaultCacheService.invalidateResource({
+                invalidation = SERVICE.DefaultCacheService.invalidateResource({
                     tenant: request.tenant,
                     authData: request.authData,
                     moduleName: schemaModel.moduleName,
@@ -443,7 +444,7 @@ module.exports = {
             this.LOG.error('Facing issue while invalidating router cache ');
             this.LOG.error(error);
         }
-        process.nextSuccess(request, response);
+        invalidation.then(() => process.nextSuccess(request, response));
     },
     /**
      * Invalidates schema item cache after save.
@@ -454,11 +455,12 @@ module.exports = {
      * @returns {undefined}
      */
     invalidateItemCache: function (request, response, process) {
+        let invalidation = Promise.resolve();
         try {
             let schemaModel = request.schemaModel;
             if (response.success && schemaModel.cache && schemaModel.cache.enabled) {
                 this.LOG.debug('Invalidating item cache for modified model');
-                SERVICE.DefaultCacheService.invalidateResource({
+                invalidation = SERVICE.DefaultCacheService.invalidateResource({
                     tenant: request.tenant,
                     authData: request.authData,
                     moduleName: schemaModel.moduleName,
@@ -474,7 +476,7 @@ module.exports = {
             this.LOG.error('Facing issue while invalidating item cache ');
             this.LOG.error(error);
         }
-        process.nextSuccess(request, response);
+        invalidation.then(() => process.nextSuccess(request, response));
     },
     /**
      * Publishes schema save events after successful persistence.

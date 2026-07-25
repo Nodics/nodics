@@ -10,6 +10,7 @@
  */
 
 const assert = require('assert');
+const fs = require('fs');
 const path = require('path');
 
 /**
@@ -58,6 +59,13 @@ assert.strictEqual(groupHeader.profile.defaultUserGroups.options.schemaName, 'us
 assert.strictEqual(userHeader.profile.defaultEmployee.options.schemaName, 'employee');
 assert.strictEqual(enterpriseData.record0.code, 'default');
 assert.strictEqual(tenantData.record0.code, 'default');
+assert.deepStrictEqual(
+    fs.readdirSync(path.join(repoRoot, 'gCore/profile/data/init/data/enterprise'))
+        .filter(fileName => fileName.startsWith('defaultTenantsData'))
+        .sort(),
+    ['defaultTenantsData.js'],
+    'Default tenant init data must have one authoritative source file'
+);
 assert(Object.values(groupData).some(group => group.code === 'serviceAccountUserGroup'));
 assert(Object.values(userData).some(user => user.code === 'apiAdmin' && user.principalType === 'service'));
 

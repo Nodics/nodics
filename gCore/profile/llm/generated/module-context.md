@@ -36,8 +36,8 @@
 | --- | ---: |
 | Source files | 52 |
 | Test files | 48 |
-| Data files | 17 |
-| All module-owned files | 93 |
+| Data files | 15 |
+| All module-owned files | 91 |
 | Local schema definitions | 11 |
 
 ## Ownership And Dependencies
@@ -74,7 +74,7 @@
 | Documented | 76 |
 | Partially documented | 3 |
 | Undocumented | 8 |
-| Inventory only | 6 |
+| Inventory only | 4 |
 
 ## Important Files
 
@@ -104,9 +104,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/data/init/data/address/defaultTenantAddressesData.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
 | `gCore/profile/data/init/data/address/defaultTenantContactsData.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
 | `gCore/profile/data/init/data/enterprise/defaultEnterpriseData.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
-| `gCore/profile/data/init/data/enterprise/defaultTenantsData.csv` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/profile/data/init/data/enterprise/defaultTenantsData.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
-| `gCore/profile/data/init/data/enterprise/defaultTenantsData.xlsx` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/profile/data/init/data/groups/defaultBootstrapUserGroupsData.js` | `data` | `documented` | 0/0 | Seeds the default user-group hierarchy and narrowly scoped administrative permissions required by profile and control-plane capabilities. |  |
 | `gCore/profile/data/init/data/user/defaultCutomerData.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
 | `gCore/profile/data/init/data/user/defaultEmployeeData.js` | `data` | `documented` | 0/0 | Provides mandatory profile initializer employees using validated bootstrap identity credentials from layered configuration. |  |

@@ -177,6 +177,51 @@ function assertPopulateSubModelsAllowsMissingOptions() {
     });
 }
 
+function assertCacheInvalidationCompletesBeforeSaveContinues() {
+    let invalidationResolved = false;
+    global.SERVICE.DefaultCacheService = {
+        invalidateResource: function () {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    invalidationResolved = true;
+                    resolve(true);
+                }, 5);
+            });
+        }
+    };
+    let request = createRequest({ code: 'product-004' });
+    request.schemaModel.moduleName = 'catalog';
+    request.schemaModel.schemaName = 'product';
+    request.schemaModel.cache = { enabled: true };
+    let response = { success: { result: request.model } };
+    return new Promise((resolve, reject) => {
+        singleSaveService.invalidateRouterCache(request, response, {
+            nextSuccess: function () {
+                try {
+                    assert.strictEqual(invalidationResolved, true);
+                    resolve(true);
+                } catch (error) {
+                    reject(error);
+                }
+            }
+        });
+    }).then(() => {
+        invalidationResolved = false;
+        return new Promise((resolve, reject) => {
+            singleSaveService.invalidateItemCache(request, response, {
+                nextSuccess: function () {
+                    try {
+                        assert.strictEqual(invalidationResolved, true);
+                        resolve(true);
+                    } catch (error) {
+                        reject(error);
+                    }
+                }
+            });
+        });
+    });
+}
+
 assertValidationError(undefined).then(() => {
     return assertValidationError([]);
 }).then(() => {
@@ -185,6 +230,8 @@ assertValidationError(undefined).then(() => {
     return assertValidatorFailureStopsPipeline();
 }).then(() => {
     return assertPopulateSubModelsAllowsMissingOptions();
+}).then(() => {
+    return assertCacheInvalidationCompletesBeforeSaveContinues();
 }).then(() => {
     console.log('Model save initializer pipeline contract validated');
 }).catch(error => {

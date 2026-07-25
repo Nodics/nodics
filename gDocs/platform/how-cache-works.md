@@ -209,6 +209,12 @@ Schema save, update, and remove pipelines invalidate both related cache layers:
 - router/API cache for generated endpoints that may expose the changed data;
 - schema/item cache for direct generated service or DAO reads.
 
+The standard single-model save pipeline waits for each best-effort cache
+invalidation attempt before reporting save completion. Therefore, a caller
+that reads the same resource immediately after a successful save or governed
+core import does not need a separate manual cache flush. An unavailable cache
+provider is logged and does not roll back an already-persisted model.
+
 Invalidation must use the cache service, not direct provider calls. The service resolves channel mappings, tenant scope, module scope, and cross-node behavior.
 
 Process-local engines use the configured `cacheInvalidation` event to tell peer module nodes to flush the same scoped resource. Shared engines such as Redis invalidate the shared store and normally do not need a second peer event for the same key.

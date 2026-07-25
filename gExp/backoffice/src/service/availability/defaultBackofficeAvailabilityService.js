@@ -57,8 +57,11 @@ module.exports = {
             let response = await SERVICE.DefaultModuleService.fetch(request);
             let data = response && response.data || response;
             let state = data && data.status === 'UP' ? 'UP' : 'UNAVAILABLE';
+            let failureCount = state === 'UP' ? 0 : previous && previous.state === 'UNAVAILABLE' ?
+                Number(previous.failureCount || 1) + 1 : 1;
             let observation = { moduleName: String(registration.moduleName), instanceId: key, state: state,
                 attemptedAt: attemptedAt, observedAt: new Date().toISOString(),
+                failureCount: failureCount,
                 failureCode: state === 'UP' ? undefined : 'READINESS_NOT_UP' };
             this._observations.set(key, observation);
             this.recordTransition(previous, observation, registration);
@@ -74,8 +77,11 @@ module.exports = {
             return observation;
         } catch (error) {
             let failureCode = this.normalizeFailureCode(error);
+            let failureCount = previous && previous.state === 'UNAVAILABLE' ?
+                Number(previous.failureCount || 1) + 1 : 1;
             let observation = { moduleName: String(registration.moduleName), instanceId: key, state: 'UNAVAILABLE',
                 attemptedAt: attemptedAt, observedAt: new Date().toISOString(),
+                failureCount: failureCount,
                 failureCode: failureCode };
             this._observations.set(key, observation);
             this.recordTransition(previous, observation, registration);
@@ -182,8 +188,13 @@ module.exports = {
         this._moduleRegistrations.get(moduleName).set(key, Object.assign({}, registration));
         let previous = this._observations.get(key);
         let refreshIntervalMs = Math.max(1, Number(policy.refreshIntervalMs || 10000));
-        if (previous && previous.state === 'UNAVAILABLE') refreshIntervalMs = Math.min(Number(policy.maxFailureBackoffMs || 60000),
-            refreshIntervalMs * Math.max(1, Number(policy.failureBackoffMultiplier || 2)));
+        if (previous && previous.state === 'UNAVAILABLE') {
+            let failureRetryIntervalMs = Math.max(1, Number(policy.failureRetryIntervalMs || refreshIntervalMs));
+            let backoffMultiplier = Math.max(1, Number(policy.failureBackoffMultiplier || 2));
+            let backoffExponent = Math.max(0, Number(previous.failureCount || 1) - 1);
+            refreshIntervalMs = Math.min(Number(policy.maxFailureBackoffMs || 60000),
+                failureRetryIntervalMs * Math.pow(backoffMultiplier, backoffExponent));
+        }
         if (previous && Date.now() - Date.parse(previous.attemptedAt) < refreshIntervalMs) {
             this._metrics.suppressedRefreshes++;
             return Promise.resolve(false);

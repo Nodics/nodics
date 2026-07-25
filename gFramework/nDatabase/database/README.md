@@ -84,6 +84,20 @@ database handles are isolated by both module and tenant. Projects may override
 the configuration service in a later layer, but must preserve these validation
 and isolation contracts.
 
+## Save and cache coherence
+
+Generated single-model saves invalidate the schema router cache and, when
+enabled, the schema item cache through `DefaultCacheService`. The save pipeline
+waits for each best-effort invalidation attempt before returning success. This
+keeps an immediate read after save or core import from observing an older
+cached projection.
+
+Cache-provider failure does not reverse an already-committed database write.
+The pipeline logs the invalidation failure and completes the save, allowing
+operators to diagnose or flush the affected scoped cache. Projects overriding
+the save lifecycle must preserve this ordering and must not call a cache
+provider directly.
+
 ## Per-schema versioning
 
 The ordinary `default.base` schema is always non-versioned. Loading the

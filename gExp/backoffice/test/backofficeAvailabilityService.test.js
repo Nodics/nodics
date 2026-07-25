@@ -18,7 +18,8 @@ const assert = require('assert');
 
 let policy = { enabled: true, timeoutMs: 50, refreshIntervalMs: 1000, staleAfterMs: 5000,
     maxResponseBytes: 2048, allowRedirects: false, allowedHosts: ['module.example'],
-    maxConcurrentObservations: 2, maxQueuedObservations: 1, failureBackoffMultiplier: 2, maxFailureBackoffMs: 5000,
+    maxConcurrentObservations: 2, maxQueuedObservations: 1, failureRetryIntervalMs: 250,
+    failureBackoffMultiplier: 2, maxFailureBackoffMs: 5000,
     events: { enabled: true, emitInitialState: false, publisherService: 'DefaultEventService' } };
 let response = { data: { status: 'UP', privateDetail: 'must-not-be-retained' } };
 let fetchedRequest;
@@ -90,12 +91,15 @@ async function run() {
     assert.strictEqual(service.getModuleAvailability([{ instanceId: 'one' }, { instanceId: 'two' }]).state, 'UNKNOWN');
     response = { data: { status: 'UP' } };
     assert.strictEqual(await service.scheduleObservation(registration('two')), false, 'fresh observations must suppress duplicate polling');
+    service._observations.get('two').attemptedAt = new Date(Date.now() - 251).toISOString();
+    assert((await service.scheduleObservation(registration('two'))).state === 'UP',
+        'the first failed observation must recover on the configured short retry interval');
     response = Object.assign(new Error('timed out'), { code: 'ETIMEDOUT' });
     await service.observe(registration('timeout'));
     assert.strictEqual(service.getDiagnostics().metrics.timeouts, 1);
     assert.strictEqual(service.getDiagnostics().metrics.suppressedRefreshes, 1);
     assert.strictEqual(service.getDiagnostics().metrics.staleReads, 1);
-    assert.strictEqual(service.getDiagnostics().metrics.publicationSuccesses, 3);
+    assert.strictEqual(service.getDiagnostics().metrics.publicationSuccesses, 4);
     assert(service.getDiagnostics().metrics.totalDurationMs >= service.getDiagnostics().metrics.maxDurationMs);
     response = { data: { status: 'UP' } };
     await service.observe(registration('one'));

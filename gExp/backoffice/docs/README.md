@@ -38,3 +38,8 @@ this runtime module.
   production-environment validation.
 - `axis-content-catalog.md` explains the module-owned core records for the
   public employee login/recovery pages and authenticated employee dashboard.
+
+Business users, administrators, and partner developers should also read
+[How To Read The Nodics Axis Workspace Context](../../../gDocs/backoffice/how-to-use-axis-workspace-context.md)
+for the implemented Environment, Tenant, Enterprise, Site, Catalog, and
+responsive authentication-screen behavior.

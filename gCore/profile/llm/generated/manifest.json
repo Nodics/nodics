@@ -15,14 +15,14 @@
   },
   "sourceFiles": 52,
   "testFiles": 48,
-  "dataFiles": 17,
-  "ownedFiles": 93,
-  "sourceFingerprint": "7ebe2bc268511fe869b821b3e63c46a32ee157ad624cba4ce88ea442951fe2d0",
+  "dataFiles": 15,
+  "ownedFiles": 91,
+  "sourceFingerprint": "df152e1db6f96e138bc17d26fa812550e07b88905383cf2613a54b036eff91dd",
   "documentation": {
     "documented": 76,
     "partially-documented": 3,
     "undocumented": 8,
-    "inventory-only": 6
+    "inventory-only": 4
   },
   "schemaGroups": {
     "profile": [

@@ -18,6 +18,31 @@ Availability collection is asynchronous to registration. Registrations from
 the same runtime instance are deduplicated, so one process readiness endpoint
 is not polled once for every hosted module. Periodic registration renewal
 triggers bounded refresh according to `backofficeRegistry.availability`.
+After a failed observation, the first renewal may retry after
+`failureRetryIntervalMs`; repeated failures use `failureBackoffMultiplier` up
+to `maxFailureBackoffMs`. This allows a runtime whose readiness becomes `UP`
+just after registration to recover promptly without creating an unbounded
+polling loop. Successful observations return to the normal
+`refreshIntervalMs` cadence.
+
+Example layered configuration:
+
+```js
+backofficeRegistry: {
+    availability: {
+        refreshIntervalMs: 10000,
+        failureRetryIntervalMs: 5000,
+        failureBackoffMultiplier: 2,
+        maxFailureBackoffMs: 60000
+    }
+}
+```
+
+The example retries the first failed observation after five seconds. Continued
+failure increases the interval without exceeding sixty seconds. Projects
+customize these values in the applicable project, environment, server, node,
+tenant, or customer `properties.js` layer; they must not add a second polling
+service or health authority.
 
 The request uses the registered endpoint's exact origin and the configured
 relative health path. It shares discovery's scheme, credential, fragment, and
@@ -83,6 +108,25 @@ different from durable contract history.
 
 Secured registry diagnostics expose only tracked/inflight counts, bounded
 operational counters, stable last-failure code, and timestamps.
+
+## Operator troubleshooting
+
+If a module remains `UNAVAILABLE`:
+
+1. call the target runtime's public `/nodics/system/v0/health/ready` endpoint;
+2. confirm that the registered origin and health path belong to that runtime;
+3. compare `failureRetryIntervalMs`, failure backoff, freshness, lease, and
+   registration heartbeat settings;
+4. inspect secured BackOffice diagnostics for the stable readiness or transport
+   failure category;
+5. correct the target dependency or configuration and allow the existing
+   registration renewal to trigger recovery.
+
+Do not mark a module healthy manually and do not create a second registry
+record. A readiness response of `DOWN` is resolved at the target runtime. A
+transport failure is resolved through endpoint, network, TLS, allowlist, or
+deployment configuration. BackOffice publishes one recovery transition when
+the normalized aggregate returns to `UP` or `DEGRADED`.
 
 ## Required validation
 

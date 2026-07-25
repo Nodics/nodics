@@ -64,6 +64,10 @@
 - Availability is a freshness-bounded observation of the target's existing
   public readiness contract. Deduplicate by runtime instance, retain no raw
   response, and never turn BackOffice into target health or readiness authority.
+- Recover a transient first readiness failure through the configured
+  `failureRetryIntervalMs`; apply bounded exponential backoff only to repeated
+  failures. Reuse registration renewal to trigger observation and never add a
+  parallel polling scheduler.
 - Availability transition events must use the existing Nodics event capability,
   publish only sanitized changed state, suppress unchanged-state storms, and
   remain fail-open and asynchronous to registration and application traffic.
