@@ -88,6 +88,46 @@ module.exports = {
     },
 
     /**
+     * Authenticates an employee and starts a Profile-owned browser session.
+     */
+    authenticateEmployeeBrowser: function (request, callback) {
+        this.mapCredentials(request);
+        let operation = FACADE.DefaultAuthenticationProviderFacade.authenticateEmployee(request)
+            .then(authentication => {
+                let tokens = authentication && authentication.result;
+                if (!tokens) {
+                    throw new CLASSES.NodicsError(
+                        'ERR_AUTH_00001', 'Employee authentication result is invalid'
+                    );
+                }
+                return SERVICE.DefaultBrowserSessionService.start(request, tokens);
+            })
+            .then(result => ({ code: 'SUC_AUTH_00001', result: result }));
+        if (callback) operation.then(result => callback(null, result)).catch(callback);
+        else return operation;
+    },
+
+    /**
+     * Rotates the HttpOnly browser refresh session and returns a new access token.
+     */
+    restoreEmployeeBrowser: function (request, callback) {
+        let operation = SERVICE.DefaultBrowserSessionService.restore(request)
+            .then(result => ({ code: 'SUC_AUTH_00000', result: result }));
+        if (callback) operation.then(result => callback(null, result)).catch(callback);
+        else return operation;
+    },
+
+    /**
+     * Revokes and clears the Profile-owned browser session.
+     */
+    logoutEmployeeBrowser: function (request, callback) {
+        let operation = SERVICE.DefaultBrowserSessionService.logout(request)
+            .then(result => ({ code: 'SUC_AUTH_00000', result: result }));
+        if (callback) operation.then(result => callback(null, result)).catch(callback);
+        else return operation;
+    },
+
+    /**
 
      * Executes authenticate customer behavior.
 

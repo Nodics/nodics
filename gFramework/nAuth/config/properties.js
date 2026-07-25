@@ -113,8 +113,15 @@ module.exports = {
         administrativeGroups: ['adminGroup', 'runtimeConfigAdminUserGroup', 'serviceAccountUserGroup'],
         systemAccessGroups: ['serviceAccountUserGroup'],
         groupValidationPageSize: 10000,
+        principalPolicy: {
+            allowedTypes: ['human', 'service', 'customer'],
+            serviceType: 'service',
+            serviceGroup: 'serviceAccountUserGroup',
+            minimumServiceApiKeyLength: 32
+        },
         customerRegistration: {
             group: 'customerUserGroup',
+            principalType: 'customer',
             active: true
         },
         permissionCatalog: [
@@ -188,6 +195,8 @@ module.exports = {
             'system.log.level.update',
             'system.schema.index.rebuild',
             'system.schema.validator.rebuild',
+            'system.schema.workbench.view',
+            'system.schema.workbench.manage',
             'system.test.unit.run',
             'system.test.nodics.run',
             'import.init.run',
@@ -217,7 +226,7 @@ module.exports = {
                 adminGroup: {
                     parentGroups: ['userGroup'],
                     permissions: ['backoffice.registry.view', 'backoffice.bootstrap.view', 'backoffice.contract.view',
-                        'backoffice.axis.policy.view']
+                        'backoffice.axis.policy.view', 'system.schema.workbench.view']
                 },
                 employeeUserGroup: {
                     parentGroups: ['userGroup'],
@@ -239,7 +248,8 @@ module.exports = {
                         'backoffice.contract.view',
                         'system.health.readiness.view',
                         'system.contract.openapi.view',
-                        'system.contract.swagger.view'
+                        'system.contract.swagger.view',
+                        'system.schema.workbench.view'
                     ]
                 },
                 runtimeConfigRequesterUserGroup: {

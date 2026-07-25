@@ -322,6 +322,11 @@ module.exports = {
             buildQuery: {
                 type: 'function',
                 handler: 'DefaultModelsRemoveInitializerService.buildQuery',
+                success: 'enforceReferenceIntegrity'
+            },
+            enforceReferenceIntegrity: {
+                type: 'function',
+                handler: 'DefaultModelsRemoveInitializerService.enforceReferenceIntegrity',
                 success: 'applyPreInterceptors'
             },
             applyPreInterceptors: {

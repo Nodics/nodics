@@ -76,5 +76,15 @@ module.exports = {
             { target: 'axisAssistantWorkspaceComponent', slot: 'workspace', index: 20, active: true }
         ],
         active: true
+    },
+    record5: {
+        code: 'axisSchemaWorkbenchPage', name: 'Axis Schema Workbench', cmsSite: ['axisCmsSite'],
+        typeCode: 'axisSchemaWorkbenchPageType', template: 'axisSchemaWorkbenchPageTemplate',
+        renderer: 'axis.page.schema-workbench',
+        cmsComponents: [
+            { target: 'axisSchemaWorkbenchHeaderComponent', slot: 'header', index: 10, active: true },
+            { target: 'axisSchemaWorkbenchComponent', slot: 'content', index: 20, active: true }
+        ],
+        active: true
     }
 };

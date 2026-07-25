@@ -54,7 +54,7 @@ module.exports = {
             configuration.guardrails.maximumMessageCharacters) {
             throw new Error('AI Assistant message identity or size is invalid');
         }
-        const identity = guardrailService.authorize(request);
+        const identity = guardrailService.authorize(request, configuration);
         const context = {
             identity: identity, configuration: configuration,
             services: runtime.services, eventPublisher: runtime.eventPublisher

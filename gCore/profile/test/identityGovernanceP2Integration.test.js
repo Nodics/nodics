@@ -35,6 +35,12 @@ global.CONFIG = { get: key => ({
     authSecurity: { apiKey: { pepper: 'auth-p2-migration-pepper-with-more-than-thirty-two-characters', minimumPepperLength: 32, defaultLifetimeSeconds: 3600 } },
     identityGovernance: {
         permissionCatalog: ['auth.internal.token.read', 'auth.internal.token.read.anyTenant'],
+        principalPolicy: {
+            allowedTypes: ['human', 'service', 'customer'],
+            serviceType: 'service',
+            serviceGroup: 'serviceAccountUserGroup',
+            minimumServiceApiKeyLength: 32
+        },
         migration: {
             version: 2,
             servicePrincipalCodes: ['apiAdmin'],

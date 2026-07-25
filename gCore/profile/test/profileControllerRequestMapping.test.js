@@ -45,6 +45,15 @@ global.SERVICE = {
             return Promise.resolve(true);
         }
     },
+    DefaultBrowserSessionService: {
+        start: function (request, tokens) {
+            calls.push({ operation: 'startBrowserSession', request, tokens });
+            return Promise.resolve({
+                authToken: tokens.authToken,
+                loginId: request.loginId
+            });
+        }
+    },
     DefaultAuthorizationProviderService: {
         authorizeToken: function (request) {
             calls.push({ operation: 'authorizeToken', request });
@@ -89,7 +98,13 @@ global.FACADE = {
     DefaultAuthenticationProviderFacade: {
         authenticateEmployee: function (request) {
             calls.push({ operation: 'authenticateEmployee', request });
-            return Promise.resolve({ code: 'SUC_AUTH_EMPLOYEE' });
+            return Promise.resolve({
+                code: 'SUC_AUTH_EMPLOYEE',
+                result: {
+                    authToken: 'employee-access-token',
+                    refreshToken: 'employee-refresh-token'
+                }
+            });
         },
         authenticateCustomer: function (request) {
             calls.push({ operation: 'authenticateCustomer', request });
@@ -155,6 +170,21 @@ const authorizationController = require('../src/controller/authorization/default
     assert.strictEqual(employeeRequest.loginId, 'employee@example.com');
     assert.strictEqual(employeeRequest.password, 'secret');
     assert.strictEqual(employeeRequest.source, 'admin');
+
+    let browserRequest = {
+        httpRequest: httpRequest({}, {
+            loginId: 'browser@example.com',
+            password: 'secret'
+        })
+    };
+    let browserResponse = await authController.authenticateEmployeeBrowser(browserRequest);
+    let browserStart = calls.find(call => call.operation === 'startBrowserSession');
+    assert.deepStrictEqual(browserStart.tokens, {
+        authToken: 'employee-access-token',
+        refreshToken: 'employee-refresh-token'
+    });
+    assert.strictEqual(browserResponse.result.authToken, 'employee-access-token');
+    assert.strictEqual(browserResponse.result.loginId, 'browser@example.com');
 
     let customerAuthRequest = {
         httpRequest: httpRequest({}, {
@@ -264,6 +294,8 @@ const authorizationController = require('../src/controller/authorization/default
 
     assert.deepStrictEqual(calls.map(call => call.operation), [
         'authenticateEmployee',
+        'authenticateEmployee',
+        'startBrowserSession',
         'authenticateCustomer',
         'rotateRefreshToken',
         'revokeSession',

@@ -28,3 +28,29 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
   can escape before commit.
 - Do not describe ordered writes, compensation, or record-level CAS as a
   multi-record transaction.
+- Declare target-delete protection on the authoritative source `refSchema`
+  relationship with `onTargetDelete: 'RESTRICT'`; never create a separate
+  reference registry for Workbench or another client.
+- Preserve fail-closed reference validation, tenant boundaries, bounded
+  inspection, stable conflict semantics, and the shared generated remove
+  pipeline when overriding reference-integrity behavior.
+- Do not infer or implement cascading deletion from relationship metadata.
+  Cascade behavior requires a module-owned business operation and explicit
+  transaction or compensation rules.
+- Keep every eligible model discoverable with generated Search, Read, Create,
+  Update, and Delete operations by default, filtered through effective schema
+  access. Treat `backoffice.enabled: false` as an explicit exclusion and use
+  an explicit operations list to narrow sensitive models.
+- Put reusable schema access and ownership defaults in layered
+  `schemaPolicies` and reference stable capability names from schemas. Preserve
+  final `accessGroups` and `ownership` as the sole runtime enforcement
+  contract; named policies are composition inputs only.
+- Use keyed booleans for extensible ownership group/type collections. Later
+  layers add entries with `true` and remove inherited entries with `false`.
+- Schema Workbench bulk actions must be schema-explicit, bounded, separately
+  permissioned, idempotency-keyed, and delegated to generated CRUD or an
+  owning domain service. Do not create a second mutation path.
+- Derive relationship, delete-impact, concurrency, and aggregate metadata from
+  effective schemas. Aggregate execution only delegates to the declared owning
+  service; same-database atomic work uses `DefaultDatabaseTransactionService`
+  and cross-module consistency uses an owning Workflow or saga.

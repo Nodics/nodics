@@ -136,6 +136,226 @@ project wants to disable schema maintenance APIs for a specific topology, do it
 through layered `apiExposure.categories.schemaMaintenance.enabled` configuration
 instead of removing framework routes.
 
+## Layered named schema policies
+
+Reusable schema access and ownership defaults belong in layered
+`schemaPolicies` configuration rather than local JavaScript factories inside a
+schema registry. A schema references one or more policies:
+
+```js
+address: {
+    super: 'base',
+    schemaPolicies: ['customerOwned'],
+    model: true
+}
+```
+
+The owning module contributes the named policy through `properties.js`.
+nDatabase resolves policies before schema inheritance and materializes the
+established `accessGroups` and `ownership` properties. Generated CRUD, access
+handlers, ownership enforcement, models, and APIs continue to consume only the
+effective schema. Named policies are composition inputs, not another runtime
+authorization authority.
+
+Ownership collections use keyed booleans so later modules can extend and
+remove entries predictably. `true` includes a group/type and `false` removes
+an inherited entry. Policies are namespaced by the schema-owning module,
+several policies compose in listed order, explicit schema properties take
+final precedence, and unknown policy names fail startup.
+
+## Schema Workbench discovery
+
+Schema Workbench lets an authorized BackOffice client discover a module's
+model contracts without receiving database, service, interceptor, or
+credential internals. Every eligible model is discoverable with generated
+Search, Read, Create, Update, and Delete operations by default, filtered by the
+caller's effective access. It is a metadata API, not another CRUD
+implementation.
+
+An owning module adds mutation behavior or presentation metadata explicitly:
+
+```js
+backoffice: {
+    enabled: true,
+    label: 'Address',
+    displayProperty: 'code',
+    displayProperties: ['city', 'code'],
+    operations: ['search', 'read', 'create', 'update', 'delete'],
+    relationships: {
+        contacts: {
+            label: 'Contact methods',
+            targetModule: 'profile',
+            actions: ['SELECT_EXISTING', 'CREATE_RELATED']
+        }
+    }
+}
+```
+
+`displayProperty` remains the stable primary presentation field.
+`displayProperties` may add ordered, client-safe identifying values so a
+selector can show a meaningful label such as `Default tenant — default`
+instead of only an opaque persistence identifier. Relationship labels describe
+the source field's business role, so two references to the same target schema
+can appear as `Parent enterprise` and `Sub-enterprises`. Define the label on
+the source field or override it in `backoffice.relationships`.
+
+When `displayProperties` is omitted, Schema Workbench supplies the stable
+`displayProperty` followed by `description`. Axis presents that contract as
+`code - description`; if a legacy model has no code, its configured stable
+identity (usually `_id`) is used instead. This applies consistently to every
+discovered model while allowing the owning module to override the fields.
+
+The secured module-local endpoints are:
+
+- `GET /nodics/{module}/v0/schema/workbench`
+- `GET /nodics/{module}/v0/schema/workbench/:schema`
+- `POST /nodics/{module}/v0/schema/workbench/:schema/records`
+- `POST /nodics/{module}/v0/schema/workbench/:schema/delete-impact`
+- `POST /nodics/{module}/v0/schema/workbench/:schema/bulk`
+- `POST /nodics/{module}/v0/schema/workbench/:schema/aggregate`
+
+Discovery, record search, and delete-impact preview require
+`system.schema.workbench.view`. Bulk and aggregate commands require the
+separate `system.schema.workbench.manage` permission. Every route also requires
+the `schemaWorkbench` API exposure category. The returned operations are intersected with the caller's
+effective schema access point. A non-model schema, an explicitly disabled
+schema, or a schema the caller cannot read is not disclosed.
+
+The layered `schemaWorkbench` configuration controls default discovery:
+
+- `discoverModelsByDefault` enables safe model discovery;
+- `defaultModelOperations` defaults to generated `search`, `read`, `create`,
+  `update`, and `delete`.
+- `defaultRelationshipActions` controls the relationship choices advertised by
+  default. The standard contract offers `SELECT_EXISTING` and `CREATE_RELATED`;
+  Axis shows create-related only when the target schema also authorizes create.
+- `defaultPageSize`, `allowedPageSizes`, and `maximumPageSize` bound record
+  browsing;
+- `maximumSearchLength` bounds free-text input.
+
+Set `backoffice.enabled: false` on a model that must never appear. Use an
+explicit `operations` list to narrow a model to read-only or another approved
+subset.
+
+The descriptor is generated from the already composed `module.rawSchema`.
+Therefore inherited fields remain visible and there is no parallel schema
+loader or registry. Data reads and mutations still use the existing generated
+CRUD routers or an explicitly declared module-owned domain operation.
+
+The record browser endpoint accepts only a plain search string, a one-based
+page number, an allowed page size, and a descriptor-advertised sort field and
+direction. It escapes the search as literal text, searches only safe string
+fields, and invokes the schema's existing generated service. It does not
+accept client-supplied MongoDB operators or create a parallel query authority.
+The response includes the page records, total count, effective page, page
+size, and sort. Axis cancels obsolete in-flight requests when the employee
+changes search, sort, page, or selected schema.
+
+Descriptors also advertise scalar `filterFields`, their type-safe operators,
+and the supported `AND`/`OR` group operators. Browser filters are limited to
+20 conditions and three group levels by default. Text, enum, number, boolean,
+and date values are validated and normalized before an internal query is
+created. Projects may reduce these limits through layered
+`schemaWorkbench` configuration. Raw query fragments, field names, operators,
+regular expressions, scripts, and URLs are never accepted from the client.
+
+Relationship metadata may identify another module through `targetModule`.
+`LOCAL_OR_REMOTE` means the client resolves the target through BackOffice
+module discovery and calls the target module directly. It does not authorize
+nDatabase to perform a distributed transaction. Cross-module workflows must
+use a domain operation, ordered compensation, or reference-only behavior
+according to the owning modules' consistency contract.
+
+Relationship descriptors also expose bounded presentation-neutral metadata:
+relationship type, ownership direction, inverse field, target-delete policy,
+maximum nested-create depth, cycle handling, and whether governed delete impact
+can be inspected. These values are derived from the effective schema and its
+`backoffice.relationships` override. They are not a second relationship
+registry.
+
+### Bulk, concurrency, and aggregate commands
+
+Bulk mutation is disabled unless the owning schema explicitly declares
+`backoffice.bulkOperations`. The first generic operation is bounded
+`DELETE`; it requires `system.schema.workbench.manage`, an 8-128 character
+`Idempotency-Key`, and no more than `schemaWorkbench.maximumBulkItems`
+identities. Execution delegates to the existing generated remove service, so
+authorization, ownership, interceptors, validation, reference integrity,
+tenant isolation, and provider behavior remain authoritative.
+
+When an effective schema has a `revision` field, its descriptor advertises a
+compare-and-set identity requirement. A later layer may configure another
+effective revision field through `backoffice.concurrency`; it may not invent a
+browser-only timestamp check.
+
+Aggregate operations are also opt-in:
+
+```js
+backoffice: {
+    aggregateOperations: {
+        SAVE_WITH_RELATIONSHIPS: {
+            enabled: true,
+            label: 'Save with related records',
+            purpose: 'SAVE_WITH_RELATIONSHIPS',
+            consistency: 'ATOMIC',
+            service: 'DefaultAddressAggregateService',
+            operation: 'saveWithRelationships'
+        }
+    }
+}
+```
+
+The descriptor exposes only inert name, label, purpose, consistency, and
+confirmation metadata. It never exposes service names. The generic endpoint
+only delegates; the owning service must validate the complete command and use
+`DefaultDatabaseTransactionService` for supported same-database atomic work.
+Cross-database or cross-module consistency must use a module-owned Workflow or
+saga with explicit compensation. Workbench never simulates a distributed
+transaction.
+
+### Reference-safe deletion
+
+Generated deletion can enforce an inbound relationship without introducing a
+second relationship registry. The source schema owns the rule on its existing
+`refSchema` entry:
+
+```js
+refSchema: {
+    contacts: {
+        enabled: true,
+        moduleName: 'profile',
+        schemaName: 'contact',
+        type: 'many',
+        propertyName: 'code',
+        onTargetDelete: 'RESTRICT'
+    }
+}
+```
+
+`RESTRICT` means a referenced target record cannot be deleted until the source
+reference is removed. The shared remove pipeline discovers these declarations
+from effective schemas before persistence. It supports same-module and
+cross-module contracts when the source model is available in the current
+runtime.
+
+The guard is configured through layered `referenceIntegrity` properties:
+
+- `enabled` activates the generic guard;
+- `failClosed` rejects deletion when a declared source cannot be checked;
+- `maximumTargetRecords` bounds target inspection per delete;
+- `maximumRelationships` bounds the number of evaluated declarations.
+
+The default is deliberately fail-closed. A distributed deployment may override
+`DefaultReferenceIntegrityService` with a governed remote or indexed
+implementation, but must continue deriving declarations from effective
+`refSchema`, preserve tenant context, and return the same conflict/unavailable
+semantics. It must not introduce an independently managed relationship list.
+
+`CASCADE` is not implemented by this contract. Declaring any value other than
+`RESTRICT` does not authorize cascading deletion. A cascade requires an
+explicit module-owned business operation with its own transaction,
+compensation, authorization, audit, and failure contract.
+
 ## Provider Adapter Checklist
 
 Use this checklist when adding a new database adapter such as Oracle:

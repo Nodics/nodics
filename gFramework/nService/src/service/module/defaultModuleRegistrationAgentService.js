@@ -38,18 +38,28 @@ module.exports = {
     /** Completes the standard service post-initialization contract. */
     postInit: function () { return Promise.resolve(true); },
     /** Returns effective registration and heartbeat policy. */
-    getConfiguration: function () { return CONFIG.get('backofficeRegistration') || {}; },
+    getConfiguration: function () {
+        let config = CONFIG.get('backofficeRegistration');
+        if (!config) throw new Error('BackOffice registration configuration is missing');
+        if (config.enabled !== false && (!config.moduleName ||
+            !Number.isSafeInteger(config.heartbeatIntervalMs) ||
+            !Number.isSafeInteger(config.retryIntervalMs) ||
+            !Number.isSafeInteger(config.maxModulesPerRegistration))) {
+            throw new Error('BackOffice registration configuration is incomplete');
+        }
+        return config;
+    },
 
     /** Starts asynchronous registration and lease renewal without blocking readiness. */
     start: function () {
         let config = this.getConfiguration();
         if (config.enabled === false || this._timer) return false;
         let schedule = () => this.runRegistration().then(success => {
-            let delay = Number(success ? config.heartbeatIntervalMs || 10000 : config.retryIntervalMs || 5000);
+            let delay = Number(success ? config.heartbeatIntervalMs : config.retryIntervalMs);
             this._timer = setTimeout(schedule, delay);
             if (this._timer.unref) this._timer.unref();
         }).catch(() => {
-            this._timer = setTimeout(schedule, Number(config.retryIntervalMs || 5000));
+            this._timer = setTimeout(schedule, Number(config.retryIntervalMs));
             if (this._timer.unref) this._timer.unref();
         });
         this._timer = setTimeout(schedule, 0);
@@ -97,7 +107,8 @@ module.exports = {
 
     /** Resolves the tenant-scoped internal service authorization header. */
     getAuthorizationHeader: function () {
-        let tenant = CONFIG.get('defaultTenant') || 'default';
+        let tenant = CONFIG.get('defaultTenant');
+        if (!tenant) throw new Error('Default tenant configuration is missing');
         let token = NODICS.getInternalAuthToken(tenant);
         return token ? { Authorization: 'Bearer ' + token } : null;
     },
@@ -112,9 +123,9 @@ module.exports = {
             if (!header) throw new Error('Internal service token is not available');
             let config = this.getConfiguration();
             let modules = this.getLocalModules();
-            if (modules.length > Number(config.maxModulesPerRegistration || 512)) throw new Error('Active module registration limit exceeded');
+            if (modules.length > Number(config.maxModulesPerRegistration)) throw new Error('Active module registration limit exceeded');
             await SERVICE.DefaultModuleService.fetch(SERVICE.DefaultModuleService.buildRequest({
-                moduleName: config.moduleName || 'backoffice',
+                moduleName: config.moduleName,
                 apiName: '/registry/instances',
                 methodName: 'PUT',
                 header: Object.assign({ 'Idempotency-Key': this.getInstanceId() }, header),
@@ -150,7 +161,7 @@ module.exports = {
         let config = this.getConfiguration();
         try {
             await SERVICE.DefaultModuleService.fetch(SERVICE.DefaultModuleService.buildRequest({
-                moduleName: config.moduleName || 'backoffice',
+                moduleName: config.moduleName,
                 apiName: '/registry/instances/' + encodeURIComponent(this.getInstanceId()),
                 methodName: 'DELETE',
                 header: Object.assign({ 'Idempotency-Key': this.getInstanceId() + ':delete' }, header),

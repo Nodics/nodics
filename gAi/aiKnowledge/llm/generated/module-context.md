@@ -45,6 +45,7 @@
 **Owned extension areas**
 
 - `configuration`
+- `data`
 - `schema`
 - `router`
 - `controller`

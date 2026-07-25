@@ -37,7 +37,21 @@ module.exports = {
             roles: ['UI_COMPOSITION_PROVIDER', 'FUNCTIONAL_CAPABILITY_PROVIDER'],
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             requiredPermissions: ['storefront.backoffice.read'],
-            navigation: [{ id: 'storefronts', label: 'Storefronts', route: '/experience/storefronts', icon: 'storefront', order: 300 }]
+            navigation: [{ id: 'storefronts', label: 'Storefronts', route: '/experience/storefronts', icon: 'storefront', order: 300,
+                group: { id: 'content', label: 'Content and Experience', order: 200 },
+                perspectives: ['operations', 'content'], contexts: ['environment', 'tenant', 'enterprise', 'site'],
+                featureState: 'ACTIVE' },
+            ...['Sites', 'Domains', 'Store Bindings', 'Catalog Bindings'].map((label, index) => ({
+                id: ['sites', 'domains', 'store-bindings', 'catalog-bindings'][index],
+                parentId: 'storefronts', label,
+                route: '/experience/storefronts/' + ['sites', 'domains', 'store-bindings',
+                    'catalog-bindings'][index],
+                icon: 'storefront', order: 310 + index * 10,
+                group: { id: 'content', label: 'Content and Experience', order: 200 },
+                perspectives: ['operations', 'content'],
+                contexts: ['environment', 'tenant', 'enterprise', 'site'],
+                featureState: 'DISABLED'
+            }))]
         }
     },
     storefront: {

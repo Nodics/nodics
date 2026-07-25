@@ -61,12 +61,11 @@ module.exports = {
 
     /** Returns the effective layered HTTP resilience policy. */
     getTransportConfiguration: function () {
-        return _.merge({
-            timeoutMs: 5000,
-            retry: { maxAttempts: 2, baseDelayMs: 50, maxDelayMs: 1000, jitterRatio: 0.2, statuses: [], errorCodes: [] },
-            circuitBreaker: { enabled: true, failureThreshold: 5, recoveryTimeoutMs: 30000 },
-            connectionPool: { keepAlive: true, keepAliveMsecs: 1000, maxSockets: 128, maxFreeSockets: 16, timeoutMs: 60000 }
-        }, CONFIG.get('serviceCommunication') || {});
+        let configuration = CONFIG.get('serviceCommunication');
+        if (!configuration) {
+            throw new CLASSES.NodicsError('ERR_SYS_00000', 'Module service communication configuration is missing');
+        }
+        return _.merge({}, configuration);
     },
 
     /** Lazily creates shared agents, circuit state, and diagnostic counters. */

@@ -17,6 +17,12 @@ implemented. Enterprise creation uses a separate immutable employee
 confirmation API; Profile remains mutation authority and Workflow owns
 configured durable multi-step execution.
 
+Assistant identity exclusions are layered under
+`aiAssistant.security.deniedPrincipalGroups`. This lets a partner add its own
+non-employee groups without replacing the guardrail service. Tenant presence
+and authenticated human-employee identity remain mandatory fail-closed
+security invariants.
+
 ## Current contracts
 
 - conversation context and start-turn request;

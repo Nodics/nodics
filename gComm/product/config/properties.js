@@ -17,7 +17,20 @@ module.exports = {
             contractVersion: 1, minimumClientContractVersion: 1, roles: ['FUNCTIONAL_CAPABILITY_PROVIDER'],
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             requiredPermissions: ['product.backoffice.read'],
-            navigation: [{ id: 'products', label: 'Products', route: '/products', icon: 'product', order: 430, requiredPermissions: ['product.backoffice.read'] }]
+            navigation: [{ id: 'products', label: 'Products', route: '/products', icon: 'product', order: 430,
+                group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'ACTIVE', requiredPermissions: ['product.backoffice.read'] },
+            ...['Categories', 'Product Catalogs', 'Classifications', 'Bundles'].map((label, index) => ({
+                id: ['categories', 'product-catalogs', 'classifications', 'bundles'][index],
+                parentId: 'products', label,
+                route: '/products/' + ['categories', 'catalogs', 'classifications', 'bundles'][index],
+                icon: 'product', order: 440 + index * 10,
+                group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'],
+                contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED'
+            }))]
         }
     },
     product: {

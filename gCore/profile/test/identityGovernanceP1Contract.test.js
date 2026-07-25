@@ -26,6 +26,12 @@ const values = {
     },
     identityGovernance: {
         permissionCatalog: ['auth.internal.token.read', 'auth.internal.token.read.anyTenant'],
+        principalPolicy: {
+            allowedTypes: ['human', 'service', 'customer'],
+            serviceType: 'service',
+            serviceGroup: 'serviceAccountUserGroup',
+            minimumServiceApiKeyLength: 32
+        },
         migration: {
             version: 1,
             servicePrincipalCodes: ['apiAdmin'],

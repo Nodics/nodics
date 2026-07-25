@@ -35,6 +35,37 @@ to use the exact backend-provided code.
    view or change.
 5. Open only an enabled module from the left navigation.
 
+The left navigation is grouped by business purpose. When more than one
+perspective is available, use **Perspective** to narrow the menu without
+changing authorization. **All work** restores every authorized destination.
+Use the star beside a destination to add or remove it from **Favourites**.
+Destinations opened recently appear as **Recent Items** inside Workspace. These
+two lists store only
+bounded module and navigation identifiers in the current browser; they never
+store employee tokens, tenant data, record data, or backend responses.
+
+## Left-navigation groups
+
+Axis uses seven stable business groups. Each destination still belongs to, and
+is authorized by, the backend module that provides the functionality.
+
+| Group | Available and planned destinations |
+| --- | --- |
+| Workspace | Dashboard, My Work, Assigned to Me, Approvals, Returned Work, Workflows I Started, Completed Work, Recent Items, and Favourites |
+| Content and Experience | Content, Pages, Components, Media, Page Templates, Content Catalogs, Storefronts, Sites, Domains, Store Bindings, Catalog Bindings, and Publishing |
+| Commerce | Products, Categories, Product Catalogs, Classifications, Bundles, Pricing, Price Lists, Price Groups, Stock, Stock Pools, Warehouses, Availability, Stores, Locations, Orders, and Carts |
+| Customers and Organization | Customers, Customer Segments, Employees, Roles, Permission Groups, Enterprises, and Business Units |
+| Process and Automation | Workflows, workflow definitions and instances, actions and failures, Scheduled Jobs, triggers, execution history, the future visual designer, and agentic processes |
+| Operations and Integration | Module Registry, Module Health, Integrations, Imports and Exports, Events, Audit Trail, and Operational Failures |
+| Administration | Schema Workbench, Axis and module configuration, Localization, Units, Security Policies, Themes and Branding, and System Information |
+
+A grey or disabled destination communicates roadmap visibility only: its
+business screen is not yet available. It cannot be opened and does not imply
+API permission. An enabled destination is still subject to the owning module's
+authorization on every request. Partners extend the relevant module's
+`backofficeCapabilities.navigation` configuration instead of hardcoding a
+second menu inside Axis.
+
 For the current implementation, the context bar is informational. It is not a
 tenant, enterprise, Site, or Catalog switcher. A future selector must use a
 governed backend context-switching contract; changing visible browser text

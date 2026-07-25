@@ -163,6 +163,9 @@ module.exports = {
             !Array.isArray(configuration.guardrails.redactionPatterns)) {
             throw new Error('AI Assistant guardrail configuration is invalid');
         }
+        if (!configuration.security || !Array.isArray(configuration.security.deniedPrincipalGroups)) {
+            throw new Error('AI Assistant identity security configuration is invalid');
+        }
         assertNoInlineSecrets(configuration, 'aiAssistant');
         return true;
     },

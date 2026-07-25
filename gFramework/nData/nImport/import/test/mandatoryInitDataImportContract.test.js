@@ -12,6 +12,8 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const _ = require('lodash');
+const authDefaults = require('../../../../nAuth/config/properties').authSecurity;
 
 /**
  * @module import/test/mandatoryInitDataImportContract
@@ -31,7 +33,9 @@ global.CONFIG = {
             servicePassword: 'test-service-password-12345',
             serviceApiKey: 'test-service-api-key-value-12345678901234567890'
         };
-        if (key === 'authSecurity') return { compatibility: { allowLocalBootstrapIdentity: true } };
+        if (key === 'authSecurity') return _.merge({}, authDefaults, {
+            compatibility: { allowLocalBootstrapIdentity: true }
+        });
         return undefined;
     }
 };

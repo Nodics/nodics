@@ -9,28 +9,6 @@
 
  */
 
-const profileAdministrativeAccess = function () {
-    return {
-        adminGroup: 10,
-        runtimeConfigAdminUserGroup: 10,
-        serviceAccountUserGroup: 10
-    };
-};
-
-const profileOwnedAccess = function () {
-    return Object.assign(profileAdministrativeAccess(), { customerUserGroup: 10 });
-};
-
-const profileOwnership = function () {
-    return {
-        enabled: true,
-        ownerProperty: 'ownerId',
-        bypassGroups: ['adminGroup', 'runtimeConfigAdminUserGroup', 'serviceAccountUserGroup'],
-        subjectGroups: ['customerUserGroup'],
-        principalTypes: ['customer']
-    };
-};
-
 /**
  * @module gCore/profile/src/schemas/schemas
  * @description Defines profile schema metadata, model contracts, and generated capability settings.
@@ -42,7 +20,13 @@ module.exports = {
     profile: {
         tenant: {
             super: 'super',
-            accessGroups: profileAdministrativeAccess(),
+            backoffice: {
+                enabled: true,
+                label: 'Tenant',
+                displayProperty: 'code',
+                displayProperties: ['code', 'description']
+            },
+            schemaPolicies: ['administrative'],
             model: true,
             service: {
                 enabled: true
@@ -69,8 +53,19 @@ module.exports = {
 
         address: {
             super: 'base',
-            accessGroups: profileOwnedAccess(),
-            ownership: profileOwnership(),
+            backoffice: {
+                enabled: true,
+                label: 'Address',
+                displayProperty: 'code',
+                operations: ['search', 'read', 'create', 'update', 'delete'],
+                relationships: {
+                    contacts: {
+                        targetModule: 'profile',
+                        actions: ['SELECT_EXISTING', 'CREATE_RELATED']
+                    }
+                }
+            },
+            schemaPolicies: ['customerOwned'],
             model: true,
             service: {
                 enabled: true
@@ -91,7 +86,8 @@ module.exports = {
                     enabled: true,
                     schemaName: "contact",
                     type: 'many',
-                    propertyName: 'code'
+                    propertyName: 'code',
+                    onTargetDelete: 'RESTRICT'
                 }
             },
             definition: {
@@ -104,7 +100,8 @@ module.exports = {
                     type: 'bool',
                     required: true,
                     default: false,
-                    description: 'Set if this address is default one'
+                    label: 'Primary address',
+                    description: 'Indicates whether this is the default address'
                 },
                 flatNo: {
                     type: 'string',
@@ -161,8 +158,13 @@ module.exports = {
 
         contact: {
             super: 'base',
-            accessGroups: profileOwnedAccess(),
-            ownership: profileOwnership(),
+            backoffice: {
+                enabled: true,
+                label: 'Contact',
+                displayProperty: 'code',
+                operations: ['search', 'read', 'create', 'update', 'delete']
+            },
+            schemaPolicies: ['customerOwned'],
             model: true,
             service: {
                 enabled: true
@@ -196,7 +198,13 @@ module.exports = {
 
         enterprise: {
             super: 'base',
-            accessGroups: profileAdministrativeAccess(),
+            backoffice: {
+                enabled: true,
+                label: 'Enterprise',
+                displayProperty: 'code',
+                displayProperties: ['code', 'description']
+            },
+            schemaPolicies: ['administrative'],
             model: true,
             service: {
                 enabled: true
@@ -267,6 +275,7 @@ module.exports = {
                 tenant: {
                     type: 'string',
                     required: true,
+                    label: 'Tenant',
                     description: 'Required Code of associated tenant',
                     searchOptions: {
                         enabled: true, // default is false
@@ -275,6 +284,7 @@ module.exports = {
                 superEnterprise: {
                     type: 'objectId',
                     required: false,
+                    label: 'Parent enterprise',
                     description: 'Parent enterprise code if any',
                     searchOptions: {
                         enabled: true, // default is false
@@ -283,6 +293,7 @@ module.exports = {
                 subEnterprises: {
                     type: 'array',
                     required: false,
+                    label: 'Sub-enterprises',
                     description: 'List of sub enterprises if any'
                 },
                 addresses: {
@@ -317,7 +328,7 @@ module.exports = {
 
         userState: {
             super: 'super',
-            accessGroups: profileAdministrativeAccess(),
+            schemaPolicies: ['administrative'],
             model: true,
             service: {
                 enabled: true
@@ -355,7 +366,7 @@ module.exports = {
 
         userGroup: {
             super: 'base',
-            accessGroups: profileAdministrativeAccess(),
+            schemaPolicies: ['administrative'],
             model: true,
             service: {
                 enabled: true
@@ -392,7 +403,7 @@ module.exports = {
 
         password: {
             super: 'super',
-            accessGroups: profileAdministrativeAccess(),
+            schemaPolicies: ['administrative'],
             model: true,
             service: {
                 enabled: true
@@ -549,7 +560,7 @@ module.exports = {
 
         employee: {
             super: 'user',
-            accessGroups: profileAdministrativeAccess(),
+            schemaPolicies: ['administrative'],
             model: true,
             service: {
                 enabled: true
@@ -596,8 +607,7 @@ module.exports = {
 
         customer: {
             super: 'user',
-            accessGroups: profileOwnedAccess(),
-            ownership: profileOwnership(),
+            schemaPolicies: ['customerOwned'],
             model: true,
             service: {
                 enabled: true
@@ -613,7 +623,7 @@ module.exports = {
 
         identityMigrationAudit: {
             super: 'base',
-            accessGroups: profileAdministrativeAccess(),
+            schemaPolicies: ['administrative'],
             model: true,
             service: { enabled: true },
             event: { enabled: false },

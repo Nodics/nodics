@@ -26,10 +26,29 @@ A module may contribute `backofficeCapabilities.<moduleName>` from its own layer
 - `discovery` references existing module-owned contract endpoints;
 - `uiComposition` may declare non-executable defaults only for a declared UI
   composition provider;
-- `navigation` contributes identifiers, labels, logical routes, semantic icon
-  keys, order, and optional permissions. A navigation-entry icon overrides the
-  module-level icon for that destination. Clients own the executable/vector
-  rendering and must fall back safely for an unknown key.
+- `navigation` contributes identifiers, labels, localization keys, logical
+  routes, semantic icon keys, business groups, parent relationships,
+  perspectives, required context dimensions, feature state, ordering,
+  non-executable badge-provider references, and optional permissions. A
+  navigation-entry icon overrides the module-level icon for that destination.
+  Clients own the executable/vector rendering and must fall back safely for an
+  unknown key.
+
+Navigation identifiers are unique inside the contributing module. `parentId`
+may reference only another item in the same contribution. Missing parents,
+self-parenting, cycles, unknown context dimensions, excessive lists, unknown
+fields, and executable badge definitions are rejected during registration.
+`HIDDEN` entries are removed by BackOffice. Permission filtering also removes
+descendants whose parent is not authorized, so Axis never receives an orphaned
+tree. `DISABLED` and `PREVIEW` are presentation states; they do not bypass
+target-route authorization or feature governance.
+
+The smallest supported customization is a later-layer override of the owning
+module's `backofficeCapabilities.<moduleName>.navigation`. Do not copy the
+catalogue into BackOffice, Axis, CMS content, or a project-specific menu
+loader. Labels and localization keys remain declarative content; badge
+providers reference a module and operation identifier but never contain a URL,
+credential, expression, or executable code.
 
 BackOffice observes this metadata during module registration. It does not keep
 a manually duplicated catalogue. Target modules remain authoritative for their

@@ -34,10 +34,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 52 |
-| Test files | 48 |
+| Source files | 53 |
+| Test files | 49 |
 | Data files | 15 |
-| All module-owned files | 91 |
+| All module-owned files | 93 |
 | Local schema definitions | 11 |
 
 ## Ownership And Dependencies
@@ -72,8 +72,8 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 76 |
-| Partially documented | 3 |
-| Undocumented | 8 |
+| Partially documented | 4 |
+| Undocumented | 9 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -117,7 +117,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/profile/nodics.js` | `module` | `documented` | 2/2 | Registers the profile module lifecycle hooks and module-level startup behavior. |  |
 | `gCore/profile/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gCore/profile/src/controller/authentication/defaultAuthenticationProviderController.js` | `src` | `documented` | 6/6 | Exposes request handlers for profile default authentication provider controller operations. |  |
+| `gCore/profile/src/controller/authentication/defaultAuthenticationProviderController.js` | `src` | `documented` | 9/9 | Exposes request handlers for profile default authentication provider controller operations. |  |
 | `gCore/profile/src/controller/authentication/defaultInternalAuthenticationProviderController.js` | `src` | `documented` | 1/1 | Exposes request handlers for profile default internal authentication provider controller operations. |  |
 | `gCore/profile/src/controller/authorization/defaultAuthorizationProviderController.js` | `src` | `documented` | 1/1 | Exposes request handlers for profile default authorization provider controller operations. |  |
 | `gCore/profile/src/controller/customer/DefaultCustomerController.js` | `src` | `documented` | 4/4 | Exposes request handlers for profile default customer controller operations. |  |
@@ -138,6 +138,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/src/search/indexes.js` | `src` | `documented` | 0/0 | Documents profile indexes module behavior. |  |
 | `gCore/profile/src/service/authentication/defaultAuthenticationProviderService.js` | `src` | `documented` | 10/10 | Implements profile default authentication provider service business behavior and extension logic. |  |
 | `gCore/profile/src/service/authentication/defaultAuthenticationService.js` | `src` | `documented` | 0/0 | Implements profile default authentication service business behavior and extension logic. |  |
+| `gCore/profile/src/service/authentication/defaultBrowserSessionService.js` | `src` | `partially-documented` | 1/12 | Owns Profile browser refresh cookies, CSRF validation, rotation, and logout. | add JSDoc for 11 exported method(s) |
 | `gCore/profile/src/service/authentication/defaultInternalAuthenticationProviderService.js` | `src` | `documented` | 1/1 | Implements profile default internal authentication provider service business behavior and extension logic. |  |
 | `gCore/profile/src/service/authorization/defaultAuthorizationProviderService.js` | `src` | `documented` | 0/0 | Implements profile default authorization provider service business behavior and extension logic. |  |
 | `gCore/profile/src/service/customer/defaultCustomerRegistrationService.js` | `src` | `documented` | 6/6 | Implements profile default customer registration service business behavior and extension logic. |  |
@@ -149,7 +150,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/src/service/group/defaultUserGroupGovernanceService.js` | `src` | `documented` | 6/6 | Validates active user-group inheritance, permission catalog membership, and acyclic group graphs before persistence. |  |
 | `gCore/profile/src/service/identity/defaultIdentityGovernanceMigrationService.js` | `src` | `documented` | 17/17 | Provides tenant-scoped preview, apply, audit, rollback, ownership backfill, and recoverable service-key rotation for identity governance upgrades. |  |
 | `gCore/profile/src/service/identity/defaultMandatoryIdentityBootstrapService.js` | `src` | `documented` | 10/10 | Reconciles missing, non-secret identity-governance groups and configured service-principal metadata after init data is available. Credential values are never generated, rotated, or overwritten automatically, preserving project and tenant secrets while allowing safe framework upgrades. |  |
-| `gCore/profile/src/service/identity/defaultPrincipalGovernanceService.js` | `src` | `documented` | 7/7 | Enforces principal categories, active group assignment, and service-only API-key ownership before identity persistence. |  |
+| `gCore/profile/src/service/identity/defaultPrincipalGovernanceService.js` | `src` | `documented` | 8/8 | Enforces principal categories, active group assignment, and service-only API-key ownership before identity persistence. |  |
 | `gCore/profile/src/service/identity/defaultPrincipalSecurityStampGovernanceService.js` | `src` | `documented` | 8/8 | Advances principal security stamps for direct principal, password, and group-membership changes. |  |
 | `gCore/profile/src/service/interceptors/defaultAPIKeyInterceptorService.js` | `src` | `documented` | 1/1 | Implements profile default apikey interceptor service business behavior and extension logic. |  |
 | `gCore/profile/src/service/interceptors/defaultCustomerGetInterceptorService.js` | `src` | `documented` | 2/2 | Implements profile default customer get interceptor service business behavior and extension logic. |  |
@@ -180,6 +181,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/test/mandatoryIdentityBootstrapService.test.js` | `test` | `documented` | 0/0 | Verifies idempotent, audited creation of missing configured identity groups and non-secret reconciliation of configured service principals without overwriting tenant secrets. |  |
 | `gCore/profile/test/profileAuthenticationRouteSecurity.test.js` | `test` | `documented` | 0/0 | Verifies username/password login uses the pre-authentication enterprise-resolution pipeline while module-to-module internal token retrieval remains a secured service capability. |  |
 | `gCore/profile/test/profileAuthenticationServiceContract.test.js` | `test` | `documented` | 0/0 | Verifies profile password authentication, failed-login state updates, customer/employee lookup boundaries, refresh-token creation, security-stamp registration, audit events, and API-key authentication. |  |
+| `gCore/profile/test/profileBrowserSessionService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileInitRequiredDetection.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

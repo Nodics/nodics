@@ -18,7 +18,20 @@ module.exports = {
             roles: ['FUNCTIONAL_CAPABILITY_PROVIDER'],
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             requiredPermissions: ['pricing.backoffice.read'],
-            navigation: [{ id: 'pricing', label: 'Pricing', route: '/pricing', icon: 'pricing', order: 420, requiredPermissions: ['pricing.backoffice.read'] }]
+            navigation: [{ id: 'pricing', label: 'Pricing', route: '/pricing', icon: 'pricing', order: 420,
+                group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'ACTIVE', requiredPermissions: ['pricing.backoffice.read'] },
+            ...['Prices', 'Price Lists', 'Price Groups', 'Price Assignment'].map((label, index) => ({
+                id: ['prices', 'price-lists', 'price-groups', 'price-assignment'][index],
+                parentId: 'pricing', label,
+                route: '/pricing/' + ['prices', 'lists', 'groups', 'assignment'][index],
+                icon: 'pricing', order: 430 + index * 10,
+                group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'],
+                contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED'
+            }))]
         }
     },
     cache: { pricing: { channels: { resolution: { enabled: true, fallback: true, engine: 'local', ttl: 30 } } } },

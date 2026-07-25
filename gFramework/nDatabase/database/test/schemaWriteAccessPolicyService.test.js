@@ -168,6 +168,14 @@ writePolicyService.enforceCreatePolicies(request, {}).then(() => {
             pipelines.modelsRemoveInitializerPipeline.nodes.enforceDeleteAccessPolicies.handler,
             'DefaultModelsRemoveInitializerService.enforceDeleteAccessPolicies'
         );
+        assert.strictEqual(
+            pipelines.modelsRemoveInitializerPipeline.nodes.buildQuery.success,
+            'enforceReferenceIntegrity'
+        );
+        assert.strictEqual(
+            pipelines.modelsRemoveInitializerPipeline.nodes.enforceReferenceIntegrity.handler,
+            'DefaultModelsRemoveInitializerService.enforceReferenceIntegrity'
+        );
 
         let createStepAdvanced = false;
         global.SERVICE.DefaultSchemaWriteAccessPolicyService = {

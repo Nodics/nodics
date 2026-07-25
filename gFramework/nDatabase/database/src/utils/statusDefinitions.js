@@ -242,6 +242,14 @@ module.exports = {
         code: '500',
         message: 'Could not execute post interceptors or validators'
     },
+    ERR_DEL_00007: {
+        code: '409',
+        message: 'Record is referenced by another resource'
+    },
+    ERR_DEL_00008: {
+        code: '503',
+        message: 'Reference integrity validation is unavailable'
+    },
 
     /**
      * Exception codes related to Model Update operations

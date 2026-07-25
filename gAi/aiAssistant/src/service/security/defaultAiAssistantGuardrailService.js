@@ -18,14 +18,16 @@
  */
 module.exports = {
     /** Validates the authenticated employee context used by Assistant persistence. */
-    authorize: function (request) {
+    authorize: function (request, configuration) {
         const auth = request.authData || {};
+        const security = configuration && configuration.security || {};
         if (!request.tenant || !auth.loginId || auth.principalType !== 'human') {
             const error = new Error('AI Assistant requires an authenticated human employee and tenant');
             error.code = 'ERR_AIA_00000';
             throw error;
         }
-        if ((auth.userGroups || []).includes('customerUserGroup')) {
+        const deniedGroups = [].concat(security.deniedPrincipalGroups || []);
+        if ((auth.userGroups || []).some(group => deniedGroups.includes(group))) {
             const error = new Error('AI Assistant is not available to customer identities');
             error.code = 'ERR_AIA_00000';
             throw error;

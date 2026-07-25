@@ -3,6 +3,11 @@
 `backoffice` is the backend registry, discovery, catalogue, compatibility, and
 bootstrap capability for the separate Nodics Axis administration application.
 
+BackOffice persistence schemas consume layered policies under
+`schemaPolicies.backoffice`. Partner modules may extend `contractReader` or
+`administrator` without copying BackOffice schemas; effective schema access
+groups remain authoritative.
+
 ## Responsibilities
 
 - Receive authenticated module self-registration and refresh requests.
@@ -10,6 +15,9 @@ bootstrap capability for the separate Nodics Axis administration application.
 - Discover and validate module identity, versions, capabilities, contracts, and
   sanitized health information.
 - Expose a permission-filtered, client-safe registry to Nodics Axis.
+- Contribute the active **Help and Documentation** entry under the governed
+  Workspace navigation group. The entry points to `/docs`; CMS owns route and
+  content resolution while Axis owns presentation.
 - Select an optional CMS UI-composition provider without depending on CMS at
   package or startup level.
 - Track BackOffice presentation enablement, compatibility, availability, and
@@ -94,6 +102,9 @@ permissions and return only configured client-safe metadata.
 
 The bootstrap response contains only active `clientCallable` modules permitted
 for the authenticated human and fields selected by
-`backofficeRegistry.clientSafeMetadata`. It does not expose service or Cron
+`backofficeRegistry.clientSafeMetadata`. It also returns the authenticated
+request tenant code so Axis can display the same tenant context without
+guessing, parsing an unverified browser token, or hardcoding `default`. It does
+not expose service or Cron
 credentials, registration secrets, or internal lease-expiry state. See
 [`gDocs/security/backoffice-browser-security.md`](../../gDocs/security/backoffice-browser-security.md).

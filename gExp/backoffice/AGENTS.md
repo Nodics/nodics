@@ -5,6 +5,9 @@
 - Follow the root Nodics contract: `../../AGENTS.md`.
 - Follow the `gExp` group contract: `../AGENTS.md`.
 - Follow global guidance: `../../gSetup/llm/README.md`.
+- Extend BackOffice persistence access through layered
+  `schemaPolicies.backoffice`; do not copy schemas or hardcode replacement
+  access-group objects.
 
 ## Capability Boundary
 
@@ -33,6 +36,14 @@
 - Each navigation entry may declare its own bounded semantic `icon` key.
   Clients map that non-executable key to a client-owned icon and safely fall
   back to the module-level icon or a generic module mark.
+- Navigation hierarchy, business group, perspective, localization key,
+  required context, feature state, badge-provider reference, ordering, and
+  permissions must remain part of the owning module's existing
+  `backofficeCapabilities.navigation` contribution. Reject duplicate ids,
+  missing parents, cycles, unknown context dimensions, executable badge
+  definitions, and unbounded metadata. Permission filtering must remove
+  orphaned descendants; never add an Axis-only or BackOffice-maintained menu
+  authority.
 - Discover effective contracts through existing System/OpenAPI authorities.
   Normalize and hash client-safe observations; never add a parallel schema or
   router loader, retain arbitrary source documents, or let BackOffice edit a

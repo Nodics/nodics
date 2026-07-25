@@ -17,6 +17,16 @@
  * @override Project modules may add principal categories while preserving least privilege and active-group validation.
  */
 module.exports = {
+    /** Returns the effective layered principal policy owned by nAuth identity governance. */
+    getPrincipalPolicy: function () {
+        let governance = CONFIG.get('identityGovernance') || {};
+        let policy = governance.principalPolicy;
+        if (!policy || !Array.isArray(policy.allowedTypes) || !policy.serviceType ||
+            !policy.serviceGroup || !Number.isSafeInteger(policy.minimumServiceApiKeyLength)) {
+            throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Principal governance policy is incomplete');
+        }
+        return policy;
+    },
     /** Normalizes save and update payloads for governance validation. */
     normalizeModels: function (model) {
         return Array.isArray(model) ? model : [model || {}];
@@ -31,12 +41,16 @@ module.exports = {
     },
     /** Validates fully materialized principal states. */
     validateModels: function (models) {
+        let policy = this.getPrincipalPolicy();
         models.forEach(model => {
-            if (model.principalType && !['human', 'service', 'customer'].includes(model.principalType)) throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Invalid principal type: ' + model.principalType);
-            if (model.principalType === 'service' && !(model.userGroups || []).includes('serviceAccountUserGroup')) throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Service principals require serviceAccountUserGroup');
-            if (model.principalType !== 'service' && (model.userGroups || []).includes('serviceAccountUserGroup')) throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Only service principals may use serviceAccountUserGroup');
-            if (model.principalType !== 'service' && (model.apiKey || model.apiKeyHash)) throw new CLASSES.NodicsError('ERR_AUTH_00003', 'API keys are restricted to service principals');
-            if (model.principalType === 'service' && model.apiKey && (typeof model.apiKey !== 'string' || model.apiKey.length < 32)) throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Service API keys must contain at least 32 characters');
+            if (model.principalType && !policy.allowedTypes.includes(model.principalType)) throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Invalid principal type: ' + model.principalType);
+            if (model.principalType === policy.serviceType && !(model.userGroups || []).includes(policy.serviceGroup)) throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Service principals require configured service group: ' + policy.serviceGroup);
+            if (model.principalType !== policy.serviceType && (model.userGroups || []).includes(policy.serviceGroup)) throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Only service principals may use configured service group: ' + policy.serviceGroup);
+            if (model.principalType !== policy.serviceType && (model.apiKey || model.apiKeyHash)) throw new CLASSES.NodicsError('ERR_AUTH_00003', 'API keys are restricted to service principals');
+            if (model.principalType === policy.serviceType && model.apiKey &&
+                (typeof model.apiKey !== 'string' || model.apiKey.length < policy.minimumServiceApiKeyLength)) {
+                throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Service API keys must contain at least ' + policy.minimumServiceApiKeyLength + ' characters');
+            }
         });
     },
     /** Resolves the generated service for partial employee/customer updates. */

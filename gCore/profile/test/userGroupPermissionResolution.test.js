@@ -10,6 +10,8 @@
  */
 
 const assert = require('assert');
+const _ = require('lodash');
+const authProperties = require('../../../gFramework/nAuth/config/properties');
 
 // @nodics-capability-behavior @nodics-area profile
 global.CONFIG = {
@@ -23,11 +25,11 @@ global.CONFIG = {
             };
         }
         if (key === 'authSecurity') {
-            return {
+            return _.merge({}, authProperties.authSecurity, {
                 compatibility: {
                     allowLocalBootstrapIdentity: true
                 }
-            };
+            });
         }
         return undefined;
     }
@@ -42,8 +44,6 @@ global.UTILS = Object.assign({}, commonUtils, {
 
 const userGroupsData = require('../data/init/data/groups/defaultBootstrapUserGroupsData');
 const employeeData = require('../data/init/data/user/defaultEmployeeData');
-const authProperties = require('../../../gFramework/nAuth/config/properties');
-
 let groupTree = [{
     code: 'runtimeConfigAdminUserGroup',
     permissions: ['runtime.config.cleanup.execute', 'backoffice.contract.approve', 'backoffice.contract.reject', 'backoffice.contract.rollback'],
@@ -97,7 +97,10 @@ assert.strictEqual(permissions.filter(permission => permission === 'runtime.conf
 
 let runtimeAdminGroup = Object.values(userGroupsData).find(group => group.code === 'runtimeConfigAdminUserGroup');
 let runtimeViewerGroup = Object.values(userGroupsData).find(group => group.code === 'runtimeConfigViewerUserGroup');
+let platformAdminGroup = Object.values(userGroupsData).find(group => group.code === 'adminGroup');
 assert(runtimeAdminGroup, 'Default runtime config admin group should be seeded');
+assert(platformAdminGroup.permissions.includes('system.schema.workbench.view'),
+    'Default platform administrators should be allowed to discover the governed Schema Workbench');
 assert(runtimeViewerGroup.permissions.includes('system.contract.openapi.view'));
 assert(runtimeAdminGroup.permissions.includes('runtime.config.cleanup.execute'));
 assert(runtimeAdminGroup.permissions.includes('backoffice.registry.diagnostics.view'));

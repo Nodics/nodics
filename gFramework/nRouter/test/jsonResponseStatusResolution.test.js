@@ -31,6 +31,20 @@ global.SERVICE = {
         }
     }
 };
+global.CONFIG = {
+    get: function (key) {
+        if (key === 'responseHandler') {
+            return {
+                publicError: {
+                    includeValidationErrors: true,
+                    maximumValidationErrors: 2,
+                    maskServerErrorMessages: true
+                }
+            };
+        }
+        return undefined;
+    }
+};
 
 global.CLASSES = {
     NodicsError: class NodicsError extends Error {
@@ -115,11 +129,18 @@ assert.deepStrictEqual(rawJsonResponse.payload, {
 });
 
 let errorResponse = createResponse();
-responseHandler.handleError({}, errorResponse, new global.CLASSES.NodicsError('ERR_TEST_00000'));
+let publicError = new global.CLASSES.NodicsError('ERR_TEST_00000');
+publicError.contexts = [{ handler: 'InternalHandler' }];
+publicError.metadata = { query: 'secret' };
+publicError.stack = '/private/internal/path';
+responseHandler.handleError({}, errorResponse, publicError);
 
 assert.strictEqual(errorResponse.statusCode, 418);
 assert.strictEqual(errorResponse.payload.code, 'ERR_TEST_00000');
 assert.strictEqual(errorResponse.payload.responseCode, '418');
 assert.strictEqual(errorResponse.payload.message, 'Configured error message');
+assert.strictEqual(errorResponse.payload.contexts, undefined);
+assert.strictEqual(errorResponse.payload.metadata, undefined);
+assert.strictEqual(errorResponse.payload.stack, undefined);
 
 console.log('JSON response status resolution validated');

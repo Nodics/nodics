@@ -20,9 +20,11 @@
  * services and permissions.
  */
 const assert = require('assert');
+const _ = require('lodash');
 const path = require('path');
 const { spawn } = require('child_process');
 const configuration = require('./authP2TestConfiguration').load();
+const authDefaults = require('../../config/properties').authSecurity;
 
 class NodicsError extends Error {
     constructor(code, message) { super(message || code && code.message || String(code)); this.code = typeof code === 'string' ? code : code && code.code; }
@@ -38,6 +40,7 @@ const values = {
         securityStamp: { enabled: true, failClosed: true, allowMissingStamp: false }
     }
 };
+values.authSecurity = _.merge({}, authDefaults, values.authSecurity);
 global.CONFIG = { get: key => values[key] };
 
 function runWorker(input) {

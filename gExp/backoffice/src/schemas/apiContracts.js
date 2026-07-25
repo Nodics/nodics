@@ -114,6 +114,22 @@ const contractActivation = {
         previousHash: { type: 'string', pattern: '^[a-f0-9]{64}$' }, revision: { type: 'integer', minimum: 1 }
     }
 };
+const navigationGroup = {
+    type: 'object', additionalProperties: false, required: ['id', 'label'],
+    properties: {
+        id: { type: 'string', minLength: 1, maxLength: 128 },
+        label: { type: 'string', minLength: 1, maxLength: 256 },
+        labelKey: { type: 'string', minLength: 1, maxLength: 256 },
+        order: { type: 'integer' }
+    }
+};
+const navigationBadgeProvider = {
+    type: 'object', additionalProperties: false, required: ['moduleName', 'operationId'],
+    properties: {
+        moduleName: moduleName,
+        operationId: { type: 'string', minLength: 1, maxLength: 256 }
+    }
+};
 const backofficeMetadata = {
     type: 'object', additionalProperties: false,
     properties: {
@@ -126,6 +142,14 @@ const backofficeMetadata = {
         navigation: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['id', 'label'], properties: {
             id: { type: 'string' }, label: { type: 'string' }, route: { type: 'string' },
             icon: { type: 'string', maxLength: 64 }, order: { type: 'integer' },
+            labelKey: { type: 'string', maxLength: 256 },
+            parentId: { type: 'string', maxLength: 128 },
+            group: navigationGroup,
+            perspectives: { type: 'array', uniqueItems: true, maxItems: 16, items: { type: 'string', maxLength: 128 } },
+            contexts: { type: 'array', uniqueItems: true, maxItems: 8,
+                items: { enum: ['environment', 'tenant', 'enterprise', 'site', 'catalog'] } },
+            featureState: { enum: ['ACTIVE', 'PREVIEW', 'DISABLED', 'HIDDEN'] },
+            badgeProvider: navigationBadgeProvider,
             requiredPermissions: { type: 'array', uniqueItems: true, items: { type: 'string' } }
         } } }
     }
@@ -179,6 +203,8 @@ module.exports = {
         moduleName: moduleName, refreshedInstances: { type: 'integer', minimum: 0 }, discoveryRequested: { type: 'boolean' }
     } },
     contractDecision: contractDecision,
+    navigationGroup: navigationGroup,
+    navigationBadgeProvider: navigationBadgeProvider,
     contractHistorySnapshot: contractHistorySnapshot,
     contractActivation: contractActivation,
     contractCurrentData: { type: 'object', required: ['snapshot'], properties: {
@@ -237,10 +263,10 @@ module.exports = {
             }
         }
     },
-    bootstrapData: { type: 'object', required: ['compatibility', 'modules', 'catalogue', 'availability', 'uiComposition', 'axisPolicy'], properties: {
+    bootstrapData: { type: 'object', required: ['compatibility', 'modules', 'catalogue', 'availability', 'uiComposition', 'axisPolicy', 'tenantCode'], properties: {
         compatibility: { type: 'object' }, modules: { type: 'object' }, catalogue: { type: 'object' },
         availability: { type: 'object', additionalProperties: moduleAvailability }, uiComposition: uiCompositionSelection,
-        axisPolicy: axisPolicy
+        axisPolicy: axisPolicy, tenantCode: { type: 'string' }
     } },
     diagnosticsData: { type: 'object', required: ['activeModuleLeases', 'metrics', 'store'], properties: {
         activeModuleLeases: { type: 'integer', minimum: 0 }, metrics: { type: 'object' }, store: { type: 'object' },

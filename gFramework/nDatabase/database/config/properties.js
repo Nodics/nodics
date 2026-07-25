@@ -26,6 +26,27 @@ module.exports = {
         failClosed: true,
         maximumCommitTimeMs: 5000
     },
+    referenceIntegrity: {
+        enabled: true,
+        failClosed: true,
+        maximumTargetRecords: 100,
+        maximumRelationships: 100
+    },
+    schemaWorkbench: {
+        discoverModelsByDefault: true,
+        defaultModelOperations: ['search', 'read', 'create', 'update', 'delete'],
+        defaultRelationshipActions: ['SELECT_EXISTING', 'CREATE_RELATED'],
+        defaultMutationMode: 'GENERATED_CRUD',
+        defaultPageSize: 25,
+        allowedPageSizes: [10, 25, 50],
+        maximumPageSize: 50,
+        maximumSearchLength: 100,
+        maximumFilterConditions: 20,
+        maximumFilterDepth: 3,
+        maximumBulkItems: 100,
+        maximumAggregatePayloadBytes: 50000
+    },
+    schemaPolicies: {},
 
     externalSchemaLocation: CONFIG.get('externalDataLocation') + '/schema',
     accessPoints: {

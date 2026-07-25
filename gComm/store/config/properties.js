@@ -23,7 +23,20 @@ module.exports = {
             contractVersion: 1, minimumClientContractVersion: 1, roles: ['FUNCTIONAL_CAPABILITY_PROVIDER'],
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             requiredPermissions: ['store.backoffice.read'],
-            navigation: [{ id: 'stores', label: 'Stores', route: '/commerce/stores', icon: 'store', order: 410 }]
+            navigation: [{ id: 'stores', label: 'Stores', route: '/commerce/stores', icon: 'store', order: 410,
+                group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'ACTIVE' },
+            ...['Locations', 'Fulfillment Associations'].map((label, index) => ({
+                id: ['store-locations', 'fulfillment-associations'][index],
+                parentId: 'stores', label,
+                route: '/commerce/stores/' + ['locations', 'fulfillment-associations'][index],
+                icon: 'store', order: 420 + index * 10,
+                group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'],
+                contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED'
+            }))]
         }
     },
     store: {

@@ -22,9 +22,72 @@
  *
  * @property {Object} common.schemaIndexes Schema index refresh routes.
  * @property {Object} common.schemaValidation Schema validator refresh routes.
+ * @property {Object} common.schemaWorkbench Client-safe schema discovery routes.
  */
 module.exports = {
     common: {
+        schemaWorkbench: {
+            listSchemas: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'system.schema.workbench.view',
+                apiExposure: 'schemaWorkbench',
+                key: '/schema/workbench',
+                method: 'GET',
+                controller: 'DefaultSchemaWorkbenchController',
+                operation: 'list'
+            },
+            getSchema: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'system.schema.workbench.view',
+                apiExposure: 'schemaWorkbench',
+                key: '/schema/workbench/:schema',
+                method: 'GET',
+                controller: 'DefaultSchemaWorkbenchController',
+                operation: 'get'
+            },
+            searchRecords: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'system.schema.workbench.view',
+                apiExposure: 'schemaWorkbench',
+                key: '/schema/workbench/:schema/records',
+                method: 'POST',
+                controller: 'DefaultSchemaWorkbenchController',
+                operation: 'search'
+            },
+            previewDeleteImpact: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'system.schema.workbench.view',
+                apiExposure: 'schemaWorkbench',
+                key: '/schema/workbench/:schema/delete-impact',
+                method: 'POST',
+                controller: 'DefaultSchemaWorkbenchController',
+                operation: 'previewDeleteImpact'
+            },
+            bulkRecords: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'system.schema.workbench.manage',
+                apiExposure: 'schemaWorkbench',
+                key: '/schema/workbench/:schema/bulk',
+                method: 'POST',
+                controller: 'DefaultSchemaWorkbenchController',
+                operation: 'bulk'
+            },
+            aggregateOperation: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'system.schema.workbench.manage',
+                apiExposure: 'schemaWorkbench',
+                key: '/schema/workbench/:schema/aggregate',
+                method: 'POST',
+                controller: 'DefaultSchemaWorkbenchController',
+                operation: 'aggregate'
+            }
+        },
         schemaIndexes: {
             updateSchemaIndexesBySchemaName: {
                 secured: true,

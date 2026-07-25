@@ -103,5 +103,42 @@ module.exports = {
             inputTokensLabel: 'string', outputTokensLabel: 'string',
             cachedTokensLabel: 'string', reasoningTokensLabel: 'string',
             embeddingTokensLabel: 'string', reconciliationLabel: 'string' }, active: true
+    },
+    record13: { code: 'axisSchemaWorkbenchPageType', kind: 'PAGE', contractVersion: 1, active: true },
+    record14: {
+        code: 'axisSchemaWorkbenchComponentType', kind: 'COMPONENT', contractVersion: 1,
+        propertySchema: {
+            title: 'string', introduction: 'string', schemaSearchLabel: 'string',
+            schemaSearchPlaceholder: 'string', schemasLabel: 'string', recordsLabel: 'string',
+            noSchemasLabel: 'string', noRecordsLabel: 'string', selectSchemaLabel: 'string',
+            loadingLabel: 'string', retryLabel: 'string', createLabel: 'string',
+            cancelLabel: 'string', savingLabel: 'string',
+            selectExistingLabel: 'string', createRelatedLabel: 'string',
+            addToDraftLabel: 'string', removeRelatedLabel: 'string',
+            noRelatedRecordsLabel: 'string', relatedSearchLabel: 'string',
+            actionsLabel: 'string', viewLabel: 'string', editLabel: 'string',
+            updateLabel: 'string', updatingLabel: 'string', closeLabel: 'string',
+            trueLabel: 'string', falseLabel: 'string',
+            deleteLabel: 'string', deletingLabel: 'string',
+            confirmDeleteLabel: 'string', deleteTitle: 'string',
+            deleteWarning: 'string', tenantLabel: 'string', enterpriseLabel: 'string',
+            searchRecordsLabel: 'string', searchRecordsPlaceholder: 'string',
+            moduleLabel: 'string', availableOperationsLabel: 'string',
+            resultsLabel: 'string', pageSizeLabel: 'string', paginationLabel: 'string',
+            filterBuilderLabel: 'string', addConditionLabel: 'string',
+            addGroupLabel: 'string', applyFiltersLabel: 'string',
+            clearFiltersLabel: 'string',
+            filterFieldLabel: 'string', filterOperatorLabel: 'string',
+            filterValueLabel: 'string', filterMatchLabel: 'string',
+            removeFilterLabel: 'string', requestPreviewLabel: 'string',
+            addFavouriteLabel: 'string', removeFavouriteLabel: 'string',
+            gridSettingsLabel: 'string', savedViewNameLabel: 'string',
+            saveViewLabel: 'string', selectVisibleRecordsLabel: 'string',
+            selectRecordLabel: 'string', selectedRecordsLabel: 'string',
+            bulkDeleteLabel: 'string', bulkDeletingLabel: 'string',
+            deleteImpactLoadingLabel: 'string', deleteImpactBlockedLabel: 'string',
+            deleteImpactClearLabel: 'string', editRelatedLabel: 'string'
+        },
+        active: true
     }
 };

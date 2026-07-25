@@ -371,6 +371,11 @@ module.exports = {
             if (!session || !session.tenant || !session.loginId) {
                 throw new CLASSES.NodicsError('ERR_AUTH_00001', 'Refresh session is invalid');
             }
+            if (request.entCode && request.entCode !== session.entCode) {
+                throw new CLASSES.NodicsError(
+                    'ERR_AUTH_00001', 'Refresh session enterprise is mismatched'
+                );
+            }
             return SERVICE.DefaultEnterpriseService.retrieveEnterprise(session.entCode).then(enterprise => {
                 if (!enterprise.active || !enterprise.tenant || enterprise.tenant.active === false || enterprise.tenant.code !== session.tenant) {
                     throw new CLASSES.NodicsError('ERR_AUTH_00001', 'Refresh session enterprise is inactive or mismatched');
@@ -399,7 +404,8 @@ module.exports = {
                         userGroups: session.userGroups,
                         permissions: session.permissions
                     }),
-                    refreshToken: nextRefreshToken
+                    refreshToken: nextRefreshToken,
+                    loginId: session.loginId
                 };
                 return _self.recordAuthEvent({
                     eventType: 'refresh_token.rotation',

@@ -26,16 +26,22 @@ module.exports = {
     /** Completes the standard service post-initialization contract. */
     postInit: function () { return Promise.resolve(true); },
     /** Returns effective store policy from the BackOffice registry configuration. */
-    getConfiguration: function () { return (CONFIG.get('backofficeRegistry') || {}).store || { mode: 'memory' }; },
+    getConfiguration: function () {
+        let config = (CONFIG.get('backofficeRegistry') || {}).store;
+        if (!config || !config.mode || !config.moduleName || !config.engineName || !config.keyPrefix) {
+            throw new Error('BackOffice registry store configuration is incomplete');
+        }
+        return config;
+    },
     /** Returns whether the effective store uses an nCache-owned distributed engine. */
     isDistributed: function () { return this.getConfiguration().mode === 'distributed'; },
     /** Builds one non-sensitive namespaced provider key. */
-    getStorageKey: function (key) { return String(this.getConfiguration().keyPrefix || 'registry:lease:') + key; },
+    getStorageKey: function (key) { return String(this.getConfiguration().keyPrefix) + key; },
     /** Returns the configured distributed engine client already owned by nCache. */
     getDistributedClient: function () {
         let config = this.getConfiguration();
         let engineService = SERVICE.DefaultCacheEngineService;
-        let client = engineService && engineService.getEngineClient(config.moduleName || 'backoffice', config.engineName || 'redis');
+        let client = engineService && engineService.getEngineClient(config.moduleName, config.engineName);
         if (!client) throw new Error('Configured BackOffice distributed registry store is unavailable');
         return client;
     },

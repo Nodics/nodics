@@ -40,6 +40,7 @@
 
 - `composition`
 - `configuration`
+- `data`
 - `schema`
 - `router`
 - `controller`

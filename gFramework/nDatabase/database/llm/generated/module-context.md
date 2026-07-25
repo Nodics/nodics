@@ -32,10 +32,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 38 |
-| Test files | 13 |
+| Source files | 42 |
+| Test files | 18 |
 | Data files | 0 |
-| All module-owned files | 59 |
+| All module-owned files | 68 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -68,9 +68,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 47 |
-| Partially documented | 4 |
-| Undocumented | 4 |
+| Documented | 52 |
+| Partially documented | 7 |
+| Undocumented | 5 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -101,9 +101,11 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDatabase/database/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/database/src/controller/schema/defaultSchemaIndexController.js` | `src` | `documented` | 2/2 | Controller for secured schema index maintenance routes. It delegates module-wide and schema-specific index refresh requests to the schema index facade. |  |
 | `gFramework/nDatabase/database/src/controller/schema/defaultSchemaValidatorController.js` | `src` | `documented` | 2/2 | Controller for secured schema validator maintenance routes. It delegates module-wide and schema-specific validator refresh requests to the schema validator facade. |  |
+| `gFramework/nDatabase/database/src/controller/schema/defaultSchemaWorkbenchController.js` | `src` | `partially-documented` | 4/7 | Maps secured Schema Workbench discovery requests to the owning facade. This controller exposes metadata only; generated CRUD and domain operations remain the sole mutation paths. | add JSDoc for 3 exported method(s) |
 | `gFramework/nDatabase/database/src/event/listeners.js` | `src` | `documented` | 0/0 | Documents nDatabase listeners module behavior. |  |
 | `gFramework/nDatabase/database/src/facade/schema/defaultSchemaIndexFacade.js` | `src` | `documented` | 3/3 | Facade boundary for schema index maintenance. It provides a stable controller-facing contract while delegating actual index work to the schema index service. |  |
 | `gFramework/nDatabase/database/src/facade/schema/defaultSchemaValidatorFacade.js` | `src` | `documented` | 3/3 | Facade boundary for schema validator maintenance. It provides a stable controller-facing contract while delegating database validator refresh to the schema validator service. |  |
+| `gFramework/nDatabase/database/src/facade/schema/defaultSchemaWorkbenchFacade.js` | `src` | `documented` | 0/0 | Stable facade for client-safe schema discovery. |  |
 | `gFramework/nDatabase/database/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Default schema interceptor registry for generated database CRUD flows. These definitions attach timestamp mutation and nTest write guards to schema save/update lifecycle triggers. |  |
 | `gFramework/nDatabase/database/src/lib/database.js` | `src` | `documented` | 0/0 | Lightweight runtime database wrapper used by Nodics connection handlers. It stores module name, URI, adapter options, client, connection, collection metadata, and schema metadata without binding the framework to a specific database driver. |  |
 | `gFramework/nDatabase/database/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Pipeline definitions for schema-driven database operations: query building, get, single save, bulk save, remove, update, and model value validation. Generated services and admin/runtime flows use these names as stable contracts. |  |
@@ -120,17 +122,19 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDatabase/database/src/service/model/defaultDatabaseModelHandlerService.js` | `src` | `documented` | 12/12 | Builds and maintains tenant/channel scoped generated database models from effective Nodics schemas. This service connects schema merging to runtime model registries and delegates database-specific model creation to the configured model handler. |  |
 | `gFramework/nDatabase/database/src/service/model/defaultModelService.js` | `src` | `documented` | 6/6 | Handles schema-driven nested model operations for generated CRUD services. It traverses `refSchema` definitions to save, populate, and remove related models without hardcoding module-specific relationships. |  |
 | `gFramework/nDatabase/database/src/service/model/defaultModelValidatorService.js` | `src` | `documented` | 4/4 | Default model validation extension point for generated save and update flows. The base implementation is intentionally permissive and exists so project modules can layer stricter mandatory-field and datatype checks. |  |
+| `gFramework/nDatabase/database/src/service/model/defaultReferenceIntegrityService.js` | `src` | `documented` | 5/5 | Enforces schema-owned inbound reference policies before a generated remove operation. It derives policies from effective `refSchema` contracts and does not maintain a parallel relationship registry. |  |
 | `gFramework/nDatabase/database/src/service/procs/get/defaultModelsGetInitializerService.js` | `src` | `documented` | 17/17 | Pipeline step service for generated schema get operations. It validates request shape, checks schema access, prepares query options, applies schema interceptors/validators, executes database reads, populates nested/virtual properties, and maintains item cache. |  |
 | `gFramework/nDatabase/database/src/service/procs/query/defaultModelQueryBuilderPipelineService.js` | `src` | `documented` | 8/8 | Pipeline step service that builds generated model lookup queries from explicit query input, `_id`, primary keys, and model property placeholders. It is used by schema-driven save/update/remove flows to resolve target models. |  |
-| `gFramework/nDatabase/database/src/service/procs/remove/defaultModelsRemoveInitializerService.js` | `src` | `documented` | 17/17 | Pipeline step service for generated schema remove operations. It validates delete requests, checks schema access, builds remove queries, applies interceptors/validators, removes items, handles recursive/deep removal, invalidates cache, and publishes schema change events. |  |
+| `gFramework/nDatabase/database/src/service/procs/remove/defaultModelsRemoveInitializerService.js` | `src` | `documented` | 18/18 | Pipeline step service for generated schema remove operations. It validates delete requests, checks schema access, builds remove queries, applies interceptors/validators, removes items, handles recursive/deep removal, invalidates cache, and publishes schema change events. |  |
 | `gFramework/nDatabase/database/src/service/procs/save/defaultModelSaveInitializerService.js` | `src` | `documented` | 22/22 | Pipeline step service for generated single-model save operations. It validates input, checks write access, applies schema defaults, strips virtual properties, executes schema interceptors/validators, saves nested references, persists the model, populates response data, invalidates cache, and publishes model change events. |  |
 | `gFramework/nDatabase/database/src/service/procs/save/defaultModelsSaveInitializerService.js` | `src` | `documented` | 11/11 | Pipeline step service for generated bulk save operations. It validates model lists, runs bulk processors, delegates each model to the single-model save pipeline, aggregates successes/failures, and resolves a stable bulk response. |  |
 | `gFramework/nDatabase/database/src/service/procs/update/defaultModelsUpdateInitializerService.js` | `src` | `documented` | 16/16 | Pipeline step service for generated schema update operations. It validates update requests, checks write access, normalizes query options, executes schema interceptors/validators, applies updates, populates response data, invalidates cache, and publishes model change events. |  |
-| `gFramework/nDatabase/database/src/service/schema/defaultDatabaseSchemaHandlerService.js` | `src` | `documented` | 8/8 | Builds effective Nodics database schemas from layered schema definitions. It merges default schema contracts, resolves `super` inheritance, and supports runtime schema additions without breaking module ownership. |  |
+| `gFramework/nDatabase/database/src/service/schema/defaultDatabaseSchemaHandlerService.js` | `src` | `documented` | 10/10 | Builds effective Nodics database schemas from layered schema definitions. It merges default schema contracts, resolves `super` inheritance, and supports runtime schema additions without breaking module ownership. |  |
 | `gFramework/nDatabase/database/src/service/schema/defaultSchemaAccessHandlerService.js` | `src` | `documented` | 3/3 | Resolves the highest schema access point allowed for an authenticated user based on schema access groups. Generated services use this contract to enforce schema-level authorization without hardcoding project roles. |  |
 | `gFramework/nDatabase/database/src/service/schema/defaultSchemaIndexService.js` | `src` | `documented` | 3/3 | Rebuilds database indexes for generated schema models across active tenants and channels. This service supports admin-triggered schema index maintenance after schema changes or deployment-time generation. |  |
 | `gFramework/nDatabase/database/src/service/schema/defaultSchemaReadAccessPolicyService.js` | `src` | `documented` | 13/13 | Applies runtime schema/property access policy decisions to generated read/export responses. This service is intentionally read-only: it masks or removes fields after data retrieval while leaving write and import enforcement to their own pipeline slices. |  |
 | `gFramework/nDatabase/database/src/service/schema/defaultSchemaValidatorService.js` | `src` | `documented` | 3/3 | Refreshes database validators for generated schema models across active tenants and channels. This keeps database-level validation aligned with the effective schema produced by layered module configuration. |  |
+| `gFramework/nDatabase/database/src/service/schema/defaultSchemaWorkbenchService.js` | `src` | `documented` | 28/28 | Projects effective Nodics schemas into a client-safe, searchable model contract for schema-driven BackOffice experiences. It never creates another schema registry and never executes data mutations. |  |
 | `gFramework/nDatabase/database/src/service/schema/defaultSchemaWriteAccessPolicyService.js` | `src` | `documented` | 18/18 | Enforces runtime schema/property access policy decisions before generated write operations reach persistence. This service protects create, update, and import payloads while remaining optional for module sets that do not include the runtime policy resolver. |  |
 | `gFramework/nDatabase/database/src/service/transaction/defaultDatabaseTransactionService.js` | `src` | `documented` | 5/5 | Owns provider-neutral, module-and-tenant-scoped transaction execution and opaque context propagation. |  |
 | `gFramework/nDatabase/database/src/service/virtual/defaultSchemaVirtualPropertiesHandlerService.js` | `src` | `documented` | 4/4 | Populates schema-defined virtual properties on database documents by invoking configured service operations. This allows generated models to expose computed values without hardcoding behavior into the base persistence layer. |  |
@@ -144,10 +148,15 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDatabase/database/test/modelsGetInitializerPipelineContract.test.js` | `test` | `documented` | 0/0 | Verifies the generated get pipeline keeps schema lineage and cache-hit responses immutable enough for repeated reads, layered overrides, read-access policies, and custom cache adapters. |  |
 | `gFramework/nDatabase/database/test/modelsRemoveUpdateInitializerPipelineContract.test.js` | `test` | `documented` | 0/0 | Verifies generated remove and update pipelines validate mutation targets safely, understand current database affected-count result shapes, and keep optional recursive/deep behavior guarded. |  |
 | `gFramework/nDatabase/database/test/modelsSaveInitializerPipelineContract.test.js` | `test` | `documented` | 0/0 | Verifies the bulk save pipeline keeps caller input stable, handles partial failures safely, and processes larger batches without recursive stack growth while delegating each item to the single-model save pipeline. |  |
+| `gFramework/nDatabase/database/test/namedSchemaPolicyComposition.test.js` | `test` | `partially-documented` | 0/0 | Verifies named schema policies compose through layered configuration, materialize the existing access/ownership contract, allow extension and removal, preserve explicit schema overrides, and fail closed for unknown policy names. | add @override |
+| `gFramework/nDatabase/database/test/referenceIntegrityService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/database/test/schemaIndexControllerRequestMapping.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/database/test/schemaIndexServiceContract.test.js` | `test` | `documented` | 0/0 | Verifies schema index maintenance fans out across active tenants, master/test channels, modules, and schema-scoped model lookups. |  |
 | `gFramework/nDatabase/database/test/schemaReadAccessPolicyService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/database/test/schemaTransactionGovernanceContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies nDatabase centrally validates transaction eligibility for static and runtime schemas. | add @override |
+| `gFramework/nDatabase/database/test/schemaWorkbenchContract.test.js` | `test` | `documented` | 0/0 | Verifies safe default model discovery, explicit exclusion, permission filtering, field projection, managed-field protection, and relationship discovery. |  |
+| `gFramework/nDatabase/database/test/schemaWorkbenchMutationContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies opt-in bulk mutation, delete-impact inspection, idempotency, bounded input, and aggregate delegation ownership. | add @override |
+| `gFramework/nDatabase/database/test/schemaWorkbenchRouterContract.test.js` | `test` | `documented` | 0/0 | Verifies that Schema Workbench discovery routes remain secured, permissioned, exposure-governed, and metadata-only. |  |
 | `gFramework/nDatabase/database/test/schemaWriteAccessPolicyService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDatabase/database/test/tenantDatabaseConfigurationValidation.test.js` | `test` | `documented` | 0/0 | Proves fail-fast tenant/module database configuration validation, registry isolation, and later-layer module connection overrides. |  |
 

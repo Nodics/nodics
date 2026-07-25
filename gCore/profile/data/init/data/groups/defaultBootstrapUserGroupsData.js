@@ -33,7 +33,13 @@ module.exports = {
         name: 'adminGroup',
         active: true,
         parentGroups: ['userGroup'],
-        permissions: ['backoffice.registry.view', 'backoffice.bootstrap.view', 'backoffice.contract.view']
+        permissions: [
+            'backoffice.registry.view',
+            'backoffice.bootstrap.view',
+            'backoffice.contract.view',
+            'system.schema.workbench.view',
+            'system.schema.workbench.manage'
+        ]
     },
     record1: {
         code: 'userGroup',
@@ -174,18 +180,18 @@ module.exports = {
             'pricing.backoffice.preview',
             'pricing.backoffice.manage',
             'product.backoffice.read',
-            'product.backoffice.manage'
-            ,'store.backoffice.read'
-            ,'store.backoffice.manage'
-            ,'storefront.backoffice.read'
-            ,'storefront.backoffice.manage'
-            ,'storefront.operations.read'
-            ,'cms.delivery.authenticated.read'
-            ,'product.online.read'
-            ,'product.operations.read'
-            ,'product.operations.manage'
-            ,'ai.knowledge.read'
-            ,'ai.knowledge.manage'
+            'product.backoffice.manage',
+            'store.backoffice.read',
+            'store.backoffice.manage',
+            'storefront.backoffice.read',
+            'storefront.backoffice.manage',
+            'storefront.operations.read',
+            'cms.delivery.authenticated.read',
+            'product.online.read',
+            'product.operations.read',
+            'product.operations.manage',
+            'ai.knowledge.read',
+            'ai.knowledge.manage'
         ]
     },
     record12: {

@@ -35,9 +35,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 29 |
-| Test files | 20 |
+| Test files | 21 |
 | Data files | 10 |
-| All module-owned files | 64 |
+| All module-owned files | 65 |
 | Local schema definitions | 3 |
 
 ## Ownership And Dependencies
@@ -73,7 +73,7 @@
 | --- | ---: |
 | Documented | 36 |
 | Partially documented | 21 |
-| Undocumented | 3 |
+| Undocumented | 4 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -130,7 +130,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/src/service/availability/defaultBackofficeAvailabilityService.js` | `src` | `documented` | 18/18 | Observes bounded public runtime readiness asynchronously and aggregates module availability without replacing target health authority. |  |
 | `gExp/backoffice/src/service/contract/defaultBackofficeContractLifecycleService.js` | `src` | `documented` | 15/15 | Provides secured read, comparison, approval, rejection, and rollback orchestration over durable normalized contract history. |  |
 | `gExp/backoffice/src/service/contract/defaultBackofficeContractRepositoryService.js` | `src` | `documented` | 24/24 | Persists immutable normalized contract observations and selects active hashes through an optimistic compare-and-set pointer. |  |
-| `gExp/backoffice/src/service/contract/defaultBackofficeContractService.js` | `src` | `documented` | 8/8 | Validates BackOffice registration and module-owned catalogue metadata against the authoritative API contracts. |  |
+| `gExp/backoffice/src/service/contract/defaultBackofficeContractService.js` | `src` | `documented` | 11/11 | Validates BackOffice registration and module-owned catalogue metadata against the authoritative API contracts. |  |
 | `gExp/backoffice/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Reserves the standard BackOffice service lifecycle and documents the mergeable service override shape. |  |
 | `gExp/backoffice/src/service/discovery/defaultBackofficeDiscoveryService.js` | `src` | `documented` | 19/19 | Discovers effective Nodics contracts through existing System APIs and maintains normalized, client-safe observed snapshots. |  |
 | `gExp/backoffice/src/service/operations/defaultBackofficeOperationalReadinessService.js` | `src` | `documented` | 6/6 | Validates layered BackOffice deployment policy and derives low-disclosure operational readiness and alert codes from owning diagnostics. |  |
@@ -152,6 +152,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/test/backofficeDiscoveryService.test.js` | `test` | `partially-documented` | 0/0 | Validates bounded OpenAPI normalization, authority filtering, hashing, change classification, and safe snapshot preservation. | add @override |
 | `gExp/backoffice/test/backofficeDistributedRegistryStore.test.js` | `test` | `partially-documented` | 0/0 | Validates shared TTL storage, replica visibility, expiry, deletion, diagnostics, and provider failure behavior. | add @override |
 | `gExp/backoffice/test/backofficeDistributedRegistryStoreLive.test.js` | `test` | `documented` | 0/0 | Optionally validates the BackOffice distributed lease-store contract against an explicitly configured isolated Redis endpoint. |  |
+| `gExp/backoffice/test/backofficeDocumentationNavigationContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gExp/backoffice/test/backofficeModuleBoundaryContract.test.js` | `test` | `documented` | 0/0 | Verifies the gExp group and BackOffice capability metadata preserve the approved backend-only experience boundary and composition contract. |  |
 | `gExp/backoffice/test/backofficeOperationalReadinessService.test.js` | `test` | `partially-documented` | 0/0 | Validates deployment configuration invariants and stable READY, DEGRADED, and NOT_READY operational assessment. | add @override |
 | `gExp/backoffice/test/backofficePerformanceContract.test.js` | `test` | `documented` | 0/0 | Provides deterministic scale-path evidence for registration, registry scans, availability deduplication/concurrency, and refresh idempotency. |  |

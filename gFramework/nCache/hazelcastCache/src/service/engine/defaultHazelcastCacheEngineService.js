@@ -24,9 +24,13 @@ module.exports = {
     /** Converts layered engine options into the official Hazelcast client configuration. */
     buildClientConfig: function (engineConfig) {
         let options = Object.assign({}, engineConfig && engineConfig.options || {});
-        let config = { clusterName: options.clusterName || 'dev', network: {
-            clusterMembers: Array.isArray(options.clusterMembers) && options.clusterMembers.length ? options.clusterMembers.slice() : ['127.0.0.1:5701'],
-            connectionTimeout: Number(options.connectionTimeoutMs || 5000)
+        if (!options.clusterName || !Array.isArray(options.clusterMembers) ||
+            options.clusterMembers.length === 0 || !Number.isSafeInteger(options.connectionTimeoutMs)) {
+            throw new Error('Hazelcast cache engine configuration is incomplete');
+        }
+        let config = { clusterName: options.clusterName, network: {
+            clusterMembers: options.clusterMembers.slice(),
+            connectionTimeout: Number(options.connectionTimeoutMs)
         } };
         if (options.connectionStrategy) config.connectionStrategy = options.connectionStrategy;
         if (options.properties) config.properties = options.properties;

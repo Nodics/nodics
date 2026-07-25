@@ -91,6 +91,9 @@ configuration layering while preserving the low-disclosure contract.
 After employee authentication, Axis calls the existing secured
 `GET /nodics/backoffice/v0/bootstrap` endpoint with the human bearer token.
 That response remains permission-filtered and separate from public discovery.
+It includes the authenticated request tenant code as client-safe context.
+Axis uses that value for contextual display and destructive-operation
+confirmation; it must not infer or override tenant authority in the browser.
 
 ## Importing the records
 

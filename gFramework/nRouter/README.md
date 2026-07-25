@@ -76,6 +76,16 @@ The default policy:
 - applies bounded body parser limits for URL-encoded, JSON, and text payloads;
 - applies a per-process rate limit as a framework guardrail.
 
+`responseHandler.publicError` governs the browser/API error envelope. The
+default response exposes only the stable code, HTTP response code, error name,
+safe message, optional trace identifier, and a bounded list of validation
+errors. Pipeline contexts, metadata, nested causes, stack traces, filesystem
+paths, queries, payloads, and credentials remain in protected server
+diagnostics. Server-error messages are resolved from the stable status catalog
+instead of returning internal exception detail. A later layer may reduce this
+envelope further; it must not expose internal diagnostic fields to browser or
+untrusted API clients.
+
 Use layered `config/properties.js` to change HTTP behavior for local,
 development, support, production, server, or node topology. Do not add ad hoc
 CORS, header, body limit, proxy, or rate-limit middleware inside controllers or

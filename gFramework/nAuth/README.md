@@ -42,8 +42,9 @@ JWT issuer, audience, algorithms, access-token lifetime, and service-token
 lifetime are independently overrideable beneath `authSecurity.jwt`.
 
 Browser clients use module-specific audiences through
-`DefaultAuthSecurityService.getBrowserAudience`. Browser exchange is disabled
-by default until the Profile-owned cookie session facade is enabled. See
+`DefaultAuthSecurityService.getBrowserAudience`. Profile implements the
+optional cookie session facade, which remains disabled by default until an
+environment supplies exact credentialed-CORS origins and secure cookie policy. See
 [`gDocs/security/backoffice-browser-security.md`](../../gDocs/security/backoffice-browser-security.md).
 
 Compatibility flags live under `authSecurity.compatibility`. They are explicit

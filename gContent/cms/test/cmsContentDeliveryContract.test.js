@@ -16,6 +16,7 @@ const path = require('path');
 const root = path.resolve(__dirname, '../../..');
 const schemas = require(path.join(root, 'gContent/cms/src/schemas/schemas'));
 const routes = require(path.join(root, 'gContent/cms/src/router/routers')).cms;
+const statusDefinitions = require(path.join(root, 'gContent/cms/src/utils/statusDefinitions'));
 const initialTypes = require(path.join(root, 'gContent/cms/data/init/data/content/defaultCmsTypeCodeData'));
 const validation = require(path.join(root, 'gContent/cms/src/service/validation/defaultCmsContractValidationService'));
 
@@ -39,6 +40,10 @@ assert.strictEqual(routes.cmsDelivery.resolvePublicPage.publicAccess, true);
 assert.strictEqual(routes.cmsDelivery.resolvePublicPage.secured, false);
 assert.strictEqual(routes.cmsDelivery.resolveAuthenticatedPage.secured, true);
 assert.strictEqual(routes.cmsDelivery.resolveAuthenticatedPage.permissionConfig, 'cms.delivery.authenticatedPermission');
+assert.strictEqual(statusDefinitions.CMS_ROUTE_NOT_FOUND.code, '404');
+assert.strictEqual(statusDefinitions.CMS_COMPONENT_ACCESS_DENIED.code, '403');
+assert.strictEqual(statusDefinitions.CMS_GRAPH_DEPTH_EXCEEDED.code, '422');
+assert.strictEqual(statusDefinitions.CMS_GRAPH_SIZE_EXCEEDED.code, '422');
 
 global.CONFIG = { get: () => undefined };
 global.SERVICE = {
@@ -60,7 +65,9 @@ global.SERVICE = {
     global.UTILS = {
         isObject: value => value !== null && typeof value === 'object' && !Array.isArray(value)
     };
-    global.CONFIG = { get: key => key === 'cms' ? { delivery: { maxDepth: 3, maxComponents: 4 } } : undefined };
+    global.CONFIG = { get: key => key === 'cms' ? {
+        delivery: { defaultLocale: 'en', defaultChannel: 'web', maxDepth: 3, maxComponents: 4 }
+    } : undefined };
     const data = {
         routes: [{ site: 'site', path: '/home', locale: 'en', channel: 'web', page: 'home', routeType: 'PAGE', deliveryState: 'ONLINE', accessMode: 'PUBLIC' }],
         pages: [{ code: 'home', name: 'Home', typeCode: 'homePage', template: 'main', internalNote: 'hidden' }],

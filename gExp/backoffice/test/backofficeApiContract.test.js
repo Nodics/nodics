@@ -35,11 +35,18 @@ assert(contracts.capabilitySnapshot.required.includes('hash'));
 assert(contracts.capabilitySnapshot.properties.changeClassification.enum.includes('BREAKING'));
 assert(contracts.bootstrapData.properties.uiComposition.required.includes('fallbackMode'));
 assert(contracts.bootstrapData.required.includes('axisPolicy'));
+assert(contracts.bootstrapData.required.includes('tenantCode'));
 assert.deepStrictEqual(contracts.axisPolicyUpdate.required,
     ['screenLockEnabled', 'idleTimeoutSeconds', 'expectedRevision']);
 assert.deepStrictEqual(contracts.publicBootstrapData.required,
     ['contractVersion', 'clientContractVersion', 'endpoints', 'uiComposition']);
 assert.deepStrictEqual(contracts.moduleAvailability.properties.state.enum, ['UP', 'DEGRADED', 'UNAVAILABLE', 'UNKNOWN']);
+assert.deepStrictEqual(contracts.backofficeMetadata.properties.navigation.items.properties.featureState.enum,
+    ['ACTIVE', 'PREVIEW', 'DISABLED', 'HIDDEN']);
+assert(contracts.backofficeMetadata.properties.navigation.items.properties.group,
+    'navigation must expose the governed business-group contract');
+assert(contracts.backofficeMetadata.properties.navigation.items.properties.badgeProvider,
+    'navigation badges must remain non-executable provider references');
 assert(contracts.moduleAvailability.required.includes('unknownInstances'));
 assert(contracts.adminDetailData.properties.instances.items.properties.environment);
 assert(contracts.adminDetailData.properties.instances.items.properties.server);
@@ -66,12 +73,27 @@ assert(service.validateBackofficeMetadata({
     enabled: true, capabilityId: 'icon-contract', displayName: 'Icon contract', category: 'platform',
     icon: 'module', contractVersion: 1, minimumClientContractVersion: 1,
     roles: ['FUNCTIONAL_CAPABILITY_PROVIDER'], requiredPermissions: ['icon.read'],
-    navigation: [{ id: 'records', label: 'Records', route: '/records', icon: 'registry', order: 1 }]
+    navigation: [{ id: 'records', label: 'Records', route: '/records', icon: 'registry', order: 1,
+        group: { id: 'operations', label: 'Operations', labelKey: 'axis.group.operations', order: 600 },
+        perspectives: ['operations'], contexts: ['environment', 'tenant'], featureState: 'ACTIVE',
+        badgeProvider: { moduleName: 'cms', operationId: 'cms.pending.count' } }]
 }));
 assert.strictEqual(service.validateBackofficeMetadata({
     enabled: true, capabilityId: 'invalid-icon-contract',
     navigation: [{ id: 'records', label: 'Records', icon: 'x'.repeat(65) }]
 }), false);
+assert.strictEqual(service.validateBackofficeMetadata({
+    navigation: [
+        { id: 'parent', label: 'Parent', parentId: 'child' },
+        { id: 'child', label: 'Child', parentId: 'parent' }
+    ]
+}), false, 'navigation cycles must fail registration');
+assert.strictEqual(service.validateBackofficeMetadata({
+    navigation: [{ id: 'child', label: 'Child', parentId: 'missing' }]
+}), false, 'orphan navigation entries must fail registration');
+assert.strictEqual(service.validateBackofficeMetadata({
+    navigation: [{ id: 'hidden', label: 'Hidden', contexts: ['secret-context'] }]
+}), false, 'unknown context dimensions must fail registration');
 assert(capabilities[1].roles.includes('UI_COMPOSITION_PROVIDER'));
 assert.strictEqual(capabilities[1].uiComposition.fallbackMode, 'STATIC_RECOVERY_SHELL');
 

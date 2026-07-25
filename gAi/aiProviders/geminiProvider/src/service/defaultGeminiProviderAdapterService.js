@@ -50,7 +50,7 @@ module.exports = {
             };
         }
         return {
-            url: (config.baseUrl || 'https://generativelanguage.googleapis.com/v1beta') +
+            url: config.baseUrl +
                 '/models/' + encodeURIComponent(input.model) + ':' + operation,
             headers: { 'x-goog-api-key': input.credential, 'content-type': 'application/json' }
         };

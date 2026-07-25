@@ -63,14 +63,18 @@ module.exports = {
             process.error(request, response, new CLASSES.NodicsError('ERR_PRFL_00003', 'Invalid customer detail to execute'));
         } else {
             let registration = CONFIG.get('identityGovernance') && CONFIG.get('identityGovernance').customerRegistration || {};
-            request.model.userGroups = [registration.group || 'customerUserGroup'];
-            request.model.principalType = 'customer';
+            if (!registration.group || !registration.principalType) {
+                return process.error(request, response,
+                    new CLASSES.NodicsError('ERR_PRFL_00003', 'Customer registration policy is incomplete'));
+            }
+            request.model.userGroups = [registration.group];
+            request.model.principalType = registration.principalType;
             request.model.ownerId = request.model.loginId;
-            request.model.ownerType = 'customer';
+            request.model.ownerType = registration.principalType;
             request.model.createdBy = request.model.loginId;
             request.model.updatedBy = request.model.loginId;
             request.model.active = registration.active === true;
-            request.model.accessGroups = [registration.group || 'customerUserGroup'];
+            request.model.accessGroups = [registration.group];
             delete request.model.apiKey;
             delete request.model.apiKeyStatus;
             delete request.model.apiKeyScopes;

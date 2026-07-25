@@ -17,5 +17,18 @@
  * @override Project modules may provide later property contributions for cart-specific behavior, validation, and integration settings.
  */
 module.exports = {
-
+    backofficeCapabilities: {
+        cart: {
+            enabled: true, capabilityId: 'cart-management', displayName: 'Carts',
+            category: 'commerce', icon: 'cart', contractVersion: 1,
+            minimumClientContractVersion: 1, roles: ['FUNCTIONAL_CAPABILITY_PROVIDER'],
+            discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
+            navigation: [{ id: 'carts', label: 'Carts', route: '/commerce/carts',
+                icon: 'cart', order: 500,
+                group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'],
+                contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED' }]
+        }
+    }
 };

@@ -35,5 +35,9 @@ module.exports = {
     record4: {
         code: 'axisAssistantRoute', site: 'axisCmsSite', path: '/assistant', locale: 'en', channel: 'web',
         page: 'axisAssistantPage', routeType: 'PAGE', deliveryState: 'ONLINE', accessMode: 'AUTHENTICATED', active: true
+    },
+    record5: {
+        code: 'axisSchemaWorkbenchRoute', site: 'axisCmsSite', path: '/schema-workbench', locale: 'en', channel: 'web',
+        page: 'axisSchemaWorkbenchPage', routeType: 'PAGE', deliveryState: 'ONLINE', accessMode: 'AUTHENTICATED', active: true
     }
 };

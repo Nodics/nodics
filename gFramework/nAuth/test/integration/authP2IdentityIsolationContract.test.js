@@ -19,7 +19,9 @@
  * preserving these isolation and redaction guarantees.
  */
 const assert = require('assert');
+const _ = require('lodash');
 const configuration = require('./authP2TestConfiguration').load();
+const authDefaults = require('../../config/properties').authSecurity;
 
 class NodicsError extends Error {
     constructor(code, message) { super(message || code && code.message || String(code)); this.code = typeof code === 'string' ? code : code && code.code; }
@@ -39,6 +41,7 @@ const values = {
         internalToken: { crossTenantPermissions: ['auth.internal.token.read.anyTenant'], crossTenantGroups: [] }
     }
 };
+values.authSecurity = _.merge({}, authDefaults, values.authSecurity);
 global.CONFIG = { get: key => values[key] };
 global.UTILS = {
     getUserGroupCodes: groups => [].concat(groups || []).map(group => typeof group === 'string' ? group : group.code),

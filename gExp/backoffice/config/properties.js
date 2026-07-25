@@ -17,6 +17,25 @@
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {
+    schemaPolicies: {
+        backoffice: {
+            contractReader: {
+                accessGroups: {
+                    adminGroup: 10,
+                    runtimeConfigViewerUserGroup: 10,
+                    runtimeConfigAdminUserGroup: 10,
+                    serviceAccountUserGroup: 10
+                }
+            },
+            administrator: {
+                accessGroups: {
+                    adminGroup: 10,
+                    runtimeConfigAdminUserGroup: 10,
+                    serviceAccountUserGroup: 10
+                }
+            }
+        }
+    },
     backofficeAxisPolicy: {
         code: 'axisEmployeeExperiencePolicy',
         contractVersion: 1,
@@ -31,7 +50,78 @@ module.exports = {
             contractVersion: 1, minimumClientContractVersion: 1, roles: ['CONTROL_PLANE_PROVIDER'],
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             requiredPermissions: ['backoffice.registry.view'],
-            navigation: [{ id: 'registry', label: 'Module Registry', route: '/registry', icon: 'registry', order: 900, requiredPermissions: ['backoffice.registry.view'] }]
+            navigation: [
+                { id: 'my-work', label: 'My Work', route: '/workspace/my-work', icon: 'workflow',
+                    order: 100, group: { id: 'workspace', label: 'Workspace', order: 100 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'DISABLED' },
+                { id: 'assigned-to-me', parentId: 'my-work', label: 'Assigned to Me',
+                    route: '/workspace/my-work/assigned', icon: 'workflow', order: 110,
+                    group: { id: 'workspace', label: 'Workspace', order: 100 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'DISABLED' },
+                { id: 'approvals', parentId: 'my-work', label: 'Approvals',
+                    route: '/workspace/my-work/approvals', icon: 'workflow', order: 120,
+                    group: { id: 'workspace', label: 'Workspace', order: 100 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'DISABLED' },
+                { id: 'returned-work', parentId: 'my-work', label: 'Returned Work',
+                    route: '/workspace/my-work/returned', icon: 'workflow', order: 130,
+                    group: { id: 'workspace', label: 'Workspace', order: 100 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'DISABLED' },
+                { id: 'started-workflows', parentId: 'my-work', label: 'Workflows I Started',
+                    route: '/workspace/my-work/started', icon: 'workflow', order: 140,
+                    group: { id: 'workspace', label: 'Workspace', order: 100 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'DISABLED' },
+                { id: 'completed-work', parentId: 'my-work', label: 'Completed Work',
+                    route: '/workspace/my-work/completed', icon: 'workflow', order: 150,
+                    group: { id: 'workspace', label: 'Workspace', order: 100 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'DISABLED' },
+                { id: 'documentation', label: 'Help and Documentation', route: '/docs', icon: 'content',
+                    order: 160, group: { id: 'workspace', label: 'Workspace', order: 100 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'ACTIVE' },
+                { id: 'schema-workbench', label: 'Schema Workbench', route: '/schema-workbench', icon: 'schema',
+                    order: 100, group: { id: 'administration', label: 'Administration', order: 700 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'ACTIVE', requiredPermissions: ['system.schema.workbench.view'] },
+                { id: 'registry', label: 'Module Registry', route: '/registry', icon: 'registry',
+                    order: 100, group: { id: 'operations', label: 'Operations and Integration', order: 600 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                    featureState: 'ACTIVE', requiredPermissions: ['backoffice.registry.view'] },
+                ...['Module Health', 'Integrations', 'Imports and Exports', 'Events', 'Audit Trail',
+                    'Operational Failures'].map((label, index) => ({
+                    id: ['module-health', 'integrations', 'imports-exports', 'events', 'audit-trail',
+                        'operational-failures'][index],
+                    label,
+                    route: '/operations/' + ['module-health', 'integrations', 'imports-exports', 'events',
+                        'audit-trail', 'operational-failures'][index],
+                    icon: index === 0 ? 'registry' : 'module',
+                    order: 110 + index * 10,
+                    group: { id: 'operations', label: 'Operations and Integration', order: 600 },
+                    perspectives: ['operations'],
+                    contexts: ['environment', 'tenant'],
+                    featureState: 'DISABLED'
+                })),
+                ...['Axis Configuration', 'Module Configuration', 'Localization', 'Units',
+                    'Security Policies', 'Themes and Branding', 'System Information'].map((label, index) => ({
+                    id: ['axis-configuration', 'module-configuration', 'localization', 'units',
+                        'security-policies', 'themes-branding', 'system-information'][index],
+                    label,
+                    route: '/administration/' + ['axis-configuration', 'module-configuration',
+                        'localization', 'units', 'security-policies', 'themes-branding',
+                        'system-information'][index],
+                    icon: 'settings',
+                    order: 110 + index * 10,
+                    group: { id: 'administration', label: 'Administration', order: 700 },
+                    perspectives: ['operations'],
+                    contexts: ['environment', 'tenant'],
+                    featureState: 'DISABLED'
+                }))
+            ]
         }
     },
     backofficeRegistry: {

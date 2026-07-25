@@ -23,7 +23,18 @@ module.exports = {
             contractVersion: 1, minimumClientContractVersion: 1, roles: ['FUNCTIONAL_CAPABILITY_PROVIDER'],
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             requiredPermissions: ['cronjob.backoffice.view'],
-            navigation: [{ id: 'cronjob', label: 'Scheduled Jobs', route: '/jobs', icon: 'cronjob', order: 300, requiredPermissions: ['cronjob.backoffice.view'] }]
+            navigation: [{ id: 'cronjob', label: 'Scheduled Jobs', route: '/jobs', icon: 'cronjob', order: 300,
+                group: { id: 'automation', label: 'Process and Automation', order: 500 },
+                perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                featureState: 'ACTIVE', requiredPermissions: ['cronjob.backoffice.view'] },
+            ...['Triggers', 'Execution History', 'Job Failures'].map((label, index) => ({
+                id: ['job-triggers', 'job-execution-history', 'job-failures'][index],
+                label, route: '/jobs/' + ['triggers', 'history', 'failures'][index], icon: 'cronjob',
+                order: 310 + index * 10,
+                group: { id: 'automation', label: 'Process and Automation', order: 500 },
+                perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                featureState: 'DISABLED'
+            }))]
         }
     },
 

@@ -13,12 +13,21 @@ const assert = require('assert');
 
 global.CONFIG = {
     get: function (key) {
+        if (key === 'schemaPolicies') {
+            return require('../config/properties').schemaPolicies;
+        }
         if (key === 'identityGovernance') {
             return {
                 administrativeGroups: ['adminGroup', 'serviceAccountUserGroup'],
                 systemAccessGroups: ['serviceAccountUserGroup'],
+                principalPolicy: {
+                    allowedTypes: ['human', 'service', 'customer'],
+                    serviceType: 'service',
+                    serviceGroup: 'serviceAccountUserGroup',
+                    minimumServiceApiKeyLength: 32
+                },
                 permissionCatalog: ['profile.read', 'profile.write'],
-                customerRegistration: { group: 'customerUserGroup', active: true }
+                customerRegistration: { group: 'customerUserGroup', principalType: 'customer', active: true }
             };
         }
         if (key === 'forceAPIKeyGenerate') return false;
@@ -45,7 +54,9 @@ const registration = require('../src/service/customer/defaultCustomerRegistratio
 const apiKeyInterceptor = require('../src/service/interceptors/defaultAPIKeyInterceptorService');
 const apiKeyCredential = require('../../../gFramework/nAuth/src/service/identity/defaultAPIKeyCredentialService');
 const employeeService = require('../src/service/employee/defaultEmployeeService');
-const profileSchemas = require('../src/schemas/schemas').profile;
+const schemaHandler = require('../../../gFramework/nDatabase/database/src/service/schema/defaultDatabaseSchemaHandlerService');
+const profileSchemas = schemaHandler.applyNamedSchemaPolicies(
+    'profile', require('../src/schemas/schemas').profile);
 const schemaAccessHandler = require('../../../gFramework/nDatabase/database/src/service/schema/defaultSchemaAccessHandlerService');
 registration.LOG = { debug: function () {} };
 

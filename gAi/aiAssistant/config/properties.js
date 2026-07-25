@@ -25,7 +25,9 @@ module.exports = {
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             requiredPermissions: ['ai.assistant.use'],
             navigation: [{ id: 'assistant', label: 'Axis Assistant', route: '/assistant',
-                icon: 'assistant', order: 50, requiredPermissions: ['ai.assistant.use'] }]
+                icon: 'assistant', order: 50, group: { id: 'operations', label: 'Operations', order: 600 },
+                perspectives: ['operations'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'ACTIVE', requiredPermissions: ['ai.assistant.use'] }]
         }
     },
     cache: {
@@ -120,6 +122,7 @@ module.exports = {
         },
         security: {
             employeeOnly: true,
+            deniedPrincipalGroups: ['customerUserGroup'],
             allowBrowserCredentials: false,
             allowInlineSecrets: false,
             allowModelSelfApproval: false,

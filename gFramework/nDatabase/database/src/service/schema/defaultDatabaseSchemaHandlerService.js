@@ -75,7 +75,8 @@ module.exports = {
                         }
                         moduleObject.rawSchema = _self.resolveModuleSchemaDependancy({
                             moduleName: key,
-                            rawSchema: _.merge(_.merge({}, defaultSchema), mergedSchema[key])
+                            rawSchema: _self.applyNamedSchemaPolicies(
+                                key, _.merge(_.merge({}, defaultSchema), mergedSchema[key]))
                         });
                     }
                 });
@@ -85,6 +86,59 @@ module.exports = {
             }
 
         });
+    },
+
+    /**
+     * Applies named, layered schema policies before inheritance resolution.
+     * The resulting schema retains the established `accessGroups` and
+     * `ownership` runtime contract; `schemaPolicies` never becomes a second
+     * authorization path.
+     *
+     * @param {string} moduleName Owning schema module.
+     * @param {Object} rawSchema Effective pre-inheritance schema map.
+     * @returns {Object} Schema map with materialized policy values.
+     */
+    applyNamedSchemaPolicies: function (moduleName, rawSchema) {
+        let registry = CONFIG.get('schemaPolicies') || {};
+        let modulePolicies = registry[moduleName] || {};
+        Object.keys(rawSchema || {}).forEach(schemaName => {
+            let schema = rawSchema[schemaName];
+            let names = schema && schema.schemaPolicies;
+            if (!names) return;
+            names = Array.isArray(names) ? names : [names];
+            let materialized = {};
+            names.forEach(policyName => {
+                let policy = modulePolicies[policyName];
+                if (!policy) {
+                    throw new CLASSES.NodicsError('ERR_DBS_00003',
+                        'Unknown schema policy: ' + moduleName + '.' + policyName);
+                }
+                materialized = _.merge(materialized, this.materializeSchemaPolicy(policy));
+            });
+            rawSchema[schemaName] = _.merge(materialized, schema);
+        });
+        return rawSchema;
+    },
+
+    /**
+     * Converts extensible keyed collection configuration into the arrays
+     * consumed by the existing ownership enforcement contract.
+     *
+     * @param {Object} policy Layered named policy.
+     * @returns {Object} Cloned runtime schema policy.
+     */
+    materializeSchemaPolicy: function (policy) {
+        let result = _.merge({}, policy);
+        let ownership = result.ownership;
+        if (ownership) {
+            ['bypassGroups', 'subjectGroups', 'principalTypes'].forEach(propertyName => {
+                let value = ownership[propertyName];
+                if (value && !Array.isArray(value) && typeof value === 'object') {
+                    ownership[propertyName] = Object.keys(value).filter(key => value[key] === true);
+                }
+            });
+        }
+        return result;
     },
 
     /**
@@ -105,6 +159,9 @@ module.exports = {
                 let schema = {};
                 schema[runtimeSchema.moduleName] = {};
                 schema[runtimeSchema.moduleName][runtimeSchema.code] = runtimeSchema;
+                schema[runtimeSchema.moduleName] = _self.applyNamedSchemaPolicies(
+                    runtimeSchema.moduleName, schema[runtimeSchema.moduleName]);
+                runtimeSchema = schema[runtimeSchema.moduleName][runtimeSchema.code];
                 SERVICE.DefaultDatabaseConfigurationService.setRawSchema(SERVICE.DefaultFilesLoaderService.mergeRuntimeSchemaFiles(
                     SERVICE.DefaultDatabaseConfigurationService.getRawSchema(), schema
                 ));

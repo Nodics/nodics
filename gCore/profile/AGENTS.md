@@ -16,6 +16,9 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
 - Put configurable behavior in layered configuration, schemas, routers, services, pipelines, data, and runtime governance.
 - Update `README.md`, permanent `docs/`, `llm/` guidance, generated context, and tests whenever behavior or extension contracts change.
 - Generated files must be recreated from source definitions; do not hand-maintain generated artifacts as source of truth.
+- Extend reusable Profile access/ownership defaults through layered
+  `schemaPolicies.profile`; do not copy full schemas or add local access-policy
+  factory functions.
 - Internal authentication token routes are service capabilities, not generic
   user routes. Preserve explicit route permissions and tenant/cross-tenant
   governance when changing profile authentication routers or controllers.
@@ -23,6 +26,12 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
   pre-authentication routes: they must resolve enterprise/tenant context before
   credential validation without requiring an existing bearer token or API key.
   Do not weaken module-to-module internal token routes when changing them.
+- Browser session restoration is Profile-owned. Keep refresh credentials in a
+  scoped HttpOnly cookie, return access tokens only to client memory, require
+  exact credentialed-CORS origins plus double-submit CSRF for restore/logout,
+  rotate refresh state on every restore, and clear/revoke it on logout. Never
+  introduce browser storage, a BackOffice-owned token authority, wildcard
+  credentialed CORS, or non-Secure cookies outside loopback local development.
 - Enterprise management APIs must remain Profile-owned, human-access-token
   protected, action-permissioned, bounded, and explicitly projected. Reuse the
   generated enterprise service; do not expose generic schema CRUD to an AI

@@ -16,6 +16,9 @@
   locale, channel, tenant, and enterprise from the active result.
 - Never decode the handle locally, trust browser scope overrides, or bypass CMS
   Online route/manifest and graph validation after introspection.
+- Preserve client-safe delivery status mappings: invalid input `400`, access
+  denial `403`, missing content `404`, and graph-bound violations `422`. Never
+  collapse expected delivery failures into generic internal errors.
 - Consumer-specific sites, catalogs, routes, templates, and content belong in
   later project modules.
 - Extend through layered properties and later schema, route, service, facade,

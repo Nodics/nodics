@@ -30,6 +30,20 @@ authenticated users do not receive generated CRUD access to identity records.
 Customer registration forces the configured customer group and removes caller-
 supplied API keys, permissions, and privileged group assignments.
 
+Reusable Profile schema access and ownership defaults live under
+`config/properties.js#schemaPolicies.profile`. Partner modules extend policies
+such as `administrative` and `customerOwned` through ordinary configuration
+layering instead of copying complete schemas. Keyed ownership entries use
+`true` to include and `false` to remove; the final effective schema remains the
+runtime authority.
+
+Principal categories, the service-principal group, minimum service API-key
+length, and customer-registration identity are governed by layered
+`identityGovernance.principalPolicy` and
+`identityGovernance.customerRegistration` configuration. Project modules may
+extend those named policies in a later layer; Profile services do not embed
+framework group names as fallback values.
+
 ## Request And Authority Boundaries
 
 ```text
@@ -58,6 +72,31 @@ API key, but they still require enterprise context so the non-secured request
 pipeline can resolve the active tenant before credentials are validated.
 Module-to-module communication remains a separate secured capability using API
 keys and internal service tokens.
+
+### Secure browser session restoration
+
+Profile also owns the optional browser-session facade used by Axis. It is
+disabled by default. Employee browser login returns an access token for
+in-memory use and places the refresh credential in a scoped `HttpOnly` cookie.
+Axis cannot read or persist that refresh credential. A page reload calls the
+Profile restore endpoint with the readable CSRF cookie value in
+`X-CSRF-Token`; Profile requires an exact allowed Origin, atomically consumes
+the refresh state, rotates both credentials, and returns only the replacement
+access token and employee identifier.
+
+The routes are:
+
+- `POST /nodics/profile/v0/employee/browser/authenticate`
+- `POST /nodics/profile/v0/employee/browser/restore`
+- `POST /nodics/profile/v0/employee/browser/logout`
+
+Configure `profileBrowserSession` through the Nodics layer hierarchy and align
+its `csrfCookieName` with the Axis public runtime setting. Credentialed CORS
+must be enabled with explicit origins. Production requires HTTPS and `Secure`
+cookies; the implementation accepts non-Secure cookies only for an explicitly
+allowed loopback HTTP origin. Logout revokes refresh state and expires both
+cookies. Access tokens remain short-lived bearer credentials and Axis removes
+its in-memory copy immediately.
 
 Profile owns its optional BackOffice catalogue declaration in
 `config/properties.js#backofficeCapabilities.profile`.

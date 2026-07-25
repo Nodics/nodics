@@ -8,6 +8,7 @@
 - `gFramework/nTooling/test/dependencyOwnershipContract.test.js`
 - `gFramework/nTooling/test/dependencyRuntimeContract.test.js`
 - `gFramework/nTooling/test/documentationNavigationQuality.test.js`
+- `gFramework/nTooling/test/extensibilityConfigurationBoundary.test.js`
 - `gFramework/nTooling/test/fullTestSuiteCoverageContract.test.js`
 - `gFramework/nTooling/test/llmChangeAcceptanceContract.test.js`
 - `gFramework/nTooling/test/mcpReadOnlyGovernanceContract.test.js`

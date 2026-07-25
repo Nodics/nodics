@@ -48,7 +48,7 @@ module.exports = {
         const streaming = typeof input.context.onProviderEvent === 'function';
         if (streaming) body.stream = true;
         const response = await transportService.request({
-            url: (config.baseUrl || 'https://api.openai.com/v1') + '/responses',
+            url: config.baseUrl + '/responses',
             headers: { 'content-type': 'application/json', authorization: 'Bearer ' + input.credential },
             body: body,
             timeoutMs: config.timeoutMs,
@@ -93,7 +93,7 @@ module.exports = {
     lookupUsage: async function (input) {
         const response = await transportService.request({
             method: 'GET',
-            url: (input.providerConfiguration.baseUrl || 'https://api.openai.com/v1') +
+            url: input.providerConfiguration.baseUrl +
                 '/responses/' + encodeURIComponent(input.providerRequestId),
             headers: { authorization: 'Bearer ' + input.credential },
             timeoutMs: input.providerConfiguration.timeoutMs,

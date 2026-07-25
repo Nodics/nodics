@@ -20,7 +20,7 @@
  * @property {Object<string,string>} defaultErrorCodes Fallback status codes by error type.
  */
 module.exports = {
-    returnErrorStack: true,
+    returnErrorStack: false,
     externalDataLocation: NODICS.getServerPath() + '/data',
 
     defaultErrorCodes: {

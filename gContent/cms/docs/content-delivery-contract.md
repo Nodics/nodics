@@ -85,6 +85,14 @@ bound. Redirects remain disabled. A later provider override must preserve
 service authentication, audience binding, bounded transport, and override
 rejection.
 
+### Client-safe failure responses
+
+Delivery maps invalid context or paths to `400`, protected component access to
+`403`, missing route/page/template/publication records to `404`, and bounded
+graph-limit violations to `422`. Axis and other clients must handle these
+stable statuses without displaying backend stack traces, queries, or record
+payloads.
+
 ## Caching And Invalidation
 
 The routes use Nodics router caching. CMS mutations call the existing

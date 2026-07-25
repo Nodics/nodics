@@ -23,6 +23,12 @@ global.CONFIG = { get: key => key === 'backofficeRegistry' ? {
     sweepIntervalMs: 1000,
     allowedSchemes: ['http', 'https'],
     requireBoundServiceIdentity: true,
+    store: {
+        mode: 'memory',
+        moduleName: 'backoffice',
+        engineName: 'redis',
+        keyPrefix: 'registry:lease:'
+    },
     modulePermissions: {},
     compatibility: { registryContractVersion: 1, minimumClientContractVersion: 1 },
     publicBootstrap: {
@@ -185,7 +191,7 @@ async function run() {
     assert.strictEqual(diagnostics.data.activeInstances, 2, 'diagnostics must retain all active module leases');
     assert.strictEqual(diagnostics.data.contracts.pendingApprovals, 1);
     assert.deepStrictEqual(diagnosticsAuthData.userGroups, ['runtimeConfigAdminUserGroup']);
-    let bootstrap = await service.bootstrap({ authData: { permissions: ['cms.backoffice.view'] },
+    let bootstrap = await service.bootstrap({ tenant: 'default', authData: { permissions: ['cms.backoffice.view'] },
         headers: { 'x-nodics-client-contract-version': '1' } });
     assert.strictEqual(bootstrap.data.compatibility.registryContractVersion, 1);
     assert.strictEqual(bootstrap.data.compatibility.status, 'DEGRADED');
@@ -198,12 +204,32 @@ async function run() {
     assert.strictEqual(bootstrap.data.uiComposition.providerModule, 'cms');
     assert.strictEqual(bootstrap.data.uiComposition.fallbackMode, 'STATIC_RECOVERY_SHELL');
     assert.strictEqual(bootstrap.data.axisPolicy.idleTimeoutSeconds, 900);
+    assert.strictEqual(bootstrap.data.tenantCode, 'default');
     assert.strictEqual(bootstrap.data.modules.workflowCore, undefined,
         'bootstrap must never expose modules that are not browser callable');
     assert.strictEqual(bootstrap.data.catalogue.workflowCore, undefined,
         'bootstrap catalogue must contain only authorized browser-callable modules');
     assert.strictEqual(JSON.stringify(bootstrap).includes('expiresAt'), false,
         'bootstrap must not expose internal lease-expiry state');
+    let navigationMetadata = {
+        requiredPermissions: ['backoffice.registry.view'],
+        navigation: [
+            { id: 'administration', requiredPermissions: ['system.schema.workbench.view'] },
+            { id: 'workbench', parentId: 'administration', requiredPermissions: ['system.schema.workbench.view'] },
+            { id: 'registry', requiredPermissions: ['backoffice.registry.view'] },
+            { id: 'hidden', featureState: 'HIDDEN' }
+        ]
+    };
+    let authorizedCatalogue = service.buildCatalogue({
+        backoffice: [{ backoffice: navigationMetadata }]
+    }, 1, { permissions: ['backoffice.registry.view', 'system.schema.workbench.view'] });
+    assert.deepStrictEqual(authorizedCatalogue.backoffice.navigation.map(item => item.id), ['administration', 'workbench', 'registry'],
+        'bootstrap should retain every navigation item independently authorized for the employee');
+    let restrictedCatalogue = service.buildCatalogue({
+        backoffice: [{ backoffice: navigationMetadata }]
+    }, 1, { permissions: ['backoffice.registry.view'] });
+    assert.deepStrictEqual(restrictedCatalogue.backoffice.navigation.map(item => item.id), ['registry'],
+        'bootstrap must remove unauthorized parents, their orphaned descendants, and hidden features');
     await assert.rejects(() => Promise.resolve().then(() => service.bootstrap({ authData: { permissions: [] },
         headers: { 'x-nodics-client-contract-version': 'invalid' } })));
     assert(auditEvents.some(event => event.eventType === 'backoffice.registry.registration'));

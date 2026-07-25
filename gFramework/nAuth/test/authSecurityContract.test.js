@@ -13,14 +13,17 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
+const _ = require('lodash');
 
 const repositoryRoot = path.resolve(__dirname, '../../..');
 const authSecurity = require('../src/service/security/defaultAuthSecurityService');
+const authDefaults = require('../config/properties').authSecurity;
 
 function configuration(values) {
+    const effective = _.merge({ authSecurity: _.merge({}, authDefaults) }, values || {});
     return {
         get: function (key) {
-            return values[key];
+            return effective[key];
         }
     };
 }

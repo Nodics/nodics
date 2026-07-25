@@ -17,6 +17,29 @@
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {
+    backofficeCapabilities: {
+        inventory: {
+            enabled: true, capabilityId: 'stock-management', displayName: 'Stock and Inventory',
+            category: 'commerce', icon: 'stock', contractVersion: 1,
+            minimumClientContractVersion: 1, roles: ['FUNCTIONAL_CAPABILITY_PROVIDER'],
+            discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
+            navigation: [{ id: 'stock', label: 'Stock', route: '/commerce/stock', icon: 'stock',
+                order: 400, group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'],
+                contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED' },
+            ...['Stock Levels', 'Stock Pools', 'Warehouses', 'Availability'].map((label, index) => ({
+                id: ['stock-levels', 'stock-pools', 'warehouses', 'availability'][index],
+                parentId: 'stock', label,
+                route: '/commerce/stock/' + ['levels', 'pools', 'warehouses', 'availability'][index],
+                icon: 'stock', order: 410 + index * 10,
+                group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'],
+                contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED'
+            }))]
+        }
+    },
     cache: {
         inventory: {
             channels: {

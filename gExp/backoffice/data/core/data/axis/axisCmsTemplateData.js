@@ -38,5 +38,10 @@ module.exports = {
         code: 'axisAssistantPageTemplate', name: 'Axis Assistant Workspace',
         renderer: 'axis.template.assistant', contractVersion: 1,
         slots: ['axisAssistantHeaderSlot', 'axisAssistantWorkspaceSlot'], active: true
+    },
+    record3: {
+        code: 'axisSchemaWorkbenchPageTemplate', name: 'Axis Schema Workbench',
+        renderer: 'axis.template.schema-workbench', contractVersion: 1,
+        slots: ['axisSchemaWorkbenchHeaderSlot', 'axisSchemaWorkbenchContentSlot'], active: true
     }
 };

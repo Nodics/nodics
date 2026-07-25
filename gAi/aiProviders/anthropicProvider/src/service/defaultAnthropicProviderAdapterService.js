@@ -33,7 +33,7 @@ module.exports = {
         const config = input.providerConfiguration;
         const streaming = typeof input.context.onProviderEvent === 'function';
         const response = await transportService.request({
-            url: (config.baseUrl || 'https://api.anthropic.com/v1') + '/messages',
+            url: config.baseUrl + '/messages',
             headers: {
                 'content-type': 'application/json', 'x-api-key': input.credential,
                 'anthropic-version': config.apiVersion

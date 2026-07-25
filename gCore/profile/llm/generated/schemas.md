@@ -26,7 +26,7 @@
 - `city` `string` required: City of the address
 - `contacts` `array` optional: All associated contacts with this enterprise
 - `flatNo` `string` optional: Flat number of the address
-- `isPrimery` `bool` required: Set if this address is default one
+- `isPrimery` `bool` required: Indicates whether this is the default address
 - `locality` `string` optional: Locality of the address
 - `postalCode` `string` required: PastalCode of the address
 - `state` `string` required: State of the address

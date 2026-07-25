@@ -33,5 +33,9 @@ module.exports = {
     record12: { code: 'axisAssistantHeaderSlot', template: 'axisAssistantPageTemplate', name: 'header',
         minItems: 1, maxItems: 2, allowedComponentTypes: ['axisBrandComponentType', 'axisMessageComponentType'], active: true },
     record13: { code: 'axisAssistantWorkspaceSlot', template: 'axisAssistantPageTemplate', name: 'workspace',
-        minItems: 1, maxItems: 1, allowedComponentTypes: ['axisAssistantWorkspaceComponentType'], active: true }
+        minItems: 1, maxItems: 1, allowedComponentTypes: ['axisAssistantWorkspaceComponentType'], active: true },
+    record14: { code: 'axisSchemaWorkbenchHeaderSlot', template: 'axisSchemaWorkbenchPageTemplate', name: 'header',
+        minItems: 1, maxItems: 1, allowedComponentTypes: ['axisBrandComponentType'], active: true },
+    record15: { code: 'axisSchemaWorkbenchContentSlot', template: 'axisSchemaWorkbenchPageTemplate', name: 'content',
+        minItems: 1, maxItems: 1, allowedComponentTypes: ['axisSchemaWorkbenchComponentType'], active: true }
 };

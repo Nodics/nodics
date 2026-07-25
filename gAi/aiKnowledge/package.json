@@ -12,6 +12,7 @@
         "loadableByNodicsModuleLoader": true,
         "owns": [
             "configuration",
+            "data",
             "schema",
             "router",
             "controller",

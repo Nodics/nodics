@@ -146,6 +146,48 @@ module.exports = {
                     }
                 }
             },
+            authenticateEmployeeBrowser: {
+                secured: false,
+                accessGroups: ['userGroup'],
+                key: '/employee/browser/authenticate',
+                method: 'POST',
+                handler: 'DefaultAuthenticationProviderController',
+                operation: 'authenticateEmployeeBrowser',
+                help: {
+                    requestType: 'pre-authentication',
+                    message: 'Authenticate an employee and establish a secure browser refresh session',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/profile/employee/browser/authenticate'
+                }
+            },
+            restoreEmployeeBrowser: {
+                secured: false,
+                accessGroups: ['userGroup'],
+                key: '/employee/browser/restore',
+                method: 'POST',
+                handler: 'DefaultAuthenticationProviderController',
+                operation: 'restoreEmployeeBrowser',
+                help: {
+                    requestType: 'browser-session',
+                    message: 'Rotate the HttpOnly browser refresh session after CSRF validation',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/profile/employee/browser/restore'
+                }
+            },
+            logoutEmployeeBrowser: {
+                secured: false,
+                accessGroups: ['userGroup'],
+                key: '/employee/browser/logout',
+                method: 'POST',
+                handler: 'DefaultAuthenticationProviderController',
+                operation: 'logoutEmployeeBrowser',
+                help: {
+                    requestType: 'browser-session',
+                    message: 'Revoke and clear the browser refresh session after CSRF validation',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/profile/employee/browser/logout'
+                }
+            },
             authenticateCustomer: {
                 secured: false,
                 accessGroups: ['userGroup'],

@@ -242,14 +242,35 @@ module.exports = {
     },
 
     /** Aggregates authorized module-owned catalogue metadata without becoming its source of truth. */
-    buildCatalogue: function (modules, clientContractVersion) {
+    buildCatalogue: function (modules, clientContractVersion, authData) {
         let catalogue = {};
+        let permissions = authData && authData.permissions || [];
         Object.keys(modules).forEach(moduleName => {
             let instances = modules[moduleName];
             let metadata = instances.map(instance => instance.backoffice).find(value => value && value.enabled !== false);
             if (!metadata) return;
             let snapshot = SERVICE.DefaultBackofficeDiscoveryService && SERVICE.DefaultBackofficeDiscoveryService.getSnapshot(moduleName);
-            catalogue[moduleName] = Object.assign({}, metadata, {
+            let authorizedMetadata = Object.assign({}, metadata);
+            if (Array.isArray(metadata.navigation)) {
+                let authorizedItems = metadata.navigation.filter(item => {
+                    let required = [].concat(item.requiredPermissions || []);
+                    return item.featureState !== 'HIDDEN' &&
+                        (permissions.includes('*') || required.every(permission => permissions.includes(permission)));
+                });
+                let authorizedIds = new Set(authorizedItems.map(item => item.id));
+                let changed = true;
+                while (changed) {
+                    changed = false;
+                    authorizedItems = authorizedItems.filter(item => {
+                        if (!item.parentId || authorizedIds.has(item.parentId)) return true;
+                        authorizedIds.delete(item.id);
+                        changed = true;
+                        return false;
+                    });
+                }
+                authorizedMetadata.navigation = authorizedItems;
+            }
+            catalogue[moduleName] = Object.assign(authorizedMetadata, {
                 moduleName: moduleName,
                 activeModuleLeases: instances.length,
                 compatibility: this.evaluateCompatibility(metadata, clientContractVersion),
@@ -367,7 +388,7 @@ module.exports = {
     bootstrap: async function (request) {
         let clientContractVersion = this.getClientContractVersion(request);
         let result = await this.list(request);
-        let catalogue = this.buildCatalogue(result.data.modules, clientContractVersion);
+        let catalogue = this.buildCatalogue(result.data.modules, clientContractVersion, request && request.authData);
         let availability = this.buildAvailability(result.data.modules);
         let configured = this.getConfiguration().compatibility || {};
         let status = this.getOverallCompatibilityStatus(catalogue);
@@ -393,7 +414,8 @@ module.exports = {
                 catalogue: catalogue,
                 availability: availability,
                 uiComposition: this.selectUiComposition(catalogue, availability),
-                axisPolicy: axisPolicy
+                axisPolicy: axisPolicy,
+                tenantCode: request.tenant
             }
         };
     },

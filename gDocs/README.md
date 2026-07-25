@@ -65,6 +65,7 @@ your goal.
 24. [How AI Cost Governance Works](ai/how-ai-cost-governance-works.md)
 25. [Assistant, AI Providers, and Knowledge Guide](ai/assistant-provider-and-knowledge-guide.md)
 26. [How To Read The Nodics Axis Workspace Context](backoffice/how-to-use-axis-workspace-context.md)
+27. [How Schema Workbench Works](backoffice/how-schema-workbench-works.md)
 
 ### Architect, Security Reviewer, Or Operator
 
@@ -81,6 +82,7 @@ your goal.
 11. [How AI Cost Governance Works](ai/how-ai-cost-governance-works.md)
 12. [Assistant, AI Providers, and Knowledge Guide](ai/assistant-provider-and-knowledge-guide.md)
 13. [How To Read The Nodics Axis Workspace Context](backoffice/how-to-use-axis-workspace-context.md)
+14. [How Schema Workbench Works](backoffice/how-schema-workbench-works.md)
 
 ### Reference And Documentation Contributors
 
@@ -154,6 +156,7 @@ Use this map when you are not sure where to start.
 | Understand tenant-scoped AI token and exact-cost controls | [How AI Cost Governance Works](ai/how-ai-cost-governance-works.md) |
 | Configure the read-only Assistant, providers, and documentation Knowledge flow | [Assistant, AI Providers, and Knowledge Guide](ai/assistant-provider-and-knowledge-guide.md) |
 | Understand Axis Environment, Tenant, Enterprise, Site, and Catalog context | [How To Read The Nodics Axis Workspace Context](backoffice/how-to-use-axis-workspace-context.md) |
+| Discover and manage explicitly enabled schemas in Axis | [How Schema Workbench Works](backoffice/how-schema-workbench-works.md) |
 | Create enterprise Product Items and alternate identifiers | [How To Create And Identify Products](commerce/how-to-create-and-identify-products.md) |
 | Use Nodics as a governed data lake or data hub | [How To Use Nodics As Data As A Service](data/how-to-use-nodics-as-data-as-a-service.md) |
 | Add scheduled jobs | [How To Create Scheduled Jobs](jobs/how-to-create-scheduled-jobs.md) |

@@ -25,7 +25,38 @@ module.exports = {
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             uiComposition: { site: 'cmsDefaultSite', catalog: 'cmsDefaultContentCatalog', defaultPage: 'cmsDefaultPage', fallbackMode: 'STATIC_RECOVERY_SHELL' },
             requiredPermissions: ['cms.backoffice.view'],
-            navigation: [{ id: 'cms', label: 'Content', route: '/content', icon: 'cms', order: 200, requiredPermissions: ['cms.backoffice.view'] }]
+            navigation: [{ id: 'cms', label: 'Content', route: '/content', icon: 'cms', order: 200,
+                group: { id: 'content', label: 'Content and Experience', order: 200 },
+                perspectives: ['operations', 'content'], contexts: ['environment', 'tenant', 'enterprise', 'site', 'catalog'],
+                featureState: 'ACTIVE', requiredPermissions: ['cms.backoffice.view'] },
+            ...['Pages', 'Components', 'Media', 'Page Templates', 'Content Catalogs'].map((label, index) => ({
+                id: ['pages', 'components', 'media', 'page-templates', 'content-catalogs'][index],
+                parentId: 'cms', label,
+                route: '/content/' + ['pages', 'components', 'media', 'page-templates',
+                    'catalogs'][index],
+                icon: 'cms', order: 210 + index * 10,
+                group: { id: 'content', label: 'Content and Experience', order: 200 },
+                perspectives: ['operations', 'content'],
+                contexts: ['environment', 'tenant', 'enterprise', 'site', 'catalog'],
+                featureState: 'DISABLED'
+            })),
+            { id: 'publishing', label: 'Publishing', route: '/publishing', icon: 'workflow', order: 280,
+                group: { id: 'content', label: 'Content and Experience', order: 200 },
+                perspectives: ['operations', 'content'],
+                contexts: ['environment', 'tenant', 'enterprise', 'site', 'catalog'],
+                featureState: 'DISABLED' },
+            ...['Publishing Requests', 'Staged-to-Online Status', 'Publishing History',
+                'Publishing Failures'].map((label, index) => ({
+                id: ['publishing-requests', 'publishing-status', 'publishing-history',
+                    'publishing-failures'][index],
+                parentId: 'publishing', label,
+                route: '/publishing/' + ['requests', 'status', 'history', 'failures'][index],
+                icon: 'workflow', order: 290 + index * 10,
+                group: { id: 'content', label: 'Content and Experience', order: 200 },
+                perspectives: ['operations', 'content'],
+                contexts: ['environment', 'tenant', 'enterprise', 'site', 'catalog'],
+                featureState: 'DISABLED'
+            }))]
         }
     },
     cms: {

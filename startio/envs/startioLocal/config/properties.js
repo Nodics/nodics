@@ -75,6 +75,11 @@ module.exports = {
             max: 2000
         }
     },
+    profileBrowserSession: {
+        enabled: true,
+        secure: false,
+        sameSite: 'Strict'
+    },
     authSecurity: {
         jwt: {
             secret: process.env.NODICS_JWT_SECRET || 'startio-local-only-jwt-secret-change-before-deployment'

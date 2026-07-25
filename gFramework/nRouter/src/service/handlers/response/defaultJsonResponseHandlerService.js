@@ -30,6 +30,42 @@ function toHttpStatus(value) {
 }
 
 module.exports = {
+    /**
+     * Creates the bounded public error envelope. Pipeline context, metadata,
+     * causal internals, and stack traces remain server-side diagnostics.
+     */
+    publicError: function (error) {
+        let policy = CONFIG.get('responseHandler') &&
+            CONFIG.get('responseHandler').publicError || {};
+        let status = toHttpStatus(error.responseCode);
+        let message = error.message;
+        if (status >= 500 && policy.maskServerErrorMessages !== false) {
+            try {
+                message = SERVICE.DefaultStatusService.get(error.code).message;
+            } catch (ignored) {
+                message = 'Failed due to an internal error';
+            }
+        }
+        let result = {
+            responseCode: error.responseCode,
+            code: error.code,
+            name: error.name,
+            message: message
+        };
+        if (error.traceId) result.traceId = error.traceId;
+        if (policy.includeValidationErrors !== false &&
+            Array.isArray(error.errors) && error.errors.length > 0) {
+            let maximum = Number.isInteger(policy.maximumValidationErrors) ?
+                Math.max(1, policy.maximumValidationErrors) : 25;
+            result.errors = error.errors.slice(0, maximum).map(item => ({
+                responseCode: item.responseCode,
+                code: item.code,
+                name: item.name,
+                message: item.message
+            }));
+        }
+        return result;
+    },
 
     /**
      * Initializes the JSON response handler during service loading.
@@ -101,6 +137,6 @@ module.exports = {
         }
         this.LOG.error(error);
         response.status(toHttpStatus(error.responseCode));
-        response.json(error.toJson());
+        response.json(this.publicError(error));
     }
 };

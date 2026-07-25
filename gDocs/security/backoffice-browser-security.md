@@ -1,8 +1,7 @@
 # BackOffice browser security
 
-This page explains the browser-security foundation currently implemented for
-Nodics Axis and other BackOffice clients. Browser login and session lifecycle
-UI are delivered by later Axis/Profile work.
+This page explains the browser-security foundation implemented for Nodics Axis
+and other BackOffice clients, including secure refresh restoration.
 
 ## The simple model
 
@@ -27,9 +26,29 @@ token if its expected audience is BackOffice, Profile, Cron, or another
 functional module. Permissions, enterprise, tenant, principal security stamp,
 expiry, revocation, and token type are still validated in addition to audience.
 
-The browser audience helpers are available now. Browser token exchange is
-disabled by default with `authSecurity.browserAccess.enabled: false`; enabling
-it without an approved Profile browser-session implementation is unsupported.
+The browser audience helpers are available now.
+
+## Refresh-safe employee sessions
+
+Profile owns the browser-session facade. Axis never persists access or refresh
+tokens in JavaScript-readable storage. Profile returns the short-lived access
+token to Axis memory and stores the refresh credential only in a scoped
+`HttpOnly` cookie.
+
+After browser refresh, Axis calls
+`POST /nodics/profile/v0/employee/browser/restore`. Profile requires an exact
+allowed Origin and a matching `X-CSRF-Token` header and readable CSRF cookie.
+It atomically consumes the old refresh token, rotates the credential pair and
+cookies, and returns only the new access token and employee identifier.
+
+Logout revokes refresh state and expires both cookies. Invalid origin,
+missing or mismatched CSRF, expired or replayed refresh state, inactive
+identity, tenant mismatch, and stale security stamp all fail closed.
+
+`profileBrowserSession` is layered configuration and is disabled by default.
+Production must use `Secure` cookies and exact HTTPS origins. The local
+environment explicitly enables non-Secure localhost cookies only for local
+testing.
 
 ## Browser transport policy
 
@@ -55,7 +74,10 @@ credentials in query strings or fragments.
 ## Errors, retries, and idempotency
 
 Browser clients use the Nodics `code`, HTTP `responseCode`, and safe `message`.
-Stack traces and secrets are not browser data. `X-Request-Id` and
+The shared response handler removes pipeline contexts, metadata, nested
+causes, stack traces, filesystem paths, queries, and payload internals from
+public error envelopes. Stack traces and secrets are not browser data.
+`X-Request-Id` and
 `X-Correlation-Id` connect a browser failure to server diagnostics without
 revealing credentials.
 
@@ -99,10 +121,8 @@ The implemented contract suite verifies successful and failed human
 authentication, wrong audience, expired and revoked access tokens, single-use
 refresh rotation, logout revocation of access and refresh state, cross-tenant
 denial, service-versus-human separation, CORS denial, bootstrap filtering,
-bounded idempotency, correlation, and secret-safe audit projection. CSRF
-cookies are not used by the approved in-memory bearer model; if a project
-introduces cookie authentication, that project must add an explicit CSRF token
-contract and its positive and negative tests before enabling the deployment.
+bounded idempotency, correlation, secret-safe audit projection, browser-cookie
+creation, CSRF mismatch denial, origin denial, rotation, and logout clearing.
 
 ## Continue
 

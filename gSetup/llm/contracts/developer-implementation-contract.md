@@ -136,6 +136,16 @@ must prove tenant-specific behavior does not leak data, cache entries, search
 results, files, events, audit records, permissions, or runtime configuration
 across tenants.
 
+Reusable policy names and operational defaults must also have one authority.
+Identity groups, roles, provider endpoints, retries, timeouts, cache locations,
+delivery bounds, and feature behavior belong in the owning module's layered
+`config/properties.js` contract (or governed runtime configuration when
+promoted). Services, controllers, and facades consume the effective value and
+fail closed when a required policy is absent; they must not repeat a fallback
+literal that silently creates a second authority. Stable protocol constants,
+schema validation contracts, error/status codes, and algorithmic security
+invariants are not configuration merely because they are literals.
+
 ## Control-Plane API Contract
 
 Control-plane work means backend API/security contract work unless the user

@@ -72,7 +72,8 @@ pages.forEach(page => {
     });
 });
 
-assert.deepStrictEqual(routes.map(route => route.path), ['/login', '/forgot-password', '/dashboard', '/lock-screen', '/assistant']);
+assert.deepStrictEqual(routes.map(route => route.path),
+    ['/login', '/forgot-password', '/dashboard', '/lock-screen', '/assistant', '/schema-workbench']);
 routes.forEach(route => {
     const page = pageByCode.get(route.page);
     assert(page, 'Missing route page ' + route.page);
@@ -91,11 +92,14 @@ assert.strictEqual(routes.find(route => route.path === '/forgot-password').acces
 assert.strictEqual(routes.find(route => route.path === '/dashboard').accessMode, 'AUTHENTICATED');
 assert.strictEqual(routes.find(route => route.path === '/lock-screen').accessMode, 'AUTHENTICATED');
 assert.strictEqual(routes.find(route => route.path === '/assistant').accessMode, 'AUTHENTICATED');
+assert.strictEqual(routes.find(route => route.path === '/schema-workbench').accessMode, 'AUTHENTICATED');
 assert(pages.find(page => page.code === 'axisDashboardPage').cmsComponents.every(association =>
     componentByCode.get(association.target).accessMode === 'AUTHENTICATED'));
 assert(pages.find(page => page.code === 'axisLockScreenPage').cmsComponents.every(association =>
     componentByCode.get(association.target).accessMode === 'AUTHENTICATED'));
 assert(pages.find(page => page.code === 'axisAssistantPage').cmsComponents.every(association =>
+    componentByCode.get(association.target).accessMode === 'AUTHENTICATED'));
+assert(pages.find(page => page.code === 'axisSchemaWorkbenchPage').cmsComponents.every(association =>
     componentByCode.get(association.target).accessMode === 'AUTHENTICATED'));
 const assistantWorkspace = componentByCode.get('axisAssistantWorkspaceComponent');
 ['title', 'welcomeMessage', 'inputPlaceholder', 'submitLabel', 'stopLabel', 'emptyState',
@@ -112,6 +116,29 @@ const assistantWorkspace = componentByCode.get('axisAssistantWorkspaceComponent'
         assert.strictEqual(typeof assistantWorkspace.properties[property], 'string');
         assert(assistantWorkspace.properties[property].length > 0);
     });
+const schemaWorkbench = componentByCode.get('axisSchemaWorkbenchComponent');
+['title', 'introduction', 'schemaSearchLabel', 'schemaSearchPlaceholder', 'schemasLabel',
+    'recordsLabel', 'noSchemasLabel', 'noRecordsLabel', 'selectSchemaLabel', 'loadingLabel',
+    'retryLabel', 'createLabel', 'cancelLabel', 'savingLabel', 'selectExistingLabel',
+    'createRelatedLabel', 'addToDraftLabel', 'removeRelatedLabel',
+    'noRelatedRecordsLabel', 'relatedSearchLabel', 'searchRecordsLabel', 'searchRecordsPlaceholder',
+    'actionsLabel', 'viewLabel', 'editLabel', 'updateLabel', 'updatingLabel',
+    'closeLabel', 'trueLabel', 'falseLabel',
+    'deleteLabel', 'deletingLabel', 'confirmDeleteLabel', 'deleteTitle',
+    'deleteWarning', 'tenantLabel', 'enterpriseLabel',
+    'moduleLabel', 'availableOperationsLabel', 'resultsLabel',
+    'pageSizeLabel', 'paginationLabel', 'filterBuilderLabel',
+    'addConditionLabel', 'addGroupLabel', 'applyFiltersLabel', 'clearFiltersLabel',
+    'filterFieldLabel', 'filterOperatorLabel', 'filterValueLabel',
+    'filterMatchLabel', 'removeFilterLabel', 'requestPreviewLabel',
+    'addFavouriteLabel', 'removeFavouriteLabel', 'gridSettingsLabel',
+    'savedViewNameLabel', 'saveViewLabel', 'selectVisibleRecordsLabel',
+    'selectRecordLabel', 'selectedRecordsLabel', 'bulkDeleteLabel',
+    'bulkDeletingLabel', 'deleteImpactLoadingLabel', 'deleteImpactBlockedLabel',
+    'deleteImpactClearLabel', 'editRelatedLabel'].forEach(property => {
+    assert.strictEqual(typeof schemaWorkbench.properties[property], 'string');
+    assert(schemaWorkbench.properties[property].length > 0);
+});
 
 const enabledHeaders = Object.values(header).flatMap(group => Object.values(group)).filter(item => item.options.enabled);
 assert.strictEqual(enabledHeaders.length, 9);

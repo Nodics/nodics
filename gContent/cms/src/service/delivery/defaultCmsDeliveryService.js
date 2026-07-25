@@ -179,7 +179,11 @@ module.exports = {
     /** Returns effective layered delivery limits and defaults. */
     settings: function () {
         let configured = typeof CONFIG !== 'undefined' && CONFIG.get ? (CONFIG.get('cms') || {}).delivery : {};
-        return Object.assign({ defaultLocale: 'default', defaultChannel: 'web', maxDepth: 12, maxComponents: 500 }, configured || {});
+        if (!configured || !configured.defaultLocale || !configured.defaultChannel ||
+            !Number.isSafeInteger(configured.maxDepth) || !Number.isSafeInteger(configured.maxComponents)) {
+            throw this.error('ERR_CMS_00083', 'CMS delivery configuration is incomplete');
+        }
+        return Object.assign({}, configured);
     },
 
     /** Creates a stable CMS delivery error. */

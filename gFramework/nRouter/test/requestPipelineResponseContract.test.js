@@ -364,7 +364,8 @@ async function executeRoute(route, headers, body) {
     assert.strictEqual(controllerErrorResponse.payload.code, 'ERR_TEST_00000');
     assert.strictEqual(controllerErrorResponse.payload.responseCode, '409');
     assert.strictEqual(controllerErrorResponse.payload.message, 'Controller rejected request');
-    assert.strictEqual(controllerErrorResponse.payload.contexts.length >= 2, true);
+    assert.strictEqual(controllerErrorResponse.payload.contexts, undefined,
+        'Internal pipeline contexts must not be returned by public JSON responses');
     assert.deepStrictEqual(controllerCalls, [{
         operation: 'fail',
         tenant: 'contractTenant',
@@ -488,11 +489,9 @@ async function executeRoute(route, headers, body) {
     assert.strictEqual(inactiveRouteResponse.statusCode, 500);
     assert.strictEqual(inactiveRouteResponse.payload.code, 'ERR_SYS_00000');
     assert.strictEqual(inactiveRouteResponse.payload.responseCode, '500');
-    assert.strictEqual(inactiveRouteResponse.payload.message, 'This API is no more active currently');
-    assert.deepStrictEqual(inactiveRouteResponse.payload.metadata, {
-        routerName: 'contractPipelineRoute',
-        moduleName: 'nRouter'
-    });
+    assert.strictEqual(inactiveRouteResponse.payload.message, 'Process failed with errors');
+    assert.strictEqual(inactiveRouteResponse.payload.metadata, undefined,
+        'Internal router metadata must not be returned by public JSON responses');
     assert.deepStrictEqual(controllerCalls, []);
 
     console.log('Request pipeline response contract validated');

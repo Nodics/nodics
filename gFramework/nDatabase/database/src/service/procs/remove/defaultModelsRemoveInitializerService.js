@@ -153,6 +153,34 @@ module.exports = {
     },
 
     /**
+     * Prevents removal when an effective schema relationship explicitly
+     * declares `onTargetDelete: 'RESTRICT'`.
+     *
+     * @param {Object} request Nodics remove request.
+     * @param {Object} response Pipeline response accumulator.
+     * @param {Object} process Pipeline process controller.
+     * @returns {undefined}
+     */
+    enforceReferenceIntegrity: function (request, response, process) {
+        let service = SERVICE.DefaultReferenceIntegrityService;
+        if (!service || typeof service.enforceRemove !== 'function') {
+            let config = CONFIG.get('referenceIntegrity') || {};
+            if (config.enabled !== false && config.failClosed !== false) {
+                process.error(request, response, new CLASSES.NodicsError(
+                    'ERR_DEL_00008', 'Reference integrity service is unavailable'));
+            } else {
+                process.nextSuccess(request, response);
+            }
+            return;
+        }
+        service.enforceRemove(request).then(() => {
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, error);
+        });
+    },
+
+    /**
      * Resolves affected remove count from old and current database adapter result shapes.
      *
      * @param {Object} result Remove result payload.

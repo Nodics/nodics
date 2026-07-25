@@ -21,7 +21,8 @@ const assert = require('assert');
 let contributor;
 let requests = [];
 global.CONFIG = { get: key => ({
-    backofficeRegistration: { enabled: true, moduleName: 'backoffice', heartbeatIntervalMs: 10000, requestTimeoutMs: 20 },
+    backofficeRegistration: { enabled: true, moduleName: 'backoffice', heartbeatIntervalMs: 10000,
+        retryIntervalMs: 5000, maxModulesPerRegistration: 512, requestTimeoutMs: 20 },
     backofficeCapabilities: { cms: { enabled: true, capabilityId: 'content-management', contractVersion: 1,
         minimumClientContractVersion: 1, requiredPermissions: ['cms.backoffice.view'] } },
     defaultTenant: 'default'
@@ -59,7 +60,8 @@ async function run() {
     assert.deepStrictEqual(requests[0].requestBody.registrations.map(item => item.moduleName), ['cms', 'utility']);
     assert.strictEqual(requests[0].requestBody.registrations[0].clientCallable, true);
     assert.strictEqual(requests[0].requestBody.registrations[0].backoffice.capabilityId, 'content-management');
-    CONFIG.get = key => ({ backofficeRegistration: { enabled: true }, backofficeCapabilities: {
+    CONFIG.get = key => ({ backofficeRegistration: { enabled: true, moduleName: 'backoffice',
+        heartbeatIntervalMs: 10000, retryIntervalMs: 5000, maxModulesPerRegistration: 512 }, backofficeCapabilities: {
         cms: { enabled: false, capabilityId: 'environment-disabled' }
     }, defaultTenant: 'default' }[key]);
     assert.strictEqual(service.buildRegistration('cms').backoffice, undefined,

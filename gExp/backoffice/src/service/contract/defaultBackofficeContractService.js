@@ -30,6 +30,56 @@ module.exports = {
     isStringList: function (value, maxItems = 128) {
         return Array.isArray(value) && value.length <= maxItems && value.every(item => this.isString(item, 256)) && new Set(value).size === value.length;
     },
+    /** Validates one bounded navigation group declaration. */
+    validateNavigationGroup: function (group) {
+        return group && typeof group === 'object' && !Array.isArray(group) &&
+            !Object.keys(group).some(key => !['id', 'label', 'labelKey', 'order'].includes(key)) &&
+            this.isString(group.id, 128) && this.isString(group.label) &&
+            (group.labelKey === undefined || this.isString(group.labelKey)) &&
+            (group.order === undefined || Number.isInteger(group.order));
+    },
+    /** Validates one non-executable badge-provider reference. */
+    validateNavigationBadgeProvider: function (provider) {
+        return provider && typeof provider === 'object' && !Array.isArray(provider) &&
+            !Object.keys(provider).some(key => !['moduleName', 'operationId'].includes(key)) &&
+            contracts.moduleName.pattern && new RegExp(contracts.moduleName.pattern).test(provider.moduleName || '') &&
+            this.isString(provider.operationId);
+    },
+    /** Validates bounded module-owned navigation metadata and hierarchy. */
+    validateNavigation: function (navigation) {
+        if (!Array.isArray(navigation) || navigation.length > 64) return false;
+        let allowedContexts = ['environment', 'tenant', 'enterprise', 'site', 'catalog'];
+        let allowedFeatureStates = ['ACTIVE', 'PREVIEW', 'DISABLED', 'HIDDEN'];
+        let ids = navigation.map(item => item && item.id);
+        if (ids.some(id => !this.isString(id, 128)) || new Set(ids).size !== ids.length) return false;
+        if (!navigation.every(item => item && !Object.keys(item).some(key =>
+            !['id', 'label', 'route', 'icon', 'order', 'requiredPermissions', 'labelKey', 'parentId',
+                'group', 'perspectives', 'contexts', 'featureState', 'badgeProvider'].includes(key)) &&
+            this.isString(item.label) && (item.route === undefined || this.isString(item.route, 512)) &&
+            (item.order === undefined || Number.isInteger(item.order)) &&
+            (item.icon === undefined || this.isString(item.icon, 64)) &&
+            (item.labelKey === undefined || this.isString(item.labelKey)) &&
+            (item.parentId === undefined || this.isString(item.parentId, 128) && item.parentId !== item.id) &&
+            (item.group === undefined || this.validateNavigationGroup(item.group)) &&
+            (item.perspectives === undefined || this.isStringList(item.perspectives, 16)) &&
+            (item.contexts === undefined || this.isStringList(item.contexts, 8) &&
+                item.contexts.every(context => allowedContexts.includes(context))) &&
+            (item.featureState === undefined || allowedFeatureStates.includes(item.featureState)) &&
+            (item.badgeProvider === undefined || this.validateNavigationBadgeProvider(item.badgeProvider)) &&
+            (item.requiredPermissions === undefined || this.isStringList(item.requiredPermissions)))) return false;
+        let byId = Object.fromEntries(navigation.map(item => [item.id, item]));
+        if (navigation.some(item => item.parentId && !byId[item.parentId])) return false;
+        return navigation.every(item => {
+            let visited = new Set([item.id]);
+            let parentId = item.parentId;
+            while (parentId) {
+                if (visited.has(parentId)) return false;
+                visited.add(parentId);
+                parentId = byId[parentId] && byId[parentId].parentId;
+            }
+            return true;
+        });
+    },
     /** Validates optional module-owned BackOffice catalogue metadata. */
     validateBackofficeMetadata: function (metadata) {
         if (metadata === undefined) return true;
@@ -57,12 +107,7 @@ module.exports = {
             metadata.uiComposition.fallbackMode !== 'STATIC_RECOVERY_SHELL')) return false;
         if (metadata.contractVersion !== undefined && metadata.minimumClientContractVersion !== undefined &&
             metadata.minimumClientContractVersion > metadata.contractVersion) return false;
-        return metadata.navigation === undefined || Array.isArray(metadata.navigation) && metadata.navigation.length <= 64 &&
-            metadata.navigation.every(item => item && !Object.keys(item).some(key =>
-                !['id', 'label', 'route', 'icon', 'order', 'requiredPermissions'].includes(key)) && this.isString(item.id) && this.isString(item.label) &&
-                (item.route === undefined || this.isString(item.route)) && (item.order === undefined || Number.isInteger(item.order)) &&
-                (item.icon === undefined || this.isString(item.icon, 64)) &&
-                (item.requiredPermissions === undefined || this.isStringList(item.requiredPermissions)));
+        return metadata.navigation === undefined || this.validateNavigation(metadata.navigation);
     },
     /** Validates one module registration against the bounded API contract. */
     validateRegistration: function (registration) {

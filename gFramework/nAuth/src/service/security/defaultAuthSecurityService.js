@@ -41,28 +41,12 @@ module.exports = {
      * @returns {Object} Effective security configuration.
      */
     getSecurityConfiguration: function (config) {
-        return _.merge({
-            jwt: {
-                minimumSecretLength: 32,
-                issuer: 'nodics',
-                audience: 'nodics-services',
-                algorithms: ['HS256'],
-                accessTokenExpiresIn: '3h',
-                serviceTokenExpiresIn: '15m'
-            },
-            compatibility: {
-                allowInsecureDevelopmentSecret: false,
-                allowLocalBootstrapIdentity: false,
-                allowNonExpiringTokens: false
-            },
-            bootstrapIdentity: {
-                required: true,
-                allowedSources: ['environment', 'externalProperty', 'secretManager', 'runtimeSecret'],
-                localSources: ['localSample', 'test'],
-                minimumPasswordLength: 16,
-                minimumApiKeyLength: 32
-            }
-        }, this.read(config, 'authSecurity') || {});
+        const configuration = this.read(config, 'authSecurity');
+        if (!configuration || !configuration.jwt || !configuration.compatibility ||
+            !configuration.bootstrapIdentity) {
+            throw new Error('Layered authentication security configuration is incomplete');
+        }
+        return _.merge({}, configuration);
     },
 
     /**
@@ -89,9 +73,9 @@ module.exports = {
         if (localSource && security.compatibility.allowLocalBootstrapIdentity !== true) {
             throw new Error('Local bootstrap identity sources are disabled outside explicit local/test configuration');
         }
-        this.validateBootstrapSecretValue('adminPassword', identity.adminPassword, policy.minimumPasswordLength || 16, security);
-        this.validateBootstrapSecretValue('servicePassword', identity.servicePassword, policy.minimumPasswordLength || 16, security);
-        this.validateBootstrapSecretValue('serviceApiKey', identity.serviceApiKey, policy.minimumApiKeyLength || 32, security);
+        this.validateBootstrapSecretValue('adminPassword', identity.adminPassword, policy.minimumPasswordLength, security);
+        this.validateBootstrapSecretValue('servicePassword', identity.servicePassword, policy.minimumPasswordLength, security);
+        this.validateBootstrapSecretValue('serviceApiKey', identity.serviceApiKey, policy.minimumApiKeyLength, security);
         if (identity.adminPassword === identity.servicePassword) {
             throw new Error('Bootstrap admin and service passwords must be different');
         }

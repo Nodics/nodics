@@ -11,10 +11,15 @@
 - `gFramework/nDatabase/database/test/modelsGetInitializerPipelineContract.test.js`
 - `gFramework/nDatabase/database/test/modelsRemoveUpdateInitializerPipelineContract.test.js`
 - `gFramework/nDatabase/database/test/modelsSaveInitializerPipelineContract.test.js`
+- `gFramework/nDatabase/database/test/namedSchemaPolicyComposition.test.js`
+- `gFramework/nDatabase/database/test/referenceIntegrityService.test.js`
 - `gFramework/nDatabase/database/test/schemaIndexControllerRequestMapping.test.js`
 - `gFramework/nDatabase/database/test/schemaIndexServiceContract.test.js`
 - `gFramework/nDatabase/database/test/schemaReadAccessPolicyService.test.js`
 - `gFramework/nDatabase/database/test/schemaTransactionGovernanceContract.test.js`
+- `gFramework/nDatabase/database/test/schemaWorkbenchContract.test.js`
+- `gFramework/nDatabase/database/test/schemaWorkbenchMutationContract.test.js`
+- `gFramework/nDatabase/database/test/schemaWorkbenchRouterContract.test.js`
 - `gFramework/nDatabase/database/test/schemaWriteAccessPolicyService.test.js`
 - `gFramework/nDatabase/database/test/tenantDatabaseConfigurationValidation.test.js`
 

@@ -84,7 +84,12 @@ module.exports = {
     responseHandler: {
         jsonResponseHandler: 'DefaultJsonResponseHandlerService',
         textResponseHandler: 'DefaultTextResponseHandlerService',
-        fileDownloadResponseHandler: 'DefaultFileDownloadResponseHandlerService'
+        fileDownloadResponseHandler: 'DefaultFileDownloadResponseHandlerService',
+        publicError: {
+            includeValidationErrors: true,
+            maximumValidationErrors: 25,
+            maskServerErrorMessages: true
+        }
     },
     routeActionAuthorization: {
         enabled: true,
@@ -103,6 +108,9 @@ module.exports = {
                 enabled: true
             },
             schemaMaintenance: {
+                enabled: true
+            },
+            schemaWorkbench: {
                 enabled: true
             },
             openApiContract: {
