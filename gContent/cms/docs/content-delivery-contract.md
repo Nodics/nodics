@@ -97,9 +97,15 @@ payloads.
 
 The routes use Nodics router caching. CMS mutations call the existing
 tenant-aware `DefaultCacheService.invalidateResource` contract for the
-`cmsDelivery` router resource. This intentionally uses the active cache engine,
+configured delivery router resources. This intentionally uses the active cache engine,
 channel mapping, and cross-node invalidation behavior instead of creating a CMS
 cache implementation.
+
+The effective router cache prefixes are configured through
+`cms.delivery.cacheResourceNames`. Defaults cover `resolvePublicPage` and
+`resolveAuthenticatedPage`; imports and other CMS mutations invalidate both.
+Later layers may extend this bounded list when they add another cacheable CMS
+delivery operation, without introducing a parallel cache authority.
 
 ## Customization
 

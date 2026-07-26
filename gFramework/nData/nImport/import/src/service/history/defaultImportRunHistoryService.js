@@ -251,6 +251,9 @@ module.exports = {
             modules: (importRun.modules || []).slice().sort(),
             checksum: importRun.checksum,
             source: importRun.sourceName || importRun.remoteSource,
+            contentPackCode: importRun.contentPackCode,
+            contentPackVersion: importRun.contentPackVersion,
+            contentPackChecksum: importRun.contentPackChecksum,
             validationOnly: !!importRun.validationOnly
         }));
     },
@@ -322,7 +325,10 @@ module.exports = {
             'dataType',
             'tenant',
             'requestedBy',
-            'correlationId'
+            'correlationId',
+            'contentPackCode',
+            'contentPackVersion',
+            'contentPackChecksum'
         ].forEach(property => {
             if (filters[property]) {
                 query[property] = filters[property];

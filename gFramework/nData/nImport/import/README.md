@@ -4,6 +4,11 @@ The `import` module owns Nodics init, core, sample, local, and remote import
 initialization; multi-format finalization; tenant-safe dispatch; diagnostics;
 history; validation-only execution; and access-policy enforcement.
 
+It also owns disabled-by-default, versioned content-pack installation and
+updates. See [Governed Content-Pack Import](docs/content-pack-import-contract.md)
+for the local `nodicsdocs` workspace, Axis administrator journey, configuration,
+security, update, extension and verification contracts.
+
 ## Tenant precedence
 
 Import tenant resolution uses intersection semantics:

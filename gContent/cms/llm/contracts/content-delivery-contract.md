@@ -9,6 +9,9 @@
   parallel component-type registry.
 - Resolve delivery graphs with tenant context, bounded breadth-first batches,
   explicit depth/size limits, and a client-safe allowlisted projection.
+- Invalidate the configured effective delivery router prefixes through
+  `DefaultCacheService.invalidateResource`; never flush an invented group name
+  or bypass nCache after CMS import and mutation.
 - Public delivery requires `publicAccess: true`; authenticated delivery uses the
   normal secured pipeline and a governed permission.
 - Storefront delivery accepts only browser path plus the opaque handle,

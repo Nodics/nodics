@@ -38,6 +38,36 @@ module.exports = {
                 enabled: true
             }
         },
+        contentPacks: {
+            enabled: false,
+            allowedContractVersions: [1],
+            cleanupStaging: true,
+            stagingDirectory: 'import/content-packs',
+            packs: {
+                nodicsDocumentation: {
+                    enabled: true,
+                    manifestPack: 'nodicsdocs',
+                    source: {
+                        type: 'LOCAL_SIBLING',
+                        repositoryName: 'nodicsdocs',
+                        contentPath: 'data/core',
+                        manifestPath: 'manifest/generated-content-pack.json'
+                    },
+                    updatePolicy: {
+                        allowDowngrade: false,
+                        sameVersionContentChange: 'REJECT'
+                    },
+                    presentation: {
+                        title: 'Nodics documentation',
+                        unavailableMessage: 'Documentation has not been installed for this environment.',
+                        disabledMessage: 'Documentation imports are not enabled for this environment.',
+                        importAction: 'Import documentation',
+                        updateAction: 'Update documentation',
+                        retryAction: 'Retry import'
+                    }
+                }
+            }
+        },
         remoteImport: {
             enabled: false,
             defaultTransport: null,

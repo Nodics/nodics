@@ -5,6 +5,8 @@
 ## Hand-Authored Tests
 
 - `gFramework/nData/nImport/import/test/common/commonTest.js`
+- `gFramework/nData/nImport/import/test/contentPackRouteContract.test.js`
+- `gFramework/nData/nImport/import/test/contentPackService.test.js`
 - `gFramework/nData/nImport/import/test/env-local/envTest.js`
 - `gFramework/nData/nImport/import/test/environmentSampleDataContribution.test.js`
 - `gFramework/nData/nImport/import/test/finalizedImportDispatch.test.js`

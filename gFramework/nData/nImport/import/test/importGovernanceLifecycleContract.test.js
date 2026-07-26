@@ -131,6 +131,20 @@ function buildRequest(runId) {
         hookCount: 2,
         status: 'PENDING'
     });
+    let firstRelease = Object.assign({}, prepared, {
+        contentPackCode: 'nodicsDocumentation',
+        contentPackVersion: '1.0.0',
+        contentPackChecksum: 'release-a'
+    });
+    let nextRelease = Object.assign({}, firstRelease, {
+        contentPackVersion: '1.1.0',
+        contentPackChecksum: 'release-b'
+    });
+    assert.notStrictEqual(
+        historyService.createImportRunFingerprint(firstRelease),
+        historyService.createImportRunFingerprint(nextRelease),
+        'A new immutable content-pack release must not be rejected as a duplicate import run'
+    );
 
     duplicateResults = [];
     let saved = await historyService.recordRun(firstRequest);

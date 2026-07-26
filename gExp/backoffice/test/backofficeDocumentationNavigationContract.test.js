@@ -17,9 +17,11 @@ const navigation = properties.backofficeCapabilities.backoffice.navigation;
 const documentation = navigation.find(item => item.id === 'documentation');
 
 assert(documentation, 'BackOffice must contribute the documentation navigation entry');
-assert.strictEqual(documentation.label, 'Help and Documentation');
+assert.strictEqual(documentation.label, 'Nodics Documentation');
 assert.strictEqual(documentation.route, '/docs');
-assert.strictEqual(documentation.group.id, 'workspace');
+assert.strictEqual(documentation.group.id, 'documentation');
+assert.strictEqual(documentation.group.label, 'Documentation');
+assert.strictEqual(documentation.group.order, 650);
 assert.strictEqual(documentation.featureState, 'ACTIVE');
 assert.deepStrictEqual(documentation.contexts, ['environment', 'tenant', 'enterprise']);
 assert.strictEqual(documentation.requiredPermissions, undefined,

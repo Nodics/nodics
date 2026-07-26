@@ -32,10 +32,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 31 |
-| Test files | 29 |
+| Source files | 34 |
+| Test files | 31 |
 | Data files | 0 |
-| All module-owned files | 64 |
+| All module-owned files | 69 |
 | Local schema definitions | 1 |
 
 ## Ownership And Dependencies
@@ -68,8 +68,8 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 47 |
-| Partially documented | 2 |
-| Undocumented | 11 |
+| Partially documented | 5 |
+| Undocumented | 13 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -98,9 +98,11 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/nImport/import/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nData/nImport/import/nodics.js` | `module` | `documented` | 2/2 | Registers the nData module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nData/nImport/import/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nData/nImport/import/src/controller/contentPack/defaultContentPackController.js` | `src` | `partially-documented` | 0/4 | Handles secured content-pack status and import requests. | add @override; add JSDoc for 4 exported method(s) |
 | `gFramework/nData/nImport/import/src/controller/history/defaultImportRunHistoryController.js` | `src` | `documented` | 5/5 | Controller for import run history control-plane APIs. |  |
 | `gFramework/nData/nImport/import/src/controller/import/DefaultImportController.js` | `src` | `documented` | 6/6 | Exposes request handlers for nData default import controller operations. |  |
 | `gFramework/nData/nImport/import/src/event/listeners.js` | `src` | `documented` | 0/0 | Documents nData listeners module behavior. |  |
+| `gFramework/nData/nImport/import/src/facade/contentPack/defaultContentPackFacade.js` | `src` | `partially-documented` | 0/4 | Exposes governed content-pack status and import operations. | add JSDoc for 4 exported method(s) |
 | `gFramework/nData/nImport/import/src/facade/history/defaultImportRunHistoryFacade.js` | `src` | `documented` | 4/4 | Facade for import run history control-plane operations. |  |
 | `gFramework/nData/nImport/import/src/facade/import/defaultImportFacade.js` | `src` | `documented` | 7/7 | Coordinates facade-level delegation for nData default import facade operations. |  |
 | `gFramework/nData/nImport/import/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers nData interceptor wiring for pipeline extension points. |  |
@@ -109,6 +111,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/nImport/import/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
 | `gFramework/nData/nImport/import/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nData route registration and HTTP exposure metadata. |  |
 | `gFramework/nData/nImport/import/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nData schema metadata, model contracts, and generated capability settings. |  |
+| `gFramework/nData/nImport/import/src/service/contentPack/defaultContentPackService.js` | `src` | `partially-documented` | 3/21 | Validates configured immutable content-pack releases, reports tenant-scoped installation state, and dispatches staged releases through the existing local import authority. | add JSDoc for 18 exported method(s) |
 | `gFramework/nData/nImport/import/src/service/defaultDataImportInitializerService.js` | `src` | `documented` | 6/6 | Implements nData default data import initializer service business behavior and extension logic. |  |
 | `gFramework/nData/nImport/import/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements import default sample service business behavior and extension logic. |  |
 | `gFramework/nData/nImport/import/src/service/diagnostics/defaultImportDiagnosticsService.js` | `src` | `documented` | 14/14 | Implements nData default import diagnostics service business behavior and extension logic. |  |
@@ -130,6 +133,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/nImport/import/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nData utility exports for status definitions. |  |
 | `gFramework/nData/nImport/import/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nData utility exports for utils. |  |
 | `gFramework/nData/nImport/import/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nData test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nData/nImport/import/test/contentPackRouteContract.test.js` | `test` | `undocumented` | 0/0 | Verifies secured, permissioned, direct nImport content-pack routes. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/test/contentPackService.test.js` | `test` | `undocumented` | 0/0 | Verifies disabled defaults, manifest and checksum validation, source-safe staging, tenant-scoped import state, update detection, immutable same-version releases, and downgrade rejection. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nData test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nData/nImport/import/test/environmentSampleDataContribution.test.js` | `test` | `documented` | 4/4 | Verifies that an arbitrarily named active environment module contributes layered sample headers and data through the same module-owned import discovery contract as capability modules. |  |
 | `gFramework/nData/nImport/import/test/finalizedImportDispatch.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

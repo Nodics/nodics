@@ -26,7 +26,7 @@ const { flattenRoutes } = require('./routerContractTestUtils');
 
 const rootPath = path.resolve(process.env.NODICS_HOME || process.cwd());
 const ignoredDirectories = new Set(['.git', 'docs', 'generated', 'node_modules']);
-const controlPlanePathPattern = /\/(config|class|import|export|test|log|schema\/indexes|schema\/validator|file\/data|file\/download|contract\/openapi|contract\/swagger|health\/ready)(\/|$)/i;
+const controlPlanePathPattern = /\/(config|class|import|content-packs|export|test|log|schema\/indexes|schema\/validator|file\/data|file\/download|contract\/openapi|contract\/swagger|health\/ready)(\/|$)/i;
 const expectedPermissions = {
     'GET /health/ready/details': 'system.health.readiness.view',
     'POST /file/data': 'system.file.read',
@@ -35,6 +35,8 @@ const expectedPermissions = {
     'POST /import/core': 'import.core.run',
     'POST /import/sample': 'import.sample.run',
     'POST /import/local': 'import.local.run',
+    'GET /content-packs/:packCode': 'import.contentPack.view',
+    'POST /content-packs/:packCode/imports': 'import.contentPack.run',
     'POST /log/level': 'system.log.level.update',
     'POST /schema/indexes/all': 'system.schema.index.rebuild',
     'POST /schema/indexes/schema/:schema': 'system.schema.index.rebuild',
@@ -61,6 +63,8 @@ const expectedExposure = {
     'POST /import/core': 'dataImport',
     'POST /import/sample': 'dataImport',
     'POST /import/local': 'dataImport',
+    'GET /content-packs/:packCode': 'dataImport',
+    'POST /content-packs/:packCode/imports': 'dataImport',
     'POST /log/level': 'logManagement',
     'POST /schema/indexes/all': 'schemaMaintenance',
     'POST /schema/indexes/schema/:schema': 'schemaMaintenance',

@@ -67,6 +67,7 @@ module.exports = {
             maxDepth: 12,
             maxComponents: 500,
             cacheTtl: 30000,
+            cacheResourceNames: ['resolvePublicPage', 'resolveAuthenticatedPage'],
             publicAccessGroups: ['userGroup'],
             authenticatedAccessGroups: ['userGroup'],
             authenticatedPermission: 'cms.delivery.authenticated.read'

@@ -153,6 +153,8 @@ module.exports = {
             'import.core.run',
             'import.sample.run',
             'import.local.run',
+            'import.contentPack.view',
+            'import.contentPack.run',
             'export.run',
             'ai.assistant.use',
             'ai.assistant.read',

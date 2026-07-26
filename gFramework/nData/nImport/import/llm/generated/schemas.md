@@ -6,11 +6,15 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
-| `importRun` | `base` | yes | yes | yes | no | no | no | `default` | 21 |
+| `importRun` | `base` | yes | yes | yes | no | no | no | `default` | 26 |
 
 ### `import.importRun`
 
 - `checksum` `string` optional: Aggregate checksum derived from imported data files when available
+- `contentPackChecksum` `string` optional: Deterministic checksum of the generated content-pack release
+- `contentPackCode` `string` optional: Stable configured content-pack identifier
+- `contentPackContractVersion` `int` optional: Validated content-pack contract version
+- `contentPackVersion` `string` optional: Immutable content-pack release version
 - `correlationId` `string` optional: Correlation id from the triggering request or event
 - `dataFiles` `object` optional: Discovered, matched, and unmatched import data files
 - `dataType` `string` optional: Import data type such as init, core, sample, local, or remote
@@ -25,6 +29,7 @@
 - `retry` `object` optional: Retry metadata for governed import retry decisions
 - `rollback` `object` optional: Rollback hook status and results for failed import runs
 - `runId` `string` required: Unique import run identifier
+- `sourceName` `string` optional: Client-safe configured source name without filesystem or credential details
 - `startedAt` `string` optional: Import run start timestamp
 - `status` `string` required: Current import run status
 - `summary` `object` optional: Import counters and aggregate summary

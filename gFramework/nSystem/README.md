@@ -30,6 +30,9 @@ Sensitive system routes must declare action-specific permissions:
   `system.file.download`;
 - import routes use `import.init.run`, `import.core.run`,
   `import.sample.run`, or `import.local.run`;
+- content-pack status and execution use `import.contentPack.view` and
+  `import.contentPack.run`; System exposes these routes while nImport remains
+  manifest, staging, execution and history authority;
 - log-level mutation uses `system.log.level.update`;
 - schema index rebuild uses `system.schema.index.rebuild`;
 - test execution uses `system.test.unit.run` or `system.test.nodics.run`;

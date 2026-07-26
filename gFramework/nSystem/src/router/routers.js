@@ -211,6 +211,29 @@ module.exports = {
             }
         },
 
+        contentPacks: {
+            status: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'import.contentPack.view',
+                apiExposure: 'dataImport',
+                key: '/content-packs/:packCode',
+                method: 'GET',
+                controller: 'DefaultContentPackController',
+                operation: 'getStatus'
+            },
+            importPack: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'import.contentPack.run',
+                apiExposure: 'dataImport',
+                key: '/content-packs/:packCode/imports',
+                method: 'POST',
+                controller: 'DefaultContentPackController',
+                operation: 'importPack'
+            }
+        },
+
         changeLogLevel: {
             changeLevelPost: {
                 secured: true,

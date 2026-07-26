@@ -14,7 +14,7 @@ const fs = require('fs');
 const path = require('path');
 
 const rootDir = path.resolve(__dirname, '../../..');
-const ignoredDirectories = new Set(['.git', 'node_modules']);
+const ignoredDirectories = new Set(['.git', 'node_modules', 'temp']);
 const statusCodePattern = /['"]((?:SUC|ERR|RSN)_[A-Z0-9]+_\d{5})['"]/g;
 
 function walk(directory, callback) {

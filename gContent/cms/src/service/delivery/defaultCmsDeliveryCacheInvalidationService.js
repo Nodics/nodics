@@ -25,13 +25,20 @@ module.exports = {
     /** Invalidates the tenant-scoped CMS delivery router resource. */
     invalidate: function (request) {
         if (!SERVICE.DefaultCacheService || typeof SERVICE.DefaultCacheService.invalidateResource !== 'function') return Promise.resolve(true);
-        return SERVICE.DefaultCacheService.invalidateResource({
-            tenant: request.tenant,
-            authData: request.authData,
-            moduleName: 'cms',
-            cacheType: 'router',
-            resourceName: 'cmsDelivery',
-            internalCacheOperation: true
-        });
+        let delivery = (CONFIG.get('cms') || {}).delivery || {};
+        let configured = Array.isArray(delivery.cacheResourceNames) ? delivery.cacheResourceNames : [];
+        let resources = configured.filter(name => typeof name === 'string' &&
+            /^[A-Za-z][A-Za-z0-9]{0,63}$/.test(name));
+        if (resources.length === 0) resources = ['resolvePublicPage', 'resolveAuthenticatedPage'];
+        return Promise.all(Array.from(new Set(resources)).map(resourceName =>
+            SERVICE.DefaultCacheService.invalidateResource({
+                tenant: request.tenant,
+                authData: request.authData,
+                moduleName: 'cms',
+                cacheType: 'router',
+                resourceName: resourceName,
+                internalCacheOperation: true
+            })
+        ));
     }
 };

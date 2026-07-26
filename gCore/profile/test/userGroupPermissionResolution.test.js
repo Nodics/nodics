@@ -125,6 +125,8 @@ assert(contentGroup.permissions.includes('cms.backoffice.view'));
     'import.core.run',
     'import.sample.run',
     'import.local.run',
+    'import.contentPack.view',
+    'import.contentPack.run',
     'export.run',
     'dynamo.class.view',
     'dynamo.class.snapshot.view',

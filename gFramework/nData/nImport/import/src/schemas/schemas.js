@@ -67,6 +67,31 @@ module.exports = {
                     required: false,
                     description: 'Correlation id from the triggering request or event'
                 },
+                contentPackCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Stable configured content-pack identifier'
+                },
+                contentPackVersion: {
+                    type: 'string',
+                    required: false,
+                    description: 'Immutable content-pack release version'
+                },
+                contentPackContractVersion: {
+                    type: 'int',
+                    required: false,
+                    description: 'Validated content-pack contract version'
+                },
+                contentPackChecksum: {
+                    type: 'string',
+                    required: false,
+                    description: 'Deterministic checksum of the generated content-pack release'
+                },
+                sourceName: {
+                    type: 'string',
+                    required: false,
+                    description: 'Client-safe configured source name without filesystem or credential details'
+                },
                 checksum: {
                     type: 'string',
                     required: false,

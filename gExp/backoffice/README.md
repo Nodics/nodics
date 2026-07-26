@@ -15,7 +15,7 @@ groups remain authoritative.
 - Discover and validate module identity, versions, capabilities, contracts, and
   sanitized health information.
 - Expose a permission-filtered, client-safe registry to Nodics Axis.
-- Contribute the active **Help and Documentation** entry under the governed
+- Contribute the active **Nodics Documentation** entry under the governed
   Workspace navigation group. The entry points to `/docs`; CMS owns route and
   content resolution while Axis owns presentation.
 - Select an optional CMS UI-composition provider without depending on CMS at

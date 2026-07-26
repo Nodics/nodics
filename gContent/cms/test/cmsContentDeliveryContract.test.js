@@ -137,15 +137,18 @@ global.SERVICE = {
     let customized = await overridden.resolvePage({ tenant: 'tenant-a', router: { publicAccess: true }, delivery: { site: 'site', path: '/customer-alias' } });
     assert.strictEqual(customized.result.path, '/home', 'later service override must customize effective resolution behavior');
 
-    let invalidationRequest;
+    let invalidationRequests = [];
     global.SERVICE.DefaultCacheService = {
-        invalidateResource: request => { invalidationRequest = request; return Promise.resolve(true); }
+        invalidateResource: request => { invalidationRequests.push(request); return Promise.resolve(true); }
     };
     const invalidation = require(path.join(root, 'gContent/cms/src/service/delivery/defaultCmsDeliveryCacheInvalidationService'));
     await invalidation.invalidate({ tenant: 'tenant-a', authData: { tenant: 'tenant-a' } });
-    assert.strictEqual(invalidationRequest.tenant, 'tenant-a');
-    assert.strictEqual(invalidationRequest.cacheType, 'router');
-    assert.strictEqual(invalidationRequest.resourceName, 'cmsDelivery');
+    assert.deepStrictEqual(invalidationRequests.map(item => item.resourceName),
+        ['resolvePublicPage', 'resolveAuthenticatedPage']);
+    invalidationRequests.forEach(item => {
+        assert.strictEqual(item.tenant, 'tenant-a');
+        assert.strictEqual(item.cacheType, 'router');
+    });
     console.log('CMS content delivery contract validated');
 })().catch(error => {
     console.error(error);
