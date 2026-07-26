@@ -177,6 +177,10 @@ planned behavior as available capability.
 
 Every functional change must evaluate whether these artifacts need updates:
 
+- canonical `nodicsdocs` capability, solution, tutorial, operations, or
+  reference content when the change affects user-observable, configurable,
+  operational, security, extension, or business behavior;
+
 - `AGENTS.md` when AI/developer rules, extension boundaries, validation
   expectations, or module-specific contribution behavior changes.
 - `README.md` when module purpose, capabilities, setup, usage, extension
@@ -198,6 +202,16 @@ AI-assisted changes must update AI-facing guidance with the same care as source
 code because future developers and AI tools will depend on it. A change is not
 complete until behavior, tests, human documentation, and AI guidance are
 consistent.
+
+Public documentation navigation is capability-first. Do not create a public
+page whose identity or primary navigation exists only to mirror a module,
+folder, class, or source hierarchy. Module names remain technical ownership and
+reference metadata. During the documentation migration, `gDocs` is frozen for
+new public guidance and retained only as migration evidence until completeness
+validation permits retirement. Do not delete it or move it to root `docs/`
+without an approved migration report. The `nodicsdocs` repository owns
+canonical public content after migration; root `docs/` remains temporary,
+untracked, non-runtime material.
 
 For a new end-to-end capability, documentation acceptance must include all
 applicable audiences and layers:
