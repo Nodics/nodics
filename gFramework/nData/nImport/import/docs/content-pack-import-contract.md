@@ -34,6 +34,25 @@ checksum. It then copies `data/core` into server-owned temporary staging.
 Nodics never gives the moving local-import pipeline the source-controlled
 directory, and clients never submit a filesystem path.
 
+The import run is not complete merely because schema writes have been
+dispatched. Every processed file must first reach its governed success
+location. Only then may the run be marked complete and content-pack staging be
+removed. An archival failure fails the run and preserves diagnostics instead
+of reporting a false successful installation.
+
+Server-owned staging cleanup occurs only after authoritative import completion.
+If cleanup itself fails after every record and file has completed, Nodics logs
+the cleanup failure for operations but does not convert an already successful
+business import into a failed API response. Residual staging remains
+server-owned and may be removed through operational housekeeping.
+
+One import-run identity follows the release through header finalization,
+finalized-file processing, and model dispatch. Therefore the persisted
+diagnostics describe the complete operation: records read, finalized,
+dispatched, succeeded, skipped, and failed all belong to the same run. A nested
+pipeline must propagate this object rather than create an untraceable parallel
+diagnostic path.
+
 Import-run duplicate protection includes the content-pack code, immutable
 version, and release checksum. Re-importing the same release remains
 idempotent, while a valid later release cannot be mistaken for an earlier
@@ -138,6 +157,8 @@ properties, request bodies, manifests or client responses.
 ```bash
 node gFramework/nData/nImport/import/test/contentPackService.test.js
 node gFramework/nData/nImport/import/test/contentPackRouteContract.test.js
+node gFramework/nData/nImport/import/test/importFileArchivalLifecycle.test.js
+node gFramework/nData/nImport/import/test/importDiagnosticsPropagation.test.js
 node gFramework/nSystem/test/systemRouteContract.test.js
 ```
 

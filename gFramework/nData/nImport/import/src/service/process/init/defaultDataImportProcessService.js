@@ -213,6 +213,7 @@ module.exports = {
                             clearRequire(fileObj.file);
                             SERVICE.DefaultPipelineService.start('processFileDataImportPipeline', {
                                 tenant: request.tenant,
+                                importRun: request.importRun,
                                 dataFiles: request.dataFiles,
                                 phase: options.phase,
                                 phaseLimit: options.phaseLimit,
@@ -221,13 +222,23 @@ module.exports = {
                                 inputPath: request.inputPath
                             }, {}).then(success => {
                                 fileObj.done = true;
-                                SERVICE.DefaultFileHandlerService.moveFile([fileObj.file], request.inputPath.successPath).then(success => {
+                                SERVICE.DefaultFileHandlerService.moveFile(
+                                    [fileObj.file],
+                                    request.inputPath.successPath
+                                ).then(success => {
                                     _self.LOG.debug('File has been moved to success folder : ' + fileObj.file.replace(NODICS.getNodicsHome(), '.'));
+                                    _self.processNextFile(
+                                        request,
+                                        response,
+                                        options,
+                                        resolve,
+                                        reject
+                                    );
                                 }).catch(error => {
                                     _self.LOG.error('Facing issue while moving file to success folder : ' + fileObj.file.replace(NODICS.getNodicsHome(), '.'));
                                     _self.LOG.error(error);
+                                    reject(error);
                                 });
-                                _self.processNextFile(request, response, options, resolve, reject);
                             }).catch(error => {
                                 if (options.phase >= options.phaseLimit - 1) {
                                     _self.LOG.error('Import process failed due to error on file: ' + fileObj.file.replace(NODICS.getNodicsHome(), '.'));

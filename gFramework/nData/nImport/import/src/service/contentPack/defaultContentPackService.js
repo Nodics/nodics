@@ -152,7 +152,14 @@ module.exports = {
             }).finally(() => {
                 this.activeImports.delete(activeKey);
                 if (context.configuration.cleanupStaging !== false) {
-                    return fse.remove(staging.rootPath);
+                    return fse.remove(staging.rootPath).catch(error => {
+                        if (this.LOG && typeof this.LOG.error === 'function') {
+                            this.LOG.error(
+                                'Content-pack staging cleanup failed for run: ' + runId,
+                                error
+                            );
+                        }
+                    });
                 }
             });
         });

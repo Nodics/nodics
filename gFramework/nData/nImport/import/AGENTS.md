@@ -32,6 +32,12 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
   data and manifest. Consumers must not build it, create client-owned staging,
   or submit arbitrary filesystem paths; only nImport creates temporary
   server-owned staging after validation.
+- Do not resolve an import run or remove its staging while processed-file
+  archival is still in flight. Success requires every processed file to reach
+  its governed success location; archival failure must fail the run.
+- Preserve the same `importRun` object across header finalization, finalized
+  file processing, and model dispatch. Nested pipeline boundaries must not
+  discard record counters, failures, tenant exclusions, or traceability.
 - Configuration is disabled by default. Project and environment layers enable
   sources, permissions, cleanup, and update policy without changing framework
   source.

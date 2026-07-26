@@ -133,6 +133,7 @@ module.exports = {
                 SERVICE.DefaultPipelineService.start('headerProcessPipeline', {
                     tenant: request.tenant,
                     moduleName: request.moduleName,
+                    importRun: request.importRun,
                     header: header,
                     headerName: headerName,
                     outputPath: _.merge({}, request.outputPath),

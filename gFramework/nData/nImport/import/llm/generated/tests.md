@@ -11,9 +11,12 @@
 - `gFramework/nData/nImport/import/test/environmentSampleDataContribution.test.js`
 - `gFramework/nData/nImport/import/test/finalizedImportDispatch.test.js`
 - `gFramework/nData/nImport/import/test/finalizedRecordCounter.test.js`
+- `gFramework/nData/nImport/import/test/fixtures/importDiagnosticsData.js`
+- `gFramework/nData/nImport/import/test/importDiagnosticsPropagation.test.js`
 - `gFramework/nData/nImport/import/test/importDuplicateHeaderDiagnostics.test.js`
 - `gFramework/nData/nImport/import/test/importExportAccessPolicy.test.js`
 - `gFramework/nData/nImport/import/test/importFailureTraceability.test.js`
+- `gFramework/nData/nImport/import/test/importFileArchivalLifecycle.test.js`
 - `gFramework/nData/nImport/import/test/importGovernanceLifecycleContract.test.js`
 - `gFramework/nData/nImport/import/test/importLifecycleContract.test.js`
 - `gFramework/nData/nImport/import/test/importRecursiveErrorPropagation.test.js`

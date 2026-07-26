@@ -384,6 +384,8 @@ module.exports = {
                 { node: 'gFramework/nData/nImport/import/test/finalizedImportDispatch.test.js' },
                 { node: 'gFramework/nData/nImport/import/test/importTargetDispatchContract.test.js' },
                 { node: 'gFramework/nData/nImport/import/test/importRecursiveErrorPropagation.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/importDiagnosticsPropagation.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/importFileArchivalLifecycle.test.js' },
                 { node: 'gFramework/nData/nImport/import/test/importFailureTraceability.test.js' },
                 { node: 'gFramework/nData/nImport/import/test/importExportAccessPolicy.test.js' }
             ],

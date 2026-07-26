@@ -9,7 +9,7 @@
 
  */
 
-/*
+/**
  * @module import/test/contentPackService
  * @description Verifies disabled defaults, manifest and checksum validation,
  * source-safe staging, tenant-scoped import state, update detection, immutable
@@ -249,6 +249,22 @@ function createHarness(fixture, enabled) {
             }),
             error => error.code === 'ERR_IMP_00003' && /downgrade/.test(error.message)
         );
+
+        let cleanupFixture = createFixture();
+        let cleanupFailureHarness = createHarness(cleanupFixture, true);
+        let originalRemove = require('fs-extra').remove;
+        require('fs-extra').remove = () => Promise.reject(new Error('cleanup failed'));
+        cleanupFailureHarness.service.LOG = { error: () => undefined };
+        try {
+            let cleanupResult = await cleanupFailureHarness.service.importPack({
+                packCode: 'nodicsDocumentation',
+                tenant: 'tenant-cleanup'
+            });
+            assert.strictEqual(cleanupResult.data.state, 'CURRENT');
+        } finally {
+            require('fs-extra').remove = originalRemove;
+            fs.rmSync(cleanupFixture.workspace, { recursive: true, force: true });
+        }
 
         console.log('Content-pack import and update contract validated');
     } finally {

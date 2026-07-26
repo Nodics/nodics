@@ -33,9 +33,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 34 |
-| Test files | 31 |
+| Test files | 34 |
 | Data files | 0 |
-| All module-owned files | 69 |
+| All module-owned files | 72 |
 | Local schema definitions | 1 |
 
 ## Ownership And Dependencies
@@ -68,8 +68,8 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 47 |
-| Partially documented | 5 |
-| Undocumented | 13 |
+| Partially documented | 9 |
+| Undocumented | 12 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -134,14 +134,17 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/nImport/import/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nData utility exports for utils. |  |
 | `gFramework/nData/nImport/import/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nData test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nData/nImport/import/test/contentPackRouteContract.test.js` | `test` | `undocumented` | 0/0 | Verifies secured, permissioned, direct nImport content-pack routes. | add @module; add @description; add @layer; add @owner; add @override |
-| `gFramework/nData/nImport/import/test/contentPackService.test.js` | `test` | `undocumented` | 0/0 | Verifies disabled defaults, manifest and checksum validation, source-safe staging, tenant-scoped import state, update detection, immutable same-version releases, and downgrade rejection. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/test/contentPackService.test.js` | `test` | `partially-documented` | 0/0 | Verifies disabled defaults, manifest and checksum validation, source-safe staging, tenant-scoped import state, update detection, immutable same-version releases, and downgrade rejection. | add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nData test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nData/nImport/import/test/environmentSampleDataContribution.test.js` | `test` | `documented` | 4/4 | Verifies that an arbitrarily named active environment module contributes layered sample headers and data through the same module-owned import discovery contract as capability modules. |  |
 | `gFramework/nData/nImport/import/test/finalizedImportDispatch.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/test/finalizedRecordCounter.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/test/fixtures/importDiagnosticsData.js` | `test` | `partially-documented` | 0/0 | Provides one finalized record for import diagnostics propagation tests. | add @override |
+| `gFramework/nData/nImport/import/test/importDiagnosticsPropagation.test.js` | `test` | `partially-documented` | 0/0 | Verifies that one import run remains attached across header finalization and finalized-file dispatch so counters and failures describe the complete import lifecycle. | add @override |
 | `gFramework/nData/nImport/import/test/importDuplicateHeaderDiagnostics.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/test/importExportAccessPolicy.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/test/importFailureTraceability.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nData/nImport/import/test/importFileArchivalLifecycle.test.js` | `test` | `partially-documented` | 0/6 | Verifies finalized import processing does not complete before processed files reach their governed success location. | add JSDoc for 6 exported method(s) |
 | `gFramework/nData/nImport/import/test/importGovernanceLifecycleContract.test.js` | `test` | `documented` | 0/0 | Verifies import run checksums, duplicate-run protection, retry metadata, and rollback hook reporting through existing import diagnostics/history services. |  |
 | `gFramework/nData/nImport/import/test/importLifecycleContract.test.js` | `test` | `documented` | 0/0 | Verifies init, core, sample, local, and remote import dispatch lifecycles, including import types, tenant propagation, finalized local processing, and non-finalizing discovery behavior. |  |
 | `gFramework/nData/nImport/import/test/importRecursiveErrorPropagation.test.js` | `test` | `documented` | 0/0 | Verifies recursive import processing continues after skipped records and propagates aggregate recursive errors with a concrete DataImportError. |  |
