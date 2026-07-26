@@ -24,17 +24,15 @@ nodicsRoot/
 └── nodicsdocs/
 ```
 
-Build and verify the pack in `nodicsdocs` first:
+Use a pinned published `nodicsdocs` revision. Its committed
+`manifest/generated-content-pack.json` and `data/core` directory are already
+the directly importable release artifact; an operator does not install
+dependencies, run generation, or create a `.work` staging directory.
 
-```bash
-npm run build -- --sites axisCmsSite --access AUTHENTICATED
-npm run verify
-```
-
-The pack owns `manifest/generated-content-pack.json` and `data/core`. Nodics
-validates every generated-file SHA-256 hash and the aggregate release checksum.
-It then copies `data/core` into server-owned staging. Nodics never gives the
-moving local-import pipeline the source-controlled directory.
+Nodics validates every committed file's SHA-256 hash and the aggregate release
+checksum. It then copies `data/core` into server-owned temporary staging.
+Nodics never gives the moving local-import pipeline the source-controlled
+directory, and clients never submit a filesystem path.
 
 Import-run duplicate protection includes the content-pack code, immutable
 version, and release checksum. Re-importing the same release remains
@@ -117,6 +115,11 @@ The routes require `import.contentPack.view` and
 `import.contentPack.run`, respectively. Backend authorization is authoritative;
 an Axis button is never authorization. Requests retain employee identity,
 tenant context, correlation information and import-run history.
+
+The import request has no source path body. Source selection is owned by
+layered `data.contentPacks` configuration; allowing a browser or caller to
+choose a server filesystem path would bypass the content-pack allowlist and
+release-integrity contract.
 
 ## Extension and deployment
 

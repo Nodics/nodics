@@ -16,6 +16,9 @@ Use these files for rules that are more specific than root `AGENTS.md` and the m
   duplicate fingerprints so update releases remain distinct and retry-safe.
 - Copy local releases into server-owned staging before local import because
   that lifecycle moves files.
+- Treat committed content-pack data and its manifest as the distribution
+  artifact. Consumer builds, `.work` copies, and caller-selected filesystem
+  paths are outside the governed installation contract.
 - System owns secured HTTP exposure; nImport owns execution and run history;
   Axis owns only status/action presentation.
 - Stable-code `saveAll` imports create and update records. Do not claim physical

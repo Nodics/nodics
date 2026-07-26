@@ -28,6 +28,10 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
 - Never give the local importer a source-controlled content-pack directory.
   Validate the release and copy it into server-owned staging because local
   import processing moves files.
+- A published local content-pack repository must commit its directly importable
+  data and manifest. Consumers must not build it, create client-owned staging,
+  or submit arbitrary filesystem paths; only nImport creates temporary
+  server-owned staging after validation.
 - Configuration is disabled by default. Project and environment layers enable
   sources, permissions, cleanup, and update policy without changing framework
   source.
