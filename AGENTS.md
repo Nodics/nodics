@@ -95,6 +95,15 @@ The expected posture is:
   customization, security, tenant behavior, observability, deployment,
   migration, troubleshooting, and the exact tests that prove the behavior.
   High-level summaries alone do not satisfy implementation acceptance.
+- Every capability that integrates an external provider must document the
+  provider-neutral authority, every prebuilt provider and evidence-based
+  maturity, selection and layered configuration, how another provider is
+  implemented and registered, lifecycle and resilience, applicable
+  import/export and cross-capability interactions, operations, security, and
+  verification. An irrelevant interaction must be marked not applicable with a
+  reason. Deterministic tests alone do not qualify an external provider for
+  production; guarded live-provider security, version, topology, capacity,
+  failure, recovery, and cleanup evidence is required.
 - OOTB customization documentation must show the smallest supported override or
   composition path and must explicitly identify what must not be copied,
   bypassed, or replaced. Examples must preserve existing authorities and avoid
