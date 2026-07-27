@@ -26,6 +26,11 @@ groups remain authoritative.
   package or startup level.
 - Track BackOffice presentation enablement, compatibility, availability, and
   registry/discovery audit history.
+- Contribute the permission-filtered **Module Health** workspace and return
+  sanitized per-instance readiness evidence for registered environment,
+  server, and node coordinates.
+- Contribute the permission-filtered **Core Data** workspace while preserving
+  nImport as the only core-data import authority.
 - Persist and project tenant-scoped, client-safe Axis employee experience
   policy with optimistic operator updates.
 
@@ -81,6 +86,11 @@ retention, and replica concurrency follow
 [the contract history lifecycle](docs/contract-history-lifecycle.md).
 Runtime readiness observation and multi-instance availability aggregation follow
 [the availability observation contract](docs/availability-observation-contract.md).
+The operator journey, per-instance projection, security boundary, and cluster
+interpretation follow
+[the Module Health operations guide](docs/module-health-operations.md).
+Core-data installation and update behavior follows
+[the Core Data operations guide](docs/core-data-operations.md).
 The same contract governs deduplicated state-transition events and sanitized
 probe/publication metrics through Nodics' existing event capability.
 Bounded administrative inventory, detail, and governed refresh behavior follow

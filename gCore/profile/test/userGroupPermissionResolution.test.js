@@ -101,6 +101,10 @@ let platformAdminGroup = Object.values(userGroupsData).find(group => group.code 
 assert(runtimeAdminGroup, 'Default runtime config admin group should be seeded');
 assert(platformAdminGroup.permissions.includes('system.schema.workbench.view'),
     'Default platform administrators should be allowed to discover the governed Schema Workbench');
+assert(platformAdminGroup.permissions.includes('backoffice.registry.admin.view'),
+    'Default platform administrators should be allowed to inspect sanitized module health');
+assert(platformAdminGroup.permissions.includes('backoffice.registry.refresh'),
+    'Default platform administrators should be allowed to request a bounded module-health refresh');
 assert(runtimeViewerGroup.permissions.includes('system.contract.openapi.view'));
 assert(runtimeAdminGroup.permissions.includes('runtime.config.cleanup.execute'));
 assert(runtimeAdminGroup.permissions.includes('backoffice.registry.diagnostics.view'));

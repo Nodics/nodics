@@ -50,6 +50,7 @@ order value, and `dependencies` must be present even when empty.
 
 Every generated `package.json.nodics` block must define:
 
+- `displayName`: bounded business-facing default label;
 - `kind`: boundary classification such as `project`, `group`, `capability`,
   `server`, `node`, or an existing specialized kind such as `publish` or
   `tooling`.
@@ -94,6 +95,15 @@ but a later active layer owns the effective override. When adding or moving a
 property, document the intended owner and prove that later layers can override
 it without changing out-of-the-box Nodics files.
 
+Later layers contain deltas, not copied snapshots. Do not repeat an inherited
+default merely to make an environment, server, or node file look complete.
+Keep the property absent until that layer intentionally changes it. A server
+may select an active engine/provider or bind a remote endpoint, but it must not
+copy the selected module's endpoint defaults, retry policy, logging defaults,
+pricing, credentials, or unrelated capability policy. Generated customer
+topologies must follow the same rule so they do not accumulate placeholders
+that become competing configuration authorities.
+
 | Boundary | May configure | Must not configure | Activation rule |
 | --- | --- | --- | --- |
 | Project root | Project-level defaults that apply before selecting an environment, project documentation settings, project LLM/tooling guidance, and project-wide governance defaults. | `activeModules`, concrete server ports, node ids, provider credentials, tenant/customer secrets, or generated runtime reports. | Project root does not activate process modules. Startup selects environment/server/node, then layered config resolves the effective runtime. |
@@ -102,7 +112,7 @@ it without changing out-of-the-box Nodics files.
 | Capability module | Capability defaults, service policies, route/security defaults, schema/search/interceptor/pipeline defaults, and provider-neutral extension contracts. | Environment credentials, tenant secrets, server process composition, node ids, or a hardcoded provider choice when multiple providers exist. | Capability behavior becomes active only when its module is part of the active module set for the selected process. |
 | Provider module | Provider-specific defaults such as client options, adapter policies, and provider capability switches. | Global provider selection for every project/customer, credentials baked into source, or unrelated provider behavior. | Provider module must be explicitly active or selected through layered configuration; selection must stay overrideable by project/environment/server/node/tenant/customer layers. |
 | Environment module | Deployment-wide defaults such as local/dev/UAT/prod policy, environment security compatibility values, cache defaults, test topology expectations, and environment-owned data toggles. | Per-process `activeModules`, concrete node id, reusable capability implementation, or source behavior unless the environment intentionally owns an override. | Environment config is selected by startup/topology and then inherited by its server modules. |
-| Server module | `activeModules`, process composition, server runtime flags, ports, local/remote endpoint coordinates under `servers.*`, process-level logging/search/cache/cron/EMS settings, server data toggles, and generated report location. | Environment-wide policy, node-local id/diagnostics, project module catalog, or reusable framework/provider behavior. | Server `activeModules.groups` and `activeModules.modules` decide what runs in the current process. `servers.*` coordinates only describe how this process calls endpoints. |
+| Server module | `activeModules`, process composition, server runtime flags, ports, local/remote endpoint coordinates under `servers.*`, intentional process-level logging/search/cache/cron/EMS selections, server data toggles, and generated report location. | Environment-wide policy, node-local id/diagnostics, project module catalog, reusable framework/provider behavior, or unchanged inherited defaults copied as placeholders. | Server `activeModules.groups` and `activeModules.modules` decide what runs in the current process. `servers.*` coordinates only describe how this process calls endpoints. |
 | Node module | `nodeId`, node-local endpoint overrides, node diagnostics, node runtime overrides, and node-specific test/report settings. | Server-wide active module composition, environment-wide data, project catalog, or reusable source implementation. | Node config refines the selected server process. It must not replace server activation. |
 
 Secrets and credentials must be injected through governed secret configuration

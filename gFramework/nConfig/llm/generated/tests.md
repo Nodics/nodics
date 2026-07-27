@@ -5,6 +5,7 @@
 ## Hand-Authored Tests
 
 - `gFramework/nConfig/test/artifactOverrideTraceability.test.js`
+- `gFramework/nConfig/test/configurationOwnershipContract.test.js`
 - `gFramework/nConfig/test/configurationValidation.test.js`
 - `gFramework/nConfig/test/layeredCustomizationContract.test.js`
 - `gFramework/nConfig/test/loggerRedactionContract.test.js`

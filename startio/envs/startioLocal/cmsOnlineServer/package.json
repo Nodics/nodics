@@ -24,7 +24,8 @@
             "router": false,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "CMS Online Server"
     },
     "scripts": {},
     "dependencies": {}

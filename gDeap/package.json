@@ -31,6 +31,7 @@
             "router": false,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "Data Engineering and Analytics"
     }
 }

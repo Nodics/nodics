@@ -33,7 +33,9 @@ and the beginner-to-expert
 OpenAI Responses, Anthropic Messages, and Google Gemini/Vertex AI adapters are
 implemented as disabled provider modules. Each adapter owns only vendor
 translation, conservative estimation, cancellation, normalized streaming
-deltas, and normalized usage. Selection, credentials, pricing, reservations,
+deltas, normalized usage, endpoint/protocol defaults, the conventional opaque
+secret reference, and reviewed vendor pricing contributions. Selection,
+credential resolution, pricing validation and application, reservations,
 retry/fallback, caching, rate limits, and kill switches remain parent gateway
 responsibilities.
 
@@ -50,6 +52,16 @@ Callers provide a usage-profile code, normalized operation, request, and
 governed context. They cannot provide a provider or model. An adapter is
 selectable only when its module is active, it is registered, its configuration
 is enabled, and it supports the requested capability.
+
+Configuration ownership follows the Nodics hierarchy without copying complete
+provider blocks into generated topologies. Vendor provider modules contribute
+endpoint/protocol defaults, conventional secret references, and reviewed model
+pricing. Project modules own reusable application and token policy. Environment
+modules contain only real deployment differences. Server and node modules may
+activate provider modules and contribute only gateway enablement plus concise
+profile/provider/model selection. They must not redefine endpoints, secret
+references, pricing, token policy, resilience, ledger, or provider-neutral
+security.
 
 Operational telemetry is bounded, sanitized, and process-local. The secured
 provider diagnostics API reports readiness and request outcomes without

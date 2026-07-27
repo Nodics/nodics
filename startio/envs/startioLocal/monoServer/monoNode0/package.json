@@ -35,6 +35,7 @@
             "router": false,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "Mono Node0"
     }
 }

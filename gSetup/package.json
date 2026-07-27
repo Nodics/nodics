@@ -28,7 +28,8 @@
             "router": false,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "Setup and Governance"
     },
     "scripts": {},
     "dependencies": {}

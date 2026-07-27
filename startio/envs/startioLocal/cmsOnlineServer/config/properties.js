@@ -22,7 +22,6 @@ module.exports = {
         groups: ['modules'],
         modules: ['cms', 'units', 'pricing', 'product', 'cmsOnlineServer', 'startioLocal']
     },
-    log: { level: 'info' },
     database: {
         default: {
             mongodb: {
@@ -34,45 +33,38 @@ module.exports = {
     cms: {
         publication: {
             enabled: true,
-            runtimeRole: 'ONLINE',
-            targetTransportProvider: null
+            runtimeRole: 'ONLINE'
         }
     },
     pricing: {
         publication: {
             enabled: true,
-            runtimeRole: 'ONLINE',
-            targetTransportProvider: null
+            runtimeRole: 'ONLINE'
         }
     },
     product: {
         publication: {
             enabled: true,
-            runtimeRole: 'ONLINE',
-            targetTransportProvider: null
+            runtimeRole: 'ONLINE'
         }
     },
     servers: {
         default: {
-            options: { contextRoot: 'nodics' },
             endpoint: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 },
             abstractEndpoint: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 },
             nodes: { node0: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 } }
         },
         profile: {
-            options: { contextRoot: 'nodics' },
             endpoint: { httpHost: 'localhost', httpPort: 3000, httpsHost: 'localhost', httpsPort: 3001 },
             abstractEndpoint: { httpHost: 'localhost', httpPort: 3000, httpsHost: 'localhost', httpsPort: 3001 },
             nodes: { node0: { httpHost: 'localhost', httpPort: 3000, httpsHost: 'localhost', httpsPort: 3001 } }
         },
         nems: {
-            options: { contextRoot: 'nodics' },
             endpoint: { httpHost: 'localhost', httpPort: 3020, httpsHost: 'localhost', httpsPort: 3021 },
             abstractEndpoint: { httpHost: 'localhost', httpPort: 3020, httpsHost: 'localhost', httpsPort: 3021 },
             nodes: { node0: { httpHost: 'localhost', httpPort: 3020, httpsHost: 'localhost', httpsPort: 3021 } }
         },
         backoffice: {
-            options: { contextRoot: 'nodics' },
             endpoint: { httpHost: 'localhost', httpPort: 3060, httpsHost: 'localhost', httpsPort: 3061 },
             abstractEndpoint: { httpHost: 'localhost', httpPort: 3060, httpsHost: 'localhost', httpsPort: 3061 },
             nodes: { node0: { httpHost: 'localhost', httpPort: 3060, httpsHost: 'localhost', httpsPort: 3061 } }

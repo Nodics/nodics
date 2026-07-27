@@ -37,6 +37,7 @@
             "router": true,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "One-Time Passwords"
     }
 }

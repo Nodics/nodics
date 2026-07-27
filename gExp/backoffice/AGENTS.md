@@ -74,6 +74,10 @@
   data, but nCatalog and CMS remain schema, persistence, delivery, and runtime
   authorities. Use the existing nData import lifecycle; never import content as
   a BackOffice startup side effect or add an Axis-specific loader.
+- BackOffice may advertise an authorized Core Data operations workspace, but
+  nImport remains the sole import authority. Axis may request the existing
+  secured core import and show its bounded result; it must never discover data
+  files, order imports, write collections, or create a second import path.
 - Axis content is employee-only and fail-closed. Only explicitly classified
   employee login and recovery routes/components may be public; all post-login
   page composition is authenticated. A public page may never reference an
@@ -81,6 +85,10 @@
 - Availability is a freshness-bounded observation of the target's existing
   public readiness contract. Deduplicate by runtime instance, retain no raw
   response, and never turn BackOffice into target health or readiness authority.
+- Secured operational detail may combine client-safe lease coordinates with
+  normalized per-instance state, freshness, observation time, and a stable
+  reason code. Never expose raw probe data or infer expected cluster membership
+  from expired or absent leases.
 - Recover a transient first readiness failure through the configured
   `failureRetryIntervalMs`; apply bounded exponential backoff only to repeated
   failures. Reuse registration renewal to trigger observation and never add a
@@ -96,6 +104,11 @@
 - Registry administration must query the owning lease store, use bounded
   filters and client-safe projection, and reuse existing discovery and
   availability observers for refresh rather than adding a parallel scheduler.
+- Administrative module presentation must consume each package's
+  `nodics.displayName` and loader-derived parent/canonical identity through the
+  registration contract. Group health is a descendant summary only; never
+  maintain a BackOffice label map, manual hierarchy, or second readiness
+  authority.
 - Distributed expiry must use provider-atomic compare-and-delete semantics;
   stale scans must never delete renewed leases. Ephemeral caches reconcile from
   active leases without deleting durable active or pending contract history.

@@ -29,7 +29,9 @@ global.CONFIG = { get: key => ({
 }[key]) };
 global.NODICS = {
     getActiveModules: () => ['cms', 'utility'],
-    getRawModule: name => ({ metaData: { version: '1.0.0', nodics: { runtime: { router: name === 'cms' }, owns: ['router'] } } }),
+    getRawModule: name => ({ parent: 'gContent', canonicalIdentity: 'gContent/' + name,
+        metaData: { version: '1.0.0', nodics: { displayName: name === 'cms' ? 'Content Management' : 'Utilities',
+            runtime: { router: name === 'cms' }, owns: ['router'] } } }),
     getEnvironmentName: () => 'envs', getSelectedEnvironmentName: () => 'local', getServerName: () => 'cmsServer', getNodeName: () => null,
     getInternalAuthToken: () => 'service-token'
 };
@@ -59,6 +61,9 @@ async function run() {
     assert(requests[0].header['Idempotency-Key']);
     assert.deepStrictEqual(requests[0].requestBody.registrations.map(item => item.moduleName), ['cms', 'utility']);
     assert.strictEqual(requests[0].requestBody.registrations[0].clientCallable, true);
+    assert.strictEqual(requests[0].requestBody.registrations[0].displayName, 'Content Management');
+    assert.strictEqual(requests[0].requestBody.registrations[0].parentModule, 'gContent');
+    assert.strictEqual(requests[0].requestBody.registrations[0].canonicalIdentity, 'gContent/cms');
     assert.strictEqual(requests[0].requestBody.registrations[0].backoffice.capabilityId, 'content-management');
     CONFIG.get = key => ({ backofficeRegistration: { enabled: true, moduleName: 'backoffice',
         heartbeatIntervalMs: 10000, retryIntervalMs: 5000, maxModulesPerRegistration: 512 }, backofficeCapabilities: {

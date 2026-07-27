@@ -73,4 +73,11 @@ includesAll('gAi/aiProviders/AGENTS.md', [
     'Transitional states must be repairable'
 ]);
 
+includesAll('gAi/aiProviders/README.md', [
+    'Configuration ownership follows the Nodics hierarchy',
+    'Vendor provider modules contribute',
+    'Server and node modules may',
+    'must not redefine endpoints'
+]);
+
 console.log('AI Provider distributed documentation contract validated');

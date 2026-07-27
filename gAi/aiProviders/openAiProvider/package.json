@@ -20,7 +20,8 @@
             "router": false,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "OpenAI Provider"
     },
     "scripts": {},
     "dependencies": {}

@@ -30,7 +30,8 @@
             "router": true,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "Stock and Inventory"
     },
     "scripts": {},
     "dependencies": {}

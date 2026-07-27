@@ -66,6 +66,9 @@ global.SERVICE = {
         observe: registration => { availabilitySchedules.push('refresh:' + registration.instanceId); return Promise.resolve(true); },
         getModuleAvailability: instances => ({ state: 'UP', activeInstances: instances.length, healthyInstances: instances.length,
             unavailableInstances: 0, unknownInstances: 0 }),
+        getInstanceAvailability: instanceId => instanceId === 'runtime-1' ?
+            { state: 'UP', freshness: 'FRESH', observedAt: '2026-07-27T00:00:00.000Z' } :
+            { state: 'UNKNOWN', freshness: 'MISSING', reasonCode: 'OBSERVATION_MISSING' },
         getDiagnostics: () => ({ trackedInstances: 1, inflight: 0, metrics: {} }),
         removeInstance: () => true
     },
@@ -87,7 +90,8 @@ const service = Object.assign({}, definition, {
 
 async function run() {
     let registration = {
-        moduleName: 'cms', instanceId: 'cms-1', endpoint: 'http://cms:3040/nodics/cms',
+        moduleName: 'cms', displayName: 'Content Management', parentModule: 'gContent',
+        canonicalIdentity: 'gContent/cms', instanceId: 'cms-1', endpoint: 'http://cms:3040/nodics/cms',
         version: '1.0.0', capabilities: ['router'], clientCallable: true, leaseTtlMs: 1000,
         backoffice: { enabled: true, capabilityId: 'content-management', displayName: 'Content', category: 'content',
             contractVersion: 2, minimumClientContractVersion: 1, roles: ['UI_COMPOSITION_PROVIDER'],
@@ -126,7 +130,8 @@ async function run() {
 
     await service.register({ body: registration, authData: identity });
     let profileRegistration = {
-        moduleName: 'profile', instanceId: 'profile-1', endpoint: 'http://profile:3000/nodics/profile',
+        moduleName: 'profile', displayName: 'Profile and Identity', parentModule: 'gCore',
+        canonicalIdentity: 'gCore/profile', instanceId: 'profile-1', endpoint: 'http://profile:3000/nodics/profile',
         clientCallable: true, leaseTtlMs: 1000
     };
     await service.register({ body: profileRegistration, authData: {
@@ -159,13 +164,22 @@ async function run() {
         server: 'cms-server',
         node: 'cms-node',
         registrations: [
-            { moduleName: 'cms', instanceId: 'runtime-1', endpoint: 'http://cms/nodics/cms', clientCallable: true,
+            { moduleName: 'gContent', displayName: 'Content', canonicalIdentity: 'gContent',
+                instanceId: 'runtime-1', moduleKind: 'group', clientCallable: false },
+            { moduleName: 'cms', displayName: 'Content Management', parentModule: 'gContent',
+                canonicalIdentity: 'gContent/cms', instanceId: 'runtime-1',
+                endpoint: 'http://cms/nodics/cms', clientCallable: true,
                 backoffice: registration.backoffice },
-            { moduleName: 'workflowCore', instanceId: 'runtime-1', clientCallable: false, capabilities: ['service'] }
+            { moduleName: 'workflow', displayName: 'Workflow', canonicalIdentity: 'workflow',
+                instanceId: 'runtime-1', moduleKind: 'group', clientCallable: false },
+            { moduleName: 'workflowCore', displayName: 'Workflow Core', parentModule: 'workflow',
+                canonicalIdentity: 'gCore/workflow/workflowCore', instanceId: 'runtime-1',
+                clientCallable: false, capabilities: ['service'] }
         ]
-    }, authData: { tokenType: 'service', runtimeInstanceId: 'runtime-1', modules: ['cms', 'workflowCore'],
+    }, authData: { tokenType: 'service', runtimeInstanceId: 'runtime-1',
+        modules: ['gContent', 'cms', 'workflow', 'workflowCore'],
         userGroups: ['serviceAccountUserGroup'] } });
-    assert.strictEqual(batch.data.registeredModules, 2);
+    assert.strictEqual(batch.data.registeredModules, 4);
     assert.deepStrictEqual({ environment: store._instances.get('cms:runtime-1').environment,
         server: store._instances.get('cms:runtime-1').server, node: store._instances.get('cms:runtime-1').node },
     { environment: 'local', server: 'cms-server', node: 'cms-node' }, 'runtime coordinates must remain available for sanitized telemetry');
@@ -173,14 +187,33 @@ async function run() {
         [['serviceAccountUserGroup'], ['serviceAccountUserGroup']], 'batch discovery must preserve authenticated service groups');
     assert(availabilitySchedules.includes('runtime-1'), 'client-callable batch registration must schedule availability observation');
     let adminList = await service.adminList({ query: { environment: 'local', state: 'UP', limit: '10' } });
-    assert.strictEqual(adminList.data.total, 2);
+    assert.strictEqual(adminList.data.total, 4);
     assert.strictEqual(adminList.data.items[0].environments[0], 'local');
+    let cmsSummary = adminList.data.items.find(item => item.moduleName === 'cms');
+    assert.strictEqual(cmsSummary.displayName, 'Content Management');
+    assert.strictEqual(cmsSummary.parentModule, 'gContent');
+    assert.strictEqual(cmsSummary.canonicalIdentity, 'gContent/cms');
+    assert.deepStrictEqual(service.aggregateModuleAvailability([
+        { availability: { state: 'UP', activeInstances: 1, healthyInstances: 1,
+            unavailableInstances: 0, unknownInstances: 0 } },
+        { availability: { state: 'UNAVAILABLE', activeInstances: 1, healthyInstances: 0,
+            unavailableInstances: 1, unknownInstances: 0 } }
+    ]), { state: 'DEGRADED', activeInstances: 2, healthyInstances: 1,
+        unavailableInstances: 1, unknownInstances: 0 },
+    'group readiness must derive from observed non-group descendants');
     await assert.rejects(() => service.adminList({ query: { limit: '101' } }));
     let adminDetail = await service.adminDetail({ params: { moduleName: 'cms' } });
+    assert.strictEqual(adminDetail.data.displayName, 'Content Management');
     assert.strictEqual(adminDetail.data.instances.length, 1);
     assert.deepStrictEqual({ environment: adminDetail.data.instances[0].environment, server: adminDetail.data.instances[0].server,
         node: adminDetail.data.instances[0].node }, { environment: 'local', server: 'cms-server', node: 'cms-node' },
     'administrative detail must expose only the safe runtime coordinates required to distinguish instances');
+    assert.deepStrictEqual(adminDetail.data.instances[0].availability, {
+        state: 'UP', freshness: 'FRESH', observedAt: '2026-07-27T00:00:00.000Z'
+    }, 'administrative detail must merge sanitized instance readiness without exposing raw probe data');
+    let httpAdminDetail = await service.adminDetail({ httpRequest: { params: { moduleName: 'cms' } } });
+    assert.strictEqual(httpAdminDetail.data.moduleName, 'cms',
+        'HTTP router path parameters must resolve through the wrapped request contract');
     let refreshed = await service.refresh({ params: { moduleName: 'cms' }, authData: { principalId: 'operator' } });
     assert.strictEqual(refreshed.data.refreshedInstances, 1);
     assert(availabilitySchedules.includes('refresh:runtime-1'));
@@ -188,7 +221,7 @@ async function run() {
     list = await service.list({ authData: { permissions: ['cms.backoffice.view'] } });
     assert.strictEqual(list.data.modules.workflowCore, undefined, 'non-API modules must not appear in client discovery');
     let diagnostics = await service.diagnostics({ authData: { userGroups: ['runtimeConfigAdminUserGroup'] } });
-    assert.strictEqual(diagnostics.data.activeInstances, 2, 'diagnostics must retain all active module leases');
+    assert.strictEqual(diagnostics.data.activeInstances, 4, 'diagnostics must retain all active module leases');
     assert.strictEqual(diagnostics.data.contracts.pendingApprovals, 1);
     assert.deepStrictEqual(diagnosticsAuthData.userGroups, ['runtimeConfigAdminUserGroup']);
     let bootstrap = await service.bootstrap({ tenant: 'default', authData: { permissions: ['cms.backoffice.view'] },

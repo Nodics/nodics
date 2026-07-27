@@ -46,6 +46,11 @@ module.exports = {
     /** Returns effective registry lease and projection policy. */
     getConfiguration: function () { return CONFIG.get('backofficeRegistry') || {}; },
 
+    /** Returns normalized router path parameters for direct and HTTP-wrapped service requests. */
+    getRequestParams: function (request) {
+        return request && (request.params || request.httpRequest && request.httpRequest.params) || {};
+    },
+
     /** Returns the configured lease-store implementation without creating a second authority path. */
     getStore: function () {
         let store = this._store || SERVICE.DefaultBackofficeRegistryStoreService;
@@ -101,6 +106,9 @@ module.exports = {
         let leaseTtlMs = Math.max(1000, Number(registration.leaseTtlMs || this.getConfiguration().leaseTtlMs || 30000));
         let observed = {
             moduleName: String(registration.moduleName),
+            displayName: String(registration.displayName),
+            parentModule: registration.parentModule ? String(registration.parentModule) : undefined,
+            canonicalIdentity: String(registration.canonicalIdentity),
             instanceId: String(registration.instanceId),
             environment: request._runtimeCoordinates && request._runtimeCoordinates.environment,
             server: request._runtimeCoordinates && request._runtimeCoordinates.server,
@@ -159,7 +167,7 @@ module.exports = {
 
     /** Removes matching observed leases during graceful process drain. */
     deregister: async function (request) {
-        let instanceId = request.params && request.params.instanceId || request.instanceId;
+        let instanceId = this.getRequestParams(request).instanceId || request.instanceId;
         let moduleName = request.body && request.body.moduleName || request.moduleName;
         if (this.getConfiguration().requireBoundServiceIdentity !== false &&
             (!request.authData || request.authData.tokenType !== 'service' || request.authData.runtimeInstanceId !== instanceId)) {
@@ -361,12 +369,26 @@ module.exports = {
             let instances = grouped[moduleName];
             let availability = this.buildAvailability({ [moduleName]: instances })[moduleName];
             let metadata = instances.map(item => item.backoffice).find(Boolean) || {};
-            return { moduleName: moduleName, version: instances[0].version, moduleKind: instances[0].moduleKind,
+            return { moduleName: moduleName, displayName: instances[0].displayName,
+                parentModule: instances[0].parentModule, canonicalIdentity: instances[0].canonicalIdentity,
+                version: instances[0].version, moduleKind: instances[0].moduleKind,
                 capabilities: Array.from(new Set(instances.flatMap(item => item.capabilities || []))).sort(),
                 environments: Array.from(new Set(instances.map(item => item.environment).filter(Boolean))).sort(),
                 servers: Array.from(new Set(instances.map(item => item.server).filter(Boolean))).sort(), availability: availability,
                 compatibility: this.evaluateCompatibility(metadata, this.getClientContractVersion(request)), activeInstances: instances.length };
-        }).filter(item => (!query.moduleName || item.moduleName.includes(query.moduleName)) &&
+        });
+        let descendants = (parentName, visited = new Set()) => {
+            if (visited.has(parentName)) return [];
+            let nextVisited = new Set(visited);
+            nextVisited.add(parentName);
+            return items.filter(candidate => candidate.parentModule === parentName)
+                .flatMap(candidate => [candidate].concat(descendants(candidate.moduleName, nextVisited)));
+        };
+        items.filter(item => item.moduleKind === 'group').forEach(group => {
+            let descendantItems = descendants(group.moduleName).filter(item => item.moduleKind !== 'group');
+            if (descendantItems.length > 0) group.availability = this.aggregateModuleAvailability(descendantItems);
+        });
+        items = items.filter(item => (!query.moduleName || item.moduleName.includes(query.moduleName)) &&
             (!query.capability || item.capabilities.includes(query.capability)) && (!query.environment || item.environments.includes(query.environment)) &&
             (!query.server || item.servers.includes(query.server)) && (!query.state || item.availability.state === query.state) &&
             (!query.compatibility || item.compatibility.status === query.compatibility));
@@ -378,16 +400,39 @@ module.exports = {
     adminDetail: async function (request) {
         SERVICE.DefaultBackofficeAdministrativeSecurityService.validate(request);
         await this.expireStale();
-        let moduleName = String(request && request.params && request.params.moduleName || '');
+        let moduleName = String(this.getRequestParams(request).moduleName || '');
         if (!/^[A-Za-z][A-Za-z0-9_-]{0,127}$/.test(moduleName)) throw new CLASSES.NodicsError('ERR_BOF_00000', 'Invalid module name');
         let instances = (await this.getStore().values()).map(entry => entry.value).filter(item => item.moduleName === moduleName);
-        return { code: 'SUC_BOF_00012', data: { moduleName: moduleName, availability: this.buildAvailability({ [moduleName]: instances })[moduleName],
-            instances: instances.map(instance => this.projectClientSafe(instance)) } };
+        return { code: 'SUC_BOF_00012', data: { moduleName: moduleName,
+            displayName: instances[0] && instances[0].displayName,
+            availability: this.buildAvailability({ [moduleName]: instances })[moduleName],
+            instances: instances.map(instance => Object.assign(this.projectClientSafe(instance), {
+                availability: SERVICE.DefaultBackofficeAvailabilityService ?
+                    SERVICE.DefaultBackofficeAvailabilityService.getInstanceAvailability(instance.instanceId) :
+                    { state: 'UNKNOWN', freshness: 'MISSING', reasonCode: 'OBSERVATION_MISSING' }
+            })) } };
+    },
+
+    /** Derives a group summary from observed non-group descendants without creating another health authority. */
+    aggregateModuleAvailability: function (items) {
+        let totals = items.reduce((result, item) => {
+            let availability = item.availability || {};
+            ['activeInstances', 'healthyInstances', 'unavailableInstances', 'unknownInstances'].forEach(name => {
+                result[name] += Number(availability[name] || 0);
+            });
+            result.states.push(availability.state || 'UNKNOWN');
+            return result;
+        }, { activeInstances: 0, healthyInstances: 0, unavailableInstances: 0, unknownInstances: 0, states: [] });
+        let state = totals.states.every(value => value === 'UP') ? 'UP' :
+            totals.states.every(value => value === 'UNAVAILABLE') ? 'UNAVAILABLE' :
+                totals.states.every(value => value === 'UNKNOWN') ? 'UNKNOWN' : 'DEGRADED';
+        return { state: state, activeInstances: totals.activeInstances, healthyInstances: totals.healthyInstances,
+            unavailableInstances: totals.unavailableInstances, unknownInstances: totals.unknownInstances };
     },
 
     /** Forces existing observers to refresh one registered module under an action-specific permission. */
     refresh: async function (request) {
-        let moduleName = String(request && request.params && request.params.moduleName || '');
+        let moduleName = String(this.getRequestParams(request).moduleName || '');
         if (!/^[A-Za-z][A-Za-z0-9_-]{0,127}$/.test(moduleName)) throw new CLASSES.NodicsError('ERR_BOF_00000', 'Invalid module name');
         return SERVICE.DefaultBackofficeAdministrativeSecurityService.executeRefresh(request, moduleName, async () => {
             await this.expireStale();

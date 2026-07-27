@@ -122,12 +122,21 @@ assert(capabilities[1].roles.includes('UI_COMPOSITION_PROVIDER'));
 assert.strictEqual(capabilities[1].uiComposition.fallbackMode, 'STATIC_RECOVERY_SHELL');
 
 let registration = {
-    moduleName: 'cms', instanceId: 'runtime-1', clientCallable: true, endpoint: 'https://cms.example/nodics/cms',
+    moduleName: 'cms', displayName: 'Content Management', parentModule: 'gContent',
+    canonicalIdentity: 'gContent/cms', instanceId: 'runtime-1', clientCallable: true,
+    endpoint: 'https://cms.example/nodics/cms',
     capabilities: ['router'], leaseTtlMs: 30000, backoffice: capabilities[1]
 };
 assert(service.validateRegistration(registration));
+let contentGroupRegistration = {
+    moduleName: 'gContent', displayName: 'Content', canonicalIdentity: 'gContent',
+    instanceId: 'runtime-1', moduleKind: 'group', clientCallable: false
+};
 assert(service.validateRegistrationBatch({ instanceId: 'runtime-1', environment: 'resolvedByEnvModule',
-    server: 'runtimeComposition', node: null, registrations: [registration] }, 10));
+    server: 'runtimeComposition', node: null, registrations: [contentGroupRegistration, registration] }, 10));
+assert.strictEqual(service.validateRegistrationBatch({ instanceId: 'runtime-1',
+    registrations: [registration] }, 10), true,
+'batch hierarchy must allow a parent observed by another distributed runtime instance');
 assert.strictEqual(service.validateRegistration(Object.assign({}, registration, { credential: 'must-not-be-accepted' })), false);
 assert.strictEqual(service.validateRegistration(Object.assign({}, registration, { healthPath: 'https://evil.example/ready' })), false);
 assert.strictEqual(service.validateBackofficeMetadata(Object.assign({}, registration.backoffice, { secret: 'invalid' })), false);

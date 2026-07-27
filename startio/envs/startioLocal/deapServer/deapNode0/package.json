@@ -34,6 +34,7 @@
             "router": false,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "Deap Node0"
     }
 }

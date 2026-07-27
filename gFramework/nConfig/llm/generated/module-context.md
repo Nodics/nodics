@@ -27,9 +27,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 15 |
-| Test files | 9 |
+| Test files | 10 |
 | Data files | 0 |
-| All module-owned files | 35 |
+| All module-owned files | 36 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -56,7 +56,7 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 30 |
-| Partially documented | 1 |
+| Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
 
@@ -104,6 +104,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nConfig/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared config status and error definition exports. |  |
 | `gFramework/nConfig/src/utils/utils.js` | `src` | `documented` | 27/27 | Shared nConfig utilities for module discovery, runtime activation, hierarchy traversal, generated artifact creation, filesystem cleanup, and router enablement decisions. |  |
 | `gFramework/nConfig/test/artifactOverrideTraceability.test.js` | `test` | `documented` | 0/0 | Verifies that layered service, facade, controller, pipeline, and related artifact contributions retain ordered source-module override trace metadata. |  |
+| `gFramework/nConfig/test/configurationOwnershipContract.test.js` | `test` | `partially-documented` | 0/0 | Prevents environment, server, and node properties from becoming copied snapshots of module defaults. | add @override |
 | `gFramework/nConfig/test/configurationValidation.test.js` | `test` | `documented` | 0/0 | Validates consolidated and modular environment/server/node configuration resolution, canonical package kinds, required module ordering, topology declarations, and negative startup cases. |  |
 | `gFramework/nConfig/test/layeredCustomizationContract.test.js` | `test` | `documented` | 13/13 | Proves that a project-neutral framework, project, environment, server, and node hierarchy can customize configuration, schemas, routers, services, pipelines, facades, controllers, data, and tests before isolated tenant/runtime governance is applied. |  |
 | `gFramework/nConfig/test/loggerRedactionContract.test.js` | `test` | `documented` | 0/0 | Verifies that central logger serialization redacts sensitive tokens, credentials, and secret-bearing fields before logs reach transports. |  |

@@ -283,6 +283,7 @@ module.exports = {
             ],
             governance: [
                 { node: 'gFramework/nConfig/test/layeredCustomizationContract.test.js' },
+                { node: 'gFramework/nConfig/test/configurationOwnershipContract.test.js' },
                 { node: 'gFramework/nConfig/test/schemaOverrideGovernance.test.js' },
                 { node: 'gFramework/nConfig/test/routerOverrideGovernance.test.js' },
                 { suite: 'runtime-overrides' },
@@ -492,6 +493,7 @@ module.exports = {
             ],
             ai: [
                 { node: 'gAi/test/aiGroupOwnershipContract.test.js' },
+                { node: 'gAi/test/aiConfigurationLayeringContract.test.js' },
                 { node: 'gAi/aiAssistant/test/aiAssistantContractAndConfiguration.test.js' },
                 { node: 'gAi/aiAssistant/test/aiAssistantReadOnlyVerticalSliceContract.test.js' },
                 { node: 'gAi/aiAssistant/test/aiAssistantKnowledgeContextContract.test.js' },

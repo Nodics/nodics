@@ -229,7 +229,7 @@ function validateMetadata(report, moduleObject) {
                 'Missing package metadata field `' + fieldName + '`.');
         }
     });
-    ['kind', 'runtimeModule', 'loadableByNodicsModuleLoader', 'owns', 'runtime'].forEach(fieldName => {
+    ['kind', 'displayName', 'runtimeModule', 'loadableByNodicsModuleLoader', 'owns', 'runtime'].forEach(fieldName => {
         if (nodics[fieldName] === undefined) {
             createFinding(report, 'error', moduleObject, 'missing-nodics-field',
                 'Missing package.json.nodics field `' + fieldName + '`.');
@@ -251,6 +251,10 @@ function validateMetadata(report, moduleObject) {
     if (nodics.owns !== undefined && !Array.isArray(nodics.owns)) {
         createFinding(report, 'error', moduleObject, 'invalid-owns',
             '`package.json.nodics.owns` must be an array.');
+    }
+    if (typeof nodics.displayName !== 'string' || !nodics.displayName.trim() || nodics.displayName.length > 160) {
+        createFinding(report, 'error', moduleObject, 'invalid-display-name',
+            '`package.json.nodics.displayName` must be a non-empty business-facing label of at most 160 characters.');
     }
 }
 

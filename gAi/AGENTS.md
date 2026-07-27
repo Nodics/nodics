@@ -22,6 +22,13 @@
   source authority.
 - Configuration chooses among active, registered providers but cannot activate
   missing code or weaken security, tenant, permission, audit, or secret rules.
+- Vendor modules own provider definitions, endpoint/protocol defaults, secret
+  reference conventions, and reviewed vendor pricing. Project modules own
+  reusable application policy. Environment layers contain only genuine
+  deployment differences. Server and node layers may select active AI modules,
+  enable the gateway, and bind usage profiles to enabled providers/models, but
+  must not duplicate provider definitions, pricing, secrets, token policy,
+  resilience, ledger, or business behavior.
 - Every provider call must pass fail-closed token estimation, immutable budget
   planning, atomic reservation, actual-usage reconciliation, exact-decimal cost
   accounting, and release on failure before it is considered valid.

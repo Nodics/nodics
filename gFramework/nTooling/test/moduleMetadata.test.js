@@ -46,7 +46,7 @@ const validRuntimeKeys = new Set([
     'web'
 ]);
 const validNodicsKeys = new Set([
-    'kind', 'runtimeModule', 'loadableByNodicsModuleLoader', 'owns', 'runtime',
+    'kind', 'displayName', 'runtimeModule', 'loadableByNodicsModuleLoader', 'owns', 'runtime',
     'entrypoints', 'dependencyGovernance'
 ]);
 
@@ -81,6 +81,8 @@ modules.forEach(module => {
     Object.keys(nodics).forEach(key => assert(validNodicsKeys.has(key),
         'Invalid package.json.nodics key `' + key + '` for package: ' + module.relativePath));
     assert(nodics.kind, 'Missing nodics.kind for package: ' + module.relativePath);
+    assert(typeof nodics.displayName === 'string' && nodics.displayName.trim() && nodics.displayName.length <= 160,
+        'Missing or invalid nodics.displayName for package: ' + module.relativePath);
     assert(validKinds.has(nodics.kind), 'Invalid nodics.kind `' + nodics.kind + '` for package: ' + module.relativePath);
     assert.strictEqual(nodics.moduleType, undefined, 'Do not use nodics.moduleType; use nodics.kind and nodics.runtime: ' + module.relativePath);
     assert(Array.isArray(nodics.owns), 'nodics.owns must be an array for package: ' + module.relativePath);

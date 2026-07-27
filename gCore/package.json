@@ -38,6 +38,7 @@
             "router": false,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "Core Capabilities"
     }
 }

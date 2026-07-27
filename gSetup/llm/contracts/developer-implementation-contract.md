@@ -217,6 +217,15 @@ standalone governance JSON files, command registries, quality-gate files, or
 implementation-specific policy files when the value can be represented as a
 property subtree.
 
+The owning capability or provider module defines reusable defaults once.
+Project, environment, server, and node `properties.js` files must contain only
+intentional deltas for their boundary. Do not copy unchanged defaults,
+disabled-provider placeholders, complete policy blocks, or conventional
+endpoint values into later layers. Before adding a property to an environment,
+server, or node, inspect the owning module and the earlier effective layers; if
+the desired value is already inherited, add nothing. Tests must prove both the
+inherited behavior and any intentional override.
+
 Use clear property namespaces for specialized concerns, for example
 `tooling.commands`, `tooling.discovery`, and
 `tooling.documentationGovernance`. A separate file is allowed only when it is a

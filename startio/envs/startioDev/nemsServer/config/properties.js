@@ -28,9 +28,6 @@ module.exports = {
 
     servers: {
         default: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3004,
@@ -57,9 +54,6 @@ module.exports = {
         },
 
         profile: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3000,
@@ -86,9 +80,6 @@ module.exports = {
         },
 
         cronjob: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3002,
@@ -115,9 +106,6 @@ module.exports = {
         },
 
         powerTool: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3008,
@@ -144,9 +132,6 @@ module.exports = {
         },
 
         dataConsumer: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3010,

@@ -92,6 +92,16 @@ const moduleAvailability = {
         unavailableInstances: { type: 'integer', minimum: 0 }, unknownInstances: { type: 'integer', minimum: 0 }
     }
 };
+const instanceAvailability = {
+    type: 'object', additionalProperties: false, required: ['state', 'freshness'],
+    properties: {
+        state: { enum: ['UP', 'UNAVAILABLE', 'UNKNOWN'] },
+        freshness: { enum: ['FRESH', 'STALE', 'MISSING'] },
+        observedAt: { type: 'string', format: 'date-time' },
+        reasonCode: { enum: ['READINESS_NOT_UP', 'OBSERVATION_TIMEOUT', 'HEALTH_OBSERVATION_FAILED',
+            'OBSERVATION_STALE', 'OBSERVATION_MISSING'] }
+    }
+};
 const contractDecision = {
     type: 'object', additionalProperties: false, required: ['reason', 'expectedRevision'], properties: {
         reason: { type: 'string', minLength: 1, maxLength: 1024 }, expectedRevision: { type: 'integer', minimum: 0 }
@@ -181,9 +191,12 @@ const backofficeMetadata = {
     }
 };
 const registration = {
-    type: 'object', additionalProperties: false, required: ['moduleName', 'instanceId', 'clientCallable'],
+    type: 'object', additionalProperties: false,
+    required: ['moduleName', 'displayName', 'canonicalIdentity', 'instanceId', 'clientCallable'],
     properties: {
-        moduleName: moduleName, instanceId: { type: 'string', minLength: 1 }, version: { type: 'string' },
+        moduleName: moduleName, displayName: { type: 'string', minLength: 1, maxLength: 160 },
+        parentModule: moduleName, canonicalIdentity: { type: 'string', minLength: 1, maxLength: 2048 },
+        instanceId: { type: 'string', minLength: 1 }, version: { type: 'string' },
         moduleKind: { type: 'string' }, capabilities: { type: 'array', uniqueItems: true, items: { type: 'string' } },
         clientCallable: { type: 'boolean' }, endpoint: { type: 'string' },
         healthPath: { type: 'string', maxLength: 512, pattern: '^/(?!/)' },
@@ -195,11 +208,14 @@ const registration = {
 const moduleLease = {
     type: 'object', required: ['moduleName', 'instanceId', 'state', 'lastSeenAt'],
     properties: {
-        moduleName: moduleName, instanceId: { type: 'string' }, environment: { type: 'string' }, server: { type: 'string' },
+        moduleName: moduleName, displayName: { type: 'string', maxLength: 160 }, parentModule: moduleName,
+        canonicalIdentity: { type: 'string', maxLength: 2048 },
+        instanceId: { type: 'string' }, environment: { type: 'string' }, server: { type: 'string' },
         node: { type: 'string', nullable: true }, version: { type: 'string' }, moduleKind: { type: 'string' },
         capabilities: { type: 'array', items: { type: 'string' } }, clientCallable: { type: 'boolean' },
         endpoint: { type: 'string' }, healthPath: { type: 'string' },
-        state: { enum: ['UP'] }, lastSeenAt: { type: 'string', format: 'date-time' }, backoffice: backofficeMetadata
+        state: { enum: ['UP'] }, lastSeenAt: { type: 'string', format: 'date-time' },
+        availability: instanceAvailability, backoffice: backofficeMetadata
     }
 };
 
@@ -216,16 +232,20 @@ module.exports = {
     capabilitySnapshot: capabilitySnapshot,
     uiCompositionSelection: uiCompositionSelection,
     moduleAvailability: moduleAvailability,
+    instanceAvailability: instanceAvailability,
     adminListData: { type: 'object', required: ['total', 'offset', 'limit', 'items'], properties: {
         total: { type: 'integer', minimum: 0 }, offset: { type: 'integer', minimum: 0 }, limit: { type: 'integer', minimum: 1, maximum: 100 },
         items: { type: 'array', items: { type: 'object', required: ['moduleName', 'capabilities', 'availability', 'compatibility', 'activeInstances'], properties: {
-            moduleName: moduleName, version: { type: 'string' }, moduleKind: { type: 'string' }, capabilities: { type: 'array', items: { type: 'string' } },
+            moduleName: moduleName, displayName: { type: 'string', maxLength: 160 },
+            parentModule: moduleName, canonicalIdentity: { type: 'string', maxLength: 2048 },
+            version: { type: 'string' }, moduleKind: { type: 'string' }, capabilities: { type: 'array', items: { type: 'string' } },
             environments: { type: 'array', items: { type: 'string' } }, servers: { type: 'array', items: { type: 'string' } },
             availability: moduleAvailability, compatibility: { type: 'object' }, activeInstances: { type: 'integer', minimum: 0 }
         } } }
     } },
     adminDetailData: { type: 'object', required: ['moduleName', 'instances'], properties: {
-        moduleName: moduleName, availability: moduleAvailability, instances: { type: 'array', items: moduleLease }
+        moduleName: moduleName, displayName: { type: 'string', maxLength: 160 },
+        availability: moduleAvailability, instances: { type: 'array', items: moduleLease }
     } },
     refreshData: { type: 'object', required: ['moduleName', 'refreshedInstances', 'discoveryRequested'], properties: {
         moduleName: moduleName, refreshedInstances: { type: 'integer', minimum: 0 }, discoveryRequested: { type: 'boolean' }

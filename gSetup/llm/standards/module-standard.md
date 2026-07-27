@@ -98,8 +98,12 @@ exempt because their identities contain generation placeholders.
 
 The `n` prefix is a naming convention, not a runtime classifier. Some `n*`
 packages are capability groups, while others are ordinary capabilities or web
-modules. Module kind must always come from `package.json.nodics.kind`, and
-runtime flags must come from `package.json.nodics.runtime`.
+modules. Module kind must always come from `package.json.nodics.kind`, the
+default business-facing label from `package.json.nodics.displayName`, and
+runtime flags from `package.json.nodics.runtime`. Never derive a presentation
+label from camel case or maintain a central duplicate label map. Parent/child
+relationships come from module-loader discovery, not a manually repeated
+`parent` property.
 
 Package manifests contain static identity, dependency, composition, loader,
 ownership, and runtime-surface metadata only. Runtime policy, permissions,

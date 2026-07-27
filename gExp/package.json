@@ -23,7 +23,8 @@
             "router": false,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "Experience Capabilities"
     },
     "scripts": {},
     "dependencies": {}

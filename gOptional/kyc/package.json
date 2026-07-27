@@ -32,6 +32,7 @@
             "router": false,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "Know Your Customer"
     }
 }

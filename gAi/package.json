@@ -25,7 +25,8 @@
             "router": false,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "AI Capabilities"
     },
     "scripts": {},
     "dependencies": {}

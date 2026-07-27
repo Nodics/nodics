@@ -29,16 +29,7 @@ module.exports = {
         level: 'debug'
     },
 
-    search: {
-        default: {
-            options: {
-                enabled: false
-            }
-        }
-    },
-
     emsClient: {
-        logFailedMessages: false,
         publishers: {
             kafkaTempPublisher: {
                 enabled: true,
@@ -47,9 +38,6 @@ module.exports = {
             }
         },
         clients: {
-            activemq: {
-                enabled: false
-            },
             kafka: {
                 enabled: true
             }
@@ -58,9 +46,6 @@ module.exports = {
 
     servers: {
         default: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3010,
@@ -101,9 +86,6 @@ module.exports = {
         },
 
         profile: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3000,
@@ -131,9 +113,6 @@ module.exports = {
 
         // This configuration required to push any event needs to be send for other module
         nems: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3020,
@@ -159,7 +138,6 @@ module.exports = {
             }
         },
         backoffice: {
-            options: { contextRoot: 'nodics' },
             endpoint: { httpHost: 'localhost', httpPort: 3060, httpsHost: 'localhost', httpsPort: 3061 },
             abstractEndpoint: { httpHost: 'localhost', httpPort: 3060, httpsHost: 'localhost', httpsPort: 3061 },
             nodes: { node0: { httpHost: 'localhost', httpPort: 3060, httpsHost: 'localhost', httpsPort: 3061 } }

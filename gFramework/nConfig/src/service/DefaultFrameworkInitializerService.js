@@ -394,6 +394,9 @@ module.exports = {
         if (!nodics.kind) {
             this.failConfiguration(moduleName + ' must define package.json.nodics.kind');
         }
+        if (typeof nodics.displayName !== 'string' || !nodics.displayName.trim() || nodics.displayName.length > 160) {
+            this.failConfiguration(moduleName + ' must define a bounded package.json.nodics.displayName');
+        }
         if (!nodics.runtime || typeof nodics.runtime !== 'object') {
             this.failConfiguration(moduleName + ' must define package.json.nodics.runtime');
         }

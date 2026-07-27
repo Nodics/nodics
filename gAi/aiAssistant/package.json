@@ -30,7 +30,8 @@
             "router": true,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "AI Assistant"
     },
     "scripts": {},
     "dependencies": {}

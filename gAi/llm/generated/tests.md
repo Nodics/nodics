@@ -4,6 +4,7 @@
 
 ## Hand-Authored Tests
 
+- `gAi/test/aiConfigurationLayeringContract.test.js`
 - `gAi/test/aiGroupOwnershipContract.test.js`
 
 ## Generated Tests

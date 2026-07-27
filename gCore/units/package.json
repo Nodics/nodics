@@ -29,7 +29,8 @@
             "router": true,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "Units"
     },
     "scripts": {},
     "dependencies": {}

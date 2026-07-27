@@ -33,6 +33,7 @@
             "router": false,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "Facades"
     }
 }

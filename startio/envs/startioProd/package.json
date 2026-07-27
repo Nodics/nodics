@@ -31,6 +31,7 @@
             "router": false,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "Startio Prod"
     }
 }

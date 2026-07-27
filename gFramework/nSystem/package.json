@@ -41,6 +41,7 @@
             "router": true,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "System Operations"
     }
 }

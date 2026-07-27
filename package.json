@@ -449,7 +449,8 @@
                     "reason": "EMS XML message handler."
                 }
             }
-        }
+        },
+        "displayName": "Nodics"
     },
     "overrides": {
         "diff": "^8.0.3",

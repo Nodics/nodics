@@ -42,6 +42,7 @@
             "router": true,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "Profile and Identity"
     }
 }

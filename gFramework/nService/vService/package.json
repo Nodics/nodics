@@ -34,6 +34,7 @@
             "router": false,
             "publish": true,
             "web": false
-        }
+        },
+        "displayName": "Versioned Services"
     }
 }

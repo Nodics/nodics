@@ -45,9 +45,6 @@ module.exports = {
 
     servers: {
         default: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3002,
@@ -74,9 +71,6 @@ module.exports = {
         },
 
         profile: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3000,
@@ -103,9 +97,6 @@ module.exports = {
         },
 
         nems: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3004,
@@ -132,9 +123,6 @@ module.exports = {
         },
 
         dataConsumer: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3010,

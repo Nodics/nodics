@@ -14,13 +14,13 @@
     "description": "Optional cross-cutting AI capability group for orchestration, knowledge retrieval, and provider abstraction."
   },
   "sourceFiles": 0,
-  "testFiles": 1,
+  "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 9,
-  "sourceFingerprint": "a7f028cf2476c84698a5a7720a26cece3c7d5fa3a38afc386320289012260801",
+  "ownedFiles": 10,
+  "sourceFingerprint": "2dea40833d950923017fd9638f587abae3f6c1c3ec11542c7253e8924cbf47d9",
   "documentation": {
     "documented": 4,
-    "partially-documented": 0,
+    "partially-documented": 1,
     "undocumented": 1,
     "inventory-only": 4
   },

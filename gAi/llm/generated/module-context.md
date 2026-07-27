@@ -24,9 +24,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 0 |
-| Test files | 1 |
+| Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 9 |
+| All module-owned files | 10 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -53,7 +53,7 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 4 |
-| Partially documented | 0 |
+| Partially documented | 1 |
 | Undocumented | 1 |
 | Inventory only | 4 |
 
@@ -81,6 +81,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gAi/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gAi/nodics.js` | `module` | `documented` | 2/2 | Generated Nodics lifecycle entrypoint for gAi. |  |
 | `gAi/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gAi/test/aiConfigurationLayeringContract.test.js` | `test` | `partially-documented` | 0/0 | Prevents topology layers from becoming duplicate AI provider-definition and policy authorities. | add @override |
 | `gAi/test/aiGroupOwnershipContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 
 ## Extension Contract

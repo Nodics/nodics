@@ -18,33 +18,6 @@
  */
 module.exports = {
 
-    log: {
-        level: 'debug',
-        transports: {
-            console: {
-                consoleTransport: {
-                    enabled: true
-                }
-            },
-            file: {
-                fileErrorLog: {
-                    enabled: false
-                },
-                fileRestLog: {
-                    enabled: false
-                }
-            },
-            elastic: {
-                elasticLogRecorder: {
-                    enabled: false,
-                    client: {
-                        hosts: ['http://10.21.77.61:9200', 'http://10.21.77.61:9200']
-                    }
-                }
-            }
-        }
-    },
-
     cache: {
         default: {
             channels: {
@@ -59,8 +32,7 @@ module.exports = {
                 redis: {
                     enabled: true,
                     options: {
-                        host: '10.21.77.75',
-                        port: 6379
+                        host: '10.21.77.75'
                     }
                 },
             }

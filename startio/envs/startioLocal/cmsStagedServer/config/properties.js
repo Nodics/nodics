@@ -39,22 +39,6 @@ module.exports = {
         }
     },
 
-    log: {
-        level: 'info'
-    },
-
-    cronjob: {
-        runOnStartup: false
-    },
-
-    search: {
-        default: {
-            options: {
-                enabled: false
-            }
-        }
-    },
-
     database: {
         default: {
             mongodb: {
@@ -72,9 +56,7 @@ module.exports = {
             target: {
                 moduleName: 'cms',
                 connectionName: 'cmsOnline',
-                connectionType: 'server',
-                timeoutMs: 30000,
-                maxAttempts: 3
+                connectionType: 'server'
             }
         }
     },
@@ -87,9 +69,7 @@ module.exports = {
             target: {
                 moduleName: 'pricing',
                 connectionName: 'pricingOnline',
-                connectionType: 'server',
-                timeoutMs: 30000,
-                maxAttempts: 3
+                connectionType: 'server'
             }
         }
     },
@@ -102,18 +82,13 @@ module.exports = {
             target: {
                 moduleName: 'product',
                 connectionName: 'productOnline',
-                connectionType: 'server',
-                timeoutMs: 30000,
-                maxAttempts: 3
+                connectionType: 'server'
             }
         }
     },
 
     servers: {
         default: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3040,
@@ -141,9 +116,6 @@ module.exports = {
 
         // This configuration required to load enterprise, tenants and all internal communication
         profile: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3000,
@@ -171,9 +143,6 @@ module.exports = {
 
         // This configuration required to push any event needs to be send for other module
         nems: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3020,
@@ -199,25 +168,21 @@ module.exports = {
             }
         },
         backoffice: {
-            options: { contextRoot: 'nodics' },
             endpoint: { httpHost: 'localhost', httpPort: 3060, httpsHost: 'localhost', httpsPort: 3061 },
             abstractEndpoint: { httpHost: 'localhost', httpPort: 3060, httpsHost: 'localhost', httpsPort: 3061 },
             nodes: { node0: { httpHost: 'localhost', httpPort: 3060, httpsHost: 'localhost', httpsPort: 3061 } }
         },
         cmsOnline: {
-            options: { contextRoot: 'nodics' },
             endpoint: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 },
             abstractEndpoint: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 },
             nodes: { node0: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 } }
         },
         pricingOnline: {
-            options: { contextRoot: 'nodics' },
             endpoint: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 },
             abstractEndpoint: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 },
             nodes: { node0: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 } }
         }
         ,productOnline: {
-            options: { contextRoot: 'nodics' },
             endpoint: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 },
             abstractEndpoint: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 },
             nodes: { node0: { httpHost: 'localhost', httpPort: 3070, httpsHost: 'localhost', httpsPort: 3071 } }

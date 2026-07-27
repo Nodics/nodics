@@ -26,27 +26,8 @@ module.exports = {
         ]
     },
 
-    log: {
-        level: 'info'
-    },
-
-    cronjob: {
-        runOnStartup: false
-    },
-
-    search: {
-        default: {
-            options: {
-                enabled: false
-            }
-        }
-    },
-
     servers: {
         default: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3060,
@@ -71,9 +52,6 @@ module.exports = {
 
         // Authentication remains owned by the independently deployed Profile module.
         profile: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3000,

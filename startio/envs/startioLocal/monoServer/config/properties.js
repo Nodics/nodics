@@ -46,10 +46,6 @@ module.exports = {
         //logLevelDefaultRequestHandlerPipelineService: 'info'
     },
 
-    cronjob: {
-        runOnStartup: false
-    },
-
     search: {
         default: {
             options: {
@@ -60,20 +56,24 @@ module.exports = {
         }
     },
 
-    aiKnowledge: {
-        enabled: true
-    },
-
-    // Local monoServer acceptance enables only governed read tools. The
-    // reusable Assistant and every non-local environment remain deny-by-default.
-    aiAssistant: {
-        tools: {
-            enabled: true
+    // Server scope chooses only the active gateway/profile/provider binding.
+    // Vendor definitions, pricing, secrets, and token policy remain module-owned.
+    aiProviders: {
+        enabled: true,
+        profiles: {
+            assistantGeneration: {
+                provider: 'openAi',
+                model: 'gpt-5-mini'
+            }
+        },
+        providers: {
+            openAi: {
+                enabled: true
+            }
         }
     },
 
     emsClient: {
-        logFailedMessages: false,
         publishers: {
             kafkaTempPublisher: {
                 enabled: true,
@@ -87,9 +87,6 @@ module.exports = {
             }
         },
         clients: {
-            activemq: {
-                enabled: false
-            },
             kafka: {
                 enabled: true
             }

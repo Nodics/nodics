@@ -31,9 +31,6 @@ module.exports = {
 
     servers: {
         default: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3020,
@@ -60,9 +57,6 @@ module.exports = {
         },
 
         profile: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3000,
@@ -89,9 +83,6 @@ module.exports = {
         },
 
         dataConsumer: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3010,
@@ -132,9 +123,6 @@ module.exports = {
         },
 
         cronjob: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3030,
@@ -182,9 +170,6 @@ module.exports = {
         },
 
         cms: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3020,
@@ -211,9 +196,6 @@ module.exports = {
         },
 
         workflow: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3050,
@@ -239,7 +221,6 @@ module.exports = {
             }
         },
         backoffice: {
-            options: { contextRoot: 'nodics' },
             endpoint: { httpHost: 'localhost', httpPort: 3060, httpsHost: 'localhost', httpsPort: 3061 },
             abstractEndpoint: { httpHost: 'localhost', httpPort: 3060, httpsHost: 'localhost', httpsPort: 3061 },
             nodes: { node0: { httpHost: 'localhost', httpPort: 3060, httpsHost: 'localhost', httpsPort: 3061 } }

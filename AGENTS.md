@@ -14,6 +14,15 @@ Framework modules provide default capabilities. Project, environment, server,
 node, tenant, and customer modules may override implementations through the
 layered module hierarchy without modifying out-of-the-box Nodics code.
 
+Configuration layers must contribute only what they own or intentionally
+change. Capability and provider modules own reusable defaults; project modules
+own reusable application policy; environments own genuine deployment-wide
+differences; servers own process composition, topology, and intentional
+process-level selections; nodes own instance identity and instance-specific
+overrides. Never restate an inherited default as a placeholder in a later
+`properties.js`, and never copy complete capability/provider policy blocks into
+environment, server, or node configuration.
+
 ## Required Expert Posture
 
 AI tools and human technical leaders working on Nodics must use an
@@ -110,6 +119,11 @@ The expected posture is:
   creating parallel loaders, state machines, registries, schedulers, or runtime
   governance paths.
 - Do not hardcode project-specific behavior into reusable framework behavior.
+- Every module-shaped package owns its bounded default user-facing label in
+  `package.json.nodics.displayName`. Runtime and API identity remains
+  `package.json.name`; module hierarchy comes from loader-discovered physical
+  parentage. Do not derive labels in clients, duplicate them in central
+  configuration, or add manually maintained parent metadata.
 - Behavior must come from active modules, layered configuration, tenant context,
   schema definitions, routers, services, pipelines, data, and runtime governance.
 - Security, access, routing, cache, audit, validation, and governance values

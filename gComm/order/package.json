@@ -36,6 +36,7 @@
             "router": true,
             "publish": false,
             "web": false
-        }
+        },
+        "displayName": "Order"
     }
 }

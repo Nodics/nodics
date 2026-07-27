@@ -21,10 +21,21 @@ module.exports = {
         providers: {
             openAi: {
                 enabled: false,
-                secretReference: undefined,
+                secretReference: 'env://OPENAI_API_KEY',
                 baseUrl: 'https://api.openai.com/v1',
                 timeoutMs: 30000,
                 maximumResponseBytes: 1048576
+            }
+        },
+        pricing: {
+            models: {
+                'openAi:gpt-5-mini': {
+                    revision: 'openai-public-rate-2026-07-25',
+                    currencyCode: 'USD',
+                    inputPerMillion: '0.25000000',
+                    cachedInputPerMillion: '0.02500000',
+                    outputPerMillion: '2.00000000'
+                }
             }
         }
     }

@@ -17,6 +17,11 @@
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {
+    // Local uses concise logs by default. Individual servers override this
+    // only when their acceptance workflow requires debug detail.
+    log: {
+        level: 'info'
+    },
     // Local-only sample credentials keep the startio developer environment runnable.
     // Real deployments must override these values through governed secret configuration.
     defaultAuthDetail: {
@@ -82,8 +87,7 @@ module.exports = {
     },
     profileBrowserSession: {
         enabled: true,
-        secure: false,
-        sameSite: 'Strict'
+        secure: false
     },
     authSecurity: {
         jwt: {
@@ -110,50 +114,14 @@ module.exports = {
             requireDistributedCache: false
         }
     },
+    // Local acceptance enables governed Assistant tools. Reusable Startio
+    // application defaults and provider definitions remain module-owned.
     aiAssistant: {
-        enabled: true
-    },
-    aiProviders: {
-        enabled: true,
-        profiles: {
-            assistantGeneration: {
-                capability: 'GENERATION',
-                provider: 'openAi',
-                model: 'gpt-5-mini',
-                fallbackProviders: []
-            }
-        },
-        providers: {
-            openAi: {
-                enabled: true,
-                secretReference: 'env://OPENAI_API_KEY'
-            }
-        },
-        tokenOptimization: {
-            profiles: {
-                assistantGeneration: {
-                    maximumInputTokens: 24000,
-                    maximumOutputTokens: 512,
-                    minimumReservedOutputTokens: 128,
-                    maximumEstimatedCost: '0.01000000',
-                    currencyCode: 'USD'
-                }
-            }
-        },
-        pricing: {
-            models: {
-                'openAi:gpt-5-mini': {
-                    revision: 'openai-public-rate-2026-07-25',
-                    currencyCode: 'USD',
-                    inputPerMillion: '0.25000000',
-                    cachedInputPerMillion: '0.02500000',
-                    outputPerMillion: '2.00000000'
-                }
-            }
+        tools: {
+            enabled: true
         }
     },
     cache: {
-        enabled: true,
         default: {
             channels: {
                 router: {

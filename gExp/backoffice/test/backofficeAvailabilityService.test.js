@@ -81,6 +81,13 @@ async function run() {
     response = new Error('connection refused');
     observed = await service.observe(registration('two'));
     assert.strictEqual(observed.state, 'UNAVAILABLE');
+    assert.deepStrictEqual(service.getInstanceAvailability('two'), {
+        state: 'UNAVAILABLE', freshness: 'FRESH', observedAt: observed.observedAt,
+        reasonCode: 'HEALTH_OBSERVATION_FAILED'
+    }, 'authorized operational projection must expose only bounded readiness evidence');
+    assert.deepStrictEqual(service.getInstanceAvailability('never-observed'), {
+        state: 'UNKNOWN', freshness: 'MISSING', reasonCode: 'OBSERVATION_MISSING'
+    });
     let aggregate = service.getModuleAvailability([{ instanceId: 'one' }, { instanceId: 'two' }]);
     assert.deepStrictEqual(aggregate, { state: 'DEGRADED', activeInstances: 2, healthyInstances: 1,
         unavailableInstances: 1, unknownInstances: 0 });
@@ -88,6 +95,10 @@ async function run() {
     assert.strictEqual(service.getModuleAvailability([{ instanceId: 'missing' }]).state, 'UNKNOWN');
 
     service._observations.get('one').observedAt = new Date(Date.now() - 6000).toISOString();
+    assert.deepStrictEqual(service.getInstanceAvailability('one'), {
+        state: 'UNKNOWN', freshness: 'STALE', observedAt: service._observations.get('one').observedAt,
+        reasonCode: 'OBSERVATION_STALE'
+    });
     assert.strictEqual(service.getModuleAvailability([{ instanceId: 'one' }, { instanceId: 'two' }]).state, 'UNKNOWN');
     response = { data: { status: 'UP' } };
     assert.strictEqual(await service.scheduleObservation(registration('two')), false, 'fresh observations must suppress duplicate polling');
@@ -98,7 +109,7 @@ async function run() {
     await service.observe(registration('timeout'));
     assert.strictEqual(service.getDiagnostics().metrics.timeouts, 1);
     assert.strictEqual(service.getDiagnostics().metrics.suppressedRefreshes, 1);
-    assert.strictEqual(service.getDiagnostics().metrics.staleReads, 1);
+    assert.strictEqual(service.getDiagnostics().metrics.staleReads, 2);
     assert.strictEqual(service.getDiagnostics().metrics.publicationSuccesses, 4);
     assert(service.getDiagnostics().metrics.totalDurationMs >= service.getDiagnostics().metrics.maxDurationMs);
     response = { data: { status: 'UP' } };

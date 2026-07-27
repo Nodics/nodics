@@ -38,6 +38,7 @@ function packageJson(name, kind, owns, extra) {
         dependencies: {},
         nodics: {
             kind: kind,
+            displayName: name + ' Fixture',
             runtimeModule: true,
             loadableByNodicsModuleLoader: true,
             owns: owns || ['configuration', 'llm'],

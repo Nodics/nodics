@@ -99,6 +99,12 @@ instances, but no private per-instance diagnostic payload. UI-composition
 selection accepts only an `UP` or `DEGRADED` provider; otherwise bootstrap uses
 the static recovery-shell fallback.
 
+The secured administrative detail route may project an active instance's
+normalized state, freshness, observation time, and stable reason together with
+its already-approved environment/server/node coordinates. This is the same
+observation used by aggregation, not another probe or health authority. Raw
+responses and provider diagnostics remain excluded.
+
 ## Lifecycle and diagnostics
 
 Observations disappear after the final lease for a runtime instance is removed

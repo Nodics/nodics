@@ -17,5 +17,21 @@
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {
-
+    aiAssistant: {
+        enabled: true
+    },
+    aiKnowledge: {
+        enabled: true
+    },
+    aiProviders: {
+        tokenOptimization: {
+            profiles: {
+                assistantGeneration: {
+                    maximumOutputTokens: 512,
+                    minimumReservedOutputTokens: 128,
+                    maximumEstimatedCost: '0.01000000'
+                }
+            }
+        }
+    }
 };

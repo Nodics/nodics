@@ -143,6 +143,8 @@ module.exports = {
             'runtime.config.cleanup.preview',
             'runtime.config.cleanup.execute',
             'backoffice.registry.view',
+            'backoffice.registry.admin.view',
+            'backoffice.registry.refresh',
             'backoffice.bootstrap.view',
             'backoffice.axis.policy.view',
             'backoffice.axis.policy.update',

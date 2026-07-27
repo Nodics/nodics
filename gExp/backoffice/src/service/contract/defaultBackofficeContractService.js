@@ -141,10 +141,19 @@ module.exports = {
     /** Validates one module registration against the bounded API contract. */
     validateRegistration: function (registration) {
         if (!registration || typeof registration !== 'object' || Array.isArray(registration)) return false;
-        let allowed = ['moduleName', 'instanceId', 'version', 'moduleKind', 'capabilities', 'clientCallable', 'endpoint',
+        let allowed = ['moduleName', 'displayName', 'parentModule', 'canonicalIdentity', 'instanceId', 'version',
+            'moduleKind', 'capabilities', 'clientCallable', 'endpoint',
             'healthPath', 'leaseTtlMs', 'runtime', 'backoffice'];
         return !Object.keys(registration).some(key => !allowed.includes(key)) &&
             contracts.moduleName.pattern && new RegExp(contracts.moduleName.pattern).test(registration.moduleName || '') &&
+            this.isString(registration.displayName, 160) &&
+            (registration.parentModule === undefined ||
+                registration.parentModule !== registration.moduleName &&
+                new RegExp(contracts.moduleName.pattern).test(registration.parentModule)) &&
+            this.isString(registration.canonicalIdentity, 2048) &&
+            registration.canonicalIdentity.split('/').every(segment =>
+                new RegExp(contracts.moduleName.pattern).test(segment)) &&
+            registration.canonicalIdentity.split('/').slice(-1)[0] === registration.moduleName &&
             this.isString(registration.instanceId, 512) && typeof registration.clientCallable === 'boolean' &&
             (registration.healthPath === undefined || this.isString(registration.healthPath, 512) &&
                 registration.healthPath.startsWith('/') && !registration.healthPath.startsWith('//')) &&
@@ -166,6 +175,7 @@ module.exports = {
             (batch.server === undefined || this.isString(batch.server)) &&
             (batch.node === undefined || batch.node === null || this.isString(batch.node)) &&
             new Set(moduleNames).size === moduleNames.length && batch.registrations.every(registration =>
-                registration.instanceId === batch.instanceId && this.validateRegistration(registration));
+                registration.instanceId === batch.instanceId &&
+                this.validateRegistration(registration));
     }
 };

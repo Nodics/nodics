@@ -260,14 +260,21 @@ module.exports = {
     },
     /** Returns one fresh instance state, treating missing or stale observations as unknown. */
     getInstanceState: function (instanceId) {
+        return this.getInstanceAvailability(instanceId).state;
+    },
+    /** Projects one sanitized readiness observation for an authorized operational client. */
+    getInstanceAvailability: function (instanceId) {
         let observation = this._observations.get(String(instanceId || ''));
-        if (!observation) return 'UNKNOWN';
+        if (!observation) return { state: 'UNKNOWN', freshness: 'MISSING', reasonCode: 'OBSERVATION_MISSING' };
         let staleAfterMs = Math.max(1, Number(this.getConfiguration().staleAfterMs || 30000));
         if (Date.now() - Date.parse(observation.observedAt) > staleAfterMs) {
             this._metrics.staleReads++;
-            return 'UNKNOWN';
+            return { state: 'UNKNOWN', freshness: 'STALE', observedAt: observation.observedAt,
+                reasonCode: 'OBSERVATION_STALE' };
         }
-        return observation.state;
+        let result = { state: observation.state, freshness: 'FRESH', observedAt: observation.observedAt };
+        if (observation.failureCode) result.reasonCode = observation.failureCode;
+        return result;
     },
     /** Aggregates module state across currently valid observed runtime instances. */
     getModuleAvailability: function (instances) {

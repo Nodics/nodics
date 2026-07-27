@@ -41,9 +41,6 @@ module.exports = {
     emsClient: {
         logFailedMessages: true,
         clients: {
-            activemq: {
-                enabled: false
-            },
             kafka: {
                 enabled: true,
                 connectionOptions: {
@@ -55,9 +52,6 @@ module.exports = {
 
     servers: {
         default: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3010,
@@ -84,9 +78,6 @@ module.exports = {
         },
 
         profile: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3000,
@@ -113,9 +104,6 @@ module.exports = {
         },
 
         nems: {
-            options: {
-                contextRoot: 'nodics'
-            },
             endpoint: {
                 httpHost: 'localhost',
                 httpPort: 3004,
