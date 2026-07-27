@@ -36,8 +36,8 @@
 | --- | ---: |
 | Source files | 32 |
 | Test files | 22 |
-| Data files | 8 |
-| All module-owned files | 62 |
+| Data files | 10 |
+| All module-owned files | 64 |
 | Local schema definitions | 8 |
 
 ## Ownership And Dependencies
@@ -74,7 +74,7 @@
 | Documented | 39 |
 | Partially documented | 18 |
 | Undocumented | 1 |
-| Inventory only | 4 |
+| Inventory only | 6 |
 
 ## Important Files
 
@@ -101,12 +101,14 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gAi/aiAssistant/config/properties.js` | `config` | `documented` | 0/0 | Defines fail-closed, layered defaults for provider-neutral Assistant behavior. |  |
 | `gAi/aiAssistant/data/core/data/jobs/defaultAiAssistantJobsData.js` | `data` | `documented` | 0/0 | Contributes the inactive OOTB Assistant abandoned-turn recovery schedule. |  |
 | `gAi/aiAssistant/data/core/headers/jobs/defaultAiAssistantJobsHeader.js` | `data` | `documented` | 0/0 | Imports inactive Assistant maintenance schedules through the existing CronJob schema authority. |  |
+| `gAi/aiAssistant/data/core/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gAi/aiAssistant/data/init/data/assistant/defaultAssistantDefinitionData.js` | `data` | `documented` | 0/0 | Defines the OOTB employee Assistant using only provider-profile, prompt, and Knowledge corpus references. |  |
 | `gAi/aiAssistant/data/init/data/assistant/defaultAssistantPromptDefinitionData.js` | `data` | `documented` | 0/0 | Defines the approved Axis Assistant prompt for governed answers, reads, and confirmed proposals. |  |
 | `gAi/aiAssistant/data/init/data/assistant/defaultAssistantToolPolicyData.js` | `data` | `documented` | 0/0 | Defines the inactive OOTB allowlist for governed employee reads and confirmed enterprise creation. |  |
 | `gAi/aiAssistant/data/init/headers/assistant/defaultAssistantDefinitionHeader.js` | `data` | `partially-documented` | 0/0 | Imports the OOTB Axis Assistant definition through its generated schema service. | add @override |
 | `gAi/aiAssistant/data/init/headers/assistant/defaultAssistantPromptDefinitionHeader.js` | `data` | `partially-documented` | 0/0 | Imports the approved versioned Assistant prompt through its generated schema service. | add @override |
 | `gAi/aiAssistant/data/init/headers/assistant/defaultAssistantToolPolicyHeader.js` | `data` | `partially-documented` | 0/0 | Imports the OOTB deny-by-default Assistant tool policy through its generated schema service. | add @override |
+| `gAi/aiAssistant/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gAi/aiAssistant/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gAi/aiAssistant/nodics.js` | `module` | `documented` | 2/2 | Generated Nodics lifecycle entrypoint for aiAssistant. |  |
 | `gAi/aiAssistant/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

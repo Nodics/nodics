@@ -1,0 +1,11 @@
+{
+    "contractVersion": 1,
+    "module": "catalog",
+    "dataType": "sample",
+    "version": "1.0.0",
+    "description": "Catalog Framework sample data",
+    "files": {
+        "data/samples/defaultSamplesCatalogData.js": "8bb2864e94338d05332dd53297efa71ea85ec0368ea5638c5af8f8623c76ab89",
+        "headers/samples/defaultSamplesCatalogHeader.js": "12d141d73f89e12a6b9236cb5af83b0587ada4514bc9dc6bef69cbf3529b46fd"
+    }
+}

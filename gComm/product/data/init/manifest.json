@@ -1,0 +1,15 @@
+{
+    "contractVersion": 1,
+    "module": "product",
+    "dataType": "init",
+    "version": "1.0.0",
+    "description": "Product init data",
+    "files": {
+        "data/publication/defaultProductPublicationWorkflowActionData.js": "f1cd3d341896fce88dda586b381c3c2c07155966c2db38f9125c27d95cc26630",
+        "data/publication/defaultProductPublicationWorkflowChannelData.js": "543374d4353b1d483d02fac0fe4114543147ffd7d652b7632ac2b6e2dc1433a1",
+        "data/publication/defaultProductPublicationWorkflowHeadData.js": "45075c4dcaa1761816127d8de347f2b47e35c51abe0f8fb6d539b9c269ef557c",
+        "headers/publication/defaultProductPublicationWorkflowActionHeader.js": "38773cf850dea185d55c0e7d263d5a23f6a23986f1e3da19c7eebbcc1769400f",
+        "headers/publication/defaultProductPublicationWorkflowChannelHeader.js": "3528802d2ff271b20b823c0063e33f1df75a05dea34cd290615fd3cb69e2ccc1",
+        "headers/publication/defaultProductPublicationWorkflowHeadHeader.js": "41dbaaaf36536d01f39516d4d184077c6ae1733116bbc39da68838b8ca7e2346"
+    }
+}

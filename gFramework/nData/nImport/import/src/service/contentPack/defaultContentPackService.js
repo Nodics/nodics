@@ -30,10 +30,12 @@ module.exports = {
     activeImports: new Map(),
     recentCompletions: new Map(),
 
+    /** Initializes content-pack state. */
     init: function () {
         return Promise.resolve(true);
     },
 
+    /** Completes content-pack service initialization. */
     postInit: function () {
         return Promise.resolve(true);
     },
@@ -165,6 +167,7 @@ module.exports = {
         });
     },
 
+    /** Resolves effective configured source and policy for a pack. */
     resolvePackContext: function (packCode) {
         let data = CONFIG.get('data') || {};
         let configuration = data.contentPacks || {};
@@ -181,6 +184,7 @@ module.exports = {
         };
     },
 
+    /** Inspects and validates the available immutable pack release. */
     inspectRelease: function (context) {
         if (!context.enabled) {
             return { available: false };
@@ -212,6 +216,7 @@ module.exports = {
         }
     },
 
+    /** Resolves a bounded configured sibling repository path. */
     resolveRepositoryPath: function (source) {
         if (source.type !== 'LOCAL_SIBLING') {
             throw this.createError('ERR_IMP_00003', 'Content-pack source type is unsupported');
@@ -229,6 +234,7 @@ module.exports = {
         return repositoryPath;
     },
 
+    /** Resolves a contained source path without traversal. */
     resolveContainedPath: function (rootPath, relativePath, label) {
         if (!relativePath || path.isAbsolute(relativePath)) {
             throw this.createError('ERR_IMP_00003', 'Content-pack ' + label + ' path is invalid');
@@ -240,6 +246,7 @@ module.exports = {
         return resolved;
     },
 
+    /** Validates manifest identity, contract, files, and hashes. */
     validateManifest: function (context, manifest, repositoryPath) {
         let allowedVersions = context.configuration.allowedContractVersions || [1];
         if (manifest.pack !== context.pack.manifestPack ||
@@ -261,12 +268,14 @@ module.exports = {
         });
     },
 
+    /** Creates the deterministic aggregate release checksum. */
     createReleaseChecksum: function (generatedHashes) {
         let value = Object.keys(generatedHashes).sort()
             .map(fileName => fileName + ':' + generatedHashes[fileName]).join('|');
         return crypto.createHash('sha256').update(value).digest('hex');
     },
 
+    /** Copies a validated immutable release into server-owned staging. */
     prepareStaging: function (context, release, runId) {
         let directory = context.configuration.stagingDirectory || 'import/content-packs';
         let rootPath = path.resolve(
@@ -285,6 +294,7 @@ module.exports = {
         return { rootPath: rootPath, inputPath: inputPath, outputPath: outputPath };
     },
 
+    /** Finds the installed release from authoritative import history. */
     findInstalledRelease: function (tenant, packCode) {
         let historyService = SERVICE.DefaultImportRunHistoryService;
         if (!historyService || typeof historyService.getImportRunService !== 'function') {
@@ -330,6 +340,7 @@ module.exports = {
         }, undefined);
     },
 
+    /** Enforces content-pack downgrade and checksum policy. */
     validateUpdatePolicy: function (context, release, installedRelease) {
         if (!installedRelease) return;
         let policy = context.pack.updatePolicy || {};
@@ -345,6 +356,7 @@ module.exports = {
         }
     },
 
+    /** Compares dotted numeric release versions. */
     compareVersions: function (left, right) {
         let leftParts = String(left || '').split('.').map(value => Number(value) || 0);
         let rightParts = String(right || '').split('.').map(value => Number(value) || 0);
@@ -356,6 +368,7 @@ module.exports = {
         return 0;
     },
 
+    /** Builds the client-safe installation and availability response. */
     buildStatusData: function (context, availableRelease, installedRelease, activeRun) {
         let state = 'NOT_INSTALLED';
         if (!context.enabled) state = 'DISABLED';
@@ -384,24 +397,29 @@ module.exports = {
         };
     },
 
+    /** Resolves and validates the route pack code. */
     resolvePackCode: function (request) {
         return request && (request.packCode ||
             request.httpRequest && request.httpRequest.params && request.httpRequest.params.packCode);
     },
 
+    /** Resolves trusted tenant context. */
     resolveTenant: function (request) {
         return request && request.tenant || CONFIG.get('defaultTenant') || 'default';
     },
 
+    /** Creates a process-local tenant and pack execution key. */
     createTenantPackKey: function (tenant, packCode) {
         return tenant + ':' + packCode;
     },
 
+    /** Creates a unique content-pack import run identifier. */
     createRunId: function (packCode) {
         return 'contentPack_' + packCode + '_' + Date.now() + '_' +
             crypto.randomBytes(6).toString('hex');
     },
 
+    /** Creates a stable sanitized import error. */
     createError: function (code, message) {
         if (typeof CLASSES !== 'undefined' && CLASSES.DataImportError) {
             return new CLASSES.DataImportError(code, message);

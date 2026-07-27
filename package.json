@@ -67,6 +67,7 @@
         "llm:clean": "node gFramework/nTooling/bin/nodics-tool.js llm:clean",
         "llm:validate": "node gFramework/nTooling/bin/nodics-tool.js llm:validate",
         "module:metadata": "node gFramework/nTooling/bin/nodics-tool.js module:metadata",
+        "data:manifests": "node scripts/generate-data-release-manifests.js",
         "governance:report": "node gFramework/nTooling/bin/nodics-tool.js governance:report",
         "ai:validate": "node gFramework/nTooling/bin/nodics-tool.js ai:validate",
         "ai:principle-audit": "node gFramework/nTooling/bin/nodics-tool.js ai:principle-audit",

@@ -18,6 +18,33 @@
  */
 module.exports = {
     import: {
+        dataInstallation: {
+            model: true,
+            service: {
+                enabled: true
+            },
+            event: {
+                enabled: false
+            },
+            router: {
+                enabled: false
+            },
+            tenants: ['default'],
+            definition: {
+                tenant: { type: 'string', required: true, description: 'Tenant owning the installed release state' },
+                environment: { type: 'string', required: true, description: 'Environment where the release was installed' },
+                moduleName: { type: 'string', required: true, description: 'Active module owning the data release' },
+                dataType: { type: 'string', required: true, description: 'Release type: init, core, or sample' },
+                version: { type: 'string', required: false, description: 'Installed immutable release version' },
+                checksum: { type: 'string', required: false, description: 'Installed immutable release checksum' },
+                availableVersion: { type: 'string', required: false, description: 'Release version used by the latest attempt' },
+                availableChecksum: { type: 'string', required: false, description: 'Release checksum used by the latest attempt' },
+                runId: { type: 'string', required: false, description: 'Successful import run that installed the release' },
+                status: { type: 'string', required: true, description: 'Current installation projection status' },
+                installedAt: { type: 'string', required: false, description: 'Successful installation timestamp' },
+                lastAttemptAt: { type: 'string', required: true, description: 'Latest governed installation attempt timestamp' }
+            }
+        },
         importRun: {
             super: 'base',
             model: true,
@@ -56,6 +83,11 @@ module.exports = {
                     type: 'array',
                     required: false,
                     description: 'Modules requested for the import run'
+                },
+                dataReleases: {
+                    type: 'array',
+                    required: false,
+                    description: 'Immutable module release identities validated for this run'
                 },
                 requestedBy: {
                     type: 'string',

@@ -1,0 +1,33 @@
+{
+    "contractVersion": 1,
+    "module": "flowCore",
+    "dataType": "sample",
+    "version": "1.0.0",
+    "description": "Workflow Core sample data",
+    "files": {
+        "data/auto/sampleAutoWorkflowActionData.js": "d17750ff29c3055d59b48ed5388f8b6a5733d7f87f460f399c41a893451917d0",
+        "data/auto/sampleAutoWorkflowChannelData.js": "dc3a6aa9f7313b1233909d8cb52b41424515bd053937824f224c6e46513a8adc",
+        "data/auto/sampleAutoWorkflowHeadData.js": "f9a37234ac15816edd5c02c80579f2c0d73e4af102bb52222aa958419e6f457e",
+        "data/manual/sampleManualWorkflowActionData.js": "bae129d4de1fb6159f90d4ad67ff6fba24e1aaea029a88d58515eafb94667c3f",
+        "data/manual/sampleManualWorkflowChannelData.js": "9578659e28d699d88ebc2b27aebbf7f5acf329c3106ca5af55566369d626341c",
+        "data/manual/sampleManualWorkflowHeadData.js": "7857e22fb5c5356924ab3ecb6cd4147686c7bea279ffd69570a357e84a227777",
+        "data/mixed/sampleMixWorkflowActionData.js": "96c1de8cb29be989445dbb8388869417b281964302b944c79c05d3ae36be39db",
+        "data/mixed/sampleMixWorkflowChannelData.js": "0aae2d222261346d50a69960ad930e5fe53c2893842ccfa7f150492faecd4059",
+        "data/mixed/sampleMixWorkflowHeadData.js": "6a7c228677ec17a980485333d5bfb16453b936339c3a7313a3192341090e9960",
+        "data/multi/sampleMultiWorkflowActionData.js": "f9356fe5604e1431c42ed1fa88fbb5f53766e97bff4a718455a39db5f75f83f5",
+        "data/multi/sampleMultiWorkflowChannelData.js": "be3459eefbe62d5aa2facf204a8df3730a3b1026e34011c42cff37432929350c",
+        "data/multi/sampleMultiWorkflowHeadData.js": "f6a8490534c014a488c7975f53eb1115e7299b90388e2f69ea79812196d50374",
+        "headers/auto/sampleAutoWorkflowActionHeader.js": "742f92cf032cba7d94b449d6e714b7c9a78d200345cc04d8e24d8ab732d5245b",
+        "headers/auto/sampleAutoWorkflowChannelHeader.js": "32e30b856e0d4dfc81c1757fea4bcbeb1083eb5d3a0b3d33cc700a6a0b39c37c",
+        "headers/auto/sampleAutoWorkflowHeadHeader.js": "e17b420bec0d7d0118cdb7c8a5eaa7314a32b45cfbb9ce36cab0a4f48b7f090b",
+        "headers/manual/sampleManualWorkflowActionHeader.js": "afcb3f1fe2476510ebadd9ad36269f0edbe1ded21781cb3e2585375d0033852b",
+        "headers/manual/sampleManualWorkflowChannelHeader.js": "2cf06b0d3b8d0d85f7e23659c3ff6c6b339aaedc7dd81514e48bcf7b5e58fff1",
+        "headers/manual/sampleManualWorkflowHeadHeader.js": "fdcfd596b3e1bbe604ff0f286e22d930367c674f1e85d5c348b7ff5b6b807979",
+        "headers/mixed/sampleMixWorkflowActionHeader.js": "f25de59438499c9211a814cdb233d47280257539fb3f59c00277be642d28da79",
+        "headers/mixed/sampleMixWorkflowChannelHeader.js": "7dcdd51b74a8c20dcd604192b2785ab264754900d533acb80a347822d7923b51",
+        "headers/mixed/sampleMixWorkflowHeadHeader.js": "603bb95b2f1419d6ac3d706906b1c1936bf6a4ee104e4b545a89cbe2b491a804",
+        "headers/multi/sampleMultiWorkflowActionHeader.js": "bf70639defc78e9b2c0ccc05669f36841c0956d3676fb192dec9325aeac4b951",
+        "headers/multi/sampleMultiWorkflowChannelHeader.js": "ca3c9204342ee452eb92f60fe4db1f50dabfa14b78a12f4ede758cf1d3838a5b",
+        "headers/multi/sampleMultiWorkflowHeadHeader.js": "fce8ffe5d9e73ebce3d2fb772a65f9fc3f6688f02f291ec2df1beb3874c87644"
+    }
+}

@@ -34,8 +34,8 @@
 | --- | ---: |
 | Source files | 13 |
 | Test files | 7 |
-| Data files | 2 |
-| All module-owned files | 25 |
+| Data files | 3 |
+| All module-owned files | 26 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -70,7 +70,7 @@
 | Documented | 19 |
 | Partially documented | 2 |
 | Undocumented | 0 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -97,6 +97,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/nems/config/properties.js` | `config` | `documented` | 0/0 | NEMS properties for event fetch/reset behavior, publish node selection, and module naming. |  |
 | `gCore/nems/data/core/data/job/defaultEventPublishingJobData.js` | `data` | `documented` | 0/0 | Core initializer data for the cronjob that periodically processes asynchronous NEMS events. |  |
 | `gCore/nems/data/core/headers/job/defaultEventPublishingJobHeader.js` | `data` | `documented` | 0/0 | Import header for saving the default asynchronous event publishing cronjob. |  |
+| `gCore/nems/data/core/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/nems/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/nems/nodics.js` | `module` | `documented` | 2/2 | NEMS module lifecycle entrypoint for event persistence, splitting, processing, and dispatch. |  |
 | `gCore/nems/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

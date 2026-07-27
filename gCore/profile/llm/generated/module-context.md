@@ -36,8 +36,8 @@
 | --- | ---: |
 | Source files | 53 |
 | Test files | 49 |
-| Data files | 15 |
-| All module-owned files | 93 |
+| Data files | 16 |
+| All module-owned files | 94 |
 | Local schema definitions | 11 |
 
 ## Ownership And Dependencies
@@ -71,10 +71,10 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 76 |
-| Partially documented | 4 |
+| Documented | 77 |
+| Partially documented | 3 |
 | Undocumented | 9 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -114,6 +114,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/data/init/headers/enterprise/defaultTenantsHeader.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
 | `gCore/profile/data/init/headers/groups/defaultUserGroupsHeader.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
 | `gCore/profile/data/init/headers/user/defaultUsersHeader.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
+| `gCore/profile/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/profile/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/profile/nodics.js` | `module` | `documented` | 2/2 | Registers the profile module lifecycle hooks and module-level startup behavior. |  |
 | `gCore/profile/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
@@ -138,7 +139,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/src/search/indexes.js` | `src` | `documented` | 0/0 | Documents profile indexes module behavior. |  |
 | `gCore/profile/src/service/authentication/defaultAuthenticationProviderService.js` | `src` | `documented` | 10/10 | Implements profile default authentication provider service business behavior and extension logic. |  |
 | `gCore/profile/src/service/authentication/defaultAuthenticationService.js` | `src` | `documented` | 0/0 | Implements profile default authentication service business behavior and extension logic. |  |
-| `gCore/profile/src/service/authentication/defaultBrowserSessionService.js` | `src` | `partially-documented` | 1/12 | Owns Profile browser refresh cookies, CSRF validation, rotation, and logout. | add JSDoc for 11 exported method(s) |
+| `gCore/profile/src/service/authentication/defaultBrowserSessionService.js` | `src` | `documented` | 12/12 | Owns Profile browser refresh cookies, CSRF validation, rotation, and logout. |  |
 | `gCore/profile/src/service/authentication/defaultInternalAuthenticationProviderService.js` | `src` | `documented` | 1/1 | Implements profile default internal authentication provider service business behavior and extension logic. |  |
 | `gCore/profile/src/service/authorization/defaultAuthorizationProviderService.js` | `src` | `documented` | 0/0 | Implements profile default authorization provider service business behavior and extension logic. |  |
 | `gCore/profile/src/service/customer/defaultCustomerRegistrationService.js` | `src` | `documented` | 6/6 | Implements profile default customer registration service business behavior and extension logic. |  |

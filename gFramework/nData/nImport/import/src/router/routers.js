@@ -18,10 +18,67 @@
  */
 module.exports = {
     import: {
+        dataReleases: {
+            catalogue: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'import.release.view',
+                permissions: ['import.core.run'],
+                apiExposure: 'dataImport',
+                key: '/data-releases',
+                method: 'GET',
+                controller: 'DefaultDataReleaseController',
+                operation: 'getCatalogue'
+            },
+            preflight: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'import.release.validate',
+                permissions: ['import.core.run'],
+                apiExposure: 'dataImport',
+                key: '/data-releases/preflight',
+                method: 'POST',
+                controller: 'DefaultDataReleaseController',
+                operation: 'preflight'
+            },
+            executeInit: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'import.init.run',
+                apiExposure: 'dataImport',
+                key: '/data-releases/init/imports',
+                method: 'POST',
+                controller: 'DefaultDataReleaseController',
+                operation: 'executeInit'
+            },
+            executeCore: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'import.core.run',
+                apiExposure: 'dataImport',
+                key: '/data-releases/core/imports',
+                method: 'POST',
+                controller: 'DefaultDataReleaseController',
+                operation: 'executeCore'
+            },
+            executeSample: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'import.sample.run',
+                apiExposure: 'dataImport',
+                key: '/data-releases/sample/imports',
+                method: 'POST',
+                controller: 'DefaultDataReleaseController',
+                operation: 'executeSample'
+            }
+        },
         importRunHistory: {
             getImportRunHistory: {
                 secured: true,
                 accessGroups: ['userGroup'],
+                permission: 'import.history.view',
+                permissions: ['import.core.run'],
+                apiExposure: 'dataImport',
                 key: '/run/history',
                 method: 'GET',
                 controller: 'DefaultImportRunHistoryController',
@@ -45,6 +102,9 @@ module.exports = {
             getImportRun: {
                 secured: true,
                 accessGroups: ['userGroup'],
+                permission: 'import.history.detail.view',
+                permissions: ['import.core.run'],
+                apiExposure: 'dataImport',
                 key: '/run/history/:runId',
                 method: 'GET',
                 controller: 'DefaultImportRunHistoryController',

@@ -33,8 +33,8 @@
 | --- | ---: |
 | Source files | 16 |
 | Test files | 7 |
-| Data files | 2 |
-| All module-owned files | 29 |
+| Data files | 3 |
+| All module-owned files | 30 |
 | Local schema definitions | 1 |
 
 ## Ownership And Dependencies
@@ -68,7 +68,7 @@
 | Documented | 23 |
 | Partially documented | 2 |
 | Undocumented | 0 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -95,6 +95,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nValidator/config/properties.js` | `config` | `documented` | 0/0 | Defines default nValidator configuration used during module startup and layering. |  |
 | `gFramework/nValidator/data/init/data/validator/defaultSampleValidatorData.js` | `data` | `documented` | 0/0 | Provides nValidator initializer or sample data consumed by the import layer. |  |
 | `gFramework/nValidator/data/init/headers/validator/defaultSampleValidatorHeader.js` | `data` | `documented` | 0/0 | Provides nValidator initializer or sample data consumed by the import layer. |  |
+| `gFramework/nValidator/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nValidator/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nValidator/nodics.js` | `module` | `documented` | 2/2 | Registers the nValidator module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nValidator/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

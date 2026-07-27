@@ -1,0 +1,13 @@
+{
+    "contractVersion": 1,
+    "module": "aiKnowledge",
+    "dataType": "init",
+    "version": "1.0.0",
+    "description": "AI Knowledge init data",
+    "files": {
+        "data/knowledge/defaultKnowledgeCorpusData.js": "21797dbfa45010d9896f73e14285aeaea23748bd583c375a2af46686e88bce4a",
+        "data/knowledge/defaultKnowledgeSourceData.js": "a53f5080245c1a337b6efab7dbe68bec3d811d595c05893765a633a6610545ee",
+        "headers/knowledge/defaultKnowledgeCorpusHeader.js": "f3b0b9760d08f87bc17e6986f6acb30a321635fc2bb87bb0308fba655c6f7f3b",
+        "headers/knowledge/defaultKnowledgeSourceHeader.js": "16dd194e46f5c04cbe375ba071784faa83f0c6ca31b1895fcff3a43692f42cf4"
+    }
+}

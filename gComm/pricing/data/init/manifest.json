@@ -1,0 +1,15 @@
+{
+    "contractVersion": 1,
+    "module": "pricing",
+    "dataType": "init",
+    "version": "1.0.0",
+    "description": "Pricing init data",
+    "files": {
+        "data/publication/defaultPricingPublicationWorkflowActionData.js": "a7b51472a3bf612b3a3f9cffe15b3efdd3b7582965f000e66dec327dfbb4742c",
+        "data/publication/defaultPricingPublicationWorkflowChannelData.js": "a148312e1a9e216a997205df36cb7803ef0479826aad8fdbffb43bbf72c21a2d",
+        "data/publication/defaultPricingPublicationWorkflowHeadData.js": "668e3e03d90e4fd511de21641446760674840055411c22a7b469e06f6f8ea78a",
+        "headers/publication/defaultPricingPublicationWorkflowActionHeader.js": "342cf1adbd20671b83fde0760ce9c218fb8e34b64e13c91827186abf4d548d1a",
+        "headers/publication/defaultPricingPublicationWorkflowChannelHeader.js": "21142e26fd711267d6f655d933b78d54cd710bc7008996ccec7b94039c679813",
+        "headers/publication/defaultPricingPublicationWorkflowHeadHeader.js": "f5b6c0c0dbf31ea124ab90055db7f6a397d4b9b4d7cca17d3b768ae61bcf60e5"
+    }
+}

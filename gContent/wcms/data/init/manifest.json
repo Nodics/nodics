@@ -1,0 +1,25 @@
+{
+    "contractVersion": 1,
+    "module": "wcms",
+    "dataType": "init",
+    "version": "1.0.0",
+    "description": "Web Content Management init data",
+    "files": {
+        "data/components/defaultCmsComponentWorkflowActionData.js": "6c7e7bb1701092db7ffa69bddf730adf8aaddc0446bed93693ccbe1de408967b",
+        "data/components/defaultCmsComponentWorkflowChannelData.js": "50764e4178821438ce698e47c41ec68acb1de0801414d1cc9058cabdf93dc8a1",
+        "data/components/defaultCmsComponentWorkflowHeadData.js": "57879155968e9123142c9d5f70c5421f7fded4f14ce5adf8b8d3879ffdb23689",
+        "data/pages/defaultCmsPageWorkflowActionData.js": "2998cf7f4a686458f9e13914f5b6803b36b96e69b21288ce6af2948ba70dd6cc",
+        "data/pages/defaultCmsPageWorkflowChannelData.js": "2ae75a6e0274839fd8af069b5e90f186026e92ccd352fb704ca64f664a4daa94",
+        "data/pages/defaultCmsPageWorkflowHeadData.js": "48ba641c58d141d3f39aaa255b5438d1a974732202f06a60fbd3ed77bd723dce",
+        "data/schema2Workflow/defaultCmsComponent2WorkflowData.js": "94684ea434f1e5302d4a4f63d7ce63cd140f6b967294619b8d7249d3a65bf301",
+        "data/schema2Workflow/defaultCmsPage2WorkflowData.js": "c1b615c04287659910a2326d4921b32d09cf644ec361ca8fb64b83d32770124f",
+        "headers/components/defaultCmsComponentWorkflowActionHeader.js": "faa94080ad5e6350c245b8d99f110176415c9992778d99750c13caf6d25e2919",
+        "headers/components/defaultCmsComponentWorkflowChannelHeader.js": "41fc3c90a06b661135c7f4d1cc097a307351d942a0af7249958df7362290f638",
+        "headers/components/defaultCmsComponentWorkflowHeadHeader.js": "a819a4c4ff8890575ff95bde5269bc99e39f3e029f1becf74b30501cad63042e",
+        "headers/pages/defaultCmsPageWorkflowActionHeader.js": "a31e925a3e47f363a7779602f0c5df35f4e5304f1df944762b67f03d3127f90f",
+        "headers/pages/defaultCmsPageWorkflowChannelHeader.js": "573d396aff5dbda154a3a216f039cb49701d90ff1b1a6004b67a05c5e7d7ca03",
+        "headers/pages/defaultCmsPageWorkflowHeadHeader.js": "599ea98cb9df9ac8f8f5fdcbd417aea1b7068ad47693d70db15a0cc9b5715063",
+        "headers/schema2Workflow/defaultCmsComponent2Workflow.js": "75e73ae978724de85740d53516778cb756ccc97e882211654006505be9af5ba7",
+        "headers/schema2Workflow/defaultCmsPage2Workflow.js": "e97f022ca373a948f093576a2382c4f270bf892799c7ae4965c2725e6e54d512"
+    }
+}

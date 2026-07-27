@@ -33,8 +33,8 @@
 | --- | ---: |
 | Source files | 42 |
 | Test files | 8 |
-| Data files | 32 |
-| All module-owned files | 90 |
+| Data files | 34 |
+| All module-owned files | 92 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -68,7 +68,7 @@
 | Documented | 83 |
 | Partially documented | 2 |
 | Undocumented | 1 |
-| Inventory only | 4 |
+| Inventory only | 6 |
 
 ## Important Files
 
@@ -101,6 +101,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/workflow/flowCore/data/init/headers/user/defaultWorkflowUserHeader.js` | `data` | `documented` | 0/0 | Provides workflow initializer or sample data consumed by the import layer. |  |
 | `gCore/workflow/flowCore/data/init/headers/workflows/defaultWorkflowActionHeader.js` | `data` | `documented` | 0/0 | Provides workflow initializer or sample data consumed by the import layer. |  |
 | `gCore/workflow/flowCore/data/init/headers/workflows/defaultWorkflowChannelHeader.js` | `data` | `documented` | 0/0 | Provides workflow initializer or sample data consumed by the import layer. |  |
+| `gCore/workflow/flowCore/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/workflow/flowCore/data/sample/data/auto/sampleAutoWorkflowActionData.js` | `data` | `documented` | 0/0 | Provides workflow initializer or sample data consumed by the import layer. |  |
 | `gCore/workflow/flowCore/data/sample/data/auto/sampleAutoWorkflowChannelData.js` | `data` | `documented` | 0/0 | Provides workflow initializer or sample data consumed by the import layer. |  |
 | `gCore/workflow/flowCore/data/sample/data/auto/sampleAutoWorkflowHeadData.js` | `data` | `documented` | 0/0 | Provides workflow initializer or sample data consumed by the import layer. |  |
@@ -125,6 +126,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/workflow/flowCore/data/sample/headers/multi/sampleMultiWorkflowActionHeader.js` | `data` | `documented` | 0/0 | Provides workflow initializer or sample data consumed by the import layer. |  |
 | `gCore/workflow/flowCore/data/sample/headers/multi/sampleMultiWorkflowChannelHeader.js` | `data` | `documented` | 0/0 | Provides workflow initializer or sample data consumed by the import layer. |  |
 | `gCore/workflow/flowCore/data/sample/headers/multi/sampleMultiWorkflowHeadHeader.js` | `data` | `documented` | 0/0 | Provides workflow initializer or sample data consumed by the import layer. |  |
+| `gCore/workflow/flowCore/data/sample/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/workflow/flowCore/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/workflow/flowCore/nodics.js` | `module` | `documented` | 2/2 | Registers the workflow module lifecycle hooks and module-level startup behavior. |  |
 | `gCore/workflow/flowCore/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

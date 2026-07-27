@@ -26,8 +26,8 @@
 | --- | ---: |
 | Source files | 0 |
 | Test files | 3 |
-| Data files | 4 |
-| All module-owned files | 15 |
+| Data files | 5 |
+| All module-owned files | 16 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -55,7 +55,7 @@
 | Documented | 11 |
 | Partially documented | 0 |
 | Undocumented | 0 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -82,6 +82,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `startio/envs/startioLocal/data/init/data/enterprise/startioLocalTestTenantsData.js` | `data` | `documented` | 0/0 | Provides envs initializer or sample data consumed by the import layer. |  |
 | `startio/envs/startioLocal/data/init/headers/enterprise/startioLocalTestEnterpriseHeader.js` | `data` | `documented` | 0/0 | Provides envs initializer or sample data consumed by the import layer. |  |
 | `startio/envs/startioLocal/data/init/headers/enterprise/startioLocalTestTenantsHeader.js` | `data` | `documented` | 0/0 | Provides envs initializer or sample data consumed by the import layer. |  |
+| `startio/envs/startioLocal/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `startio/envs/startioLocal/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `startio/envs/startioLocal/nodics.js` | `module` | `documented` | 2/2 | Registers the envs module lifecycle hooks and module-level startup behavior. |  |
 | `startio/envs/startioLocal/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

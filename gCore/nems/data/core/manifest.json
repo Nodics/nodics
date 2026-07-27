@@ -1,0 +1,11 @@
+{
+    "contractVersion": 1,
+    "module": "nems",
+    "dataType": "core",
+    "version": "1.0.0",
+    "description": "Event Management core data",
+    "files": {
+        "data/job/defaultEventPublishingJobData.js": "a627f318bea5fed8f59aadc60aa110cfe9c65e919273117ce58f14deeacbd430",
+        "headers/job/defaultEventPublishingJobHeader.js": "0efe20e47145783e1e46be69ab0474fce90c79359328470d61de03ac6bfbfd0d"
+    }
+}

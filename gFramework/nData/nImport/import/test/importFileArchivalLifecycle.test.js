@@ -36,6 +36,7 @@ const serviceDefinition = require(
     let moveStarted = false;
     let settled = false;
     global.NODICS = {
+        /** Returns the isolated test workspace. */
         getNodicsHome: function () {
             return workspace;
         }
@@ -45,11 +46,13 @@ const serviceDefinition = require(
     };
     global.SERVICE = {
         DefaultPipelineService: {
+            /** Simulates successful import-pipeline execution. */
             start: function () {
                 return Promise.resolve(true);
             }
         },
         DefaultFileHandlerService: {
+            /** Holds file movement until the test explicitly releases it. */
             moveFile: function () {
                 moveStarted = true;
                 return new Promise(resolve => {
@@ -58,6 +61,7 @@ const serviceDefinition = require(
             }
         },
         DefaultImportUtilityService: {
+            /** Reports that no additional import work remains. */
             isImportPending: function () {
                 return false;
             }
@@ -66,7 +70,9 @@ const serviceDefinition = require(
 
     const service = Object.assign({
         LOG: {
+            /** Discards debug output during the focused contract test. */
             debug: function () {},
+            /** Discards error output during the focused contract test. */
             error: function () {}
         }
     }, serviceDefinition);

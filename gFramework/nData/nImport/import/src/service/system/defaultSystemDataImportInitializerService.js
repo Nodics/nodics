@@ -117,6 +117,7 @@ module.exports = {
             dataType: request.dataType,
             tenant: request.tenant || this.getDefaultTenant(),
             modules: [].concat(request.modules),
+            dataReleases: request.dataReleasePlan || [],
             validationOnly: !!request.options.validateOnly,
             startedAt: new Date().toISOString(),
             finishedAt: null,

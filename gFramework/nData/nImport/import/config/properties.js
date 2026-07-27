@@ -38,6 +38,26 @@ module.exports = {
                 enabled: true
             }
         },
+        dataReleases: {
+            allowedContractVersions: [1],
+            maximumFilesPerRelease: 1024,
+            maximumModulesPerRun: 256,
+            allowDowngrade: false,
+            types: {
+                init: {
+                    enabled: true,
+                    operatorExecution: true
+                },
+                core: {
+                    enabled: true,
+                    operatorExecution: true
+                },
+                sample: {
+                    enabled: false,
+                    operatorExecution: false
+                }
+            }
+        },
         contentPacks: {
             enabled: false,
             allowedContractVersions: [1],

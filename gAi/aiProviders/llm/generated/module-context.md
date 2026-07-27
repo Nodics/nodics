@@ -30,8 +30,8 @@
 | --- | ---: |
 | Source files | 25 |
 | Test files | 21 |
-| Data files | 2 |
-| All module-owned files | 51 |
+| Data files | 3 |
+| All module-owned files | 52 |
 | Local schema definitions | 5 |
 
 ## Ownership And Dependencies
@@ -63,7 +63,7 @@
 | Documented | 27 |
 | Partially documented | 12 |
 | Undocumented | 8 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -90,6 +90,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gAi/aiProviders/config/properties.js` | `config` | `documented` | 0/0 | Defines fail-closed layered defaults for the provider-neutral AI gateway. |  |
 | `gAi/aiProviders/data/core/data/jobs/defaultAiLedgerJobsData.js` | `data` | `documented` | 0/0 | Defines disabled-by-default reservation expiry and ledger repair CronJob records. |  |
 | `gAi/aiProviders/data/core/headers/jobs/defaultAiLedgerJobsHeader.js` | `data` | `documented` | 0/0 | Contributes disabled AI ledger maintenance schedules to the existing CronJob schema authority. |  |
+| `gAi/aiProviders/data/core/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gAi/aiProviders/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gAi/aiProviders/nodics.js` | `module` | `documented` | 2/2 | Generated Nodics lifecycle entrypoint for aiProviders. |  |
 | `gAi/aiProviders/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

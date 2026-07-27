@@ -1,0 +1,11 @@
+{
+    "contractVersion": 1,
+    "module": "validator",
+    "dataType": "init",
+    "version": "1.0.0",
+    "description": "Validation init data",
+    "files": {
+        "data/validator/defaultSampleValidatorData.js": "55b84f1d375c9f9c02e2d2a86fd213b864bcfd8741dcc7fef8de162b97463cbb",
+        "headers/validator/defaultSampleValidatorHeader.js": "7267747ddcf9f1cd17c02b71c3f56442c59a0577103340b9fabb28016acc01c2"
+    }
+}

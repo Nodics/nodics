@@ -32,8 +32,8 @@
 | --- | ---: |
 | Source files | 9 |
 | Test files | 6 |
-| Data files | 8 |
-| All module-owned files | 27 |
+| Data files | 9 |
+| All module-owned files | 28 |
 | Local schema definitions | 1 |
 
 ## Ownership And Dependencies
@@ -66,7 +66,7 @@
 | Documented | 21 |
 | Partially documented | 2 |
 | Undocumented | 0 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -99,6 +99,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gMrkty/cres/data/init/headers/workflows/reviewWorkflowActionHeader.js` | `data` | `documented` | 0/0 | Provides cres initializer or sample data consumed by the import layer. |  |
 | `gMrkty/cres/data/init/headers/workflows/reviewWorkflowChannelHeader.js` | `data` | `documented` | 0/0 | Provides cres initializer or sample data consumed by the import layer. |  |
 | `gMrkty/cres/data/init/headers/workflows/reviewWorkflowHeadHeader.js` | `data` | `documented` | 0/0 | Provides cres initializer or sample data consumed by the import layer. |  |
+| `gMrkty/cres/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gMrkty/cres/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gMrkty/cres/nodics.js` | `module` | `documented` | 2/2 | Registers the cres module lifecycle hooks and module-level startup behavior. |  |
 | `gMrkty/cres/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

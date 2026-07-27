@@ -32,8 +32,8 @@
 | --- | ---: |
 | Source files | 12 |
 | Test files | 16 |
-| Data files | 8 |
-| All module-owned files | 30 |
+| Data files | 9 |
+| All module-owned files | 31 |
 | Local schema definitions | 5 |
 
 ## Ownership And Dependencies
@@ -66,7 +66,7 @@
 | Documented | 24 |
 | Partially documented | 2 |
 | Undocumented | 0 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -99,6 +99,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/order/data/init/header/defaultOrderStatusResonHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default order, payment, and shipment reason records. |  |
 | `gComm/order/data/init/header/defaultPaymentStatusHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default payment status records. |  |
 | `gComm/order/data/init/header/defaultShippingStatusHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default shipping status records. |  |
+| `gComm/order/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/order/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/order/nodics.js` | `module` | `documented` | 2/2 | Order module lifecycle entrypoint used by the Nodics module loader. |  |
 | `gComm/order/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

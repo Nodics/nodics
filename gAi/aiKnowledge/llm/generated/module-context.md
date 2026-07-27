@@ -36,8 +36,8 @@
 | --- | ---: |
 | Source files | 22 |
 | Test files | 10 |
-| Data files | 4 |
-| All module-owned files | 39 |
+| Data files | 5 |
+| All module-owned files | 40 |
 | Local schema definitions | 5 |
 
 ## Ownership And Dependencies
@@ -74,7 +74,7 @@
 | Documented | 25 |
 | Partially documented | 9 |
 | Undocumented | 1 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -103,6 +103,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gAi/aiKnowledge/data/init/data/knowledge/defaultKnowledgeSourceData.js` | `data` | `documented` | 0/0 | Registers gDocs as an explicit source without transferring publication authority. |  |
 | `gAi/aiKnowledge/data/init/headers/knowledge/defaultKnowledgeCorpusHeader.js` | `data` | `documented` | 0/0 | Imports the OOTB Nodics documentation corpus through the generated schema service. |  |
 | `gAi/aiKnowledge/data/init/headers/knowledge/defaultKnowledgeSourceHeader.js` | `data` | `documented` | 0/0 | Imports the explicit gDocs source registration through the generated schema service. |  |
+| `gAi/aiKnowledge/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gAi/aiKnowledge/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gAi/aiKnowledge/nodics.js` | `module` | `documented` | 2/2 | Generated Nodics lifecycle entrypoint for aiKnowledge. |  |
 | `gAi/aiKnowledge/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

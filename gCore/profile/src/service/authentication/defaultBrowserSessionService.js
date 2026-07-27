@@ -19,6 +19,7 @@ const crypto = require('crypto');
  * @override Projects may layer cookie policy while preserving HttpOnly refresh, exact-origin, CSRF, and rotation guarantees.
  */
 module.exports = {
+    /** Returns and validates the effective browser-session configuration. */
     config: function () {
         let config = CONFIG.get('profileBrowserSession') || {};
         if (config.enabled !== true) {
@@ -45,6 +46,7 @@ module.exports = {
         return config;
     },
 
+    /** Parses request cookies into a decoded name-value map. */
     cookies: function (request) {
         let header = request.httpRequest && request.httpRequest.headers &&
             request.httpRequest.headers.cookie || '';
@@ -67,6 +69,7 @@ module.exports = {
         }, {});
     },
 
+    /** Enforces the configured credentialed browser origin policy. */
     validateOrigin: function (request, config) {
         let origin = request.httpRequest && request.httpRequest.headers &&
             request.httpRequest.headers.origin;
@@ -96,6 +99,7 @@ module.exports = {
         }
     },
 
+    /** Compares two bounded security values in constant time. */
     equal: function (left, right) {
         if (!left || !right) return false;
         let a = Buffer.from(String(left));
@@ -103,6 +107,7 @@ module.exports = {
         return a.length === b.length && crypto.timingSafeEqual(a, b);
     },
 
+    /** Validates the double-submit CSRF token for a browser-session request. */
     validateCsrf: function (request, config, cookies) {
         let header = request.httpRequest && request.httpRequest.headers &&
             request.httpRequest.headers['x-csrf-token'];
@@ -111,6 +116,7 @@ module.exports = {
         }
     },
 
+    /** Serializes one browser cookie using the supplied security attributes. */
     cookie: function (name, value, options) {
         let parts = [
             name + '=' + encodeURIComponent(value),
@@ -123,6 +129,7 @@ module.exports = {
         return parts.join('; ');
     },
 
+    /** Writes rotated refresh and CSRF cookies to the response. */
     write: function (request, refreshToken, csrfToken, config) {
         request.httpResponse.setHeader('Cache-Control', 'no-store');
         request.httpResponse.setHeader('Set-Cookie', [
@@ -143,6 +150,7 @@ module.exports = {
         ]);
     },
 
+    /** Expires browser-session cookies without retaining credential material. */
     clear: function (request, config) {
         request.httpResponse.setHeader('Cache-Control', 'no-store');
         request.httpResponse.setHeader('Set-Cookie', [
@@ -175,6 +183,7 @@ module.exports = {
         });
     },
 
+    /** Starts a browser session after origin validation and token rotation. */
     start: function (request, tokens) {
         let config = this.config();
         this.validateOrigin(request, config);
@@ -193,6 +202,7 @@ module.exports = {
         });
     },
 
+    /** Restores a browser session through the Profile-owned refresh contract. */
     restore: function (request) {
         let config = this.config();
         this.validateOrigin(request, config);
@@ -214,6 +224,7 @@ module.exports = {
         });
     },
 
+    /** Revokes the refresh credential and clears the browser session. */
     logout: function (request) {
         let config = this.config();
         this.validateOrigin(request, config);

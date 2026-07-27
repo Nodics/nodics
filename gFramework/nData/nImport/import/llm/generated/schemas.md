@@ -6,7 +6,23 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
-| `importRun` | `base` | yes | yes | yes | no | no | no | `default` | 26 |
+| `dataInstallation` |  | yes | yes | no | no | no | no | `default` | 12 |
+| `importRun` | `base` | yes | yes | yes | no | no | no | `default` | 27 |
+
+### `import.dataInstallation`
+
+- `availableChecksum` `string` optional: Release checksum used by the latest attempt
+- `availableVersion` `string` optional: Release version used by the latest attempt
+- `checksum` `string` optional: Installed immutable release checksum
+- `dataType` `string` required: Release type: init, core, or sample
+- `environment` `string` required: Environment where the release was installed
+- `installedAt` `string` optional: Successful installation timestamp
+- `lastAttemptAt` `string` required: Latest governed installation attempt timestamp
+- `moduleName` `string` required: Active module owning the data release
+- `runId` `string` optional: Successful import run that installed the release
+- `status` `string` required: Current installation projection status
+- `tenant` `string` required: Tenant owning the installed release state
+- `version` `string` optional: Installed immutable release version
 
 ### `import.importRun`
 
@@ -17,6 +33,7 @@
 - `contentPackVersion` `string` optional: Immutable content-pack release version
 - `correlationId` `string` optional: Correlation id from the triggering request or event
 - `dataFiles` `object` optional: Discovered, matched, and unmatched import data files
+- `dataReleases` `array` optional: Immutable module release identities validated for this run
 - `dataType` `string` optional: Import data type such as init, core, sample, local, or remote
 - `durationMs` `int` optional: Import run duration in milliseconds
 - `failureCount` `int` optional: Number of recorded import failures

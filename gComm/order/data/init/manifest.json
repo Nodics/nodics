@@ -1,0 +1,17 @@
+{
+    "contractVersion": 1,
+    "module": "order",
+    "dataType": "init",
+    "version": "1.0.0",
+    "description": "Order init data",
+    "files": {
+        "data/defaultOrderStatusData.js": "30cac44af14d28ca41d3201f1b34511fac41bbcdb3a45df6d85665778609fe26",
+        "data/defaultOrderStatusResonData.js": "5f50af5a11de9efdb509a963f1d8c8f2af9da905d7fbbcd8ab41a671e0210ab7",
+        "data/defaultPaymentStatusData.js": "4112d68eec8c4a7168c25199525eaad2515dd8b768a13e09493e6892883c77c7",
+        "data/defaultShippingStatusData.js": "b19957cee4923ba001a70cadffd2543b86f5693f35bb104f48578bea144e8e6b",
+        "header/defaultOrderStatusHeader.js": "ebf2a0c57ff449dbce036d54f019dd5c347a36b6c1f71b33efc37b3ad9266343",
+        "header/defaultOrderStatusResonHeader.js": "5900a7b1d69f6d3d05da57c48fa2741590da3b4abd9c2de4d8e30dabe70e0307",
+        "header/defaultPaymentStatusHeader.js": "394c6b86254d918cea049ce57d7e3ff6aea955fd80e520f1a72d4e98aff05d58",
+        "header/defaultShippingStatusHeader.js": "ae984dc883eef01b9dcd4fa80a307dc902abbc7ce4092c7806e364cb3d2578d0"
+    }
+}

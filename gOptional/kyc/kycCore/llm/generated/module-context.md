@@ -32,8 +32,8 @@
 | --- | ---: |
 | Source files | 19 |
 | Test files | 2 |
-| Data files | 6 |
-| All module-owned files | 35 |
+| Data files | 7 |
+| All module-owned files | 36 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -66,7 +66,7 @@
 | Documented | 29 |
 | Partially documented | 2 |
 | Undocumented | 0 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -97,6 +97,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gOptional/kyc/kycCore/data/init/headers/mobile/mobileNumberKycWorkflowActionHeader.js` | `data` | `documented` | 0/0 | Provides kyc initializer or sample data consumed by the import layer. |  |
 | `gOptional/kyc/kycCore/data/init/headers/mobile/mobileNumberKycWorkflowChannelHeader.js` | `data` | `documented` | 0/0 | Provides kyc initializer or sample data consumed by the import layer. |  |
 | `gOptional/kyc/kycCore/data/init/headers/mobile/mobileNumberKycWorkflowHeadHeader.js` | `data` | `documented` | 0/0 | Provides kyc initializer or sample data consumed by the import layer. |  |
+| `gOptional/kyc/kycCore/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gOptional/kyc/kycCore/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gOptional/kyc/kycCore/nodics.js` | `module` | `documented` | 2/2 | Registers the kyc module lifecycle hooks and module-level startup behavior. |  |
 | `gOptional/kyc/kycCore/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

@@ -1,0 +1,13 @@
+{
+    "contractVersion": 1,
+    "module": "cronjob",
+    "dataType": "core",
+    "version": "1.0.0",
+    "description": "Scheduled Jobs core data",
+    "files": {
+        "data/indexer/defaultIndexerData.js": "26e9a78a4fc1c25937ffdddad725d41ce582fdb49c8d2c36b3a60dbce2234df6",
+        "data/jobs/defaultIndexerJobsData.js": "cb892323c06035c9709ed95520eb579bfc4d3f8eecb5d0b13708dfc5459a9c82",
+        "headers/indexer/defaultIndexerHeader.js": "f9f14983f922230f2eee204610597ce3d0012719bebed9a6e7bc26b95cc4ce31",
+        "headers/jobs/defaultIndexerJobsHeader.js": "9bb3c2187cfcdf52b686660653a4dbd117d6d6986caab381a92aa9f132050ed3"
+    }
+}

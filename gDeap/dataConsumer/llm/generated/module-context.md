@@ -33,8 +33,8 @@
 | --- | ---: |
 | Source files | 13 |
 | Test files | 10 |
-| Data files | 4 |
-| All module-owned files | 27 |
+| Data files | 5 |
+| All module-owned files | 28 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -68,7 +68,7 @@
 | Documented | 21 |
 | Partially documented | 2 |
 | Undocumented | 0 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -97,6 +97,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gDeap/dataConsumer/data/core/data/defaultIndexerJobsData.js` | `data` | `documented` | 0/0 | Provides dataConsumer initializer or sample data consumed by the import layer. |  |
 | `gDeap/dataConsumer/data/core/headers/defaultIndexerHeader.js` | `data` | `documented` | 0/0 | Provides dataConsumer initializer or sample data consumed by the import layer. |  |
 | `gDeap/dataConsumer/data/core/headers/defaultIndexerJobsHeader.js` | `data` | `documented` | 0/0 | Provides dataConsumer initializer or sample data consumed by the import layer. |  |
+| `gDeap/dataConsumer/data/core/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gDeap/dataConsumer/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gDeap/dataConsumer/nodics.js` | `module` | `documented` | 2/2 | Registers the dataConsumer module lifecycle hooks and module-level startup behavior. |  |
 | `gDeap/dataConsumer/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

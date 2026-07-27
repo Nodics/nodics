@@ -35,8 +35,8 @@
 | --- | ---: |
 | Source files | 34 |
 | Test files | 15 |
-| Data files | 4 |
-| All module-owned files | 53 |
+| Data files | 5 |
+| All module-owned files | 54 |
 | Local schema definitions | 2 |
 
 ## Ownership And Dependencies
@@ -72,7 +72,7 @@
 | Documented | 47 |
 | Partially documented | 2 |
 | Undocumented | 0 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -101,6 +101,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/cronjob/data/core/data/jobs/defaultIndexerJobsData.js` | `data` | `documented` | 0/0 | Core initializer data for default cronjob records related to indexing. |  |
 | `gCore/cronjob/data/core/headers/indexer/defaultIndexerHeader.js` | `data` | `documented` | 0/0 | Import header for saving cronjob indexer support records. |  |
 | `gCore/cronjob/data/core/headers/jobs/defaultIndexerJobsHeader.js` | `data` | `documented` | 0/0 | Import header for saving default cronjob records related to indexing. |  |
+| `gCore/cronjob/data/core/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/cronjob/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/cronjob/nodics.js` | `module` | `documented` | 2/2 | Cronjob module lifecycle entrypoint for scheduler, route, pipeline, and node-responsibility capabilities. |  |
 | `gCore/cronjob/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

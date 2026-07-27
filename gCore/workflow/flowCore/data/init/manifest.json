@@ -1,0 +1,17 @@
+{
+    "contractVersion": 1,
+    "module": "flowCore",
+    "dataType": "init",
+    "version": "1.0.0",
+    "description": "Workflow Core init data",
+    "files": {
+        "data/user/defaultWorkflowEmployeeData.js": "acdfd2bfaaef4269cd9a4ef4aa25c94228b4dfbd4f8541c7a0acbe5ef88fc834",
+        "data/user/defaultWorkflowUserGroupData.js": "cf72a550e12be484288e526298cffd2c0817566c40105b2eba568e642b8e80f6",
+        "data/workflows/defaultWorkflowActionData.js": "c1c14250a39d90e9bab48cb614f4533cca19a8528804f6dcd556a350d451771f",
+        "data/workflows/defaultWorkflowChannelData.js": "e26f67ee48d900e8a4f01f2a918798e13a441c4c5ba1b60158e6ffbbd667d2f1",
+        "headers/user/defaultWorkflowUserGroupsHeader.js": "60ac290018e2db622cba6d8ef1d23ccbdc2f628509b9dd04be99d368b7904adb",
+        "headers/user/defaultWorkflowUserHeader.js": "7ccabf579515d5d16589c02ca6340412887088f95c1d61e4965bef64468ea3cc",
+        "headers/workflows/defaultWorkflowActionHeader.js": "0d2a3f2126ff940a938227ec34364b01d1ed81e46218d23ab33034254bc2edd5",
+        "headers/workflows/defaultWorkflowChannelHeader.js": "38976cb8323d6412f8796208d6e329f18fa26ccc7e50f086775646f7ee82ca5d"
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "contractVersion": 1,
+    "module": "dataConsumer",
+    "dataType": "core",
+    "version": "1.0.0",
+    "description": "Data Consumer core data",
+    "files": {
+        "data/defaultIndexerData.js": "7d27ad5f416ebf4fe593cfff2b7c74098dabae8b67dd34d1091d13a2fc9c0ea3",
+        "data/defaultIndexerJobsData.js": "94a748b9f7a924d492903bc3d2bd769934a83b60c0503f087aa3f151a127ea97",
+        "headers/defaultIndexerHeader.js": "076e7a351d9866962a4195bf08c5bd4ff98414a2fe6e4f020c2a44e3512e60a8",
+        "headers/defaultIndexerJobsHeader.js": "34b5cb1ec9f770d9027026f18911b8483591c830031745af50fc97ca66cb4ae5"
+    }
+}

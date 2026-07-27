@@ -34,8 +34,8 @@
 | --- | ---: |
 | Source files | 29 |
 | Test files | 42 |
-| Data files | 24 |
-| All module-owned files | 68 |
+| Data files | 26 |
+| All module-owned files | 70 |
 | Local schema definitions | 14 |
 
 ## Ownership And Dependencies
@@ -70,7 +70,7 @@
 | Documented | 58 |
 | Partially documented | 3 |
 | Undocumented | 3 |
-| Inventory only | 4 |
+| Inventory only | 6 |
 
 ## Important Files
 
@@ -103,6 +103,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gContent/cms/data/init/headers/content/defaultCmsTypeCodeDataHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default CMS type-code records. |  |
 | `gContent/cms/data/init/headers/user/defaultCmsEmployeeDataHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default CMS employee records. |  |
 | `gContent/cms/data/init/headers/user/defaultCmsUserGroupsDataHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default CMS user-group records. |  |
+| `gContent/cms/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gContent/cms/data/sample/data/components/sampleCmsComponentData.js` | `data` | `documented` | 0/0 | Sample CMS component records used for demo or development data loading. |  |
 | `gContent/cms/data/sample/data/components/sampleFooterCmsComponentData.js` | `data` | `documented` | 0/0 | Sample footer CMS component records used for demo or development data loading. |  |
 | `gContent/cms/data/sample/data/components/sampleHeaderCmsComponentData.js` | `data` | `documented` | 0/0 | Sample header CMS component records used for demo or development data loading. |  |
@@ -119,6 +120,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gContent/cms/data/sample/headers/sites/sampleCmsSiteDataHeader.js` | `data` | `documented` | 0/0 | Sample import header for CMS site demo data. |  |
 | `gContent/cms/data/sample/headers/typeCodes/sampleTypeCode2RendererDataHeader.js` | `data` | `documented` | 0/0 | Sample import header for CMS type-code renderer mapping demo data. |  |
 | `gContent/cms/data/sample/headers/typeCodes/sampleTypeCodeDataHeader.js` | `data` | `documented` | 0/0 | Sample import header for CMS type-code demo data. |  |
+| `gContent/cms/data/sample/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gContent/cms/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gContent/cms/nodics.js` | `module` | `documented` | 2/2 | CMS module lifecycle entrypoint used by the Nodics module loader. |  |
 | `gContent/cms/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

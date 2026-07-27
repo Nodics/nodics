@@ -254,6 +254,10 @@ module.exports = {
             contentPackCode: importRun.contentPackCode,
             contentPackVersion: importRun.contentPackVersion,
             contentPackChecksum: importRun.contentPackChecksum,
+            dataReleases: (importRun.dataReleases || []).map(release => ({
+                moduleName: release.moduleName, dataType: release.dataType,
+                version: release.version, checksum: release.checksum
+            })).sort((first, second) => first.moduleName.localeCompare(second.moduleName)),
             validationOnly: !!importRun.validationOnly
         }));
     },

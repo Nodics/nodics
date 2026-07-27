@@ -1,0 +1,24 @@
+{
+    "contractVersion": 1,
+    "module": "profile",
+    "dataType": "init",
+    "version": "1.0.2",
+    "description": "Profile and Identity init data",
+    "files": {
+        "data/address/defaultAddressesData.js": "b07e1f42427ce89cfd99c7eb57733bcce92c325d047c08bd560f1a57cb103b22",
+        "data/address/defaultContactsData.js": "ed153d189a9abfdae19e5d6d7283a95970964297f2710d4b959a1c13992d8278",
+        "data/address/defaultTenantAddressesData.js": "7149c20543880e697cf43721cc46de8fa991ea22d66c6084e572248be2ab3db4",
+        "data/address/defaultTenantContactsData.js": "1cdb1c179383364b06f16a5bd13adb82bfec184f50e0d2fa0d1ae99296d46ce0",
+        "data/enterprise/defaultEnterpriseData.js": "4644982d61655a683e1eeff8d294d03c8b4a48cb69a7310f79140891c433d9f4",
+        "data/enterprise/defaultTenantsData.js": "7ae019c1ac600c28b03266d071e2d4574ac73e6c273750416778cf6ec910d9ab",
+        "data/groups/defaultBootstrapUserGroupsData.js": "fba6c8c8f2553b655e4b73fd359e782476a4e6ad881ce95da65dcf56ba0885c7",
+        "data/user/defaultCutomerData.js": "8ef04c3ff865054184c981295898f1daa633828bb84969edcb1368e2c5d94153",
+        "data/user/defaultEmployeeData.js": "235d655cceabb7f43f710eaa6ecce1c90f1c516a53de6c9f1f23e11d8e4e66e2",
+        "headers/address/defaultAddressesHeader.js": "04f6ed39e6c98c82f26890e3c124fd4ab00dc3ac5533fe1f0c90096679f465b8",
+        "headers/address/defaultContactsHeader.js": "199c87d694b3a48a1ecbe1b074708872a8686dd0757ba7e45208e820acc15f2b",
+        "headers/enterprise/defaultEnterpriseHeader.js": "ac4d6e9bd0cb3df7cfa2c4f3ca43654e538b3ab33aeb0866ab41d2c1e65c1c34",
+        "headers/enterprise/defaultTenantsHeader.js": "620c53f2060f6203bdf088239e0a8e5d5592dbe28da9407313d41ce07f472340",
+        "headers/groups/defaultUserGroupsHeader.js": "ab2e9079b891c90085fa68f927978d00c5dbe14b1dd1cf20d18465f9869e5486",
+        "headers/user/defaultUsersHeader.js": "23f494f1855ac4e22ff791947b21322b9654039d675bbbad5b5cb1a95bc67abe"
+    }
+}

@@ -18,15 +18,19 @@
  * execution authority.
  */
 module.exports = {
+    /** Initializes the content-pack facade. */
     init: function () {
         return Promise.resolve(true);
     },
+    /** Completes content-pack facade initialization. */
     postInit: function () {
         return Promise.resolve(true);
     },
+    /** Delegates content-pack status retrieval. */
     getStatus: function (request) {
         return SERVICE.DefaultContentPackService.getStatus(request);
     },
+    /** Delegates content-pack import execution. */
     importPack: function (request) {
         return SERVICE.DefaultContentPackService.importPack(request);
     }

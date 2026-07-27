@@ -61,12 +61,15 @@ module.exports = {
     search: function (request, callback) {
         return this.execute('search', request, callback);
     },
+    /** Returns the authorized dependency impact before deleting records. */
     previewDeleteImpact: function (request, callback) {
         return this.execute('previewDeleteImpact', request, callback);
     },
+    /** Executes one authorized bounded bulk schema operation. */
     bulk: function (request, callback) {
         return this.execute('bulk', request, callback);
     },
+    /** Executes one authorized bounded schema aggregation. */
     aggregate: function (request, callback) {
         return this.execute('aggregate', request, callback);
     }

@@ -1,0 +1,15 @@
+{
+    "contractVersion": 1,
+    "module": "aiAssistant",
+    "dataType": "init",
+    "version": "1.0.0",
+    "description": "AI Assistant init data",
+    "files": {
+        "data/assistant/defaultAssistantDefinitionData.js": "1324aa66703158fdabe56e81e5b417a94b798334f014931d932614a22616e808",
+        "data/assistant/defaultAssistantPromptDefinitionData.js": "44bf6a0989d3b2f62b8addb0287b252611238a179d9f2831f91eca7a8c1eb48e",
+        "data/assistant/defaultAssistantToolPolicyData.js": "760c3cefc152c2bb5f2986f40abc2c62aba2f333fcd4c24fa9b90d78e71fd56e",
+        "headers/assistant/defaultAssistantDefinitionHeader.js": "a95f48d3f5d49e7f5cd0c754f33c16885f9002b50bc7ff10a82477938b2bb928",
+        "headers/assistant/defaultAssistantPromptDefinitionHeader.js": "21d945640f65b665f739e60f3cf4561fdcc634828a67c4a220936d122e777a63",
+        "headers/assistant/defaultAssistantToolPolicyHeader.js": "7f3f9691de9e4d4a6670c925923eb3138dc364c126ac05a168f784d4f2e02e08"
+    }
+}

@@ -68,8 +68,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 52 |
-| Partially documented | 7 |
+| Documented | 53 |
+| Partially documented | 6 |
 | Undocumented | 5 |
 | Inventory only | 4 |
 
@@ -101,7 +101,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDatabase/database/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nDatabase/database/src/controller/schema/defaultSchemaIndexController.js` | `src` | `documented` | 2/2 | Controller for secured schema index maintenance routes. It delegates module-wide and schema-specific index refresh requests to the schema index facade. |  |
 | `gFramework/nDatabase/database/src/controller/schema/defaultSchemaValidatorController.js` | `src` | `documented` | 2/2 | Controller for secured schema validator maintenance routes. It delegates module-wide and schema-specific validator refresh requests to the schema validator facade. |  |
-| `gFramework/nDatabase/database/src/controller/schema/defaultSchemaWorkbenchController.js` | `src` | `partially-documented` | 4/7 | Maps secured Schema Workbench discovery requests to the owning facade. This controller exposes metadata only; generated CRUD and domain operations remain the sole mutation paths. | add JSDoc for 3 exported method(s) |
+| `gFramework/nDatabase/database/src/controller/schema/defaultSchemaWorkbenchController.js` | `src` | `documented` | 7/7 | Maps secured Schema Workbench discovery requests to the owning facade. This controller exposes metadata only; generated CRUD and domain operations remain the sole mutation paths. |  |
 | `gFramework/nDatabase/database/src/event/listeners.js` | `src` | `documented` | 0/0 | Documents nDatabase listeners module behavior. |  |
 | `gFramework/nDatabase/database/src/facade/schema/defaultSchemaIndexFacade.js` | `src` | `documented` | 3/3 | Facade boundary for schema index maintenance. It provides a stable controller-facing contract while delegating actual index work to the schema index service. |  |
 | `gFramework/nDatabase/database/src/facade/schema/defaultSchemaValidatorFacade.js` | `src` | `documented` | 3/3 | Facade boundary for schema validator maintenance. It provides a stable controller-facing contract while delegating database validator refresh to the schema validator service. |  |

@@ -1,0 +1,17 @@
+{
+    "contractVersion": 1,
+    "module": "cres",
+    "dataType": "init",
+    "version": "1.0.0",
+    "description": "Customer Relationships init data",
+    "files": {
+        "data/schema2Workflow/defaultReview2WorkflowData.js": "8f27c1a45499fb15988873ff05c01a05b771ba22c9fc49ac5a9667c7c541adaa",
+        "data/workflows/reviewWorkflowActionData.js": "5dae33d2790a21661a563195d9a436a36da74ef87ecc0f7453cc60a8faba1908",
+        "data/workflows/reviewWorkflowChannelData.js": "acacfbafdbfd4fd0ebdd47b0edc26d6327572cba51d1e0acf7577067822d206c",
+        "data/workflows/reviewWorkflowHeadData.js": "63bec0afbbeb2db6dcd3361dccd1f8083056bfdedbec793ba342d94a72b3f74d",
+        "headers/schema2Workflow/defaultReview2WorkflowHeader.js": "6ff12860ca8ec5416cdb52717dc58dab904edb6491b793c0d57cd4880988b790",
+        "headers/workflows/reviewWorkflowActionHeader.js": "32520c13f4a329ef6bd377b0529cad9acfeb9da9484d2c8a493bb6875416cc6a",
+        "headers/workflows/reviewWorkflowChannelHeader.js": "f5ec5097870965304c5cedb6421fc0e117d8cde691cc53e580514039c9463efc",
+        "headers/workflows/reviewWorkflowHeadHeader.js": "e2efaae0dd8f9b736865ef5b9b9c32407af8429681d46a6262cbaddcc3cbcc19"
+    }
+}

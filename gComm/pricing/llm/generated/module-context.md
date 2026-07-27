@@ -36,8 +36,8 @@
 | --- | ---: |
 | Source files | 30 |
 | Test files | 15 |
-| Data files | 6 |
-| All module-owned files | 51 |
+| Data files | 7 |
+| All module-owned files | 52 |
 | Local schema definitions | 8 |
 
 ## Ownership And Dependencies
@@ -74,7 +74,7 @@
 | Documented | 5 |
 | Partially documented | 39 |
 | Undocumented | 3 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -105,6 +105,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/pricing/data/init/headers/publication/defaultPricingPublicationWorkflowActionHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/data/init/headers/publication/defaultPricingPublicationWorkflowChannelHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/data/init/headers/publication/defaultPricingPublicationWorkflowHeadHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/pricing/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/pricing/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/pricing/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

@@ -63,7 +63,23 @@ const schemas = require('../src/schemas/schemas');
         }
     ]);
 
-    assert.strictEqual(routes.length, 2);
+    assert(routes.length >= 2);
+    assert.strictEqual(
+        routerConfig.import.importRunHistory.getImportRunHistory.permission,
+        'import.history.view'
+    );
+    assert.deepStrictEqual(
+        routerConfig.import.importRunHistory.getImportRunHistory.permissions,
+        ['import.core.run']
+    );
+    assert.strictEqual(
+        routerConfig.import.importRunHistory.getImportRun.permission,
+        'import.history.detail.view'
+    );
+    assert.deepStrictEqual(
+        routerConfig.import.importRunHistory.getImportRun.permissions,
+        ['import.core.run']
+    );
     assert(schemas.import.importRun.model);
     assert(schemas.import.importRun.service.enabled);
     assert(schemas.import.importRun.router.enabled);

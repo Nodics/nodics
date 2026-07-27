@@ -32,8 +32,8 @@
 | --- | ---: |
 | Source files | 10 |
 | Test files | 3 |
-| Data files | 16 |
-| All module-owned files | 37 |
+| Data files | 17 |
+| All module-owned files | 38 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -66,7 +66,7 @@
 | Documented | 30 |
 | Partially documented | 2 |
 | Undocumented | 1 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -107,6 +107,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gContent/wcms/data/init/headers/pages/defaultCmsPageWorkflowHeadHeader.js` | `data` | `documented` | 0/0 | Import header for saving the default CMS page workflow head record. |  |
 | `gContent/wcms/data/init/headers/schema2Workflow/defaultCmsComponent2Workflow.js` | `data` | `documented` | 0/0 | Import header for saving CMS component schema-to-workflow mappings. |  |
 | `gContent/wcms/data/init/headers/schema2Workflow/defaultCmsPage2Workflow.js` | `data` | `documented` | 0/0 | Import header for saving CMS page schema-to-workflow mappings. |  |
+| `gContent/wcms/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gContent/wcms/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gContent/wcms/nodics.js` | `module` | `documented` | 2/2 | WCMS module lifecycle entrypoint for workflow-enabled content management features. |  |
 | `gContent/wcms/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

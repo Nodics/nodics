@@ -64,6 +64,14 @@ module.exports = {
     data: {
         contentPacks: {
             enabled: true
+        },
+        dataReleases: {
+            types: {
+                sample: {
+                    enabled: true,
+                    operatorExecution: true
+                }
+            }
         }
     },
     httpHardening: {

@@ -7,6 +7,8 @@
 - `gFramework/nData/nImport/import/test/common/commonTest.js`
 - `gFramework/nData/nImport/import/test/contentPackRouteContract.test.js`
 - `gFramework/nData/nImport/import/test/contentPackService.test.js`
+- `gFramework/nData/nImport/import/test/dataReleaseRouteContract.test.js`
+- `gFramework/nData/nImport/import/test/dataReleaseService.test.js`
 - `gFramework/nData/nImport/import/test/env-local/envTest.js`
 - `gFramework/nData/nImport/import/test/environmentSampleDataContribution.test.js`
 - `gFramework/nData/nImport/import/test/finalizedImportDispatch.test.js`
@@ -40,6 +42,7 @@
 - `gFramework/nData/nImport/import/test/gen/api/importRunApiContract.test.js`
 - `gFramework/nData/nImport/import/test/gen/apiScenario/importRunApiScenario.test.js`
 - `gFramework/nData/nImport/import/test/gen/crud/importRunCrudScenario.test.js`
+- `gFramework/nData/nImport/import/test/gen/schema/dataInstallationSchemaContract.test.js`
 - `gFramework/nData/nImport/import/test/gen/schema/importRunSchemaContract.test.js`
 
 ## Testing Rules

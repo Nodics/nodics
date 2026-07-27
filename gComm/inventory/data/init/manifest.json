@@ -1,0 +1,15 @@
+{
+    "contractVersion": 1,
+    "module": "inventory",
+    "dataType": "init",
+    "version": "1.0.0",
+    "description": "Stock and Inventory init data",
+    "files": {
+        "data/reconciliation/defaultStockReconciliationWorkflowActionData.js": "5db6a33fcfd64f940307fc9340ff89167133d1014de17308d4dc6e61a1e4cb50",
+        "data/reconciliation/defaultStockReconciliationWorkflowChannelData.js": "cb68f130a652f2912ceedf8879df67d3e2c8f511b10484f8884346b9b9a4e602",
+        "data/reconciliation/defaultStockReconciliationWorkflowHeadData.js": "f822b45af3add3ddaa0115c9ee27e98e0bffa7793b9f7fb56a17dc5aa6d22a59",
+        "headers/reconciliation/defaultStockReconciliationWorkflowActionHeader.js": "e0f594e80555b11c6b365f3a899e53918dff84e1cfe39cb8e5de8099fa9bc891",
+        "headers/reconciliation/defaultStockReconciliationWorkflowChannelHeader.js": "8af70668e0df765fd15aab00e2a9aabaee192f06c3b06e07869f06d935c74485",
+        "headers/reconciliation/defaultStockReconciliationWorkflowHeadHeader.js": "b96b870d99a86bb11e4998ff7ecacac32e465f2240913c7fc6210bd3d025f2aa"
+    }
+}

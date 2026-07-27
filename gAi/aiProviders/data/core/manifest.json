@@ -1,0 +1,11 @@
+{
+    "contractVersion": 1,
+    "module": "aiProviders",
+    "dataType": "core",
+    "version": "1.0.0",
+    "description": "AI Providers core data",
+    "files": {
+        "data/jobs/defaultAiLedgerJobsData.js": "6bf38554f0751a2073922e444f813a5a33352a335f910d80edba7e04526a1ab4",
+        "headers/jobs/defaultAiLedgerJobsHeader.js": "24b8d80d4fbb1cea211de9085d4780b0d4a22d6fc627424b53c1007a7fdfa2e8"
+    }
+}

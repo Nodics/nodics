@@ -1,0 +1,25 @@
+{
+    "contractVersion": 1,
+    "module": "cms",
+    "dataType": "sample",
+    "version": "1.0.0",
+    "description": "Content Management sample data",
+    "files": {
+        "data/components/sampleCmsComponentData.js": "8f6536112c1893d1368605ffc3ec9b462ae339363ab57badc6404a42d4279f2a",
+        "data/components/sampleFooterCmsComponentData.js": "f7f98a2eca710ab4b59fb12a9f86c8a831ac16ea1b5067727d237f0fda5da66a",
+        "data/components/sampleHeaderCmsComponentData.js": "3c3ab072eac6d51e22001d8a78981670298537c5f954d3048c5b96f387282cef",
+        "data/components/sampleMainCmsComponentData.js": "ebec1898b73fa8faac194c8835b4ad4dd0b97eaf3923ce9cf1eafaa65a640af7",
+        "data/pages/sampleCmsPageData.js": "c3a9189d43ae9bb54f50589e39711263101344652f780749a4b5ed620405bcb8",
+        "data/sites/sampleCmsSiteData.js": "0672678e463aefd8d465fc54549b707bf3ea1c52138660313bea39270882d812",
+        "data/typeCodes/sampleTypeCode2RendererData.js": "520d7e5f2f41086acb83b03dd639059725ba1d34e1ad762a30f750b9111f5981",
+        "data/typeCodes/sampleTypeCodeData.js": "07a601f667db595b9f38b18aabee28cee8c22ac6dde3a6c7d477e12cc6dde8af",
+        "headers/components/sampleCmsComponentDataHeader.js": "dfe4cf5d482fbddc5f8734d695ea683da67eed342768cc830c7dc126208e092c",
+        "headers/components/sampleFooterCmsComponentDataHeader.js": "62e46c32307be224e9968315aee475e5f1e0832ec14d7624e9e7e4ea45dd4e91",
+        "headers/components/sampleHeaderCmsComponentDataHeader.js": "f152c5f49bfc908c854012ffac7c3f84c287b6ad58e9bea4713c7ce0c60dd338",
+        "headers/components/sampleMainCmsComponentDataHeader.js": "6f8ca7d435ef722bc73ad8cd9dd7ae50e62a0edcdd4ba48acb7af4e0a238931b",
+        "headers/pages/sampleCmsPageDataHeader.js": "0718f444032c1d8589a90f68968b428ed6558f19afc2f46e77cc405d9657a953",
+        "headers/sites/sampleCmsSiteDataHeader.js": "7bafcd70330ea3392702fd4ea1fd5127ee1f9d2a038dbbcd2dfe40bcfbe6e2d5",
+        "headers/typeCodes/sampleTypeCode2RendererDataHeader.js": "951d3fef87e74f690dff7887b96d6ad740f9c64fadd386661260219c60e8b5aa",
+        "headers/typeCodes/sampleTypeCodeDataHeader.js": "186f7532c8f45b42d213a527b7d9945e649f175d1a17ab422284bcb92cec36b5"
+    }
+}

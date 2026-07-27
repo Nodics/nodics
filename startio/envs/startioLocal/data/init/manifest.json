@@ -1,0 +1,13 @@
+{
+    "contractVersion": 1,
+    "module": "startioLocal",
+    "dataType": "init",
+    "version": "1.0.0",
+    "description": "Startio Local init data",
+    "files": {
+        "data/enterprise/startioLocalTestEnterpriseData.js": "30ee7ebf5061dd661c4924a1dce0d6f5c60a6a9785d4428413fb73df0fce67d1",
+        "data/enterprise/startioLocalTestTenantsData.js": "aa33ed16fb52abf7cedf1786077dcbdde563b795112a53f7755419942459e338",
+        "headers/enterprise/startioLocalTestEnterpriseHeader.js": "5e8aa86e871809385beea3ea1495c84eb5f4da2c0cca8d9151a9b55570927f16",
+        "headers/enterprise/startioLocalTestTenantsHeader.js": "17a3693e233848b283c5336f19cc18e16426e8df6239537454244573586304ca"
+    }
+}

@@ -32,8 +32,8 @@
 | --- | ---: |
 | Source files | 10 |
 | Test files | 7 |
-| Data files | 4 |
-| All module-owned files | 25 |
+| Data files | 6 |
+| All module-owned files | 27 |
 | Local schema definitions | 1 |
 
 ## Ownership And Dependencies
@@ -66,7 +66,7 @@
 | Documented | 19 |
 | Partially documented | 2 |
 | Undocumented | 0 |
-| Inventory only | 4 |
+| Inventory only | 6 |
 
 ## Important Files
 
@@ -93,8 +93,10 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nCatalog/config/properties.js` | `config` | `documented` | 0/0 | Defines default nCatalog configuration used during module startup and layering. |  |
 | `gFramework/nCatalog/data/init/data/catalog/defaultCatalogData.js` | `data` | `documented` | 0/0 | Provides nCatalog initializer or sample data consumed by the import layer. |  |
 | `gFramework/nCatalog/data/init/headers/catalog/defaultCatalogHeader.js` | `data` | `documented` | 0/0 | Provides nCatalog initializer or sample data consumed by the import layer. |  |
+| `gFramework/nCatalog/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nCatalog/data/sample/data/samples/defaultSamplesCatalogData.js` | `data` | `documented` | 0/0 | Provides nCatalog initializer or sample data consumed by the import layer. |  |
 | `gFramework/nCatalog/data/sample/headers/samples/defaultSamplesCatalogHeader.js` | `data` | `documented` | 0/0 | Provides nCatalog initializer or sample data consumed by the import layer. |  |
+| `gFramework/nCatalog/data/sample/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nCatalog/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nCatalog/nodics.js` | `module` | `documented` | 2/2 | Registers the nCatalog module lifecycle hooks and module-level startup behavior. |  |
 | `gFramework/nCatalog/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

@@ -1,0 +1,11 @@
+{
+    "contractVersion": 1,
+    "module": "aiAssistant",
+    "dataType": "core",
+    "version": "1.0.0",
+    "description": "AI Assistant core data",
+    "files": {
+        "data/jobs/defaultAiAssistantJobsData.js": "290e687a38f6383b7d24c66bd213027e78295342df79ebb8d41974ee36f6c144",
+        "headers/jobs/defaultAiAssistantJobsHeader.js": "5e5ea999dac7659482a56c54f2e2746594f930c04a9810c22837766751eecfac"
+    }
+}

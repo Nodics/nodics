@@ -1,0 +1,11 @@
+{
+    "contractVersion": 1,
+    "module": "catalog",
+    "dataType": "init",
+    "version": "1.0.0",
+    "description": "Catalog Framework init data",
+    "files": {
+        "data/catalog/defaultCatalogData.js": "8953f85c808131fece55ed0982bce5e349917b9f1a2d915658a06314d6730500",
+        "headers/catalog/defaultCatalogHeader.js": "2b6beb5f1f8a88888d99b3dffea3c69f5c2c5f1b4e5e163f27e4e16b8c307e1c"
+    }
+}

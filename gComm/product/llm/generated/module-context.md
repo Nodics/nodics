@@ -35,8 +35,8 @@
 | --- | ---: |
 | Source files | 40 |
 | Test files | 28 |
-| Data files | 6 |
-| All module-owned files | 64 |
+| Data files | 7 |
+| All module-owned files | 65 |
 | Local schema definitions | 18 |
 
 ## Ownership And Dependencies
@@ -72,7 +72,7 @@
 | Documented | 7 |
 | Partially documented | 53 |
 | Undocumented | 0 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -103,6 +103,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/product/data/init/headers/publication/defaultProductPublicationWorkflowActionHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/data/init/headers/publication/defaultProductPublicationWorkflowChannelHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/data/init/headers/publication/defaultProductPublicationWorkflowHeadHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/product/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/product/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/product/nodics.js` | `module` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

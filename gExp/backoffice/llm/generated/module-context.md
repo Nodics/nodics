@@ -36,8 +36,8 @@
 | --- | ---: |
 | Source files | 29 |
 | Test files | 21 |
-| Data files | 10 |
-| All module-owned files | 65 |
+| Data files | 11 |
+| All module-owned files | 66 |
 | Local schema definitions | 3 |
 
 ## Ownership And Dependencies
@@ -74,7 +74,7 @@
 | Documented | 36 |
 | Partially documented | 21 |
 | Undocumented | 4 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -109,6 +109,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/data/core/data/axis/axisCmsTypeCodeData.js` | `data` | `partially-documented` | 0/0 | Declares non-executable Axis page and component property contracts. | add @override |
 | `gExp/backoffice/data/core/data/axis/axisContentCatalogData.js` | `data` | `partially-documented` | 0/0 | Defines the employee-only Nodics Axis content catalog. | add @override |
 | `gExp/backoffice/data/core/headers/axis/axisContentCatalogHeader.js` | `data` | `documented` | 0/0 | Declares the governed core import contract for the initial Nodics Axis CMS composition. |  |
+| `gExp/backoffice/data/core/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gExp/backoffice/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gExp/backoffice/nodics.js` | `module` | `documented` | 2/2 | Declares the lifecycle boundary for the BackOffice registry and discovery capability. |  |
 | `gExp/backoffice/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

@@ -36,8 +36,8 @@
 | --- | ---: |
 | Source files | 58 |
 | Test files | 35 |
-| Data files | 6 |
-| All module-owned files | 92 |
+| Data files | 7 |
+| All module-owned files | 93 |
 | Local schema definitions | 15 |
 
 ## Ownership And Dependencies
@@ -74,7 +74,7 @@
 | Documented | 35 |
 | Partially documented | 40 |
 | Undocumented | 13 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -105,6 +105,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/inventory/data/init/headers/reconciliation/defaultStockReconciliationWorkflowActionHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/data/init/headers/reconciliation/defaultStockReconciliationWorkflowChannelHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/data/init/headers/reconciliation/defaultStockReconciliationWorkflowHeadHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/inventory/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/inventory/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/inventory/nodics.js` | `module` | `documented` | 2/2 | Generated Nodics lifecycle entrypoint for inventory. |  |
 | `gComm/inventory/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
