@@ -180,9 +180,9 @@ and verified functionality. Future designs, proposed architecture, unresolved
 decisions, implementation backlogs, and action plans belong only in the
 temporary, untracked, non-runtime root `docs/` workspace until implementation
 and validation are complete. Promote only the implemented portions into
-`gDocs`, module `README.md`, module `docs/`, and generated context. Do not link
-temporary plans from public or module documentation in a way that presents
-planned behavior as available capability.
+canonical `nodicsdocs` content, module `README.md`, module `docs/`, and
+generated context. Do not link temporary plans from public or module
+documentation in a way that presents planned behavior as available capability.
 
 Every functional change must evaluate whether these artifacts need updates:
 
@@ -211,6 +211,13 @@ AI-assisted changes must update AI-facing guidance with the same care as source
 code because future developers and AI tools will depend on it. A change is not
 complete until behavior, tests, human documentation, and AI guidance are
 consistent.
+
+The platform-wide detail-preservation, audience, migration, and documentation
+generation authority is
+`gSetup/llm/contracts/documentation-impact-contract.md`. Humans and AI tools
+must apply it before creating, restructuring, migrating, reducing, or
+generating documentation. A word-count or section-count check is never evidence
+that unique verified knowledge was preserved.
 
 Public documentation navigation is capability-first. Do not create a public
 page whose identity or primary navigation exists only to mirror a module,

@@ -50,6 +50,23 @@ module.exports = {
             contractVersion: 1, minimumClientContractVersion: 1, roles: ['CONTROL_PLANE_PROVIDER'],
             discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
             requiredPermissions: ['backoffice.registry.view'],
+            documentation: [
+                {
+                    id: 'framework', label: 'Framework', type: 'CMS', route: '/docs/framework', order: 100,
+                    connectionModule: 'cms', site: 'axisCmsSite', catalog: 'nodicsDocumentationContentCatalog',
+                    defaultPage: '/docs', packCode: 'nodicsDocumentation'
+                },
+                {
+                    id: 'swaggers', label: 'Swaggers', type: 'OPENAPI', route: '/docs/swaggers', order: 200,
+                    connectionModule: 'system', openApiPath: '/nodics/system/v0/contract/openapi',
+                    swaggerPath: '/nodics/system/v0/contract/swagger'
+                },
+                {
+                    id: 'nodics-axis', label: 'Nodics Axis', type: 'CMS', route: '/docs/nodics-axis', order: 300,
+                    connectionModule: 'cms', site: 'axisDocumentationSite', catalog: 'axisDocumentationContentCatalog',
+                    defaultPage: '/docs/nodics-axis', packCode: 'axisDocumentation'
+                }
+            ],
             navigation: [
                 { id: 'my-work', label: 'My Work', route: '/workspace/my-work', icon: 'workflow',
                     order: 100, group: { id: 'workspace', label: 'Workspace', order: 100 },

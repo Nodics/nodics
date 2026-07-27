@@ -154,8 +154,8 @@ files are opened. Its maintained documentation must provide:
   customization examples;
 - permissions, tenant behavior, observability, performance, deployment,
   migration, backup/restore, troubleshooting, and verification impact;
-- links from the module README to deeper module docs and from permanent public
-  `gDocs` journeys to the owning module.
+- links from the module README to deeper module docs and from canonical
+  `nodicsdocs` capability journeys to the owning module.
 
 Critical invariants must be enforced by focused tests. A sentence in a README
 or `AGENTS.md` is not sufficient proof when source/configuration structure or

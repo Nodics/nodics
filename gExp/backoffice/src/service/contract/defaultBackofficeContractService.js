@@ -80,12 +80,40 @@ module.exports = {
             return true;
         });
     },
+    /** Validates bounded declarative documentation sources contributed by one owning module. */
+    validateDocumentation: function (documentation) {
+        if (!Array.isArray(documentation) || documentation.length > 32) return false;
+        let ids = documentation.map(source => source && source.id);
+        if (ids.some(id => !this.isString(id, 128)) || new Set(ids).size !== ids.length) return false;
+        return documentation.every(source => {
+            if (!source || typeof source !== 'object' || Array.isArray(source)) return false;
+            let allowed = ['id', 'label', 'labelKey', 'type', 'route', 'order', 'connectionModule',
+                'site', 'catalog', 'defaultPage', 'packCode', 'openApiPath', 'swaggerPath', 'requiredPermissions'];
+            if (Object.keys(source).some(key => !allowed.includes(key)) ||
+                !this.isString(source.label) || !['CMS', 'OPENAPI'].includes(source.type) ||
+                !this.isSafePath(source.route) || !Number.isInteger(source.order) ||
+                !new RegExp(contracts.moduleName.pattern).test(source.connectionModule || '') ||
+                source.labelKey !== undefined && !this.isString(source.labelKey) ||
+                source.requiredPermissions !== undefined && !this.isStringList(source.requiredPermissions)) return false;
+            if (source.type === 'CMS') {
+                return ['site', 'catalog', 'defaultPage', 'packCode'].every(key => this.isString(source[key], 128)) &&
+                    this.isSafePath(source.defaultPage) && source.openApiPath === undefined && source.swaggerPath === undefined;
+            }
+            return this.isSafePath(source.openApiPath) && this.isSafePath(source.swaggerPath) &&
+                ['site', 'catalog', 'defaultPage', 'packCode'].every(key => source[key] === undefined);
+        });
+    },
+    /** Returns whether a string is a bounded application-relative path. */
+    isSafePath: function (value) {
+        return this.isString(value, 512) && value.startsWith('/') && !value.startsWith('//') && !value.includes('://');
+    },
     /** Validates optional module-owned BackOffice catalogue metadata. */
     validateBackofficeMetadata: function (metadata) {
         if (metadata === undefined) return true;
         if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) return false;
         let allowed = ['enabled', 'capabilityId', 'displayName', 'category', 'icon', 'contractVersion',
-            'minimumClientContractVersion', 'roles', 'discovery', 'uiComposition', 'requiredPermissions', 'navigation'];
+            'minimumClientContractVersion', 'roles', 'discovery', 'uiComposition', 'documentation',
+            'requiredPermissions', 'navigation'];
         if (Object.keys(metadata).some(key => !allowed.includes(key))) return false;
         if (metadata.enabled !== undefined && typeof metadata.enabled !== 'boolean') return false;
         if (['capabilityId', 'displayName', 'category', 'icon'].some(key => metadata[key] !== undefined && !this.isString(metadata[key]))) return false;
@@ -107,7 +135,8 @@ module.exports = {
             metadata.uiComposition.fallbackMode !== 'STATIC_RECOVERY_SHELL')) return false;
         if (metadata.contractVersion !== undefined && metadata.minimumClientContractVersion !== undefined &&
             metadata.minimumClientContractVersion > metadata.contractVersion) return false;
-        return metadata.navigation === undefined || this.validateNavigation(metadata.navigation);
+        return (metadata.navigation === undefined || this.validateNavigation(metadata.navigation)) &&
+            (metadata.documentation === undefined || this.validateDocumentation(metadata.documentation));
     },
     /** Validates one module registration against the bounded API contract. */
     validateRegistration: function (registration) {

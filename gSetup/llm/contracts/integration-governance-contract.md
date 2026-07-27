@@ -268,8 +268,8 @@ including provider credentials or connection settings in diagnostics.
 An integration is complete only when:
 
 - the owning module and provider adapter are declared;
-- `gDocs/reference/provider-capability-maturity-matrix.md` reflects the
-  provider or capability maturity level;
+- canonical `nodicsdocs` page `/docs/reference/maturity` reflects the provider
+  or capability maturity level;
 - root dependency governance and the owner module `package.json` declare any
   external SDK, provider adapter, or runtime package used by the integration;
 - provider selection is layered and overrideable;

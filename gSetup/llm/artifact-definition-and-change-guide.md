@@ -190,7 +190,7 @@ Cache behavior is a cross-layer contract, not a single implementation detail.
 Nodics has router/API-response cache in the request pipeline and DAO/schema-item
 cache in the database get pipeline.
 
-Use the public cache guide at `gDocs/platform/how-cache-works.md` for the
+Use the canonical `nodicsdocs` page `/docs/capabilities/caching` for the
 reader-facing explanation of what cache is, where it applies, how it is
 configured, how invalidation works, and what to check when it fails. Use the
 `nCache/cache` README for implementation contracts.

@@ -32,6 +32,31 @@ const discovery = {
         openApiPath: { type: 'string' }, contractVersion: { type: 'integer', minimum: 1 }
     }
 };
+const documentationSource = {
+    type: 'object', additionalProperties: false,
+    required: ['id', 'label', 'type', 'route', 'order', 'connectionModule'],
+    properties: {
+        id: { type: 'string', minLength: 1, maxLength: 128 },
+        label: { type: 'string', minLength: 1, maxLength: 256 },
+        labelKey: { type: 'string', minLength: 1, maxLength: 256 },
+        type: { enum: ['CMS', 'OPENAPI'] },
+        route: { type: 'string', pattern: '^/(?!/)', maxLength: 512 },
+        order: { type: 'integer' },
+        connectionModule: moduleName,
+        site: { type: 'string', minLength: 1, maxLength: 128 },
+        catalog: { type: 'string', minLength: 1, maxLength: 128 },
+        defaultPage: { type: 'string', pattern: '^/(?!/)', maxLength: 512 },
+        packCode: { type: 'string', minLength: 1, maxLength: 128 },
+        openApiPath: { type: 'string', pattern: '^/(?!/)', maxLength: 512 },
+        swaggerPath: { type: 'string', pattern: '^/(?!/)', maxLength: 512 },
+        requiredPermissions: { type: 'array', uniqueItems: true, items: { type: 'string' } }
+    }
+};
+const documentationSelection = {
+    type: 'object', additionalProperties: false,
+    required: documentationSource.required.concat(['ownerModule']),
+    properties: Object.assign({ ownerModule: moduleName }, documentationSource.properties)
+};
 const capabilityOperation = {
     type: 'object', additionalProperties: false, required: ['operationId', 'path', 'method', 'permissions'],
     properties: {
@@ -138,6 +163,7 @@ const backofficeMetadata = {
         minimumClientContractVersion: { type: 'integer', minimum: 1 },
         roles: { type: 'array', uniqueItems: true, items: moduleRole }, discovery: discovery,
         uiComposition: uiComposition,
+        documentation: { type: 'array', maxItems: 32, items: documentationSource },
         requiredPermissions: { type: 'array', uniqueItems: true, items: { type: 'string' } },
         navigation: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['id', 'label'], properties: {
             id: { type: 'string' }, label: { type: 'string' }, route: { type: 'string' },
@@ -184,6 +210,8 @@ module.exports = {
     moduleRole: moduleRole,
     uiComposition: uiComposition,
     discovery: discovery,
+    documentationSource: documentationSource,
+    documentationSelection: documentationSelection,
     capabilityOperation: capabilityOperation,
     capabilitySnapshot: capabilitySnapshot,
     uiCompositionSelection: uiCompositionSelection,
@@ -263,9 +291,10 @@ module.exports = {
             }
         }
     },
-    bootstrapData: { type: 'object', required: ['compatibility', 'modules', 'catalogue', 'availability', 'uiComposition', 'axisPolicy', 'tenantCode'], properties: {
+    bootstrapData: { type: 'object', required: ['compatibility', 'modules', 'catalogue', 'availability', 'uiComposition', 'documentationSources', 'axisPolicy', 'tenantCode'], properties: {
         compatibility: { type: 'object' }, modules: { type: 'object' }, catalogue: { type: 'object' },
         availability: { type: 'object', additionalProperties: moduleAvailability }, uiComposition: uiCompositionSelection,
+        documentationSources: { type: 'array', items: documentationSelection },
         axisPolicy: axisPolicy, tenantCode: { type: 'string' }
     } },
     diagnosticsData: { type: 'object', required: ['activeModuleLeases', 'metrics', 'store'], properties: {

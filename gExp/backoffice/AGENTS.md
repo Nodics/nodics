@@ -33,6 +33,12 @@
   module in `config/properties.js#backofficeCapabilities.<moduleName>`. BackOffice validates and
   permission-filters that metadata; it must not maintain a duplicated manual
   module catalogue.
+- Documentation products must be contributed through the same module-owned
+  `backofficeCapabilities.<moduleName>.documentation` metadata and aggregated
+  by the existing registry. Axis must render the permission-filtered list
+  dynamically. CMS products use separate Site/catalog/content-pack identities;
+  Swagger products reference live System/OpenAPI paths. Never create an
+  Axis-owned source registry, copy OpenAPI into CMS, or add another importer.
 - Each navigation entry may declare its own bounded semantic `icon` key.
   Clients map that non-executable key to a client-owned icon and safely fall
   back to the module-level icon or a generic module mark.

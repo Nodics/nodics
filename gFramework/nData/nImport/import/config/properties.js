@@ -65,6 +65,28 @@ module.exports = {
                         updateAction: 'Update documentation',
                         retryAction: 'Retry import'
                     }
+                },
+                axisDocumentation: {
+                    enabled: true,
+                    manifestPack: 'nodicsaxis',
+                    source: {
+                        type: 'LOCAL_SIBLING',
+                        repositoryName: 'nodicsaxis',
+                        contentPath: 'data/core',
+                        manifestPath: 'manifest/docs-content-pack.json'
+                    },
+                    updatePolicy: {
+                        allowDowngrade: false,
+                        sameVersionContentChange: 'REJECT'
+                    },
+                    presentation: {
+                        title: 'Nodics Axis documentation',
+                        unavailableMessage: 'Nodics Axis documentation has not been installed for this environment.',
+                        disabledMessage: 'Documentation imports are not enabled for this environment.',
+                        importAction: 'Import Nodics Axis documentation',
+                        updateAction: 'Update Nodics Axis documentation',
+                        retryAction: 'Retry import'
+                    }
                 }
             }
         },

@@ -34,23 +34,30 @@ Not every change updates every file. Every change must make an explicit
 documentation-impact decision. Generated documentation and generated LLM context
 must be recreated from source definitions.
 
-Permanent public documentation belongs in `gDocs`; root `docs/` is temporary,
-untracked, and non-runtime unless material is explicitly promoted. The root
-README is the public entry point and must provide reachable journeys for
-business evaluators, beginners, builders, architects, security reviewers, and
-operators. Public task pages must link to their next useful action and owning
-module detail. Run `npm run quality:docs` to validate links, path case,
-reachability, page continuation, required entry points, and module-catalog
-coverage through the existing documentation-governance authority.
+Canonical public documentation content belongs in the separate `nodicsdocs`
+repository and is projected into Nodics CMS through the governed content-pack
+contract. `gDocs` is frozen migration evidence until its retirement gate
+passes; it is not the authority for new public guidance. Root `docs/` is
+temporary, untracked, and non-runtime unless implemented material is explicitly
+promoted. The Nodics root README remains the repository entry point and must
+link readers toward canonical capability journeys for business evaluators,
+beginners, builders, architects, security reviewers, and operators. Public task
+pages must link to their next useful action and owning module detail.
 
-Promotion is evidence-based. `gDocs`, module `README.md`, module `docs/`, and
-generated context must describe functionality that exists in authoritative
-source/configuration/runtime contracts and has appropriate validation evidence.
-Keep proposals, future architecture, unresolved decisions, backlogs, and action
-plans under root `docs/` while they remain unimplemented. When implementation
-differs from a plan, update the temporary plan first; promote only the behavior
-that was actually implemented and verified. Do not create permanent public
-documentation merely to preserve a future idea.
+Run Nodics documentation-governance checks for repository links, ownership,
+module coverage, and generated AI context. Run the `nodicsdocs` coverage, depth,
+content-pack, and link checks when canonical public content changes. Neither
+repository may create a second public documentation authority.
+
+Promotion is evidence-based. Canonical `nodicsdocs` content, module
+`README.md`, module `docs/`, and generated context must describe functionality
+that exists in authoritative source/configuration/runtime contracts and has
+appropriate validation evidence. Keep proposals, future architecture,
+unresolved decisions, backlogs, and action plans under root `docs/` while they
+remain unimplemented. When implementation differs from a plan, update the
+temporary plan first; promote only the behavior that was actually implemented
+and verified. Do not create permanent public documentation merely to preserve a
+future idea.
 
 ## Distributed Discovery Contract
 
@@ -74,6 +81,174 @@ Do not place a critical rule only in a distant public guide, planning document,
 prompt, or generated summary. Repeat a concise local rule when it is necessary
 to make the module safe in isolation, while linking to the canonical detailed
 contract instead of copying its complete text.
+
+## Documentation Detail Preservation Contract
+
+Documentation is a product capability, not a short summary of source code.
+Human contributors, partners, generators, migration tools, and AI tools must
+preserve or increase useful verified detail whenever documentation is created,
+restructured, migrated, or updated.
+
+The following rules are mandatory:
+
+1. Never reduce a complete guide merely to make it shorter, easier to generate,
+   visually simpler, or compliant with a minimum word count.
+2. Preserve verified business context, beginner explanations, terminology,
+   concepts, architecture, configuration, defaults, precedence, extension
+   points, examples, tables, security, tenant behavior, performance,
+   observability, operations, failures, recovery, troubleshooting, limitations,
+   and verification whenever applicable.
+3. Capability-first restructuring may change titles, grouping, sequence, and
+   language. It must not silently discard unique knowledge from an
+   authoritative or reviewed migration source.
+4. Keep stronger explanations, scenarios, decisions, and limitations already
+   added to a canonical destination. A synchronization tool may replace only
+   content attributed to the same recorded evidence source.
+5. Do not invent behavior to make a page appear complete. Verify claims against
+   current source, properties, schemas, routes, services, tests, module
+   technical documentation, and controlled runtime evidence.
+6. State whether behavior is implemented, configurable, guarded,
+   provider-dependent, scaffolded, deprecated, or planned. Planned behavior
+   remains outside published runtime documentation until its implementation and
+   tests exist.
+7. Write for partial discovery. A reader arriving through search must
+   understand purpose, prerequisites, authority, context, expected result,
+   limitations, and the next action without reading the whole repository.
+8. Reuse and extend an existing canonical page before adding another
+   authority. Do not create parallel guides, terminology sources, configuration
+   authorities, migration paths, or generated content paths.
+9. Removing documented behavior requires evidence of a governed implementation
+   removal, a reviewed correction of inaccurate or unsafe guidance, a named
+   canonical destination preserving the knowledge, or an explicit archive or
+   reject decision with a reason.
+10. Page splitting, navigation redesign, rewording, or generator convenience is
+    not sufficient reason to remove detail.
+11. Every overview begins by defining the topic in plain language, using a
+    familiar analogy, explaining why an application needs it, and walking
+    through a small example before business outcomes, architecture,
+    configuration, or operations. Do not assume a graduate, evaluator, or
+    first-time reader already knows the underlying technology.
+12. Navigation expresses the learning journey, not implementation containment.
+    Framework orientation belongs in discovery; capability hubs remain owned
+    by the capability section instead of becoming children of one architecture
+    article.
+13. Preserve reviewed diagrams and images as governed structured media with
+    alternative text, integrity evidence, safe transport, and responsive
+    rendering. Do not leave image Markdown as visible text, copy canonical
+    media into each frontend, or silently discard it during generation.
+14. Inline presentation syntax is a bounded declarative contract. Consumers
+    may render allowlisted links, emphasis, and inline code, but must reject raw
+    HTML, executable markup, unsafe URL schemes, and arbitrary styles.
+
+Minimum word and section counts are lower-bound defect detectors only. They do
+not prove accuracy, usefulness, audience completeness, evidence coverage, or
+source preservation.
+
+## Documentation Generation and Review Contract
+
+Before creating or changing canonical public documentation:
+
+1. identify the capability, owner, primary reader intent, and applicable
+   audiences;
+2. search existing canonical content and technical evidence before adding a
+   page;
+3. collect current implementation, configuration, schema, API, event, test,
+   operational, and module-owned evidence;
+4. reconcile conflicts using Nodics-owned runtime contracts as the behavior
+   authority;
+5. document the applicable business, beginner, developer, architecture,
+   security, tenancy, performance, observability, operations, failure,
+   recovery, customization, and verification concerns;
+6. include a recognizable end-to-end example plus rejected, boundary, failure,
+   and recovery behavior where the capability changes data, access, money,
+   publishing, workflow, external systems, or runtime state;
+7. explain the smallest supported later-loaded project customization without
+   editing Nodics framework source or creating a parallel authority;
+8. record evidence, ownership, maturity, limitations, and last verification;
+9. update all affected destinations when one implementation change affects
+   multiple audiences or contracts;
+10. regenerate derived content and run Nodics plus `nodicsdocs` validation
+    proportionate to the change.
+
+## Project Documentation Content-Pack Contract
+
+Every backend project, frontend project, reusable application, and implemented
+functionality must ship documentation proportionate to what it contributes.
+Documentation is part of feature acceptance; tests and source code alone do not
+make a capability adoptable.
+
+A project that supplies CMS-importable documentation data uses this stable
+release shape:
+
+```text
+project/
+  data/
+    core/
+      headers/
+      data/
+        documentation/
+  manifest/
+    docs-content-pack.json
+```
+
+The manifest name is exactly `docs-content-pack.json`. Do not introduce
+`documentation-content-pack.json`, project-specific manifest names, or another
+import authority. Generated or assembled `data/core` is committed,
+deterministic, and directly consumable by the existing Nodics content-pack and
+`nImport` contracts. The project repository owns its source-controlled
+documentation release; CMS is the runtime projection.
+
+Frontend startup may discover documentation-pack status and present authorized
+Import or Update actions. A frontend must never read sibling files, write CMS
+records, connect to the database, or automatically mutate persistent
+documentation merely because the browser application started. Nodics backend
+configuration owns pack discovery, compatibility, checksum validation,
+permissions, startup policy, locking, import history, and import execution.
+
+Each project or reusable application guide must cover, where applicable:
+
+1. project purpose, supported business outcomes, users, and explicit
+   limitations;
+2. repository ownership and the boundary between framework, project backend,
+   frontend presentation, CMS content, and generated artifacts;
+3. the technology stack, exact supported version ranges, runtime requirements,
+   dependency policy, build toolchain, and upgrade procedure;
+4. installation, configuration, environment variables, local start, production
+   build, deployment shape, and compatibility matrix;
+5. route and page organization, navigation ownership, layouts, templates,
+   slots, components, loading/empty/error/recovery states, and responsive or
+   mobile-WebView behavior;
+6. one-renderer-per-file organization, typed renderer registry, logical
+   renderer keys, contract versions, supported channels, deprecation behavior,
+   unknown-renderer failure behavior, and focused mirrored tests;
+7. how backend CMS page, template, slot, component, type-code, and renderer
+   models map to frontend-owned implementations without sending executable
+   frontend code from the backend;
+8. API and OpenAPI dependencies, authentication, authorization, tenant and
+   enterprise context, browser-session security, error-code handling, and
+   frontend versus backend validation responsibilities;
+9. server-state and presentation-state ownership, caching, localization,
+   accessibility, keyboard/touch behavior, performance, security headers, and
+   safe rendering constraints;
+10. supported project customization and extension paths, including what later
+    layers may replace and which framework or backend authorities they must not
+    bypass;
+11. observability, diagnostics, failure modes, troubleshooting, recovery,
+    migration, rollback, and operational ownership;
+12. positive, negative, permission, boundary, responsive, contract,
+    integration, regression, and production-build verification with exact
+    commands and expected results.
+
+When one functionality spans repositories, each repository documents only its
+owned implementation boundary and links to the canonical end-to-end capability
+journey. Do not duplicate business authority in a frontend guide or frontend
+implementation detail in a backend module guide.
+
+For a migration or merge, every reviewed source receives a disposition and
+destination or an archive/reject reason. Mapped instructional sources must keep
+their substantive headings and detailed content. Links are normalized to
+canonical routes, and generated CMS blocks are reviewed in addition to authored
+structured source.
 
 ## Capability Documentation Acceptance Matrix
 

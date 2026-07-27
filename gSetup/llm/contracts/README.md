@@ -19,8 +19,10 @@ Use these files for rules that are more specific than root `AGENTS.md` and the m
 - `module-structure-contract.md`: standard module, docs, and LLM folder shape.
 - `integration-governance-contract.md`: ownership, configuration, security,
   testing, and MCP exposure rules for external/provider integrations.
-- `documentation-impact-contract.md`: documentation updates required by behavior
-  and contract changes.
+- `documentation-impact-contract.md`: canonical platform-wide documentation
+  authority for impact analysis, audience and use-case coverage, detail
+  preservation, generation, migration, distributed discovery, and updates
+  required by behavior and contract changes.
 - `testing-and-release-contract.md`: testing and release expectations.
 - `customer-project-mode-contract.md`: scope rules for customer/project work on
   top of released Nodics.

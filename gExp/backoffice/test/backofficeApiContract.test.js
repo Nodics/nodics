@@ -36,6 +36,8 @@ assert(contracts.capabilitySnapshot.properties.changeClassification.enum.include
 assert(contracts.bootstrapData.properties.uiComposition.required.includes('fallbackMode'));
 assert(contracts.bootstrapData.required.includes('axisPolicy'));
 assert(contracts.bootstrapData.required.includes('tenantCode'));
+assert(contracts.bootstrapData.required.includes('documentationSources'));
+assert.deepStrictEqual(contracts.documentationSource.properties.type.enum, ['CMS', 'OPENAPI']);
 assert.deepStrictEqual(contracts.axisPolicyUpdate.required,
     ['screenLockEnabled', 'idleTimeoutSeconds', 'expectedRevision']);
 assert.deepStrictEqual(contracts.publicBootstrapData.required,
@@ -94,6 +96,28 @@ assert.strictEqual(service.validateBackofficeMetadata({
 assert.strictEqual(service.validateBackofficeMetadata({
     navigation: [{ id: 'hidden', label: 'Hidden', contexts: ['secret-context'] }]
 }), false, 'unknown context dimensions must fail registration');
+assert(service.validateBackofficeMetadata({
+    documentation: [
+        { id: 'guide', label: 'Guide', type: 'CMS', route: '/docs/guide', order: 1,
+            connectionModule: 'cms', site: 'guideSite', catalog: 'guideCatalog',
+            defaultPage: '/docs/guide', packCode: 'guideDocumentation' },
+        { id: 'apis', label: 'APIs', type: 'OPENAPI', route: '/docs/apis', order: 2,
+            connectionModule: 'system', openApiPath: '/nodics/system/v0/contract/openapi',
+            swaggerPath: '/nodics/system/v0/contract/swagger' }
+    ]
+}));
+assert.strictEqual(service.validateBackofficeMetadata({
+    documentation: [
+        { id: 'duplicate', label: 'One', type: 'CMS', route: '/docs/one', order: 1,
+            connectionModule: 'cms', site: 'one', catalog: 'one', defaultPage: '/docs/one', packCode: 'one' },
+        { id: 'duplicate', label: 'Two', type: 'OPENAPI', route: '/docs/two', order: 2,
+            connectionModule: 'system', openApiPath: '/openapi', swaggerPath: '/swagger' }
+    ]
+}), false, 'duplicate documentation source ids must fail registration');
+assert.strictEqual(service.validateBackofficeMetadata({
+    documentation: [{ id: 'unsafe', label: 'Unsafe', type: 'OPENAPI', route: '//evil', order: 1,
+        connectionModule: 'system', openApiPath: '/openapi', swaggerPath: '/swagger' }]
+}), false, 'unsafe documentation routes must fail registration');
 assert(capabilities[1].roles.includes('UI_COMPOSITION_PROVIDER'));
 assert.strictEqual(capabilities[1].uiComposition.fallbackMode, 'STATIC_RECOVERY_SHELL');
 

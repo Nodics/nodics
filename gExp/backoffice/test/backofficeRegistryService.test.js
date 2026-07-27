@@ -204,6 +204,7 @@ async function run() {
     assert.strictEqual(bootstrap.data.uiComposition.providerModule, 'cms');
     assert.strictEqual(bootstrap.data.uiComposition.fallbackMode, 'STATIC_RECOVERY_SHELL');
     assert.strictEqual(bootstrap.data.axisPolicy.idleTimeoutSeconds, 900);
+    assert(Array.isArray(bootstrap.data.documentationSources));
     assert.strictEqual(bootstrap.data.tenantCode, 'default');
     assert.strictEqual(bootstrap.data.modules.workflowCore, undefined,
         'bootstrap must never expose modules that are not browser callable');
@@ -230,6 +231,13 @@ async function run() {
     }, 1, { permissions: ['backoffice.registry.view'] });
     assert.deepStrictEqual(restrictedCatalogue.backoffice.navigation.map(item => item.id), ['registry'],
         'bootstrap must remove unauthorized parents, their orphaned descendants, and hidden features');
+    assert.deepStrictEqual(service.buildDocumentationSources({
+        backoffice: { documentation: [
+            { id: 'public-guide', label: 'Guide', order: 1 },
+            { id: 'restricted-guide', label: 'Restricted', order: 2, requiredPermissions: ['docs.private'] }
+        ] }
+    }, { permissions: [] }).map(item => item.id), ['public-guide'],
+    'documentation aggregation must permission-filter module-owned sources');
     await assert.rejects(() => Promise.resolve().then(() => service.bootstrap({ authData: { permissions: [] },
         headers: { 'x-nodics-client-contract-version': 'invalid' } })));
     assert(auditEvents.some(event => event.eventType === 'backoffice.registry.registration'));

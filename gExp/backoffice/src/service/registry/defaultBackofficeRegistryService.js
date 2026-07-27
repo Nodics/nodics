@@ -305,6 +305,26 @@ module.exports = {
         return Object.assign({ enabled: true, providerModule: providerModule }, catalogue[providerModule].uiComposition);
     },
 
+    /** Aggregates permission-filtered module-owned documentation sources into one client-safe ordered registry. */
+    buildDocumentationSources: function (catalogue, authData) {
+        let permissions = authData && authData.permissions || [];
+        let sources = [];
+        Object.keys(catalogue).sort().forEach(moduleName => {
+            let metadata = catalogue[moduleName];
+            (metadata.documentation || []).forEach(source => {
+                let required = [].concat(source.requiredPermissions || []);
+                if (!permissions.includes('*') && !required.every(permission => permissions.includes(permission))) return;
+                sources.push(Object.assign({}, source, { ownerModule: moduleName }));
+            });
+        });
+        let ids = new Set();
+        return sources.sort((left, right) => left.order - right.order || left.id.localeCompare(right.id)).filter(source => {
+            if (ids.has(source.id)) return false;
+            ids.add(source.id);
+            return true;
+        });
+    },
+
     /** Resolves and validates bounded administrative query parameters. */
     getAdminQuery: function (request) {
         let source = request && (request.query || request.httpRequest && request.httpRequest.query) || {};
@@ -414,6 +434,7 @@ module.exports = {
                 catalogue: catalogue,
                 availability: availability,
                 uiComposition: this.selectUiComposition(catalogue, availability),
+                documentationSources: this.buildDocumentationSources(catalogue, request && request.authData),
                 axisPolicy: axisPolicy,
                 tenantCode: request.tenant
             }

@@ -105,6 +105,15 @@ help a human or AI tool answer:
 - which generated artifacts must be regenerated;
 - which tests prove the change.
 
+The canonical platform-wide documentation rule is
+`contracts/documentation-impact-contract.md`. It applies equally to human
+contributors, partners, generators, migration tools, and AI tools. Never
+compress a complete verified guide into a thin summary during restructuring or
+generation. Preserve applicable business, beginner, technical, security,
+tenant, operational, failure, recovery, customization, and verification detail.
+Minimum word counts are lower-bound checks and never replace evidence coverage
+or editorial review.
+
 Do not rely on expert shortcuts such as "add a service" or "change the route"
 without naming the Nodics layer, file pattern, export shape, configuration,
 permission, tenant, generated artifact, and verification impact.

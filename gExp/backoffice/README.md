@@ -15,6 +15,10 @@ groups remain authoritative.
 - Discover and validate module identity, versions, capabilities, contracts, and
   sanitized health information.
 - Expose a permission-filtered, client-safe registry to Nodics Axis.
+- Aggregate bounded module-owned documentation sources for Framework,
+  live Swagger/OpenAPI, Nodics Axis, and future customer projects. BackOffice
+  owns source discovery only; CMS, System/OpenAPI, and nImport retain their
+  respective runtime authorities.
 - Contribute the active **Nodics Documentation** entry under the governed
   Workspace navigation group. The entry points to `/docs`; CMS owns route and
   content resolution while Axis owns presentation.
@@ -46,7 +50,11 @@ Axis first uses `/bootstrap/public`, which exposes only active Profile/CMS
 endpoints and non-sensitive CMS composition identifiers needed to display
 employee login. After Profile authentication, Axis uses the existing secured
 `/bootstrap` contract for the permission-filtered module catalogue and
-client-safe employee policy. The initial policy supports configured idle
+client-safe employee policy. The same response contains ordered
+`documentationSources`. Each source declares a safe Axis route, runtime
+connection module, and either a CMS Site/catalog/content-pack identity or live
+OpenAPI/Swagger paths. Axis renders this list dynamically and never maintains a
+second documentation registry. The initial policy supports configured idle
 screen locking; private policy persistence and operator mutation remain owned
 by BackOffice.
 
@@ -108,3 +116,10 @@ guessing, parsing an unverified browser token, or hardcoding `default`. It does
 not expose service or Cron
 credentials, registration secrets, or internal lease-expiry state. See
 [`gDocs/security/backoffice-browser-security.md`](../../gDocs/security/backoffice-browser-security.md).
+
+Projects add documentation by contributing `backofficeCapabilities.<module>
+.documentation` from their owning backend module. Source IDs must be unique,
+paths must be application-relative, and optional permissions are filtered
+before bootstrap. A CMS source uses a dedicated Site/catalog pair and a
+configured nImport pack; an OpenAPI source references the live System contract.
+Do not copy API contracts into CMS or add an Axis-owned source list.

@@ -15,6 +15,7 @@ const properties = require('../config/properties');
 
 const navigation = properties.backofficeCapabilities.backoffice.navigation;
 const documentation = navigation.find(item => item.id === 'documentation');
+const sources = properties.backofficeCapabilities.backoffice.documentation;
 
 assert(documentation, 'BackOffice must contribute the documentation navigation entry');
 assert.strictEqual(documentation.label, 'Nodics Documentation');
@@ -26,5 +27,9 @@ assert.strictEqual(documentation.featureState, 'ACTIVE');
 assert.deepStrictEqual(documentation.contexts, ['environment', 'tenant', 'enterprise']);
 assert.strictEqual(documentation.requiredPermissions, undefined,
     'authenticated employees must not require an unrelated operational permission to read help');
+assert.deepStrictEqual(sources.map(source => source.id), ['framework', 'swaggers', 'nodics-axis']);
+assert(sources.every(source => source.connectionModule),
+    'every documentation source must resolve its runtime through the BackOffice registry');
+assert.strictEqual(sources.find(source => source.id === 'nodics-axis').packCode, 'axisDocumentation');
 
 console.log('BackOffice documentation navigation contract tests passed');
