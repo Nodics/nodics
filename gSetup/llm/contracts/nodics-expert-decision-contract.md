@@ -40,7 +40,8 @@ Before writing code, identify which artifact should own the behavior:
   behavior;
 - generated artifacts only through their source definitions and build process;
 - tests for default, negative, tenant/security, and later-layer override proof;
-- README/docs/LLM guidance for human and AI understanding.
+- README, canonical documentation, and LLM guidance for human and AI
+  understanding.
 
 Do not create a parallel configuration artifact when a namespaced
 `config/properties.js` subtree can own the data. Files such as

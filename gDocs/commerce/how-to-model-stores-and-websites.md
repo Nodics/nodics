@@ -54,7 +54,7 @@ The same implemented pattern now covers CMS, Pricing, and Inventory. The reposit
 
 The same handle can be sent to the CMS Storefront delivery endpoint with only a page path. CMS introspects the separate `cms` audience and derives Site, locale, and channel. Consequently, `/home` on Apparel and `/home` on Electronics can resolve different Online CMS publications even though both businesses share the same tenant. Browser-supplied Site, tenant, enterprise, locale, or channel values cannot switch that selection.
 
-For complete payloads, permissions, lifecycle, security, operations, customization, and tests, use [Storefront Foundation](../../gExp/storefront/docs/storefront-foundation.md).
+For complete payloads, permissions, lifecycle, security, operations, customization, and tests, use Storefront Foundation (canonical documentation: `capability.commerce.technical-reference`).
 
 ## Continue
 

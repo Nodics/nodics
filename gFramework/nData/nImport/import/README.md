@@ -5,7 +5,7 @@ initialization; multi-format finalization; tenant-safe dispatch; diagnostics;
 history; validation-only execution; and access-policy enforcement.
 
 It also owns disabled-by-default, versioned content-pack installation and
-updates. See [Governed Content-Pack Import](docs/content-pack-import-contract.md)
+updates. See Governed Content-Pack Import (canonical documentation: `capability.data-exchange.technical-reference`)
 for the local `nodicsdocs` workspace, Axis administrator journey, configuration,
 security, update, extension and verification contracts.
 
@@ -85,6 +85,34 @@ exposed.
 Both patterns must use the same import pipeline and diagnostics model. Do not
 add a direct persistence path for one source just because its data arrives by
 API, file drop, CronJob, or remote adapter.
+
+## Multi-format examples
+
+The import module keeps committed processor fixtures in
+`test/fixtures/multi-format` for the built-in file formats:
+
+- trusted module-owned JavaScript data definitions;
+- JSON arrays;
+- CSV tabular records;
+- Excel workbooks.
+
+`multiFormatDataProcessors.test.js` reads those fixture files directly. This
+protects the end-to-end parser contract and gives developers concrete examples
+without making the examples part of runtime bootstrap. If a project needs a
+real supplier, ERP, PIM, CMS, or partner file import, create project-owned
+headers, mapping, source configuration, adapter or local-file trigger, and
+tests through the existing import lifecycle instead of copying these fixtures
+into framework startup data.
+
+`gCore/profile/data/sample/tenant` restores the older Profile tenant local-file
+import example as module-owned sample data. It uses the standard
+`headers/` and `data/` structure: CSV, XLSX, and legacy XLS headers live under
+one `headers/` folder and their files live under one `data/` folder. Each header
+uses its own `dataFilePrefix` (`defaultTenantCsvData`,
+`defaultTenantExcelData`, or `defaultTenantLegacyExcelData`) so the import
+engine can safely match same-capability files without per-format folders. The
+legacy `.xls` file is kept as historical reference only; the current validated
+spreadsheet path is `.xlsx`.
 
 ## Production Remote Adapter Gate
 
@@ -213,8 +241,12 @@ route public. The capability is sacred; the implementation belongs to the
 project or provider layer that owns the external source contract.
 
 Generated/finalized files and reports are owned by the selected server module.
-Validation-only mode can inspect headers, files, target schemas/services, and
-processors without persistence.
+Data-release preflight validates the immutable manifest, requested version,
+upgrade policy, active-module authority, tenant context, and installed state
+without invoking import handlers. Only execute/install operations call the
+init, core, or sample import pipeline. Lower-level validation-only import
+processing remains available inside provider-owned import flows, but the
+BackOffice data-release validate action must remain side-effect-free.
 
 ## Import Governance
 

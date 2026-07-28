@@ -12,7 +12,6 @@ module/
   package.json
   config/
   data/       # optional for concrete modules that own init/core/sample import data
-  docs/
   llm/
     README.md
     contracts/
@@ -22,13 +21,15 @@ module/
   test/
 ```
 
-`README.md` is the human entrypoint. `AGENTS.md` is the AI/developer behavior
-contract. `docs/` contains permanent module documentation. `llm/` contains
+`README.md` is the single module-level human entrypoint. `AGENTS.md` is the
+AI/developer behavior contract. Detailed permanent human documentation belongs
+to the canonical documentation content pack; `llm/` contains nearby
 AI-specific guidance, examples, contracts, and generated context.
 
-`docs/` is never a runtime module source. Raw module discovery must skip folders
-named `docs`, including root planning notes and module documentation, even
-when copied material under `docs/` contains `package.json` files.
+Module packages must not create a parallel `docs/` directory. The root `docs/`
+workspace remains temporary, untracked, non-runtime planning and archive space.
+Raw module discovery must continue to skip folders named `docs` so copied
+historical material can never become a runtime module source.
 
 `data/` is optional and must be owned by the concrete module whose records are
 being imported. Supported module-owned system data directories are `data/init`

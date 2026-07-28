@@ -133,6 +133,23 @@ npm run quality:docs
 
 Format-specific tests should also be added when adding readers or processors.
 
+Committed multi-format examples live under
+`import/test/fixtures/multi-format`. They intentionally cover JavaScript,
+JSON, CSV, and Excel files so the file processors can be validated from real
+repository fixtures instead of only dynamically generated test files. These
+fixtures are examples for the import capability; they are not active
+module-owned `init`, `core`, or `sample` data and must not be imported during
+normal server startup.
+
+The historical profile tenant local-file import use case is preserved as
+Profile-owned sample data under `gCore/profile/data/sample/tenant`. It keeps
+real CSV and XLSX `defaultTenantData` records, matching tenant headers, and a
+legacy XLS reference outside active bootstrap data. The CSV and XLSX paths are
+covered by
+`profileTenantLocalFileImportContract.test.js`, which proves header discovery,
+data-file matching, file-type resolution, processor execution, and tenant schema
+dispatch metadata.
+
 ## What To Avoid
 
 Avoid:

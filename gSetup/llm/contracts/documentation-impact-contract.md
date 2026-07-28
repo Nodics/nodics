@@ -50,7 +50,7 @@ content-pack, and link checks when canonical public content changes. Neither
 repository may create a second public documentation authority.
 
 Promotion is evidence-based. Canonical `nodicsdocs` content, module
-`README.md`, module `docs/`, and generated context must describe functionality
+`README.md`, canonical documentation content, and generated context must describe functionality
 that exists in authoritative source/configuration/runtime contracts and has
 appropriate validation evidence. Keep proposals, future architecture,
 unresolved decisions, backlogs, and action plans under root `docs/` while they
@@ -139,6 +139,16 @@ The following rules are mandatory:
 14. Inline presentation syntax is a bounded declarative contract. Consumers
     may render allowlisted links, emphasis, and inline code, but must reject raw
     HTML, executable markup, unsafe URL schemes, and arbitrary styles.
+15. Complex process documentation must use diagrams when they make the
+    relationship materially easier to understand. Pipelines, workflows,
+    import/export lifecycles, publishing flows, authentication boundaries,
+    provider routing, event delivery, and runtime startup sequences should
+    include a small declarative diagram when the reader would otherwise need to
+    mentally connect three or more dependent steps. The diagram must be paired
+    with plain-language explanation, stable step names, accessible alternative
+    text or equivalent prose, and source-backed behavior. Do not add diagrams
+    as decoration, and do not use diagrams to hide unsupported or planned
+    behavior inside published documentation.
 
 Minimum word and section counts are lower-bound defect detectors only. They do
 not prove accuracy, usefulness, audience completeness, evidence coverage, or
@@ -162,12 +172,16 @@ Before creating or changing canonical public documentation:
 6. include a recognizable end-to-end example plus rejected, boundary, failure,
    and recovery behavior where the capability changes data, access, money,
    publishing, workflow, external systems, or runtime state;
-7. explain the smallest supported later-loaded project customization without
+7. include a declarative process diagram for non-trivial pipelines, workflows,
+   lifecycle orchestration, import/export, provider routing, publishing,
+   authentication, or runtime startup flows when the visual materially improves
+   comprehension;
+8. explain the smallest supported later-loaded project customization without
    editing Nodics framework source or creating a parallel authority;
-8. record evidence, ownership, maturity, limitations, and last verification;
-9. update all affected destinations when one implementation change affects
+9. record evidence, ownership, maturity, limitations, and last verification;
+10. update all affected destinations when one implementation change affects
    multiple audiences or contracts;
-10. regenerate derived content and run Nodics plus `nodicsdocs` validation
+11. regenerate derived content and run Nodics plus `nodicsdocs` validation
     proportionate to the change.
 
 ## Customization-First Documentation Rule
@@ -201,7 +215,7 @@ Every implemented module or application feature must update its granular
 canonical structured documentation source in the same change. The generated
 CMS page, component, navigation, route, search, and manifest records are
 derived release artifacts; they must never become a shorter hand-maintained
-documentation authority beside richer README or module docs.
+documentation authority beside a richer README or the canonical content pack.
 
 A generator must be deterministic and expose a check mode that fails when
 committed CMS import data is stale. Migration or retirement requires a register
@@ -211,6 +225,14 @@ README/docs content may be reduced only after source coverage, detail
 preservation, generated-pack validation, link/media validation, and rendered
 frontend review pass. Moving evidence to untracked root `docs/` before this
 gate is content loss, not migration.
+
+Every module and project keeps a concise high-level `README.md` after detailed
+content moves into the canonical documentation pack. It must summarize purpose,
+ownership, implemented capabilities, setup, verification, safe extension
+boundaries, and links to the canonical detail. Migration may retire duplicated
+retired module documentation after the evidence gates pass, but it must never
+leave a module without its local README entry point or create a parallel
+module-level documentation tree.
 
 ## Project Documentation Content-Pack Contract
 

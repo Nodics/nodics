@@ -8,8 +8,8 @@ allowing a later module to replace or reorder specific steps.
 `nPipeline` owns configurable execution pipelines used to compose ordered
 runtime behavior.
 
-Detailed pipeline framework documentation is maintained in
-[docs/pipeline-framework.md](docs/pipeline-framework.md).
+Detailed pipeline framework documentation is maintained as canonical
+documentation `capability.execution-processes.technical-reference`.
 
 Pipeline guidance covers configurable process-style execution: a definition is
 a series of nodes where each step can decide the next operation. Nodics uses
@@ -143,7 +143,7 @@ the appropriate job, event, messaging, or workflow capability.
 
 ## Continue
 
-- Detailed framework: [Pipeline Framework](docs/pipeline-framework.md)
+- Detailed framework: Pipeline Framework (canonical documentation: `capability.execution-processes.technical-reference`)
 - Public platform guide: [How Platform Capabilities Work](../../gDocs/platform/how-platform-capabilities-work.md)
 - Business workflow modules: [workflow](../../gCore/workflow/README.md)
 - Framework map: [gFramework](../README.md)

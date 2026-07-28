@@ -124,7 +124,7 @@ AI-specific cache engine, or write directly to ledger collections.
 ## Continue
 
 - Detailed business, operator, and developer guide:
-  [Persistent AI Token Ledger Guide](../../gAi/aiProviders/docs/persistent-token-ledger-guide.md)
+  Persistent AI Token Ledger Guide (canonical documentation: `capability.ai.technical-reference`)
 - Owning module: [AI Providers](../../gAi/aiProviders/README.md)
 - Security model: [How Users, Tenants, And Permissions Work](../security/how-users-tenants-and-permissions-work.md)
 - Documentation home: [Nodics Documentation](../README.md)

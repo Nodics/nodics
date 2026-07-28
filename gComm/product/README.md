@@ -125,9 +125,9 @@ node gComm/product/test/productManagementAndReferenceContract.test.js
 node gComm/product/test/productProviderAndOverrideContract.test.js
 ```
 
-See [Product foundation, Category, Classification, and Variant operations](docs/product-p0-operations.md)
+See Product foundation, Category, Classification, and Variant operations (canonical documentation: `capability.commerce.technical-reference`)
 for business and developer procedures and
-[Product release-readiness evidence](docs/product-release-readiness.md) for the
+Product release-readiness evidence (canonical documentation: `capability.commerce.technical-reference`) for the
 P4 validation matrix.
 
 ## Not yet implemented

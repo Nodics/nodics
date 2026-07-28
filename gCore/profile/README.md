@@ -122,7 +122,7 @@ schema loader, registry, or persistence path. BackOffice discovers it from the
 effective OpenAPI contract, and Assistant may invoke it only when the reviewed
 tool policy also allowlists `profile.enterprise.search` with operation ID
 `profile_searchenterprises`. See
-[Enterprise Management Search](docs/enterprise-management-search.md).
+Enterprise Management Search (canonical documentation: `capability.identity-access.technical-reference`).
 
 User-group save and update interceptors validate parent existence, active
 parents, acyclic inheritance, and permission catalog membership. Principal
@@ -211,6 +211,31 @@ Projects can replace the service list, override the reconciler in a later module
 layer, extend `identityGovernance.migration.groupTargets`, or disable automatic
 group reconciliation. Missing service principals or credentials are not
 silently recreated; those remain fail-closed governed recovery operations.
+
+## Tenant Local File Import Examples
+
+Profile keeps historical tenant local-file import examples under
+`data/sample/tenant`. These examples include CSV, XLSX, and legacy XLS
+`defaultTenantData` records with matching headers, but they are not active
+startup data. This placement lets developers and Axis import workflows
+intentionally test or demonstrate Profile tenant imports through the sample
+import process without creating example tenants during normal framework
+bootstrap.
+
+The sample data uses the normal Nodics structure:
+
+```text
+gCore/profile/data/sample/tenant/
+  headers/
+  data/
+```
+
+The legacy `.xls` example is preserved as historical reference only; the
+validated spreadsheet path is `.xlsx`. The contract test
+`gFramework/nData/nImport/import/test/profileTenantLocalFileImportContract.test.js`
+proves header discovery, data-file prefix matching, file-type resolution,
+processor execution, and tenant schema dispatch metadata through the existing
+`nImport` local-import lifecycle.
 
 ## Identity Capability Boundary
 

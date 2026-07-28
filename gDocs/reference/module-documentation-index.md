@@ -23,8 +23,8 @@ composition modules that are not appropriate in a short capability map.
 1. Start with the task guide that matches what you want to do.
 2. Use this index to find the owning capability module.
 3. Read the module `README.md` for the exact implementation contract.
-4. Read the module `docs/` pages when the capability has deeper framework
-   guides.
+4. Read the canonical capability pages when the module README points to deeper
+   framework guides.
 5. Use `gSetup/llm` and `AGENTS.md` when you are changing code and need
    AI/developer implementation contracts.
 
@@ -62,7 +62,7 @@ the extension path from source code alone.
 
 | Capability | Module Documentation | Use When |
 | --- | --- | --- |
-| API routes, Express binding, request pipeline, security, OpenAPI, Swagger UI | [nRouter](../../gFramework/nRouter/README.md), [Router Framework](../../gFramework/nRouter/docs/router-framework.md), and [nSystem](../../gFramework/nSystem/README.md) | You need to create, secure, expose, customize, document, or debug APIs. |
+| API routes, Express binding, request pipeline, security, OpenAPI, Swagger UI | [nRouter](../../gFramework/nRouter/README.md), Router Framework (canonical documentation: `capability.apis-routing.technical-reference`), and [nSystem](../../gFramework/nSystem/README.md) | You need to create, secure, expose, customize, document, or debug APIs. |
 | Controller boundary and request mapping | [nController](../../gFramework/nController/README.md) | You need to map HTTP params, query, body, or headers into Nodics request context. |
 | Facade orchestration boundary | [nFacade](../../gFramework/nFacade/README.md) | You need to coordinate services or capability calls without putting orchestration in controllers. |
 | Service behavior and generated service contracts | [nService](../../gFramework/nService/README.md) | You need business behavior, generated CRUD service flow, or service override rules. |
@@ -85,7 +85,7 @@ the extension path from source code alone.
 
 | Capability | Module Documentation | Use When |
 | --- | --- | --- |
-| Pipeline framework | [nPipeline](../../gFramework/nPipeline/README.md) and [Pipeline Framework](../../gFramework/nPipeline/docs/pipeline-framework.md) | You need ordered lifecycle execution, custom pipeline nodes, processors vs pipeline nodes, or pipeline overrides. |
+| Pipeline framework | [nPipeline](../../gFramework/nPipeline/README.md) and Pipeline Framework (canonical documentation: `capability.execution-processes.technical-reference`) | You need ordered lifecycle execution, custom pipeline nodes, processors vs pipeline nodes, or pipeline overrides. |
 | Events | [nEvent](../../gFramework/nEvent/README.md) | You need module event definitions, listeners, or internal event behavior. |
 | Enterprise messaging | [nEms](../../gFramework/nEms/README.md) | You need messaging abstractions, producer/consumer behavior, or provider-neutral messaging. |
 | ActiveMQ provider | [activemq](../../gFramework/nEms/activemq/README.md) | You need ActiveMQ-specific messaging behavior. |
@@ -115,7 +115,7 @@ the extension path from source code alone.
 
 | Capability | Module Documentation | Use When |
 | --- | --- | --- |
-| AI provider governance and token ledger | [aiProviders](../../gAi/aiProviders/README.md) and [Persistent AI Token Ledger Guide](../../gAi/aiProviders/docs/persistent-token-ledger-guide.md) | You need provider-neutral AI selection, exact token/cost planning, persistent budgets, reservations, usage evidence, or AI ledger administration. |
+| AI provider governance and token ledger | [aiProviders](../../gAi/aiProviders/README.md) and Persistent AI Token Ledger Guide (canonical documentation: `capability.ai.technical-reference`) | You need provider-neutral AI selection, exact token/cost planning, persistent budgets, reservations, usage evidence, or AI ledger administration. |
 | AI Assistant read-only backend | [aiAssistant](../../gAi/aiAssistant/README.md) | You need employee-owned conversations, approved prompts, redaction, read-only provider orchestration, or replay events. |
 | AI Knowledge documentation slice | [aiKnowledge](../../gAi/aiKnowledge/README.md) | You need explicit documentation ingestion, derived chunks, nSearch retrieval, evidence, and citations. |
 | Catalogs | [nCatalog](../../gFramework/nCatalog/README.md) | You need catalog modeling, catalog hierarchy, or product/content catalog behavior. |
@@ -129,22 +129,23 @@ Use this quick map from common `gDocs` pages to module references.
 
 | User Guide | Related Modules |
 | --- | --- |
-| [How To Create APIs](../development/how-to-create-apis.md) | [nRouter](../../gFramework/nRouter/README.md), [Router Framework](../../gFramework/nRouter/docs/router-framework.md), [nController](../../gFramework/nController/README.md), [nFacade](../../gFramework/nFacade/README.md), [nService](../../gFramework/nService/README.md) |
+| [How To Create APIs](../development/how-to-create-apis.md) | [nRouter](../../gFramework/nRouter/README.md), Router Framework (canonical documentation: `capability.apis-routing.technical-reference`), [nController](../../gFramework/nController/README.md), [nFacade](../../gFramework/nFacade/README.md), [nService](../../gFramework/nService/README.md) |
 | [How To Work With Data](../data/how-to-work-with-data.md) | [nDatabase](../../gFramework/nDatabase/README.md), [database](../../gFramework/nDatabase/database/README.md), [nData](../../gFramework/nData/README.md), [nImport](../../gFramework/nData/nImport/README.md), [nExport](../../gFramework/nData/nExport/README.md), [nSearch](../../gFramework/nSearch/README.md) |
-| [How Platform Capabilities Work](../platform/how-platform-capabilities-work.md) | [nPipeline](../../gFramework/nPipeline/README.md), [Pipeline Framework](../../gFramework/nPipeline/docs/pipeline-framework.md), [nCache](../../gFramework/nCache/README.md), [nEms](../../gFramework/nEms/README.md), [nEvent](../../gFramework/nEvent/README.md), [nDynamo](../../gFramework/nDynamo/README.md) |
+| [How Platform Capabilities Work](../platform/how-platform-capabilities-work.md) | [nPipeline](../../gFramework/nPipeline/README.md), Pipeline Framework (canonical documentation: `capability.execution-processes.technical-reference`), [nCache](../../gFramework/nCache/README.md), [nEms](../../gFramework/nEms/README.md), [nEvent](../../gFramework/nEvent/README.md), [nDynamo](../../gFramework/nDynamo/README.md) |
 | [How Cache Works](../platform/how-cache-works.md) | [nCache](../../gFramework/nCache/README.md), [cache](../../gFramework/nCache/cache/README.md), [redisCache](../../gFramework/nCache/redisCache/README.md), [nodeCache](../../gFramework/nCache/nodeCache/README.md), [hazelcastCache](../../gFramework/nCache/hazelcastCache/README.md), [nRouter](../../gFramework/nRouter/README.md), [database](../../gFramework/nDatabase/database/README.md), [search](../../gFramework/nSearch/search/README.md) |
 | [How Users, Tenants, And Permissions Work](../security/how-users-tenants-and-permissions-work.md) | [nAuth](../../gFramework/nAuth/README.md), [nToken](../../gFramework/nToken/README.md), [nOtp](../../gFramework/nOtp/README.md), [nRouter](../../gFramework/nRouter/README.md), [nDynamo](../../gFramework/nDynamo/README.md) |
 | [How To Test Nodics Changes](../testing/how-to-test-nodics-changes.md) | [nTest](../../gFramework/nTest/README.md), [nTooling](../../gFramework/nTooling/README.md), module-specific test sections |
 | [How Configuration Works](../configuration/how-configuration-works.md) | [nConfig](../../gFramework/nConfig/README.md), [nDynamo](../../gFramework/nDynamo/README.md), [nTooling](../../gFramework/nTooling/README.md) |
-| [How AI Cost Governance Works](../ai/how-ai-cost-governance-works.md) | [aiProviders](../../gAi/aiProviders/README.md), [AI Token Economics](../../gAi/aiProviders/docs/token-economics-and-optimization.md), [Persistent AI Token Ledger](../../gAi/aiProviders/docs/persistent-token-ledger-guide.md) |
+| [How AI Cost Governance Works](../ai/how-ai-cost-governance-works.md) | [aiProviders](../../gAi/aiProviders/README.md), AI Token Economics (canonical documentation: `capability.ai.technical-reference`), Persistent AI Token Ledger (canonical documentation: `capability.ai.technical-reference`) |
 | [Assistant, AI Providers, and Knowledge Guide](../ai/assistant-provider-and-knowledge-guide.md) | [aiAssistant](../../gAi/aiAssistant/README.md), [aiKnowledge](../../gAi/aiKnowledge/README.md), and [aiProviders](../../gAi/aiProviders/README.md) |
 
 ## Documentation Ownership Rule
 
 If a page explains how a user performs a task, it belongs in `gDocs`.
 
-If a page explains the exact behavior owned by one module, it belongs in that
-module's `README.md` or `docs/` folder.
+If a page explains the exact behavior owned by one module, its concise
+orientation belongs in the module `README.md` and its detailed guidance belongs
+in the canonical documentation content pack.
 
 If a page defines rules that AI tools and developers must follow while changing
 code, it belongs in `AGENTS.md` or `gSetup/llm`.

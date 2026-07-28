@@ -66,10 +66,6 @@ module.exports = {
         code: 'axisLegalComponent', typeCode: 'axisMessageComponentType', accessMode: 'PUBLIC',
         properties: { title: 'Authorized use', message: 'Use of Nodics Axis is limited to authorized employees.', tone: 'muted' }, active: true
     },
-    record9: {
-        code: 'axisDashboardHeaderComponent', typeCode: 'axisBrandComponentType', accessMode: 'AUTHENTICATED',
-        properties: { productName: 'Nodics Axis', tagline: 'Employee BackOffice', logoAsset: 'axis-brand-mark' }, active: true
-    },
     record10: {
         code: 'axisDashboardWelcomeComponent', typeCode: 'axisMessageComponentType', accessMode: 'AUTHENTICATED',
         properties: { title: 'Welcome to Nodics Axis', message: 'Your authorized business workspace is ready.', tone: 'default' }, active: true

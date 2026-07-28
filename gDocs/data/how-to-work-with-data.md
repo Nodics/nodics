@@ -20,7 +20,7 @@ Use this simple map:
 | --- | --- |
 | Add a new data type | Owning module `src/schemas/schemas.js` |
 | Add a field or remove a field for a project | Later project module schema contribution |
-| Add searchable fields | `src/search/indexes.js` and search module docs |
+| Add searchable fields | `src/search/indexes.js` and canonical Search documentation |
 | Add validation before save/update/remove | `src/interceptors/interceptors.js`, validators, or model pipelines |
 | Change database behavior | Database provider module or project provider module |
 | Import records from files | Import configuration, data files, and import pipeline |

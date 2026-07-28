@@ -109,7 +109,7 @@ Run `npm run test:topology:modular` to exercise the implemented Staged-to-Online
 - Back up Staged pricing data plus Online manifests, pointers, and receipts; test restoration and rollback.
 - Keep Staged and Online database names distinct. The local reference topology co-hosts CMS and Pricing in publishing processes, but uses direct module APIs and separate named target connections; production may deploy Pricing independently through later environment configuration.
 
-Implementation details and extension rules are in the Pricing module's [architecture guide](../../gComm/pricing/docs/pricing-architecture-and-operations.md).
+Implementation details and extension rules are in the Pricing module's architecture guide (canonical documentation: `capability.commerce.technical-reference`).
 
 ## Continue
 

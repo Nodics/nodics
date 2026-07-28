@@ -90,7 +90,7 @@ database provider directly. Public or BackOffice administration requires a
 later intent-API slice with human permissions and negative security tests.
 
 See the module-level
-[Warehouse Foundation contract](../../gComm/inventory/docs/warehouse-foundation.md)
+Warehouse Foundation contract (canonical documentation: `capability.commerce.technical-reference`)
 for exact fields, properties, services, interceptors, errors, customization,
 recovery, and test commands.
 

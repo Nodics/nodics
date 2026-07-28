@@ -375,6 +375,7 @@ module.exports = {
                 { node: 'gFramework/nData/nImport/import/test/systemCoreSampleDataCatalog.test.js' },
                 { node: 'startio/envs/startioLocal/test/data/startioLocalTestTenantDataCatalog.test.js' },
                 { node: 'gFramework/nData/nImport/import/test/multiFormatDataProcessors.test.js' },
+                { node: 'gFramework/nData/nImport/import/test/profileTenantLocalFileImportContract.test.js' },
                 { node: 'gFramework/nData/nImport/import/test/systemImportDiagnosticsValidationOnly.test.js' },
                 { node: 'gFramework/nData/nImport/import/test/importRunSummaryContract.test.js' },
                 { node: 'gFramework/nData/nImport/import/test/importRunHistoryService.test.js' },

@@ -264,7 +264,7 @@ npm run llm:validate
 
 Each module's `llm/generated/module-context.md` inventories all owned files and marks documentation as `documented`, `partially-documented`, or `undocumented`. These statuses never indicate that the file or runtime capability is absent. This inventory does not replace JSDoc review and must not generate fictional descriptions for undocumented code.
 
-Root `docs/` is excluded from source documentation coverage. It may contain local reference material, migration notes, captured documentation content, or planning files; those files are not framework source and must not distort module documentation coverage. Permanent module documentation belongs under the owning module or under `gSetup/llm` when it is a cross-cutting developer/AI contract.
+Root `docs/` is excluded from source documentation coverage. It may contain local reference material, migration notes, captured documentation content, or planning files; those files are not framework source and must not distort module documentation coverage. A module keeps one concise `README.md`; detailed permanent human documentation belongs in the canonical documentation content pack, while cross-cutting developer and AI contracts belong under `gSetup/llm`.
 
 Use scoped checks during rollout:
 

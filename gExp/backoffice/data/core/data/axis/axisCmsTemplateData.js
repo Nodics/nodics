@@ -30,7 +30,7 @@ module.exports = {
         name: 'Axis Dashboard Page',
         renderer: 'axis.template.dashboard',
         contractVersion: 1,
-        slots: ['axisDashboardHeaderSlot', 'axisDashboardWelcomeSlot', 'axisDashboardSummarySlot',
+        slots: ['axisDashboardWelcomeSlot', 'axisDashboardSummarySlot',
             'axisDashboardActionsSlot', 'axisDashboardActivitySlot', 'axisDashboardHelpSlot'],
         active: true
     },

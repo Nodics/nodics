@@ -26,9 +26,9 @@ transactions, but it is not a database adapter. Projects must not put MongoDB,
 Cassandra, or other provider-specific behavior in this service.
 
 Token economics and optimization are mandatory. See
-[AI Token Economics and Optimization](docs/token-economics-and-optimization.md)
+AI Token Economics and Optimization (canonical documentation: `capability.ai.technical-reference`)
 and the beginner-to-expert
-[Persistent AI Token Ledger Guide](docs/persistent-token-ledger-guide.md).
+Persistent AI Token Ledger Guide (canonical documentation: `capability.ai.technical-reference`).
 
 OpenAI Responses, Anthropic Messages, and Google Gemini/Vertex AI adapters are
 implemented as disabled provider modules. Each adapter owns only vendor

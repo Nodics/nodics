@@ -77,7 +77,7 @@ The route definition makes the API contract visible. Permission behavior, pre-au
 
 Related module documentation:
 
-- [nRouter](../../gFramework/nRouter/README.md) and [Router Framework](../../gFramework/nRouter/docs/router-framework.md) for API route registration, request pipeline behavior, security, and controller dispatch.
+- [nRouter](../../gFramework/nRouter/README.md) and Router Framework (canonical documentation: `capability.apis-routing.technical-reference`) for API route registration, request pipeline behavior, security, and controller dispatch.
 - [nController](../../gFramework/nController/README.md) for controller request mapping.
 - [nService](../../gFramework/nService/README.md) for service contracts after controller handoff.
 
@@ -151,7 +151,7 @@ Keep the process definition separate from the implementation. The definition exp
 
 Related module documentation:
 
-- [nPipeline](../../gFramework/nPipeline/README.md) and [Pipeline Framework](../../gFramework/nPipeline/docs/pipeline-framework.md) for ordered process execution and customization.
+- [nPipeline](../../gFramework/nPipeline/README.md) and Pipeline Framework (canonical documentation: `capability.execution-processes.technical-reference`) for ordered process execution and customization.
 - [nbpm](../../gFramework/nbpm/README.md) for stateful workflow lifecycle behavior.
 - [nEvent](../../gFramework/nEvent/README.md) for event-driven extension behavior.
 

@@ -89,7 +89,7 @@ component, and association mutations invalidate the tenant's CMS delivery
 resource through `DefaultCacheService`, including existing cross-node cache
 propagation behavior.
 
-See `docs/content-delivery-contract.md` for the schema, security, extension,
+See canonical documentation `capability.content-publishing.technical-reference` for the schema, security, extension,
 and operational contract.
 
 ## Immutable Publication Manifests
@@ -108,7 +108,7 @@ or `ONLINE`. A Staged process activates publish/version variants and versioned
 CMS schema overrides. An Online process keeps `publishEnabled: false`, uses
 non-versioned schemas, and stores imported manifests in a separate database.
 
-See `docs/publication-manifest-contract.md` for authority, migration, extension,
+See canonical documentation `capability.content-publishing.technical-reference` for authority, migration, extension,
 and fail-closed delivery behavior.
 
 For a beginner-friendly business journey, configuration examples,

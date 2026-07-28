@@ -238,9 +238,9 @@ and regression suites before release.
 
 ## Related Detail
 
-- [CMS publication manifest contract](../../gContent/cms/docs/publication-manifest-contract.md)
-- [WCMS approval-to-publication contract](../../gContent/wcms/docs/README.md)
-- [nPublish lifecycle contract](../../gFramework/nPublish/docs/README.md)
+- CMS publication manifest contract (canonical documentation: `capability.content-publishing.technical-reference`)
+- WCMS approval-to-publication contract (canonical documentation: `capability.content-publishing.technical-reference`)
+- nPublish lifecycle contract (canonical documentation: `capability.content-publishing.technical-reference`)
 - [How users, tenants, and permissions work](../security/how-users-tenants-and-permissions-work.md)
 - [How to test Nodics changes](../testing/how-to-test-nodics-changes.md)
 

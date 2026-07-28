@@ -47,7 +47,7 @@ conversion. Reservations, allocations, available-to-sell, sourcing, coordinated
 transfers, BackOffice screens, and public Stock APIs are not part of this slice.
 
 Developers and operators should read the Inventory module's
-[Stock Core contract](../../gComm/inventory/docs/stock-core.md) for configuration,
+Stock Core contract (canonical documentation: `capability.commerce.technical-reference`) for configuration,
 extension rules, failure codes, and verification.
 
 ## Continue

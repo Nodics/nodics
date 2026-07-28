@@ -102,7 +102,11 @@ function getHeaderFiles(dataRoot) {
 }
 
 function getDataFileKeys(dataRoot) {
-    return walk(dataRoot, (_filePath, fileName) => {
+    return walk(dataRoot, (filePath, fileName) => {
+        let relativeSegments = path.relative(dataRoot, filePath).split(path.sep);
+        if (!relativeSegments.includes('data')) {
+            return false;
+        }
         let baseName = fileName.split('.').shift();
         return baseName && !baseName.endsWith('Header') && !baseName.endsWith('Headers');
     }).map(filePath => {
@@ -139,7 +143,7 @@ let activeDataTypeRoots = getActiveDataTypeRoots(activeModules);
 
 activeDataTypeRoots.forEach(dataTypeRoot => {
     let headerFiles = getHeaderFiles(dataTypeRoot.dataRoot);
-    let dataFileKeys = getDataFileKeys(path.join(dataTypeRoot.dataRoot, 'data'));
+    let dataFileKeys = getDataFileKeys(dataTypeRoot.dataRoot);
     let enabledHeaders = getEnabledHeaders(headerFiles);
     if (headerFiles.length > 0 || dataFileKeys.length > 0) {
         scannedRoots.push(dataTypeRoot.dataRoot.replace(repoRoot + path.sep, ''));

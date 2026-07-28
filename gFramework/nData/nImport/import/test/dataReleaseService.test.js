@@ -50,6 +50,7 @@ global.NODICS = {
     getSelectedEnvironmentName: () => 'testEnvironment'
 };
 let installations = [];
+let importAttempts = 0;
 global.SERVICE = {
     DefaultDataInstallationService: {
         get: request => Promise.resolve({ result: installations.filter(item => !request.query.code || item.code === request.query.code) }),
@@ -62,6 +63,7 @@ global.SERVICE = {
     },
     DefaultImportService: {
         importCoreData: request => {
+            importAttempts++;
             request.importRun = { runId: request.options.validateOnly ? 'validate-run' : 'install-run' };
             return Promise.resolve({ validationOnly: request.options.validateOnly });
         }
@@ -81,18 +83,38 @@ const service = require('../src/service/release/defaultDataReleaseService');
         releaseRequest: { dataType: 'core', modules: ['testModule'], expectedReleases: { testModule: '1.1.0' } }
     });
     assert.strictEqual(preflight.data.validation.validationOnly, true);
+    assert.strictEqual(preflight.data.validation.importExecuted, false);
+    assert.strictEqual(preflight.data.validation.skipped, false);
+    assert.strictEqual(preflight.data.releases[0].status, 'NOT_INSTALLED');
     assert.strictEqual(installations.length, 0);
+    assert.strictEqual(importAttempts, 0);
 
     let execution = await service.execute({
         tenant: 'default',
         releaseRequest: { dataType: 'core', modules: ['testModule'], expectedReleases: { testModule: '1.1.0' } }
     });
     assert.strictEqual(execution.data.importRun.runId, 'install-run');
+    assert.strictEqual(execution.data.releases[0].status, 'CURRENT');
+    assert.strictEqual(execution.data.releases[0].installedVersion, '1.1.0');
     assert.strictEqual(installations.length, 1);
 
     catalogue = await service.getCatalogue({ tenant: 'default', dataType: 'core' });
     assert.strictEqual(catalogue.data[0].status, 'CURRENT');
     assert.strictEqual(catalogue.data[0].installedVersion, '1.1.0');
+
+    preflight = await service.preflight({
+        tenant: 'default',
+        releaseRequest: { dataType: 'core', modules: ['testModule'], expectedReleases: { testModule: '1.1.0' } }
+    });
+    assert.strictEqual(preflight.data.releases[0].status, 'CURRENT');
+    assert.strictEqual(preflight.data.validation.skipped, true);
+    assert.strictEqual(preflight.data.validation.importExecuted, false);
+    assert.strictEqual(importAttempts, 1);
+
+    await assert.rejects(() => service.execute({
+        tenant: 'default',
+        releaseRequest: { dataType: 'core', modules: ['testModule'], expectedReleases: { testModule: '1.1.0' } }
+    }), /already current/);
 
     await assert.rejects(() => service.preflight({
         tenant: 'default',

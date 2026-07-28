@@ -95,6 +95,13 @@ assert.strictEqual(routes.find(route => route.path === '/assistant').accessMode,
 assert.strictEqual(routes.find(route => route.path === '/schema-workbench').accessMode, 'AUTHENTICATED');
 assert(pages.find(page => page.code === 'axisDashboardPage').cmsComponents.every(association =>
     componentByCode.get(association.target).accessMode === 'AUTHENTICATED'));
+assert(!componentByCode.has('axisDashboardHeaderComponent'),
+    'Dashboard must not import the redundant Axis brand header component');
+assert(!slotByCode.has('axisDashboardHeaderSlot'),
+    'Dashboard must not import the redundant Axis brand header slot');
+assert(!pages.find(page => page.code === 'axisDashboardPage').cmsComponents.some(association =>
+    association.target === 'axisDashboardHeaderComponent' || association.slot === 'header'),
+'Dashboard page must not render a separate brand header because the shell already owns Axis branding');
 assert(pages.find(page => page.code === 'axisLockScreenPage').cmsComponents.every(association =>
     componentByCode.get(association.target).accessMode === 'AUTHENTICATED'));
 assert(pages.find(page => page.code === 'axisAssistantPage').cmsComponents.every(association =>

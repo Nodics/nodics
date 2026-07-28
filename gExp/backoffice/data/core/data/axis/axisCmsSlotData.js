@@ -24,7 +24,6 @@ module.exports = {
         allowedComponentTypes: ['axisEmployeeLoginFormComponentType', 'axisEmployeeRecoveryFormComponentType', 'axisEmployeeLockFormComponentType'], active: true },
     record3: { code: 'axisAuthenticationAssistanceSlot', template: 'axisAuthenticationPageTemplate', name: 'assistance', minItems: 0, maxItems: 3, allowedComponentTypes: ['axisLinkComponentType', 'axisMessageComponentType'], active: true },
     record4: { code: 'axisAuthenticationLegalSlot', template: 'axisAuthenticationPageTemplate', name: 'legal', minItems: 0, maxItems: 3, allowedComponentTypes: ['axisLinkComponentType', 'axisMessageComponentType'], active: true },
-    record5: { code: 'axisDashboardHeaderSlot', template: 'axisDashboardPageTemplate', name: 'header', minItems: 1, maxItems: 2, allowedComponentTypes: ['axisBrandComponentType', 'axisMessageComponentType'], active: true },
     record6: { code: 'axisDashboardWelcomeSlot', template: 'axisDashboardPageTemplate', name: 'welcome', minItems: 1, maxItems: 1, allowedComponentTypes: ['axisMessageComponentType'], active: true },
     record7: { code: 'axisDashboardSummarySlot', template: 'axisDashboardPageTemplate', name: 'summary', minItems: 1, maxItems: 1, allowedComponentTypes: ['axisDashboardSummaryComponentType'], active: true },
     record8: { code: 'axisDashboardActionsSlot', template: 'axisDashboardPageTemplate', name: 'quickActions', minItems: 1, maxItems: 1, allowedComponentTypes: ['axisDashboardActionsComponentType'], active: true },

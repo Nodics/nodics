@@ -281,4 +281,5 @@ An integration is complete only when:
   implemented or explicitly out of scope;
 - deterministic, negative, tenant, override, and optional live-provider tests
   pass;
-- README, AGENTS, module docs, LLM guidance, and generated context are updated.
+- README, AGENTS, canonical documentation content, LLM guidance, and generated
+  context are updated.

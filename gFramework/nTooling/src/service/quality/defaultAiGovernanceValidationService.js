@@ -69,6 +69,7 @@ function walk(directory, visitor) {
         .forEach(entry => {
             if (entry.isDirectory() && ignoredDirectories.has(entry.name)) return;
             let entryPath = path.join(directory, entry.name);
+            if (entry.isDirectory() && entryPath === path.join(rootPath, 'docs')) return;
             visitor(entryPath, entry);
             if (entry.isDirectory()) walk(entryPath, visitor);
         });
@@ -183,7 +184,6 @@ function validatePackageFiles(failures) {
             fail(failures, 'Package is missing AGENTS.md: ' + relativePath);
         }
         [
-            'docs/README.md',
             'llm/README.md',
             'llm/contracts/README.md',
             'llm/examples/README.md'
@@ -192,6 +192,13 @@ function validatePackageFiles(failures) {
                 fail(failures, 'Package is missing mandatory AI/documentation file: ' + relativePath + '/' + relativeFile);
             }
         });
+        if (directory !== rootPath && fs.existsSync(path.join(directory, 'docs'))) {
+            fail(
+                failures,
+                'Package must not contain a parallel module docs directory; keep the local entry point in README.md ' +
+                'and detailed guidance in the canonical documentation content pack: ' + relativePath + '/docs'
+            );
+        }
         let llmDirectory = path.join(directory, 'llm');
         if (fs.existsSync(llmDirectory) && !fs.existsSync(path.join(llmDirectory, 'README.md'))) {
             fail(failures, 'Module llm directory is missing README.md: ' + relativePath + '/llm');

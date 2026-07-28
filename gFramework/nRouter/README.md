@@ -8,8 +8,8 @@ business behavior runs.
 `nRouter` owns request routing, secured request pipelines, route action
 authorization, OpenAPI generation, and route metadata governance.
 
-Detailed router framework documentation is maintained in
-[docs/router-framework.md](docs/router-framework.md).
+Detailed router framework documentation is maintained as canonical
+documentation `capability.apis-routing.technical-reference`.
 
 ## When To Use This Module
 
@@ -235,5 +235,5 @@ integration tests.
 
 - Public API guide: [How To Create APIs](../../gDocs/development/how-to-create-apis.md)
 - Security guide: [How Users, Tenants, And Permissions Work](../../gDocs/security/how-users-tenants-and-permissions-work.md)
-- Detailed framework: [Router Framework](docs/router-framework.md)
+- Detailed framework: Router Framework (canonical documentation: `capability.apis-routing.technical-reference`)
 - Framework map: [gFramework](../README.md)

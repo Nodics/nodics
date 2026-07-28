@@ -55,5 +55,5 @@
   Transitional recovery reconstructs exact counters from evidence.
 - Never release `UNCERTAIN` capacity from absence, timeout, caller assertion, or
   negative lookup alone. Positive provider usage evidence may reconcile it.
-- Read `../../docs/token-economics-and-optimization.md` before extending a
+- Read canonical documentation `capability.ai.technical-reference` before extending a
   provider, optimizer, cache policy, quota, ledger, retry or fallback.

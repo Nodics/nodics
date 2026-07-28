@@ -51,8 +51,7 @@ const configFiles = [
     'config/postscripts.js'
 ];
 
-const docsFiles = [
-    'docs/README.md',
+const guidanceFiles = [
     'llm/README.md',
     'llm/contracts/README.md',
     'llm/examples/README.md'
@@ -334,7 +333,7 @@ module.exports = {
     },
 
     /**
-     * Writes standard root, configuration, docs, LLM, source, data, and test files.
+     * Writes standard root, configuration, LLM, source, data, and test files.
      * @param {Object} options Generator options.
      * @returns {Object} Generation summary.
      */
@@ -351,7 +350,7 @@ module.exports = {
                 lifecycleFile(options.name, relativePath.replace('.js', ''));
             writeFile(path.join(options.targetPath, relativePath), content);
         });
-        docsFiles.forEach(relativePath => {
+        guidanceFiles.forEach(relativePath => {
             writeFile(path.join(options.targetPath, relativePath), readme(options.name + ' ' + path.basename(path.dirname(relativePath)), 'Generated documentation entry for ' + options.name + '.'));
         });
         ensureDirectory(path.join(options.targetPath, 'llm/generated'));
@@ -384,7 +383,7 @@ module.exports = {
             name: options.name,
             kind: options.kind,
             path: options.targetPath,
-            files: rootFiles.concat(configFiles, docsFiles)
+            files: rootFiles.concat(configFiles, guidanceFiles)
         };
     },
 

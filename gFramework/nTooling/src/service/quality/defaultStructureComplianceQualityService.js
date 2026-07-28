@@ -202,9 +202,9 @@ function validateRootFiles(report, moduleObject) {
                 'Missing recommended LLM guidance file `' + relativePath + '`.');
         }
     });
-    if (!exists(moduleObject.path, 'docs/README.md')) {
-        createFinding(report, 'warning', moduleObject, 'missing-docs-readme',
-            'Missing module documentation entry `docs/README.md`.');
+    if (exists(moduleObject.path, 'docs')) {
+        createFinding(report, 'error', moduleObject, 'parallel-module-docs',
+            'Module documentation must use the module `README.md` and canonical documentation content pack, not a parallel `docs/` directory.');
     }
 }
 

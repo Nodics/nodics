@@ -79,7 +79,7 @@ Projects can extend Store types, assignment purposes, priority bounds, Site-bind
 
 Customizations must keep enterprise isolation, derived identities, Inventory/CMS reference validation, human-versus-service authentication, and historical records. Do not create a second Store, Warehouse, or CMS Site registry or copy owning-module state into Store.
 
-For technical details, read the [Store module guide](../../gComm/store/docs/store-foundation.md) and [Store, CMS Site, and Integration](../../gComm/store/docs/store-site-and-integration.md).
+For technical details, read the Store module guide (canonical documentation: `capability.commerce.technical-reference`) and Store, CMS Site, and Integration (canonical documentation: `capability.commerce.technical-reference`).
 
 ## Continue
 

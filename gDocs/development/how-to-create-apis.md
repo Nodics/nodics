@@ -104,7 +104,7 @@ Small APIs may call a service directly from a controller when no orchestration i
 
 For exact implementation details, read:
 
-- [nRouter](../../gFramework/nRouter/README.md) and [Router Framework](../../gFramework/nRouter/docs/router-framework.md) for route definitions, Express registration, request pipelines, security, response handlers, cache, and OpenAPI.
+- [nRouter](../../gFramework/nRouter/README.md) and Router Framework (canonical documentation: `capability.apis-routing.technical-reference`) for route definitions, Express registration, request pipelines, security, response handlers, cache, and OpenAPI.
 - [nController](../../gFramework/nController/README.md) for controller request mapping.
 - [nFacade](../../gFramework/nFacade/README.md) for orchestration boundaries.
 - [nService](../../gFramework/nService/README.md) for service behavior and generated CRUD service flow.

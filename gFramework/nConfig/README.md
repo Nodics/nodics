@@ -163,7 +163,7 @@ Startup script changes must describe:
 ## Runtime Lifecycle And Resilience
 
 Process startup, readiness, draining, shutdown, and provider cleanup follow the
-[runtime lifecycle and resilience contract](docs/runtime-lifecycle-resilience-contract.md).
+runtime lifecycle and resilience contract (canonical documentation: `capability.configuration.technical-reference`).
 `nConfig` owns the single signal coordinator; later modules contribute bounded
 hooks instead of installing parallel process handlers.
 
@@ -333,5 +333,5 @@ run `npm run test:basic` before release or shared-branch publication.
 
 - Public guide: [How Configuration Works](../../gDocs/configuration/how-configuration-works.md)
 - Runtime structure: [How Nodics Is Organized](../../gDocs/architecture/how-nodics-is-organized.md)
-- Lifecycle detail: [Runtime Lifecycle And Resilience Contract](docs/runtime-lifecycle-resilience-contract.md)
+- Lifecycle detail: Runtime Lifecycle And Resilience Contract (canonical documentation: `capability.configuration.technical-reference`)
 - Framework map: [gFramework](../README.md)

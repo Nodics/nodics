@@ -12,3 +12,10 @@ Recommended use:
 4. For project-specific overrides, read the later module layer before changing out-of-the-box Nodics code.
 
 Do not hardcode this module into framework behavior. Use active modules, layered configuration, schemas, runtime governance, and tenant context.
+
+Profile-owned tenant local-file import examples belong under
+`data/sample/tenant` using the standard `headers/` and `data/` sample-data
+structure. Keep them outside active `data/init` unless the task explicitly
+requires runtime bootstrap data. The CSV and XLSX examples must remain
+validated by
+`gFramework/nData/nImport/import/test/profileTenantLocalFileImportContract.test.js`.

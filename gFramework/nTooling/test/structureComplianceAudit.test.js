@@ -57,7 +57,6 @@ function createModule(rootPath, relativePath, name, kind, owns, extraPackage, pr
     write(path.join(modulePath, 'nodics.js'), 'module.exports = {};\n');
     write(path.join(modulePath, 'AGENTS.md'), '# ' + name + ' Agents\n');
     write(path.join(modulePath, 'README.md'), '# ' + name + '\n');
-    write(path.join(modulePath, 'docs/README.md'), '# ' + name + ' Docs\n');
     write(path.join(modulePath, 'llm/README.md'), '# ' + name + ' LLM\n');
     write(path.join(modulePath, 'llm/contracts/README.md'), '# Contracts\n');
     write(path.join(modulePath, 'llm/examples/README.md'), '# Examples\n');
@@ -126,6 +125,13 @@ try {
         'Audit must report activeModules outside server configuration');
     assert(codes.includes('retired-router-file'),
         'Audit must report retired router.js files');
+    write(path.join(badModule, 'docs/README.md'), '# Duplicate documentation entry\n');
+    const docsGapReport = structureComplianceQualityService.collectReport({
+        rootDir: projectHome,
+        includeInfo: false
+    });
+    assert(findingCodes(docsGapReport).includes('parallel-module-docs'),
+        'Audit must reject parallel module docs directories');
     assert(structureComplianceQualityService.hasComplianceGaps(gapReport),
         'Audit must expose gaps for fail-on-gap mode');
 } finally {

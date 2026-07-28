@@ -47,7 +47,6 @@ module.exports = {
         code: 'axisDashboardPage', name: 'Axis Employee Dashboard', cmsSite: ['axisCmsSite'],
         typeCode: 'axisDashboardPageType', template: 'axisDashboardPageTemplate', renderer: 'axis.page.dashboard',
         cmsComponents: [
-            { target: 'axisDashboardHeaderComponent', slot: 'header', index: 10, active: true },
             { target: 'axisDashboardWelcomeComponent', slot: 'welcome', index: 20, active: true },
             { target: 'axisDashboardSummaryComponent', slot: 'summary', index: 30, active: true },
             { target: 'axisDashboardActionsComponent', slot: 'quickActions', index: 40, active: true },

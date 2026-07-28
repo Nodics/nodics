@@ -58,27 +58,27 @@ node gComm/inventory/test/stockTransferFoundation.test.js
 node gComm/inventory/test/stockReconciliationFoundation.test.js
 ```
 
-Read [the warehouse foundation contract](docs/warehouse-foundation.md) for
+Read the warehouse foundation contract (canonical documentation: `capability.commerce.technical-reference`) for
 business operations, administrator configuration, developer behavior,
 customization, failures, and troubleshooting.
 
-Read [the Stock Core contract](docs/stock-core.md) before adding stock APIs,
+Read the Stock Core contract (canonical documentation: `capability.commerce.technical-reference`) before adding stock APIs,
 reservation logic, multi-hop conversion, availability, or provider customizations.
 
-Read [the Stock Pool foundation](docs/stock-pool-foundation.md) before adding
+Read the Stock Pool foundation (canonical documentation: `capability.commerce.technical-reference`) before adding
 availability aggregation or Pool administration APIs.
 
-Read [the Stock Sourcing foundation](docs/stock-sourcing-foundation.md) before
+Read the Stock Sourcing foundation (canonical documentation: `capability.commerce.technical-reference`) before
 adding sourcing intent APIs, availability, reservation, or cached evaluation.
 
-Read [the Stock Availability foundation](docs/stock-availability-foundation.md) before adding Availability caching or allocation promises.
+Read the Stock Availability foundation (canonical documentation: `capability.commerce.technical-reference`) before adding Availability caching or allocation promises.
 
-Read [the Stock Reservation foundation](docs/stock-reservation-foundation.md) before extending checkout holds, expiry, or fulfillment consumption.
+Read the Stock Reservation foundation (canonical documentation: `capability.commerce.technical-reference`) before extending checkout holds, expiry, or fulfillment consumption.
 
-Read [the Stock Allocation foundation](docs/stock-allocation-foundation.md) before integrating Order demand, split fulfillment, or backorders.
+Read the Stock Allocation foundation (canonical documentation: `capability.commerce.technical-reference`) before integrating Order demand, split fulfillment, or backorders.
 
-Read [the Stock Transfer foundation](docs/stock-transfer-foundation.md) before moving Stock between Warehouses or extending discrepancy handling.
+Read the Stock Transfer foundation (canonical documentation: `capability.commerce.technical-reference`) before moving Stock between Warehouses or extending discrepancy handling.
 
-Read [the Stock Reconciliation foundation](docs/stock-reconciliation-foundation.md) before adding scheduled scans, findings, approvals, or repairs.
+Read the Stock Reconciliation foundation (canonical documentation: `capability.commerce.technical-reference`) before adding scheduled scans, findings, approvals, or repairs.
 
-Read [Inventory Operations and Integrations](docs/inventory-operations-and-integrations.md) before exposing BackOffice reads, creating Movement checkpoints, or enabling WMS/POS connectors.
+Read Inventory Operations and Integrations (canonical documentation: `capability.commerce.technical-reference`) before exposing BackOffice reads, creating Movement checkpoints, or enabling WMS/POS connectors.

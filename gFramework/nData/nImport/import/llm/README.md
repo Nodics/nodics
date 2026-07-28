@@ -12,3 +12,16 @@ Recommended use:
 4. For project-specific overrides, read the later module layer before changing out-of-the-box Nodics code.
 
 Do not hardcode this module into framework behavior. Use active modules, layered configuration, schemas, runtime governance, and tenant context.
+
+Committed multi-format examples belong under
+`test/fixtures/multi-format`. Keep them as test/demo evidence for JavaScript,
+JSON, CSV, and Excel import processors. Do not move them into active
+`data/init`, `data/core`, or `data/sample` folders unless a specific module
+owns that runtime seed data and the import contract, documentation, and tests
+are updated for that module-owned behavior.
+
+The restored historical Profile tenant file-import use case belongs under
+`gCore/profile/data/sample/tenant`, with the normal `headers/` and `data/`
+sample-data structure. Preserve Profile ownership for these tenant records.
+Keep the CSV and XLSX paths covered by
+`profileTenantLocalFileImportContract.test.js`.

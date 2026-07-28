@@ -23,7 +23,7 @@ The endpoint is for trusted module-to-module communication. Business users do no
 
 For performance, Nodics caches the ordered Pool result using the configured `nCache` provider. Local cache suits one process or development; Redis and Hazelcast support shared distributed deployments. Hazelcast is implemented but remains disabled by default and must pass the guarded live-cluster test before production selection. Cache outages do not stop sourcing requests: Nodics evaluates directly. Policy, Rule, Pool, and membership changes invalidate affected tenant results automatically.
 
-Read the [Stock Sourcing foundation contract](../../gComm/inventory/docs/stock-sourcing-foundation.md) for schemas, configuration, security, customization, recovery, and tests.
+Read the Stock Sourcing foundation contract (canonical documentation: `capability.commerce.technical-reference`) for schemas, configuration, security, customization, recovery, and tests.
 
 ## Continue
 

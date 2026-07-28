@@ -129,9 +129,9 @@ Back up Dimensions, Units, and Conversions together. Restore Dimensions first,
 then Units, then Conversions. Test representative business volume in the actual
 deployment; framework correctness tests are not universal capacity evidence.
 
-Read the [Units module guide](../../gCore/units/docs/units-foundation.md) for
+Read the Units module guide (canonical documentation: `capability.units.technical-reference`) for
 schemas, arithmetic, regional selection, recovery, and tests, and the
-[deployment and integration guide](../../gCore/units/docs/units-deployment-and-integration.md)
+deployment and integration guide (canonical documentation: `capability.units.technical-reference`)
 for configuration and topology decisions.
 
 ## Continue

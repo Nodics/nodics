@@ -38,8 +38,8 @@ active module hierarchy.
 | Change import validation for a customer | Project import service/interceptor/pipeline | Reject or transform customer-specific data |
 
 When a user or AI tool asks for a customization, first identify the row in this
-table. If no row fits, inspect the owning module docs before inventing a new
-extension path.
+table. If no row fits, inspect the owning module README and canonical
+documentation before inventing a new extension path.
 
 ## Customizing Or Generalizing Services
 

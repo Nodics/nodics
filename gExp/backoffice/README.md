@@ -74,38 +74,38 @@ with provider TTL leases and incremental key scanning. BackOffice never creates
 or owns a second Redis connection. Modules reconcile automatically after
 BackOffice or module restart through bounded retry and periodic renewal.
 
-See [the registry contract](docs/module-registry-contract.md) and
-[the operations runbook](docs/registry-operations-runbook.md). API, catalogue,
+See the registry contract (canonical documentation: `solution.backoffice.technical-reference`) and
+the operations runbook (canonical documentation: `solution.backoffice.technical-reference`). API, catalogue,
 compatibility, and audit behavior is defined by
-[the API catalogue contract](docs/api-catalogue-contract.md); deployment
-configuration follows [the environment deployment contract](docs/environment-deployment-contract.md).
+the API catalogue contract (canonical documentation: `solution.backoffice.technical-reference`); deployment
+configuration follows the environment deployment contract (canonical documentation: `solution.backoffice.technical-reference`).
 Module capability discovery, safe snapshot behavior, and CMS provider selection
-follow [the capability discovery contract](docs/capability-discovery-contract.md).
+follow the capability discovery contract (canonical documentation: `solution.backoffice.technical-reference`).
 Durable observation history, breaking-change approval, rejection, rollback,
 retention, and replica concurrency follow
-[the contract history lifecycle](docs/contract-history-lifecycle.md).
+the contract history lifecycle (canonical documentation: `solution.backoffice.technical-reference`).
 Runtime readiness observation and multi-instance availability aggregation follow
-[the availability observation contract](docs/availability-observation-contract.md).
+the availability observation contract (canonical documentation: `solution.backoffice.technical-reference`).
 The operator journey, per-instance projection, security boundary, and cluster
 interpretation follow
-[the Module Health operations guide](docs/module-health-operations.md).
+the Module Health operations guide (canonical documentation: `solution.backoffice.technical-reference`).
 Core-data installation and update behavior follows
-[the Core Data operations guide](docs/core-data-operations.md).
+the Core Data operations guide (canonical documentation: `solution.backoffice.technical-reference`).
 The same contract governs deduplicated state-transition events and sanitized
 probe/publication metrics through Nodics' existing event capability.
 Bounded administrative inventory, detail, and governed refresh behavior follow
-[the registry administration contract](docs/registry-administration-contract.md).
+the registry administration contract (canonical documentation: `solution.backoffice.technical-reference`).
 Human/service separation and the administrative permission matrix follow
-[the administrative security contract](docs/administrative-security-contract.md).
+the administrative security contract (canonical documentation: `solution.backoffice.technical-reference`).
 Structural scale budgets and benchmark evidence follow
-[the performance and scale contract](docs/performance-and-scale-contract.md).
+the performance and scale contract (canonical documentation: `solution.backoffice.technical-reference`).
 Backend go-live, monitoring, rollback, and residual-risk gates follow
-[the backend release-readiness checklist](docs/backend-release-readiness.md).
+the backend release-readiness checklist (canonical documentation: `solution.backoffice.technical-reference`).
 The current evidence, acceptance decision, and remaining production gates are
-recorded in [the backend acceptance report](docs/backend-acceptance-report.md).
+recorded in the backend acceptance report (canonical documentation: `solution.backoffice.technical-reference`).
 The module-owned core records for the initial Axis login, employee password
 recovery, secured screen lock, and dashboard composition are described in
-[the Axis content catalog guide](docs/axis-content-catalog.md).
+the Axis content catalog guide (canonical documentation: `solution.backoffice.technical-reference`).
 
 ## Customization
 

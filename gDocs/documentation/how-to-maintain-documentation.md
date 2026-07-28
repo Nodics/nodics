@@ -24,7 +24,8 @@ inventories, checklists, audits, drafts, proposed architecture, unresolved
 decisions, implementation backlogs, and action plans. It is not the Nodics
 documentation module or a source of runtime truth. Promote only functionality
 that has been implemented in authoritative Nodics contracts and verified into
-`gDocs`, a module `README.md`, or a module `docs/` folder.
+the canonical documentation content pack, a concise module `README.md`, or
+AI/developer contracts.
 
 Permanent repository documentation describes current implemented behavior. A
 plan may change during implementation, so it must not be linked into the public
@@ -38,7 +39,7 @@ then promote only the implemented sections and leave unresolved work in root
 Each module README explains the purpose, behavior, configuration, extension points, and tests for that module.
 
 Use [Module Documentation Index](../reference/module-documentation-index.md)
-to connect public task guides to module-owned README and docs pages.
+to connect public task guides to module-owned READMEs and canonical pages.
 
 **AI and implementation contracts**
 
@@ -57,8 +58,8 @@ Use the right documentation layer for the right audience.
 | Root `README.md` | New visitors, evaluators, and developers | Explain what Nodics is, why it exists, and where to start. |
 | `gDocs` | Business owners, evaluators, users, application developers, framework developers, operators, and technical leads | Provide business decision journeys and task-based guides such as setup, APIs, data, jobs, security, testing, and deployment. |
 | Module `README.md` files | Developers working inside one capability | Explain module purpose, owned schemas/routes/services/data/tests, configuration, extension paths, and verification. |
-| Module `docs/` folders | Developers needing deeper module detail | Hold permanent module documentation that belongs with the product. |
-| `gDocs/reference/module-documentation-index.md` | Users and developers moving from guide pages to module details | Maps task-based documentation to the module README and module docs that own exact capability behavior. |
+| Canonical documentation content pack | Business users, operators, developers, and AI tools needing full detail | Own permanent capability, solution, tutorial, operations, security, and reference content. |
+| `gDocs/reference/module-documentation-index.md` | Users and developers moving from guide pages to module details | Maps task-based documentation to the module README and canonical pages that explain exact capability behavior. |
 | `AGENTS.md` | AI tools and developers changing code | Define local implementation behavior, ownership boundaries, and safety rules. |
 | `gSetup/llm` | AI tools, automation, and developers doing implementation work | Define cross-cutting contracts, prompts, standards, generated context rules, and structure guidance. |
 | Generated LLM context | AI tools and reviewers | Summarize source-derived module facts and documentation gaps after regeneration. |
@@ -129,7 +130,8 @@ that the nearest module boundary is safe and useful by itself:
 
 1. Put global rules in root `AGENTS.md`.
 2. Put module ownership and prohibitions in the nearest `AGENTS.md`.
-3. Put human capability guidance in the module README and module `docs/`.
+3. Put concise local orientation in the module README and detailed human
+   capability guidance in the canonical documentation content pack.
 4. Put concise machine-oriented rules and examples in `llm/contracts/` and
    `llm/examples/`.
 5. Protect critical rules with tests.

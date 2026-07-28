@@ -34,7 +34,7 @@ An expired or unverifiable handle is denied. Resolve the hostname again and retr
 
 Operators configure Storefront introspection under `inventory.storefrontContext` in layered `properties.js`. Multi-node Storefront deployments require a shared security-state cache so any node can introspect a recently issued handle. Inventory Availability cache failure remains fail-open to authoritative Stock calculation, but Storefront security-state failure remains fail-closed.
 
-Read the [technical Availability contract](../../gComm/inventory/docs/stock-availability-foundation.md) for configuration, security, evidence, customization, deployment, and tests.
+Read the technical Availability contract (canonical documentation: `capability.commerce.technical-reference`) for configuration, security, evidence, customization, deployment, and tests.
 
 ## Continue
 

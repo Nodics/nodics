@@ -26,5 +26,5 @@ development process at `http://localhost:3100` and
 `http://127.0.0.1:3100`. Higher environments must declare their own exact
 approved frontend origins and must not inherit local development origins.
 
-See [the local backend topology guide](docs/local-backend-runtime-topologies.md)
+See the local backend topology guide (canonical documentation: `operations.runtime-topology-reference`)
 for ports, startup commands, expected results, and troubleshooting.

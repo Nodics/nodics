@@ -48,7 +48,7 @@ A typical export flow should follow this shape:
 The current base `DataExportService.export` intentionally rejects until an active module provides implementation behavior. This prevents accidental data leakage through a partially configured exporter.
 
 The detailed shared engine contract is documented in
-[Export Process Framework](export/docs/export-process-framework.md).
+Export Process Framework (canonical documentation: `capability.data-exchange.technical-reference`).
 
 ## Configuration
 

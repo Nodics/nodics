@@ -179,7 +179,6 @@ module/
   README.md
   package.json
   config/
-  docs/
   llm/
     README.md
     contracts/
@@ -191,8 +190,9 @@ module/
 
 Aggregator modules and submodules follow the same convention. For example,
 `gFramework/nCache`, `gFramework/nCache/cache`, and
-`gFramework/nCache/redisCache` each own their own `AGENTS.md`, `README.md`,
-`docs/`, and `llm/` guidance.
+`gFramework/nCache/redisCache` each own their own `AGENTS.md`, `README.md`, and
+`llm/` guidance. Detailed permanent human documentation belongs in the
+canonical documentation content pack, not a parallel module `docs/` tree.
 
 ## Documentation Impact Contract
 
@@ -201,8 +201,8 @@ and verified functionality. Future designs, proposed architecture, unresolved
 decisions, implementation backlogs, and action plans belong only in the
 temporary, untracked, non-runtime root `docs/` workspace until implementation
 and validation are complete. Promote only the implemented portions into
-canonical `nodicsdocs` content, module `README.md`, module `docs/`, and
-generated context. Do not link temporary plans from public or module
+canonical `nodicsdocs` content, module `README.md`, and generated context. Do
+not link temporary plans from public or module
 documentation in a way that presents planned behavior as available capability.
 
 Every functional change must evaluate whether these artifacts need updates:
@@ -215,8 +215,9 @@ Every functional change must evaluate whether these artifacts need updates:
   expectations, or module-specific contribution behavior changes.
 - `README.md` when module purpose, capabilities, setup, usage, extension
   points, or public behavior changes.
-- `docs/` when architecture, runtime contracts, security model, configuration
-  model, lifecycle, troubleshooting, or operational behavior changes.
+- canonical documentation content when architecture, runtime contracts,
+  security model, configuration model, lifecycle, troubleshooting, or
+  operational behavior changes.
 - `llm/` when AI guidance, generated module context, examples, checklists, or
   module summaries become stale.
 - `llm/contracts/` when a behavior rule, extension boundary, override contract,
@@ -235,6 +236,13 @@ change. Generated CMS records must never be manually maintained as a shorter
 parallel authority. Retirement of README/docs evidence requires a migration
 register, detail-preservation validation, deterministic generation checks, and
 rendered-content review.
+
+Every module and project retains a concise high-level `README.md` after detailed
+guidance migrates into canonical documentation. The README remains the local
+entry point for purpose, ownership, implemented capabilities, setup and
+verification entry points, supported extension boundaries, and canonical
+documentation links. Never remove a module README during documentation
+retirement, and never rebuild a second copy of the detailed guides inside it.
 
 AI-assisted changes must update AI-facing guidance with the same care as source
 code because future developers and AI tools will depend on it. A change is not

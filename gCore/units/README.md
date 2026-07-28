@@ -23,8 +23,8 @@ effective dates, dimensional compatibility, bounded reads, and explicit
 rounding. It returns only the Unit and conversion evidence a consuming domain
 needs; it does not expose Units master-data CRUD.
 
-Read [Units Foundation](docs/units-foundation.md), the
-[deployment and integration guide](docs/units-deployment-and-integration.md),
+Read Units Foundation (canonical documentation: `capability.units.technical-reference`), the
+deployment and integration guide (canonical documentation: `capability.units.technical-reference`),
 and the [business guide](../../gDocs/data/how-to-use-units-and-land-measurements.md).
 
 ## Verification

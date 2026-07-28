@@ -17,15 +17,14 @@
  * @override Projects may add focused processor fixtures beside this test while preserving import format behavior.
  */
 const assert = require('assert');
-const fs = require('fs');
-const os = require('os');
 const path = require('path');
-const ExcelJS = require('exceljs');
 
 const jsProcessor = require('../../jsImport/src/service/init/defaultJsFileDataProcessService');
 const jsonProcessor = require('../../jsonImport/src/service/init/defaultJsonFileDataProcessService');
 const csvProcessor = require('../../csvImport/src/service/init/defaultCsvFileDataProcessService');
 const excelProcessor = require('../../excelImport/src/service/init/defaultExcelFileDataProcessService');
+
+const fixtureRoot = path.join(__dirname, 'fixtures', 'multi-format');
 
 global.UTILS = {
     isBlank: value => value === null || value === undefined || value === ''
@@ -147,45 +146,25 @@ function runProcessor(processor, files) {
     });
 }
 
-async function createExcelFile(filePath) {
-    let workbook = new ExcelJS.Workbook();
-    let sheet = workbook.addWorksheet('Sheet1');
-    sheet.addRow(['code', 'name']);
-    sheet.addRow(['excelOne', 'Excel One']);
-    sheet.addRow(['excelTwo', 'Excel Two']);
-    await workbook.xlsx.writeFile(filePath);
-}
-
 (async function () {
-    let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nodics-import-format-'));
-    let jsFile = path.join(tmpDir, 'records.js');
-    let jsonFile = path.join(tmpDir, 'records.json');
-    let emptyJsonFile = path.join(tmpDir, 'empty-records.json');
-    let jsonFileAfterEmpty = path.join(tmpDir, 'records-after-empty.json');
-    let invalidJsonFile = path.join(tmpDir, 'invalid-records.json');
-    let csvFile = path.join(tmpDir, 'records.csv');
-    let emptyCsvFile = path.join(tmpDir, 'empty-records.csv');
-    let csvFileAfterEmpty = path.join(tmpDir, 'records-after-empty.csv');
-    let excelFile = path.join(tmpDir, 'records.xlsx');
-
-    fs.writeFileSync(jsFile, 'module.exports = { record0: { code: "jsOne" }, record1: { code: "jsTwo" } };');
-    fs.writeFileSync(jsonFile, JSON.stringify([{ code: 'jsonOne' }, { code: 'jsonTwo' }]));
-    fs.writeFileSync(emptyJsonFile, JSON.stringify([]));
-    fs.writeFileSync(jsonFileAfterEmpty, JSON.stringify([{ code: 'jsonAfterEmpty' }]));
-    fs.writeFileSync(invalidJsonFile, '[{ "code": "broken" ');
-    fs.writeFileSync(csvFile, 'code,name\ncsvOne,Csv One\ncsvTwo,Csv Two\n');
-    fs.writeFileSync(emptyCsvFile, 'code,name\n');
-    fs.writeFileSync(csvFileAfterEmpty, 'code,name\ncsvAfterEmpty,Csv After Empty\n');
-    await createExcelFile(excelFile);
+    let jsFile = path.join(fixtureRoot, 'records.js');
+    let jsUpdatedFile = path.join(fixtureRoot, 'records-updated.js');
+    let jsonFile = path.join(fixtureRoot, 'records.json');
+    let emptyJsonFile = path.join(fixtureRoot, 'empty-records.json');
+    let jsonFileAfterEmpty = path.join(fixtureRoot, 'records-after-empty.json');
+    let invalidJsonFile = path.join(fixtureRoot, 'invalid-records.json');
+    let csvFile = path.join(fixtureRoot, 'records.csv');
+    let emptyCsvFile = path.join(fixtureRoot, 'empty-records.csv');
+    let csvFileAfterEmpty = path.join(fixtureRoot, 'records-after-empty.csv');
+    let excelFile = path.join(fixtureRoot, 'records.xlsx');
 
     pipelineCalls = [];
     let jsRequest = await runProcessor(jsProcessor, [jsFile]);
     assert.deepStrictEqual(pipelineCalls.map(call => call.models.map(model => model.code)), [['jsOne', 'jsTwo']]);
     assert.strictEqual(jsRequest.importRun.summary.recordsRead, 2);
 
-    fs.writeFileSync(jsFile, 'module.exports = { record0: { code: "jsUpdated" } };');
     pipelineCalls = [];
-    let jsUpdatedRequest = await runProcessor(jsProcessor, [jsFile]);
+    let jsUpdatedRequest = await runProcessor(jsProcessor, [jsUpdatedFile]);
     assert.deepStrictEqual(pipelineCalls.map(call => call.models.map(model => model.code)), [['jsUpdated']]);
     assert.strictEqual(jsUpdatedRequest.importRun.summary.recordsRead, 1);
 

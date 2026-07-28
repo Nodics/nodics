@@ -36,7 +36,7 @@ then calculate eligible Stock from the member Warehouses. Neither behavior is
 part of the current Pool foundation.
 
 For configuration, extension, security, recovery, and test details, read the
-[Stock Pool foundation contract](../../gComm/inventory/docs/stock-pool-foundation.md).
+Stock Pool foundation contract (canonical documentation: `capability.commerce.technical-reference`).
 
 ## Continue
 

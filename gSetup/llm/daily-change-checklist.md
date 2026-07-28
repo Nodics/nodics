@@ -35,7 +35,7 @@ During implementation:
 - keep generated output derived from source
 - keep code understandable, diagnosable, safely changeable, and reviewable by a
   developer who did not create it
-- update affected `AGENTS.md`, `README.md`, `docs/`, `llm/contracts/`,
+- update affected `AGENTS.md`, `README.md`, canonical documentation content, `llm/contracts/`,
   `llm/examples/`, generated LLM context, and tests when behavior or extension
   guidance changes
 - run focused tests after changing the relevant behavior

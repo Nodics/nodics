@@ -23,7 +23,7 @@ The module currently contributes:
 The default `export` implementation rejects with a Nodics error until an active module overrides export behavior. This is intentional: an export surface must not leak data just because the module exists.
 
 For the full engineering contract, read
-[Export Process Framework](docs/export-process-framework.md).
+Export Process Framework (canonical documentation: `capability.data-exchange.technical-reference`).
 
 ## Runtime Flow
 

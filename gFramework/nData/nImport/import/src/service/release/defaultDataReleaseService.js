@@ -41,17 +41,25 @@ module.exports = {
         };
     },
 
-    /** Validates a requested immutable plan without persisting imported business data. */
+    /** Validates a requested immutable plan without executing import handlers or persisting imported business data. */
     preflight: async function (request) {
         let plan = await this.preparePlan(request);
-        let validationRequest = this.createImportRequest(request, plan, true);
-        let validation = await this.invokeImport(validationRequest, plan.dataType);
+        let operationReleases = await this.operationReleases(plan, 'AVAILABLE');
+        let executablePlan = this.executablePlan(plan, operationReleases);
+        let validation = {
+            validationOnly: true,
+            importExecuted: false,
+            skipped: executablePlan.releases.length === 0,
+            reason: executablePlan.releases.length === 0 ?
+                'Selected data releases are already current' :
+                'Data release plan validated; no import execution was performed'
+        };
         return {
             code: 'SUC_IMP_00000',
             data: {
                 dataType: plan.dataType,
                 tenant: plan.tenant,
-                releases: plan.releases.map(release => this.publicRelease(release)),
+                releases: operationReleases,
                 validation: validation
             }
         };
@@ -60,6 +68,9 @@ module.exports = {
     /** Executes one validated plan through the authoritative init/core/sample service operation. */
     execute: async function (request) {
         let plan = await this.preparePlan(request);
+        let operationReleases = await this.operationReleases(plan, 'AVAILABLE');
+        plan = this.executablePlan(plan, operationReleases);
+        if (plan.releases.length === 0) throw this.error('ERR_IMP_00003', 'Selected data releases are already current');
         let typePolicy = (this.configuration().types || {})[plan.dataType] || {};
         if (typePolicy.operatorExecution !== true) throw this.error('ERR_IMP_00002', 'Operator execution is disabled for this data release type');
         let executionKey = plan.tenant + ':' + plan.dataType;
@@ -70,12 +81,13 @@ module.exports = {
             let importRequest = this.createImportRequest(request, plan, false);
             let result = await this.invokeImport(importRequest, plan.dataType);
             await Promise.all(plan.releases.map(release => this.recordInstallation(plan, release, importRequest.importRun, 'CURRENT')));
+            let operationReleases = plan.releases.map(release => this.operationRelease(release, 'CURRENT'));
             return {
                 code: 'SUC_IMP_00000',
                 data: {
                     dataType: plan.dataType,
                     tenant: plan.tenant,
-                    releases: plan.releases.map(release => this.publicRelease(release)),
+                    releases: operationReleases,
                     importRun: importRequest.importRun,
                     result: result
                 }
@@ -118,6 +130,34 @@ module.exports = {
         let installedByCode = Object.fromEntries(installations.map(item => [item.code, item]));
         releases.forEach(release => this.validateUpgradePolicy(release, installedByCode[this.installationCode(tenant, release)]));
         return { dataType: dataType, tenant: tenant, releases: releases };
+    },
+
+    /** Projects operation responses using the same client-safe release contract as the catalogue. */
+    operationReleases: async function (plan, mode) {
+        if (mode === 'CURRENT') return plan.releases.map(release => this.operationRelease(release, 'CURRENT'));
+        let installations = await this.getInstallations(plan.tenant);
+        let byCode = Object.fromEntries(installations.map(item => [item.code, item]));
+        return plan.releases.map(release => this.toCatalogueItem(release,
+            byCode[this.installationCode(plan.tenant, release)],
+            this.activeExecutions.has(plan.tenant + ':' + release.dataType)));
+    },
+
+    /** Adds mandatory operation status fields without exposing internal paths or executable data. */
+    operationRelease: function (release, status) {
+        return Object.assign(this.publicRelease(release), {
+            installedVersion: status === 'CURRENT' ? release.version : undefined,
+            status: status
+        });
+    },
+
+    /** Keeps execution scoped to releases that can change state. */
+    executablePlan: function (plan, operationReleases) {
+        let executableModules = new Set((operationReleases || [])
+            .filter(release => ['NOT_INSTALLED', 'UPDATE_AVAILABLE', 'FAILED'].includes(release.status))
+            .map(release => release.moduleName));
+        return Object.assign({}, plan, {
+            releases: plan.releases.filter(release => executableModules.has(release.moduleName))
+        });
     },
 
     /** Discovers only active loader-owned module data releases. */

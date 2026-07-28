@@ -34,7 +34,8 @@ Documentation must explain:
 
 AI tools must not infer a new folder structure when documentation already
 defines one. If a required extension point is unclear, the tool must inspect the
-owning module docs and source before proposing code. If the extension point does
+owning module README, canonical documentation, and source before proposing
+code. If the extension point does
 not exist, document the gap instead of inventing an ungoverned path.
 
 ## Source Perspective
@@ -417,17 +418,18 @@ When guidance asks for pipeline work, it must also explain the pipeline
 lifecycle contract: pipeline definitions own ordered execution, service methods
 own each node implementation, processors own targeted data transformation, and
 tests must prove default behavior plus the intended later-module override path.
-Use `gFramework/nPipeline/docs/pipeline-framework.md` as the canonical
-framework guide before adding, extending, or documenting pipeline behavior.
+Use canonical documentation
+`capability.execution-processes.technical-reference` as the framework guide
+before adding, extending, or documenting pipeline behavior.
 
 When guidance asks for router work, it must explain the full router contract:
 route definitions own HTTP exposure and access metadata, Express app
 configuration owns middleware hooks, `DefaultRouterService` registers effective
 routes, `DefaultRouterOperationService` binds Express methods, the request
 handler pipeline normalizes and secures requests, controllers map request data,
-and downstream facades/services/pipelines own business behavior. Use
-`gFramework/nRouter/docs/router-framework.md` as the canonical framework guide
-before adding, securing, extending, or documenting API routes.
+and downstream facades/services/pipelines own business behavior. Use canonical
+documentation `capability.apis-routing.technical-reference` as the framework
+guide before adding, securing, extending, or documenting API routes.
 
 API documentation guidance must keep OpenAPI and Swagger UI inside that same
 router contract. OpenAPI generation comes from effective schemas and routers.

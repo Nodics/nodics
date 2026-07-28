@@ -42,7 +42,6 @@ module/                         Module boundary and ownership root.
     sample/                     Demo/sample data imported intentionally through nData import APIs.
       headers/                  Import header definitions for sample data.
       data/                     Sample data files matched by header data-file prefixes.
-  docs/                         Permanent module documentation that is part of the product, not temporary project notes.
   llm/                          AI-facing guidance, contracts, examples, and generated context for this module.
     README.md                   Module-specific AI guidance entrypoint.
     contracts/                  Maintained AI/developer contracts that define module-specific rules.
@@ -80,11 +79,12 @@ folders. Environment-owned init data belongs under that environment module,
 server-owned data belongs under that server module, and reusable framework data
 belongs under the capability module that owns the records.
 
-`docs/` is documentation/reference space, not a runtime package source. The
-Nodics raw module discovery must skip any folder named `docs`, even when copied
-reference material contains `package.json` files. Runtime modules must live
-under real project, framework, environment, server, node, or capability module
-boundaries outside `docs/`.
+Module packages must not create a parallel `docs/` directory. Their
+`README.md` is the concise local human entry point, while detailed permanent
+guidance is authored in the canonical documentation content pack. The root
+`docs/` workspace remains temporary, untracked, and non-runtime. Nodics raw
+module discovery must continue to skip any folder named `docs`, even when
+copied reference material contains `package.json` files.
 
 ## Naming
 
@@ -158,8 +158,8 @@ files are opened. Its maintained documentation must provide:
   customization examples;
 - permissions, tenant behavior, observability, performance, deployment,
   migration, backup/restore, troubleshooting, and verification impact;
-- links from the module README to deeper module docs and from canonical
-  `nodicsdocs` capability journeys to the owning module.
+- canonical documentation identifiers or routes from the module README and
+  links from canonical `nodicsdocs` capability journeys to the owning module.
 
 Critical invariants must be enforced by focused tests. A sentence in a README
 or `AGENTS.md` is not sufficient proof when source/configuration structure or

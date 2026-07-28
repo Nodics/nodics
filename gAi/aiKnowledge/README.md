@@ -79,5 +79,5 @@ node gAi/aiKnowledge/test/aiKnowledgeRuntimeOperationsContract.test.js
 node gAi/aiKnowledge/test/aiKnowledgeRouteSecurityContract.test.js
 ```
 
-See [Runtime operations](docs/README.md) for beginner, operator, security,
+See Runtime operations (canonical documentation: `capability.ai.technical-reference`) for beginner, operator, security,
 recovery, customization, and troubleshooting guidance.
