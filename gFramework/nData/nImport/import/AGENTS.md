@@ -41,3 +41,23 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
 - Configuration is disabled by default. Project and environment layers enable
   sources, permissions, cleanup, and update policy without changing framework
   source.
+- Browser-facing file import must be media-reference based. Axis or another
+  frontend uploads files through `gFramework/nMedia`; `nImport` resolves a
+  trusted media descriptor and owns import-run staging. Do not let a frontend
+  submit raw local paths, cloud object keys, NAS paths, bucket names, or
+  provider URLs as import authority.
+- `nImport` must not own multipart upload parsing or media storage. `nMedia`
+  must not parse import records or dispatch schema/search writes. Preserve the
+  boundary even when both capabilities are used in one employee workflow.
+- The secured browser-facing import entry point is
+  `POST /nodics/system/v0/import/media`. It accepts `mediaCode` plus either a
+  generic `moduleName`/`schemaName` target or an optional future
+  `definitionCode` template, and optional `options.validateOnly`; it must
+  generate a run-local header, stage the media through
+  `DefaultMediaImportSourceStagingService`, and then use the existing local
+  import/finalized-data pipelines. Do not add another path-based browser route.
+- Validation-only media imports may stage the media and run the existing local
+  import initializer so file format, headers, row parsing, and finalized-record
+  preparation are proven. They must stop before `processDataImportPipeline`;
+  they must not dispatch schema/search writes or report installation as
+  complete.

@@ -1,0 +1,16 @@
+{
+    "contractVersion": 1,
+    "module": "profile",
+    "dataType": "sample",
+    "version": "1.0.3",
+    "description": "Profile and Identity sample data",
+    "files": {
+        "tenant/data/defaultTenantCsvData.csv": "b0fbbb7114896806277727caeab9cb1e2b3d5c592ac7f59a3f7a7dd8c2c57cca",
+        "tenant/data/defaultTenantExcelData.xlsx": "cf4f3d7f7e1b94c5ccbfeab90bf99594bbd2cc57afdf830ccca4d31af2c2f95d",
+        "tenant/data/defaultTenantLegacyExcelData.xls": "9ceaf1edfc803e913b84e66c8ce978155cff8d0ebbf39790983dfe96729f9975",
+        "tenant/headers/tenantCsvDataHeader.js": "fab83edb5f28e4be95b77aac237422aa736b80522b6fe41c8775828cecdf2649",
+        "tenant/headers/tenantExcelDataHeader.js": "d7c47d37cd19d5eb7bd8d18dfa6c806200f70cb9b4e2a9f6fb2606ab016b7d90",
+        "tenant/headers/tenantLegacyExcelDataHeader.js": "d16803c7c0b0c2c65e106a1c38d2b8e1b782d8585e52d381e747d3b4d7f2084f",
+        "tenant/README.md": "78f0c64ea84f318b11e7ff5eca051a2a0331182b1cd0988ab033f38b9df43c06"
+    }
+}

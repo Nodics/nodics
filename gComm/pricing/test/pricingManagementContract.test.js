@@ -16,7 +16,7 @@
  * @owner pricing
  * @override Not applicable; this test protects the OOTB contract.
  */
-const assert = require('assert'), properties = require('../config/properties'), authProperties = require('../../../gFramework/nAuth/config/properties'), groups = require('../../../gCore/profile/data/init/data/groups/defaultUserGroupsData'), routes = require('../src/router/routers').pricing.management;
+const assert = require('assert'), properties = require('../config/properties'), authProperties = require('../../../gFramework/nAuth/config/properties'), groups = require('../../../gCore/profile/data/init/data/groups/defaultBootstrapUserGroupsData'), routes = require('../src/router/routers').pricing.management;
 class NodicsError extends Error { constructor(code, message) { super(message || code); this.code = code; } }
 global.CLASSES = { NodicsError }; global.CONFIG = { get: key => properties[key] }; global.SERVICE = {};
 SERVICE.DefaultPricingEnterpriseScopeService = require('../src/service/foundation/defaultPricingEnterpriseScopeService');

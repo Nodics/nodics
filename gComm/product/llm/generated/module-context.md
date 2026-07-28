@@ -33,10 +33,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 40 |
+| Source files | 41 |
 | Test files | 28 |
 | Data files | 7 |
-| All module-owned files | 65 |
+| All module-owned files | 66 |
 | Local schema definitions | 18 |
 
 ## Ownership And Dependencies
@@ -70,7 +70,7 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 7 |
-| Partially documented | 53 |
+| Partially documented | 54 |
 | Undocumented | 0 |
 | Inventory only | 5 |
 
@@ -142,6 +142,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/product/src/service/publication/defaultProductPublicationWorkflowService.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/src/service/reference/defaultProductCatalogReferenceProviderService.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/src/service/reference/defaultProductItemReferenceService.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/product/src/service/reference/defaultProductMediaReferenceProviderService.js` | `src` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/src/service/reference/defaultProductReferenceService.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/src/service/reference/defaultProductUnitsReferenceProviderService.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/src/utils/enums.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |

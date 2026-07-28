@@ -45,6 +45,96 @@ module.exports = {
                 lastAttemptAt: { type: 'string', required: true, description: 'Latest governed installation attempt timestamp' }
             }
         },
+        importDefinition: {
+            super: 'base',
+            model: true,
+            service: {
+                enabled: true
+            },
+            event: {
+                enabled: false
+            },
+            router: {
+                enabled: true
+            },
+            search: {
+                enabled: true,
+                idPropertyName: 'code'
+            },
+            tenants: ['default'],
+            definition: {
+                code: {
+                    type: 'string',
+                    required: true,
+                    description: 'Stable business code for the import definition selected by BackOffice users'
+                },
+                description: {
+                    type: 'string',
+                    required: false,
+                    description: 'Business-facing explanation of the file shape and target operation'
+                },
+                enabled: {
+                    type: 'bool',
+                    required: false,
+                    description: 'Whether this import definition may be selected for governed media-backed imports'
+                },
+                moduleName: {
+                    type: 'string',
+                    required: true,
+                    description: 'Owning module for the target schema or index contract'
+                },
+                schemaName: {
+                    type: 'string',
+                    required: false,
+                    description: 'Target schema name when importing records into schema-backed storage'
+                },
+                indexName: {
+                    type: 'string',
+                    required: false,
+                    description: 'Target search index name when importing records into search projection storage'
+                },
+                operation: {
+                    type: 'string',
+                    required: false,
+                    description: 'Generated data-handler operation such as saveAll'
+                },
+                tenants: {
+                    type: 'array',
+                    required: false,
+                    description: 'Tenant scope allowed by this definition; request tenant may narrow but not broaden it'
+                },
+                dataFilePrefix: {
+                    type: 'string',
+                    required: true,
+                    description: 'Prefix expected on staged data files before their extension'
+                },
+                query: {
+                    type: 'object',
+                    required: false,
+                    description: 'Import query mapping used by schema data handlers'
+                },
+                macros: {
+                    type: 'object',
+                    required: false,
+                    description: 'Optional relation macros used by model import processing'
+                },
+                options: {
+                    type: 'object',
+                    required: false,
+                    description: 'Additional import header options preserved by the existing header contract'
+                },
+                allowedExtensions: {
+                    type: 'array',
+                    required: false,
+                    description: 'Optional extension allow-list for media files used with this definition'
+                },
+                active: {
+                    type: 'bool',
+                    required: false,
+                    description: 'Whether the definition is active in the current tenant'
+                }
+            }
+        },
         importRun: {
             super: 'base',
             model: true,

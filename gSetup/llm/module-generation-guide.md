@@ -37,6 +37,32 @@ topology folders according to `standards/nodics-structure-matrix.md`. After
 generation, run `npm run structure:audit -- --fail` before adding business
 behavior.
 
+## New Module Acceptance Checklist
+
+Use this checklist for every new or repaired module-shaped boundary before
+implementation work continues:
+
+1. Read the nearest `AGENTS.md`, `standards/module-standard.md`, this guide,
+   and the relevant row in `standards/nodics-structure-matrix.md`.
+2. Generate with `structure:generate` where practical. If a compatibility path
+   requires manual creation, compare against generated output and keep all
+   mandatory config, router, pipeline, utility, LLM, README, AGENTS, and test
+   extension points.
+3. Run `npm run structure:audit -- --fail` before adding business behavior.
+4. Run `npm run module:metadata`; when normalization changes ownership,
+   runtime flags, or kind metadata, update the normalizer/source contract
+   rather than repeatedly editing generated metadata by hand.
+5. Run focused module tests plus `npm run llm:generate` and
+   `npm run llm:validate` after source or documentation changes.
+6. Confirm permanent documentation describes how a beginner developer,
+   partner, business user, operator, and AI tool can understand, customize, and
+   extend the capability without touching framework source.
+
+This checklist exists so Nodics helps people who do not already know the
+framework. A missing generated file, metadata rewrite surprise, or hidden
+ownership rule is a framework/tooling gap that must be fixed at the contract
+or generator level.
+
 For a full project topology, use the approval-first planner:
 
 ```text

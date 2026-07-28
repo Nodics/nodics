@@ -1,0 +1,44 @@
+{
+    "name": "media",
+    "index": "1.27",
+    "description": "Nodics framework media lifecycle capability for storage-provider-neutral assets.",
+    "homepage": "http://www.nodics.com/",
+    "keywords": [
+        "Nodics",
+        "Framework",
+        "Media",
+        "Storage"
+    ],
+    "author": "Nodics Framework <nodics.framework@gmail.com>",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL-3.0-or-later",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics.git"
+    },
+    "dependencies": {},
+    "nodics": {
+        "kind": "capability",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "configuration",
+            "schema",
+            "router",
+            "controller",
+            "facade",
+            "service",
+            "utility",
+            "test",
+            "llm"
+        ],
+        "runtime": {
+            "router": true,
+            "publish": false,
+            "web": false
+        },
+        "displayName": "Media Management"
+    }
+}

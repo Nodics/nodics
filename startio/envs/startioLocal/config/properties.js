@@ -41,6 +41,9 @@ module.exports = {
             aiAssistant: {
                 enabled: true
             },
+            mediaManagement: {
+                enabled: true
+            },
             fileAccess: {
                 enabled: true
             },

@@ -28,8 +28,12 @@ Relations use configured type, symmetry, cross-Catalog, ordering, effective
 date, cardinality, and acyclic-graph policy. Bundle Entries keep exact positive
 quantity strings, use Units references, and reject duplicate components,
 positions, excessive depth, and cycles. Packaging stores exact quantities and
-measurements with Units-owned Unit codes. Media References accept configured
-safe URI schemes and never store binary payloads.
+measurements with Units-owned Unit codes. Media References use a Product-owned
+`mediaReferenceCode` and exactly one `nMedia` reference: `mediaCode` or
+`mediaSetCode`. Product owns role, position, locale, alt text, and lifecycle;
+`nMedia` owns provider paths, generated URLs, checksums, MIME policy, upload
+limits, and binary payloads. Product validates media item and media set
+references through the `nMedia` reference lookup contract.
 
 Staged Product business schemas are versioned only by an environment/server
 schema contribution. Online schemas remain non-versioned. Workflow governs

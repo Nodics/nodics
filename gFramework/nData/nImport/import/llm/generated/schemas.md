@@ -7,6 +7,7 @@
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `dataInstallation` |  | yes | yes | no | no | no | no | `default` | 12 |
+| `importDefinition` | `base` | yes | yes | yes | no | yes | no | `default` | 14 |
 | `importRun` | `base` | yes | yes | yes | no | no | no | `default` | 27 |
 
 ### `import.dataInstallation`
@@ -23,6 +24,23 @@
 - `status` `string` required: Current installation projection status
 - `tenant` `string` required: Tenant owning the installed release state
 - `version` `string` optional: Installed immutable release version
+
+### `import.importDefinition`
+
+- `active` `bool` optional: Whether the definition is active in the current tenant
+- `allowedExtensions` `array` optional: Optional extension allow-list for media files used with this definition
+- `code` `string` required: Stable business code for the import definition selected by BackOffice users
+- `dataFilePrefix` `string` required: Prefix expected on staged data files before their extension
+- `description` `string` optional: Business-facing explanation of the file shape and target operation
+- `enabled` `bool` optional: Whether this import definition may be selected for governed media-backed imports
+- `indexName` `string` optional: Target search index name when importing records into search projection storage
+- `macros` `object` optional: Optional relation macros used by model import processing
+- `moduleName` `string` required: Owning module for the target schema or index contract
+- `operation` `string` optional: Generated data-handler operation such as saveAll
+- `options` `object` optional: Additional import header options preserved by the existing header contract
+- `query` `object` optional: Import query mapping used by schema data handlers
+- `schemaName` `string` optional: Target schema name when importing records into schema-backed storage
+- `tenants` `array` optional: Tenant scope allowed by this definition; request tenant may narrow but not broaden it
 
 ### `import.importRun`
 

@@ -57,5 +57,13 @@ module.exports = {
     ERR_IMP_00007: {
         code: '400',
         message: 'Models not found'
+    },
+    ERR_IMP_00008: {
+        code: '400',
+        message: 'Invalid media import source request'
+    },
+    ERR_IMP_00009: {
+        code: '400',
+        message: 'Invalid media import definition request'
     }
 };

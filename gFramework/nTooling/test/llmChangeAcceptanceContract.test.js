@@ -215,6 +215,11 @@ requireClauses('gSetup/llm/module-generation-guide.md', [
     'npm run generate:env',
     'These commands delegate to `structure:generate`',
     'run `npm run structure:audit -- --fail` before adding business',
+    '## New Module Acceptance Checklist',
+    'Use this checklist for every new or repaired module-shaped boundary',
+    'Run `npm run module:metadata`; when normalization changes ownership',
+    'update the normalizer/source contract',
+    'This checklist exists so Nodics helps people who do not already know the',
     'For a full project topology, use the approval-first planner',
     'The planner writes no files by default',
     'Review the proposed project',
@@ -422,6 +427,24 @@ requireClauses('gSetup/llm/standards/nodics-structure-matrix.md', [
     '`npm run structure:audit -- --fail`',
     '`npm run structure:audit -- --include-root`',
     'Audit results are evidence, not authority'
+]);
+
+requireClauses('AGENTS.md', [
+    '### New Module Acceptance Gate',
+    'Creating or materially reshaping a module is never a freehand file-copy task',
+    'Run `npm run structure:audit -- --fail` before adding behavior',
+    'Run `npm run module:metadata`; if it rewrites a change',
+    'normalizer or source rule instead of fighting generated output',
+    'Nodics must guide new developers into the correct module shape'
+]);
+
+requireClauses('gSetup/llm/standards/module-standard.md', [
+    '## New Module Acceptance Gate',
+    'accepted when it merely starts and appears to work',
+    'the scaffold has passed the same generated-module contract',
+    'Run `npm run structure:audit -- --fail` before adding business logic',
+    'fix the owning normalizer or source rule instead of manually',
+    'framework defects'
 ]);
 
 console.log('Nodics LLM change acceptance contract validated');

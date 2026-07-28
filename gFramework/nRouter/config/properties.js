@@ -116,6 +116,9 @@ module.exports = {
             openApiContract: {
                 enabled: true
             },
+            mediaManagement: {
+                enabled: false
+            },
             operationalHealth: {
                 enabled: true
             },

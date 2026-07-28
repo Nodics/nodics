@@ -23,6 +23,7 @@ const expectedRoutes = [
     { key: '/import/core', method: 'POST', controller: 'DefaultImportController', operation: 'importCoreData', secured: true, permission: 'import.core.run' },
     { key: '/import/sample', method: 'POST', controller: 'DefaultImportController', operation: 'importSampleData', secured: true, permission: 'import.sample.run' },
     { key: '/import/local', method: 'POST', controller: 'DefaultImportController', operation: 'importLocalData', secured: true, permission: 'import.local.run' },
+    { key: '/import/media', method: 'POST', controller: 'DefaultImportController', operation: 'importMediaData', secured: true, permission: 'import.media.run' },
     { key: '/content-packs/:packCode', method: 'GET', controller: 'DefaultContentPackController', operation: 'getStatus', secured: true, permission: 'import.contentPack.view' },
     { key: '/content-packs/:packCode/imports', method: 'POST', controller: 'DefaultContentPackController', operation: 'importPack', secured: true, permission: 'import.contentPack.run' },
     { key: '/log/level', method: 'POST', controller: 'DefaultLogController', operation: 'changeLogLevel', secured: true, permission: 'system.log.level.update' },

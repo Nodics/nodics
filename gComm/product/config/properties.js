@@ -98,17 +98,18 @@ module.exports = {
             allowedTransitions: { DRAFT: ['ACTIVE', 'RETIRED'], ACTIVE: ['SUSPENDED', 'RETIRED'], SUSPENDED: ['ACTIVE', 'RETIRED'], RETIRED: [] }
         },
         media: {
-            types: ['IMAGE', 'VIDEO', 'DOCUMENT', 'MODEL'], roles: ['PRIMARY', 'GALLERY', 'THUMBNAIL', 'MANUAL', 'DATASHEET'],
-            allowedSchemes: ['https'], maximumEntriesPerItem: 1000, maximumUriLength: 2048,
+            types: ['IMAGE', 'VIDEO', 'DOCUMENT', 'MODEL'], roles: ['PRIMARY', 'GALLERY', 'THUMBNAIL', 'SWATCH', 'MANUAL', 'DATASHEET', 'VIDEO', 'ZOOM'],
+            referenceModes: ['MEDIA', 'MEDIA_SET'], maximumEntriesPerItem: 1000,
             statuses: ['DRAFT', 'ACTIVE', 'SUSPENDED', 'RETIRED'],
             allowedTransitions: { DRAFT: ['ACTIVE', 'RETIRED'], ACTIVE: ['SUSPENDED', 'RETIRED'], SUSPENDED: ['ACTIVE', 'RETIRED'], RETIRED: [] }
         },
         references: {
-            providers: { catalog: 'DefaultProductCatalogReferenceProviderService', unit: 'DefaultProductUnitsReferenceProviderService' },
+            providers: { catalog: 'DefaultProductCatalogReferenceProviderService', unit: 'DefaultProductUnitsReferenceProviderService', media: 'DefaultProductMediaReferenceProviderService', mediaSet: 'DefaultProductMediaReferenceProviderService' },
             requireValidationWhenConfigured: true
         },
         catalogReference: { moduleName: 'catalog', apiVersion: 'v0', preferLocal: true, maximumResults: 2 },
         unitsReference: { moduleName: 'units', apiVersion: 'v0', apiName: '/references/units/convert', requestTimeoutMs: 2000, maximumAttempts: 2, preferLocal: true },
+        mediaReference: { moduleName: 'media', apiVersion: 'v0', apiName: '/references/media/validate', requestTimeoutMs: 2000, maximumAttempts: 2, preferLocal: true },
         management: { maximumResultCount: 500, maximumPayloadBytes: 262144, allowedResources: ['items', 'identifiers', 'categories', 'categoryAssignments', 'attributeDefinitions', 'attributeValues', 'classificationClasses', 'classificationAssignments', 'variantAxes', 'variantAssignments', 'relations', 'bundleEntries', 'packaging', 'mediaReferences'] },
         workflow: { enabled: true, defaultMode: 'MANUAL', modes: ['MANUAL', 'AUTOMATIC'], manualWorkflowCode: 'productPublicationManualFlow', automaticWorkflowCode: 'productPublicationAutomaticFlow', maximumAssociatedItems: 20000, allowedAssociatedSchemas: ['productItem', 'productIdentifier', 'productCategory', 'productCategoryAssignment', 'productAttributeDefinition', 'productAttributeValue', 'productClassificationClass', 'productClassificationAssignment', 'productVariantAxis', 'productVariantAssignment', 'productRelation', 'productBundleEntry', 'productPackaging', 'productMediaReference'] },
         publication: { enabled: false, runtimeRole: 'UNASSIGNED', rootTypes: { PRODUCT_ITEM: { schema: 'productItem', service: 'DefaultProductItemService' } }, maxDependencies: 20000, targetTransportProvider: null, target: { moduleName: null, connectionName: null, connectionType: 'abstract', timeoutMs: 30000, maxAttempts: 3, maxManifestBytes: 20971520, supportedContractVersions: [1] } },

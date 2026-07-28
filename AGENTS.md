@@ -194,6 +194,30 @@ Aggregator modules and submodules follow the same convention. For example,
 `llm/` guidance. Detailed permanent human documentation belongs in the
 canonical documentation content pack, not a parallel module `docs/` tree.
 
+### New Module Acceptance Gate
+
+Creating or materially reshaping a module is never a freehand file-copy task.
+Before adding business behavior to a new module-shaped package, agents and
+developers must prove the generated/module scaffold first:
+
+1. Read the nearest `AGENTS.md` files and the module generation/structure
+   contracts.
+2. Use `npm run generate:*`/`structure:generate` where practical, or manually
+   match the generated capability/provider/group/environment/server/node shape
+   when an existing compatibility folder is being repaired.
+3. Run `npm run structure:audit -- --fail` before adding behavior.
+4. Run `npm run module:metadata`; if it rewrites a change, fix the metadata
+   normalizer or source rule instead of fighting generated output.
+5. Run `npm run llm:generate` and `npm run llm:validate` after source,
+   metadata, test, or documentation changes.
+6. Add or verify module `README.md`, `AGENTS.md`, `llm/` guidance, focused
+   tests, and canonical documentation content before claiming the module is
+   ready for developers, partners, or AI tools.
+
+If this gate fails, stop and fix the contract gap before implementing feature
+logic. Nodics must guide new developers into the correct module shape; it must
+not depend on an expert user noticing missing files after the fact.
+
 ## Documentation Impact Contract
 
 Permanent repository documentation must describe implemented, source-backed,

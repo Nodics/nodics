@@ -121,6 +121,32 @@ deliberately rather than corrected mechanically.
 The repository-standard human entrypoint is upper-case `README.md`. The
 repository-standard AI/developer behavior contract is upper-case `AGENTS.md`.
 
+## New Module Acceptance Gate
+
+A new module, provider, group, environment, server, or node boundary is not
+accepted when it merely starts and appears to work. It is accepted only after
+the scaffold has passed the same generated-module contract that partner
+developers and AI tools rely on:
+
+1. Read the nearest `AGENTS.md`, this module standard, and
+   `gSetup/llm/module-generation-guide.md`.
+2. Generate with `structure:generate` when creating a new boundary. When
+   repairing an existing compatibility path, compare the manual files against
+   the generated structure before adding behavior.
+3. Run `npm run structure:audit -- --fail` before adding business logic.
+4. Run `npm run module:metadata`. If metadata normalization removes or changes
+   a manual edit, fix the owning normalizer or source rule instead of manually
+   reapplying the generated output.
+5. Run `npm run llm:generate` followed by `npm run llm:validate` after source,
+   metadata, tests, or documentation change.
+6. Verify the module-local `README.md`, `AGENTS.md`, `llm/README.md`,
+   `llm/contracts`, `llm/examples`, focused tests, and canonical
+   documentation content explain the ownership and extension path.
+
+Do not call a module compliant until this gate passes. Missing generated
+extension files are framework defects, not knowledge prerequisites for a
+developer using Nodics.
+
 ## Configuration
 
 The three configuration files are mandatory even when empty. Empty files are

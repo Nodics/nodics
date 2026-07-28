@@ -32,6 +32,13 @@ The CSV and XLSX records are validated end-to-end by
 legacy file reference and should be promoted to an active test only when the
 current Excel reader supports legacy binary `.xls` files.
 
+Axis file import is generic and schema-first. The employee selects the target
+enterprise, Axis displays the derived technical tenant, the backend Workbench
+contract lists available schemas, and nImport generates the run-local header
+from the selected module/schema target. Import templates for recurring business
+feeds will be introduced later as optional nImport-owned conveniences; Profile
+does not contribute a mandatory tenant import-template pattern.
+
 To run the examples intentionally through local import, use this root path:
 
 ```text

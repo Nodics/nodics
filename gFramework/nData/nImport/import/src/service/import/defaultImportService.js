@@ -240,6 +240,72 @@ module.exports = {
         });
     },
 
+    /** Imports one nMedia-owned upload through a selected governed import definition. */
+    importMediaData: function (request) {
+        request = request || {};
+        request.dataType = 'media';
+        request.options = request.options || {};
+        request.importFinalizeData = request.importFinalizeData !== false;
+        if (SERVICE.DefaultSystemDataImportInitializerService &&
+            typeof SERVICE.DefaultSystemDataImportInitializerService.initImportRun === 'function') {
+            SERVICE.DefaultSystemDataImportInitializerService.initImportRun(request);
+        }
+        return new Promise((resolve, reject) => {
+            SERVICE.DefaultMediaImportDefinitionService.prepare(request).then(prepared => {
+                request.inputPath = prepared.inputPath;
+                request.outputPath = prepared.outputPath;
+                request.mediaSource = prepared.mediaSource;
+                request.importDefinition = prepared.importDefinition;
+                request.stagedFile = prepared.stagedFile;
+                if (request.importRun) {
+                    request.importRun.sourceName = 'media:' + prepared.mediaSource.mediaCode;
+                    request.importRun.mediaSource = prepared.mediaSource;
+                    request.importRun.importDefinition = prepared.importDefinition;
+                }
+                SERVICE.DefaultPipelineService.start('localDataImportInitializerPipeline', request, {}).then(success => {
+                    let result = {
+                        finalizer: success,
+                        importRun: request.importRun,
+                        mediaSource: prepared.mediaSource,
+                        importDefinition: prepared.importDefinition
+                    };
+                    if (request.options.validateOnly || request.validationOnly || success && success.validationOnly) {
+                        this.finalizeImportRun(request, 'VALIDATED');
+                        resolve(Object.assign({
+                            code: 'SUC_IMP_00000',
+                            validationOnly: true
+                        }, result));
+                        return;
+                    }
+                    this.processImportData({
+                        tenant: request.tenant || CONFIG.get('defaultTenant') || 'default',
+                        importRun: request.importRun,
+                        inputPath: {
+                            rootPath: request.outputPath.rootPath,
+                            dataPath: request.outputPath.dataPath,
+                            successPath: request.outputPath.successPath,
+                            errorPath: request.outputPath.errorPath,
+                            postFix: 'data'
+                        }
+                    }).then(importResult => {
+                        result.import = importResult;
+                        this.finalizeImportRun(request, 'COMPLETED');
+                        resolve(result);
+                    }).catch(error => {
+                        this.finalizeImportRun(request, 'FAILED');
+                        reject(error);
+                    });
+                }).catch(error => {
+                    this.finalizeImportRun(request, 'FAILED');
+                    reject(error);
+                });
+            }).catch(error => {
+                this.finalizeImportRun(request, 'FAILED');
+                reject(error);
+            });
+        });
+    },
+
     /** Dispatches finalized import files through the standard processing pipeline. */
     processImportData: function (request) {
         return SERVICE.DefaultPipelineService.start('processDataImportPipeline', request, {});

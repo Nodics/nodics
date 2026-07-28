@@ -110,5 +110,15 @@ module.exports = {
 
     importRemoteData: function (request) {
         return SERVICE.DefaultImportService.importRemoteData(request);
+    },
+
+    /**
+     * Executes governed media-backed file import behavior.
+     *
+     * @param {*} request Method input.
+     * @returns {*} Method result.
+     */
+    importMediaData: function (request) {
+        return SERVICE.DefaultImportService.importMediaData(request);
     }
 };

@@ -211,6 +211,32 @@ module.exports = {
             }
         },
 
+        importMediaData: {
+            importMediaPost: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'import.media.run',
+                apiExposure: 'dataImport',
+                key: '/import/media',
+                method: 'POST',
+                controller: 'DefaultImportController',
+                operation: 'importMediaData',
+                help: {
+                    requestType: 'secured',
+                    message: 'Authorization: Bearer <token> header is preferred; legacy authToken header is deprecated',
+                    method: 'POST',
+                    url: 'http://host:port/nodics/system/import/media',
+                    body: {
+                        mediaCode: 'nMedia record code returned by the governed upload API',
+                        definitionCode: 'Active importDefinition code that owns schema/index mapping',
+                        options: {
+                            validateOnly: 'When true, validate media and definition staging without importing records'
+                        }
+                    }
+                }
+            }
+        },
+
         contentPacks: {
             status: {
                 secured: true,

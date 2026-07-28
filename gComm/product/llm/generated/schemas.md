@@ -15,7 +15,7 @@
 | `productClassificationClass` | `base` | yes | yes | no | no | no | no |  | 8 |
 | `productIdentifier` | `base` | yes | yes | no | no | no | no |  | 9 |
 | `productItem` | `base` | yes | yes | no | no | no | no |  | 10 |
-| `productMediaReference` | `base` | yes | yes | no | no | no | no |  | 12 |
+| `productMediaReference` | `base` | yes | yes | no | no | no | no |  | 13 |
 | `productOnlinePointer` | `base` | yes | yes | no | no | no | no |  | 6 |
 | `productPackaging` | `base` | yes | yes | no | no | no | no |  | 16 |
 | `productProjectionJob` | `base` | yes | yes | no | no | no | no |  | 12 |
@@ -162,12 +162,13 @@
 - `itemCode` `string` required
 - `itemType` `string` required
 - `localeCode` `string` optional
-- `mediaCode` `string` required
+- `mediaCode` `string` optional: Optional nMedia-owned single Media item reference
+- `mediaReferenceCode` `string` required: Stable Product-owned media assignment identity
+- `mediaSetCode` `string` optional: Optional nMedia-owned reusable Media Set reference
 - `mediaType` `string` required
 - `position` `int` required
 - `role` `string` required
 - `status` `string` required: Governed lifecycle status
-- `uri` `string` required
 
 ### `product.productOnlinePointer`
 

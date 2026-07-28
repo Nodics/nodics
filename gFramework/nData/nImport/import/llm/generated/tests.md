@@ -14,6 +14,8 @@
 - `gFramework/nData/nImport/import/test/finalizedImportDispatch.test.js`
 - `gFramework/nData/nImport/import/test/finalizedRecordCounter.test.js`
 - `gFramework/nData/nImport/import/test/fixtures/importDiagnosticsData.js`
+- `gFramework/nData/nImport/import/test/fixtures/multi-format/records-updated.js`
+- `gFramework/nData/nImport/import/test/fixtures/multi-format/records.js`
 - `gFramework/nData/nImport/import/test/importDiagnosticsPropagation.test.js`
 - `gFramework/nData/nImport/import/test/importDuplicateHeaderDiagnostics.test.js`
 - `gFramework/nData/nImport/import/test/importExportAccessPolicy.test.js`
@@ -28,7 +30,10 @@
 - `gFramework/nData/nImport/import/test/importTargetDispatchContract.test.js`
 - `gFramework/nData/nImport/import/test/importTenantPrecedence.test.js`
 - `gFramework/nData/nImport/import/test/mandatoryInitDataImportContract.test.js`
+- `gFramework/nData/nImport/import/test/mediaImportDefinitionContract.test.js`
+- `gFramework/nData/nImport/import/test/mediaImportSourceStagingContract.test.js`
 - `gFramework/nData/nImport/import/test/multiFormatDataProcessors.test.js`
+- `gFramework/nData/nImport/import/test/profileTenantLocalFileImportContract.test.js`
 - `gFramework/nData/nImport/import/test/remoteImportInitializerContract.test.js`
 - `gFramework/nData/nImport/import/test/remoteImportTransportGovernance.test.js`
 - `gFramework/nData/nImport/import/test/systemCoreSampleDataCatalog.test.js`
@@ -39,10 +44,14 @@
 
 ## Generated Tests
 
+- `gFramework/nData/nImport/import/test/gen/api/importDefinitionApiContract.test.js`
 - `gFramework/nData/nImport/import/test/gen/api/importRunApiContract.test.js`
+- `gFramework/nData/nImport/import/test/gen/apiScenario/importDefinitionApiScenario.test.js`
 - `gFramework/nData/nImport/import/test/gen/apiScenario/importRunApiScenario.test.js`
+- `gFramework/nData/nImport/import/test/gen/crud/importDefinitionCrudScenario.test.js`
 - `gFramework/nData/nImport/import/test/gen/crud/importRunCrudScenario.test.js`
 - `gFramework/nData/nImport/import/test/gen/schema/dataInstallationSchemaContract.test.js`
+- `gFramework/nData/nImport/import/test/gen/schema/importDefinitionSchemaContract.test.js`
 - `gFramework/nData/nImport/import/test/gen/schema/importRunSchemaContract.test.js`
 
 ## Testing Rules

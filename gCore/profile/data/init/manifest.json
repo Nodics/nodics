@@ -2,7 +2,7 @@
     "contractVersion": 1,
     "module": "profile",
     "dataType": "init",
-    "version": "1.0.2",
+    "version": "1.0.4",
     "description": "Profile and Identity init data",
     "files": {
         "data/address/defaultAddressesData.js": "b07e1f42427ce89cfd99c7eb57733bcce92c325d047c08bd560f1a57cb103b22",
@@ -11,7 +11,7 @@
         "data/address/defaultTenantContactsData.js": "1cdb1c179383364b06f16a5bd13adb82bfec184f50e0d2fa0d1ae99296d46ce0",
         "data/enterprise/defaultEnterpriseData.js": "4644982d61655a683e1eeff8d294d03c8b4a48cb69a7310f79140891c433d9f4",
         "data/enterprise/defaultTenantsData.js": "7ae019c1ac600c28b03266d071e2d4574ac73e6c273750416778cf6ec910d9ab",
-        "data/groups/defaultBootstrapUserGroupsData.js": "fba6c8c8f2553b655e4b73fd359e782476a4e6ad881ce95da65dcf56ba0885c7",
+        "data/groups/defaultBootstrapUserGroupsData.js": "e1f36393e0443eeb98e0f0b5ce89e98fd4fc733ae088e4a8025861691e8bfa7c",
         "data/user/defaultCutomerData.js": "8ef04c3ff865054184c981295898f1daa633828bb84969edcb1368e2c5d94153",
         "data/user/defaultEmployeeData.js": "235d655cceabb7f43f710eaa6ecce1c90f1c516a53de6c9f1f23e11d8e4e66e2",
         "headers/address/defaultAddressesHeader.js": "04f6ed39e6c98c82f26890e3c124fd4ab00dc3ac5533fe1f0c90096679f465b8",

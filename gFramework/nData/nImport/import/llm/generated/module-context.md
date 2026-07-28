@@ -32,11 +32,11 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 37 |
-| Test files | 37 |
+| Source files | 39 |
+| Test files | 46 |
 | Data files | 0 |
-| All module-owned files | 77 |
-| Local schema definitions | 2 |
+| All module-owned files | 93 |
+| Local schema definitions | 3 |
 
 ## Ownership And Dependencies
 
@@ -67,10 +67,10 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 51 |
+| Documented | 58 |
 | Partially documented | 9 |
 | Undocumented | 13 |
-| Inventory only | 4 |
+| Inventory only | 13 |
 
 ## Important Files
 
@@ -100,12 +100,12 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/nImport/import/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nData/nImport/import/src/controller/contentPack/defaultContentPackController.js` | `src` | `partially-documented` | 4/4 | Handles secured content-pack status and import requests. | add @override |
 | `gFramework/nData/nImport/import/src/controller/history/defaultImportRunHistoryController.js` | `src` | `documented` | 5/5 | Controller for import run history control-plane APIs. |  |
-| `gFramework/nData/nImport/import/src/controller/import/DefaultImportController.js` | `src` | `documented` | 6/6 | Exposes request handlers for nData default import controller operations. |  |
+| `gFramework/nData/nImport/import/src/controller/import/DefaultImportController.js` | `src` | `documented` | 7/7 | Exposes request handlers for nData default import controller operations. |  |
 | `gFramework/nData/nImport/import/src/controller/release/defaultDataReleaseController.js` | `src` | `partially-documented` | 9/9 | Maps secured HTTP requests into bounded data-release catalogue, preflight, and execution operations. | add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/src/event/listeners.js` | `src` | `documented` | 0/0 | Documents nData listeners module behavior. |  |
 | `gFramework/nData/nImport/import/src/facade/contentPack/defaultContentPackFacade.js` | `src` | `documented` | 4/4 | Exposes governed content-pack status and import operations. |  |
 | `gFramework/nData/nImport/import/src/facade/history/defaultImportRunHistoryFacade.js` | `src` | `documented` | 4/4 | Facade for import run history control-plane operations. |  |
-| `gFramework/nData/nImport/import/src/facade/import/defaultImportFacade.js` | `src` | `documented` | 7/7 | Coordinates facade-level delegation for nData default import facade operations. |  |
+| `gFramework/nData/nImport/import/src/facade/import/defaultImportFacade.js` | `src` | `documented` | 8/8 | Coordinates facade-level delegation for nData default import facade operations. |  |
 | `gFramework/nData/nImport/import/src/facade/release/defaultDataReleaseFacade.js` | `src` | `partially-documented` | 5/5 | Delegates data-release control-plane operations to the active owning service. | add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Registers nData interceptor wiring for pipeline extension points. |  |
 | `gFramework/nData/nImport/import/src/lib/dataImportError.js` | `src` | `documented` | 0/0 | Provides reusable nData library primitives for data import error. |  |
@@ -120,15 +120,17 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/nImport/import/src/service/external/defaultExternalModelsImportEventHandlerService.js` | `src` | `documented` | 3/3 | Implements nData default external models import event handler service business behavior and extension logic. |  |
 | `gFramework/nData/nImport/import/src/service/header/defaultHeaderProcessService.js` | `src` | `documented` | 5/5 | Implements nData default header process service business behavior and extension logic. |  |
 | `gFramework/nData/nImport/import/src/service/history/defaultImportRunHistoryService.js` | `src` | `documented` | 25/25 | Persists and queries import run summaries through the generated importRun model service without making import execution dependent on history storage availability. |  |
-| `gFramework/nData/nImport/import/src/service/import/defaultImportService.js` | `src` | `documented` | 10/10 | Coordinates init, core, sample, local, and governed remote import lifecycles, finalized-data processing, run status, and staging cleanup. |  |
+| `gFramework/nData/nImport/import/src/service/import/defaultImportService.js` | `src` | `documented` | 11/11 | Coordinates init, core, sample, local, and governed remote import lifecycles, finalized-data processing, run status, and staging cleanup. |  |
 | `gFramework/nData/nImport/import/src/service/import/defaultImportUtilityService.js` | `src` | `documented` | 10/10 | Implements nData default import utility service business behavior and extension logic. |  |
 | `gFramework/nData/nImport/import/src/service/interceptor/import/defaultMandatePropertyImportInterceptorService.js` | `src` | `documented` | 3/3 | Implements nData default mandate property import interceptor service business behavior and extension logic. |  |
 | `gFramework/nData/nImport/import/src/service/interceptor/import/defaultSampleImportInterceptorService.js` | `src` | `documented` | 3/3 | Implements nData default sample import interceptor service business behavior and extension logic. |  |
 | `gFramework/nData/nImport/import/src/service/local/defaultLocalDataImportInitializerService.js` | `src` | `documented` | 10/10 | Implements nData default local data import initializer service business behavior and extension logic. |  |
+| `gFramework/nData/nImport/import/src/service/media/defaultMediaImportDefinitionService.js` | `src` | `documented` | 18/18 | Resolves optional import templates or generic schema targets and materializes run-local header files for media-backed imports. |  |
+| `gFramework/nData/nImport/import/src/service/media/defaultMediaImportSourceStagingService.js` | `src` | `documented` | 10/10 | Stages nMedia-owned import files into nImport-owned run workspaces. |  |
 | `gFramework/nData/nImport/import/src/service/process/file/defaultFileDataImportProcessService.js` | `src` | `documented` | 18/18 | Implements nData default file data import process service business behavior and extension logic. |  |
 | `gFramework/nData/nImport/import/src/service/process/init/defaultDataImportProcessService.js` | `src` | `documented` | 9/9 | Implements nData default data import process service business behavior and extension logic. |  |
 | `gFramework/nData/nImport/import/src/service/process/model/defaultModelImportProcessService.js` | `src` | `documented` | 16/16 | Implements nData default model import process service business behavior and extension logic. |  |
-| `gFramework/nData/nImport/import/src/service/release/defaultDataReleaseService.js` | `src` | `documented` | 22/22 | Discovers immutable module-owned init, core, and sample releases, validates installation plans, and invokes the existing nImport execution authority. |  |
+| `gFramework/nData/nImport/import/src/service/release/defaultDataReleaseService.js` | `src` | `documented` | 25/25 | Discovers immutable module-owned init, core, and sample releases, validates installation plans, and invokes the existing nImport execution authority. |  |
 | `gFramework/nData/nImport/import/src/service/remote/defaultRemoteDataImportInitializerService.js` | `src` | `documented` | 7/7 | Initializes governed remote imports by validating tenant and active-module scope, staging non-executable data through a configured adapter, and pairing it only with trusted headers owned by active Nodics modules. |  |
 | `gFramework/nData/nImport/import/src/service/remote/defaultRemoteImportTransportService.js` | `src` | `documented` | 9/9 | Resolves layered remote-import sources and adapters, stages non-executable data inside the active server module, and enforces tenant, module, timeout, retry, path, symlink, size, extension, and checksum policies before import processing. |  |
 | `gFramework/nData/nImport/import/src/service/system/defaultSystemDataImportInitializerService.js` | `src` | `documented` | 18/18 | Implements nData default system data import initializer service business behavior and extension logic. |  |
@@ -145,13 +147,24 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/nImport/import/test/finalizedImportDispatch.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/test/finalizedRecordCounter.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/test/fixtures/importDiagnosticsData.js` | `test` | `partially-documented` | 0/0 | Provides one finalized record for import diagnostics propagation tests. | add @override |
+| `gFramework/nData/nImport/import/test/fixtures/multi-format/README.md` | `test` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nData/nImport/import/test/fixtures/multi-format/empty-records.csv` | `test` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nData/nImport/import/test/fixtures/multi-format/empty-records.json` | `test` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nData/nImport/import/test/fixtures/multi-format/invalid-records.json` | `test` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nData/nImport/import/test/fixtures/multi-format/records-after-empty.csv` | `test` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nData/nImport/import/test/fixtures/multi-format/records-after-empty.json` | `test` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nData/nImport/import/test/fixtures/multi-format/records-updated.js` | `test` | `documented` | 0/0 | Updated JavaScript import fixture used by multi-format import contract tests. |  |
+| `gFramework/nData/nImport/import/test/fixtures/multi-format/records.csv` | `test` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nData/nImport/import/test/fixtures/multi-format/records.js` | `test` | `documented` | 0/0 | JavaScript import fixture used by multi-format import contract tests. |  |
+| `gFramework/nData/nImport/import/test/fixtures/multi-format/records.json` | `test` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nData/nImport/import/test/fixtures/multi-format/records.xlsx` | `test` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nData/nImport/import/test/importDiagnosticsPropagation.test.js` | `test` | `partially-documented` | 0/0 | Verifies that one import run remains attached across header finalization and finalized-file dispatch so counters and failures describe the complete import lifecycle. | add @override |
 | `gFramework/nData/nImport/import/test/importDuplicateHeaderDiagnostics.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/test/importExportAccessPolicy.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/test/importFailureTraceability.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/test/importFileArchivalLifecycle.test.js` | `test` | `documented` | 6/6 | Verifies finalized import processing does not complete before processed files reach their governed success location. |  |
 | `gFramework/nData/nImport/import/test/importGovernanceLifecycleContract.test.js` | `test` | `documented` | 0/0 | Verifies import run checksums, duplicate-run protection, retry metadata, and rollback hook reporting through existing import diagnostics/history services. |  |
-| `gFramework/nData/nImport/import/test/importLifecycleContract.test.js` | `test` | `documented` | 0/0 | Verifies init, core, sample, local, and remote import dispatch lifecycles, including import types, tenant propagation, finalized local processing, and non-finalizing discovery behavior. |  |
+| `gFramework/nData/nImport/import/test/importLifecycleContract.test.js` | `test` | `documented` | 0/0 | Verifies init, core, sample, local, remote, and media import lifecycles, including import types, tenant propagation, finalized local processing, validation-only media staging, and non-finalizing discovery behavior. |  |
 | `gFramework/nData/nImport/import/test/importRecursiveErrorPropagation.test.js` | `test` | `documented` | 0/0 | Verifies recursive import processing continues after skipped records and propagates aggregate recursive errors with a concrete DataImportError. |  |
 | `gFramework/nData/nImport/import/test/importRunHistoryControllerRoute.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/test/importRunHistoryService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
@@ -159,7 +172,10 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/nImport/import/test/importTargetDispatchContract.test.js` | `test` | `documented` | 0/0 | Verifies model import target dispatch sends schema imports to generated database services and search imports to search operation services while accepting normal search result response shapes. |  |
 | `gFramework/nData/nImport/import/test/importTenantPrecedence.test.js` | `test` | `documented` | 0/0 | Verifies that request-scoped tenants narrow effective import-header tenants, never broaden them, and fail closed for inactive or unauthorized tenant targets. |  |
 | `gFramework/nData/nImport/import/test/mandatoryInitDataImportContract.test.js` | `test` | `documented` | 0/0 | Verifies mandatory profile bootstrap records and proves that init imports preserve selected modules, tenant scope, init type, and diagnostics through processing. |  |
-| `gFramework/nData/nImport/import/test/multiFormatDataProcessors.test.js` | `test` | `documented` | 6/6 | Validates JavaScript, JSON, CSV, and Excel import data processors against shared import diagnostics behavior. |  |
+| `gFramework/nData/nImport/import/test/mediaImportDefinitionContract.test.js` | `test` | `documented` | 0/0 | Validates importDefinition-owned header generation for media-backed imports. |  |
+| `gFramework/nData/nImport/import/test/mediaImportSourceStagingContract.test.js` | `test` | `documented` | 0/0 | Validates nImport staging for nMedia-owned import source files. |  |
+| `gFramework/nData/nImport/import/test/multiFormatDataProcessors.test.js` | `test` | `documented` | 0/0 | Validates JavaScript, JSON, CSV, and Excel import data processors against shared import diagnostics behavior. |  |
+| `gFramework/nData/nImport/import/test/profileTenantLocalFileImportContract.test.js` | `test` | `documented` | 0/0 | Validates the Profile-owned tenant sample data import use case for CSV and XLSX files with real headers. |  |
 | `gFramework/nData/nImport/import/test/remoteImportInitializerContract.test.js` | `test` | `documented` | 0/0 | Proves that remote imports accept only active tenant/module scope, resolve a configured adapter, and load trusted headers from active modules rather than executable remote definitions. |  |
 | `gFramework/nData/nImport/import/test/remoteImportTransportGovernance.test.js` | `test` | `documented` | 6/6 | Verifies layered adapter resolution, tenant and module allowlists, bounded retries, isolated staging, extension and checksum enforcement, sanitized diagnostics, and cleanup for remote imports. |  |
 | `gFramework/nData/nImport/import/test/systemCoreSampleDataCatalog.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

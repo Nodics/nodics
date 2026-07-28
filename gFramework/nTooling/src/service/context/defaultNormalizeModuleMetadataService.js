@@ -113,7 +113,7 @@ function inferOwns(module, kind) {
         return ['llm'];
     }
     if (kind === 'tooling') {
-        return ['tooling', 'quality', 'configuration', 'test', 'llm'];
+        return ['tooling', 'quality', 'configuration', 'service', 'test', 'llm'];
     }
     let owns = listFeatureFolders(module.path)
         .map(folder => generatedFolderToOwnership[folder])

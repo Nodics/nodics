@@ -16,7 +16,7 @@
  * @owner product
  * @override Not applicable; this test protects the default security boundary.
  */
-const assert = require('assert'), configuration = require('../config/properties'), authProperties = require('../../../gFramework/nAuth/config/properties'), groups = require('../../../gCore/profile/data/init/data/groups/defaultUserGroupsData'), routes = require('../src/router/routers').product;
+const assert = require('assert'), configuration = require('../config/properties'), authProperties = require('../../../gFramework/nAuth/config/properties'), groups = require('../../../gCore/profile/data/init/data/groups/defaultBootstrapUserGroupsData'), routes = require('../src/router/routers').product;
 class NodicsError extends Error { constructor(code, message) { super(message || code); this.code = code; } }
 global.CLASSES = { NodicsError }; global.CONFIG = { get: key => configuration[key] }; global.SERVICE = {};
 SERVICE.DefaultProductEnterpriseScopeService = require('../src/service/foundation/defaultProductEnterpriseScopeService');

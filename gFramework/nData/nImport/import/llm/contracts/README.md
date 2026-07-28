@@ -24,3 +24,50 @@ Use these files for rules that are more specific than root `AGENTS.md` and the m
 - Stable-code `saveAll` imports create and update records. Do not claim physical
   removal, catalog activation or publication until composed through CMS,
   Workflow and nPublish authorities.
+
+## Media-backed file import
+
+- Axis and other frontend clients must upload files through `gFramework/nMedia`
+  before starting a browser-facing file import.
+- The frontend may pass `source.type = MEDIA` and `source.mediaCode` to the
+  import capability. It must not pass raw local paths, temporary folders, cloud
+  object keys, NAS paths, bucket names, provider URLs, or credentials.
+- `nMedia` owns multipart upload parsing, storage provider selection, storage
+  keys, checksum, media lifecycle, and backend-only storage descriptors.
+- `nImport` owns generic media import target acceptance, optional import
+  templates, media-source acceptance, import-run staging, format parsing,
+  finalization, target dispatch, diagnostics, and run history.
+- The secured media-backed import route is
+  `POST /nodics/system/v0/import/media`. It accepts `mediaCode` plus either a
+  generic `moduleName`/`schemaName` target or an optional future
+  `definitionCode` template, and optional `options.validateOnly`.
+- Generic media import is schema-first: Axis may select an authorized target
+  model from Workbench metadata, but nImport generates the runtime header and
+  executes validation/dispatch.
+- Import templates may later map recurring business import choices to module
+  name, schema or index target, operation, tenant scope, data-file prefix, query
+  mapping, optional macros, options, and allowed file extensions. Templates are
+  conveniences over the same route, not a required authority for generic file
+  import.
+- Media import execution generates a run-local header from the generic target
+  or optional template. The generated header is temporary runtime material, not
+  source authority.
+- A media-backed import implementation must stage the media into an
+  import-run-owned workspace before invoking existing local file import
+  pipelines, because local import processing can move processed files.
+- Validation-only media import may resolve media, validate definition policy,
+  generate the temporary header, stage the source file, run the standard local
+  initializer, parse rows, and prepare finalized records inside the run
+  workspace. It must stop before `processDataImportPipeline`; it must not
+  dispatch schema/search writes or mark the import installed.
+- `DefaultMediaImportSourceStagingService` is the import-owned staging
+  primitive. It may call nMedia-owned source resolution, but it must not inspect
+  provider configuration directly or expose backend source paths in public
+  projections.
+- Public API responses and Axis state must not expose provider secrets, local
+  absolute paths, object-store keys, signed URLs, or storage implementation
+  details.
+- Project customization should add headers, processors, optional import templates,
+  media folder policy, provider services, or remote adapters through later
+  layers. Do not create a parallel upload table, parser, importer, or direct
+  persistence path.

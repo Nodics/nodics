@@ -151,6 +151,9 @@ assert(!runtimeBootstrapSource.includes("options.defaultServer || 'monoServer'")
     'Framework bootstrap must not hardcode a project server');
 
 const nToolingSrcPath = path.join(process.cwd(), 'gFramework', 'nTooling', 'src');
+const nToolingModule = modules.find(moduleObject => moduleObject.relativePath === 'gFramework/nTooling');
+assert(nToolingModule && ((nToolingModule.packageJson.nodics || {}).owns || []).includes('service'),
+    'nTooling metadata must declare service ownership because all tooling source lives under src/service');
 fs.readdirSync(nToolingSrcPath, { withFileTypes: true })
     .filter(entry => entry.isDirectory())
     .forEach(entry => {

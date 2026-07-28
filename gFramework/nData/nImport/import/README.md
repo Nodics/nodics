@@ -86,6 +86,171 @@ Both patterns must use the same import pipeline and diagnostics model. Do not
 add a direct persistence path for one source just because its data arrives by
 API, file drop, CronJob, or remote adapter.
 
+## Axis File Upload And Media-backed Import
+
+The Back Office file-import journey must compose `nMedia` and `nImport`
+instead of making Axis or a project module own raw uploaded files.
+
+For a business user, the intended experience is simple:
+
+1. Open the Import area in Axis.
+2. Choose the kind of import, such as tenant data, product feed, price list, or
+   catalog enrichment.
+3. Upload a CSV, JSON, Excel, or other supported file.
+4. Review validation results before installation.
+5. Run the import.
+6. Read the import history, rejected rows, counts, duration, and recovery
+   guidance.
+
+Behind that simple journey, Nodics keeps strict authority boundaries:
+
+1. Axis uploads the file to `nMedia` using `folderCode=importSources` and
+   `formatCode=importFile`.
+2. `nMedia` validates the upload request, file size, MIME type, extension,
+   folder policy, generated storage key, checksum, and media metadata.
+3. Axis receives a media identity such as `mediaCode`. It does not receive a
+   server filesystem path, cloud object key, NAS path, bucket name, provider
+   credential, or authoritative URL.
+4. Axis calls the secured `POST /nodics/system/v0/import/media` contract with
+   the selected `definitionCode`, `mediaCode`, and optional validation mode.
+5. `DefaultMediaImportDefinitionService` loads the active persisted
+   `importDefinition`, validates tenant and file-extension policy, and creates
+   a run-local header from that definition.
+6. `DefaultMediaImportSourceStagingService` asks `nMedia` for a trusted backend
+   descriptor for that media item.
+7. `DefaultMediaImportSourceStagingService` creates import-run-owned staging
+   and copies the media into the existing file import structure.
+8. The standard import initializer loads trusted headers from active modules,
+   parses the staged data file, finalizes records, dispatches through schema or
+   search services, and records diagnostics.
+
+The important rule is that upload and import are two separate backend
+authorities. `nMedia` owns file storage. `nImport` owns import execution. Axis
+owns only the employee workflow and rendering.
+
+### Why Axis must not send paths
+
+It is tempting to upload a file somewhere and call local import with:
+
+```json
+{
+  "inputPath": {
+    "rootPath": "/tmp/some-upload-folder"
+  }
+}
+```
+
+That is acceptable only for trusted backend-local operations where the caller is
+already inside server authority. It is not acceptable as a browser-facing
+Back Office pattern. A browser-supplied path can be wrong, malicious,
+environment-specific, impossible to use in a cluster, or tied to one node's
+temporary disk. It also bypasses the provider and lifecycle policy that
+`nMedia` exists to enforce.
+
+For Axis, the safe request shape is reference-based:
+
+```json
+{
+  "mediaCode": "supplier-price-list-2026-07",
+  "definitionCode": "supplierPriceImport",
+  "options": {
+    "validateOnly": true
+  }
+}
+```
+
+When the business user is ready to install the same validated source, Axis calls
+the same route with validation disabled:
+
+```json
+{
+  "mediaCode": "supplier-price-list-2026-07",
+  "definitionCode": "supplierPriceImport",
+  "importFinalizeData": true
+}
+```
+
+The implemented secured route is:
+
+```text
+POST /nodics/system/v0/import/media
+Authorization: Bearer <employee-token>
+Content-Type: application/json
+x-enterprise-code: <enterprise-code>
+```
+
+`DefaultMediaImportDefinitionService` owns definition lookup and header
+materialization. `DefaultMediaImportSourceStagingService.stage(request)` owns
+media staging. The staging service accepts `source.type=MEDIA` and
+`source.mediaCode`, calls `DefaultMediaImportSourceResolverService` in
+`nMedia`, creates a run-owned `data/`, `success/`, and `error/` workspace,
+verifies checksum when the media record provides one, and returns a normal
+`inputPath` shape for import execution without exposing the original media
+provider path.
+
+Validation-only mode resolves the media, validates the definition, validates
+the file extension and tenant scope, stages the file, and runs the same local
+initializer used by execution mode. This proves the selected file can be read,
+parsed, and finalized into the import-run workspace. The run is recorded as
+`VALIDATED`, and the summary can report records read and finalized. It must
+stop before `processDataImportPipeline`, so it must not write target
+schema/search records or report installation as complete. Execution mode uses
+the same prepared workspace and then runs the existing finalized-data dispatch
+pipeline.
+
+### Cluster and production behavior
+
+In a clustered runtime, the node that receives the upload may not be the node
+that executes the import. This is why media-backed import must use provider
+storage and import-run staging rather than node-local browser paths.
+
+The media-backed import resolver must:
+
+- verify the authenticated employee has import permission;
+- verify the media item exists, is active, and belongs to an import-capable
+  folder such as `importSources`;
+- resolve a generic module/schema target, or resolve an optional future
+  template by `definitionCode`;
+- reject public delivery URLs as import authority;
+- use `nMedia` provider behavior to read or stage the file safely;
+- create a server-owned import-run workspace;
+- validate size, checksum, selected target, tenant scope, and active-module
+  authority;
+- run the existing local import pipeline after staging;
+- record the source media code and safe diagnostics in import run history;
+- avoid leaking provider paths, object keys, signed URLs, credentials, or local
+  absolute paths to Axis.
+
+### Customization path
+
+Partners customize file import by adding project-owned headers, processors,
+optional templates, and provider configuration. They should not copy framework
+import services or create a second file-upload table.
+
+Safe customizations include:
+
+- adding a project header under the project module's `data/init`, `data/core`,
+  or `data/sample` folders;
+- adding a project-owned import template that maps a specific recurring
+  business feed after the generic schema-first import is working;
+- overriding allowed extensions or maximum file sizes in layered
+  `properties.js`;
+- adding a new media storage provider behind the `nMedia` provider contract;
+- adding a remote import adapter for SFTP, object storage, partner API, or file
+  gateway source;
+- adding validation, enrichment, or mapping processors through the import
+  pipeline.
+
+Unsafe customizations include:
+
+- making Axis upload directly to the server filesystem, S3, NAS, or a database
+  blob table;
+- sending raw local paths from a browser;
+- bypassing `nImport` and writing records directly from an upload controller;
+- parsing import data inside `nMedia`;
+- storing media provider details inside Product, CMS, BackOffice, or project
+  business models.
+
 ## Multi-format examples
 
 The import module keeps committed processor fixtures in

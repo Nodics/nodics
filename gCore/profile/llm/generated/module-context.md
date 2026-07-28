@@ -36,8 +36,8 @@
 | --- | ---: |
 | Source files | 53 |
 | Test files | 49 |
-| Data files | 16 |
-| All module-owned files | 94 |
+| Data files | 24 |
+| All module-owned files | 102 |
 | Local schema definitions | 11 |
 
 ## Ownership And Dependencies
@@ -71,10 +71,10 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 77 |
+| Documented | 80 |
 | Partially documented | 3 |
 | Undocumented | 9 |
-| Inventory only | 5 |
+| Inventory only | 10 |
 
 ## Important Files
 
@@ -115,6 +115,14 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/data/init/headers/groups/defaultUserGroupsHeader.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
 | `gCore/profile/data/init/headers/user/defaultUsersHeader.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
 | `gCore/profile/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gCore/profile/data/sample/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gCore/profile/data/sample/tenant/README.md` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gCore/profile/data/sample/tenant/data/defaultTenantCsvData.csv` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gCore/profile/data/sample/tenant/data/defaultTenantExcelData.xlsx` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gCore/profile/data/sample/tenant/data/defaultTenantLegacyExcelData.xls` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gCore/profile/data/sample/tenant/headers/tenantCsvDataHeader.js` | `data` | `documented` | 0/0 | Defines the Profile-owned sample tenant CSV import header. |  |
+| `gCore/profile/data/sample/tenant/headers/tenantExcelDataHeader.js` | `data` | `documented` | 0/0 | Defines the Profile-owned sample tenant XLSX import header. |  |
+| `gCore/profile/data/sample/tenant/headers/tenantLegacyExcelDataHeader.js` | `data` | `documented` | 0/0 | Preserves the Profile-owned historical tenant legacy XLS import header as sample reference data. |  |
 | `gCore/profile/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gCore/profile/nodics.js` | `module` | `documented` | 2/2 | Registers the profile module lifecycle hooks and module-level startup behavior. |  |
 | `gCore/profile/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |

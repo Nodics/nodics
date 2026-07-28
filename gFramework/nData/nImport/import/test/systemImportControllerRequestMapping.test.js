@@ -38,6 +38,10 @@ global.FACADE = {
         importLocalData: function (request) {
             calls.push({ operation: 'importLocalData', request });
             return Promise.resolve({ operation: 'importLocalData' });
+        },
+        importMediaData: function (request) {
+            calls.push({ operation: 'importMediaData', request });
+            return Promise.resolve({ operation: 'importMediaData' });
         }
     }
 };
@@ -107,11 +111,56 @@ const controller = require('../src/controller/import/DefaultImportController');
     assert.deepStrictEqual(localRequest.inputPath, { rootPath: '/tmp/nodics/import' });
     assert.strictEqual(localRequest.importFinalizeData, false);
 
+    let mediaRequest = {
+        httpRequest: {
+            body: {
+                mediaCode: 'tenant-upload',
+                definitionCode: 'tenantCsv',
+                options: {
+                    validateOnly: true
+                }
+            }
+        }
+    };
+    await controller.importMediaData(mediaRequest);
+    assert.strictEqual(mediaRequest.mediaCode, 'tenant-upload');
+    assert.strictEqual(mediaRequest.definitionCode, 'tenantCsv');
+    assert.deepStrictEqual(mediaRequest.source, {
+        type: 'MEDIA',
+        mediaCode: 'tenant-upload',
+        definitionCode: 'tenantCsv'
+    });
+    assert.deepStrictEqual(mediaRequest.options, { validateOnly: true });
+
+    let genericMediaRequest = {
+        httpRequest: {
+            body: {
+                mediaCode: 'tenant-generic-upload',
+                moduleName: 'profile',
+                schemaName: 'tenant',
+                operation: 'saveAll',
+                validationOnly: true
+            }
+        }
+    };
+    await controller.importMediaData(genericMediaRequest);
+    assert.strictEqual(genericMediaRequest.mediaCode, 'tenant-generic-upload');
+    assert.strictEqual(genericMediaRequest.definitionCode, undefined);
+    assert.strictEqual(genericMediaRequest.moduleName, 'profile');
+    assert.strictEqual(genericMediaRequest.schemaName, 'tenant');
+    assert.deepStrictEqual(genericMediaRequest.source, {
+        type: 'MEDIA',
+        mediaCode: 'tenant-generic-upload'
+    });
+    assert.strictEqual(genericMediaRequest.validationOnly, true);
+
     assert.deepStrictEqual(calls.map(call => call.operation), [
         'importInitData',
         'importCoreData',
         'importSampleData',
-        'importLocalData'
+        'importLocalData',
+        'importMediaData',
+        'importMediaData'
     ]);
 
     console.log('System import controller request mapping validated');

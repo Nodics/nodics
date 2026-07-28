@@ -161,4 +161,47 @@ module.exports = {
             return FACADE.DefaultImportFacade.importLocalData(request);
         }
     },
+
+    /**
+     * Executes governed media-backed file import behavior.
+     *
+     * @param {*} request Method input.
+     * @param {*} callback Method input.
+     * @returns {*} Method result.
+     */
+    importMediaData: function (request, callback) {
+        if (!UTILS.isBlank(request.httpRequest.body)) {
+            let body = request.httpRequest.body;
+            request.mediaCode = body.mediaCode;
+            request.definitionCode = body.definitionCode || body.importDefinitionCode;
+            request.moduleName = body.moduleName;
+            request.schemaName = body.schemaName;
+            request.indexName = body.indexName;
+            request.operation = body.operation;
+            request.dataFilePrefix = body.dataFilePrefix;
+            request.query = body.query;
+            request.source = Object.assign({}, body.source || {
+                type: 'MEDIA',
+                mediaCode: body.mediaCode
+            });
+            if (!UTILS.isBlank(request.definitionCode)) {
+                request.source.definitionCode = request.definitionCode;
+            } else {
+                delete request.definitionCode;
+                delete request.source.definitionCode;
+            }
+            request.options = body.options || {};
+            request.importFinalizeData = body.importFinalizeData !== undefined ? body.importFinalizeData : true;
+            request.validationOnly = body.validationOnly === true;
+        }
+        if (callback) {
+            FACADE.DefaultImportFacade.importMediaData(request).then(success => {
+                callback(null, success);
+            }).catch(error => {
+                callback(error);
+            });
+        } else {
+            return FACADE.DefaultImportFacade.importMediaData(request);
+        }
+    },
 };

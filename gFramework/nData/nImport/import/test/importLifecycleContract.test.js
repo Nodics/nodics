@@ -13,7 +13,7 @@ const assert = require('assert');
 
 /**
  * @module import/test/importLifecycleContract
- * @description Verifies init, core, sample, local, and remote import dispatch lifecycles, including import types, tenant propagation, finalized local processing, and non-finalizing discovery behavior.
+ * @description Verifies init, core, sample, local, remote, and media import lifecycles, including import types, tenant propagation, finalized local processing, validation-only media staging, and non-finalizing discovery behavior.
  * @layer test
  * @owner import
  * @override Project modules may extend import initializer pipelines and fixtures while preserving these public lifecycle contracts.
@@ -67,6 +67,30 @@ function createHarness() {
         },
         DefaultRemoteImportTransportService: { cleanup: function () { return Promise.resolve(true); } }
     };
+    global.SERVICE.DefaultMediaImportDefinitionService = {
+        prepare: function (request) {
+            request.importRun = request.importRun || { runId: 'media_run', summary: {}, failures: [], validationErrors: [] };
+            return Promise.resolve({
+                inputPath: {
+                    rootPath: '/tmp/nodics-media-input',
+                    dataPath: '/tmp/nodics-media-input/data',
+                    headerPath: '/tmp/nodics-media-input/headers',
+                    successPath: '/tmp/nodics-media-input/success',
+                    errorPath: '/tmp/nodics-media-input/error',
+                    importType: 'media'
+                },
+                outputPath: {
+                    rootPath: '/tmp/nodics-media-output',
+                    dataPath: '/tmp/nodics-media-output/data',
+                    successPath: '/tmp/nodics-media-output/success',
+                    errorPath: '/tmp/nodics-media-output/error'
+                },
+                mediaSource: { mediaCode: request.mediaCode || request.source && request.source.mediaCode },
+                importDefinition: { code: request.definitionCode || 'tenantCsv' },
+                stagedFile: { fileName: 'tenantData.csv' }
+            });
+        }
+    };
     return { service: service, calls: calls };
 }
 
@@ -114,7 +138,32 @@ function createHarness() {
     assert.deepStrictEqual(harness.calls.map(call => call.pipelineName), ['remoteDataImportInitializerPipeline']);
     assert.strictEqual(discoveryRequest.dataType, 'remote');
 
-    console.log('Import lifecycle contract validated for init, core, sample, local, and remote');
+    harness = createHarness();
+    const mediaValidation = await harness.service.importMediaData({
+        tenant: 'nodicsTest',
+        mediaCode: 'tenant-upload',
+        definitionCode: 'tenantCsv',
+        options: { validateOnly: true }
+    });
+    assert.deepStrictEqual(harness.calls.map(call => call.pipelineName), ['localDataImportInitializerPipeline']);
+    assert.strictEqual(harness.calls[0].request.dataType, 'media');
+    assert.strictEqual(mediaValidation.validationOnly, true);
+    assert.strictEqual(mediaValidation.finalizer.code, 'SUC_IMP_READY');
+    assert.strictEqual(mediaValidation.importRun.status, 'VALIDATED');
+
+    harness = createHarness();
+    const mediaResult = await harness.service.importMediaData({
+        tenant: 'nodicsTest',
+        mediaCode: 'tenant-upload',
+        definitionCode: 'tenantCsv'
+    });
+    assert.deepStrictEqual(harness.calls.map(call => call.pipelineName), ['localDataImportInitializerPipeline', 'processDataImportPipeline']);
+    assert.strictEqual(harness.calls[0].request.dataType, 'media');
+    assert.strictEqual(harness.calls[1].request.inputPath.dataType, undefined);
+    assert.strictEqual(harness.calls[1].request.inputPath.dataPath, '/tmp/nodics-media-output/data');
+    assert.strictEqual(mediaResult.importRun.status, 'COMPLETED');
+
+    console.log('Import lifecycle contract validated for init, core, sample, local, remote, and media');
 })().catch(error => {
     console.error(error);
     process.exit(1);

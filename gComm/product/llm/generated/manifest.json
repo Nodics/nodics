@@ -13,14 +13,14 @@
     "version": "0.0.1",
     "description": "Enterprise-scoped Product structure and governed publication capability for Nodics commerce applications."
   },
-  "sourceFiles": 40,
+  "sourceFiles": 41,
   "testFiles": 28,
   "dataFiles": 7,
-  "ownedFiles": 65,
-  "sourceFingerprint": "6cda159d323c43f8314e150dcb78ce7f8e7ed14739818919959a49966b0a1395",
+  "ownedFiles": 66,
+  "sourceFingerprint": "c8160b53cb040e0ca2c862df25cf9c6ca6ac154c74f9d13fba72009cadf05ded",
   "documentation": {
     "documented": 7,
-    "partially-documented": 53,
+    "partially-documented": 54,
     "undocumented": 0,
     "inventory-only": 5
   },

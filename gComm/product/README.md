@@ -31,7 +31,8 @@ industry-specific fields into the common model.
 - configurable directional and symmetric Product relations;
 - exact-quantity Bundle components with bounded nested-Bundle graphs;
 - Units-backed packaging quantities, dimensions, and weights;
-- ordered, localized, safe-scheme references to externally owned media;
+- ordered, localized Product media assignments that reference `nMedia` media
+  items or reusable media sets without copying storage URLs;
 - manual or automatic Workflow submission of exact versioned Product changes;
 - immutable integrity-checked Product release manifests through `nPublish`;
 - authenticated delivery to a distinct non-versioned Online runtime with
@@ -58,7 +59,35 @@ industry-specific fields into the common model.
 
 Product does not own catalogs, prices, stock, Unit conversion, customers,
 stores, tax, promotions, Workflow state, `nPublish` lifecycle, search/cache
-engines, or binary media. Those capabilities remain with existing authorities.
+engines, or binary media storage. Those capabilities remain with existing
+authorities.
+
+## Product media assignments
+
+Product media is a business assignment, not a file-storage implementation.
+Business users normally think in roles such as primary image, thumbnail,
+gallery image, swatch, zoom image, product video, manual, or datasheet.
+Product owns those roles, their order, locale, lifecycle, and relationship to
+the Product Item.
+
+The file itself belongs to `gFramework/nMedia`. A Product media assignment
+stores a Product-owned `mediaReferenceCode` plus exactly one of:
+
+- `mediaCode`, when the assignment points to one concrete media item; or
+- `mediaSetCode`, when the assignment points to a reusable media set containing
+  variants such as original, thumbnail, mobile, desktop, large, and zoom.
+
+Product must not store provider keys, local paths, cloud bucket paths, generated
+delivery URLs, signed URLs, checksums, MIME policy, or upload limits. Those
+remain `nMedia` authority. A customer-facing API may later resolve displayable
+URLs by composing Product with `nMedia`, but Product's persisted record remains
+a stable business assignment.
+
+Before saving a Product media assignment, Product validates the configured
+`mediaCode` or `mediaSetCode` through the `nMedia` reference lookup contract.
+This confirms the media item or set exists and is in a usable lifecycle state
+without copying storage keys, paths, provider data, or delivery URLs into the
+Product module.
 
 ## Runtime requirements
 
@@ -134,5 +163,5 @@ P4 validation matrix.
 
 Dedicated large-Catalog migration/import tooling and deployment-specific
 capacity certification are outside the implemented Product scope. Use existing
-Nodics import/export and database backup authorities; binary media, Pricing,
-and Inventory remain separate authorities.
+Nodics import/export and database backup authorities; media upload/storage,
+Pricing, and Inventory remain separate authorities.

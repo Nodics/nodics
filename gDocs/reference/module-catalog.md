@@ -96,6 +96,7 @@ Use the [Module Documentation Index](module-documentation-index.md) when you kno
 - [kafka](../../gFramework/nEms/kafka/README.md) — `capability`; `gFramework/nEms/kafka`
 - [event](../../gFramework/nEvent/README.md) — `capability`; `gFramework/nEvent`
 - [nFacade](../../gFramework/nFacade/README.md) — `capability`; `gFramework/nFacade`
+- [nMedia](../../gFramework/nMedia/README.md) — `capability`; `gFramework/nMedia`
 - [nms](../../gFramework/nNms/README.md) — `capability`; `gFramework/nNms`
 - [otp](../../gFramework/nOtp/README.md) — `capability`; `gFramework/nOtp`
 - [pipeline](../../gFramework/nPipeline/README.md) — `capability`; `gFramework/nPipeline`

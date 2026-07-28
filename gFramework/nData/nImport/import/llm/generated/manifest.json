@@ -13,20 +13,21 @@
     "version": "0.0.1",
     "description": "Governed data import engine for init, core, sample, local, remote, diagnostics, run history, checksums, duplicate protection, retry metadata, rollback hooks, and access-policy-aware import."
   },
-  "sourceFiles": 37,
-  "testFiles": 37,
+  "sourceFiles": 39,
+  "testFiles": 46,
   "dataFiles": 0,
-  "ownedFiles": 77,
-  "sourceFingerprint": "cd24b12a0b663aa47ca72ea9d0976e661db4a12b24924b7b44f8073ea1409f58",
+  "ownedFiles": 93,
+  "sourceFingerprint": "328684d602fd59b0f8cb26f4f5dbe604b10f06a69260e28119ecbce2b5996b97",
   "documentation": {
-    "documented": 51,
+    "documented": 58,
     "partially-documented": 9,
     "undocumented": 13,
-    "inventory-only": 4
+    "inventory-only": 13
   },
   "schemaGroups": {
     "import": [
       "dataInstallation",
+      "importDefinition",
       "importRun"
     ]
   },

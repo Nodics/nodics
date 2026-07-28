@@ -18,7 +18,7 @@ module.exports = {
 ```
 
 Repeat required defaults when the effective loader replaces arrays. Keep graph
-limits finite and URI schemes allow-listed. Override
+limits finite and keep media roles declarative. Override
 `DefaultProductOnlineProjectionService` in a later module to compose an
 existing cache or search provider after activation or rollback.
 
@@ -32,6 +32,7 @@ in the Online composition.
 Do not copy Unit conversion, binary storage, Workflow, `nPublish`, module-token
 transport, version persistence, or Online pointer logic. Do not add a direct
 Staged-to-Online database writer. Tests must cover tenant/enterprise scope,
-exact quantities, graph bounds, URI rejection, manifest integrity, target
-separation, idempotency, active-manifest reads, cache invalidation, search
-failure recovery, reconciliation, and rollback.
+exact quantities, graph bounds, media assignments that reference exactly one
+`mediaCode` or `mediaSetCode`, manifest integrity, target separation,
+idempotency, active-manifest reads, cache invalidation, search failure recovery,
+reconciliation, and rollback.

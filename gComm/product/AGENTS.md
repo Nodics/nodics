@@ -39,7 +39,10 @@ Follow the root Nodics contract and `gComm/AGENTS.md`.
   acyclic graphs, sellable-variant policy, and dependent-first retirement.
 - Product Relations, Bundle Entries, Packaging, and Media References remain
   Product-owned associations. Preserve configured graph bounds, exact quantity
-  strings, Units authority, safe URI schemes, and external binary ownership.
+  strings, Units authority, Product-owned media roles/order/locale, and external
+  `nMedia` binary ownership. Product media records may reference `mediaCode` or
+  `mediaSetCode`; they must not store provider paths, delivery URLs, checksums,
+  MIME policy, or upload limits.
 - Product Staged records become versioned only in the Staged composition.
   Online remains non-versioned. Workflow owns manual/automatic approval and
   `nPublish` owns deployment lifecycle, retry, audit, and rollback orchestration.
