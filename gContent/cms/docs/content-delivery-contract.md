@@ -93,6 +93,12 @@ graph-limit violations to `422`. Axis and other clients must handle these
 stable statuses without displaying backend stack traces, queries, or record
 payloads.
 
+CMS delivery errors use the module-owned `ERR_CMS_*` status catalogue. Do not
+invent symbolic codes outside the Nodics `ERR_` convention: `NodicsError`
+resolves response status and client-safe messages only through the registered
+status catalogue, and an unregistered symbolic value would incorrectly fall
+back to the generic system error.
+
 ## Caching And Invalidation
 
 The routes use Nodics router caching. CMS mutations call the existing

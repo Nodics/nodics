@@ -40,10 +40,10 @@ assert.strictEqual(routes.cmsDelivery.resolvePublicPage.publicAccess, true);
 assert.strictEqual(routes.cmsDelivery.resolvePublicPage.secured, false);
 assert.strictEqual(routes.cmsDelivery.resolveAuthenticatedPage.secured, true);
 assert.strictEqual(routes.cmsDelivery.resolveAuthenticatedPage.permissionConfig, 'cms.delivery.authenticatedPermission');
-assert.strictEqual(statusDefinitions.CMS_ROUTE_NOT_FOUND.code, '404');
-assert.strictEqual(statusDefinitions.CMS_COMPONENT_ACCESS_DENIED.code, '403');
-assert.strictEqual(statusDefinitions.CMS_GRAPH_DEPTH_EXCEEDED.code, '422');
-assert.strictEqual(statusDefinitions.CMS_GRAPH_SIZE_EXCEEDED.code, '422');
+assert.strictEqual(statusDefinitions.ERR_CMS_00087.code, '404');
+assert.strictEqual(statusDefinitions.ERR_CMS_00086.code, '403');
+assert.strictEqual(statusDefinitions.ERR_CMS_00092.code, '422');
+assert.strictEqual(statusDefinitions.ERR_CMS_00093.code, '422');
 
 global.CONFIG = { get: () => undefined };
 global.SERVICE = {
@@ -123,13 +123,13 @@ global.SERVICE = {
     data.components[0].accessMode = 'AUTHENTICATED';
     await assert.rejects(delivery.resolvePage({ tenant: 'tenant-a', authData: {}, options: {}, router: { publicAccess: true },
         delivery: { site: 'site', path: '/home', locale: 'en', channel: 'web' } }),
-    error => error.code === 'CMS_COMPONENT_ACCESS_DENIED');
+    error => error.code === 'ERR_CMS_00086');
     data.components[0].accessMode = 'PUBLIC';
     data.routes[0].deliveryState = 'DRAFT';
-    await assert.rejects(delivery.resolvePage({ tenant: 'tenant-a', router: { publicAccess: true }, delivery: { site: 'site', path: '/home', locale: 'en', channel: 'web' } }), error => error.code === 'CMS_ROUTE_NOT_FOUND');
+    await assert.rejects(delivery.resolvePage({ tenant: 'tenant-a', router: { publicAccess: true }, delivery: { site: 'site', path: '/home', locale: 'en', channel: 'web' } }), error => error.code === 'ERR_CMS_00087');
     data.routes[0].deliveryState = 'ONLINE';
-    await assert.rejects(delivery.resolvePage({ tenant: 'tenant-a', delivery: { site: 'site', path: 'https://host' } }), error => error.code === 'CMS_DELIVERY_PATH_INVALID');
-    await assert.rejects(delivery.resolvePage({ tenant: 'tenant-a', delivery: { site: 'site', path: '/missing', locale: 'en', channel: 'web' } }), error => error.code === 'CMS_ROUTE_NOT_FOUND');
+    await assert.rejects(delivery.resolvePage({ tenant: 'tenant-a', delivery: { site: 'site', path: 'https://host' } }), error => error.code === 'ERR_CMS_00085');
+    await assert.rejects(delivery.resolvePage({ tenant: 'tenant-a', delivery: { site: 'site', path: '/missing', locale: 'en', channel: 'web' } }), error => error.code === 'ERR_CMS_00087');
 
     const overridden = Object.assign({}, delivery, {
         normalizeContext: request => ({ site: request.delivery.site, path: '/home', locale: 'en', channel: 'web' })

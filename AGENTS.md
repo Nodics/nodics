@@ -118,6 +118,13 @@ The expected posture is:
   bypassed, or replaced. Examples must preserve existing authorities and avoid
   creating parallel loaders, state machines, registries, schedulers, or runtime
   governance paths.
+- Treat this as the documentation thumb rule for every implemented
+  functionality: a partner, developer, or AI tool must be able to customize or
+  extend the capability through a project-owned later layer without touching
+  framework source. Document the exact extension point, smallest working
+  example, preserved contract, prohibited bypasses, upgrade/rollback impact,
+  and focused tests. Describing only the OOTB behavior is not complete
+  documentation.
 - Do not hardcode project-specific behavior into reusable framework behavior.
 - Every module-shaped package owns its bounded default user-facing label in
   `package.json.nodics.displayName`. Runtime and API identity remains
@@ -220,6 +227,14 @@ Every functional change must evaluate whether these artifacts need updates:
 - `test/` when behavior changes or a new contract is introduced.
 - `config/`, schema, router, service, pipeline, and data definitions when
   defaults, override points, or runtime governance change.
+
+When a backend module, frontend application, or reusable project supplies a
+CMS documentation content pack, update its granular canonical documentation
+source and regenerate committed `data/core` records in the same functional
+change. Generated CMS records must never be manually maintained as a shorter
+parallel authority. Retirement of README/docs evidence requires a migration
+register, detail-preservation validation, deterministic generation checks, and
+rendered-content review.
 
 AI-assisted changes must update AI-facing guidance with the same care as source
 code because future developers and AI tools will depend on it. A change is not

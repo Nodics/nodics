@@ -149,7 +149,7 @@ const request = { tenant: 'tenant-a', authData: { principalId: 'publisher-a' }, 
     assert.strictEqual(delivered.result.page.components[0].code, 'hero');
     await assert.rejects(delivery.resolvePage({ tenant: 'tenant-a', authData: {}, router: { publicAccess: true },
         delivery: { site: 'site-a', path: '/missing', locale: 'en', channel: 'web' } }),
-    error => error.code === 'CMS_PUBLICATION_POINTER_NOT_FOUND');
+    error => error.code === 'ERR_CMS_00090');
     properties.cms.publication.enabled = false;
 
     let previous = Object.assign({}, manifest, { code: 'publish-home_1', sourceVersion: '1', contentHash: 'previous' });

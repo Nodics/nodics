@@ -37,15 +37,15 @@ module.exports = {
             deliveryState: 'ONLINE',
             accessMode: isPublic ? 'PUBLIC' : 'AUTHENTICATED',
             active: true
-        }, 'CMS_ROUTE_NOT_FOUND');
+        }, 'ERR_CMS_00087');
         if (route.routeType === 'REDIRECT') {
             return { result: { contractVersion: 1, type: 'REDIRECT', path: context.path, redirectPath: route.redirectPath } };
         }
         let pageCode = this.codeOf(route.page);
-        let page = await this.getSingle(SERVICE.DefaultCmsPageService, request, { code: pageCode, active: true }, 'CMS_PAGE_NOT_FOUND');
+        let page = await this.getSingle(SERVICE.DefaultCmsPageService, request, { code: pageCode, active: true }, 'ERR_CMS_00088');
         let templateCode = this.codeOf(page.template);
         let template = templateCode ? await this.getSingle(SERVICE.DefaultCmsPageTemplateService, request,
-            { code: templateCode, active: true }, 'CMS_PAGE_TEMPLATE_NOT_FOUND') : undefined;
+            { code: templateCode, active: true }, 'ERR_CMS_00089') : undefined;
         let graph = await this.resolveGraph(request, [page.code], isPublic ? 'PUBLIC' : 'AUTHENTICATED');
         return {
             result: {
@@ -64,9 +64,9 @@ module.exports = {
         let pointer = await this.getSingle(SERVICE.DefaultCmsOnlinePublicationPointerService, request, {
             site: context.site, path: context.path, locale: context.locale, channel: context.channel,
             accessMode: isPublic ? 'PUBLIC' : 'AUTHENTICATED', active: true
-        }, 'CMS_PUBLICATION_POINTER_NOT_FOUND');
+        }, 'ERR_CMS_00090');
         let manifest = await this.getSingle(SERVICE.DefaultCmsPublicationManifestService, request,
-            { code: pointer.manifestCode, active: true }, 'CMS_PUBLICATION_MANIFEST_NOT_FOUND');
+            { code: pointer.manifestCode, active: true }, 'ERR_CMS_00091');
         return { result: manifest.snapshot };
     },
 
@@ -74,9 +74,9 @@ module.exports = {
     normalizeContext: function (request) {
         let input = request.delivery || {};
         let settings = this.settings();
-        if (!input.site || !input.path) throw this.error('CMS_DELIVERY_CONTEXT_INVALID', 'site and path are required');
+        if (!input.site || !input.path) throw this.error('ERR_CMS_00084', 'site and path are required');
         if (typeof input.path !== 'string' || input.path.charAt(0) !== '/' || input.path.includes('://')) {
-            throw this.error('CMS_DELIVERY_PATH_INVALID', 'path must be an absolute application path');
+            throw this.error('ERR_CMS_00085', 'path must be an absolute application path');
         }
         return {
             site: String(input.site),
@@ -96,7 +96,7 @@ module.exports = {
         for (let depth = 0; frontier.length > 0; depth++) {
             let sources = frontier.filter(code => code && !visited.has(code));
             if (sources.length === 0) break;
-            if (depth >= settings.maxDepth) throw this.error('CMS_GRAPH_DEPTH_EXCEEDED', 'component graph exceeds configured depth');
+            if (depth >= settings.maxDepth) throw this.error('ERR_CMS_00092', 'component graph exceeds configured depth');
             sources.forEach(code => visited.add(code));
             let associations = await this.getMany(SERVICE.DefaultCmsComponentDetailService, request, {
                 source: { $in: sources }, active: true
@@ -104,12 +104,12 @@ module.exports = {
             associations.sort((left, right) => (left.index || 0) - (right.index || 0));
             let targetCodes = Array.from(new Set(associations.map(item => this.codeOf(item.target)).filter(Boolean)));
             count += targetCodes.length;
-            if (count > settings.maxComponents) throw this.error('CMS_GRAPH_SIZE_EXCEEDED', 'component graph exceeds configured size');
+            if (count > settings.maxComponents) throw this.error('ERR_CMS_00093', 'component graph exceeds configured size');
             let components = targetCodes.length ? await this.getMany(SERVICE.DefaultCmsComponentService, request, {
                 code: { $in: targetCodes }, active: true
             }) : [];
             if (accessMode === 'PUBLIC' && components.some(component => component.accessMode !== 'PUBLIC')) {
-                throw this.error('CMS_COMPONENT_ACCESS_DENIED', 'public page composition contains protected content');
+                throw this.error('ERR_CMS_00086', 'public page composition contains protected content');
             }
             let byCode = components.reduce((result, component) => {
                 result[component.code] = component;

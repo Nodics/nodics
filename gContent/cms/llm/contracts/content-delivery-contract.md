@@ -22,6 +22,9 @@
 - Preserve client-safe delivery status mappings: invalid input `400`, access
   denial `403`, missing content `404`, and graph-bound violations `422`. Never
   collapse expected delivery failures into generic internal errors.
+- Define every delivery failure in the module-owned `ERR_CMS_*` status
+  catalogue. Do not use unregistered symbolic codes outside Nodics' `ERR_`
+  convention because they fall back to the generic system error.
 - Consumer-specific sites, catalogs, routes, templates, and content belong in
   later project modules.
 - Extend through layered properties and later schema, route, service, facade,

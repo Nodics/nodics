@@ -170,6 +170,48 @@ Before creating or changing canonical public documentation:
 10. regenerate derived content and run Nodics plus `nodicsdocs` validation
     proportionate to the change.
 
+## Customization-First Documentation Rule
+
+The primary adoption outcome of Nodics documentation is that a partner,
+developer, or AI tool can understand an implemented capability and customize
+it safely without editing framework-owned source. Every capability and
+functionality page family must therefore document:
+
+1. what the out-of-the-box capability owns and guarantees;
+2. the supported later-loaded project, module, provider, configuration,
+   schema, service, facade, controller, pipeline, event, renderer, or data
+   extension point, as applicable;
+3. the smallest complete customization example with exact files, properties,
+   registrations, commands, and expected result;
+4. which contract is preserved and which behavior the custom layer may replace
+   or compose;
+5. prohibited shortcuts, including framework edits, copied loaders, duplicate
+   registries, parallel persistence, client-side business authority, and
+   bypassed security or validation;
+6. positive, rejected, boundary, integration, and regression tests proving the
+   customization against the effective layered runtime;
+7. upgrade, rollback, troubleshooting, and compatibility implications.
+
+If an implemented capability has no safe extension point, its documentation
+must state that limitation explicitly and the capability is not considered
+partner-customizable. A high-level sentence saying that Nodics is extensible
+does not satisfy this rule.
+
+Every implemented module or application feature must update its granular
+canonical structured documentation source in the same change. The generated
+CMS page, component, navigation, route, search, and manifest records are
+derived release artifacts; they must never become a shorter hand-maintained
+documentation authority beside richer README or module docs.
+
+A generator must be deterministic and expose a check mode that fails when
+committed CMS import data is stale. Migration or retirement requires a register
+that maps every reviewed README/docs source to a canonical destination with a
+disposition, content hash, substantive headings, and detail evidence.
+README/docs content may be reduced only after source coverage, detail
+preservation, generated-pack validation, link/media validation, and rendered
+frontend review pass. Moving evidence to untracked root `docs/` before this
+gate is content loss, not migration.
+
 ## Project Documentation Content-Pack Contract
 
 Every backend project, frontend project, reusable application, and implemented
@@ -197,6 +239,12 @@ import authority. Generated or assembled `data/core` is committed,
 deterministic, and directly consumable by the existing Nodics content-pack and
 `nImport` contracts. The project repository owns its source-controlled
 documentation release; CMS is the runtime projection.
+
+The project must declare one canonical structured documentation source outside
+generated `data/core`. Content should be split into independently navigable
+pages at the level users search, learn, operate, troubleshoot, customize, and
+verify a capability. One coarse project overview or one summary page per module
+does not satisfy the contract when richer implemented feature guidance exists.
 
 Frontend startup may discover documentation-pack status and present authorized
 Import or Update actions. A frontend must never read sibling files, write CMS
@@ -238,6 +286,12 @@ Each project or reusable application guide must cover, where applicable:
 12. positive, negative, permission, boundary, responsive, contract,
     integration, regression, and production-build verification with exact
     commands and expected results.
+
+For every implemented project functionality, include a dedicated
+**Customize and extend safely** section. It must identify the authoritative
+owner, show the smallest supported project-owned customization, name the files
+that belong in the custom project, state what must not be copied or bypassed,
+and provide the tests that protect the extension across framework upgrades.
 
 When one functionality spans repositories, each repository documents only its
 owned implementation boundary and links to the canonical end-to-end capability

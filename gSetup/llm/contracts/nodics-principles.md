@@ -248,6 +248,22 @@ loader-visible source paths, keep configuration layered, preserve generated
 artifact ownership, update documentation, and prove behavior through focused
 tests.
 
+Documentation changes follow the same source-versus-generated discipline as
+runtime code. Every implemented backend module, customer backend, frontend
+application, and reusable project updates granular canonical documentation
+source and deterministically regenerates its CMS content-pack data. Generated
+CMS records are never hand-authored summaries or a second authority. Legacy
+README/docs guidance is retired only after a migration register and automated
+detail-preservation gates prove that its substantive knowledge is available
+through the canonical rendered documentation.
+
+The documentation thumb rule is customization without framework modification.
+Every implemented functionality must teach partners, developers, and AI tools
+how to use the supported later-loaded extension point, provide the smallest
+working project-owned example, identify preserved contracts and prohibited
+bypasses, and name the tests that prove the customization. Documentation that
+describes behavior without its safe customization path is incomplete.
+
 ## Completion Rule
 
 A change is complete only when behavior, configuration, generated artifacts,
