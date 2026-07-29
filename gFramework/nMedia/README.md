@@ -27,20 +27,334 @@ Production systems usually do not store static files on the same application pro
 
 The OOTB provider is `local`, intended for development and simple deployments. NAS, S3, Azure Blob, GCP Storage, or CDN-backed providers must implement the same provider contract instead of changing callers.
 
+For the local provider, `basePath` is intentionally configurable. If a later
+project, environment, server, node, tenant, or customer layer sets an absolute
+path, that configured deployment path wins. If it sets a relative path, the
+path resolves under the active server path. If no `basePath` is configured,
+nMedia falls back to `NODICS.getServerPath() + '/temp/media'`, for example
+`startio/envs/startioLocal/monoServer/temp/media` in local mono-server
+execution. Do not create or depend on a repository-root `runtime/` directory
+for uploaded files.
+
+Storage root resolution and storage key generation are separate contracts:
+
+- root resolution decides the local/NAS/cloud provider root;
+- key strategy decides the provider-relative logical path.
+
+The OOTB key strategy builds:
+
+```text
+{purpose}/{tenant}/{enterprise}/{schema}/{yyyy}/{mm}/{mediaCode}.{extension}
+```
+
+`purpose` is resolved from the folder policy. OOTB purpose prefixes are:
+
+| Folder | Purpose prefix | Typical usage |
+| --- | --- | --- |
+| `importSources` | `data` | CSV, JSON, Excel, and other governed import files. |
+| `cmsAssets` | `content` | CMS page, component, banner, icon, and document assets. |
+| `productAssets` | `products` | Product images, manuals, galleries, swatches, and product documents. |
+| `default` | `utils` | General documents or uncategorized internal media. |
+
+For file imports, Axis should pass the selected target schema to nMedia during
+upload, and nMedia stores the uploaded file under the schema segment selected
+by the configured strategy. A partner can replace or remap the strategy without
+changing Axis, nImport, or the storage provider.
+
+## Storage Root Resolution
+
+The storage root is the provider-owned base location where bytes are written.
+The frontend never decides this path. Axis, CMS, Product, Import, Documentation,
+or a project website may describe the media purpose, but `nMedia` resolves the
+root from layered backend configuration.
+
+For the local provider, root resolution works in this order:
+
+1. If `media.storage.providers.local.basePath` is an absolute path, use it as
+   the deployment-owned root. This is useful for mounted NAS volumes or a
+   server-local directory managed by operations.
+2. If `basePath` is a relative path, resolve it under the active server path.
+   This lets a server keep its runtime files under its own topology folder.
+3. If `basePath` is empty, use the active server path plus
+   `fallbackRelativeBasePath`. The OOTB fallback is `temp/media`, so local
+   mono-server execution stores files under:
+
+```text
+startio/envs/startioLocal/monoServer/temp/media
+```
+
+This fallback is intentional. Uploaded files must not be written to a Nodics
+repository-root `runtime/` directory, because the repository is source code and
+runtime files are deployment state. A generated customer project should not
+inherit a repository-level upload folder by accident.
+
+## Storage Key Strategy
+
+The storage key is the provider-relative path under the resolved root. It is
+not a filesystem root and it is not a URL. The OOTB strategy is
+`tenantEnterpriseSchemaDateMedia`, implemented by
+`DefaultTenantEnterpriseSchemaDateMediaKeyStrategyService`.
+
+The generated key shape is:
+
+```text
+{purpose}/{tenant}/{enterprise}/{schema}/{yyyy}/{mm}/{mediaCode}.{extension}
+```
+
+For example, a CSV import file for the `tenant` schema in the default tenant and
+enterprise during July 2026 may become:
+
+```text
+data/default/default/tenant/2026/07/defaultTenantCsvData-047642748389f750.csv
+```
+
+The strategy chooses the schema segment from the most specific request context
+available, such as `schemaName`, `ownerSchema`, or `targetSchema`. It chooses
+the purpose segment from `media.folders[folderCode].storagePrefix`. If no
+schema is provided, it falls back to the folder code. Axis file import should
+send the selected target model schema after the employee chooses it; the file
+name is not the authority for schema selection.
+
+Strategy configuration lives under `media.storage`:
+
+```js
+media: {
+    storage: {
+        defaultKeyStrategy: 'tenantEnterpriseSchemaDateMedia',
+        keyStrategies: {
+            default: 'tenantEnterpriseSchemaDateMedia',
+            importSources: 'tenantEnterpriseSchemaDateMedia',
+            cmsAssets: 'tenantEnterpriseSchemaDateMedia',
+            productAssets: 'tenantEnterpriseSchemaDateMedia'
+        },
+        keyStrategyServices: {
+            tenantEnterpriseSchemaDateMedia: 'DefaultTenantEnterpriseSchemaDateMediaKeyStrategyService'
+        }
+    }
+}
+```
+
+A partner can customize path shape by adding a new strategy service and changing
+only the relevant mapping. Do not fork Axis, nImport, CMS, Product, or the
+storage provider just to change a media path.
+
+## Configuring Local Storage
+
+Local storage is implemented and enabled by default. It is the right provider
+for developer laptops, automated tests, and simple deployments where the active
+server can safely read the files it writes.
+
+Minimal local development configuration:
+
+```js
+media: {
+    storage: {
+        defaultProvider: 'local',
+        providers: {
+            local: {
+                enabled: true,
+                service: 'DefaultLocalMediaStorageProviderService',
+                basePath: '',
+                fallbackRelativeBasePath: 'temp/media',
+                baseUrl: '/nodics/media/v0/content'
+            }
+        }
+    }
+}
+```
+
+Configured server-local directory:
+
+```js
+media: {
+    storage: {
+        providers: {
+            local: {
+                basePath: 'temp/media'
+            }
+        }
+    }
+}
+```
+
+Because the path is relative, it resolves under the active server path. This is
+safe for local module execution and avoids mixing files between environments.
+
+Configured absolute directory:
+
+```js
+media: {
+    storage: {
+        providers: {
+            local: {
+                basePath: '/var/lib/nodics/media'
+            }
+        }
+    }
+}
+```
+
+Use an absolute path only when operations owns that deployment path and backup,
+retention, access permissions, and cleanup are understood.
+
+## Configuring NAS Storage
+
+NAS is useful when multiple Nodics nodes must read and write the same media
+files through a shared filesystem. The OOTB NAS provider is a configuration
+slot until a provider service is implemented. A NAS provider should still obey
+the same nMedia contract: callers pass media purpose and file descriptors;
+`nMedia` generates storage keys; the provider writes to the mounted volume.
+
+Example configuration:
+
+```js
+media: {
+    storage: {
+        defaultProvider: 'nas',
+        providers: {
+            nas: {
+                enabled: true,
+                service: 'DefaultNasMediaStorageProviderService',
+                basePath: '/mnt/nodics-media',
+                baseUrl: 'https://media.company.example'
+            }
+        }
+    }
+}
+```
+
+Before using NAS in production, verify:
+
+- every node can access the same mount path;
+- write permissions are restricted to the Nodics runtime user;
+- file locking and partial-write behavior are understood;
+- backup and retention policies are owned by operations;
+- `baseUrl` does not expose private media unless access policy allows it.
+
+## Configuring S3 Storage
+
+S3-style object storage is usually the preferred cloud production pattern. The
+S3 provider is a placeholder until implemented, but its contract is already
+clear: `nMedia` should pass the generated key to the provider; the provider
+should store bytes in the configured bucket; credentials must come from secure
+runtime configuration, IAM roles, or a secret manager.
+
+Example configuration:
+
+```js
+media: {
+    storage: {
+        defaultProvider: 's3',
+        providers: {
+            s3: {
+                enabled: true,
+                service: 'DefaultS3MediaStorageProviderService',
+                bucket: 'company-nodics-media',
+                region: 'ap-south-1',
+                baseUrl: 'https://cdn.company.example'
+            }
+        }
+    }
+}
+```
+
+Do not store AWS access keys in `properties.js`, `package.json`, docs, sample
+data, or frontend `.env` files. The provider should resolve credentials through
+the deployment runtime. If public delivery is required, use CDN or signed URL
+contracts owned by nMedia, not raw bucket URLs copied into Product or CMS.
+
+## Configuring Azure Blob Storage
+
+Azure Blob follows the same shape as S3 but uses a container instead of a
+bucket. The provider implementation should own Azure SDK usage, credentials,
+retry behavior, metadata mapping, private/public URL generation, and delete
+semantics.
+
+Example configuration:
+
+```js
+media: {
+    storage: {
+        defaultProvider: 'azureBlob',
+        providers: {
+            azureBlob: {
+                enabled: true,
+                service: 'DefaultAzureBlobMediaStorageProviderService',
+                container: 'nodics-media',
+                baseUrl: 'https://cdn.company.example'
+            }
+        }
+    }
+}
+```
+
+Production implementations should support managed identity or a secure secret
+source. The provider must not return connection strings, account keys, SAS
+tokens, or internal blob names as caller-owned data.
+
+## Configuring Google Cloud Storage
+
+Google Cloud Storage uses the same provider-neutral pattern. The provider owns
+GCP SDK calls and authentication, while `nMedia` owns folder policy, key
+strategy, checksum, lifecycle, and media metadata.
+
+Example configuration:
+
+```js
+media: {
+    storage: {
+        defaultProvider: 'gcpStorage',
+        providers: {
+            gcpStorage: {
+                enabled: true,
+                service: 'DefaultGcpMediaStorageProviderService',
+                bucket: 'company-nodics-media',
+                baseUrl: 'https://cdn.company.example'
+            }
+        }
+    }
+}
+```
+
+Use service accounts, workload identity, or another governed secret mechanism.
+Never expose GCP credentials or signed delivery URLs to Axis as configuration.
+
+## Future FTP And SFTP Providers
+
+FTP, SFTP, partner gateways, and enterprise file-transfer appliances are useful
+for legacy integrations, but they should be modeled as provider implementations
+or import-source adapters, not as direct browser paths.
+
+Use FTP/SFTP when Nodics needs to place or read governed files from an external
+file-transfer location. The provider or adapter must own:
+
+- host, port, protocol, and connection timeout;
+- credential or certificate lookup from secure runtime configuration;
+- upload/download working directory rules;
+- retry and idempotency behavior;
+- partial file handling;
+- quarantine or archive folder behavior;
+- operational diagnostics without secret leakage.
+
+Axis should still upload through `nMedia` or select a governed external source.
+It should not know FTP passwords, SFTP private keys, remote folders, or raw
+provider paths.
+
 ## Implemented First Slice
 
 This module currently provides the authoritative media contracts, local-provider storage resolution, and secured upload entry point:
 
 - provider-based configuration in `config/properties.js`;
 - schemas for media folders, formats, media items, media sets, media set entries, and media references;
-- storage key generation that never trusts raw caller paths;
+- root resolution and strategy-based storage key generation that never trusts raw caller paths;
 - local provider path/URL resolution;
 - route metadata for upload policy discovery;
-- secured upload route that consumes nMedia-parsed multipart files, stores bytes through the active nMedia provider, calculates checksum, and persists media metadata;
+- media-code based delivery at `/nodics/media/v0/content/{mediaCode}` for media that nMedia policy allows;
+- secured upload route that consumes nMedia-parsed multipart files, stores bytes through the active nMedia provider, calculates checksum, and persists media metadata including original filename, generated storage key, relative path, backend full path, access URL, MIME type, file size, checksum, access mode, and lifecycle status;
 - secured internal media and media-set reference lookup for domain modules;
 - tests that protect provider selection and path traversal boundaries.
 
-The media multipart upload parser belongs to `gFramework/nMedia`. `nRouter` only invokes the body parser handler declared by the route. `nMedia` owns upload limits, parsed `req.files` descriptors, storage, checksum, generated keys, and media records. Axis upload UI is still a separate follow-up work item and must call these backend contracts rather than writing files itself.
+The media multipart upload parser belongs to `gFramework/nMedia`. `nRouter` only invokes the body parser handler declared by the route. `nMedia` owns upload limits, parsed `req.files` descriptors, storage, checksum, generated keys, and media records. Axis file-import UI composes these backend contracts by uploading through nMedia and then starting import through nImport; it must never write files or provider paths itself.
 
 ## Upload Flow
 
@@ -52,7 +366,7 @@ Browser or API client uploads one file to `/storage/upload` as `multipart/form-d
 4. `DefaultMediaMultipartUploadBodyParserHandlerService` parses text fields into `req.body` and the file into a bounded `req.files` descriptor.
 5. `nMedia` validates folder, MIME type, extension, and size against `media.upload` and `media.folders`.
 6. `nMedia` calculates a checksum, generates a safe provider-relative storage key, and stores the bytes through the active provider.
-7. `nMedia` saves the generated media model through the standard schema service.
+7. `nMedia` saves the generated media model through the standard schema service. The media record is the governed file handle and includes the original filename, stored filename, `storageKey`, readable `relativePath`, backend-resolved `fullPath`, `url`/`accessUrl` when the provider can resolve one, MIME type, size, checksum, access mode, and status.
 8. Caller modules store only `mediaCode`, `mediaSetCode`, or `mediaReferenceCode`.
 
 Example multipart fields:
@@ -61,12 +375,19 @@ Example multipart fields:
 file=<uploaded binary>
 folderCode=importSources
 formatCode=importFile
+schemaName=tenant
 mediaCode=optional-business-friendly-code
 name=Optional display name
 description=Optional description
 ```
 
 The caller never supplies a local path, cloud key, NAS path, or provider URL as authority.
+
+After upload, callers should use the returned `media.code` for later processing.
+For example, nImport receives the media code, asks nMedia for a backend-only
+readable source, and never reads a browser path. Product and CMS similarly store
+media references or media sets instead of duplicating paths, URLs, provider
+credentials, or storage lifecycle rules.
 
 ## Media As A Governed Import Source
 
@@ -98,6 +419,53 @@ The import descriptor used by `nImport` may include provider-internal
 information, but it must remain backend-only. Do not expose local absolute
 paths, object-store keys, bucket names, NAS paths, signed URLs, or provider
 credentials to Axis or any other browser client.
+
+## Media Delivery And Access Policy
+
+The media record stores `accessUrl` as a stable media-code based delivery
+handle. For local development this usually looks like:
+
+```text
+/nodics/media/v0/content/{mediaCode}
+```
+
+That URL is not a raw filesystem path and it is not an object-store key. It is
+an nMedia route that reloads the media model, checks delivery policy, resolves
+the provider-owned file source, and streams the content only when allowed.
+
+OOTB delivery is intentionally conservative:
+
+- `PUBLIC` media can be delivered when `media.delivery.publicAccessEnabled` is
+  `true`.
+- `SIGNED` media is blocked until a real signed-token validation policy is
+  implemented by nMedia or a project override.
+- `PRIVATE` media is blocked until a real authorization policy is implemented
+  by nMedia or a project override.
+- Delivery can be disabled entirely with `media.delivery.enabled = false`.
+
+This prevents a dangerous shortcut where private files become visible just
+because a local or cloud provider can resolve a URL. A partner adding signed
+delivery should extend the nMedia delivery service or policy layer, validate
+expiry/signature/audience, and keep token generation backend-owned. A partner
+adding private delivery should validate the employee/customer principal,
+tenant, enterprise, and domain permission before streaming bytes.
+
+Example policy:
+
+```js
+media: {
+    delivery: {
+        enabled: true,
+        allowedStatuses: ['READY', 'CONSUMED'],
+        publicAccessEnabled: true,
+        signedAccessEnabled: false,
+        privateAccessEnabled: false,
+        maximumResults: 2,
+        cacheControl: 'public, max-age=3600',
+        contentDisposition: 'inline'
+    }
+}
+```
 
 The nMedia side is intentionally not an import browser route. It is a service
 contract used by `nImport`:

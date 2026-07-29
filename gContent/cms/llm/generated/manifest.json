@@ -14,10 +14,10 @@
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to cms"
   },
   "sourceFiles": 29,
-  "testFiles": 42,
+  "testFiles": 46,
   "dataFiles": 26,
   "ownedFiles": 70,
-  "sourceFingerprint": "268d0cbda98dd846276f188acbcaa58b48bee53a6d9d33e69ea6a872825c6c93",
+  "sourceFingerprint": "958895e7734cc0c69a58bde9db408fd20dbf7409adcbd570465cafe27c133bc5",
   "documentation": {
     "documented": 58,
     "partially-documented": 3,
@@ -29,6 +29,7 @@
       "cmsBase",
       "cmsComponent",
       "cmsComponentDetail",
+      "cmsComponentMedia",
       "cmsMigrationAudit",
       "cmsOnlinePublicationPointer",
       "cmsPage",

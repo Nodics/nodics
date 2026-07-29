@@ -33,10 +33,10 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 29 |
-| Test files | 42 |
+| Test files | 46 |
 | Data files | 26 |
 | All module-owned files | 70 |
-| Local schema definitions | 14 |
+| Local schema definitions | 15 |
 
 ## Ownership And Dependencies
 
@@ -138,7 +138,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gContent/cms/src/service/defaultCmsSiteReferenceService.js` | `src` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gContent/cms/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements cms default sample service business behavior and extension logic. |  |
 | `gContent/cms/src/service/delivery/defaultCmsDeliveryCacheInvalidationService.js` | `src` | `documented` | 3/3 | Invalidates tenant-scoped resolved delivery responses through the authoritative nCache contract after CMS mutations. |  |
-| `gContent/cms/src/service/delivery/defaultCmsDeliveryService.js` | `src` | `documented` | 14/14 | Resolves a bounded, tenant-aware, client-safe CMS page graph using generated CMS schema services. |  |
+| `gContent/cms/src/service/delivery/defaultCmsDeliveryService.js` | `src` | `documented` | 16/16 | Resolves a bounded, tenant-aware, client-safe CMS page graph using generated CMS schema services. |  |
 | `gContent/cms/src/service/delivery/defaultCmsStorefrontContextProviderService.js` | `src` | `documented` | 9/9 | Validates an opaque Storefront handle and establishes the CMS-owned delivery request from its audience-bound projection. |  |
 | `gContent/cms/src/service/interceptors/defaultCmsComponentDetailInterceptorService.js` | `src` | `documented` | 5/5 | CMS interceptor service that generates component-detail codes and normalizes page/component relationship sources before save. |  |
 | `gContent/cms/src/service/interceptors/defaultItemRendererInterceptorService.js` | `src` | `documented` | 4/4 | CMS post-load interceptor service that enriches pages and components with renderer names and contract versions from authoritative type-code mappings. |  |
@@ -149,7 +149,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gContent/cms/src/service/publication/defaultCmsPublicationModuleTransportService.js` | `src` | `documented` | 6/6 | Sends authenticated release operations from Staged CMS to a separately configured Online CMS module runtime. |  |
 | `gContent/cms/src/service/publication/defaultCmsPublicationTargetService.js` | `src` | `documented` | 9/9 | Imports, activates, reports, and rolls back immutable releases inside the independently deployed Online CMS target. |  |
 | `gContent/cms/src/service/publication/defaultCmsPublicationVersionProviderService.js` | `src` | `documented` | 10/10 | Implements the nPublish version-provider contract with CMS immutable manifests and atomic Online pointers. |  |
-| `gContent/cms/src/service/validation/defaultCmsContractValidationService.js` | `src` | `documented` | 7/7 | Validates CMS-owned renderer, route, and ordered-composition contracts before persistence. |  |
+| `gContent/cms/src/service/validation/defaultCmsContractValidationService.js` | `src` | `documented` | 13/13 | Validates CMS-owned renderer, route, and ordered-composition contracts before persistence. |  |
 | `gContent/cms/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared cms enum definition exports. |  |
 | `gContent/cms/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared cms status and error definition exports. |  |
 | `gContent/cms/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for CMS-specific helper functions. |  |

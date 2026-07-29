@@ -25,6 +25,9 @@ const path = require('path');
 const properties = require('../config/properties');
 const policyService = require('../src/service/storage/defaultMediaStoragePolicyService');
 const keyService = require('../src/service/storage/defaultMediaStorageKeyService');
+const rootResolverService = require('../src/service/storage/defaultMediaStorageRootResolverService');
+const keyStrategyRegistryService = require('../src/service/storage/defaultMediaStorageKeyStrategyRegistryService');
+const tenantEnterpriseSchemaDateMediaKeyStrategyService = require('../src/service/storage/strategy/defaultTenantEnterpriseSchemaDateMediaKeyStrategyService');
 const registryService = require('../src/service/storage/defaultMediaStorageProviderRegistryService');
 const localProviderService = require('../src/service/storage/provider/defaultLocalMediaStorageProviderService');
 
@@ -41,6 +44,9 @@ class NodicsError extends Error {
     global.NODICS = {
         getNodicsHome: function () {
             return workspace;
+        },
+        getServerPath: function () {
+            return path.join(workspace, 'startio/envs/startioLocal/monoServer');
         }
     };
     global.CONFIG = {
@@ -51,6 +57,9 @@ class NodicsError extends Error {
     global.SERVICE = {
         DefaultMediaStoragePolicyService: policyService,
         DefaultMediaStorageKeyService: keyService,
+        DefaultMediaStorageRootResolverService: rootResolverService,
+        DefaultMediaStorageKeyStrategyRegistryService: keyStrategyRegistryService,
+        DefaultTenantEnterpriseSchemaDateMediaKeyStrategyService: tenantEnterpriseSchemaDateMediaKeyStrategyService,
         DefaultMediaStorageProviderRegistryService: registryService,
         DefaultLocalMediaStorageProviderService: localProviderService
     };
@@ -63,6 +72,7 @@ class NodicsError extends Error {
         mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         sizeBytes: 128,
         date: new Date(Date.UTC(2026, 6, 28)),
+        schemaName: 'tenant',
         mediaCode: 'upload-1'
     };
 
@@ -71,14 +81,33 @@ class NodicsError extends Error {
     assert.strictEqual(location.folderCode, 'importSources');
     assert.strictEqual(location.extension, 'xlsx');
     assert.strictEqual(location.absolutePath, undefined, 'public descriptors must not expose absolute filesystem paths');
-    assert.strictEqual(location.storageKey, 'default/default/imports/2026/07/upload-1.xlsx');
-    assert.strictEqual(location.url, '/nodics/media/v0/content/default/default/imports/2026/07/upload-1.xlsx');
+    assert.strictEqual(location.storageKey, 'data/default/default/tenant/2026/07/upload-1.xlsx');
+    assert.strictEqual(location.relativePath, 'data/default/default/tenant/2026/07/upload-1.xlsx');
+    assert.strictEqual(location.url, '/nodics/media/v0/content/upload-1');
+    assert.strictEqual(location.accessUrl, '/nodics/media/v0/content/upload-1');
 
     const stored = await registryService.store(Object.assign({}, descriptor, {
         buffer: Buffer.from('tenant,data\n')
     }));
     assert.strictEqual(stored.sizeBytes, 12);
+    assert.strictEqual(stored.relativePath, stored.storageKey);
+    assert.strictEqual(stored.fullPath, stored.internalAbsolutePath);
     assert.strictEqual(fs.existsSync(stored.internalAbsolutePath), true);
+    assert.strictEqual(
+        stored.internalAbsolutePath.startsWith(path.join(workspace, 'startio/envs/startioLocal/monoServer/temp/media') + path.sep),
+        true,
+        'relative local media storage must resolve under the active server runtime path'
+    );
+    assert.strictEqual(
+        rootResolverService.resolveLocalRoot({ provider: { basePath: path.join(workspace, 'configured-media-root') } }),
+        path.join(workspace, 'configured-media-root'),
+        'configured absolute local media root must win over server fallback'
+    );
+    assert.strictEqual(
+        rootResolverService.resolveLocalRoot({ provider: { basePath: 'custom/media' } }),
+        path.join(workspace, 'startio/envs/startioLocal/monoServer/custom/media'),
+        'configured relative local media root must resolve under active server path'
+    );
 
     assert.throws(() => keyService.assertSafeStorageKey('../escape.xlsx'), /Unsafe media storage key/);
     assert.throws(() => registryService.resolveLocation(Object.assign({}, descriptor, {
@@ -98,4 +127,3 @@ class NodicsError extends Error {
     console.error(error);
     process.exit(1);
 });
-

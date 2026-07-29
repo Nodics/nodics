@@ -18,6 +18,7 @@ const schemas = require(path.join(root, 'gContent/cms/src/schemas/schemas'));
 const routes = require(path.join(root, 'gContent/cms/src/router/routers')).cms;
 const statusDefinitions = require(path.join(root, 'gContent/cms/src/utils/statusDefinitions'));
 const initialTypes = require(path.join(root, 'gContent/cms/data/init/data/content/defaultCmsTypeCodeData'));
+const sampleHeaderComponents = require(path.join(root, 'gContent/cms/data/sample/data/components/sampleHeaderCmsComponentData'));
 const validation = require(path.join(root, 'gContent/cms/src/service/validation/defaultCmsContractValidationService'));
 
 assert.strictEqual(Object.keys(initialTypes).length, new Set(Object.keys(initialTypes)).size);
@@ -29,6 +30,7 @@ assert(Object.values(initialTypes).some(item => item.code === 'navigationalCompo
 });
 assert(schemas.cms.cmsTypeCode.definition.kind, 'existing cmsTypeCode must remain the component/page type authority');
 assert(schemas.cms.cmsTypeCode.definition.propertySchema, 'type authority must support declarative property contracts');
+assert(schemas.cms.cmsTypeCode.definition.mediaSchema, 'type authority must support declarative media-association contracts');
 assert.deepStrictEqual(schemas.cms.cmsTypeCode2Renderer.definition.channels.default, ['web']);
 assert.strictEqual(schemas.cms.cmsTypeCode2Renderer.definition.deprecated.type, 'bool',
     'persistent CMS boolean fields must use the MongoDB BSON bool type');
@@ -36,6 +38,21 @@ assert.strictEqual(schemas.cms.cmsTypeCode2Renderer.definition.deprecated.defaul
 assert(schemas.cms.cmsTypeCode2Renderer.definition.replacementRenderer);
 assert(schemas.cms.cmsComponent.definition.properties, 'component delivery properties must be an explicit schema contract');
 assert.strictEqual(schemas.cms.cmsComponent.definition.accessMode.default, 'AUTHENTICATED');
+assert(schemas.cms.cmsComponentMedia.definition.componentMediaCode, 'CMS must own structured component media associations');
+assert(schemas.cms.cmsComponentMedia.definition.componentCode, 'CMS component medias must point to a CMS component');
+assert(schemas.cms.cmsComponentMedia.definition.mediaCode, 'CMS component medias may point to one nMedia media item');
+assert(schemas.cms.cmsComponentMedia.definition.mediaSetCode, 'CMS component medias may point to one nMedia media set');
+const typeByCode = Object.values(initialTypes).reduce((accumulator, item) => {
+    accumulator[item.code] = item;
+    return accumulator;
+}, {});
+['imageComponentType', 'imagesComponentType', 'imageTextComponentType', 'homePageBannerComponentType'].forEach(typeCode => {
+    assert(typeByCode[typeCode].mediaSchema, typeCode + ' must declare its CMS-owned media association contract');
+});
+assert.strictEqual(typeByCode.imageComponentType.propertySchema.mediaCode, undefined, 'media item codes do not belong in generic component properties');
+assert.strictEqual(typeByCode.homePageBannerComponentType.propertySchema.mediaSetCode, undefined, 'media set codes do not belong in generic component properties');
+assert.strictEqual(sampleHeaderComponents.record2.media, undefined, 'CMS samples must not store raw media objects or URLs');
+assert.strictEqual(sampleHeaderComponents.record2.properties, undefined, 'CMS sample media association belongs in cmsComponentMedia data');
 assert.strictEqual(routes.cmsDelivery.resolvePublicPage.publicAccess, true);
 assert.strictEqual(routes.cmsDelivery.resolvePublicPage.secured, false);
 assert.strictEqual(routes.cmsDelivery.resolveAuthenticatedPage.secured, true);
@@ -49,6 +66,18 @@ global.CONFIG = { get: () => undefined };
 global.SERVICE = {
     DefaultCmsComponentDetailService: {
         get: () => Promise.resolve({ result: [] })
+    },
+    DefaultCmsComponentMediaService: {
+        get: () => Promise.resolve({ result: [] })
+    },
+    DefaultCmsComponentService: {
+        get: () => Promise.resolve({ result: [{ code: 'hero', active: true }] })
+    },
+    DefaultMediaReferenceLookupService: {
+        validateInternal: request => Promise.resolve({
+            referenceType: request.body.referenceType,
+            code: request.body.referenceCode
+        })
     }
 };
 
@@ -60,6 +89,24 @@ global.SERVICE = {
     assert.strictEqual(route.model.path, '/account/profile');
     await assert.rejects(validation.validateRoute({ model: { path: 'https://host/path', routeType: 'PAGE' } }), error => error.code === 'CMS_ROUTE_PATH_INVALID');
     await validation.validateAssociation({ tenant: 'tenant-a', model: { source: 'page', target: 'hero', index: 0 }, options: {} });
+    await validation.validateComponentMedia({ tenant: 'tenant-a', authData: {}, model: {
+        code: 'hero-primary-media',
+        componentMediaCode: 'hero-primary-media',
+        componentCode: 'hero',
+        mediaCode: 'hero-image',
+        mediaType: 'IMAGE',
+        role: 'primary',
+        position: 0
+    } });
+    await assert.rejects(validation.validateComponentMedia({ tenant: 'tenant-a', authData: {}, model: {
+        componentMediaCode: 'hero-invalid-media',
+        componentCode: 'hero',
+        mediaCode: 'hero-image',
+        mediaSetCode: 'hero-image-set',
+        mediaType: 'IMAGE',
+        role: 'primary',
+        position: 0
+    } }), error => error.code === 'ERR_CMS_00094');
 
     global._ = require('lodash');
     global.UTILS = {
@@ -74,6 +121,9 @@ global.SERVICE = {
         details: [{ code: 'homeHero', source: 'home', target: 'hero', slot: 'main', index: 0, active: true }],
         components: [{ code: 'hero', typeCode: 'heroType', accessMode: 'PUBLIC',
             properties: { title: 'Hello' }, secret: 'hidden' }],
+        componentMedia: [{ code: 'heroBackground', componentMediaCode: 'heroBackground', componentCode: 'hero',
+            mediaSetCode: 'heroBackgroundSet', mediaType: 'IMAGE', role: 'background', slot: 'default',
+            position: 0, altText: 'Hero background', storageKey: 'hidden', active: true }],
         templates: [{ code: 'main', renderer: 'template.main', contractVersion: 1 }],
         rendererMappings: [
             { code: 'homePage', renderer: 'page.home', contractVersion: 1, channels: ['web'] },
@@ -93,6 +143,7 @@ global.SERVICE = {
         DefaultCmsPageTemplateService: service(data.templates),
         DefaultCmsComponentDetailService: service(data.details),
         DefaultCmsComponentService: service(data.components),
+        DefaultCmsComponentMediaService: service(data.componentMedia),
         DefaultCmsTypeCode2RendererService: service(data.rendererMappings)
     };
     const rendererInterceptor = require(path.join(root, 'gContent/cms/src/service/interceptors/defaultItemRendererInterceptorService'));
@@ -118,6 +169,9 @@ global.SERVICE = {
     assert.deepStrictEqual(response.result.page.components[0].rendererChannels, ['web', 'mobile-webview']);
     assert.strictEqual(response.result.page.components[0].rendererDeprecated, true);
     assert.strictEqual(response.result.page.components[0].rendererReplacement, 'component.hero-v2');
+    assert.strictEqual(response.result.page.components[0].media[0].mediaSetCode, 'heroBackgroundSet');
+    assert.strictEqual(response.result.page.components[0].media[0].role, 'background');
+    assert.strictEqual(response.result.page.components[0].media[0].storageKey, undefined);
     assert.strictEqual(response.result.page.internalNote, undefined);
     assert.strictEqual(response.result.page.components[0].secret, undefined);
     data.components[0].accessMode = 'AUTHENTICATED';

@@ -17,7 +17,7 @@
   "testFiles": 28,
   "dataFiles": 7,
   "ownedFiles": 66,
-  "sourceFingerprint": "c8160b53cb040e0ca2c862df25cf9c6ca6ac154c74f9d13fba72009cadf05ded",
+  "sourceFingerprint": "04c9075f5560ead2ecea40707fbdaa38ced67152f68a17839e0d63ebab5305ff",
   "documentation": {
     "documented": 7,
     "partially-documented": 54,
@@ -35,7 +35,7 @@
       "productClassificationClass",
       "productIdentifier",
       "productItem",
-      "productMediaReference",
+      "productMedia",
       "productOnlinePointer",
       "productPackaging",
       "productProjectionJob",

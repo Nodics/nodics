@@ -31,6 +31,11 @@ assert(!mediaSchemas.mediaContainer, 'nMedia must use mediaSet naming instead of
 assert(!mediaSchemas.mediaContainerEntry, 'nMedia must use mediaSetEntry naming instead of copied mediaContainerEntry terminology');
 assert(mediaSchemas.media.definition.providerCode.required, 'media.providerCode must identify the storage provider');
 assert(mediaSchemas.media.definition.storageKey.required, 'media.storageKey must preserve provider-relative storage key');
+assert(mediaSchemas.media.definition.originalFileName, 'media.originalFileName must preserve the uploaded filename');
+assert(mediaSchemas.media.definition.storedFileName, 'media.storedFileName must preserve the provider stored filename');
+assert(mediaSchemas.media.definition.relativePath, 'media.relativePath must preserve the readable provider-relative path');
+assert(mediaSchemas.media.definition.fullPath, 'media.fullPath must preserve backend-resolved storage location for governed processing');
+assert(mediaSchemas.media.definition.accessUrl, 'media.accessUrl must preserve the provider-resolved access URL when available');
 assert(mediaSchemas.mediaSet.definition.mediaType.required, 'mediaSet.mediaType must classify the logical asset');
 assert(mediaSchemas.mediaSetEntry.definition.mediaSetCode.required, 'mediaSetEntry.mediaSetCode must identify the owning media set');
 assert(mediaSchemas.mediaSetEntry.definition.mediaCode.required, 'mediaSetEntry.mediaCode must identify the concrete media item');

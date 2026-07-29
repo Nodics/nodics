@@ -95,7 +95,7 @@
 | `productClassificationClass` |  | no | no | no | no | no | no |  | 0 |
 | `productIdentifier` |  | no | no | no | no | no | no |  | 0 |
 | `productItem` |  | no | no | no | no | no | no |  | 0 |
-| `productMediaReference` |  | no | no | no | no | no | no |  | 0 |
+| `productMedia` |  | no | no | no | no | no | no |  | 0 |
 | `productPackaging` |  | no | no | no | no | no | no |  | 0 |
 | `productRelation` |  | no | no | no | no | no | no |  | 0 |
 | `productVariantAssignment` |  | no | no | no | no | no | no |  | 0 |
@@ -137,7 +137,7 @@
 
 - No direct properties defined.
 
-### `product.productMediaReference`
+### `product.productMedia`
 
 - No direct properties defined.
 

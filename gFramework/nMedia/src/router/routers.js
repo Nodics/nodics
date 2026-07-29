@@ -95,6 +95,10 @@ module.exports = {
                                     file: { type: 'string', format: 'binary' },
                                     folderCode: { type: 'string' },
                                     formatCode: { type: 'string' },
+                                    moduleName: { type: 'string' },
+                                    schemaName: { type: 'string' },
+                                    indexName: { type: 'string' },
+                                    keyStrategy: { type: 'string' },
                                     mediaCode: { type: 'string' },
                                     name: { type: 'string' },
                                     description: { type: 'string' }
@@ -104,6 +108,27 @@ module.exports = {
                     }
                 },
                 responses: { '200': { description: 'Stored media metadata descriptor' } }
+            },
+            deliverMediaContent: {
+                secured: false,
+                publicAccess: true,
+                accessGroups: ['userGroup'],
+                apiExposure: 'mediaManagement',
+                key: '/content/:mediaCode',
+                method: 'GET',
+                controller: 'DefaultMediaStorageController',
+                operation: 'deliverMediaContent',
+                responseHandler: 'mediaContentResponseHandler',
+                help: {
+                    requestType: 'publicWhenMediaPolicyAllows',
+                    message: 'Delivers media content by media code after nMedia access policy validation.',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/media/v0/content/{mediaCode}'
+                },
+                parameters: [
+                    { name: 'mediaCode', in: 'path', required: true, schema: { type: 'string' } }
+                ],
+                responses: { '200': { description: 'Media binary content' } }
             }
         },
         referenceLookup: {

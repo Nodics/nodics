@@ -9,6 +9,7 @@
 | `cmsBase` | `base` | no | no | no | yes | no | no |  | 0 |
 | `cmsComponent` | `cmsBase` | yes | yes | yes | no | no | no |  | 5 |
 | `cmsComponentDetail` | `base` | yes | yes | no | yes | no | no |  | 4 |
+| `cmsComponentMedia` | `cmsBase` | yes | yes | yes | no | no | no |  | 11 |
 | `cmsMigrationAudit` | `base` | yes | yes | no | no | no | no |  | 8 |
 | `cmsOnlinePublicationPointer` | `base` | yes | yes | no | no | no | no |  | 10 |
 | `cmsPage` | `cmsBase` | yes | yes | yes | no | no | no |  | 6 |
@@ -18,7 +19,7 @@
 | `cmsPublicationManifest` | `base` | yes | yes | no | no | no | no |  | 9 |
 | `cmsSite` | `cmsBase` | yes | yes | yes | no | no | no |  | 2 |
 | `cmsSlotDefinition` | `cmsBase` | yes | yes | no | no | no | no |  | 5 |
-| `cmsTypeCode` | `base` | yes | yes | yes | yes | no | no |  | 3 |
+| `cmsTypeCode` | `base` | yes | yes | yes | yes | no | no |  | 4 |
 | `cmsTypeCode2Renderer` | `base` | yes | yes | yes | yes | no | no |  | 5 |
 
 ### `cms.cmsBase`
@@ -39,6 +40,20 @@
 - `slot` `string` optional: Logical template slot containing this ordered component association
 - `source` `string` required: Required source component, it could be a page or component itself
 - `target` `string` required: Required target component, it will be component
+
+### `cms.cmsComponentMedia`
+
+- `altText` `string` optional: Accessible media text owned by CMS content
+- `caption` `string` optional: Optional CMS-owned caption for the media placement
+- `componentCode` `string` required: CMS component code that owns this media placement
+- `componentMediaCode` `string` required: Stable CMS-owned media association identity
+- `localeCode` `string` optional: Optional locale for localized media selection
+- `mediaCode` `string` optional: Optional nMedia-owned single media item reference
+- `mediaSetCode` `string` optional: Optional nMedia-owned media set reference for responsive, localized, or gallery assets
+- `mediaType` `string` required: Business media category expected by the CMS component renderer
+- `position` `int` required: Ordered media position within component, role, slot, and locale
+- `role` `string` required: CMS-owned role such as primary, background, thumbnail, icon, gallery, or document
+- `slot` `string` optional: Optional logical media slot within the component
 
 ### `cms.cmsMigrationAudit`
 
@@ -130,6 +145,7 @@
 
 - `contractVersion` `int` required: Major version of the declarative type contract
 - `kind` `string` required: Declares whether the type classifies pages or components
+- `mediaSchema` `object` optional: Declarative CMS media-association contract; actual media lifecycle remains owned by nMedia
 - `propertySchema` `object` optional: Declarative property contract; executable code is prohibited
 
 ### `cms.cmsTypeCode2Renderer`

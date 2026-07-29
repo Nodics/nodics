@@ -71,7 +71,7 @@ Product owns those roles, their order, locale, lifecycle, and relationship to
 the Product Item.
 
 The file itself belongs to `gFramework/nMedia`. A Product media assignment
-stores a Product-owned `mediaReferenceCode` plus exactly one of:
+stores a Product-owned `productMediaCode` plus exactly one of:
 
 - `mediaCode`, when the assignment points to one concrete media item; or
 - `mediaSetCode`, when the assignment points to a reusable media set containing

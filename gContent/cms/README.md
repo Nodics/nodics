@@ -54,6 +54,33 @@ The existing `cmsTypeCode` model remains the single page/component type
 authority and carries the declarative type contract; CMS does not introduce a
 parallel component-type registry.
 
+## CMS Media Components
+
+CMS owns the meaning of a content component, not the binary media lifecycle.
+Image, image-list, image-text, banner, carousel, and similar components must
+use structured `cmsComponentMedia` records that point to nMedia-owned
+identifiers such as `mediaCode` or `mediaSetCode`.
+
+Use `mediaCode` when the component needs one concrete media item. Use
+`mediaSetCode` when a logical asset has multiple formats, responsive variants,
+localized images, thumbnails, or fallback files. CMS owns the media association
+meaning: component code, role, slot, locale, position, alt text, and caption.
+Generic `cmsComponent.properties` stays available for loose renderer-aligned
+content such as heading, subheading, layout hints, and CTA text, but it must not
+be used as the media relationship authority.
+
+CMS must not store provider paths, local file paths, generated delivery URLs,
+S3 keys, CDN URLs, or upload metadata as the source of truth. Those belong to
+`nMedia`. A renderer may call the nMedia delivery endpoint with the media code
+or media set code returned in the CMS media association projection, but CMS
+must not duplicate nMedia storage or access policy decisions.
+
+Project modules can extend the default CMS type-code `propertySchema` for
+project-specific component fields and `mediaSchema` for media-association
+expectations. Both contracts must stay declarative and client-safe: they can
+describe fields, roles, counts, and expected reference types, but they must not
+embed executable renderer code or provider-specific media storage logic.
+
 ## Resolved Page Delivery
 
 CMS provides three versioned delivery routes:

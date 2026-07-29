@@ -43,15 +43,39 @@ module.exports = {
     },
     record6: {
         code: 'imageTextComponentType',
-        active: true
+        active: true,
+        mediaSchema: {
+            allowedReferenceTypes: ['MEDIA', 'MEDIA_SET'],
+            allowedRoles: ['primary'],
+            maximumReferences: 1
+        },
+        propertySchema: {
+            title: { type: 'string', required: false, description: 'Text title rendered with the image' },
+            summary: { type: 'string', required: false, description: 'Short text rendered with the image' },
+            ctaLabel: { type: 'string', required: false, description: 'Optional call-to-action label' },
+            ctaUrl: { type: 'string', required: false, description: 'Optional safe application URL or route key' }
+        }
     },
     record7: {
         code: 'imageComponentType',
-        active: true
+        active: true,
+        mediaSchema: {
+            allowedReferenceTypes: ['MEDIA', 'MEDIA_SET'],
+            allowedRoles: ['primary'],
+            maximumReferences: 1
+        },
+        propertySchema: {
+            caption: { type: 'string', required: false, description: 'Optional display caption owned by CMS content' }
+        }
     },
     record8: {
         code: 'imagesComponentType',
-        active: true
+        active: true,
+        mediaSchema: {
+            allowedReferenceTypes: ['MEDIA', 'MEDIA_SET'],
+            allowedRoles: ['gallery', 'thumbnail', 'primary'],
+            maximumReferences: 100
+        }
     },
     record9: {
         code: 'menuComponentType',
@@ -99,6 +123,17 @@ module.exports = {
     record19: {
         code: 'homePageBannerComponentType',
         active: true,
+        mediaSchema: {
+            allowedReferenceTypes: ['MEDIA', 'MEDIA_SET'],
+            allowedRoles: ['background', 'primary', 'mobile', 'desktop'],
+            maximumReferences: 10
+        },
+        propertySchema: {
+            heading: { type: 'string', required: false, description: 'Banner heading text' },
+            subheading: { type: 'string', required: false, description: 'Banner supporting text' },
+            ctaLabel: { type: 'string', required: false, description: 'Banner call-to-action label' },
+            ctaUrl: { type: 'string', required: false, description: 'Safe application URL or route key' }
+        }
     },
     record20: {
         code: 'homePageSectionComponentType',

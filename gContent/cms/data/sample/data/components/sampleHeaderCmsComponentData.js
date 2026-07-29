@@ -53,11 +53,7 @@ module.exports = {
     record2: {
         code: 'sampleLogoImageComponent',
         active: true,
-        typeCode: 'imageComponentType',
-        media: {
-            name: 'Compnay logo image',
-            url: 'http://nodics.com/wp-content/uploads/2018/06/Nodics_Architecture.jpg'
-        }
+        typeCode: 'imageComponentType'
     },
     record3: {
         code: 'sampleLogoTextComponent',

@@ -40,17 +40,18 @@ module.exports = {
     resolveLocation: function (request) {
         let descriptor = SERVICE.DefaultMediaStoragePolicyService.validateDescriptor(request);
         let storageKey = SERVICE.DefaultMediaStorageKeyService.buildStorageKey(request);
-        let basePath = this.resolveBasePath(request.provider && request.provider.basePath);
+        let basePath = this.resolveBasePath(request.provider);
         let absolutePath = path.resolve(basePath, storageKey);
         if (!absolutePath.startsWith(basePath + path.sep) && absolutePath !== basePath) {
             throw new CLASSES.NodicsError('ERR_MED_00004', 'Unsafe media storage key');
         }
-        let baseUrl = String((request.provider && request.provider.baseUrl) || '').replace(/\/+$/, '');
+        let accessUrl = this.resolveAccessUrl(request, storageKey);
         return {
             providerCode: request.providerCode || 'local',
             folderCode: descriptor.folder.code,
             access: descriptor.folder.access || 'PRIVATE',
             storageKey: storageKey,
+            relativePath: storageKey,
             fileName: descriptor.fileName,
             originalFileName: descriptor.originalFileName,
             extension: descriptor.extension,
@@ -58,7 +59,8 @@ module.exports = {
             sizeBytes: descriptor.sizeBytes,
             absolutePath: this.shouldExposeAbsolutePath(request) ? absolutePath : undefined,
             internalAbsolutePath: absolutePath,
-            url: baseUrl ? baseUrl + '/' + storageKey : undefined
+            url: accessUrl,
+            accessUrl: accessUrl
         };
     },
 
@@ -81,7 +83,10 @@ module.exports = {
                     if (error) {
                         reject(new CLASSES.NodicsError(error, null, 'ERR_MED_00006'));
                     } else {
-                        resolve(Object.assign({}, location, { sizeBytes: content.length }));
+                        resolve(Object.assign({}, location, {
+                            sizeBytes: content.length,
+                            fullPath: location.internalAbsolutePath
+                        }));
                     }
                 });
             } catch (error) {
@@ -99,7 +104,7 @@ module.exports = {
     remove: function (request) {
         return new Promise((resolve, reject) => {
             try {
-                let basePath = this.resolveBasePath(request.provider && request.provider.basePath);
+                let basePath = this.resolveBasePath(request.provider);
                 let storageKey = SERVICE.DefaultMediaStorageKeyService.assertSafeStorageKey(request.storageKey);
                 let absolutePath = path.resolve(basePath, storageKey);
                 if (!absolutePath.startsWith(basePath + path.sep) && absolutePath !== basePath) {
@@ -126,7 +131,7 @@ module.exports = {
      * @returns {Object} Internal readable source descriptor.
      */
     resolveImportSource: function (request) {
-        let basePath = this.resolveBasePath(request.provider && request.provider.basePath);
+        let basePath = this.resolveBasePath(request.provider);
         let storageKey = SERVICE.DefaultMediaStorageKeyService.assertSafeStorageKey(request.storageKey);
         let absolutePath = path.resolve(basePath, storageKey);
         if (!absolutePath.startsWith(basePath + path.sep) && absolutePath !== basePath) {
@@ -147,14 +152,16 @@ module.exports = {
 
     /**
      * Resolves the local provider base path from configured relative or absolute path.
+     * Root ownership belongs to the nMedia root resolver so provider services
+     * do not invent deployment paths.
      *
-     * @param {string} configuredPath Configured provider base path.
+     * @param {Object} provider Provider configuration.
      * @returns {string} Absolute base path.
      */
-    resolveBasePath: function (configuredPath) {
-        let rawPath = configuredPath || 'runtime/media';
-        let root = typeof NODICS !== 'undefined' && NODICS.getNodicsHome ? NODICS.getNodicsHome() : process.cwd();
-        return path.resolve(path.isAbsolute(rawPath) ? rawPath : path.join(root, rawPath));
+    resolveBasePath: function (provider) {
+        return SERVICE.DefaultMediaStorageRootResolverService.resolveLocalRoot({
+            provider: provider || {}
+        });
     },
 
     /**
@@ -165,5 +172,20 @@ module.exports = {
      */
     shouldExposeAbsolutePath: function (request) {
         return !!(request && request.internal === true && request.storage && request.storage.exposeAbsolutePath === true);
+    },
+
+    /**
+     * Resolves a public-facing access URL. Stored media uses media code as
+     * the external handle so storage keys remain provider-owned metadata.
+     *
+     * @param {Object} request Media request.
+     * @param {string} storageKey Provider-relative storage key.
+     * @returns {string|undefined} Access URL when configured.
+     */
+    resolveAccessUrl: function (request, storageKey) {
+        let baseUrl = String((request.provider && request.provider.baseUrl) || '').replace(/\/+$/, '');
+        if (!baseUrl) return undefined;
+        let handle = request.mediaCode || request.code || storageKey;
+        return baseUrl + '/' + SERVICE.DefaultMediaStorageKeyService.cleanSegment(handle);
     }
 };

@@ -55,7 +55,7 @@ module.exports = {
         productRelation: { isVersionedEnabled: false },
         productBundleEntry: { isVersionedEnabled: false },
         productPackaging: { isVersionedEnabled: false },
-        productMediaReference: { isVersionedEnabled: false },
+        productMedia: { isVersionedEnabled: false },
         productReleaseManifest: { isVersionedEnabled: false },
         productOnlinePointer: { isVersionedEnabled: false },
         productPublicationReceipt: { isVersionedEnabled: false }

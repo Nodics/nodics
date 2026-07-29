@@ -49,6 +49,6 @@ module.exports = {
         productRelation: { isVersionedEnabled: true },
         productBundleEntry: { isVersionedEnabled: true },
         productPackaging: { isVersionedEnabled: true },
-        productMediaReference: { isVersionedEnabled: true }
+        productMedia: { isVersionedEnabled: true }
     }
 };

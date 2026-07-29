@@ -25,4 +25,4 @@ module.exports = Object.assign({},
     scoped('productRelation', 'DefaultProductCompositionService.prepareRelation', 'DefaultProductCompositionService.prepareRelationUpdate'),
     scoped('productBundleEntry', 'DefaultProductCompositionService.prepareBundleEntry', 'DefaultProductCompositionService.prepareBundleEntryUpdate'),
     scoped('productPackaging', 'DefaultProductCompositionService.preparePackaging', 'DefaultProductCompositionService.preparePackagingUpdate'),
-    scoped('productMediaReference', 'DefaultProductCompositionService.prepareMedia', 'DefaultProductCompositionService.prepareMediaUpdate'));
+    scoped('productMedia', 'DefaultProductCompositionService.prepareMedia', 'DefaultProductCompositionService.prepareMediaUpdate'));

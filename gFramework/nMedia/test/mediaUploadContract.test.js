@@ -26,6 +26,9 @@ const path = require('path');
 const properties = require('../config/properties');
 const policyService = require('../src/service/storage/defaultMediaStoragePolicyService');
 const keyService = require('../src/service/storage/defaultMediaStorageKeyService');
+const rootResolverService = require('../src/service/storage/defaultMediaStorageRootResolverService');
+const keyStrategyRegistryService = require('../src/service/storage/defaultMediaStorageKeyStrategyRegistryService');
+const tenantEnterpriseSchemaDateMediaKeyStrategyService = require('../src/service/storage/strategy/defaultTenantEnterpriseSchemaDateMediaKeyStrategyService');
 const registryService = require('../src/service/storage/defaultMediaStorageProviderRegistryService');
 const uploadService = require('../src/service/storage/defaultMediaUploadService');
 const localProviderService = require('../src/service/storage/provider/defaultLocalMediaStorageProviderService');
@@ -42,7 +45,8 @@ class NodicsError extends Error {
     let savedMedia;
     global.CLASSES = { NodicsError };
     global.NODICS = {
-        getNodicsHome: () => workspace
+        getNodicsHome: () => workspace,
+        getServerPath: () => path.join(workspace, 'startio/envs/startioLocal/monoServer')
     };
     global.CONFIG = {
         get: key => properties[key]
@@ -50,6 +54,9 @@ class NodicsError extends Error {
     global.SERVICE = {
         DefaultMediaStoragePolicyService: policyService,
         DefaultMediaStorageKeyService: keyService,
+        DefaultMediaStorageRootResolverService: rootResolverService,
+        DefaultMediaStorageKeyStrategyRegistryService: keyStrategyRegistryService,
+        DefaultTenantEnterpriseSchemaDateMediaKeyStrategyService: tenantEnterpriseSchemaDateMediaKeyStrategyService,
         DefaultMediaStorageProviderRegistryService: registryService,
         DefaultLocalMediaStorageProviderService: localProviderService,
         DefaultMediaUploadService: uploadService,
@@ -67,6 +74,8 @@ class NodicsError extends Error {
         tenant: 'default',
         enterpriseCode: 'default',
         authData: { tokenType: 'access', principalId: 'admin' },
+        enterpriseCode: 'default',
+        schemaName: 'tenant',
         folderCode: 'importSources',
         formatCode: 'importFile',
         files: [{
@@ -82,8 +91,17 @@ class NodicsError extends Error {
     assert.strictEqual(media.formatCode, 'importFile');
     assert.strictEqual(media.status, 'READY');
     assert.strictEqual(media.checksum, expectedChecksum);
+    assert.strictEqual(savedMedia.originalFileName, 'tenant.csv');
     assert.strictEqual(savedMedia.storageKey.endsWith('.csv'), true);
-    assert.strictEqual(fs.existsSync(path.join(workspace, 'runtime/media', savedMedia.storageKey)), true);
+    assert.strictEqual(savedMedia.relativePath, savedMedia.storageKey);
+    assert.strictEqual(savedMedia.storageKey.startsWith('data/default/default/tenant/'), true);
+    assert.strictEqual(savedMedia.fullPath, path.join(workspace, 'startio/envs/startioLocal/monoServer/temp/media', savedMedia.storageKey));
+    assert.strictEqual(savedMedia.accessUrl, '/nodics/media/v0/content/' + savedMedia.code);
+    assert.strictEqual(savedMedia.accessUrl, savedMedia.url);
+    assert.strictEqual(
+        fs.existsSync(path.join(workspace, 'startio/envs/startioLocal/monoServer/temp/media', savedMedia.storageKey)),
+        true
+    );
 
     await assert.rejects(uploadService.upload({ tenant: 'default', files: [] }), error => error.code === 'ERR_MED_00001');
     delete global.SERVICE.DefaultMediaService;

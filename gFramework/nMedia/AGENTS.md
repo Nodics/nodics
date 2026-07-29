@@ -19,6 +19,13 @@ This file gives AI coding agents mandatory guidance for the Nodics framework med
 - media references that other modules can use without owning files;
 - media access, stream, lifecycle, and cleanup contracts.
 
+Every successful upload must create a governed `media` model record. The record
+must retain the original filename, generated stored filename, provider code,
+folder/format, `storageKey`, readable relative path, backend full path or
+provider locator, access URL when resolvable, MIME type, extension, file size,
+checksum, access mode, and lifecycle status. Downstream modules process media
+through `media.code`, not raw paths.
+
 `nMedia` does not own product, CMS, import, documentation, or storefront business meaning. Those modules reference media or media sets when they need assets.
 
 Product-specific relationships such as primary image, thumbnail, gallery order,
@@ -44,7 +51,9 @@ Project, environment, server, node, tenant, or customer layers may override:
 - active/default storage provider;
 - provider enablement;
 - provider base path, base URL, and internal/private URL policy;
+- root fallback path for local runtime storage;
 - folder policy;
+- folder-to-key-strategy mapping and key strategy service mapping;
 - allowed extensions and MIME types;
 - maximum file size;
 - generated key strategy;
@@ -52,6 +61,41 @@ Project, environment, server, node, tenant, or customer layers may override:
 - reference lookup active status policies for media items and media sets.
 
 Later layers must override only the values they intentionally change. Do not copy the full OOTB provider configuration into server or environment properties as placeholders.
+
+If `media.storage.providers.local.basePath` is empty, local storage must fall
+back to the active server path plus `fallbackRelativeBasePath` such as
+`temp/media`. Do not create a repository-root `runtime/` directory. Provider
+services own storage mechanics only; key strategy services own logical path
+shape such as `{purpose}/{tenant}/{enterprise}/{schema}/{yyyy}/{mm}/{mediaCode}.{extension}`.
+The OOTB purpose prefix is folder-policy driven: `data` for import sources,
+`content` for CMS assets, `products` for product assets, and `utils` for
+general media.
+
+For import uploads, Axis must collect the business destination first, then the
+target model/schema, then the file. The selected schema comes from the governed
+model picker and must be passed as upload context. Never infer the target
+schema from the uploaded file name.
+
+Provider-specific configuration rules:
+
+- local storage is implemented and should use server-path fallback for local
+  development unless a trusted layer overrides it;
+- NAS, S3, Azure Blob, Google Cloud Storage, FTP, SFTP, CDN, or partner storage
+  integrations must be provider services behind `nMedia`;
+- credentials, connection strings, certificates, access keys, SAS tokens,
+  private keys, bucket names that are not safe to disclose, and signed URLs
+  must stay backend-only;
+- public callers may receive a safe media identity and delivery descriptor
+  only through an nMedia-owned contract;
+- media delivery must go through `/nodics/media/v0/content/{mediaCode}` or a
+  later nMedia-owned delivery route. Never expose local filesystem paths,
+  provider storage keys, object-store URLs, or signed URLs as caller-owned
+  authority;
+- public delivery may serve only policy-allowed `PUBLIC` media. `SIGNED` and
+  `PRIVATE` delivery must remain blocked until a real nMedia access policy is
+  implemented and tested;
+- storage provider changes must not require changes in Axis, CMS, Product,
+  nImport, Documentation, or project modules.
 
 ## Implementation Order
 

@@ -33,6 +33,14 @@ module.exports = {
         type: 'schema', item: 'cmsComponentDetail', trigger: 'preSave', active: 'true', index: 10,
         handler: 'DefaultCmsContractValidationService.validateAssociation'
     },
+    validateCmsComponentMedia: {
+        type: 'schema', item: 'cmsComponentMedia', trigger: 'preSave', active: 'true', index: 10,
+        handler: 'DefaultCmsContractValidationService.validateComponentMedia'
+    },
+    validateCmsComponentMediaUpdate: {
+        type: 'schema', item: 'cmsComponentMedia', trigger: 'preUpdate', active: 'true', index: 10,
+        handler: 'DefaultCmsContractValidationService.validateComponentMediaUpdate'
+    },
     invalidateCmsPageDeliveryAfterSave: { type: 'schema', item: 'cmsPage', trigger: 'postSave', active: 'true', index: 100, handler: 'DefaultCmsDeliveryCacheInvalidationService.invalidate' },
     invalidateCmsPageDeliveryAfterUpdate: { type: 'schema', item: 'cmsPage', trigger: 'postUpdate', active: 'true', index: 100, handler: 'DefaultCmsDeliveryCacheInvalidationService.invalidate' },
     invalidateCmsPageDeliveryAfterRemove: { type: 'schema', item: 'cmsPage', trigger: 'postRemove', active: 'true', index: 100, handler: 'DefaultCmsDeliveryCacheInvalidationService.invalidate' },

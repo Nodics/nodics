@@ -91,5 +91,27 @@ module.exports = {
         } else {
             return FACADE.DefaultMediaStorageFacade.uploadMedia(input);
         }
+    },
+    /**
+     * Delivers authorized media content by media code.
+     *
+     * @param {Object} request Nodics request wrapper.
+     * @param {Function} callback Optional callback used by router pipeline.
+     * @returns {Promise<Object>|void} File response descriptor or callback result.
+     */
+    deliverMediaContent: function (request, callback) {
+        let params = request && request.httpRequest && request.httpRequest.params || request && request.params || {};
+        let query = request && request.httpRequest && request.httpRequest.query || request && request.query || {};
+        let input = {
+            tenant: request && request.tenant,
+            authData: request && request.authData,
+            params: params,
+            query: query
+        };
+        if (callback) {
+            FACADE.DefaultMediaStorageFacade.deliverMediaContent(input).then(success => callback(null, success)).catch(error => callback(error));
+        } else {
+            return FACADE.DefaultMediaStorageFacade.deliverMediaContent(input);
+        }
     }
 };

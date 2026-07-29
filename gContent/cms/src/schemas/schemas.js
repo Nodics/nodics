@@ -49,6 +49,11 @@ module.exports = {
                     type: 'object',
                     required: false,
                     description: 'Declarative property contract; executable code is prohibited'
+                },
+                mediaSchema: {
+                    type: 'object',
+                    required: false,
+                    description: 'Declarative CMS media-association contract; actual media lifecycle remains owned by nMedia'
                 }
             }
         },
@@ -376,6 +381,110 @@ module.exports = {
                     default: 'AUTHENTICATED',
                     enum: ['PUBLIC', 'AUTHENTICATED'],
                     description: 'Fail-closed component delivery boundary; public pages may contain only PUBLIC components'
+                }
+            }
+        },
+        cmsComponentMedia: {
+            super: 'cmsBase',
+            isVersionedEnabled: false,
+            model: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
+            search: {
+                enabled: false,
+                idPropertyName: 'componentMediaCode',
+            },
+            cache: {
+                enabled: false,
+                ttl: 1000
+            },
+            refSchema: {
+                componentCode: {
+                    enabled: true,
+                    schemaName: 'cmsComponent',
+                    type: 'one',
+                    propertyName: 'code',
+                    searchEnabled: true
+                }
+            },
+            definition: {
+                componentMediaCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Stable CMS-owned media association identity'
+                },
+                componentCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'CMS component code that owns this media placement'
+                },
+                mediaCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional nMedia-owned single media item reference'
+                },
+                mediaSetCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional nMedia-owned media set reference for responsive, localized, or gallery assets'
+                },
+                mediaType: {
+                    type: 'string',
+                    required: true,
+                    enum: ['IMAGE', 'VIDEO', 'DOCUMENT', 'FILE', 'MIXED'],
+                    default: 'IMAGE',
+                    description: 'Business media category expected by the CMS component renderer'
+                },
+                role: {
+                    type: 'string',
+                    required: true,
+                    description: 'CMS-owned role such as primary, background, thumbnail, icon, gallery, or document'
+                },
+                slot: {
+                    type: 'string',
+                    required: false,
+                    default: 'default',
+                    description: 'Optional logical media slot within the component'
+                },
+                localeCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional locale for localized media selection'
+                },
+                position: {
+                    type: 'int',
+                    required: true,
+                    default: 100,
+                    description: 'Ordered media position within component, role, slot, and locale'
+                },
+                altText: {
+                    type: 'string',
+                    required: false,
+                    description: 'Accessible media text owned by CMS content'
+                },
+                caption: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional CMS-owned caption for the media placement'
+                }
+            },
+            indexes: {
+                common: {
+                    componentCode: { enabled: true, name: 'componentCode' },
+                    componentMediaCode: { enabled: true, name: 'componentMediaCode' }
+                },
+                individual: {
+                    componentMediaCode: { enabled: true, name: 'componentMediaCode' },
+                    componentCode: { enabled: true, name: 'componentCode' },
+                    mediaCode: { enabled: true, name: 'mediaCode' },
+                    mediaSetCode: { enabled: true, name: 'mediaSetCode' },
+                    role: { enabled: true, name: 'role' },
+                    slot: { enabled: true, name: 'slot' },
+                    position: { enabled: true, name: 'position' }
                 }
             }
         },

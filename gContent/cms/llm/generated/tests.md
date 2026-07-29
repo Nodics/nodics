@@ -15,6 +15,7 @@
 ## Generated Tests
 
 - `gContent/cms/test/gen/api/cmsComponentApiContract.test.js`
+- `gContent/cms/test/gen/api/cmsComponentMediaApiContract.test.js`
 - `gContent/cms/test/gen/api/cmsPageApiContract.test.js`
 - `gContent/cms/test/gen/api/cmsPageRouteApiContract.test.js`
 - `gContent/cms/test/gen/api/cmsPageTemplateApiContract.test.js`
@@ -22,6 +23,7 @@
 - `gContent/cms/test/gen/api/cmsTypeCode2RendererApiContract.test.js`
 - `gContent/cms/test/gen/api/cmsTypeCodeApiContract.test.js`
 - `gContent/cms/test/gen/apiScenario/cmsComponentApiScenario.test.js`
+- `gContent/cms/test/gen/apiScenario/cmsComponentMediaApiScenario.test.js`
 - `gContent/cms/test/gen/apiScenario/cmsPageApiScenario.test.js`
 - `gContent/cms/test/gen/apiScenario/cmsPageRouteApiScenario.test.js`
 - `gContent/cms/test/gen/apiScenario/cmsPageTemplateApiScenario.test.js`
@@ -29,6 +31,7 @@
 - `gContent/cms/test/gen/apiScenario/cmsTypeCode2RendererApiScenario.test.js`
 - `gContent/cms/test/gen/apiScenario/cmsTypeCodeApiScenario.test.js`
 - `gContent/cms/test/gen/crud/cmsComponentCrudScenario.test.js`
+- `gContent/cms/test/gen/crud/cmsComponentMediaCrudScenario.test.js`
 - `gContent/cms/test/gen/crud/cmsPageCrudScenario.test.js`
 - `gContent/cms/test/gen/crud/cmsPageRouteCrudScenario.test.js`
 - `gContent/cms/test/gen/crud/cmsPageTemplateCrudScenario.test.js`
@@ -37,6 +40,7 @@
 - `gContent/cms/test/gen/crud/cmsTypeCodeCrudScenario.test.js`
 - `gContent/cms/test/gen/schema/cmsBaseSchemaContract.test.js`
 - `gContent/cms/test/gen/schema/cmsComponentDetailSchemaContract.test.js`
+- `gContent/cms/test/gen/schema/cmsComponentMediaSchemaContract.test.js`
 - `gContent/cms/test/gen/schema/cmsComponentSchemaContract.test.js`
 - `gContent/cms/test/gen/schema/cmsMigrationAuditSchemaContract.test.js`
 - `gContent/cms/test/gen/schema/cmsOnlinePublicationPointerSchemaContract.test.js`

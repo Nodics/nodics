@@ -10,7 +10,7 @@ framework in this directory.
 ## Product Media Assignment Contract
 
 Product owns media assignment meaning, not binary storage. A Product media
-record must use `mediaReferenceCode` as the Product-owned identity and exactly
+record must use `productMediaCode` as the Product-owned identity and exactly
 one of `mediaCode` or `mediaSetCode` as the `nMedia` reference.
 
 Use `mediaCode` for one concrete media item. Use `mediaSetCode` when the

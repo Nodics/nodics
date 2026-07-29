@@ -79,6 +79,18 @@ module.exports = {
             keyPattern: '^[a-z][a-z0-9]*(\\.[a-z][a-z0-9-]*)+$',
             prohibitedSchemes: ['http:', 'https:', 'javascript:', 'data:', 'file:']
         },
+        mediaReference: {
+            moduleName: 'media',
+            apiVersion: 'v0',
+            apiName: '/references/media/validate',
+            preferLocal: true,
+            requestTimeoutMs: 2000,
+            maximumAttempts: 2,
+            maximumReferencesPerComponent: 200,
+            mediaTypes: ['IMAGE', 'VIDEO', 'DOCUMENT', 'FILE', 'MIXED'],
+            roles: ['primary', 'background', 'thumbnail', 'icon', 'gallery', 'document', 'video', 'mobile', 'desktop'],
+            localePattern: '^[A-Za-z]{2,3}(?:[-_][A-Za-z0-9]{2,8})*$'
+        },
         migration: {
             version: 1,
             rendererMappings: {

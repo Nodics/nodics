@@ -30,5 +30,6 @@ module.exports = {
     ERR_CMS_00080: { code: '401', message: 'CMS Site reference lookup requires service identity' },
     ERR_CMS_00081: { code: '400', message: 'CMS Site reference input is invalid' },
     ERR_CMS_00082: { code: '401', message: 'Active Storefront context is required' },
-    ERR_CMS_00083: { code: '500', message: 'CMS delivery configuration is incomplete' }
+    ERR_CMS_00083: { code: '500', message: 'CMS delivery configuration is incomplete' },
+    ERR_CMS_00094: { code: '400', message: 'CMS component media is invalid' }
 };

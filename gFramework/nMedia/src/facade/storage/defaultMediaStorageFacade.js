@@ -75,5 +75,14 @@ module.exports = {
             code: 'SUC_MED_00004',
             data: media
         }));
+    },
+    /**
+     * Resolves an authorized media content delivery descriptor.
+     *
+     * @param {Object} request Delivery request.
+     * @returns {Promise<Object>} File response descriptor.
+     */
+    deliverMediaContent: function (request) {
+        return SERVICE.DefaultMediaDeliveryService.deliver(request);
     }
 };

@@ -15,7 +15,7 @@
 | `productClassificationClass` | `base` | yes | yes | no | no | no | no |  | 8 |
 | `productIdentifier` | `base` | yes | yes | no | no | no | no |  | 9 |
 | `productItem` | `base` | yes | yes | no | no | no | no |  | 10 |
-| `productMediaReference` | `base` | yes | yes | no | no | no | no |  | 13 |
+| `productMedia` | `base` | yes | yes | no | no | no | no |  | 13 |
 | `productOnlinePointer` | `base` | yes | yes | no | no | no | no |  | 6 |
 | `productPackaging` | `base` | yes | yes | no | no | no | no |  | 16 |
 | `productProjectionJob` | `base` | yes | yes | no | no | no | no |  | 12 |
@@ -154,7 +154,7 @@
 - `status` `string` required: Governed lifecycle status
 - `stockManaged` `bool` required
 
-### `product.productMediaReference`
+### `product.productMedia`
 
 - `altText` `string` optional
 - `catalogCode` `string` required: nCatalog-owned catalog identity
@@ -163,10 +163,10 @@
 - `itemType` `string` required
 - `localeCode` `string` optional
 - `mediaCode` `string` optional: Optional nMedia-owned single Media item reference
-- `mediaReferenceCode` `string` required: Stable Product-owned media assignment identity
 - `mediaSetCode` `string` optional: Optional nMedia-owned reusable Media Set reference
 - `mediaType` `string` required
 - `position` `int` required
+- `productMediaCode` `string` required: Stable Product-owned media assignment identity
 - `role` `string` required
 - `status` `string` required: Governed lifecycle status
 

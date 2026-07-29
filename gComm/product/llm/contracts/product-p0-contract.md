@@ -29,7 +29,7 @@ date, cardinality, and acyclic-graph policy. Bundle Entries keep exact positive
 quantity strings, use Units references, and reject duplicate components,
 positions, excessive depth, and cycles. Packaging stores exact quantities and
 measurements with Units-owned Unit codes. Media References use a Product-owned
-`mediaReferenceCode` and exactly one `nMedia` reference: `mediaCode` or
+`productMediaCode` and exactly one `nMedia` reference: `mediaCode` or
 `mediaSetCode`. Product owns role, position, locale, alt text, and lifecycle;
 `nMedia` owns provider paths, generated URLs, checksums, MIME policy, upload
 limits, and binary payloads. Product validates media item and media set

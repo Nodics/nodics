@@ -29,10 +29,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 19 |
-| Test files | 32 |
+| Source files | 24 |
+| Test files | 33 |
 | Data files | 0 |
-| All module-owned files | 35 |
+| All module-owned files | 41 |
 | Local schema definitions | 6 |
 
 ## Ownership And Dependencies
@@ -61,7 +61,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 31 |
+| Documented | 37 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -93,25 +93,31 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nMedia/nodics.js` | `module` | `documented` | 2/2 | Registers the nMedia framework module lifecycle hooks. |  |
 | `gFramework/nMedia/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nMedia/src/controller/reference/defaultMediaReferenceLookupController.js` | `src` | `documented` | 1/1 | Maps secured internal media reference lookup requests to the nMedia facade. |  |
-| `gFramework/nMedia/src/controller/storage/defaultMediaStorageController.js` | `src` | `documented` | 5/5 | Exposes nMedia storage policy and location controller operations. |  |
+| `gFramework/nMedia/src/controller/storage/defaultMediaStorageController.js` | `src` | `documented` | 6/6 | Exposes nMedia storage policy and location controller operations. |  |
 | `gFramework/nMedia/src/facade/reference/defaultMediaReferenceLookupFacade.js` | `src` | `documented` | 1/1 | Delegates internal media reference validation intents to the nMedia authority. |  |
-| `gFramework/nMedia/src/facade/storage/defaultMediaStorageFacade.js` | `src` | `documented` | 5/5 | Delegates media storage policy and location operations. |  |
+| `gFramework/nMedia/src/facade/storage/defaultMediaStorageFacade.js` | `src` | `documented` | 6/6 | Delegates media storage policy and location operations. |  |
 | `gFramework/nMedia/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved application router configuration contribution for the media framework module. |  |
 | `gFramework/nMedia/src/router/routers.js` | `src` | `documented` | 0/0 | Defines nMedia route registration and HTTP exposure metadata. |  |
 | `gFramework/nMedia/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines provider-neutral media lifecycle schemas. |  |
 | `gFramework/nMedia/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Blank generated-module service scaffold. Do not place business behavior here. |  |
 | `gFramework/nMedia/src/service/reference/defaultMediaReferenceLookupService.js` | `src` | `documented` | 8/8 | Provides a bounded nMedia-owned reference validation contract for domain modules. |  |
+| `gFramework/nMedia/src/service/storage/defaultMediaContentResponseHandlerService.js` | `src` | `documented` | 5/5 | Sends nMedia-authorized binary content inline without exposing provider paths to callers. |  |
+| `gFramework/nMedia/src/service/storage/defaultMediaDeliveryService.js` | `src` | `documented` | 8/8 | Resolves media-code based content delivery through nMedia-owned access policy and provider storage descriptors. |  |
 | `gFramework/nMedia/src/service/storage/defaultMediaImportSourceResolverService.js` | `src` | `documented` | 7/7 | Resolves backend-only media descriptors that nImport can stage as governed import sources. |  |
 | `gFramework/nMedia/src/service/storage/defaultMediaMultipartUploadBodyParserHandlerService.js` | `src` | `documented` | 5/5 | nMedia-owned multipart intake handler for governed media upload routes. nRouter invokes this handler through the route's configured `bodyParserHandler`, but nMedia owns the upload format, limits, validation semantics, and file descriptor contract. |  |
-| `gFramework/nMedia/src/service/storage/defaultMediaStorageKeyService.js` | `src` | `documented` | 6/6 | Generates safe provider-relative media storage keys. |  |
+| `gFramework/nMedia/src/service/storage/defaultMediaStorageKeyService.js` | `src` | `documented` | 7/7 | Delegates provider-relative media storage key generation to the configured nMedia strategy. |  |
+| `gFramework/nMedia/src/service/storage/defaultMediaStorageKeyStrategyRegistryService.js` | `src` | `documented` | 4/4 | Selects the configured nMedia storage key strategy and delegates logical provider-relative path generation. |  |
 | `gFramework/nMedia/src/service/storage/defaultMediaStoragePolicyService.js` | `src` | `documented` | 8/8 | Resolves and validates backend-owned media storage policy. |  |
 | `gFramework/nMedia/src/service/storage/defaultMediaStorageProviderRegistryService.js` | `src` | `documented` | 7/7 | Selects and invokes the configured nMedia storage provider. |  |
+| `gFramework/nMedia/src/service/storage/defaultMediaStorageRootResolverService.js` | `src` | `documented` | 4/4 | Resolves provider root paths without letting local runtime files leak into the Nodics repository root. |  |
 | `gFramework/nMedia/src/service/storage/defaultMediaUploadService.js` | `src` | `documented` | 8/8 | Stores nMedia-parsed media uploads and persists nMedia-owned metadata using the generated media model service. |  |
-| `gFramework/nMedia/src/service/storage/provider/defaultLocalMediaStorageProviderService.js` | `src` | `documented` | 8/8 | Local filesystem media provider for development and simple deployments. |  |
+| `gFramework/nMedia/src/service/storage/provider/defaultLocalMediaStorageProviderService.js` | `src` | `documented` | 9/9 | Local filesystem media provider for development and simple deployments. |  |
+| `gFramework/nMedia/src/service/storage/strategy/defaultTenantEnterpriseSchemaDateMediaKeyStrategyService.js` | `src` | `documented` | 4/4 | Generates tenant, enterprise, schema, date, and media-code based provider-relative storage keys. |  |
 | `gFramework/nMedia/src/utils/enums.js` | `src` | `documented` | 0/0 | Reserved enum definition registry for the media framework module. |  |
 | `gFramework/nMedia/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Defines nMedia success and error status metadata. |  |
 | `gFramework/nMedia/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility contribution registry for the media framework module. |  |
 | `gFramework/nMedia/test/mediaBusinessOwnershipBoundary.test.js` | `test` | `documented` | 0/0 | Ensures nMedia owns reusable media sets while caller modules own product, CMS, import, and documentation meaning. |  |
+| `gFramework/nMedia/test/mediaDeliveryContract.test.js` | `test` | `documented` | 0/0 | Validates media-code based content delivery access policy. |  |
 | `gFramework/nMedia/test/mediaImportSourceResolverContract.test.js` | `test` | `documented` | 0/0 | Validates backend-only media import source resolution for nImport. |  |
 | `gFramework/nMedia/test/mediaMultipartUploadBodyParserContract.test.js` | `test` | `documented` | 0/0 | Validates nMedia ownership of multipart upload parsing and confirms nRouter does not own media/file upload behavior. |  |
 | `gFramework/nMedia/test/mediaReferenceLookupContract.test.js` | `test` | `documented` | 0/0 | Validates secured nMedia media item and media set reference lookup boundaries. |  |

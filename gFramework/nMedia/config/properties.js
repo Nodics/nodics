@@ -20,16 +20,29 @@ module.exports = {
     bodyParserHandler: {
         mediaMultipartUploadBodyParserHandler: 'DefaultMediaMultipartUploadBodyParserHandlerService'
     },
+    responseHandler: {
+        mediaContentResponseHandler: 'DefaultMediaContentResponseHandlerService'
+    },
     media: {
         storage: {
             defaultProvider: 'local',
-            keyStrategy: 'tenantFolderDateUuid',
+            defaultKeyStrategy: 'tenantEnterpriseSchemaDateMedia',
+            keyStrategies: {
+                default: 'tenantEnterpriseSchemaDateMedia',
+                importSources: 'tenantEnterpriseSchemaDateMedia',
+                cmsAssets: 'tenantEnterpriseSchemaDateMedia',
+                productAssets: 'tenantEnterpriseSchemaDateMedia'
+            },
+            keyStrategyServices: {
+                tenantEnterpriseSchemaDateMedia: 'DefaultTenantEnterpriseSchemaDateMediaKeyStrategyService'
+            },
             exposeAbsolutePath: false,
             providers: {
                 local: {
                     enabled: true,
                     service: 'DefaultLocalMediaStorageProviderService',
-                    basePath: 'runtime/media',
+                    basePath: '',
+                    fallbackRelativeBasePath: 'temp/media',
                     baseUrl: '/nodics/media/v0/content'
                 },
                 nas: {
@@ -82,7 +95,7 @@ module.exports = {
         folders: {
             default: {
                 code: 'default',
-                storagePrefix: 'general',
+                storagePrefix: 'utils',
                 access: 'PRIVATE',
                 allowedExtensions: [],
                 allowedMimeTypes: [],
@@ -91,7 +104,7 @@ module.exports = {
             },
             importSources: {
                 code: 'importSources',
-                storagePrefix: 'imports',
+                storagePrefix: 'data',
                 access: 'PRIVATE',
                 allowedExtensions: ['csv', 'json', 'xls', 'xlsx'],
                 allowedMimeTypes: [
@@ -105,7 +118,7 @@ module.exports = {
             },
             cmsAssets: {
                 code: 'cmsAssets',
-                storagePrefix: 'cms',
+                storagePrefix: 'content',
                 access: 'PUBLIC',
                 allowedExtensions: ['gif', 'jpeg', 'jpg', 'pdf', 'png', 'svg', 'webp'],
                 allowedMimeTypes: ['application/pdf', 'image/gif', 'image/jpeg', 'image/png', 'image/svg+xml', 'image/webp'],
@@ -144,6 +157,16 @@ module.exports = {
             allowedFormats: ['importFile'],
             allowedStatuses: ['READY', 'CONSUMED'],
             maximumResults: 2
+        },
+        delivery: {
+            enabled: true,
+            allowedStatuses: ['READY', 'CONSUMED'],
+            publicAccessEnabled: true,
+            signedAccessEnabled: false,
+            privateAccessEnabled: false,
+            maximumResults: 2,
+            cacheControl: 'public, max-age=3600',
+            contentDisposition: 'inline'
         }
     }
 };

@@ -26,7 +26,7 @@
 - `gComm/product/test/gen/schema/productClassificationClassSchemaContract.test.js`
 - `gComm/product/test/gen/schema/productIdentifierSchemaContract.test.js`
 - `gComm/product/test/gen/schema/productItemSchemaContract.test.js`
-- `gComm/product/test/gen/schema/productMediaReferenceSchemaContract.test.js`
+- `gComm/product/test/gen/schema/productMediaSchemaContract.test.js`
 - `gComm/product/test/gen/schema/productOnlinePointerSchemaContract.test.js`
 - `gComm/product/test/gen/schema/productPackagingSchemaContract.test.js`
 - `gComm/product/test/gen/schema/productProjectionJobSchemaContract.test.js`

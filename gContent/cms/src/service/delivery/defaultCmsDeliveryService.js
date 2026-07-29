@@ -108,6 +108,7 @@ module.exports = {
             let components = targetCodes.length ? await this.getMany(SERVICE.DefaultCmsComponentService, request, {
                 code: { $in: targetCodes }, active: true
             }) : [];
+            let mediaByComponent = targetCodes.length ? await this.resolveComponentMedia(request, targetCodes) : {};
             if (accessMode === 'PUBLIC' && components.some(component => component.accessMode !== 'PUBLIC')) {
                 throw this.error('ERR_CMS_00086', 'public page composition contains protected content');
             }
@@ -118,7 +119,7 @@ module.exports = {
             sources.forEach(source => {
                 graph[source] = associations.filter(item => item.source === source).map(item => {
                     let target = byCode[this.codeOf(item.target)];
-                    return target ? this.projectComponent(target, item) : null;
+                    return target ? this.projectComponent(target, item, mediaByComponent[target.code] || []) : null;
                 }).filter(Boolean);
             });
             frontier = components.map(component => component.code);
@@ -147,6 +148,21 @@ module.exports = {
         return response && Array.isArray(response.result) ? response.result : [];
     },
 
+    /** Resolves ordered CMS-owned media associations for resolved components. */
+    resolveComponentMedia: async function (request, componentCodes) {
+        if (!SERVICE.DefaultCmsComponentMediaService) return {};
+        let references = await this.getMany(SERVICE.DefaultCmsComponentMediaService, request, {
+            componentCode: { $in: componentCodes },
+            active: true
+        });
+        references.sort((left, right) => (left.position || 0) - (right.position || 0));
+        return references.reduce((result, item) => {
+            result[item.componentCode] = result[item.componentCode] || [];
+            result[item.componentCode].push(this.projectComponentMedia(item));
+            return result;
+        }, {});
+    },
+
     /** Projects safe page fields and resolved components. */
     projectPage: function (page, template, components) {
         let result = this.pickDefined(page, ['code', 'name', 'typeCode', 'template', 'renderer', 'rendererContractVersion',
@@ -158,10 +174,17 @@ module.exports = {
     },
 
     /** Projects safe component and association fields. */
-    projectComponent: function (component, association) {
+    projectComponent: function (component, association, componentMedia) {
         let result = this.pickDefined(component, ['code', 'typeCode', 'renderer', 'rendererContractVersion',
             'rendererChannels', 'rendererDeprecated', 'rendererReplacement', 'properties']);
+        if (componentMedia && componentMedia.length) result.media = componentMedia;
         return Object.assign(result, { slot: association.slot || 'default', index: association.index || 0, components: [] });
+    },
+
+    /** Projects client-safe CMS media-association fields without storage authority. */
+    projectComponentMedia: function (reference) {
+        return this.pickDefined(reference, ['componentMediaCode', 'mediaCode', 'mediaSetCode', 'mediaType',
+            'role', 'slot', 'localeCode', 'position', 'altText', 'caption']);
     },
 
     /** Copies only defined allowlisted fields into a detached object. */

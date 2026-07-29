@@ -43,7 +43,7 @@ module.exports = {
     ,ERR_PRODUCT_00034: { code: '400', message: 'Product bundle entry invalid' }
     ,ERR_PRODUCT_00035: { code: '409', message: 'Product bundle graph or duplicate invalid' }
     ,ERR_PRODUCT_00036: { code: '400', message: 'Product packaging invalid' }
-    ,ERR_PRODUCT_00037: { code: '400', message: 'Product media reference invalid' }
+    ,ERR_PRODUCT_00037: { code: '400', message: 'Product media assignment invalid' }
     ,ERR_PRODUCT_00040: { code: '404', message: 'Product publication source version unavailable' }
     ,ERR_PRODUCT_00041: { code: '413', message: 'Product publication graph exceeds bounds' }
     ,ERR_PRODUCT_00042: { code: '409', message: 'Product publication requires Staged runtime' }

@@ -33,6 +33,10 @@ module.exports = {
         code: '200',
         message: 'Media uploaded successfully'
     },
+    SUC_MED_00005: {
+        code: '200',
+        message: 'Media content resolved successfully'
+    },
     ERR_MED_00001: {
         code: '400',
         message: 'Invalid media request'
@@ -76,5 +80,9 @@ module.exports = {
     ERR_MED_00011: {
         code: '400',
         message: 'Media import source is unavailable'
+    },
+    ERR_MED_00012: {
+        code: '404',
+        message: 'Media content is unavailable'
     }
 };
