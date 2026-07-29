@@ -11,7 +11,7 @@
 
 /**
  * @module aiAssistant/data/init/headers/assistant/DefaultAssistantToolPolicyHeader
- * @description Imports the OOTB deny-by-default Assistant tool policy through its generated schema service.
+ * @description Imports the OOTB governed Assistant tool policy through its generated schema service.
  * @layer data
  * @owner aiAssistant
  */

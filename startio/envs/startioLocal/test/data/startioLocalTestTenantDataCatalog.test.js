@@ -10,6 +10,7 @@
  */
 
 const assert = require('assert');
+const fs = require('fs');
 const path = require('path');
 
 /**
@@ -25,6 +26,7 @@ const tenantHeader = require(path.join(repoRoot, 'startio/envs/startioLocal/data
 const enterpriseHeader = require(path.join(repoRoot, 'startio/envs/startioLocal/data/init/headers/enterprise/startioLocalTestEnterpriseHeader'));
 const tenants = require(path.join(repoRoot, 'startio/envs/startioLocal/data/init/data/enterprise/startioLocalTestTenantsData'));
 const enterprises = require(path.join(repoRoot, 'startio/envs/startioLocal/data/init/data/enterprise/startioLocalTestEnterpriseData'));
+const assistantPolicy = require(path.join(repoRoot, 'gAi/aiAssistant/data/init/data/assistant/defaultAssistantToolPolicyData'));
 
 // @nodics-capability-behavior @nodics-area testing
 assert.strictEqual(tenantHeader.profile.startioLocalTestTenants.options.owningModule, 'startioLocal');
@@ -43,5 +45,14 @@ assert.strictEqual(tenants.record0.active, true);
 assert.strictEqual(enterprises.record0.code, 'nodicsTest');
 assert.strictEqual(enterprises.record0.active, true);
 assert.strictEqual(enterprises.record0.tenant, 'nodicsTest:true');
+
+// @nodics-capability-behavior @nodics-area runtime-governance
+assert.strictEqual(assistantPolicy.record0.policyCode, 'axisAssistantReadOnly');
+assert.strictEqual(assistantPolicy.record0.enabled, true);
+assert.strictEqual(
+    fs.existsSync(path.join(repoRoot, 'startio/envs/startioLocal/monoServer/data/init/manifest.json')),
+    false,
+    'monoServer must not duplicate owner-module Assistant policy init data'
+);
 
 console.log('startioLocal dedicated test tenant init data validated');

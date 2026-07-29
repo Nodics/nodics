@@ -6,12 +6,13 @@ Use this module for local server activation, node composition, route/service ava
 
 Local server settings should stay explicit and replaceable by higher environment server modules.
 
-For local Assistant acceptance, this server enables the globally deny-by-default
-read-tool boundary and contributes an enabled `axisAssistantReadOnly` policy
-through explicit init data. The policy exposes only the BackOffice catalogue
-read operation and the bounded Profile enterprise-search operation. Run init
-import for both `aiAssistant` and `monoServer` after
-policy changes. The local topology explicitly activates `openAiProvider`
-because the `assistantGeneration` profile selects OpenAI; `gAi` intentionally
-does not activate every vendor adapter. Provider credentials remain environment
-secret references and are never stored here.
+For local Assistant acceptance, this server only selects process composition
+and the active provider adapter required by the local `assistantGeneration`
+profile. Assistant definitions, prompts, tool-policy records, provider
+defaults, and reusable business capability data remain owned by their source
+modules, such as `gAi/aiAssistant` and `gAi/aiProviders`.
+
+Do not copy full Assistant policy blocks, provider definitions, or reusable
+capability data into `monoServer`. If local behavior needs a different
+activation, contribute only the smallest server-owned override that is not
+available in the owning module or environment layer.

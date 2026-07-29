@@ -11,7 +11,7 @@
 
 /**
  * @module aiAssistant/data/init/data/assistant/DefaultAssistantToolPolicyData
- * @description Defines the inactive OOTB allowlist for governed employee reads and confirmed enterprise creation.
+ * @description Defines the OOTB allowlist for governed employee reads and confirmed enterprise creation.
  * @layer data
  * @owner aiAssistant
  * @override Projects may activate a reviewed policy or add separate policies without accepting model-supplied routes or methods.
@@ -84,8 +84,8 @@ module.exports = {
                 }
             }
         }],
-        enabled: false,
-        revision: 0,
+        enabled: true,
+        revision: 1,
         active: true
     }
 };

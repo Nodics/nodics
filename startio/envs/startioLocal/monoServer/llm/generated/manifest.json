@@ -15,14 +15,14 @@
   },
   "sourceFiles": 8,
   "testFiles": 2,
-  "dataFiles": 3,
-  "ownedFiles": 21,
-  "sourceFingerprint": "ada05906694377c1c86fd57af3f991979c2fc060d848b9735b7e8abf8fe6f1c9",
+  "dataFiles": 0,
+  "ownedFiles": 18,
+  "sourceFingerprint": "383b02625998e9c6d0112627b2b7946f494b0f96e1d088eb543d612c570acbe5",
   "documentation": {
-    "documented": 14,
+    "documented": 12,
     "partially-documented": 2,
     "undocumented": 0,
-    "inventory-only": 5
+    "inventory-only": 4
   },
   "schemaGroups": {},
   "schemaLoadError": null,

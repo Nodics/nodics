@@ -23,7 +23,6 @@
         "owns": [
             "composition",
             "configuration",
-            "data",
             "schema",
             "router",
             "service",
