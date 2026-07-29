@@ -9,6 +9,7 @@
 - `gFramework/nData/nImport/import/test/contentPackService.test.js`
 - `gFramework/nData/nImport/import/test/dataReleaseRouteContract.test.js`
 - `gFramework/nData/nImport/import/test/dataReleaseService.test.js`
+- `gFramework/nData/nImport/import/test/directImportRouteContract.test.js`
 - `gFramework/nData/nImport/import/test/env-local/envTest.js`
 - `gFramework/nData/nImport/import/test/environmentSampleDataContribution.test.js`
 - `gFramework/nData/nImport/import/test/finalizedImportDispatch.test.js`
@@ -31,6 +32,7 @@
 - `gFramework/nData/nImport/import/test/importTenantPrecedence.test.js`
 - `gFramework/nData/nImport/import/test/mandatoryInitDataImportContract.test.js`
 - `gFramework/nData/nImport/import/test/mediaImportDefinitionContract.test.js`
+- `gFramework/nData/nImport/import/test/mediaImportFinalizedValidationContract.test.js`
 - `gFramework/nData/nImport/import/test/mediaImportSourceStagingContract.test.js`
 - `gFramework/nData/nImport/import/test/multiFormatDataProcessors.test.js`
 - `gFramework/nData/nImport/import/test/profileTenantLocalFileImportContract.test.js`

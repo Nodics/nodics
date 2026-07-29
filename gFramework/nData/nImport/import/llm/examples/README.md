@@ -37,7 +37,7 @@ Then start import with a media reference:
 Install or update uses the same route without validation-only mode:
 
 ```text
-POST /nodics/system/v0/import/media
+POST /nodics/import/v0/media
 Authorization: Bearer <employee-token>
 Content-Type: application/json
 

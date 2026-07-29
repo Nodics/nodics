@@ -17,8 +17,9 @@ global.UTILS = {
 global.CLASSES = {
     DataImportError: function DataImportError(error, message) {
         this.error = error;
-        this.message = message;
+        this.message = message || error && error.message;
         this.code = error && error.code ? error.code : error;
+        this.metadata = error && error.metadata;
         this.errors = [];
         this.add = function (childError) {
             this.errors.push(childError);
@@ -189,7 +190,7 @@ function getCodes(dataModel) {
         await processModels(request);
         assert.fail('Expected finalized import dispatch to report aggregate failure');
     } catch (error) {
-        assert.strictEqual(error.code, 'ERR_IMP_00000');
+        assert.strictEqual(error.code, 'ERR_IMP_00010');
         assert.strictEqual(error.errors.length, 1);
         assert.strictEqual(error.errors[0].code, 'ERR_TEST_IMPORT');
     }
@@ -212,6 +213,60 @@ function getCodes(dataModel) {
             tenant: request.tenant,
             model: request.dataModel
         });
+        if (!request.dataModel.code) {
+            return Promise.reject(new Error('could not find a valid property code'));
+        }
+        return Promise.resolve({
+            code: request.dataModel.code
+        });
+    };
+    request.fileData.models = {
+        record0: {
+            code: 'one'
+        },
+        record1: {
+            active: true
+        }
+    };
+    request.dataFiles.finalizedData_js.processed = [];
+    request.importRun = {
+        summary: {}
+    };
+
+    try {
+        await processModels(request);
+        assert.fail('Expected missing query property to report safe aggregate failure');
+    } catch (error) {
+        assert.strictEqual(error.code, 'ERR_IMP_00010');
+        assert.strictEqual(error.errors.length, 1);
+        assert.strictEqual(error.errors[0].code, 'ERR_IMP_00011');
+        assert.strictEqual(error.errors[0].metadata.propertyName, 'code');
+        assert.ok(error.errors[0].message.includes('record1'));
+        assert.ok(!error.errors[0].message.includes('DefaultModelQueryBuilderPipelineService'));
+    }
+
+    assert.deepStrictEqual(calls.map(call => call.model.code), ['one', undefined]);
+    assert.deepStrictEqual(request.dataFiles.finalizedData_js.processed, ['test:record0']);
+    assert.strictEqual(request.importRun.summary.recordsDispatched, 2);
+    assert.strictEqual(request.importRun.summary.recordsSucceeded, 1);
+    assert.strictEqual(request.importRun.summary.recordsFailed, 1);
+
+    request.fileData.models = {
+        record0: {
+            code: 'one'
+        },
+        record1: {
+            code: 'two'
+        }
+    };
+
+    calls = [];
+    global.SERVICE.DefaultPipelineService.start = function (pipelineName, request) {
+        calls.push({
+            pipelineName: pipelineName,
+            tenant: request.tenant,
+            model: request.dataModel
+        });
         return Promise.reject({
             code: 'ERR_TEST_IMPORT',
             message: 'Synthetic import failure'
@@ -226,7 +281,7 @@ function getCodes(dataModel) {
         await processModels(request);
         assert.fail('Expected all failed records to report aggregate failure');
     } catch (error) {
-        assert.strictEqual(error.code, 'ERR_IMP_00000');
+        assert.strictEqual(error.code, 'ERR_IMP_00010');
         assert.strictEqual(error.errors.length, 2);
     }
 
@@ -321,7 +376,7 @@ function getCodes(dataModel) {
         await processModels(request);
         assert.fail('Expected failed batch import to report aggregate failure');
     } catch (error) {
-        assert.strictEqual(error.code, 'ERR_IMP_00000');
+        assert.strictEqual(error.code, 'ERR_IMP_00010');
         assert.strictEqual(error.errors.length, 2);
         assert.strictEqual(error.errors[0].code, 'ERR_TEST_BATCH_IMPORT');
     }

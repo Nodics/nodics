@@ -40,13 +40,14 @@ class NodicsError extends Error {
 
 (async function () {
     const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'nodics-media-contract-'));
+    const serverPath = path.join(workspace, 'startio/envs/startioLocal/monoServer');
     global.CLASSES = { NodicsError };
     global.NODICS = {
         getNodicsHome: function () {
             return workspace;
         },
         getServerPath: function () {
-            return path.join(workspace, 'startio/envs/startioLocal/monoServer');
+            return serverPath;
         }
     };
     global.CONFIG = {
@@ -81,8 +82,8 @@ class NodicsError extends Error {
     assert.strictEqual(location.folderCode, 'importSources');
     assert.strictEqual(location.extension, 'xlsx');
     assert.strictEqual(location.absolutePath, undefined, 'public descriptors must not expose absolute filesystem paths');
-    assert.strictEqual(location.storageKey, 'data/default/default/tenant/2026/07/upload-1.xlsx');
-    assert.strictEqual(location.relativePath, 'data/default/default/tenant/2026/07/upload-1.xlsx');
+    assert.strictEqual(location.storageKey, 'data/import/default/default/tenant/2026/07/upload-1.xlsx');
+    assert.strictEqual(location.relativePath, 'data/import/default/default/tenant/2026/07/upload-1.xlsx');
     assert.strictEqual(location.url, '/nodics/media/v0/content/upload-1');
     assert.strictEqual(location.accessUrl, '/nodics/media/v0/content/upload-1');
 
@@ -94,7 +95,7 @@ class NodicsError extends Error {
     assert.strictEqual(stored.fullPath, stored.internalAbsolutePath);
     assert.strictEqual(fs.existsSync(stored.internalAbsolutePath), true);
     assert.strictEqual(
-        stored.internalAbsolutePath.startsWith(path.join(workspace, 'startio/envs/startioLocal/monoServer/temp/media') + path.sep),
+        stored.internalAbsolutePath.startsWith(path.join(NODICS.getServerPath(), 'temp/media') + path.sep),
         true,
         'relative local media storage must resolve under the active server runtime path'
     );
@@ -105,9 +106,57 @@ class NodicsError extends Error {
     );
     assert.strictEqual(
         rootResolverService.resolveLocalRoot({ provider: { basePath: 'custom/media' } }),
-        path.join(workspace, 'startio/envs/startioLocal/monoServer/custom/media'),
+        path.join(NODICS.getServerPath(), 'custom/media'),
         'configured relative local media root must resolve under active server path'
     );
+
+    const exportLocation = registryService.resolveLocation(Object.assign({}, descriptor, {
+        folderCode: 'exportFiles',
+        formatCode: 'exportFile',
+        fileName: 'tenant-export.csv',
+        mimeType: 'text/csv',
+        mediaCode: 'export-1'
+    }));
+    assert.strictEqual(exportLocation.folderCode, 'exportFiles');
+    assert.strictEqual(exportLocation.access, 'PRIVATE');
+    assert.strictEqual(exportLocation.storageKey, 'data/export/default/default/tenant/2026/07/export-1.csv');
+
+    const contentLocation = registryService.resolveLocation(Object.assign({}, descriptor, {
+        folderCode: 'cmsAssets',
+        formatCode: 'desktop',
+        fileName: 'home-banner.png',
+        mimeType: 'image/png',
+        schemaName: 'cmsComponent',
+        mediaCode: 'home-banner'
+    }));
+    assert.strictEqual(contentLocation.folderCode, 'cmsAssets');
+    assert.strictEqual(contentLocation.access, 'PUBLIC');
+    assert.strictEqual(contentLocation.storageKey, 'media/content/default/default/cmsComponent/2026/07/home-banner.png');
+
+    const productLocation = registryService.resolveLocation(Object.assign({}, descriptor, {
+        folderCode: 'productAssets',
+        formatCode: 'original',
+        fileName: 'iphone-gallery.webp',
+        mimeType: 'image/webp',
+        enterpriseCode: 'electronics',
+        schemaName: 'product',
+        mediaCode: 'iphone-gallery'
+    }));
+    assert.strictEqual(productLocation.folderCode, 'productAssets');
+    assert.strictEqual(productLocation.access, 'PUBLIC');
+    assert.strictEqual(productLocation.storageKey, 'media/product/default/electronics/product/2026/07/iphone-gallery.webp');
+
+    const utilityLocation = registryService.resolveLocation(Object.assign({}, descriptor, {
+        folderCode: 'default',
+        formatCode: 'original',
+        fileName: 'kyc-proof.pdf',
+        mimeType: 'application/pdf',
+        schemaName: 'document',
+        mediaCode: 'kyc-proof'
+    }));
+    assert.strictEqual(utilityLocation.folderCode, 'default');
+    assert.strictEqual(utilityLocation.access, 'PRIVATE');
+    assert.strictEqual(utilityLocation.storageKey, 'media/utility/default/default/document/2026/07/kyc-proof.pdf');
 
     assert.throws(() => keyService.assertSafeStorageKey('../escape.xlsx'), /Unsafe media storage key/);
     assert.throws(() => registryService.resolveLocation(Object.assign({}, descriptor, {

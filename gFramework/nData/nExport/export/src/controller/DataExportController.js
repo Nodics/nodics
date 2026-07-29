@@ -11,10 +11,10 @@
 
 /**
  * @module gFramework/nData/nExport/export/src/controller/DataExportController
- * @description Exposes request handlers for nData data export controller operations.
+ * @description Exposes request handlers for nExport data export orchestration operations.
  * @layer controller
- * @owner nData
- * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ * @owner nExport
+ * @override Project modules may override export orchestration through later active modules while preserving nMedia-owned generated-file delivery.
  */
 module.exports = {
 

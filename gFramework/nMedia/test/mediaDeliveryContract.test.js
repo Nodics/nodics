@@ -30,6 +30,7 @@ const rootResolverService = require('../src/service/storage/defaultMediaStorageR
 const registryService = require('../src/service/storage/defaultMediaStorageProviderRegistryService');
 const localProviderService = require('../src/service/storage/provider/defaultLocalMediaStorageProviderService');
 const deliveryService = require('../src/service/storage/defaultMediaDeliveryService');
+const contentResponseHandler = require('../src/service/storage/defaultMediaContentResponseHandlerService');
 
 class NodicsError extends Error {
     constructor(code, message) {
@@ -41,7 +42,7 @@ class NodicsError extends Error {
 (async function () {
     const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'nodics-media-delivery-contract-'));
     const serverPath = path.join(workspace, 'startio/envs/startioLocal/monoServer');
-    const mediaPath = path.join(serverPath, 'temp/media/content/default/default/cmsComponent/2026/07/home-banner.png');
+    const mediaPath = path.join(serverPath, 'temp/media/media/content/default/default/cmsComponent/2026/07/home-banner.png');
     fs.mkdirSync(path.dirname(mediaPath), { recursive: true });
     fs.writeFileSync(mediaPath, Buffer.from('png'));
 
@@ -51,7 +52,7 @@ class NodicsError extends Error {
             folderCode: 'cmsAssets',
             formatCode: 'original',
             providerCode: 'local',
-            storageKey: 'content/default/default/cmsComponent/2026/07/home-banner.png',
+            storageKey: 'media/content/default/default/cmsComponent/2026/07/home-banner.png',
             originalFileName: 'home-banner.png',
             storedFileName: 'home-banner.png',
             mimeType: 'image/png',
@@ -65,7 +66,7 @@ class NodicsError extends Error {
             folderCode: 'default',
             formatCode: 'original',
             providerCode: 'local',
-            storageKey: 'utils/default/default/customerDocument/2026/07/kyc-doc.pdf',
+            storageKey: 'media/utility/default/default/customerDocument/2026/07/kyc-doc.pdf',
             originalFileName: 'kyc.pdf',
             storedFileName: 'kyc.pdf',
             mimeType: 'application/pdf',
@@ -74,6 +75,9 @@ class NodicsError extends Error {
             status: 'READY'
         }
     ];
+    const privatePath = path.join(serverPath, 'temp/media/media/utility/default/default/customerDocument/2026/07/kyc-doc.pdf');
+    fs.mkdirSync(path.dirname(privatePath), { recursive: true });
+    fs.writeFileSync(privatePath, Buffer.from('pdf'));
 
     global.CLASSES = { NodicsError };
     global.NODICS = {
@@ -115,12 +119,89 @@ class NodicsError extends Error {
 
     await assert.rejects(
         () => deliveryService.deliver({ params: { mediaCode: 'kyc-doc' } }),
-        error => error.code === 'ERR_MED_00012' && /does not allow/.test(error.message)
+        error => error.code === 'ERR_MED_00012' && /authenticated/.test(error.message)
     );
+    const privateDelivery = await deliveryService.deliver({
+        authData: { loginId: 'admin', userGroups: ['adminGroup'] },
+        params: { mediaCode: 'kyc-doc' },
+        download: true
+    });
+    assert.strictEqual(privateDelivery.mediaCode, 'kyc-doc');
+    assert.strictEqual(privateDelivery.filePath, privatePath);
+    assert.strictEqual(privateDelivery.contentDisposition, 'attachment');
     await assert.rejects(
         () => deliveryService.deliver({ params: { mediaCode: '../escape' } }),
         error => error.code === 'ERR_MED_00012'
     );
+
+    const circularError = new NodicsError('ERR_MED_00012', 'Private media delivery requires an authenticated principal');
+    circularError.responseCode = '401';
+    circularError.defaultCode = 'ERR_SYS_00000';
+    circularError.errors = [circularError];
+    let jsonPayload;
+    let httpStatus;
+    contentResponseHandler.handleError({}, {
+        status: function (status) {
+            httpStatus = status;
+            return this;
+        },
+        json: function (payload) {
+            JSON.stringify(payload);
+            jsonPayload = payload;
+        }
+    }, circularError);
+    assert.strictEqual(httpStatus, 401);
+    assert.strictEqual(jsonPayload.code, 'ERR_MED_00012');
+    assert.strictEqual(jsonPayload.message, 'Private media delivery requires an authenticated principal');
+    assert.strictEqual(jsonPayload.errors, undefined);
+
+    let downloadedPath;
+    let downloadedName;
+    contentResponseHandler.handleSuccess({}, {
+        type: function () { },
+        set: function () { },
+        download: function (filePath, fileName, callback) {
+            downloadedPath = filePath;
+            downloadedName = fileName;
+            assert.strictEqual(typeof callback, 'function');
+            callback();
+        }
+    }, privateDelivery);
+    assert.strictEqual(downloadedPath, privatePath);
+    assert.strictEqual(downloadedName, 'kyc.pdf');
+
+    let sentFilePath;
+    contentResponseHandler.handleSuccess({}, {
+        type: function () { },
+        set: function () { },
+        sendFile: function (filePath, callback) {
+            sentFilePath = filePath;
+            assert.strictEqual(typeof callback, 'function');
+            callback();
+        }
+    }, publicDelivery);
+    assert.strictEqual(sentFilePath, mediaPath);
+
+    let transferErrorStatus;
+    let transferErrorPayload;
+    contentResponseHandler.handleSuccess({}, {
+        type: function () { },
+        set: function () { },
+        headersSent: false,
+        sendFile: function (filePath, callback) {
+            callback(new NodicsError('ERR_MED_00012', 'Media file is not readable'));
+        },
+        status: function (status) {
+            transferErrorStatus = status;
+            return this;
+        },
+        json: function (payload) {
+            transferErrorPayload = payload;
+        }
+    }, publicDelivery);
+    assert.strictEqual(transferErrorStatus, 500);
+    assert.strictEqual(transferErrorPayload.code, 'ERR_MED_00012');
+    assert.strictEqual(transferErrorPayload.message, 'Media file is not readable');
 
     fs.rmSync(workspace, { recursive: true, force: true });
     console.log('nMedia delivery contract validated');

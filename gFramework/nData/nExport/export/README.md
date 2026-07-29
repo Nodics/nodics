@@ -1,8 +1,9 @@
 # Export Module
 
-**Maturity: Guarded, fail closed.** It provides the common boundary and access
-policy hook, but intentionally rejects export until a later active module
-supplies a fully governed implementation.
+**Maturity: Guarded implementation.** It provides the common export boundary,
+schema-workbench read path, access-policy hook, file rendering, and nMedia-backed
+generated-file storage. It remains fail-closed when disabled or when required
+runtime collaborators are not active.
 
 `export` is the executable export engine inside `nData/nExport`. It owns shared export orchestration, export access policy checks, dispatch behavior, and the framework contracts that format modules plug into.
 
@@ -16,11 +17,16 @@ The module currently contributes:
 
 - `DataExportController.export`, which normalizes HTTP body and query data into `request.export`;
 - `DataExportFacade.export`, which delegates to the active `DataExportService`;
-- `DataExportService.export`, which defines the default fail-closed export contract;
+- `DataExportService.export`, which executes bounded schema exports through
+  Schema Workbench and stores generated files through nMedia;
 - `DataExportService.applyExportAccessPolicies`, which delegates to `DefaultSchemaReadAccessPolicyService.applyExportPolicies` when that service is active;
 - standard router, schema, pipeline, utility, status, enum, lifecycle, and test extension files.
 
-The default `export` implementation rejects with a Nodics error until an active module overrides export behavior. This is intentional: an export surface must not leak data just because the module exists.
+The default implementation is intentionally conservative: it accepts only
+configured formats, reads data through the authorized schema workbench, applies
+export policy to model copies, and stores generated files as nMedia `exportFiles`
+records. It does not accept arbitrary filesystem paths, database names,
+credentials, URLs, or custom destination instructions from the caller.
 
 For the full engineering contract, read
 Export Process Framework (canonical documentation: `capability.data-exchange.technical-reference`).
@@ -31,27 +37,60 @@ Export Process Framework (canonical documentation: `capability.data-exchange.tec
 2. When an HTTP request is present, the controller copies the request body into `request.export`.
 3. HTTP query parameters are preserved under `request.export.query`.
 4. The facade delegates to `SERVICE.DataExportService.export`.
-5. The base service rejects until a framework/provider/project module supplies governed export behavior.
-6. Implemented exporters should apply schema/property access policy before rendering or delivery.
-7. Export access-policy filtering must operate on export-safe model copies so source models are not mutated in memory.
+5. The service resolves the schema descriptor through Schema Workbench.
+6. Records are collected through bounded Workbench search pages using the
+   configured maximum export size.
+7. Export access-policy filtering runs against export-safe model copies so
+   source models are not mutated in memory.
+8. The service renders CSV or JSON and asks nMedia to create a generated media
+   object under the configured export folder.
+9. The response returns file name, media summary, exported count, available
+   count, and truncation status.
+10. When a user or integration downloads that generated file, the caller uses
+    the generic nMedia media-code download contract. Export does not implement a
+    second file-delivery path.
+11. nMedia resolves the provider, file path, MIME type, access policy, and
+    content-disposition metadata. nRouter streams the file through the existing
+    `fileDownloadResponseHandler`.
+
+## Generated Export Downloads
+
+Generated export files are media records. Export owns the source read,
+transformation, rendering, and target-write lifecycle that creates those media
+records. It does not own delivery after the media record exists.
+
+Axis and other clients download generated files through the generic nMedia
+download route:
+
+```http
+GET /nodics/media/v0/download/{mediaCode}
+Authorization: Bearer <employee-token>
+```
+
+This route is governed by nMedia permissions and delivery policy, such as
+`media.content.download`. Granting `export.run` allows export generation; it
+does not automatically grant broad media download rights. Do not add export
+download routes, export binary streaming, or export-specific file-response
+handlers. Use nMedia delivery and the framework `fileDownloadResponseHandler`.
 
 ## Extension Path
 
-Projects or provider modules may override the export service through later active modules. A real implementation should:
+Projects or provider modules may override or extend the export service through
+later active modules. A real implementation should:
 
-- validate the selected export definition;
+- validate the selected schema, format, query, and export policy;
 - verify tenant context, access group, and permission requirements;
 - resolve source data through governed services or schemas;
 - call `applyExportAccessPolicies` before data is serialized;
 - delegate format rendering to CSV, Excel, JSON, JavaScript, or custom format services;
-- write only to governed destination aliases;
+- write only through governed media/storage provider aliases;
 - return a traceable result with status, counts, destination metadata, and diagnostics.
 
 Keep delivery-provider details in their own services. Keep format rendering in format modules. Keep request normalization and cross-format policy in this module.
 
 ## Tests
 
-Focused behavior is covered by `test/dataExportCapabilityBehavior.test.js`, which verifies HTTP request normalization, the default fail-closed service behavior, access-policy delegation, and export-safe model copy handling.
+Focused behavior is covered by `test/dataExportCapabilityBehavior.test.js`, which verifies HTTP request normalization, the default fail-closed service behavior, access-policy delegation, export-safe model copy handling, and the rule that generated file downloads remain owned by nMedia.
 
 Run:
 

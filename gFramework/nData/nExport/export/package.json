@@ -33,7 +33,7 @@
             "llm"
         ],
         "runtime": {
-            "router": false,
+            "router": true,
             "publish": false,
             "web": false
         },

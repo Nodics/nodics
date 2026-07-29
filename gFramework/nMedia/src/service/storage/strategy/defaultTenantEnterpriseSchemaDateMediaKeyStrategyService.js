@@ -57,7 +57,7 @@ module.exports = {
             descriptor.folder && descriptor.folder.code ||
             'general'
         );
-        let purpose = this.cleanSegment(
+        let purpose = SERVICE.DefaultMediaStorageKeyService.cleanPathPrefix(
             descriptor.folder && (descriptor.folder.storagePrefix || descriptor.folder.code) ||
             'utils'
         );

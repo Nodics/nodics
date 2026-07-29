@@ -26,11 +26,9 @@ const { flattenRoutes } = require('./routerContractTestUtils');
 
 const rootPath = path.resolve(process.env.NODICS_HOME || process.cwd());
 const ignoredDirectories = new Set(['.git', 'docs', 'generated', 'node_modules']);
-const controlPlanePathPattern = /\/(config|class|import|content-packs|export|test|log|schema\/indexes|schema\/validator|file\/data|file\/download|contract\/openapi|contract\/swagger|health\/ready)(\/|$)/i;
+const controlPlanePathPattern = /\/(config|class|import|content-packs|export|test|log|schema\/indexes|schema\/validator|contract\/openapi|contract\/swagger|health\/ready)(\/|$)/i;
 const expectedPermissions = {
     'GET /health/ready/details': 'system.health.readiness.view',
-    'POST /file/data': 'system.file.read',
-    'POST /file/download': 'system.file.download',
     'POST /import/init': 'import.init.run',
     'POST /import/core': 'import.core.run',
     'POST /import/sample': 'import.sample.run',
@@ -58,8 +56,6 @@ const expectedPermissions = {
 const expectedExposure = {
     'GET /health/ready': 'operationalHealth',
     'GET /health/ready/details': 'operationalHealth',
-    'POST /file/data': 'fileAccess',
-    'POST /file/download': 'fileAccess',
     'POST /import/init': 'dataImport',
     'POST /import/core': 'dataImport',
     'POST /import/sample': 'dataImport',

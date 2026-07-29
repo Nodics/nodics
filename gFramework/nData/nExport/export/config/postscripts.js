@@ -11,9 +11,9 @@
 
 /**
  * @module gFramework/nData/nExport/export/config/postscripts
- * @description Defines default nData configuration used during module startup and layering.
+ * @description Defines default nExport postscript configuration used during module startup and layering.
  * @layer config
- * @owner nData
+ * @owner nExport
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {

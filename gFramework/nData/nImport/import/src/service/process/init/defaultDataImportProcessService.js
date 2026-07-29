@@ -161,7 +161,7 @@ module.exports = {
                     pendingFiles: Object.keys(request.dataFiles)
                 }).then(success => {
                     if (response.errors && response.errors.length > 0) {
-                        let error = new CLASSES.DataImportError('ERR_IMP_00000', 'Import processing completed with errors');
+                        let error = new CLASSES.DataImportError('ERR_IMP_00010', 'Import processing completed with record-level errors');
                         response.errors.forEach(importError => {
                             if (typeof error.add === 'function') {
                                 error.add(importError);

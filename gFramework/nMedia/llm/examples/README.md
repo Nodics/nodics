@@ -16,7 +16,7 @@
 The caller does not provide a filesystem path. `nMedia` chooses the provider,
 resolves the provider root, and uses the configured key strategy to generate a
 provider-relative key such as
-`data/default/default/tenant/2026/07/tenant-upload-july.xlsx`.
+`data/import/default/default/tenant/2026/07/tenant-upload-july.xlsx`.
 
 The upload response returns the governed media item. Downstream callers should
 store or pass `media.code`, not the path:
@@ -29,9 +29,9 @@ store or pass `media.code`, not the path:
   "formatCode": "importFile",
   "originalFileName": "tenant-upload.xlsx",
   "storedFileName": "tenant-upload-july.xlsx",
-  "storageKey": "data/default/default/tenant/2026/07/tenant-upload-july.xlsx",
-  "relativePath": "data/default/default/tenant/2026/07/tenant-upload-july.xlsx",
-  "fullPath": "/active/server/path/temp/media/data/default/default/tenant/2026/07/tenant-upload-july.xlsx",
+  "storageKey": "data/import/default/default/tenant/2026/07/tenant-upload-july.xlsx",
+  "relativePath": "data/import/default/default/tenant/2026/07/tenant-upload-july.xlsx",
+  "fullPath": "/active/server/path/temp/media/data/import/default/default/tenant/2026/07/tenant-upload-july.xlsx",
   "accessUrl": "/nodics/media/v0/content/tenant-upload-july",
   "checksum": "sha256-value",
   "status": "READY"
@@ -66,7 +66,7 @@ NODICS.getServerPath()/temp/media/{purpose}/{tenant}/{enterprise}/{schema}/{yyyy
 For local mono-server development, that becomes:
 
 ```text
-startio/envs/startioLocal/monoServer/temp/media/data/default/default/tenant/2026/07/tenant-upload-july.xlsx
+startio/envs/startioLocal/monoServer/temp/media/data/import/default/default/tenant/2026/07/tenant-upload-july.xlsx
 ```
 
 Do not use a Nodics repository-root `runtime/` directory for uploaded files.
@@ -76,19 +76,21 @@ Do not use a Nodics repository-root `runtime/` directory for uploaded files.
 The first storage-key segment is controlled by folder policy:
 
 ```text
-importSources -> data
-cmsAssets -> content
-productAssets -> products
-default -> utils
+importSources -> data/import
+exportFiles -> data/export
+cmsAssets -> media/content
+productAssets -> media/product
+default -> media/utility
 ```
 
 Examples:
 
 ```text
-data/default/default/tenant/2026/07/defaultTenantCsvData.csv
-content/default/default/cmsComponent/2026/07/home-banner.png
-products/default/electronics/product/2026/07/iphone-gallery.webp
-utils/default/default/document/2026/07/kyc-proof.pdf
+data/import/default/default/tenant/2026/07/defaultTenantCsvData.csv
+data/export/default/default/tenant/2026/07/tenantExportCsvData.csv
+media/content/default/default/cmsComponent/2026/07/home-banner.png
+media/product/default/electronics/product/2026/07/iphone-gallery.webp
+media/utility/default/default/document/2026/07/kyc-proof.pdf
 ```
 
 Partners can change purpose names through `media.folders.<folderCode>.storagePrefix`
@@ -268,8 +270,18 @@ provider-owned file on the backend, and streams bytes only when allowed. The
 browser receives content, not the provider root or storage key.
 
 `PUBLIC` media is deliverable when `media.delivery.publicAccessEnabled` is true.
-`SIGNED` and `PRIVATE` media are deliberately not implemented as flag-only
-behavior; add a real signed-token or authorization policy before enabling them.
+`PRIVATE` operational media, such as generated export files, should be
+downloaded through the secured attachment route:
+
+```text
+GET /nodics/media/v0/download/{mediaCode}
+Authorization: Bearer <employee-token>
+```
+
+BackOffice clients should fetch this route as a blob and save the response with
+the returned `Content-Disposition` filename. They must not open private media
+URLs in a new public tab. `SIGNED` media is deliberately not implemented as
+flag-only behavior; add a real signed-token policy before enabling it.
 
 ## Unsafe request
 

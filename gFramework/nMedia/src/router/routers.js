@@ -32,7 +32,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'Returns upload/storage policy for a backend-owned media folder. Does not expose provider secrets.',
                     method: 'POST',
-                    url: 'http://host:port/nodics/media/storage/policy',
+                    url: 'http://host:port/nodics/media/v0/storage/policy',
                     body: {
                         folderCode: 'importSources',
                         fileName: 'catalog.xlsx',
@@ -54,7 +54,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'Resolves a safe provider storage key and URL for a parsed media descriptor. Raw filesystem paths are rejected.',
                     method: 'POST',
-                    url: 'http://host:port/nodics/media/storage/location',
+                    url: 'http://host:port/nodics/media/v0/storage/location',
                     body: {
                         folderCode: 'importSources',
                         fileName: 'catalog.xlsx',
@@ -77,7 +77,7 @@ module.exports = {
                     requestType: 'secured',
                     message: 'Uploads one file through nMedia-owned multipart intake and stores it as nMedia-owned media metadata.',
                     method: 'POST',
-                    url: 'http://host:port/nodics/media/storage/upload',
+                    url: 'http://host:port/nodics/media/v0/storage/upload',
                     body: {
                         folderCode: 'importSources',
                         formatCode: 'importFile',
@@ -129,6 +129,27 @@ module.exports = {
                     { name: 'mediaCode', in: 'path', required: true, schema: { type: 'string' } }
                 ],
                 responses: { '200': { description: 'Media binary content' } }
+            },
+            downloadMediaContent: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'media.content.download',
+                apiExposure: 'mediaManagement',
+                key: '/download/:mediaCode',
+                method: 'GET',
+                controller: 'DefaultMediaStorageController',
+                operation: 'downloadMediaContent',
+                responseHandler: 'fileDownloadResponseHandler',
+                help: {
+                    requestType: 'secured',
+                    message: 'Downloads private or public media content by media code after nMedia access policy validation.',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/media/v0/download/{mediaCode}'
+                },
+                parameters: [
+                    { name: 'mediaCode', in: 'path', required: true, schema: { type: 'string' } }
+                ],
+                responses: { '200': { description: 'Media binary download' } }
             }
         },
         referenceLookup: {

@@ -50,7 +50,7 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
   must not parse import records or dispatch schema/search writes. Preserve the
   boundary even when both capabilities are used in one employee workflow.
 - The secured browser-facing import entry point is
-  `POST /nodics/system/v0/import/media`. It accepts `mediaCode` plus either a
+  `POST /nodics/import/v0/media`. It accepts `mediaCode` plus either a
   generic `moduleName`/`schemaName` target or an optional future
   `definitionCode` template, and optional `options.validateOnly`; it must
   generate a run-local header, stage the media through

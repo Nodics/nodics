@@ -6,7 +6,7 @@ Media lifecycle is backend-owned and provider-neutral.
 
 1. A caller uploads a file or asks for media storage by purpose/folder and file descriptor.
 2. `nRouter` selects the route-declared body parser handler.
-3. `nMedia` owns multipart upload parsing for media routes and produces bounded `req.files` descriptors.
+3. The configured parser produces bounded file descriptors for the route.
 4. `nMedia` validates the descriptor against folder and upload policy.
 5. `nMedia` selects the active configured provider.
 6. `nMedia` generates the storage key; raw caller paths are rejected.
@@ -14,10 +14,24 @@ Media lifecycle is backend-owned and provider-neutral.
 8. `nMedia` calculates checksum and creates or updates the media model.
 9. Caller modules store only `mediaCode`, `mediaSetCode`, or `mediaReferenceCode`.
 
-`nMedia` must own upload-specific multipart parsing because upload limits,
-file descriptors, and media intake semantics are part of the media lifecycle.
-`nRouter` must not become a file/media upload framework; it only invokes the
-handler declared by the route.
+`nMedia` owns media intake semantics, upload policy, storage, checksum,
+provider descriptors, and media records. `nRouter` owns the route/body-parser
+extension point and must not learn media business meaning.
+
+## Media Download Contract
+
+`nMedia` must not own a parallel attachment-download response path.
+
+1. The media download route is secured by router/auth configuration.
+2. `nMedia` resolves the media code, validates access, and returns a bounded
+   file descriptor.
+3. The route uses `fileDownloadResponseHandler` from `gFramework/nRouter`.
+4. The shared handler owns HTTP attachment headers, filename sanitization, and
+   safe transfer-error responses.
+
+Inline content delivery may use an nMedia-specific content response handler
+because inline delivery policy and content-disposition behavior are media
+specific. Attachment downloads must reuse the router handler.
 
 ## Media Set Contract
 
@@ -90,8 +104,22 @@ generates:
 ```
 
 The first segment is a folder-owned purpose prefix. OOTB mappings are
-`importSources -> data`, `cmsAssets -> content`, `productAssets -> products`,
-and `default -> utils`.
+`importSources -> data/import`, `exportFiles -> data/export`,
+`cmsAssets -> media/content`, `productAssets -> media/product`, and
+`default -> media/utility`.
+
+The data import/export split is intentional. Single-schema import files live
+under `data/import/{tenant}/{enterprise}/{schema}/{yyyy}/{mm}/{mediaCode}.{extension}`;
+single-schema generated export files live under
+`data/export/{tenant}/{enterprise}/{schema}/{yyyy}/{mm}/{mediaCode}.{extension}`.
+Multi-schema aggregated export paths are a separate future contract and should
+not be inferred by callers.
+
+Business media purpose paths are similarly explicit:
+`media/product/{tenant}/{enterprise}/{schema}/{yyyy}/{mm}/{mediaCode}.{extension}`,
+`media/content/{tenant}/{enterprise}/{schema}/{yyyy}/{mm}/{mediaCode}.{extension}`,
+and
+`media/utility/{tenant}/{enterprise}/{schema}/{yyyy}/{mm}/{mediaCode}.{extension}`.
 
 Later layers may map a folder or request to another strategy by changing the
 smallest relevant key-strategy setting. They must not fork provider services,
@@ -247,7 +275,19 @@ media-code based nMedia endpoint such as:
 /nodics/media/v0/content/{mediaCode}
 ```
 
-The delivery route must:
+Private operational media, including generated export files, must use the
+secured download endpoint:
+
+```text
+/nodics/media/v0/download/{mediaCode}
+```
+
+The download endpoint is still media-code based. It requires an authenticated
+caller, applies the nMedia delivery policy, and returns an attachment
+disposition so BackOffice clients can download bytes without seeing local paths
+or provider storage keys.
+
+The delivery and download routes must:
 
 - validate the media code format;
 - load exactly one active media model through the schema service;
@@ -262,12 +302,15 @@ OOTB behavior is intentionally strict:
 - `PUBLIC` media can be streamed when `publicAccessEnabled` is true;
 - `SIGNED` media must remain blocked until a signed-token policy validates
   expiry, signature, audience, tenant, and media code;
-- `PRIVATE` media must remain blocked until a private authorization policy
-  validates the authenticated principal and business permission.
+- `PRIVATE` media may be downloaded only through the secured route by an
+  authenticated principal with the route permission. Richer tenant, enterprise,
+  usage, or owner checks belong in the nMedia policy layer or a project
+  override.
 
-Do not implement signed or private delivery by simply enabling a flag. Add the
-real policy service, tests for expired/forged/wrong-audience tokens or
-unauthorized users, and documentation for the customization point.
+Do not implement signed delivery or domain-specific private delivery by simply
+enabling a flag. Add the real policy service, tests for
+expired/forged/wrong-audience tokens or unauthorized users, and documentation
+for the customization point.
 
 ## Provider Contract
 

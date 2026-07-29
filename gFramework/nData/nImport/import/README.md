@@ -88,6 +88,27 @@ API, file drop, CronJob, or remote adapter.
 
 ## Axis File Upload And Media-backed Import
 
+Axis and other browser clients must not send raw local filesystem paths, cloud
+object keys, NAS paths, or provider URLs to the import module. Browser-facing
+file import is composed from existing Nodics capabilities:
+
+1. The user selects the target enterprise in Axis.
+2. Axis resolves the technical tenant from that enterprise and lets the user
+   choose an authorized target model.
+3. Axis uploads the selected file through the secured nMedia upload route.
+4. nMedia validates upload policy, stores the file with the active provider,
+   creates the media record, and returns only the governed `mediaCode`.
+5. Axis starts the media-backed import route with the selected target model and
+   `mediaCode`.
+6. nImport asks nMedia for a backend-only import source descriptor, stages the
+   file into an import-run workspace, and invokes the existing import pipeline.
+7. Validation results, row-level correction guidance, install results, and run
+   history remain owned by nImport.
+
+This is the import-side equivalent of reusing the router file-download handler:
+no parallel upload table, browser path, or module-specific raw file intake
+should be added for imports.
+
 The Back Office file-import journey must compose `nMedia` and `nImport`
 instead of making Axis or a project module own raw uploaded files.
 
@@ -111,11 +132,14 @@ Behind that simple journey, Nodics keeps strict authority boundaries:
 3. Axis receives a media identity such as `mediaCode`. It does not receive a
    server filesystem path, cloud object key, NAS path, bucket name, provider
    credential, or authoritative URL.
-4. Axis calls the secured `POST /nodics/system/v0/import/media` contract with
-   the selected `definitionCode`, `mediaCode`, and optional validation mode.
-5. `DefaultMediaImportDefinitionService` loads the active persisted
-   `importDefinition`, validates tenant and file-extension policy, and creates
-   a run-local header from that definition.
+4. Axis calls the secured `POST /nodics/import/v0/media` contract with
+   `mediaCode`, the selected backend `moduleName` and `schemaName`, and
+   optional validation mode. It may send a future `definitionCode` only when an
+   nImport-owned reusable template is intentionally selected.
+5. `DefaultMediaImportDefinitionService` builds a runtime generic definition
+   from the selected module/schema target, or loads the optional active
+   persisted `importDefinition`, validates tenant and file-extension policy,
+   and creates a run-local header from that backend-owned target.
 6. `DefaultMediaImportSourceStagingService` asks `nMedia` for a trusted backend
    descriptor for that media item.
 7. `DefaultMediaImportSourceStagingService` creates import-run-owned staging
@@ -147,7 +171,23 @@ environment-specific, impossible to use in a cluster, or tied to one node's
 temporary disk. It also bypasses the provider and lifecycle policy that
 `nMedia` exists to enforce.
 
-For Axis, the safe request shape is reference-based:
+For Axis, the normal safe request shape is reference-based and schema-first:
+
+```json
+{
+  "mediaCode": "supplier-price-list-2026-07",
+  "moduleName": "catalog",
+  "schemaName": "price",
+  "operation": "saveAll",
+  "options": {
+    "validateOnly": true
+  }
+}
+```
+
+A future project may add an optional reusable template for recurring feeds. In
+that case `definitionCode` is a convenience over the same nImport authority, not
+the primary file-import decision:
 
 ```json
 {
@@ -165,7 +205,9 @@ the same route with validation disabled:
 ```json
 {
   "mediaCode": "supplier-price-list-2026-07",
-  "definitionCode": "supplierPriceImport",
+  "moduleName": "catalog",
+  "schemaName": "price",
+  "operation": "saveAll",
   "importFinalizeData": true
 }
 ```
@@ -173,7 +215,7 @@ the same route with validation disabled:
 The implemented secured route is:
 
 ```text
-POST /nodics/system/v0/import/media
+POST /nodics/import/v0/media
 Authorization: Bearer <employee-token>
 Content-Type: application/json
 x-enterprise-code: <enterprise-code>
@@ -188,15 +230,15 @@ verifies checksum when the media record provides one, and returns a normal
 `inputPath` shape for import execution without exposing the original media
 provider path.
 
-Validation-only mode resolves the media, validates the definition, validates
-the file extension and tenant scope, stages the file, and runs the same local
-initializer used by execution mode. This proves the selected file can be read,
-parsed, and finalized into the import-run workspace. The run is recorded as
-`VALIDATED`, and the summary can report records read and finalized. It must
-stop before `processDataImportPipeline`, so it must not write target
-schema/search records or report installation as complete. Execution mode uses
-the same prepared workspace and then runs the existing finalized-data dispatch
-pipeline.
+Validation-only mode resolves the media, validates the generic module/schema
+target or optional template, validates the file extension and tenant scope,
+stages the file, and runs the same local initializer used by execution mode.
+This proves the selected file can be read, parsed, and finalized into the
+import-run workspace. The run is recorded as `VALIDATED`, and the summary can
+report records read and finalized. It must stop before
+`processDataImportPipeline`, so it must not write target schema/search records
+or report installation as complete. Execution mode uses the same prepared
+workspace and then runs the existing finalized-data dispatch pipeline.
 
 ### Cluster and production behavior
 
@@ -209,8 +251,8 @@ The media-backed import resolver must:
 - verify the authenticated employee has import permission;
 - verify the media item exists, is active, and belongs to an import-capable
   folder such as `importSources`;
-- resolve a generic module/schema target, or resolve an optional future
-  template by `definitionCode`;
+- resolve the selected generic module/schema target, or resolve an optional
+  future template by `definitionCode`;
 - reject public delivery URLs as import authority;
 - use `nMedia` provider behavior to read or stage the file safely;
 - create a server-owned import-run workspace;

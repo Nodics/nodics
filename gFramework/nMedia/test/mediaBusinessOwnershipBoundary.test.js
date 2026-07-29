@@ -36,11 +36,13 @@ assert(schemas.mediaReference, 'nMedia must expose generic mediaReference for ca
     assert(!schemas[schemaName], 'nMedia must not own caller-specific business schema `' + schemaName + '`');
 });
 
-['original', 'thumbnail', 'small', 'medium', 'large', 'zoom', 'desktop', 'mobile', 'importFile'].forEach(formatCode => {
+['original', 'thumbnail', 'small', 'medium', 'large', 'zoom', 'desktop', 'mobile', 'importFile', 'exportFile'].forEach(formatCode => {
     assert(properties.formats[formatCode], 'nMedia must provide generic format `' + formatCode + '`');
 });
 
 assert(properties.folders.productAssets, 'nMedia may provide a reusable productAssets folder policy');
+assert(properties.folders.exportFiles, 'nMedia must provide a reusable exportFiles folder policy for generated data export files');
+assert.strictEqual(properties.folders.exportFiles.access, 'PRIVATE', 'Generated export files must default to private delivery visibility');
 assert.strictEqual(schemas.mediaReference.definition.ownerModule.required, true,
     'Generic references must preserve caller module ownership');
 assert.strictEqual(schemas.mediaReference.definition.ownerSchema.required, true,

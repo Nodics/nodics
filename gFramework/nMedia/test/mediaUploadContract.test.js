@@ -42,11 +42,12 @@ class NodicsError extends Error {
 
 (async function () {
     const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'nodics-media-upload-contract-'));
+    const serverPath = path.join(workspace, 'startio/envs/startioLocal/monoServer');
     let savedMedia;
     global.CLASSES = { NodicsError };
     global.NODICS = {
         getNodicsHome: () => workspace,
-        getServerPath: () => path.join(workspace, 'startio/envs/startioLocal/monoServer')
+        getServerPath: () => serverPath
     };
     global.CONFIG = {
         get: key => properties[key]
@@ -74,7 +75,6 @@ class NodicsError extends Error {
         tenant: 'default',
         enterpriseCode: 'default',
         authData: { tokenType: 'access', principalId: 'admin' },
-        enterpriseCode: 'default',
         schemaName: 'tenant',
         folderCode: 'importSources',
         formatCode: 'importFile',
@@ -94,12 +94,12 @@ class NodicsError extends Error {
     assert.strictEqual(savedMedia.originalFileName, 'tenant.csv');
     assert.strictEqual(savedMedia.storageKey.endsWith('.csv'), true);
     assert.strictEqual(savedMedia.relativePath, savedMedia.storageKey);
-    assert.strictEqual(savedMedia.storageKey.startsWith('data/default/default/tenant/'), true);
-    assert.strictEqual(savedMedia.fullPath, path.join(workspace, 'startio/envs/startioLocal/monoServer/temp/media', savedMedia.storageKey));
+    assert.strictEqual(savedMedia.storageKey.startsWith('data/import/default/default/tenant/'), true);
+    assert.strictEqual(savedMedia.fullPath, path.join(NODICS.getServerPath(), 'temp/media', savedMedia.storageKey));
     assert.strictEqual(savedMedia.accessUrl, '/nodics/media/v0/content/' + savedMedia.code);
     assert.strictEqual(savedMedia.accessUrl, savedMedia.url);
     assert.strictEqual(
-        fs.existsSync(path.join(workspace, 'startio/envs/startioLocal/monoServer/temp/media', savedMedia.storageKey)),
+        fs.existsSync(path.join(NODICS.getServerPath(), 'temp/media', savedMedia.storageKey)),
         true
     );
 

@@ -274,6 +274,11 @@ module.exports = {
                     required: false,
                     description: 'Validation errors collected before import processing'
                 },
+                validationReport: {
+                    type: 'object',
+                    required: false,
+                    description: 'Structured row-level validation report for governed file imports'
+                },
                 failureCount: {
                     type: 'int',
                     required: false,

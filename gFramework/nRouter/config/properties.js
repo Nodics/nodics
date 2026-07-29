@@ -128,9 +128,6 @@ module.exports = {
             aiAssistant: {
                 enabled: false
             },
-            fileAccess: {
-                enabled: false
-            },
             dataImport: {
                 enabled: false
             },

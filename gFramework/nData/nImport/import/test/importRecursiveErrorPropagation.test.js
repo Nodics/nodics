@@ -86,7 +86,7 @@ const dataImportProcessService = require('../src/service/process/init/defaultDat
     });
 
     assert(capturedError instanceof global.CLASSES.DataImportError);
-    assert.strictEqual(capturedError.code, 'ERR_IMP_00000');
+    assert.strictEqual(capturedError.code, 'ERR_IMP_00010');
     assert.strictEqual(capturedError.errors.length, 1);
     assert.strictEqual(capturedError.errors[0].code, 'ERR_IMPORT_RECURSIVE_CHILD');
 

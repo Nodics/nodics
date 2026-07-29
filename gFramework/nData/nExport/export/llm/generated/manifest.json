@@ -4,7 +4,7 @@
   "path": "gFramework/nData/nExport/export",
   "kind": "capability",
   "runtime": {
-    "router": false,
+    "router": true,
     "publish": false,
     "web": false
   },
@@ -17,7 +17,7 @@
   "testFiles": 3,
   "dataFiles": 0,
   "ownedFiles": 22,
-  "sourceFingerprint": "ee77bc0a190dd7bf3d07dc0b9809f32544cd76a187710cb9dce3737ad4041ba0",
+  "sourceFingerprint": "e91a88f729397e2a75b6c716ac4536228eb248f038657d9c2cd97591618868ba",
   "documentation": {
     "documented": 16,
     "partially-documented": 2,

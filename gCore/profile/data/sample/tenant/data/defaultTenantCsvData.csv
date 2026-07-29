@@ -1,2 +1,11 @@
 code,active,description,properties.database.default.databaseType,properties.database.default.mongodb.master.URI,properties.database.default.mongodb.master.databaseName,properties.database.default.mongodb.master.options.native_parser,properties.database.default.mongodb.master.options.poolSize,properties.database.default.mongodb.test.URI,properties.database.default.mongodb.test.databaseName,properties.database.default.mongodb.test.options.native_parser,properties.database.default.mongodb.test.options.poolSize
-testOne,true,This tenant is just for testing purpose,mongodb,mongodb://localhost:27017,testOneMaster,true,5,mongodb://localhost:27017,testOneTest,true,5
+testOne,true,This tenant is just for testing purpose Import,mongodb,mongodb://localhost:27017,testOneMaster,true,5,mongodb://localhost:27017,testOneTest,true,5
+testTwo,true,Second tenant sample import record,mongodb,mongodb://localhost:27017,testTwoMaster,true,5,mongodb://localhost:27017,testTwoTest,true,5
+testThree,true,Third tenant sample import record,mongodb,mongodb://localhost:27017,testThreeMaster,true,5,mongodb://localhost:27017,testThreeTest,true,5
+testFour,true,Fourth tenant sample import record,mongodb,mongodb://localhost:27017,testFourMaster,true,5,mongodb://localhost:27017,testFourTest,true,5
+testFive,true,Fifth tenant sample import record,mongodb,mongodb://localhost:27017,testFiveMaster,true,5,mongodb://localhost:27017,testFiveTest,true,5
+testSix,true,Intentional failure row missing tenant code,mongodb,mongodb://localhost:27017,missingCodeMaster,true,5,mongodb://localhost:27017,missingCodeTest,true,5
+testSeven,true,Seventh tenant sample import record,mongodb,mongodb://localhost:27017,testSevenMaster,true,5,mongodb://localhost:27017,testSevenTest,true,5
+testEight,notABoolean,Intentional failure row with invalid active flag,mongodb,mongodb://localhost:27017,testEightMaster,true,5,mongodb://localhost:27017,testEightTest,true,5
+testNine,true,Ninth tenant sample import record,mongodb,mongodb://localhost:27017,testNineMaster,true,5,mongodb://localhost:27017,testNineTest,true,5
+testTen,true,Tenth tenant sample import record,mongodb,mongodb://localhost:27017,testTenMaster,true,5,mongodb://localhost:27017,testTenTest,true,5

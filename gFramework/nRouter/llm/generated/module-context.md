@@ -28,9 +28,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 22 |
-| Test files | 11 |
+| Test files | 12 |
 | Data files | 0 |
-| All module-owned files | 41 |
+| All module-owned files | 42 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -57,7 +57,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 33 |
+| Documented | 34 |
 | Partially documented | 1 |
 | Undocumented | 3 |
 | Inventory only | 4 |
@@ -96,7 +96,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nRouter/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements router default sample service business behavior and extension logic. |  |
 | `gFramework/nRouter/src/service/handlers/parser/defaultJsonBodyParserHandlerService.js` | `src` | `documented` | 3/3 | Body parser handler for JSON API routes. It supplies Express middleware for URL-encoded and JSON payload parsing when a router uses the default JSON parser. |  |
 | `gFramework/nRouter/src/service/handlers/parser/defaultTextBodyParserHandlerService.js` | `src` | `documented` | 3/3 | Body parser handler for text API routes. It supplies Express middleware for URL-encoded and text payload parsing when a router selects the text parser. |  |
-| `gFramework/nRouter/src/service/handlers/response/defaultFileDownloadResponseHandlerService.js` | `src` | `documented` | 4/4 | Response handler for routes that return downloadable files instead of JSON payloads. |  |
+| `gFramework/nRouter/src/service/handlers/response/defaultFileDownloadResponseHandlerService.js` | `src` | `documented` | 8/8 | Response handler for routes that return downloadable files instead of JSON payloads. |  |
 | `gFramework/nRouter/src/service/handlers/response/defaultJsonResponseHandlerService.js` | `src` | `documented` | 5/5 | Default JSON response handler for Nodics APIs. It normalizes success payloads with status metadata and converts errors to standard Nodics error JSON. |  |
 | `gFramework/nRouter/src/service/handlers/response/defaultTextResponseHandlerService.js` | `src` | `documented` | 4/4 | Text response handler for routes that return plain text or already formatted textual payloads. |  |
 | `gFramework/nRouter/src/service/request/defaultNonSecuredRequestPipelineService.js` | `src` | `documented` | 5/5 | Non-secured API request pipeline that validates enterprise code, resolves enterprise metadata, and derives the active tenant for public or pre-authentication routes. |  |
@@ -112,6 +112,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nRouter/test/apiMethodStandardRouteContract.test.js` | `test` | `documented` | 0/0 | Verifies repository router definitions keep GET routes read-only and keep help metadata aligned with runtime route methods. |  |
 | `gFramework/nRouter/test/authHeaderNormalization.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nRouter/test/controlPlaneRouteContract.test.js` | `test` | `documented` | 0/0 | Verifies sensitive control-plane route definitions declare action-specific permissions instead of relying only on broad access groups. |  |
+| `gFramework/nRouter/test/fileDownloadResponseHandlerContract.test.js` | `test` | `documented` | 0/0 | Validates the shared file-download response handler contract used by modules that return governed binary files. |  |
 | `gFramework/nRouter/test/httpHardeningContract.test.js` | `test` | `documented` | 0/0 | Verifies that nRouter applies topology-aware HTTP hardening through layered configuration for proxy trust, security headers, CORS, rate limits, and body parser limit policy. |  |
 | `gFramework/nRouter/test/jsonResponseStatusResolution.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nRouter/test/openapiContractGeneration.test.js` | `test` | `documented` | 0/0 | Verifies that OpenAPI generation follows effective layered schema and router definitions, excludes inactive capabilities, preserves security metadata, rejects conflicting routes and invalid references, and emits accurate request and response contracts. |  |

@@ -44,9 +44,6 @@ module.exports = {
             mediaManagement: {
                 enabled: true
             },
-            fileAccess: {
-                enabled: true
-            },
             dataImport: {
                 enabled: true
             },
@@ -73,6 +70,19 @@ module.exports = {
                 sample: {
                     enabled: true,
                     operatorExecution: true
+                }
+            }
+        }
+    },
+    // Local runtime media bytes are deployment state for the active server.
+    // nMedia owns provider definitions, folder policy, URL delivery, and key
+    // strategy defaults; this environment only makes the local storage root
+    // explicit so uploads land below each running server path.
+    media: {
+        storage: {
+            providers: {
+                local: {
+                    basePath: 'temp/media'
                 }
             }
         }

@@ -1,14 +1,14 @@
 # nSystem
 
 `nSystem` is the operational control plane exposed by a running Nodics
-application. It provides governed health, contract, configuration, file, data,
+application. It provides governed health, contract, configuration, import,
 diagnostic, and test operations for infrastructure, administrators, support
 tools, and trusted internal clients.
 
-The system capability exposes Nodics operational APIs for configuration, files,
-imports, exports, diagnostics, contracts, and tests. It is a control-plane
-module: project modules may override its routers, controllers, facades, and
-services through the normal later-loaded hierarchy.
+The system capability exposes Nodics operational APIs for configuration,
+content-pack and import orchestration, diagnostics, contracts, and tests. It is
+a control-plane module: project modules may override its routers, controllers,
+facades, and services through the normal later-loaded hierarchy.
 
 ## When To Use This Module
 
@@ -16,7 +16,12 @@ Use `nSystem` when an operation observes or administers the running platform
 rather than performing a business capability. Business APIs remain in their
 owning modules. BackOffice, CLI, Postman, MCP, or AI tooling may consume system
 contracts, but none of those clients becomes a second authority for health,
-OpenAPI, runtime configuration, files, imports, exports, logs, or tests.
+OpenAPI, runtime configuration, import orchestration, logs, or tests.
+
+Do not use `nSystem` as a generic file or export owner. Governed media storage
+and download belongs to `nMedia`. Data export generation belongs to `nExport`,
+which creates governed media records and delegates file delivery back to
+`nMedia`.
 
 ## Control-plane route permissions
 
@@ -26,8 +31,6 @@ contract is owned by route metadata.
 
 Sensitive system routes must declare action-specific permissions:
 
-- file read/download routes use `system.file.read` and
-  `system.file.download`;
 - import routes use `import.init.run`, `import.core.run`,
   `import.sample.run`, or `import.local.run`;
 - content-pack status and execution use `import.contentPack.view` and
@@ -36,17 +39,16 @@ Sensitive system routes must declare action-specific permissions:
 - log-level mutation uses `system.log.level.update`;
 - schema index rebuild uses `system.schema.index.rebuild`;
 - test execution uses `system.test.unit.run` or `system.test.nodics.run`;
-- export uses `export.run`;
 - OpenAPI and Swagger UI documentation use the `openApiContract` exposure category;
 - runtime configuration routes use their `runtime.config.*` permissions.
 
 Sensitive system routes also declare `apiExposure` categories so topology can
 disable complete API families before permission checks or controller execution.
-Current categories include `fileAccess`, `dataImport`, `dataExport`,
-`logManagement`, `testExecution`, `schemaMaintenance`, `runtimeConfiguration`,
-`operationalHealth`, and `openApiContract`. Project, environment, server, or
-node configuration must explicitly enable categories that are not part of the
-framework default runtime surface.
+Current categories include `dataImport`, `logManagement`, `testExecution`,
+`schemaMaintenance`, `runtimeConfiguration`, `operationalHealth`, and
+`openApiContract`. Project, environment, server, or node configuration must
+explicitly enable categories that are not part of the framework default runtime
+surface.
 
 Do not expose system/control-plane behavior with only a broad group such as
 `userGroup`. Add the permission to the catalog and a route contract test when a

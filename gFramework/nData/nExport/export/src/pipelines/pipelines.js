@@ -11,9 +11,9 @@
 
 /**
  * @module gFramework/nData/nExport/export/src/pipelines/pipelines
- * @description Defines nData pipeline wiring and execution contracts.
+ * @description Defines nExport pipeline wiring and execution contracts.
  * @layer pipelines
- * @owner nData
+ * @owner nExport
  * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
  */
 module.exports = {

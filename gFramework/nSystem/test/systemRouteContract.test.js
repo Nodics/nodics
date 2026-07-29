@@ -17,13 +17,6 @@ const expectedRoutes = [
     { key: '/health/live', method: 'GET', controller: 'DefaultHealthController', operation: 'getLiveness', secured: false },
     { key: '/health/ready', method: 'GET', controller: 'DefaultHealthController', operation: 'getReadiness', secured: false },
     { key: '/health/ready/details', method: 'GET', controller: 'DefaultHealthController', operation: 'getReadinessDetails', secured: true, permission: 'system.health.readiness.view' },
-    { key: '/file/data', method: 'POST', controller: 'DefaultFileController', operation: 'getFileContent', secured: true, permission: 'system.file.read' },
-    { key: '/file/download', method: 'POST', controller: 'DefaultFileController', operation: 'downloadFile', secured: true, permission: 'system.file.download' },
-    { key: '/import/init', method: 'POST', controller: 'DefaultImportController', operation: 'importInitData', secured: true, permission: 'import.init.run' },
-    { key: '/import/core', method: 'POST', controller: 'DefaultImportController', operation: 'importCoreData', secured: true, permission: 'import.core.run' },
-    { key: '/import/sample', method: 'POST', controller: 'DefaultImportController', operation: 'importSampleData', secured: true, permission: 'import.sample.run' },
-    { key: '/import/local', method: 'POST', controller: 'DefaultImportController', operation: 'importLocalData', secured: true, permission: 'import.local.run' },
-    { key: '/import/media', method: 'POST', controller: 'DefaultImportController', operation: 'importMediaData', secured: true, permission: 'import.media.run' },
     { key: '/content-packs/:packCode', method: 'GET', controller: 'DefaultContentPackController', operation: 'getStatus', secured: true, permission: 'import.contentPack.view' },
     { key: '/content-packs/:packCode/imports', method: 'POST', controller: 'DefaultContentPackController', operation: 'importPack', secured: true, permission: 'import.contentPack.run' },
     { key: '/log/level', method: 'POST', controller: 'DefaultLogController', operation: 'changeLogLevel', secured: true, permission: 'system.log.level.update' },
@@ -45,11 +38,13 @@ const expectedRoutes = [
     { key: '/contract/swagger/asset/:assetName', method: 'GET', controller: 'DefaultApiContractController', operation: 'getSwaggerAsset', secured: false, permission: 'system.contract.swagger.view' },
     { key: '/schema/indexes/all', method: 'POST', controller: 'DefaultSchemaIndexController', operation: 'updateModulesIndexes', secured: true, permission: 'system.schema.index.rebuild' },
     { key: '/test/runUTest', method: 'POST', controller: 'TestExecutionController', operation: 'runUTest', secured: true, permission: 'system.test.unit.run' },
-    { key: '/test/runNTest', method: 'POST', controller: 'TestExecutionController', operation: 'runNTest', secured: true, permission: 'system.test.nodics.run' },
-    { key: '/export', method: 'POST', controller: 'DataExportController', operation: 'export', secured: true, permission: 'export.run' }
+    { key: '/test/runNTest', method: 'POST', controller: 'TestExecutionController', operation: 'runNTest', secured: true, permission: 'system.test.nodics.run' }
 ];
 
 const routes = assertRouteContracts(routerConfig, expectedRoutes);
+['/file/data', '/file/download', '/export', '/import/init', '/import/core', '/import/sample', '/import/local', '/import/media'].forEach((key) => {
+    assert.strictEqual(routes.some(route => route.key === key), false, key + ' must not be exposed by nSystem');
+});
 const livenessRoute = routes.find(route => route.key === '/health/live' && route.method === 'GET');
 assert.strictEqual(livenessRoute.publicProbe, true, 'Liveness route must bypass enterprise/tenant request pipeline resolution');
 const readinessRoute = routes.find(route => route.key === '/health/ready' && route.method === 'GET');

@@ -11,9 +11,9 @@
 
 /**
  * @module gFramework/nData/nExport/export/src/utils/utils
- * @description Provides shared nData utility exports for utils.
+ * @description Provides shared nExport utility exports for export orchestration helpers.
  * @layer utils
- * @owner nData
+ * @owner nExport
  * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
  */
 module.exports = {

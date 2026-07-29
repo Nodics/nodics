@@ -119,6 +119,9 @@ module.exports = {
             if (!availableByModule[moduleName]) throw this.error('ERR_IMP_00004', 'Requested module data release is unavailable');
             return availableByModule[moduleName];
         });
+        if (releases.some(release => release.invalidManifest === true)) {
+            throw this.error('ERR_IMP_00003', 'Requested data release manifest is invalid; repair manifest before installation');
+        }
         let expected = body.expectedReleases || {};
         releases.forEach(release => {
             if (expected[release.moduleName] && expected[release.moduleName] !== release.version) {
@@ -170,7 +173,11 @@ module.exports = {
             ['init', 'core', 'sample'].filter(type => !requestedType || requestedType === type).forEach(dataType => {
                 let manifestPath = path.join(rawModule.path, 'data', dataType, 'manifest.json');
                 if (!fs.existsSync(manifestPath)) return;
-                releases.push(this.inspectManifest(rawModule, dataType, manifestPath));
+                try {
+                    releases.push(this.inspectManifest(rawModule, dataType, manifestPath));
+                } catch (error) {
+                    releases.push(this.invalidManifestRelease(rawModule, dataType, manifestPath, error));
+                }
             });
         });
         return releases.sort((first, second) =>
@@ -216,6 +223,28 @@ module.exports = {
             version: manifest.version,
             description: String(manifest.description || ''),
             checksum: checksum
+        };
+    },
+
+    /** Projects a bad manifest as a visible but non-executable release. */
+    invalidManifestRelease: function (rawModule, dataType, manifestPath, error) {
+        let manifest = {};
+        try {
+            manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+        } catch (ignored) {
+            manifest = {};
+        }
+        return {
+            moduleName: rawModule.name,
+            displayName: rawModule.metaData && rawModule.metaData.nodics && rawModule.metaData.nodics.displayName || rawModule.name,
+            parentModule: rawModule.parent,
+            canonicalIdentity: rawModule.canonicalIdentity || rawModule.name,
+            dataType: dataType,
+            version: /^\d+\.\d+\.\d+$/.test(manifest.version || '') ? manifest.version : '0.0.0',
+            description: 'This data release manifest is invalid and must be repaired before it can be validated or installed.',
+            checksum: 'invalid-release',
+            invalidManifest: true,
+            invalidReason: error && error.message || 'Data release manifest is invalid'
         };
     },
 
@@ -271,6 +300,16 @@ module.exports = {
 
     /** Combines available and installed state into a client-safe catalogue item. */
     toCatalogueItem: function (release, installed, running) {
+        if (release.invalidManifest === true) {
+            return Object.assign(this.publicRelease(release), {
+                installedVersion: installed && installed.version,
+                installedChecksum: installed && installed.checksum,
+                lastRunId: installed && installed.runId,
+                installedAt: installed && installed.installedAt,
+                lastAttemptAt: installed && installed.lastAttemptAt,
+                status: 'INVALID_RELEASE'
+            });
+        }
         let status = 'NOT_INSTALLED';
         if (installed) {
             let comparison = this.compareVersions(release.version, installed.version);
@@ -330,7 +369,8 @@ module.exports = {
             moduleName: release.moduleName, displayName: release.displayName,
             parentModule: release.parentModule, canonicalIdentity: release.canonicalIdentity,
             dataType: release.dataType, version: release.version,
-            description: release.description, checksum: release.checksum
+            description: release.description, checksum: release.checksum,
+            invalidReason: release.invalidReason
         };
     },
 

@@ -65,5 +65,25 @@ module.exports = {
     ERR_IMP_00009: {
         code: '400',
         message: 'Invalid media import definition request'
+    },
+    ERR_IMP_00010: {
+        code: '400',
+        message: 'Import completed with record-level errors'
+    },
+    ERR_IMP_00011: {
+        code: '400',
+        message: 'Import record is invalid for selected target model'
+    },
+    ERR_IMP_VALIDATE_00000: {
+        code: '400',
+        message: 'Import validation failed'
+    },
+    ERR_IMP_VALIDATE_00007: {
+        code: '400',
+        message: 'Finalized import file could not be read'
+    },
+    ERR_IMP_VALIDATE_00008: {
+        code: '400',
+        message: 'Import record is missing required data'
     }
 };

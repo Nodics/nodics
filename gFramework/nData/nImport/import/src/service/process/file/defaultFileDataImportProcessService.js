@@ -386,6 +386,7 @@ module.exports = {
         let header = request.fileData.header;
         options.errors = options.errors || [];
         batch.forEach(entry => {
+            let recordError = this.createRecordImportFailureError(request, header, entry, error);
             if (SERVICE.DefaultImportDiagnosticsService) {
                 SERVICE.DefaultImportDiagnosticsService.addFailure(request, {
                     tenant: options.tenant,
@@ -396,11 +397,53 @@ module.exports = {
                     schemaName: header.options.schemaName,
                     indexName: header.options.indexName,
                     operation: header.options.operation,
-                    error: error
+                    error: recordError
                 });
             }
-            options.errors.push(error);
+            options.errors.push(recordError);
         });
+    },
+
+    /**
+     * Creates a safe row-level import error without exposing lower-level service internals.
+     *
+     * @param {Object} request Import request.
+     * @param {Object} header Finalized import header.
+     * @param {Object} entry Failed record entry.
+     * @param {*} error Original failure.
+     * @returns {*} Original error or a safe DataImportError when the failure can be translated.
+     */
+    createRecordImportFailureError: function (request, header, entry, error) {
+        let missingProperty = this.extractMissingQueryProperty(error);
+        if (!missingProperty) {
+            return error;
+        }
+        let targetName = header.options.schemaName || header.options.indexName || 'selected target model';
+        return new CLASSES.DataImportError({
+            code: 'ERR_IMP_00011',
+            responseCode: '400',
+            message: 'Import record "' + entry.recordKey + '" is missing required property "' + missingProperty + '" for ' + targetName + ' ' + (header.options.operation || 'operation'),
+            metadata: {
+                tenant: request && request.tenant,
+                recordKey: entry.recordKey,
+                propertyName: missingProperty,
+                schemaName: header.options.schemaName,
+                indexName: header.options.indexName,
+                operation: header.options.operation
+            }
+        });
+    },
+
+    /**
+     * Extracts a missing query property name from lower-level query-builder errors.
+     *
+     * @param {*} error Original failure.
+     * @returns {string|undefined} Missing property name.
+     */
+    extractMissingQueryProperty: function (error) {
+        let message = String(error && error.message || error || '');
+        let match = message.match(/could not find a valid property\s+([A-Za-z0-9_.-]+)/);
+        return match && match[1] || undefined;
     },
 
     /**
@@ -463,7 +506,7 @@ module.exports = {
      * @returns {CLASSES.DataImportError} Aggregate import error.
      */
     createAggregateImportError: function (errors, message) {
-        let aggregateError = new CLASSES.DataImportError('ERR_IMP_00000', message || 'Import processing completed with errors');
+        let aggregateError = new CLASSES.DataImportError('ERR_IMP_00010', message || 'Import processing completed with record-level errors');
         [].concat(errors || []).forEach(error => {
             if (typeof aggregateError.add === 'function') {
                 aggregateError.add(error);

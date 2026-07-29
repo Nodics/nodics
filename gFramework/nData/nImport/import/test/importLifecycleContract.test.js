@@ -148,6 +148,8 @@ function createHarness() {
     assert.deepStrictEqual(harness.calls.map(call => call.pipelineName), ['localDataImportInitializerPipeline']);
     assert.strictEqual(harness.calls[0].request.dataType, 'media');
     assert.strictEqual(mediaValidation.validationOnly, true);
+    assert.strictEqual(mediaValidation.validationPassed, true);
+    assert.strictEqual(mediaValidation.validationErrorCount, 0);
     assert.strictEqual(mediaValidation.finalizer.code, 'SUC_IMP_READY');
     assert.strictEqual(mediaValidation.importRun.status, 'VALIDATED');
 

@@ -11,9 +11,9 @@
 
 /**
  * @module gFramework/nData/nExport/export/nodics
- * @description Registers the nData module lifecycle hooks and module-level startup behavior.
+ * @description Registers the nExport module lifecycle hooks and module-level startup behavior.
  * @layer module
- * @owner nData
+ * @owner nExport
  * @override Projects may override lifecycle behavior through later active modules instead of modifying this module directly.
  */
 module.exports = {

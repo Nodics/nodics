@@ -9,6 +9,9 @@
 
  */
 
+const fs = require('fs');
+const path = require('path');
+
 /**
  * @module import/service/DefaultImportService
  * @description Coordinates init, core, sample, local, and governed remote import lifecycles, finalized-data processing, run status, and staging cleanup.
@@ -270,10 +273,18 @@ module.exports = {
                         importDefinition: prepared.importDefinition
                     };
                     if (request.options.validateOnly || request.validationOnly || success && success.validationOnly) {
-                        this.finalizeImportRun(request, 'VALIDATED');
+                        let validationErrors = this.validatePreparedFinalizedImport(request);
+                        let validationReport = this.createPreparedFinalizedValidationReport(request, validationErrors);
+                        request.importRun.validationOnly = true;
+                        request.importRun.validationReport = validationReport;
+                        this.finalizeImportRun(request, validationErrors.length > 0 ? 'FAILED' : 'VALIDATED');
                         resolve(Object.assign({
                             code: 'SUC_IMP_00000',
-                            validationOnly: true
+                            validationOnly: true,
+                            validationPassed: validationErrors.length === 0,
+                            validationErrorCount: validationErrors.length,
+                            validationErrors: validationErrors,
+                            validationReport: validationReport
                         }, result));
                         return;
                     }
@@ -309,5 +320,277 @@ module.exports = {
     /** Dispatches finalized import files through the standard processing pipeline. */
     processImportData: function (request) {
         return SERVICE.DefaultPipelineService.start('processDataImportPipeline', request, {});
+    },
+
+    /**
+     * Validates finalized media import records against the generated header
+     * dispatch contract before any schema write is attempted.
+     *
+     * @param {Object} request Media import request with outputPath and importRun.
+     * @returns {Object[]} Business-readable validation errors.
+     */
+    validatePreparedFinalizedImport: function (request) {
+        let errors = [];
+        let dataPath = request && request.outputPath && request.outputPath.dataPath;
+        if (!dataPath || !fs.existsSync(dataPath)) {
+            return errors;
+        }
+        fs.readdirSync(dataPath).filter(fileName => fileName.endsWith('.js')).sort().forEach(fileName => {
+            let filePath = path.join(dataPath, fileName);
+            let fileData;
+            try {
+                delete require.cache[require.resolve(filePath)];
+                fileData = require(filePath);
+            } catch (error) {
+                errors.push(this.createFinalizedValidationError({
+                    code: 'ERR_IMP_VALIDATE_00007',
+                    message: 'Finalized import file could not be read',
+                    fileName: fileName
+                }));
+                return;
+            }
+            errors = errors.concat(this.validateFinalizedFileQueryPlaceholders(request, fileName, fileData));
+        });
+        if (request.importRun) {
+            request.importRun.validationErrors = errors;
+            request.importRun.summary = request.importRun.summary || {};
+            request.importRun.summary.validationErrors = request.importRun.validationErrors.length;
+        }
+        return errors;
+    },
+
+    /**
+     * Creates a row-level validation report that Axis and other clients can page,
+     * search, and explain without parsing technical exception text.
+     *
+     * @param {Object} request Import request.
+     * @param {Object[]} validationErrors Normalized validation errors.
+     * @returns {Object} Structured validation report.
+     */
+    createPreparedFinalizedValidationReport: function (request, validationErrors) {
+        let rows = [];
+        let recordNumber = 0;
+        let dataPath = request && request.outputPath && request.outputPath.dataPath;
+        let errorsByRecord = this.indexValidationErrors(validationErrors);
+        if (dataPath && fs.existsSync(dataPath)) {
+            fs.readdirSync(dataPath).filter(fileName => fileName.endsWith('.js')).sort().forEach(fileName => {
+                let filePath = path.join(dataPath, fileName);
+                let fileData;
+                try {
+                    delete require.cache[require.resolve(filePath)];
+                    fileData = require(filePath);
+                } catch (error) {
+                    return;
+                }
+                let header = fileData && fileData.header || {};
+                let models = fileData && fileData.models || {};
+                Object.keys(models).forEach(recordKey => {
+                    recordNumber++;
+                    let recordErrors = errorsByRecord[this.validationRecordKey(fileName, recordKey)] || [];
+                    rows.push(this.createValidationReportRow({
+                        fileName: fileName,
+                        recordKey: recordKey,
+                        rowNumber: recordNumber,
+                        status: recordErrors.length > 0 ? 'INVALID' : 'VALID',
+                        schemaName: header.options && header.options.schemaName,
+                        indexName: header.options && header.options.indexName,
+                        operation: header.options && header.options.operation,
+                        tenant: request && request.tenant,
+                        errors: recordErrors
+                    }));
+                });
+            });
+        }
+        let invalidRecords = rows.filter(row => row.status === 'INVALID').length;
+        let report = {
+            totalRecords: rows.length,
+            validRecords: rows.length - invalidRecords,
+            invalidRecords: invalidRecords,
+            warningRecords: 0,
+            rows: rows
+        };
+        if (request && request.importRun) {
+            request.importRun.summary = request.importRun.summary || {};
+            request.importRun.summary.recordsValidated = rows.length;
+            request.importRun.summary.recordsValid = report.validRecords;
+            request.importRun.summary.recordsInvalid = report.invalidRecords;
+        }
+        return report;
+    },
+
+    /**
+     * Validates all `$property` query placeholders for one finalized import file.
+     *
+     * @param {Object} request Import request.
+     * @param {string} fileName Finalized file name.
+     * @param {Object} fileData Finalized import payload.
+     * @returns {Object[]} Validation errors.
+     */
+    validateFinalizedFileQueryPlaceholders: function (request, fileName, fileData) {
+        let errors = [];
+        let header = fileData && fileData.header || {};
+        let query = header.query || {};
+        let models = fileData && fileData.models || {};
+        let requiredProperties = this.extractRequiredQueryProperties(query);
+        if (requiredProperties.length === 0) {
+            return errors;
+        }
+        Object.keys(models).forEach((recordKey, index) => {
+            let model = models[recordKey] || {};
+            requiredProperties.forEach(propertyName => {
+                let value = this.resolveModelValue(model, propertyName);
+                if (value === undefined || value === null || value === '') {
+                    errors.push(this.createFinalizedValidationError({
+                        code: 'ERR_IMP_VALIDATE_00008',
+                        message: 'Import record is missing required property "' + propertyName + '" for the selected save/update operation',
+                        fileName: fileName,
+                        recordKey: recordKey,
+                        schemaName: header.options && header.options.schemaName,
+                        indexName: header.options && header.options.indexName,
+                        operation: header.options && header.options.operation,
+                        propertyName: propertyName,
+                        rowNumber: index + 1,
+                        tenant: request && request.tenant
+                    }));
+                }
+            });
+        });
+        return errors;
+    },
+
+    /**
+     * Extracts model property names referenced by query placeholders.
+     *
+     * @param {Object} query Header query object.
+     * @returns {string[]} Required model properties.
+     */
+    extractRequiredQueryProperties: function (query) {
+        let properties = [];
+        Object.keys(query || {}).forEach(queryProperty => {
+            let value = query[queryProperty];
+            if (typeof value === 'string' && value.startsWith('$')) {
+                properties.push(value.substring(1));
+            }
+        });
+        return Array.from(new Set(properties.filter(Boolean)));
+    },
+
+    /**
+     * Resolves a dot-notated model property.
+     *
+     * @param {Object} model Import model.
+     * @param {string} propertyName Property path.
+     * @returns {*} Resolved value.
+     */
+    resolveModelValue: function (model, propertyName) {
+        return String(propertyName || '').split('.').reduce((value, property) => {
+            if (value && Object.prototype.hasOwnProperty.call(value, property)) {
+                return value[property];
+            }
+            return undefined;
+        }, model);
+    },
+
+    /**
+     * Groups validation errors by finalized file and record key.
+     *
+     * @param {Object[]} validationErrors Normalized validation errors.
+     * @returns {Object} Error map.
+     */
+    indexValidationErrors: function (validationErrors) {
+        return (validationErrors || []).reduce((index, error) => {
+            let key = this.validationRecordKey(error.fileName, error.recordKey);
+            index[key] = index[key] || [];
+            index[key].push(error);
+            return index;
+        }, {});
+    },
+
+    /**
+     * Builds a stable record-key for report grouping.
+     *
+     * @param {string} fileName Finalized file name.
+     * @param {string} recordKey Finalized record key.
+     * @returns {string} Group key.
+     */
+    validationRecordKey: function (fileName, recordKey) {
+        return String(fileName || '') + '::' + String(recordKey || '');
+    },
+
+    /**
+     * Creates one user-facing validation row.
+     *
+     * @param {Object} options Row options.
+     * @returns {Object} Validation report row.
+     */
+    createValidationReportRow: function (options) {
+        let errors = options.errors || [];
+        let firstError = errors[0] || {};
+        return {
+            rowNumber: options.rowNumber,
+            recordKey: options.recordKey,
+            status: options.status,
+            severity: options.status === 'INVALID' ? 'error' : 'success',
+            fileName: options.fileName,
+            schemaName: options.schemaName,
+            indexName: options.indexName,
+            operation: options.operation,
+            tenant: options.tenant,
+            field: firstError.propertyName,
+            message: errors.length > 0 ?
+                errors.map(error => error.message).join('; ') :
+                'Record is ready for import',
+            howToFix: errors.length > 0 ?
+                errors.map(error => this.createValidationHowToFix(error)).join(' ') :
+                '',
+            technicalCode: firstError.code,
+            errorCount: errors.length
+        };
+    },
+
+    /**
+     * Converts a validation error into a short business-readable repair hint.
+     *
+     * @param {Object} error Validation error.
+     * @returns {string} Repair hint.
+     */
+    createValidationHowToFix: function (error) {
+        if (error && error.propertyName) {
+            return 'Add a valid value for "' + error.propertyName + '" because this save/update operation uses it to identify the record.';
+        }
+        return 'Correct the record data and validate the file again before installation.';
+    },
+
+    /**
+     * Creates a safe validation error object that can be nested in DataImportError.
+     *
+     * @param {Object} options Error metadata.
+     * @returns {Object} Nodics-compatible error payload.
+     */
+    createFinalizedValidationError: function (options) {
+        return {
+            code: options.code,
+            responseCode: '400',
+            name: 'DataImportError',
+            message: options.message,
+            fileName: options.fileName,
+            recordKey: options.recordKey,
+            schemaName: options.schemaName,
+            indexName: options.indexName,
+            operation: options.operation,
+            propertyName: options.propertyName,
+            rowNumber: options.rowNumber,
+            tenant: options.tenant,
+            metadata: {
+                fileName: options.fileName,
+                recordKey: options.recordKey,
+                schemaName: options.schemaName,
+                indexName: options.indexName,
+                operation: options.operation,
+                propertyName: options.propertyName,
+                rowNumber: options.rowNumber,
+                tenant: options.tenant
+            }
+        };
     }
 };

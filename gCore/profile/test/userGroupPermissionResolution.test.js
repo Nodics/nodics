@@ -118,8 +118,6 @@ assert(runtimeViewerGroup.permissions.includes('backoffice.contract.view'));
 let contentGroup = Object.values(userGroupsData).find(group => group.code === 'contentUserGroup');
 assert(contentGroup.permissions.includes('cms.backoffice.view'));
 [
-    'system.file.read',
-    'system.file.download',
     'system.log.level.update',
     'system.schema.index.rebuild',
     'system.schema.validator.rebuild',

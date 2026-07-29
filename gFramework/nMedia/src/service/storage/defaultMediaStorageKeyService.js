@@ -63,7 +63,7 @@ module.exports = {
         let date = request.date || new Date();
         let tenant = this.cleanSegment(request.tenant || 'default');
         let enterprise = this.cleanSegment(request.enterpriseCode || (request.authData && request.authData.enterprise && request.authData.enterprise.code) || 'default');
-        let purpose = this.cleanSegment(folder.storagePrefix || folder.code || 'utils');
+        let purpose = this.cleanPathPrefix(folder.storagePrefix || folder.code || 'utils');
         let schema = this.cleanSegment(request.schemaName || request.ownerSchema || request.targetSchema || folder.code || 'general');
         let yyyy = String(date.getUTCFullYear());
         let mm = String(date.getUTCMonth() + 1).padStart(2, '0');
@@ -90,6 +90,26 @@ module.exports = {
     cleanSegment: function (value) {
         let segment = String(value || 'default').replace(/[^a-zA-Z0-9._-]/g, '-');
         return segment || 'default';
+    },
+
+    /**
+     * Cleans a configured provider-relative path prefix.
+     *
+     * Folder storage prefixes are backend-owned configuration and may contain
+     * safe nested path segments such as `data/import` or `data/export`. Each
+     * segment is still sanitized independently and the final key is validated
+     * by `assertSafeStorageKey`, so traversal tokens remain blocked.
+     *
+     * @param {string} value Raw configured prefix.
+     * @returns {string} Safe provider-relative prefix.
+     */
+    cleanPathPrefix: function (value) {
+        let segments = String(value || 'default')
+            .replace(/\\/g, '/')
+            .split('/')
+            .filter(segment => segment !== '')
+            .map(segment => this.cleanSegment(segment));
+        return segments.length ? segments.join('/') : 'default';
     },
 
     /**

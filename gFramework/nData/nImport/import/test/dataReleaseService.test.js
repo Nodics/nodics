@@ -16,7 +16,7 @@ const path = require('path');
 
 /**
  * @module import/test/dataReleaseService
- * @description Validates discovery, preflight, installation projection, immutable version selection, disabled types, and checksum rejection.
+ * @description Validates discovery, preflight, installation projection, immutable version selection, disabled types, and fail-safe checksum projection.
  * @layer test
  * @owner import
  */
@@ -125,7 +125,16 @@ const service = require('../src/service/release/defaultDataReleaseService');
     }), /disabled/);
 
     fs.writeFileSync(path.join(releaseRoot, 'data', 'data.js'), 'module.exports = [1];\n');
-    assert.throws(() => service.discoverReleases('core'), /checksum validation failed/);
+    let invalidReleases = service.discoverReleases('core');
+    assert.strictEqual(invalidReleases.length, 1);
+    assert.strictEqual(invalidReleases[0].invalidManifest, true);
+    catalogue = await service.getCatalogue({ tenant: 'default', dataType: 'core' });
+    assert.strictEqual(catalogue.data[0].status, 'INVALID_RELEASE');
+    assert.match(catalogue.data[0].invalidReason, /checksum validation failed/);
+    await assert.rejects(() => service.preflight({
+        tenant: 'default',
+        releaseRequest: { dataType: 'core', modules: ['testModule'], expectedReleases: { testModule: '1.1.0' } }
+    }), /manifest is invalid/);
     fs.rmSync(root, { recursive: true, force: true });
     console.log('Data release service contracts validated');
 })().catch(error => {

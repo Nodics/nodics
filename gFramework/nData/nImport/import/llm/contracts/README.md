@@ -28,17 +28,20 @@ Use these files for rules that are more specific than root `AGENTS.md` and the m
 ## Media-backed file import
 
 - Axis and other frontend clients must upload files through `gFramework/nMedia`
-  before starting a browser-facing file import.
+  before starting a browser-facing file import. This is the reusable import
+  intake path; do not add an nImport-specific multipart upload route.
 - The frontend may pass `source.type = MEDIA` and `source.mediaCode` to the
   import capability. It must not pass raw local paths, temporary folders, cloud
   object keys, NAS paths, bucket names, provider URLs, or credentials.
-- `nMedia` owns multipart upload parsing, storage provider selection, storage
-  keys, checksum, media lifecycle, and backend-only storage descriptors.
+- `nMedia` owns media upload semantics, storage provider selection, storage
+  keys, checksum, media lifecycle, and backend-only storage descriptors. The
+  route/body-parser extension point remains framework-owned and must not be
+  duplicated inside nImport.
 - `nImport` owns generic media import target acceptance, optional import
   templates, media-source acceptance, import-run staging, format parsing,
   finalization, target dispatch, diagnostics, and run history.
 - The secured media-backed import route is
-  `POST /nodics/system/v0/import/media`. It accepts `mediaCode` plus either a
+  `POST /nodics/import/v0/media`. It accepts `mediaCode` plus either a
   generic `moduleName`/`schemaName` target or an optional future
   `definitionCode` template, and optional `options.validateOnly`.
 - Generic media import is schema-first: Axis may select an authorized target

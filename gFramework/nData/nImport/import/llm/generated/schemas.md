@@ -8,7 +8,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `dataInstallation` |  | yes | yes | no | no | no | no | `default` | 12 |
 | `importDefinition` | `base` | yes | yes | yes | no | yes | no | `default` | 14 |
-| `importRun` | `base` | yes | yes | yes | no | no | no | `default` | 27 |
+| `importRun` | `base` | yes | yes | yes | no | no | no | `default` | 28 |
 
 ### `import.dataInstallation`
 
@@ -71,3 +71,4 @@
 - `tenant` `string` optional: Tenant used for the import run
 - `validationErrorCount` `int` optional: Number of recorded validation errors
 - `validationErrors` `array` optional: Validation errors collected before import processing
+- `validationReport` `object` optional: Structured row-level validation report for governed file imports

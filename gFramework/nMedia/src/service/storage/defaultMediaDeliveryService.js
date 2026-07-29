@@ -65,7 +65,7 @@ module.exports = {
             fileName: source.fileName || media.originalFileName || media.storedFileName || media.code,
             mimeType: media.mimeType || source.mimeType,
             cacheControl: policy.cacheControl,
-            contentDisposition: policy.contentDisposition || 'inline'
+            contentDisposition: this.resolveContentDisposition(request, policy)
         };
     },
 
@@ -129,9 +129,36 @@ module.exports = {
             throw new CLASSES.NodicsError('ERR_MED_00012', 'Signed media delivery token validation is not configured');
         }
         if (access === 'PRIVATE' && policy.privateAccessEnabled === true) {
-            throw new CLASSES.NodicsError('ERR_MED_00012', 'Private media delivery authorization is not configured');
+            if (this.hasAuthenticatedPrincipal(request)) return true;
+            throw new CLASSES.NodicsError('ERR_MED_00012', 'Private media delivery requires an authenticated principal');
         }
         throw new CLASSES.NodicsError('ERR_MED_00012', 'Media access policy does not allow direct delivery');
+    },
+
+    /**
+     * Checks whether the current delivery request has an authenticated principal.
+     *
+     * @param {Object} request Delivery request.
+     * @returns {boolean} True when auth data was resolved by the secured route.
+     */
+    hasAuthenticatedPrincipal: function (request) {
+        let authData = request && request.authData || {};
+        return !!(authData.loginId || authData.principalId || authData.userId || authData.uid ||
+            authData.code || authData.serviceId || authData.tokenType);
+    },
+
+    /**
+     * Resolves inline versus attachment response disposition.
+     *
+     * @param {Object} request Delivery request.
+     * @param {Object} policy Delivery policy.
+     * @returns {string} Content disposition.
+     */
+    resolveContentDisposition: function (request, policy) {
+        let query = request && request.query || {};
+        if (request && request.download === true) return 'attachment';
+        if (query.download === true || query.download === 'true' || query.download === '1') return 'attachment';
+        return policy.contentDisposition || 'inline';
     },
 
     /**
@@ -147,7 +174,7 @@ module.exports = {
             allowedStatuses: delivery.allowedStatuses || ['READY', 'CONSUMED'],
             publicAccessEnabled: delivery.publicAccessEnabled === true,
             signedAccessEnabled: delivery.signedAccessEnabled === true,
-            privateAccessEnabled: delivery.privateAccessEnabled === true,
+            privateAccessEnabled: delivery.privateAccessEnabled !== false,
             maximumResults: delivery.maximumResults || 2,
             cacheControl: delivery.cacheControl || 'public, max-age=3600',
             contentDisposition: delivery.contentDisposition || 'inline'

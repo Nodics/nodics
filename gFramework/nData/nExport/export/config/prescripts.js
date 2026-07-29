@@ -11,9 +11,9 @@
 
 /**
  * @module gFramework/nData/nExport/export/config/prescripts
- * @description Defines default nData configuration used during module startup and layering.
+ * @description Defines default nExport prescript configuration used during module startup and layering.
  * @layer config
- * @owner nData
+ * @owner nExport
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {

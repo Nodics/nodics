@@ -11,10 +11,10 @@
 
 /**
  * @module gFramework/nData/nExport/export/src/router/appConfig
- * @description Defines nData route registration and HTTP exposure metadata.
+ * @description Defines nExport route application metadata; export orchestration is exposed by nExport and generated-file delivery stays with nMedia.
  * @layer router
- * @owner nData
- * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ * @owner nExport
+ * @override Project modules may extend export orchestration metadata through later active modules while preserving nMedia delivery authority.
  */
 module.exports = {
 

@@ -27,6 +27,7 @@ const capabilities = [
     require('../../../gCore/cronjob/config/properties').backofficeCapabilities.cronjob,
     require('../../../gCore/workflow/config/properties').backofficeCapabilities.workflow,
     require('../../../gComm/pricing/config/properties').backofficeCapabilities.pricing,
+    require('../../../gFramework/nMedia/config/properties').backofficeCapabilities.media,
     require('../config/properties').backofficeCapabilities.backoffice
 ];
 

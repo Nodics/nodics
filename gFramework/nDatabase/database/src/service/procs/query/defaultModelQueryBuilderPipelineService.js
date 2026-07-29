@@ -170,12 +170,15 @@ module.exports = {
                         break;
                     }
                 }
-                if (value) {
+                if (value !== null && value !== undefined && value !== '') {
                     queryStr[propertyName] = value;
                 }
             } else if (propertyValue.startsWith('$')) {
                 propertyValue = propertyValue.substring(1, propertyValue.length);
-                if (model[propertyValue]) {
+                if (Object.prototype.hasOwnProperty.call(model, propertyValue) &&
+                    model[propertyValue] !== null &&
+                    model[propertyValue] !== undefined &&
+                    model[propertyValue] !== '') {
                     queryStr[propertyName] = model[propertyValue];
                 } else {
                     throw new Error('could not find a valid property ' + propertyName);

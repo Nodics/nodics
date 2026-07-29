@@ -23,6 +23,115 @@ module.exports = {
     responseHandler: {
         mediaContentResponseHandler: 'DefaultMediaContentResponseHandlerService'
     },
+    backofficeCapabilities: {
+        media: {
+            enabled: true,
+            capabilityId: 'media-management',
+            displayName: 'Media Management',
+            category: 'platform',
+            icon: 'media',
+            contractVersion: 1,
+            minimumClientContractVersion: 1,
+            roles: ['FUNCTIONAL_CAPABILITY_PROVIDER'],
+            discovery: {
+                openApiPath: '/nodics/media/v0/contract/openapi',
+                contractVersion: 1
+            },
+            requiredPermissions: ['media.storage.policy.view'],
+            navigation: [
+                {
+                    id: 'media-management',
+                    label: 'Media Management',
+                    route: '/media-management',
+                    icon: 'media',
+                    order: 100,
+                    group: { id: 'media-management', label: 'Media Management', order: 250 },
+                    perspectives: ['operations'],
+                    contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'ACTIVE',
+                    requiredPermissions: ['media.storage.policy.view']
+                },
+                {
+                    id: 'media',
+                    parentId: 'media-management',
+                    label: 'Media',
+                    route: '/media-management/media',
+                    icon: 'media',
+                    order: 110,
+                    group: { id: 'media-management', label: 'Media Management', order: 250 },
+                    perspectives: ['operations'],
+                    contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'PREVIEW',
+                    requiredPermissions: ['media.storage.policy.view']
+                },
+                {
+                    id: 'media-folders',
+                    parentId: 'media-management',
+                    label: 'Media Folders',
+                    route: '/media-management/folders',
+                    icon: 'folder',
+                    order: 120,
+                    group: { id: 'media-management', label: 'Media Management', order: 250 },
+                    perspectives: ['operations'],
+                    contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'PREVIEW',
+                    requiredPermissions: ['media.storage.policy.view']
+                },
+                {
+                    id: 'media-sets',
+                    parentId: 'media-management',
+                    label: 'Media Sets',
+                    route: '/media-management/sets',
+                    icon: 'gallery',
+                    order: 130,
+                    group: { id: 'media-management', label: 'Media Management', order: 250 },
+                    perspectives: ['operations'],
+                    contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'PREVIEW',
+                    requiredPermissions: ['media.storage.policy.view']
+                },
+                {
+                    id: 'media-formats',
+                    parentId: 'media-management',
+                    label: 'Media Formats',
+                    route: '/media-management/formats',
+                    icon: 'format',
+                    order: 140,
+                    group: { id: 'media-management', label: 'Media Management', order: 250 },
+                    perspectives: ['operations'],
+                    contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'PREVIEW',
+                    requiredPermissions: ['media.storage.policy.view']
+                },
+                {
+                    id: 'media-usage',
+                    parentId: 'media-management',
+                    label: 'Media Usage',
+                    route: '/media-management/usage',
+                    icon: 'reference',
+                    order: 150,
+                    group: { id: 'media-management', label: 'Media Management', order: 250 },
+                    perspectives: ['operations'],
+                    contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'PREVIEW',
+                    requiredPermissions: ['media.storage.policy.view']
+                },
+                {
+                    id: 'storage-delivery',
+                    parentId: 'media-management',
+                    label: 'Storage and Delivery',
+                    route: '/media-management/storage-delivery',
+                    icon: 'storage',
+                    order: 160,
+                    group: { id: 'media-management', label: 'Media Management', order: 250 },
+                    perspectives: ['operations'],
+                    contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'PREVIEW',
+                    requiredPermissions: ['media.storage.policy.view']
+                }
+            ]
+        }
+    },
     media: {
         storage: {
             defaultProvider: 'local',
@@ -30,6 +139,7 @@ module.exports = {
             keyStrategies: {
                 default: 'tenantEnterpriseSchemaDateMedia',
                 importSources: 'tenantEnterpriseSchemaDateMedia',
+                exportFiles: 'tenantEnterpriseSchemaDateMedia',
                 cmsAssets: 'tenantEnterpriseSchemaDateMedia',
                 productAssets: 'tenantEnterpriseSchemaDateMedia'
             },
@@ -95,7 +205,7 @@ module.exports = {
         folders: {
             default: {
                 code: 'default',
-                storagePrefix: 'utils',
+                storagePrefix: 'media/utility',
                 access: 'PRIVATE',
                 allowedExtensions: [],
                 allowedMimeTypes: [],
@@ -104,7 +214,7 @@ module.exports = {
             },
             importSources: {
                 code: 'importSources',
-                storagePrefix: 'data',
+                storagePrefix: 'data/import',
                 access: 'PRIVATE',
                 allowedExtensions: ['csv', 'json', 'xls', 'xlsx'],
                 allowedMimeTypes: [
@@ -116,9 +226,25 @@ module.exports = {
                 maximumFileSizeBytes: 52428800,
                 retentionDays: 30
             },
+            exportFiles: {
+                code: 'exportFiles',
+                storagePrefix: 'data/export',
+                access: 'PRIVATE',
+                allowedExtensions: ['csv', 'json', 'pdf', 'xls', 'xlsx', 'zip'],
+                allowedMimeTypes: [
+                    'application/json',
+                    'application/pdf',
+                    'application/vnd.ms-excel',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'application/zip',
+                    'text/csv'
+                ],
+                maximumFileSizeBytes: 52428800,
+                retentionDays: 30
+            },
             cmsAssets: {
                 code: 'cmsAssets',
-                storagePrefix: 'content',
+                storagePrefix: 'media/content',
                 access: 'PUBLIC',
                 allowedExtensions: ['gif', 'jpeg', 'jpg', 'pdf', 'png', 'svg', 'webp'],
                 allowedMimeTypes: ['application/pdf', 'image/gif', 'image/jpeg', 'image/png', 'image/svg+xml', 'image/webp'],
@@ -127,7 +253,7 @@ module.exports = {
             },
             productAssets: {
                 code: 'productAssets',
-                storagePrefix: 'products',
+                storagePrefix: 'media/product',
                 access: 'PUBLIC',
                 allowedExtensions: ['gif', 'jpeg', 'jpg', 'pdf', 'png', 'webp'],
                 allowedMimeTypes: ['application/pdf', 'image/gif', 'image/jpeg', 'image/png', 'image/webp'],
@@ -144,7 +270,8 @@ module.exports = {
             zoom: { code: 'zoom', description: 'High-detail zoom media variant' },
             desktop: { code: 'desktop', description: 'Desktop presentation media' },
             mobile: { code: 'mobile', description: 'Mobile presentation media' },
-            importFile: { code: 'importFile', description: 'File staged for governed data import' }
+            importFile: { code: 'importFile', description: 'File staged for governed data import' },
+            exportFile: { code: 'exportFile', description: 'File generated by governed data export' }
         },
         referenceLookup: {
             requireServiceToken: true,
@@ -163,7 +290,7 @@ module.exports = {
             allowedStatuses: ['READY', 'CONSUMED'],
             publicAccessEnabled: true,
             signedAccessEnabled: false,
-            privateAccessEnabled: false,
+            privateAccessEnabled: true,
             maximumResults: 2,
             cacheControl: 'public, max-age=3600',
             contentDisposition: 'inline'

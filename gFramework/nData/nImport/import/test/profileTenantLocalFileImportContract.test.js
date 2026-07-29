@@ -195,8 +195,21 @@ async function processPreparedImport(request, processor, headerName, dataFileNam
     let csvResult = await processPreparedImport(request, csvProcessor, 'defaultTenantCsv', 'defaultTenantCsvData_csv');
     assert.strictEqual(csvResult.headerName, 'defaultTenantCsv');
     assert.strictEqual(csvResult.dataFileName, 'defaultTenantCsvData_csv');
-    assert.deepStrictEqual(csvResult.models.map(model => model.code), ['testOne']);
-    assert.strictEqual(csvResult.models[0].description, 'This tenant is just for testing purpose');
+    assert.deepStrictEqual(csvResult.models.map(model => model.code), [
+        'testOne',
+        'testTwo',
+        'testThree',
+        'testFour',
+        'testFive',
+        undefined,
+        'testSeven',
+        'testEight',
+        'testNine',
+        'testTen'
+    ]);
+    assert.strictEqual(csvResult.models[0].description, 'This tenant is just for testing purpose Import');
+    assert.strictEqual(csvResult.models[5].description, 'Intentional failure row missing tenant code');
+    assert.strictEqual(csvResult.models[7].active, 'notABoolean');
 
     let xlsxResult = await processPreparedImport(request, excelProcessor, 'defaultTenantExcel', 'defaultTenantExcelData_xlsx');
     assert.strictEqual(xlsxResult.headerName, 'defaultTenantExcel');

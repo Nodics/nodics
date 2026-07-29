@@ -2,11 +2,11 @@
     "contractVersion": 1,
     "module": "cms",
     "dataType": "init",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Content Management init data",
     "files": {
         "data/content/defaultCmsSiteData.js": "66abc5dcbe43fdb4383aad00ce780acc82c352b0e8798a351cc0a7547eea9b58",
-        "data/content/defaultCmsTypeCodeData.js": "8d12b55beddb098c1b4178f928c7e3493a1a95d108fcefac3750ddd0f70f5744",
+        "data/content/defaultCmsTypeCodeData.js": "3c1151e81e1a5db1bcd6133441c93b59b6160840c6e2ded447985dcd786bad7b",
         "data/user/defaultCmsEmployeeData.js": "8eae13201575e98d3397917407f6f2dd5c8bc53c5c6f9ab1e400c3c52a4cbde8",
         "data/user/defaultCmsUserGroupsData.js": "61fbcc1b2b33224336af980844cc41bcd6be05852abbc8f8013af56a7e641984",
         "headers/content/defaultCmsSiteDataHeader.js": "ddaa741f8ae8975ecaecf803675bf72610b3405ece68de5c2d49374eb3a2c53c",

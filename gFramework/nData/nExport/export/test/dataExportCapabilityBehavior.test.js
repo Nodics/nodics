@@ -30,6 +30,19 @@ global.CONFIG = {
                 NodicsError: 'ERR_SYS_00000'
             };
         }
+        if (key === 'dataExport') {
+            return {
+                enabled: true,
+                allowedFormats: ['csv', 'json'],
+                defaultFormat: 'csv',
+                maximumRecords: 100,
+                pageSize: 10,
+                media: {
+                    folderCode: 'exportFiles',
+                    formatCode: 'exportFile'
+                }
+            };
+        }
         if (key === 'returnErrorStack') {
             return false;
         }
@@ -85,6 +98,7 @@ global.FACADE = {
 };
 
 const controller = require('../src/controller/DataExportController');
+const routerConfig = require('../src/router/routers');
 
 (async function () {
     let request = {
@@ -112,8 +126,8 @@ const controller = require('../src/controller/DataExportController');
         }
     });
     assert(exportError instanceof global.CLASSES.NodicsError);
-    assert.strictEqual(exportError.code, 'ERR_SYS_00001');
-    assert(exportError.message.includes('Data export service is not configured'));
+    assert.strictEqual(exportError.code, 'ERR_SYS_00003');
+    assert(exportError.message.includes('Export module is invalid'));
 
     let selectedModels = [{
         code: 'product-001',
@@ -121,8 +135,9 @@ const controller = require('../src/controller/DataExportController');
     }];
     global.SERVICE.DefaultSchemaReadAccessPolicyService = {
         applyExportPolicies: function (policyRequest, policyResponse) {
-            assert.strictEqual(policyRequest.tenant, 'electronics');
-            assert.strictEqual(policyRequest.schemaModel.schemaName, 'product');
+            if (policyRequest.schemaModel.schemaName === 'product') {
+                assert.strictEqual(policyRequest.tenant, 'electronics');
+            }
             delete policyResponse.success.result[0].internalCost;
             policyResponse.success.policy = {
                 action: 'export',
@@ -145,6 +160,107 @@ const controller = require('../src/controller/DataExportController');
         code: 'product-001',
         internalCost: 99
     }]);
+
+    global.SERVICE.DefaultSchemaWorkbenchService = {
+        get: function (workbenchRequest) {
+            assert.strictEqual(workbenchRequest.moduleName, 'profile');
+            assert.strictEqual(workbenchRequest.httpRequest.params.schema, 'tenant');
+            return Promise.resolve({
+                data: {
+                    label: 'Tenant',
+                    fields: [
+                        { name: 'code', type: 'string' },
+                        { name: 'description', type: 'string' },
+                        { name: 'properties', type: 'object' }
+                    ],
+                    queryCapabilities: {
+                        allowedPageSizes: [10],
+                        defaultPageSize: 10,
+                        maximumPageSize: 10,
+                        defaultSort: { field: 'code', direction: 'ASC' },
+                        sortableFields: ['code']
+                    }
+                }
+            });
+        },
+        search: function (workbenchRequest) {
+            assert.strictEqual(workbenchRequest.moduleName, 'profile');
+            assert.strictEqual(workbenchRequest.httpRequest.params.schema, 'tenant');
+            assert.strictEqual(workbenchRequest.httpRequest.body.pageSize, 10);
+            return Promise.resolve({
+                data: {
+                    records: [
+                        { code: 'default', description: 'Default tenant', internalCost: 99 },
+                        { code: 'qa', description: 'QA tenant', internalCost: 88 }
+                    ],
+                    totalCount: 2
+                }
+            });
+        }
+    };
+    global.SERVICE.DefaultMediaUploadService = {
+        upload: function (mediaRequest) {
+            assert.strictEqual(mediaRequest.folderCode, 'exportFiles');
+            assert.strictEqual(mediaRequest.formatCode, 'exportFile');
+            assert.strictEqual(mediaRequest.moduleName, 'profile');
+            assert.strictEqual(mediaRequest.schemaName, 'tenant');
+            assert.strictEqual(mediaRequest.files.length, 1);
+            assert(Buffer.isBuffer(mediaRequest.files[0].buffer));
+            return Promise.resolve({
+                code: 'tenant-export-test',
+                accessUrl: '/nodics/media/v0/content/tenant-export-test',
+                originalFileName: mediaRequest.files[0].originalFileName
+            });
+        }
+    };
+    global.NODICS = {
+        getModels: function (moduleName, tenant) {
+            assert.strictEqual(moduleName, 'profile');
+            assert.strictEqual(tenant, 'default');
+            return {
+                Tenant: {
+                    schemaName: 'tenant'
+                }
+            };
+        }
+    };
+    global.UTILS.createModelName = function (schemaName) {
+        return schemaName.charAt(0).toUpperCase() + schemaName.slice(1);
+    };
+
+    let exportResult = await global.SERVICE.DataExportService.export({
+        tenant: 'default',
+        authData: {
+            enterprise: {
+                code: 'default'
+            }
+        },
+        export: {
+            moduleName: 'profile',
+            schemaName: 'tenant',
+            format: 'csv',
+            query: {
+                search: 'default'
+            }
+        }
+    });
+
+    assert.strictEqual(exportResult.code, 'SUC_SYS_00000');
+    assert.strictEqual(exportResult.data.media.code, 'tenant-export-test');
+    assert.strictEqual(exportResult.data.summary.exportedRecords, 2);
+
+    assert.strictEqual(typeof controller.downloadGeneratedExport, 'undefined',
+        'nExport must not expose a duplicate download controller operation');
+    assert.strictEqual(typeof global.FACADE.DataExportFacade.downloadGeneratedExport, 'undefined',
+        'nExport must not expose a duplicate download facade operation');
+    assert.strictEqual(typeof global.SERVICE.DataExportService.downloadGeneratedExport, 'undefined',
+        'nExport must not expose a duplicate download service operation');
+    const exportRoute = routerConfig.export.dataExport.exportPost;
+    assert.strictEqual(exportRoute.key, '/export');
+    assert.strictEqual(exportRoute.controller, 'DataExportController');
+    assert.strictEqual(exportRoute.operation, 'export');
+    assert.strictEqual(exportRoute.permission, 'export.run');
+    assert.strictEqual(exportRoute.apiExposure, 'dataExport');
 
     console.log('Data export capability behavior validated');
 })().catch((error) => {
