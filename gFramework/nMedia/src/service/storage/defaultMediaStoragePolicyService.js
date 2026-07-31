@@ -57,6 +57,94 @@ module.exports = {
     },
 
     /**
+     * Returns a copy of configured media context descriptors.
+     *
+     * @returns {Object} Configured media contexts keyed by context code.
+     */
+    getContextPolicies: function () {
+        let configuration = this.getConfiguration();
+        return configuration.contexts || {};
+    },
+
+    /**
+     * Returns ordered backend-owned media context metadata for clients such as Axis.
+     *
+     * @returns {Array<Object>} Safe media context metadata.
+     */
+    listMediaContexts: function () {
+        let contexts = this.getContextPolicies();
+        return Object.keys(contexts).map(code => this.projectMediaContext(code, contexts[code]));
+    },
+
+    /**
+     * Projects one configured media context without exposing provider internals.
+     *
+     * @param {string} code Context code.
+     * @param {Object} context Configured context descriptor.
+     * @returns {Object} Safe media context projection.
+     */
+    projectMediaContext: function (code, context) {
+        context = context || {};
+        let folderCodes = this.copyStringList(context.folderCodes);
+        let defaultFolderCode = context.defaultFolderCode || folderCodes[0] || 'default';
+        let allowedFolderCodes = folderCodes.length ? folderCodes : [defaultFolderCode];
+        return {
+            code: context.code || code,
+            label: context.label || context.code || code,
+            description: context.description || '',
+            folderCodes: allowedFolderCodes,
+            defaultFolderCode: defaultFolderCode,
+            allowedFolders: allowedFolderCodes.map(folderCode => this.projectFolderPolicy(folderCode)),
+            allowedFormatCodes: this.copyStringList(context.allowedFormatCodes),
+            defaultFormatCode: context.defaultFormatCode || 'original',
+            defaultModuleName: context.defaultModuleName,
+            defaultSchemaName: context.defaultSchemaName,
+            targetRequired: context.targetRequired === true,
+            manualUploadEnabled: context.manualUploadEnabled === true,
+            storageRouteTemplate: context.storageRouteTemplate || ''
+        };
+    },
+
+    /**
+     * Projects one folder policy as safe client metadata.
+     *
+     * @param {string} folderCode Folder code.
+     * @returns {Object} Safe folder policy projection.
+     */
+    projectFolderPolicy: function (folderCode) {
+        let folder = this.getFolderPolicy(folderCode);
+        let configuration = this.getConfiguration();
+        let upload = configuration.upload || {};
+        let allowedExtensions = folder.allowedExtensions && folder.allowedExtensions.length ? folder.allowedExtensions : upload.defaultAllowedExtensions || [];
+        let allowedMimeTypes = folder.allowedMimeTypes && folder.allowedMimeTypes.length ? folder.allowedMimeTypes : upload.defaultAllowedMimeTypes || [];
+        return {
+            folderCode: folder.code,
+            storagePrefix: folder.storagePrefix,
+            access: folder.access,
+            retentionDays: Number(folder.retentionDays || 0),
+            uploadPolicy: {
+                maximumFileSizeBytes: Number(folder.maximumFileSizeBytes || upload.maximumFileSizeBytes || 0),
+                allowedExtensions: this.copyStringList(allowedExtensions),
+                allowedMimeTypes: this.copyStringList(allowedMimeTypes),
+                checksumAlgorithm: upload.checksumAlgorithm || 'sha256'
+            }
+        };
+    },
+
+    /**
+     * Copies a string array from configuration while dropping blank values.
+     *
+     * @param {Array<string>} values Configured values.
+     * @returns {Array<string>} Safe string values.
+     */
+    copyStringList: function (values) {
+        if (!Array.isArray(values)) {
+            return [];
+        }
+        return values.filter(value => typeof value === 'string' && value.trim()).map(value => value.trim());
+    },
+
+    /**
      * Returns the selected storage provider configuration.
      *
      * @param {string} providerCode Optional provider code.
@@ -153,4 +241,3 @@ module.exports = {
         return extension;
     }
 };
-

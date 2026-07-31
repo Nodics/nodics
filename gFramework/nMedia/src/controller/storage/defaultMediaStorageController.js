@@ -53,6 +53,20 @@ module.exports = {
         }
     },
     /**
+     * Lists safe backend-owned media source context metadata.
+     *
+     * @param {Object} request Nodics request wrapper.
+     * @param {Function} callback Optional callback used by router pipeline.
+     * @returns {Promise<Object>|void} Context metadata response or callback result.
+     */
+    listMediaContexts: function (request, callback) {
+        if (callback) {
+            FACADE.DefaultMediaStorageFacade.listMediaContexts().then(success => callback(null, success)).catch(error => callback(error));
+        } else {
+            return FACADE.DefaultMediaStorageFacade.listMediaContexts();
+        }
+    },
+    /**
      * Resolves a safe provider storage location for a media descriptor.
      *
      * @param {Object} request Nodics request wrapper.

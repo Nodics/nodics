@@ -68,9 +68,9 @@ back to the active server path plus `fallbackRelativeBasePath` such as
 `temp/media`. Do not create a repository-root `runtime/` directory. Provider
 services own storage mechanics only; key strategy services own logical path
 shape such as `{purpose}/{tenant}/{enterprise}/{schema}/{yyyy}/{mm}/{mediaCode}.{extension}`.
-The OOTB purpose prefix is folder-policy driven: `data` for import sources,
-`content` for CMS assets, `products` for product assets, and `utils` for
-general media.
+The OOTB purpose prefix is folder-policy driven: `data/import` for import
+sources, `data/export` for export files, `media/content` for CMS assets,
+`media/product` for product assets, and `media/utility` for general media.
 
 For import uploads, Axis must collect the business destination first, then the
 target model/schema, then the file. The selected schema comes from the governed

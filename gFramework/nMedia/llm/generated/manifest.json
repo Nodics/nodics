@@ -14,12 +14,12 @@
     "description": "Nodics framework media lifecycle capability for storage-provider-neutral assets."
   },
   "sourceFiles": 24,
-  "testFiles": 33,
+  "testFiles": 34,
   "dataFiles": 0,
-  "ownedFiles": 41,
-  "sourceFingerprint": "9630febd5b4b02bf5bb969a59afa2d1b88a77e2d5613f3ee0a473bfc3580a61b",
+  "ownedFiles": 42,
+  "sourceFingerprint": "42bd4e6a44792c7a02117af75367bb6ac8c8b61bcc4012317c51158eef2cf1bc",
   "documentation": {
-    "documented": 37,
+    "documented": 38,
     "partially-documented": 0,
     "undocumented": 0,
     "inventory-only": 4

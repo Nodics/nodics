@@ -22,6 +22,7 @@ const { assertRouteContracts } = require('../../nRouter/test/routerContractTestU
 const routerConfig = require('../src/router/routers');
 
 const expectedRoutes = [
+    { key: '/contexts', method: 'GET', controller: 'DefaultMediaStorageController', operation: 'listMediaContexts', secured: true, permission: 'media.context.view' },
     { key: '/storage/policy', method: 'POST', controller: 'DefaultMediaStorageController', operation: 'resolveStoragePolicy', secured: true, permission: 'media.storage.policy.view' },
     { key: '/storage/location', method: 'POST', controller: 'DefaultMediaStorageController', operation: 'resolveStorageLocation', secured: true, permission: 'media.storage.location.resolve' },
     { key: '/storage/upload', method: 'POST', controller: 'DefaultMediaStorageController', operation: 'uploadMedia', secured: true, permission: 'media.upload.create' },

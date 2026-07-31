@@ -5,6 +5,7 @@
 ## Hand-Authored Tests
 
 - `gFramework/nMedia/test/mediaBusinessOwnershipBoundary.test.js`
+- `gFramework/nMedia/test/mediaContextPolicyContract.test.js`
 - `gFramework/nMedia/test/mediaDeliveryContract.test.js`
 - `gFramework/nMedia/test/mediaImportSourceResolverContract.test.js`
 - `gFramework/nMedia/test/mediaMultipartUploadBodyParserContract.test.js`

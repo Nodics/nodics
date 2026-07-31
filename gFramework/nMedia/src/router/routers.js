@@ -19,6 +19,23 @@
 module.exports = {
     media: {
         storagePolicy: {
+            listMediaContexts: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'media.context.view',
+                apiExposure: 'mediaManagement',
+                key: '/contexts',
+                method: 'GET',
+                controller: 'DefaultMediaStorageController',
+                operation: 'listMediaContexts',
+                help: {
+                    requestType: 'secured',
+                    message: 'Returns backend-owned media source context metadata for upload and management clients. Does not expose provider secrets.',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/media/v0/contexts'
+                },
+                responses: { '200': { description: 'Media source context metadata' } }
+            },
             resolveStoragePolicy: {
                 secured: true,
                 accessGroups: ['userGroup'],

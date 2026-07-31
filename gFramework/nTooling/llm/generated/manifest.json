@@ -14,14 +14,14 @@
     "description": "Non-runtime Nodics development, quality, generation, and command tooling."
   },
   "sourceFiles": 30,
-  "testFiles": 19,
+  "testFiles": 21,
   "dataFiles": 0,
-  "ownedFiles": 58,
-  "sourceFingerprint": "e47bbc07b8afd2a956b66fda7ee13be089626259f1fd7b11895a58391e45c6f7",
+  "ownedFiles": 61,
+  "sourceFingerprint": "d848c27b6131e893d7e470fe201b5dd9a381464384ffa56cceae969e9e37f7c4",
   "documentation": {
-    "documented": 54,
+    "documented": 56,
     "partially-documented": 0,
-    "undocumented": 0,
+    "undocumented": 1,
     "inventory-only": 4
   },
   "schemaGroups": {},

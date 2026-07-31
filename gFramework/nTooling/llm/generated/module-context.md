@@ -25,9 +25,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 30 |
-| Test files | 19 |
+| Test files | 21 |
 | Data files | 0 |
-| All module-owned files | 58 |
+| All module-owned files | 61 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -53,9 +53,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 54 |
+| Documented | 56 |
 | Partially documented | 0 |
-| Undocumented | 0 |
+| Undocumented | 1 |
 | Inventory only | 4 |
 
 ## Important Files
@@ -76,6 +76,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gFramework/nTooling/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gFramework/nTooling/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gFramework/nTooling/bin/generate-data-release-manifests.js` | `bin` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nTooling/bin/nodics-tool.js` | `bin` | `documented` | 0/0 | CLI entrypoint that delegates non-runtime commands to the governed, project-aware tooling command service. |  |
 | `gFramework/nTooling/config/postscripts.js` | `config` | `documented` | 0/0 | Reserved post-script contribution required by the module structure contract; nTooling does not execute during runtime startup. |  |
 | `gFramework/nTooling/config/prescripts.js` | `config` | `documented` | 0/0 | Reserved pre-script contribution required by the module structure contract; nTooling does not execute during runtime startup. |  |
@@ -113,9 +114,11 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/src/service/quality/defaultDocumentationGatesQualityService.js` | `src` | `documented` | 0/0 | Applies project-overridable documentation governance configuration to enforced and report-only coverage gates. |  |
 | `gFramework/nTooling/src/service/quality/defaultDocumentationNavigationQualityService.js` | `src` | `documented` | 0/0 | Validates public documentation links, path case, entry-point reachability, page continuation, and exhaustive module README navigation. |  |
 | `gFramework/nTooling/src/service/quality/defaultStructureComplianceQualityService.js` | `src` | `documented` | 0/0 | Audits Nodics module, project, environment, server, and node structure against the canonical structure matrix without mutating source files. |  |
+| `gFramework/nTooling/test/aiGovernanceValidation.test.js` | `test` | `documented` | 0/0 | Verifies that repository-root AI governance and shared memory are owned by gSetup/llm while module-shaped packages retain local llm entrypoints. |  |
 | `gFramework/nTooling/test/copyrightHeaderGovernance.test.js` | `test` | `documented` | 0/0 | Validates Nodics copyright header detection and normalization. |  |
 | `gFramework/nTooling/test/dependencyOwnershipContract.test.js` | `test` | `documented` | 0/0 | Verifies package dependency ownership so external providers, runtime frameworks, and shared utilities remain declared by their owning Nodics capability modules while the root package remains the install aggregator for the repository. |  |
 | `gFramework/nTooling/test/dependencyRuntimeContract.test.js` | `test` | `documented` | 0/0 | Verifies the repository declares supported Node.js/npm versions, package-lock ownership, and release dependency validation commands. |  |
+| `gFramework/nTooling/test/designPrincipleAiGovernanceContract.test.js` | `test` | `documented` | 0/0 | Ensures the design-principle audit cannot pass while canonical AI governance is invalid. |  |
 | `gFramework/nTooling/test/documentationNavigationQuality.test.js` | `test` | `documented` | 0/0 | Proves positive, negative, boundary, reachability, path-case, continuation, and exhaustive module-catalog documentation contracts. |  |
 | `gFramework/nTooling/test/extensibilityConfigurationBoundary.test.js` | `test` | `documented` | 0/0 | Prevents known hardcoded policy and duplicate-default patterns from returning to loader-managed runtime implementations. |  |
 | `gFramework/nTooling/test/fullTestSuiteCoverageContract.test.js` | `test` | `documented` | 0/0 | Guards the full Nodics test command surface so import, workflow, cron, NEMS, tenant, and distributed-communication coverage remains wired into executable package gates instead of living only as documentation. |  |

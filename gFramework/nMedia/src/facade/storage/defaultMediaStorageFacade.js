@@ -51,6 +51,19 @@ module.exports = {
         });
     },
     /**
+     * Lists safe backend-owned media source context metadata.
+     *
+     * @returns {Promise<Object>} Media context metadata response.
+     */
+    listMediaContexts: function () {
+        return Promise.resolve({
+            code: 'SUC_MED_00006',
+            data: {
+                contexts: SERVICE.DefaultMediaStoragePolicyService.listMediaContexts()
+            }
+        });
+    },
+    /**
      * Resolves a provider-neutral storage location descriptor.
      *
      * @param {Object} request Media descriptor request.

@@ -37,6 +37,10 @@ module.exports = {
         code: '200',
         message: 'Media content resolved successfully'
     },
+    SUC_MED_00006: {
+        code: '200',
+        message: 'Media contexts resolved successfully'
+    },
     ERR_MED_00001: {
         code: '400',
         message: 'Invalid media request'
