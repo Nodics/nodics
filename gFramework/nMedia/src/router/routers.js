@@ -36,6 +36,23 @@ module.exports = {
                 },
                 responses: { '200': { description: 'Media source context metadata' } }
             },
+            summarizeStorageProviders: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'media.storage.policy.view',
+                apiExposure: 'mediaManagement',
+                key: '/storage/providers/summary',
+                method: 'GET',
+                controller: 'DefaultMediaStorageController',
+                operation: 'summarizeStorageProviders',
+                help: {
+                    requestType: 'secured',
+                    message: 'Returns safe storage provider and delivery summary metadata without exposing paths, buckets, credentials, or secrets.',
+                    method: 'GET',
+                    url: 'http://host:port/nodics/media/v0/storage/providers/summary'
+                },
+                responses: { '200': { description: 'Safe media storage provider summary' } }
+            },
             resolveStoragePolicy: {
                 secured: true,
                 accessGroups: ['userGroup'],

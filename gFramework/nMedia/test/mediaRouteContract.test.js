@@ -23,6 +23,7 @@ const routerConfig = require('../src/router/routers');
 
 const expectedRoutes = [
     { key: '/contexts', method: 'GET', controller: 'DefaultMediaStorageController', operation: 'listMediaContexts', secured: true, permission: 'media.context.view' },
+    { key: '/storage/providers/summary', method: 'GET', controller: 'DefaultMediaStorageController', operation: 'summarizeStorageProviders', secured: true, permission: 'media.storage.policy.view' },
     { key: '/storage/policy', method: 'POST', controller: 'DefaultMediaStorageController', operation: 'resolveStoragePolicy', secured: true, permission: 'media.storage.policy.view' },
     { key: '/folders/policy', method: 'PUT', controller: 'DefaultMediaStorageController', operation: 'createFolderPolicy', secured: true, permission: 'media.folder.policy.manage' },
     { key: '/folders/policy/:folderCode', method: 'PATCH', controller: 'DefaultMediaStorageController', operation: 'saveFolderPolicy', secured: true, permission: 'media.folder.policy.manage' },

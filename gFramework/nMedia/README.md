@@ -502,6 +502,9 @@ This module currently provides the authoritative media contracts, local-provider
 - root resolution and strategy-based storage key generation that never trusts raw caller paths;
 - local provider path/URL resolution;
 - route metadata for upload policy discovery;
+- safe storage provider summary at `/nodics/media/v0/storage/providers/summary`
+  for active provider code, provider type, health, key strategy, and delivery
+  mode without exposing secrets or raw paths;
 - media-code based inline delivery at `/nodics/media/v0/content/{mediaCode}` for media that nMedia policy allows;
 - secured media-code based download at `/nodics/media/v0/download/{mediaCode}`, where `nMedia` resolves the governed file descriptor and the shared `nRouter` file-download response handler owns the HTTP download response;
 - secured upload route that consumes nMedia-parsed multipart files, stores bytes through the active nMedia provider, calculates checksum, and persists media metadata including original filename, generated storage key, relative path, backend full path, access URL, MIME type, file size, checksum, access mode, and lifecycle status;
@@ -607,6 +610,12 @@ The import descriptor used by `nImport` may include provider-internal
 information, but it must remain backend-only. Do not expose local absolute
 paths, object-store keys, bucket names, NAS paths, signed URLs, or provider
 credentials to Axis or any other browser client.
+
+Import history may be queried with `mediaCode` by operator tools that need to
+show which import runs used a media-backed source. The filter maps to the
+sanitized run-history source name `media:{mediaCode}` and stays read-only.
+Owning import execution, validation, finalization, and diagnostics remain in
+`nImport`; nMedia only owns the media lifecycle and storage boundary.
 
 ## Media Delivery And Access Policy
 

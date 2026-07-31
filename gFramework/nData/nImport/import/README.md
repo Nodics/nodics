@@ -416,11 +416,11 @@ connection details:
 
 ```js
 SERVICE.DefaultImportService.importRemoteData({
-    tenant: 'default',
-    modules: ['profile', 'catalog'],
-    remoteImport: {
-        source: 'supplierCatalog'
-    }
+  tenant: "default",
+  modules: ["profile", "catalog"],
+  remoteImport: {
+    source: "supplierCatalog",
+  },
 });
 ```
 
@@ -429,17 +429,17 @@ files under the assigned target path:
 
 ```js
 module.exports = {
-    stage: function (context) {
-        return Promise.resolve({
-            rootPath: context.targetPath,
-            files: [
-                {
-                    path: 'products.csv',
-                    sha256: '<lowercase sha256 checksum>'
-                }
-            ]
-        });
-    }
+  stage: function (context) {
+    return Promise.resolve({
+      rootPath: context.targetPath,
+      files: [
+        {
+          path: "products.csv",
+          sha256: "<lowercase sha256 checksum>",
+        },
+      ],
+    });
+  },
 };
 ```
 
@@ -462,6 +462,12 @@ history path. Each run may carry an aggregate checksum, deterministic
 fingerprint, retry metadata, duplicate-run lookup result, and rollback hook
 evidence. Duplicate protection skips history persistence only when a completed
 or validated run with the same fingerprint already exists.
+
+Operator tools may query run history with `mediaCode` to inspect runs that used
+a media-backed source. The filter is converted to the sanitized source name
+`media:{mediaCode}` and remains read-only. This gives Axis Media Management a
+safe way to show import linkage for a selected media record without exposing
+provider paths or mutating import state.
 
 Retry metadata is advisory. The framework records attempt/max-attempt state so
 project or provider-specific orchestration can decide whether to reschedule the

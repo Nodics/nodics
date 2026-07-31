@@ -67,6 +67,24 @@ module.exports = {
         }
     },
     /**
+     * Returns safe storage provider summary metadata.
+     *
+     * @param {Object} request Nodics request wrapper.
+     * @param {Function} callback Optional callback used by router pipeline.
+     * @returns {Promise<Object>|void} Provider summary response or callback result.
+     */
+    summarizeStorageProviders: function (request, callback) {
+        let input = {
+            tenant: request && request.tenant,
+            authData: request && request.authData
+        };
+        if (callback) {
+            FACADE.DefaultMediaStorageFacade.summarizeStorageProviders(input).then(success => callback(null, success)).catch(error => callback(error));
+        } else {
+            return FACADE.DefaultMediaStorageFacade.summarizeStorageProviders(input);
+        }
+    },
+    /**
      * Creates or updates a backend-owned media folder policy.
      *
      * @param {Object} request Nodics request wrapper.

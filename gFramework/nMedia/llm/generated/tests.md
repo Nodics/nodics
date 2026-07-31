@@ -17,6 +17,7 @@
 - `gFramework/nMedia/test/mediaSchemaWorkbenchContract.test.js`
 - `gFramework/nMedia/test/mediaSetEntryManagementContract.test.js`
 - `gFramework/nMedia/test/mediaStorageProviderContract.test.js`
+- `gFramework/nMedia/test/mediaStorageProviderSummaryContract.test.js`
 - `gFramework/nMedia/test/mediaUploadContract.test.js`
 
 ## Generated Tests

@@ -40,6 +40,9 @@ Use these files for rules that are more specific than root `AGENTS.md` and the m
 - `nImport` owns generic media import target acceptance, optional import
   templates, media-source acceptance, import-run staging, format parsing,
   finalization, target dispatch, diagnostics, and run history.
+- Import run history may be filtered by `mediaCode`; this is translated to the
+  sanitized source name `media:{mediaCode}` and must stay read-only for
+  BackOffice/Axis media-linkage views.
 - The secured media-backed import route is
   `POST /nodics/import/v0/media`. It accepts `mediaCode` plus either a
   generic `moduleName`/`schemaName` target or an optional future

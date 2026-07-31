@@ -102,6 +102,7 @@ global.SERVICE.DefaultImportRunHistoryService = historyService;
                 status: 'COMPLETED',
                 dataType: 'sample',
                 moduleName: 'profile',
+                mediaCode: 'tenant-upload',
                 limit: '10'
             }
         }
@@ -113,6 +114,7 @@ global.SERVICE.DefaultImportRunHistoryService = historyService;
     assert.strictEqual(historyRequest.query.status, 'COMPLETED');
     assert.strictEqual(historyRequest.query.dataType, 'sample');
     assert.strictEqual(historyRequest.query.modules, 'profile');
+    assert.strictEqual(historyRequest.query.sourceName, 'media:tenant-upload');
     assert.strictEqual(historyRequest.searchOptions.limit, 10);
 
     let detail = await historyService.getImportRun({

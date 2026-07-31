@@ -175,6 +175,24 @@ module.exports = {
     },
 
     /**
+     * Returns safe local-provider health metadata without exposing the local path.
+     *
+     * @param {Object} request Provider summary request.
+     * @returns {Object} Safe health summary.
+     */
+    summarizeHealth: function (request) {
+        let provider = request && request.provider || {};
+        let basePath = provider.basePath;
+        let rootMode = !basePath ? 'SERVER_RUNTIME_FALLBACK' : path.isAbsolute(basePath) ? 'CONFIGURED_ABSOLUTE' : 'CONFIGURED_RELATIVE';
+        return {
+            status: provider.enabled === true ? 'AVAILABLE' : 'DISABLED',
+            rootMode: rootMode,
+            pathExposed: false,
+            message: provider.enabled === true ? 'Local media provider is configured.' : 'Local media provider is disabled.'
+        };
+    },
+
+    /**
      * Resolves a public-facing access URL. Stored media uses media code as
      * the external handle so storage keys remain provider-owned metadata.
      *

@@ -251,6 +251,7 @@ module.exports = {
                         dataType: 'Optional import data type',
                         tenant: 'Optional tenant code',
                         moduleName: 'Optional module name',
+                        mediaCode: 'Optional nMedia code for media-backed import run lookup',
                         limit: 'Optional page size',
                         skip: 'Optional page offset'
                     }

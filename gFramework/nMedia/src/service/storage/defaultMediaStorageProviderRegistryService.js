@@ -110,5 +110,86 @@ module.exports = {
             provider: context.policy.provider,
             storage: context.policy.storage
         }));
+    },
+
+    /**
+     * Returns safe operational storage-provider metadata for BackOffice users.
+     *
+     * @param {Object} request Summary request.
+     * @returns {Object} Safe provider summary.
+     */
+    summarizeProviders: function (request) {
+        let configuration = SERVICE.DefaultMediaStoragePolicyService.getConfiguration();
+        let storage = configuration.storage || {};
+        let providers = storage.providers || {};
+        let defaultProvider = storage.defaultProvider || 'local';
+        return {
+            activeProviderCode: defaultProvider,
+            keyStrategyName: storage.defaultKeyStrategy || 'default',
+            delivery: SERVICE.DefaultMediaStoragePolicyService.projectDeliveryPolicy(),
+            providers: Object.keys(providers).sort().map(code => this.projectProviderSummary(code, providers[code], code === defaultProvider))
+        };
+    },
+
+    /**
+     * Projects one provider without exposing paths, buckets, credentials, or secrets.
+     *
+     * @param {string} code Provider code.
+     * @param {Object} provider Provider configuration.
+     * @param {boolean} active Active provider flag.
+     * @returns {Object} Safe provider summary.
+     */
+    projectProviderSummary: function (code, provider, active) {
+        provider = provider || {};
+        let serviceName = provider.service || '';
+        let service = serviceName && SERVICE ? SERVICE[serviceName] : undefined;
+        let providerType = this.providerType(code);
+        let health = service && typeof service.summarizeHealth === 'function'
+            ? service.summarizeHealth({ providerCode: code, provider: provider, active: active })
+            : { status: provider.enabled === true ? 'UNKNOWN' : 'DISABLED', message: provider.enabled === true ? 'Provider health is not published yet.' : 'Provider is disabled.' };
+        return {
+            providerCode: code,
+            providerType: providerType,
+            active: active,
+            enabled: provider.enabled === true,
+            health: health,
+            deliveryMode: this.deliveryMode(provider),
+            secretsHidden: true,
+            rawPathsHidden: true
+        };
+    },
+
+    /**
+     * Resolves a provider type from the configured provider code.
+     *
+     * @param {string} code Provider code.
+     * @returns {string} Provider type.
+     */
+    providerType: function (code) {
+        return ({
+            local: 'LOCAL_FILESYSTEM',
+            nas: 'SHARED_FILESYSTEM',
+            s3: 'S3_COMPATIBLE',
+            azureBlob: 'AZURE_BLOB',
+            gcpStorage: 'GCP_STORAGE',
+            ftp: 'FTP',
+            sftp: 'SFTP'
+        })[code] || 'CUSTOM';
+    },
+
+    /**
+     * Resolves a safe delivery mode label without returning URLs or secrets.
+     *
+     * @param {Object} provider Provider configuration.
+     * @returns {string} Delivery mode.
+     */
+    deliveryMode: function (provider) {
+        if (!provider || provider.enabled !== true) {
+            return 'DISABLED';
+        }
+        if (provider.baseUrl) {
+            return 'MEDIA_ENDPOINT';
+        }
+        return 'BACKEND_DELIVERY';
     }
 };

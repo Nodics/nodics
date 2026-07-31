@@ -227,6 +227,21 @@ customize contexts by overriding only the relevant `media.contexts` entries or
 by overriding `DefaultMediaStoragePolicyService` in a later module. They must
 not duplicate this mapping in Axis, CMS, Product, nImport, or nExport.
 
+Storage provider summary is exposed as a safe operator projection:
+
+```text
+GET /nodics/media/v0/storage/providers/summary
+```
+
+It is exposed through `mediaManagement` with permission
+`media.storage.policy.view`. The response may include active provider code,
+provider type, active/enabled flags, coarse provider health, configured key
+strategy name, and delivery mode. It must hide provider credentials, local or
+NAS absolute paths, object-store buckets or keys, certificates, signed URL
+secrets, and raw storage descriptors. Axis may display this summary as an
+operations aid, but it must not become a provider configuration console or a
+second storage authority.
+
 ## Storage Root Resolution Contract
 
 Storage root resolution is provider-owned backend behavior. Frontend clients,

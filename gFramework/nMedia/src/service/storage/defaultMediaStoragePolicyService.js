@@ -490,6 +490,24 @@ module.exports = {
     },
 
     /**
+     * Projects safe delivery policy metadata for BackOffice operations.
+     *
+     * @returns {Object} Safe delivery policy summary.
+     */
+    projectDeliveryPolicy: function () {
+        let configuration = this.getConfiguration();
+        let delivery = configuration.delivery || {};
+        return {
+            enabled: delivery.enabled === true,
+            publicAccessEnabled: delivery.publicAccessEnabled === true,
+            signedAccessEnabled: delivery.signedAccessEnabled === true,
+            privateAccessEnabled: delivery.privateAccessEnabled === true,
+            cacheControl: delivery.cacheControl || '',
+            contentDisposition: delivery.contentDisposition || 'inline'
+        };
+    },
+
+    /**
      * Copies a string array from configuration while dropping blank values.
      *
      * @param {Array<string>} values Configured values.

@@ -64,6 +64,18 @@ module.exports = {
         });
     },
     /**
+     * Returns safe operational storage-provider metadata.
+     *
+     * @param {Object} request Provider summary request.
+     * @returns {Promise<Object>} Provider summary response.
+     */
+    summarizeStorageProviders: function (request) {
+        return Promise.resolve({
+            code: 'SUC_MED_00018',
+            data: SERVICE.DefaultMediaStorageProviderRegistryService.summarizeProviders(request)
+        });
+    },
+    /**
      * Creates or updates one effective media folder policy.
      *
      * @param {Object} request Folder policy mutation request.

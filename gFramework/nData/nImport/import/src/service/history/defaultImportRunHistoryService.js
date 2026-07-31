@@ -341,7 +341,25 @@ module.exports = {
         if (filters.moduleName) {
             query.modules = filters.moduleName;
         }
+        if (filters.mediaCode) {
+            query.sourceName = 'media:' + this.safeMediaCode(filters.mediaCode);
+        }
         return query;
+    },
+
+    /**
+     * Normalizes a media code for import-history lookup without exposing media
+     * storage authority to nImport.
+     *
+     * @param {string} value Media code.
+     * @returns {string} Safe media code.
+     */
+    safeMediaCode: function (value) {
+        let code = String(value || '').trim();
+        if (!/^[A-Za-z][A-Za-z0-9._-]{0,127}$/.test(code)) {
+            throw this.createUnavailableError('Import run history media code is invalid');
+        }
+        return code;
     },
 
     /**
