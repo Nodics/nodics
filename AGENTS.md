@@ -89,6 +89,13 @@ The expected posture is:
   the nearest `AGENTS.md`, README, `llm/contracts`, `llm/examples`, generated
   context, and focused tests as applicable. Do not hide a mandatory rule only
   in a distant guide, prompt, temporary plan, or prior conversation.
+- Treat the root `package.json` as the only dependency installation authority.
+  Module `package.json` files are module metadata only: they identify ownership,
+  kind, runtime flags, composition, loader behavior, and governance metadata,
+  but must not declare `dependencies` or `devDependencies`. When adding or
+  changing an npm package, update root `package.json`, root dependency
+  governance ownership metadata, `package-lock.json`, and the relevant tests;
+  do not duplicate versions in module manifests.
 - Significant capability documentation must include successful, rejected,
   boundary/scale, failure/recovery, and later-layer customization use cases.
   It must address business evaluators, business users, administrators/operators,

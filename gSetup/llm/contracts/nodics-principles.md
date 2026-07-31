@@ -145,6 +145,12 @@ Generated LLM context, documentation, and examples help developers understand
 the platform, but they do not replace source definitions, configuration, tests,
 and runtime governance as authority.
 
+The root `package.json` is the only npm dependency installation authority.
+Module `package.json` files are module metadata only and must not declare
+`dependencies` or `devDependencies`. Dependency ownership, approved consumers,
+and restricted imports are governed by root dependency-governance metadata and
+focused tests, not duplicated package-version declarations in module manifests.
+
 ## Extension First
 
 Do not edit out-of-the-box Nodics code when a later-loaded module can provide

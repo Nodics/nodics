@@ -24,7 +24,7 @@ defined separately in `gSetup/llm/module-generation-guide.md`.
 
 ```text
 module/                         Module boundary and ownership root.
-  package.json                  Canonical module metadata, dependency metadata, runtime flags, and ownership declaration.
+  package.json                  Canonical module metadata, dependency ownership metadata, runtime flags, and ownership declaration; not an npm dependency install authority.
   nodics.js                     Module lifecycle entrypoint used by Nodics startup and module loading.
   AGENTS.md                     AI/developer behavior contract for working inside this module.
   README.md                     Human-readable module guide covering purpose, capability, configuration, and extension paths.
@@ -105,12 +105,22 @@ label from camel case or maintain a central duplicate label map. Parent/child
 relationships come from module-loader discovery, not a manually repeated
 `parent` property.
 
-Package manifests contain static identity, dependency, composition, loader,
-ownership, and runtime-surface metadata only. Runtime policy, permissions,
-navigation, provider selection, limits, endpoints, feature switches, and
-BackOffice capability presentation belong in layered `config/properties.js`.
-Use the standard top-level `description` as the sole package description and
-`package.json.nodics.runtimeModule` as the sole module-loader enablement flag.
+Package manifests contain static identity, dependency ownership, composition,
+loader, ownership, and runtime-surface metadata only. Runtime policy,
+permissions, navigation, provider selection, limits, endpoints, feature
+switches, and BackOffice capability presentation belong in layered
+`config/properties.js`. Use the standard top-level `description` as the sole
+package description and `package.json.nodics.runtimeModule` as the sole
+module-loader enablement flag.
+
+The root `package.json` is the only npm dependency installation authority.
+Module `package.json` files must keep `dependencies` and `devDependencies`
+empty when present. A module may own or consume a dependency through root
+`nodics.dependencyGovernance.ownedDependencies` metadata and focused tests, but
+it must not duplicate dependency versions in its module manifest. Dependency
+changes must update root `package.json`, root dependency-governance ownership
+metadata, `package-lock.json`, generated LLM context, and dependency-governance
+tests together.
 
 Never rename an established runtime identifier merely to match a folder. Such a
 change requires an explicit compatibility migration for active-module lists,

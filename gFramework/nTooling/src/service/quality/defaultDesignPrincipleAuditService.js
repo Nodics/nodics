@@ -173,7 +173,12 @@ function auditPrincipleContracts(failures) {
     requireClauses(failures, 'gSetup/llm/contracts/nodics-principles.md', [
         'capabilities are sacred, implementations are negotiable',
         'provide default capabilities',
+        'root `package.json` is the only npm dependency installation authority',
         'Security, access control, validation, audit, rollback, diagnostics, and test'
+    ]);
+    requireClauses(failures, 'gSetup/llm/standards/module-standard.md', [
+        'Module `package.json` files must keep `dependencies` and `devDependencies`',
+        '`nodics.dependencyGovernance.ownedDependencies` metadata'
     ]);
     requireClauses(failures, 'gSetup/llm/nodics-principles.md', [
         'Capabilities are sacred; implementations are negotiable',
