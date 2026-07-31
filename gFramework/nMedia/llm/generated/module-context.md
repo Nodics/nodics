@@ -30,9 +30,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 24 |
-| Test files | 34 |
+| Test files | 35 |
 | Data files | 0 |
-| All module-owned files | 42 |
+| All module-owned files | 43 |
 | Local schema definitions | 6 |
 
 ## Ownership And Dependencies
@@ -61,7 +61,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 38 |
+| Documented | 39 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -124,6 +124,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nMedia/test/mediaReferenceLookupContract.test.js` | `test` | `documented` | 0/0 | Validates secured nMedia media item and media set reference lookup boundaries. |  |
 | `gFramework/nMedia/test/mediaRouteContract.test.js` | `test` | `documented` | 0/0 | Validates nMedia route exposure and authorization metadata. |  |
 | `gFramework/nMedia/test/mediaSchemaContract.test.js` | `test` | `documented` | 0/0 | Validates nMedia schema ownership and required lifecycle fields. |  |
+| `gFramework/nMedia/test/mediaSchemaWorkbenchContract.test.js` | `test` | `documented` | 0/0 | Validates that nMedia exposes safe Schema Workbench search and filtering metadata without returning raw storage locator fields. |  |
 | `gFramework/nMedia/test/mediaStorageProviderContract.test.js` | `test` | `documented` | 0/0 | Validates provider-neutral media storage resolution and local provider safety. |  |
 | `gFramework/nMedia/test/mediaUploadContract.test.js` | `test` | `documented` | 0/0 | Validates nMedia upload ownership after nMedia has parsed multipart data. |  |
 

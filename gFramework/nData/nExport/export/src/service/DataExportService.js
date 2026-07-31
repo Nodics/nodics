@@ -17,7 +17,6 @@
  * @override Project modules may override export behavior through later active modules while preserving nMedia-owned media lookup, access policy, and download delivery.
  */
 module.exports = {
-
     /**
      * Initializes the data export service.
      *
@@ -50,10 +49,13 @@ module.exports = {
         let descriptor = await this.resolveSchemaDescriptor(request, payload);
         let records = await this.collectRecords(request, payload, descriptor);
         let schemaModel = this.resolveSchemaModel(request, payload);
-        let exportRecords = await this.applyExportAccessPolicies(Object.assign({}, request, {
-            moduleName: payload.moduleName,
-            schemaModel: schemaModel
-        }), records);
+        let exportRecords = await this.applyExportAccessPolicies(
+            Object.assign({}, request, {
+                moduleName: payload.moduleName,
+                schemaModel: schemaModel,
+            }),
+            records,
+        );
         let rendered = this.render(payload, exportRecords, descriptor);
         let media = await this.storeMedia(request, payload, rendered);
         return {
@@ -68,9 +70,9 @@ module.exports = {
                     requestedRecords: records.length,
                     exportedRecords: exportRecords.length,
                     totalAvailableRecords: records.totalCount || exportRecords.length,
-                    truncated: records.truncated === true
-                }
-            }
+                    truncated: records.truncated === true,
+                },
+            },
         };
     },
 
@@ -83,17 +85,18 @@ module.exports = {
     normalizeRequest: function (request) {
         let config = this.getConfiguration();
         if (config.enabled === false) {
-            throw new CLASSES.NodicsError('ERR_SYS_00003', 'Data export is disabled by configuration');
+            throw new CLASSES.NodicsError('ERR_EXP_00001', 'Data export is disabled by configuration');
         }
-        let body = request && request.export || {};
+        let body = (request && request.export) || {};
         let moduleName = this.safeCode(body.moduleName, 'Export module');
         let schemaName = this.safeCode(body.schemaName, 'Export schema');
-        let format = String(body.format || config.defaultFormat || 'csv').trim().toLowerCase();
+        let format = String(body.format || config.defaultFormat || 'csv')
+            .trim()
+            .toLowerCase();
         if (!config.allowedFormats.includes(format)) {
-            throw new CLASSES.NodicsError('ERR_SYS_00003', 'Requested export file type is not supported');
+            throw new CLASSES.NodicsError('ERR_EXP_00001', 'Requested export file type is not supported');
         }
-        let query = body.query && typeof body.query === 'object' && !Array.isArray(body.query) ?
-            body.query : {};
+        let query = body.query && typeof body.query === 'object' && !Array.isArray(body.query) ? body.query : {};
         let pageSize = Number(config.pageSize || 50);
         if (!Number.isInteger(pageSize) || pageSize < 1) pageSize = 50;
         let maximumRecords = Number(config.maximumRecords || 1000);
@@ -101,16 +104,15 @@ module.exports = {
         return {
             moduleName: moduleName,
             schemaName: schemaName,
-            enterpriseCode: this.safeOptionalCode(body.enterpriseCode) ||
-                this.resolveEnterpriseCode(request),
+            enterpriseCode: this.safeOptionalCode(body.enterpriseCode) || this.resolveEnterpriseCode(request),
             format: format,
             query: {
                 search: typeof query.search === 'string' ? query.search : '',
                 filters: query.filters,
-                sort: query.sort
+                sort: query.sort,
             },
             pageSize: pageSize,
-            maximumRecords: maximumRecords
+            maximumRecords: maximumRecords,
         };
     },
 
@@ -120,17 +122,20 @@ module.exports = {
      * @returns {Object} Export configuration.
      */
     getConfiguration: function () {
-        return Object.assign({
-            enabled: true,
-            allowedFormats: ['csv', 'json'],
-            defaultFormat: 'csv',
-            maximumRecords: 1000,
-            pageSize: 50,
-            media: {
-                folderCode: 'exportFiles',
-                formatCode: 'exportFile'
-            }
-        }, CONFIG && CONFIG.get ? (CONFIG.get('dataExport') || {}) : {});
+        return Object.assign(
+            {
+                enabled: true,
+                allowedFormats: ['csv', 'json'],
+                defaultFormat: 'csv',
+                maximumRecords: 1000,
+                pageSize: 50,
+                media: {
+                    folderCode: 'exportFiles',
+                    formatCode: 'exportFile',
+                },
+            },
+            CONFIG && CONFIG.get ? CONFIG.get('dataExport') || {} : {},
+        );
     },
 
     /**
@@ -141,14 +146,10 @@ module.exports = {
      * @returns {Promise<Object>} Workbench schema descriptor.
      */
     resolveSchemaDescriptor: async function (request, payload) {
-        if (!SERVICE.DefaultSchemaWorkbenchService ||
-            typeof SERVICE.DefaultSchemaWorkbenchService.get !== 'function') {
-            throw new CLASSES.NodicsError('ERR_SYS_00003',
-                'Schema Workbench service is required for governed exports');
+        if (!SERVICE.DefaultSchemaWorkbenchService || typeof SERVICE.DefaultSchemaWorkbenchService.get !== 'function') {
+            throw new CLASSES.NodicsError('ERR_EXP_00001', 'Schema Workbench service is required for governed exports');
         }
-        let response = await SERVICE.DefaultSchemaWorkbenchService.get(
-            this.buildWorkbenchRequest(request, payload, {})
-        );
+        let response = await SERVICE.DefaultSchemaWorkbenchService.get(this.buildWorkbenchRequest(request, payload, {}));
         return response.data || response.result || response;
     },
 
@@ -161,10 +162,8 @@ module.exports = {
      * @returns {Promise<Object[]>} Export candidate records.
      */
     collectRecords: async function (request, payload, descriptor) {
-        if (!SERVICE.DefaultSchemaWorkbenchService ||
-            typeof SERVICE.DefaultSchemaWorkbenchService.search !== 'function') {
-            throw new CLASSES.NodicsError('ERR_SYS_00003',
-                'Schema Workbench search is required for governed exports');
+        if (!SERVICE.DefaultSchemaWorkbenchService || typeof SERVICE.DefaultSchemaWorkbenchService.search !== 'function') {
+            throw new CLASSES.NodicsError('ERR_EXP_00001', 'Schema Workbench search is required for governed exports');
         }
         let records = [];
         let totalCount = 0;
@@ -172,10 +171,14 @@ module.exports = {
         let pageSize = this.resolvePageSize(payload.pageSize, descriptor);
         while (records.length < payload.maximumRecords) {
             let response = await SERVICE.DefaultSchemaWorkbenchService.search(
-                this.buildWorkbenchRequest(request, payload, Object.assign({}, payload.query, {
-                    pageNumber: pageNumber,
-                    pageSize: pageSize
-                }))
+                this.buildWorkbenchRequest(
+                    request,
+                    payload,
+                    Object.assign({}, payload.query, {
+                        pageNumber: pageNumber,
+                        pageSize: pageSize,
+                    }),
+                ),
             );
             let page = response.data || response.result || {};
             let pageRecords = Array.isArray(page.records) ? page.records : [];
@@ -203,10 +206,10 @@ module.exports = {
             moduleName: payload.moduleName,
             httpRequest: {
                 params: {
-                    schema: payload.schemaName
+                    schema: payload.schemaName,
                 },
-                body: body || {}
-            }
+                body: body || {},
+            },
         });
     },
 
@@ -218,11 +221,9 @@ module.exports = {
      * @returns {number} Allowed page size.
      */
     resolvePageSize: function (configuredPageSize, descriptor) {
-        let capabilities = descriptor && descriptor.queryCapabilities || {};
-        let allowed = Array.isArray(capabilities.allowedPageSizes) ?
-            capabilities.allowedPageSizes.slice().sort((left, right) => right - left) : [50, 25, 10];
-        return allowed.find(size => size <= configuredPageSize) ||
-            capabilities.defaultPageSize || 25;
+        let capabilities = (descriptor && descriptor.queryCapabilities) || {};
+        let allowed = Array.isArray(capabilities.allowedPageSizes) ? capabilities.allowedPageSizes.slice().sort((left, right) => right - left) : [50, 25, 10];
+        return allowed.find((size) => size <= configuredPageSize) || capabilities.defaultPageSize || 25;
     },
 
     /**
@@ -233,15 +234,17 @@ module.exports = {
      * @returns {Object} Runtime schema model descriptor.
      */
     resolveSchemaModel: function (request, payload) {
-        let modelName = UTILS && typeof UTILS.createModelName === 'function' ?
-            UTILS.createModelName(payload.schemaName) :
-            payload.schemaName.charAt(0).toUpperCase() + payload.schemaName.slice(1);
-        let models = NODICS && typeof NODICS.getModels === 'function' ?
-            NODICS.getModels(payload.moduleName, request.tenant) : undefined;
-        return models && models[modelName] || {
-            schemaName: payload.schemaName,
-            moduleName: payload.moduleName
-        };
+        let modelName =
+            UTILS && typeof UTILS.createModelName === 'function'
+                ? UTILS.createModelName(payload.schemaName)
+                : payload.schemaName.charAt(0).toUpperCase() + payload.schemaName.slice(1);
+        let models = NODICS && typeof NODICS.getModels === 'function' ? NODICS.getModels(payload.moduleName, request.tenant) : undefined;
+        return (
+            (models && models[modelName]) || {
+                schemaName: payload.schemaName,
+                moduleName: payload.moduleName,
+            }
+        );
     },
 
     /**
@@ -255,20 +258,24 @@ module.exports = {
     render: function (payload, records, descriptor) {
         let extension = payload.format;
         let mimeType = payload.format === 'json' ? 'application/json' : 'text/csv';
-        let fileName = [
-            payload.schemaName,
-            'export',
-            new Date().toISOString().replace(/[^0-9]/g, '').substring(0, 14)
-        ].join('-') + '.' + extension;
-        let content = payload.format === 'json' ?
-            this.renderJson(payload, records, descriptor) :
-            this.renderCsv(records, descriptor);
+        let fileName =
+            [
+                payload.schemaName,
+                'export',
+                new Date()
+                    .toISOString()
+                    .replace(/[^0-9]/g, '')
+                    .substring(0, 14),
+            ].join('-') +
+            '.' +
+            extension;
+        let content = payload.format === 'json' ? this.renderJson(payload, records, descriptor) : this.renderCsv(records, descriptor);
         return {
             fileName: fileName,
             originalFileName: fileName,
             mimeType: mimeType,
             extension: extension,
-            buffer: Buffer.from(content, 'utf8')
+            buffer: Buffer.from(content, 'utf8'),
         };
     },
 
@@ -281,13 +288,17 @@ module.exports = {
      * @returns {string} JSON content.
      */
     renderJson: function (payload, records, descriptor) {
-        return JSON.stringify({
-            exportedAt: new Date().toISOString(),
-            moduleName: payload.moduleName,
-            schemaName: payload.schemaName,
-            label: descriptor.label,
-            records: records
-        }, null, 2);
+        return JSON.stringify(
+            {
+                exportedAt: new Date().toISOString(),
+                moduleName: payload.moduleName,
+                schemaName: payload.schemaName,
+                label: descriptor.label,
+                records: records,
+            },
+            null,
+            2,
+        );
     },
 
     /**
@@ -300,8 +311,8 @@ module.exports = {
     renderCsv: function (records, descriptor) {
         let fields = this.resolveCsvFields(records, descriptor);
         let lines = [fields.map(this.escapeCsvValue).join(',')];
-        records.forEach(record => {
-            lines.push(fields.map(field => this.escapeCsvValue(this.readPath(record, field))).join(','));
+        records.forEach((record) => {
+            lines.push(fields.map((field) => this.escapeCsvValue(this.readPath(record, field))).join(','));
         });
         return lines.join('\n') + '\n';
     },
@@ -314,15 +325,11 @@ module.exports = {
      * @returns {string[]} CSV field names.
      */
     resolveCsvFields: function (records, descriptor) {
-        let descriptorFields = (descriptor.fields || [])
-            .filter(field => !['array', 'object'].includes(field.type))
-            .map(field => field.name);
+        let descriptorFields = (descriptor.fields || []).filter((field) => !['array', 'object'].includes(field.type)).map((field) => field.name);
         let observed = [];
-        records.forEach(record => {
-            Object.keys(record || {}).forEach(key => {
-                if (!observed.includes(key) &&
-                    !['object', 'function', 'undefined'].includes(typeof record[key]) &&
-                    !Array.isArray(record[key])) {
+        records.forEach((record) => {
+            Object.keys(record || {}).forEach((key) => {
+                if (!observed.includes(key) && !['object', 'function', 'undefined'].includes(typeof record[key]) && !Array.isArray(record[key])) {
                     observed.push(key);
                 }
             });
@@ -362,10 +369,8 @@ module.exports = {
      * @returns {Promise<Object>} Stored media model.
      */
     storeMedia: async function (request, payload, rendered) {
-        if (!SERVICE.DefaultMediaUploadService ||
-            typeof SERVICE.DefaultMediaUploadService.upload !== 'function') {
-            throw new CLASSES.NodicsError('ERR_SYS_00003',
-                'nMedia upload service is required for generated exports');
+        if (!SERVICE.DefaultMediaUploadService || typeof SERVICE.DefaultMediaUploadService.upload !== 'function') {
+            throw new CLASSES.NodicsError('ERR_EXP_00001', 'nMedia upload service is required for generated exports');
         }
         let config = this.getConfiguration();
         let mediaConfig = config.media || {};
@@ -379,14 +384,16 @@ module.exports = {
             formatCode: mediaConfig.formatCode || 'exportFile',
             name: rendered.originalFileName,
             description: 'Generated ' + payload.schemaName + ' ' + payload.format + ' export',
-            files: [{
-                fieldName: 'file',
-                originalFileName: rendered.originalFileName,
-                fileName: rendered.fileName,
-                mimeType: rendered.mimeType,
-                sizeBytes: rendered.buffer.length,
-                buffer: rendered.buffer
-            }]
+            files: [
+                {
+                    fieldName: 'file',
+                    originalFileName: rendered.originalFileName,
+                    fileName: rendered.fileName,
+                    mimeType: rendered.mimeType,
+                    sizeBytes: rendered.buffer.length,
+                    buffer: rendered.buffer,
+                },
+            ],
         });
     },
 
@@ -397,12 +404,13 @@ module.exports = {
      * @returns {string} Enterprise code.
      */
     resolveEnterpriseCode: function (request) {
-        return request.enterpriseCode ||
-            request.authData && request.authData.enterprise && request.authData.enterprise.code ||
-            request.headers && request.headers['x-enterprise-code'] ||
-            request.httpRequest && request.httpRequest.headers &&
-            request.httpRequest.headers['x-enterprise-code'] ||
-            'default';
+        return (
+            request.enterpriseCode ||
+            (request.authData && request.authData.enterprise && request.authData.enterprise.code) ||
+            (request.headers && request.headers['x-enterprise-code']) ||
+            (request.httpRequest && request.httpRequest.headers && request.httpRequest.headers['x-enterprise-code']) ||
+            'default'
+        );
     },
 
     /**
@@ -414,7 +422,7 @@ module.exports = {
      */
     safeCode: function (value, label) {
         if (typeof value !== 'string' || !/^[A-Za-z][A-Za-z0-9._-]{0,127}$/.test(value.trim())) {
-            throw new CLASSES.NodicsError('ERR_SYS_00003', label + ' is invalid');
+            throw new CLASSES.NodicsError('ERR_EXP_00001', label + ' is invalid');
         }
         return value.trim();
     },
@@ -439,15 +447,14 @@ module.exports = {
      */
     applyExportAccessPolicies: function (request, models) {
         let exportModels = this.cloneModels(models || []);
-        if (!SERVICE.DefaultSchemaReadAccessPolicyService ||
-            typeof SERVICE.DefaultSchemaReadAccessPolicyService.applyExportPolicies !== 'function') {
+        if (!SERVICE.DefaultSchemaReadAccessPolicyService || typeof SERVICE.DefaultSchemaReadAccessPolicyService.applyExportPolicies !== 'function') {
             return Promise.resolve(exportModels);
         }
         return SERVICE.DefaultSchemaReadAccessPolicyService.applyExportPolicies(request, {
             success: {
-                result: exportModels
-            }
-        }).then(response => {
+                result: exportModels,
+            },
+        }).then((response) => {
             return response.success.result;
         });
     },
@@ -459,7 +466,7 @@ module.exports = {
      * @returns {Object[]} Plain model copies that export policies may mutate safely.
      */
     cloneModels: function (models) {
-        return [].concat(models || []).map(model => {
+        return [].concat(models || []).map((model) => {
             if (model && typeof model.toObject === 'function') {
                 return model.toObject();
             }
@@ -484,5 +491,5 @@ module.exports = {
         if (response.data && Array.isArray(response.data.result)) return response.data.result;
         if (response.data && Array.isArray(response.data.records)) return response.data.records;
         return [];
-    }
+    },
 };

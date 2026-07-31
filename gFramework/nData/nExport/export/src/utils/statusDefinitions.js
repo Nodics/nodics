@@ -17,5 +17,8 @@
  * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
  */
 module.exports = {
-
+    ERR_EXP_00001: {
+        code: '400',
+        message: 'Data export request is invalid or required export dependencies are unavailable',
+    },
 };

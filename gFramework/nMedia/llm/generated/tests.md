@@ -12,6 +12,7 @@
 - `gFramework/nMedia/test/mediaReferenceLookupContract.test.js`
 - `gFramework/nMedia/test/mediaRouteContract.test.js`
 - `gFramework/nMedia/test/mediaSchemaContract.test.js`
+- `gFramework/nMedia/test/mediaSchemaWorkbenchContract.test.js`
 - `gFramework/nMedia/test/mediaStorageProviderContract.test.js`
 - `gFramework/nMedia/test/mediaUploadContract.test.js`
 

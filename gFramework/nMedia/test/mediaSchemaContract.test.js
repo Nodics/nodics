@@ -21,7 +21,7 @@ const assert = require('assert');
 const schemas = require('../src/schemas/schemas');
 
 const mediaSchemas = schemas.media;
-['mediaFolder', 'mediaFormat', 'media', 'mediaSet', 'mediaSetEntry', 'mediaReference'].forEach(schemaName => {
+['mediaFolder', 'mediaFormat', 'media', 'mediaSet', 'mediaSetEntry', 'mediaReference'].forEach((schemaName) => {
     assert(mediaSchemas[schemaName], schemaName + ' schema must exist');
     assert.strictEqual(mediaSchemas[schemaName].super, 'base', schemaName + ' must inherit the base schema explicitly for generated contracts');
     assert.strictEqual(mediaSchemas[schemaName].model, true, schemaName + ' must be a persisted model');
@@ -36,10 +36,26 @@ assert(mediaSchemas.media.definition.storedFileName, 'media.storedFileName must 
 assert(mediaSchemas.media.definition.relativePath, 'media.relativePath must preserve the readable provider-relative path');
 assert(mediaSchemas.media.definition.fullPath, 'media.fullPath must preserve backend-resolved storage location for governed processing');
 assert(mediaSchemas.media.definition.accessUrl, 'media.accessUrl must preserve the provider-resolved access URL when available');
+['storageKey', 'storedFileName', 'relativePath', 'fullPath', 'url', 'accessUrl'].forEach((fieldName) => {
+    assert(mediaSchemas.media.backoffice.excludedFields.includes(fieldName), 'media Workbench contract must exclude raw storage field `' + fieldName + '`');
+});
+['code', 'name', 'description', 'folderCode', 'formatCode', 'providerCode', 'originalFileName', 'mimeType', 'extension'].forEach((fieldName) => {
+    assert.strictEqual(mediaSchemas.media.definition[fieldName].searchOptions.enabled, true, 'media.' + fieldName + ' must be searchable through Schema Workbench');
+});
+['access', 'status'].forEach((fieldName) => {
+    assert(Array.isArray(mediaSchemas.media.definition[fieldName].enum), 'media.' + fieldName + ' must remain enum-filterable through Schema Workbench');
+});
 assert(mediaSchemas.mediaSet.definition.mediaType.required, 'mediaSet.mediaType must classify the logical asset');
 assert(mediaSchemas.mediaSetEntry.definition.mediaSetCode.required, 'mediaSetEntry.mediaSetCode must identify the owning media set');
 assert(mediaSchemas.mediaSetEntry.definition.mediaCode.required, 'mediaSetEntry.mediaCode must identify the concrete media item');
 assert(mediaSchemas.mediaReference.definition.ownerModule.required, 'mediaReference.ownerModule must identify caller ownership');
 assert(mediaSchemas.mediaReference.definition.ownerSchema.required, 'mediaReference.ownerSchema must identify caller schema ownership');
 assert(mediaSchemas.mediaReference.definition.mediaSetCode, 'mediaReference must be able to reference a media set');
+['ownerModule', 'ownerSchema', 'ownerCode', 'mediaCode', 'mediaSetCode', 'relationType'].forEach((fieldName) => {
+    assert.strictEqual(
+        mediaSchemas.mediaReference.definition[fieldName].searchOptions.enabled,
+        true,
+        'mediaReference.' + fieldName + ' must be searchable through Schema Workbench',
+    );
+});
 console.log('nMedia schema contract validated');

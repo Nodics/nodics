@@ -209,6 +209,14 @@
                     "restricted": false,
                     "reason": "HTTP body parsing owned by router/app configuration."
                 },
+                "busboy": {
+                    "type": "runtime-utility",
+                    "owners": [
+                        "gFramework/nMedia"
+                    ],
+                    "restricted": true,
+                    "reason": "Multipart media upload parsing owned by nMedia storage upload handling."
+                },
                 "chai": {
                     "type": "test-framework",
                     "owners": [

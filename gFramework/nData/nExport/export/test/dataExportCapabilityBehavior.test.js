@@ -27,7 +27,7 @@ global.CONFIG = {
     get: function (key) {
         if (key === 'defaultErrorCodes') {
             return {
-                NodicsError: 'ERR_SYS_00000'
+                NodicsError: 'ERR_SYS_00000',
             };
         }
         if (key === 'dataExport') {
@@ -39,15 +39,15 @@ global.CONFIG = {
                 pageSize: 10,
                 media: {
                     folderCode: 'exportFiles',
-                    formatCode: 'exportFile'
-                }
+                    formatCode: 'exportFile',
+                },
             };
         }
         if (key === 'returnErrorStack') {
             return false;
         }
         return undefined;
-    }
+    },
 };
 
 global.SERVICE = {
@@ -55,10 +55,10 @@ global.SERVICE = {
         get: function (code) {
             return {
                 code: 500,
-                message: 'Status message for ' + code
+                message: 'Status message for ' + code,
             };
-        }
-    }
+        },
+    },
 };
 
 global.UTILS = {
@@ -66,9 +66,7 @@ global.UTILS = {
         return value !== null && typeof value === 'object' && !Array.isArray(value);
     },
     isBlank: function (value) {
-        return value === undefined || value === null || value === '' ||
-            (Array.isArray(value) && value.length === 0) ||
-            (this.isObject(value) && Object.keys(value).length === 0);
+        return value === undefined || value === null || value === '' || (Array.isArray(value) && value.length === 0) || (this.isObject(value) && Object.keys(value).length === 0);
     },
     extractFromError: function (error, message, defaultCode) {
         return {
@@ -76,25 +74,25 @@ global.UTILS = {
             name: error.name,
             responseCode: global.SERVICE.DefaultStatusService.get(defaultCode).code,
             message: message ? error.message + ' : ' + message : error.message,
-            stack: error.stack
+            stack: error.stack,
         };
     },
     extractFromMessage: function (message, defaultCode) {
         return {
             code: defaultCode,
             responseCode: global.SERVICE.DefaultStatusService.get(defaultCode).code,
-            message: message
+            message: message,
         };
-    }
+    },
 };
 
 global.CLASSES = {
-    NodicsError: require('../../../../nCommon/src/lib/nodicsError')
+    NodicsError: require('../../../../nCommon/src/lib/nodicsError'),
 };
 
 global.SERVICE.DataExportService = require('../src/service/DataExportService');
 global.FACADE = {
-    DataExportFacade: require('../src/facade/DataExportFacade')
+    DataExportFacade: require('../src/facade/DataExportFacade'),
 };
 
 const controller = require('../src/controller/DataExportController');
@@ -104,12 +102,12 @@ const routerConfig = require('../src/router/routers');
     let request = {
         httpRequest: {
             query: {
-                schema: 'tenant'
+                schema: 'tenant',
             },
             body: {
-                format: 'json'
-            }
-        }
+                format: 'json',
+            },
+        },
     };
 
     let exportError;
@@ -122,17 +120,19 @@ const routerConfig = require('../src/router/routers');
     assert.deepStrictEqual(request.export, {
         format: 'json',
         query: {
-            schema: 'tenant'
-        }
+            schema: 'tenant',
+        },
     });
     assert(exportError instanceof global.CLASSES.NodicsError);
-    assert.strictEqual(exportError.code, 'ERR_SYS_00003');
+    assert.strictEqual(exportError.code, 'ERR_EXP_00001');
     assert(exportError.message.includes('Export module is invalid'));
 
-    let selectedModels = [{
-        code: 'product-001',
-        internalCost: 99
-    }];
+    let selectedModels = [
+        {
+            code: 'product-001',
+            internalCost: 99,
+        },
+    ];
     global.SERVICE.DefaultSchemaReadAccessPolicyService = {
         applyExportPolicies: function (policyRequest, policyResponse) {
             if (policyRequest.schemaModel.schemaName === 'product') {
@@ -141,25 +141,32 @@ const routerConfig = require('../src/router/routers');
             delete policyResponse.success.result[0].internalCost;
             policyResponse.success.policy = {
                 action: 'export',
-                appliedCount: 1
+                appliedCount: 1,
             };
             return Promise.resolve(policyResponse);
-        }
+        },
     };
-    let filteredModels = await global.SERVICE.DataExportService.applyExportAccessPolicies({
-        tenant: 'electronics',
-        schemaModel: {
-            schemaName: 'product'
-        }
-    }, selectedModels);
+    let filteredModels = await global.SERVICE.DataExportService.applyExportAccessPolicies(
+        {
+            tenant: 'electronics',
+            schemaModel: {
+                schemaName: 'product',
+            },
+        },
+        selectedModels,
+    );
 
-    assert.deepStrictEqual(filteredModels, [{
-        code: 'product-001'
-    }]);
-    assert.deepStrictEqual(selectedModels, [{
-        code: 'product-001',
-        internalCost: 99
-    }]);
+    assert.deepStrictEqual(filteredModels, [
+        {
+            code: 'product-001',
+        },
+    ]);
+    assert.deepStrictEqual(selectedModels, [
+        {
+            code: 'product-001',
+            internalCost: 99,
+        },
+    ]);
 
     global.SERVICE.DefaultSchemaWorkbenchService = {
         get: function (workbenchRequest) {
@@ -171,16 +178,16 @@ const routerConfig = require('../src/router/routers');
                     fields: [
                         { name: 'code', type: 'string' },
                         { name: 'description', type: 'string' },
-                        { name: 'properties', type: 'object' }
+                        { name: 'properties', type: 'object' },
                     ],
                     queryCapabilities: {
                         allowedPageSizes: [10],
                         defaultPageSize: 10,
                         maximumPageSize: 10,
                         defaultSort: { field: 'code', direction: 'ASC' },
-                        sortableFields: ['code']
-                    }
-                }
+                        sortableFields: ['code'],
+                    },
+                },
             });
         },
         search: function (workbenchRequest) {
@@ -190,13 +197,21 @@ const routerConfig = require('../src/router/routers');
             return Promise.resolve({
                 data: {
                     records: [
-                        { code: 'default', description: 'Default tenant', internalCost: 99 },
-                        { code: 'qa', description: 'QA tenant', internalCost: 88 }
+                        {
+                            code: 'default',
+                            description: 'Default tenant',
+                            internalCost: 99,
+                        },
+                        {
+                            code: 'qa',
+                            description: 'QA tenant',
+                            internalCost: 88,
+                        },
                     ],
-                    totalCount: 2
-                }
+                    totalCount: 2,
+                },
             });
-        }
+        },
     };
     global.SERVICE.DefaultMediaUploadService = {
         upload: function (mediaRequest) {
@@ -209,9 +224,9 @@ const routerConfig = require('../src/router/routers');
             return Promise.resolve({
                 code: 'tenant-export-test',
                 accessUrl: '/nodics/media/v0/content/tenant-export-test',
-                originalFileName: mediaRequest.files[0].originalFileName
+                originalFileName: mediaRequest.files[0].originalFileName,
             });
-        }
+        },
     };
     global.NODICS = {
         getModels: function (moduleName, tenant) {
@@ -219,10 +234,10 @@ const routerConfig = require('../src/router/routers');
             assert.strictEqual(tenant, 'default');
             return {
                 Tenant: {
-                    schemaName: 'tenant'
-                }
+                    schemaName: 'tenant',
+                },
             };
-        }
+        },
     };
     global.UTILS.createModelName = function (schemaName) {
         return schemaName.charAt(0).toUpperCase() + schemaName.slice(1);
@@ -232,29 +247,26 @@ const routerConfig = require('../src/router/routers');
         tenant: 'default',
         authData: {
             enterprise: {
-                code: 'default'
-            }
+                code: 'default',
+            },
         },
         export: {
             moduleName: 'profile',
             schemaName: 'tenant',
             format: 'csv',
             query: {
-                search: 'default'
-            }
-        }
+                search: 'default',
+            },
+        },
     });
 
     assert.strictEqual(exportResult.code, 'SUC_SYS_00000');
     assert.strictEqual(exportResult.data.media.code, 'tenant-export-test');
     assert.strictEqual(exportResult.data.summary.exportedRecords, 2);
 
-    assert.strictEqual(typeof controller.downloadGeneratedExport, 'undefined',
-        'nExport must not expose a duplicate download controller operation');
-    assert.strictEqual(typeof global.FACADE.DataExportFacade.downloadGeneratedExport, 'undefined',
-        'nExport must not expose a duplicate download facade operation');
-    assert.strictEqual(typeof global.SERVICE.DataExportService.downloadGeneratedExport, 'undefined',
-        'nExport must not expose a duplicate download service operation');
+    assert.strictEqual(typeof controller.downloadGeneratedExport, 'undefined', 'nExport must not expose a duplicate download controller operation');
+    assert.strictEqual(typeof global.FACADE.DataExportFacade.downloadGeneratedExport, 'undefined', 'nExport must not expose a duplicate download facade operation');
+    assert.strictEqual(typeof global.SERVICE.DataExportService.downloadGeneratedExport, 'undefined', 'nExport must not expose a duplicate download service operation');
     const exportRoute = routerConfig.export.dataExport.exportPost;
     assert.strictEqual(exportRoute.key, '/export');
     assert.strictEqual(exportRoute.controller, 'DataExportController');
