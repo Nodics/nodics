@@ -39,5 +39,9 @@ module.exports = {
     record5: {
         code: 'axisSchemaWorkbenchRoute', site: 'axisCmsSite', path: '/schema-workbench', locale: 'en', channel: 'web',
         page: 'axisSchemaWorkbenchPage', routeType: 'PAGE', deliveryState: 'ONLINE', accessMode: 'AUTHENTICATED', active: true
+    },
+    record6: {
+        code: 'axisMediaManagementRoute', site: 'axisCmsSite', path: '/media-management', locale: 'en', channel: 'web',
+        page: 'axisMediaManagementPage', routeType: 'PAGE', deliveryState: 'ONLINE', accessMode: 'AUTHENTICATED', active: true
     }
 };

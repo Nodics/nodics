@@ -73,7 +73,7 @@ pages.forEach(page => {
 });
 
 assert.deepStrictEqual(routes.map(route => route.path),
-    ['/login', '/forgot-password', '/dashboard', '/lock-screen', '/assistant', '/schema-workbench']);
+    ['/login', '/forgot-password', '/dashboard', '/lock-screen', '/assistant', '/schema-workbench', '/media-management']);
 routes.forEach(route => {
     const page = pageByCode.get(route.page);
     assert(page, 'Missing route page ' + route.page);
@@ -93,6 +93,7 @@ assert.strictEqual(routes.find(route => route.path === '/dashboard').accessMode,
 assert.strictEqual(routes.find(route => route.path === '/lock-screen').accessMode, 'AUTHENTICATED');
 assert.strictEqual(routes.find(route => route.path === '/assistant').accessMode, 'AUTHENTICATED');
 assert.strictEqual(routes.find(route => route.path === '/schema-workbench').accessMode, 'AUTHENTICATED');
+assert.strictEqual(routes.find(route => route.path === '/media-management').accessMode, 'AUTHENTICATED');
 assert(pages.find(page => page.code === 'axisDashboardPage').cmsComponents.every(association =>
     componentByCode.get(association.target).accessMode === 'AUTHENTICATED'));
 assert(!componentByCode.has('axisDashboardHeaderComponent'),
@@ -107,6 +108,8 @@ assert(pages.find(page => page.code === 'axisLockScreenPage').cmsComponents.ever
 assert(pages.find(page => page.code === 'axisAssistantPage').cmsComponents.every(association =>
     componentByCode.get(association.target).accessMode === 'AUTHENTICATED'));
 assert(pages.find(page => page.code === 'axisSchemaWorkbenchPage').cmsComponents.every(association =>
+    componentByCode.get(association.target).accessMode === 'AUTHENTICATED'));
+assert(pages.find(page => page.code === 'axisMediaManagementPage').cmsComponents.every(association =>
     componentByCode.get(association.target).accessMode === 'AUTHENTICATED'));
 const assistantWorkspace = componentByCode.get('axisAssistantWorkspaceComponent');
 ['title', 'welcomeMessage', 'inputPlaceholder', 'submitLabel', 'stopLabel', 'emptyState',
@@ -145,6 +148,11 @@ const schemaWorkbench = componentByCode.get('axisSchemaWorkbenchComponent');
     'deleteImpactClearLabel', 'editRelatedLabel'].forEach(property => {
     assert.strictEqual(typeof schemaWorkbench.properties[property], 'string');
     assert(schemaWorkbench.properties[property].length > 0);
+});
+const mediaManagement = componentByCode.get('axisMediaManagementWorkspaceComponent');
+['title', 'introduction', 'backendAuthority', 'customizationBoundary'].forEach(property => {
+    assert.strictEqual(typeof mediaManagement.properties[property], 'string');
+    assert(mediaManagement.properties[property].length > 0);
 });
 
 const enabledHeaders = Object.values(header).flatMap(group => Object.values(group)).filter(item => item.options.enabled);

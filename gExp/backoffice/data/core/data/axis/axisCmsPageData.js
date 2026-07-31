@@ -85,5 +85,14 @@ module.exports = {
             { target: 'axisSchemaWorkbenchComponent', slot: 'content', index: 20, active: true }
         ],
         active: true
+    },
+    record6: {
+        code: 'axisMediaManagementPage', name: 'Axis Media Management', cmsSite: ['axisCmsSite'],
+        typeCode: 'axisMediaManagementPageType', template: 'axisMediaManagementPageTemplate',
+        renderer: 'axis.page.media-management',
+        cmsComponents: [
+            { target: 'axisMediaManagementWorkspaceComponent', slot: 'workspace', index: 10, active: true }
+        ],
+        active: true
     }
 };

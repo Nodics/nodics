@@ -36,5 +36,9 @@ module.exports = {
     record13: { code: 'axisSchemaWorkbenchPageType', renderer: 'axis.page.schema-workbench',
         contractVersion: 1, channels: ['web', 'mobile-webview'], deprecated: false, active: true },
     record14: { code: 'axisSchemaWorkbenchComponentType', renderer: 'axis.component.schema-workbench',
+        contractVersion: 1, channels: ['web', 'mobile-webview'], deprecated: false, active: true },
+    record15: { code: 'axisMediaManagementPageType', renderer: 'axis.page.media-management',
+        contractVersion: 1, channels: ['web', 'mobile-webview'], deprecated: false, active: true },
+    record16: { code: 'axisMediaManagementWorkspaceComponentType', renderer: 'axis.component.media-management-workspace',
         contractVersion: 1, channels: ['web', 'mobile-webview'], deprecated: false, active: true }
 };

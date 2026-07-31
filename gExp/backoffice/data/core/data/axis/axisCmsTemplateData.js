@@ -43,5 +43,10 @@ module.exports = {
         code: 'axisSchemaWorkbenchPageTemplate', name: 'Axis Schema Workbench',
         renderer: 'axis.template.schema-workbench', contractVersion: 1,
         slots: ['axisSchemaWorkbenchHeaderSlot', 'axisSchemaWorkbenchContentSlot'], active: true
+    },
+    record4: {
+        code: 'axisMediaManagementPageTemplate', name: 'Axis Media Management',
+        renderer: 'axis.template.media-management', contractVersion: 1,
+        slots: ['axisMediaManagementWorkspaceSlot'], active: true
     }
 };

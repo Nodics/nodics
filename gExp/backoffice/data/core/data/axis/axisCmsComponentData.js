@@ -192,5 +192,16 @@ module.exports = {
             editRelatedLabel: 'Edit related'
         },
         active: true
+    },
+    record25: {
+        code: 'axisMediaManagementWorkspaceComponent', typeCode: 'axisMediaManagementWorkspaceComponentType',
+        accessMode: 'AUTHENTICATED',
+        properties: {
+            title: 'Media Management',
+            introduction: 'Operate media files, folder policy, format policy, usage references, and delivery metadata through nMedia-owned contracts.',
+            backendAuthority: 'nMedia owns storage, upload, delivery, folders, formats, media sets, permissions, and safe provider metadata. nImport and nExport compose nMedia for file-backed data flows.',
+            customizationBoundary: 'Customize presentation by replacing this CMS component or Axis renderer in a project layer. Keep storage rules, schemas, permissions, and import/export execution in their owning Nodics modules.'
+        },
+        active: true
     }
 };

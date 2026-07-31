@@ -140,5 +140,16 @@ module.exports = {
             deleteImpactClearLabel: 'string', editRelatedLabel: 'string'
         },
         active: true
+    },
+    record15: { code: 'axisMediaManagementPageType', kind: 'PAGE', contractVersion: 1, active: true },
+    record16: {
+        code: 'axisMediaManagementWorkspaceComponentType', kind: 'COMPONENT', contractVersion: 1,
+        propertySchema: {
+            title: 'string',
+            introduction: 'string',
+            backendAuthority: 'string',
+            customizationBoundary: 'string'
+        },
+        active: true
     }
 };
