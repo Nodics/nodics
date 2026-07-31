@@ -192,6 +192,7 @@ module.exports = {
             'system.health.readiness.view',
             'system.contract.openapi.view',
             'system.contract.swagger.view',
+            'media.context.view',
             'media.storage.policy.view',
             'media.folder.policy.manage',
             'media.format.policy.manage',
@@ -240,7 +241,7 @@ module.exports = {
                 adminGroup: {
                     parentGroups: ['userGroup'],
                     permissions: ['backoffice.registry.view', 'backoffice.bootstrap.view', 'backoffice.contract.view',
-                        'backoffice.axis.policy.view', 'system.schema.workbench.view']
+                        'backoffice.axis.policy.view', 'system.schema.workbench.view', 'media.context.view']
                 },
                 employeeUserGroup: {
                     parentGroups: ['userGroup'],
@@ -328,6 +329,7 @@ module.exports = {
                         'cache.configuration.item.update',
                         'system.health.readiness.view',
                         'system.contract.swagger.view',
+                        'media.context.view',
                         'media.storage.policy.view',
                         'media.folder.policy.manage',
                         'media.format.policy.manage',

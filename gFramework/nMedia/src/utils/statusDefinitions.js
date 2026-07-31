@@ -41,6 +41,54 @@ module.exports = {
         code: '200',
         message: 'Media contexts resolved successfully'
     },
+    SUC_MED_00007: {
+        code: '200',
+        message: 'Media folder policy saved successfully'
+    },
+    SUC_MED_00008: {
+        code: '200',
+        message: 'Media folder policy activated successfully'
+    },
+    SUC_MED_00009: {
+        code: '200',
+        message: 'Media folder policy deactivated successfully'
+    },
+    SUC_MED_00010: {
+        code: '200',
+        message: 'Media format policy saved successfully'
+    },
+    SUC_MED_00011: {
+        code: '200',
+        message: 'Media format policy activated successfully'
+    },
+    SUC_MED_00012: {
+        code: '200',
+        message: 'Media format policy deactivated successfully'
+    },
+    SUC_MED_00013: {
+        code: '200',
+        message: 'Media set entry added successfully'
+    },
+    SUC_MED_00014: {
+        code: '200',
+        message: 'Media set entry updated successfully'
+    },
+    SUC_MED_00015: {
+        code: '200',
+        message: 'Media set entry removed successfully'
+    },
+    SUC_MED_00016: {
+        code: '200',
+        message: 'Media set entries reordered successfully'
+    },
+    SUC_MED_00017: {
+        code: '200',
+        message: 'Primary media set entry updated successfully'
+    },
+    SUC_MED_00018: {
+        code: '200',
+        message: 'Media storage provider summary resolved successfully'
+    },
     ERR_MED_00001: {
         code: '400',
         message: 'Invalid media request'
@@ -88,5 +136,29 @@ module.exports = {
     ERR_MED_00012: {
         code: '404',
         message: 'Media content is unavailable'
+    },
+    ERR_MED_00013: {
+        code: '500',
+        message: 'Media format policy runtime configuration is unavailable'
+    },
+    ERR_MED_00014: {
+        code: '400',
+        message: 'Invalid media set entry'
+    },
+    ERR_MED_00015: {
+        code: '500',
+        message: 'Media set entry service is unavailable'
+    },
+    ERR_MED_00016: {
+        code: '404',
+        message: 'Media set is unavailable'
+    },
+    ERR_MED_00017: {
+        code: '400',
+        message: 'Invalid media set entry policy'
+    },
+    ERR_MED_00018: {
+        code: '409',
+        message: 'Media set entry already exists'
     }
 };

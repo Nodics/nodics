@@ -19,6 +19,7 @@
 
 const assert = require('assert');
 const { assertRouteContracts } = require('../../nRouter/test/routerContractTestUtils');
+const authProperties = require('../../nAuth/config/properties');
 const routerConfig = require('../src/router/routers');
 
 const expectedRoutes = [
@@ -55,6 +56,12 @@ routes.forEach(route => {
     assert(['mediaManagement', 'moduleInternal'].includes(route.apiExposure), route.key + ' must be intentionally exposure-gated');
     if (route.key !== '/content/:mediaCode') {
         assert.notStrictEqual(route.publicAccess, true, route.key + ' must not be public');
+    }
+    if (route.permission) {
+        assert(
+            authProperties.identityGovernance.permissionCatalog.includes(route.permission),
+            route.key + ' permission must be registered in the governed permission catalog'
+        );
     }
 });
 console.log(`nMedia route contract validated: ${expectedRoutes.length} routes`);
