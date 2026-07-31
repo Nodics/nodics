@@ -53,7 +53,178 @@ module.exports = {
         if (!folder) {
             throw new CLASSES.NodicsError('ERR_MED_00003', 'Invalid media folder');
         }
-        return Object.assign({}, folder, { code: folder.code || effectiveFolderCode });
+        let policy = Object.assign({}, folder, { code: folder.code || effectiveFolderCode, status: folder.status || 'ACTIVE' });
+        if (policy.status !== 'ACTIVE') {
+            throw new CLASSES.NodicsError('ERR_MED_00003', 'Inactive media folder');
+        }
+        return policy;
+    },
+
+    /**
+     * Returns a folder policy without applying active-upload eligibility.
+     *
+     * @param {string} folderCode Folder code.
+     * @returns {Object|undefined} Existing folder policy.
+     */
+    getConfiguredFolderPolicy: function (folderCode) {
+        let configuration = this.getConfiguration();
+        let folders = configuration.folders || {};
+        let folder = folders[folderCode];
+        return folder ? Object.assign({}, folder, { code: folder.code || folderCode, status: folder.status || 'ACTIVE' }) : undefined;
+    },
+
+    /**
+     * Creates or updates one effective media folder policy in runtime configuration.
+     *
+     * @param {Object} request Folder policy mutation request.
+     * @returns {Object} Safe folder policy projection.
+     */
+    saveFolderPolicy: function (request) {
+        request = request || {};
+        let code = this.safeCode(request.code || request.folderCode, 'Folder code');
+        let existing = this.getConfiguredFolderPolicy(code);
+        if (request.create === true && existing) {
+            throw new CLASSES.NodicsError('ERR_MED_00007', 'Media folder already exists');
+        }
+        if (request.create !== true && !existing) {
+            throw new CLASSES.NodicsError('ERR_MED_00003', 'Invalid media folder');
+        }
+        let next = this.normalizeFolderPolicy(code, request, existing || {});
+        this.writeFolderPolicy(code, next, request.tenant);
+        return this.projectConfiguredFolderPolicy(code, next);
+    },
+
+    /**
+     * Activates or deactivates one configured media folder policy.
+     *
+     * @param {Object} request Folder lifecycle request.
+     * @param {string} status Next status.
+     * @returns {Object} Safe folder policy projection.
+     */
+    setFolderPolicyStatus: function (request, status) {
+        request = request || {};
+        let code = this.safeCode(request.code || request.folderCode, 'Folder code');
+        let existing = this.getConfiguredFolderPolicy(code);
+        if (!existing) {
+            throw new CLASSES.NodicsError('ERR_MED_00003', 'Invalid media folder');
+        }
+        let next = Object.assign({}, existing, { status: status });
+        this.writeFolderPolicy(code, next, request.tenant);
+        return this.projectConfiguredFolderPolicy(code, next);
+    },
+
+    /**
+     * Normalizes and validates the mutable folder policy fields.
+     *
+     * @param {string} code Folder code.
+     * @param {Object} request Mutation request.
+     * @param {Object} existing Existing policy.
+     * @returns {Object} Normalized policy.
+     */
+    normalizeFolderPolicy: function (code, request, existing) {
+        let access = request.access !== undefined ? request.access : existing.access || 'PRIVATE';
+        if (!['PRIVATE', 'PUBLIC', 'SIGNED'].includes(access)) {
+            throw new CLASSES.NodicsError('ERR_MED_00008', 'Invalid media folder access policy');
+        }
+        let status = request.status !== undefined ? request.status : existing.status || 'ACTIVE';
+        if (!['ACTIVE', 'INACTIVE'].includes(status)) {
+            throw new CLASSES.NodicsError('ERR_MED_00008', 'Invalid media folder status');
+        }
+        let storagePrefix = request.storagePrefix !== undefined ? request.storagePrefix : existing.storagePrefix;
+        if (!this.isSafeStoragePrefix(storagePrefix)) {
+            throw new CLASSES.NodicsError('ERR_MED_00008', 'Invalid media folder storage prefix');
+        }
+        return {
+            code: code,
+            name: this.safeOptionalText(request.name !== undefined ? request.name : existing.name) || code,
+            description: this.safeOptionalText(request.description !== undefined ? request.description : existing.description) || '',
+            storagePrefix: storagePrefix,
+            access: access,
+            allowedExtensions: this.normalizeStringList(request.allowedExtensions !== undefined ? request.allowedExtensions : existing.allowedExtensions),
+            allowedMimeTypes: this.normalizeStringList(request.allowedMimeTypes !== undefined ? request.allowedMimeTypes : existing.allowedMimeTypes),
+            maximumFileSizeBytes: this.normalizeNonNegativeInteger(request.maximumFileSizeBytes !== undefined ? request.maximumFileSizeBytes : existing.maximumFileSizeBytes || 0, 'maximumFileSizeBytes'),
+            retentionDays: this.normalizeNonNegativeInteger(request.retentionDays !== undefined ? request.retentionDays : existing.retentionDays || 0, 'retentionDays'),
+            status: status
+        };
+    },
+
+    /**
+     * Writes an effective folder policy through the existing CONFIG registry.
+     *
+     * @param {string} code Folder code.
+     * @param {Object} policy Normalized policy.
+     * @param {string} tenant Optional tenant.
+     */
+    writeFolderPolicy: function (code, policy, tenant) {
+        if (typeof CONFIG === 'undefined' || !CONFIG.get || !CONFIG.setProperties) {
+            throw new CLASSES.NodicsError('ERR_MED_00009', 'Media folder policy runtime configuration is not writable');
+        }
+        let properties = CONFIG.getProperties ? (CONFIG.getProperties(tenant) || CONFIG.getProperties()) : undefined;
+        if (!properties) {
+            properties = {};
+            let currentMedia = CONFIG.get('media', tenant) || CONFIG.get('media') || {};
+            properties.media = currentMedia;
+        }
+        let nextProperties = Object.assign({}, properties);
+        nextProperties.media = Object.assign({}, properties.media || {});
+        nextProperties.media.folders = Object.assign({}, nextProperties.media.folders || {});
+        nextProperties.media.folders[code] = policy;
+        CONFIG.setProperties(nextProperties, tenant);
+    },
+
+    /** @param {string} value Value to validate. @param {string} label Error label. @returns {string} Safe code. */
+    safeCode: function (value, label) {
+        if (typeof value !== 'string' || !/^[A-Za-z][A-Za-z0-9._-]{0,127}$/.test(value)) {
+            throw new CLASSES.NodicsError('ERR_MED_00008', label + ' is invalid');
+        }
+        return value;
+    },
+
+    /** @param {string} value Storage prefix. @returns {boolean} True when provider-relative and safe. */
+    isSafeStoragePrefix: function (value) {
+        return typeof value === 'string' &&
+            value.trim() === value &&
+            value.length > 0 &&
+            value.length <= 256 &&
+            !path.isAbsolute(value) &&
+            !/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(value) &&
+            !value.split(/[\\/]+/).some(part => part === '..' || part === '.');
+    },
+
+    /** @param {unknown} value Value. @returns {string} Safe text. */
+    safeOptionalText: function (value) {
+        if (value === undefined || value === null) {
+            return '';
+        }
+        if (typeof value !== 'string' || value.length > 500) {
+            throw new CLASSES.NodicsError('ERR_MED_00008', 'Invalid media folder text');
+        }
+        return value.trim();
+    },
+
+    /** @param {unknown} value Value. @returns {Array<string>} Normalized string list. */
+    normalizeStringList: function (value) {
+        if (value === undefined || value === null) {
+            return [];
+        }
+        if (!Array.isArray(value)) {
+            throw new CLASSES.NodicsError('ERR_MED_00008', 'Media folder policy list must be an array');
+        }
+        return Array.from(new Set(value.map(item => {
+            if (typeof item !== 'string' || !item.trim() || item.length > 200) {
+                throw new CLASSES.NodicsError('ERR_MED_00008', 'Invalid media folder policy list item');
+            }
+            return item.trim();
+        })));
+    },
+
+    /** @param {unknown} value Value. @param {string} label Label. @returns {number} Integer. */
+    normalizeNonNegativeInteger: function (value, label) {
+        let number = Number(value || 0);
+        if (!Number.isSafeInteger(number) || number < 0) {
+            throw new CLASSES.NodicsError('ERR_MED_00008', 'Invalid media folder ' + label);
+        }
+        return number;
     },
 
     /**
@@ -115,15 +286,29 @@ module.exports = {
      */
     projectFolderPolicy: function (folderCode) {
         let folder = this.getFolderPolicy(folderCode);
+        return this.projectConfiguredFolderPolicy(folder.code, folder);
+    },
+
+    /**
+     * Projects one configured folder policy as safe client metadata.
+     *
+     * @param {string} folderCode Folder code.
+     * @param {Object} folder Folder policy.
+     * @returns {Object} Safe folder policy projection.
+     */
+    projectConfiguredFolderPolicy: function (folderCode, folder) {
         let configuration = this.getConfiguration();
         let upload = configuration.upload || {};
         let allowedExtensions = folder.allowedExtensions && folder.allowedExtensions.length ? folder.allowedExtensions : upload.defaultAllowedExtensions || [];
         let allowedMimeTypes = folder.allowedMimeTypes && folder.allowedMimeTypes.length ? folder.allowedMimeTypes : upload.defaultAllowedMimeTypes || [];
         return {
-            folderCode: folder.code,
+            folderCode: folder.code || folderCode,
+            name: folder.name || folder.code || folderCode,
+            description: folder.description || '',
             storagePrefix: folder.storagePrefix,
             access: folder.access,
             retentionDays: Number(folder.retentionDays || 0),
+            status: folder.status || 'ACTIVE',
             uploadPolicy: {
                 maximumFileSizeBytes: Number(folder.maximumFileSizeBytes || upload.maximumFileSizeBytes || 0),
                 allowedExtensions: this.copyStringList(allowedExtensions),

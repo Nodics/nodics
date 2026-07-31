@@ -7,6 +7,7 @@
 - `gFramework/nMedia/test/mediaBusinessOwnershipBoundary.test.js`
 - `gFramework/nMedia/test/mediaContextPolicyContract.test.js`
 - `gFramework/nMedia/test/mediaDeliveryContract.test.js`
+- `gFramework/nMedia/test/mediaFolderPolicyManagementContract.test.js`
 - `gFramework/nMedia/test/mediaImportSourceResolverContract.test.js`
 - `gFramework/nMedia/test/mediaMultipartUploadBodyParserContract.test.js`
 - `gFramework/nMedia/test/mediaReferenceLookupContract.test.js`

@@ -64,6 +64,42 @@ module.exports = {
         });
     },
     /**
+     * Creates or updates one effective media folder policy.
+     *
+     * @param {Object} request Folder policy mutation request.
+     * @returns {Promise<Object>} Folder policy response.
+     */
+    saveFolderPolicy: function (request) {
+        return Promise.resolve({
+            code: 'SUC_MED_00007',
+            data: SERVICE.DefaultMediaStoragePolicyService.saveFolderPolicy(request)
+        });
+    },
+    /**
+     * Activates one effective media folder policy.
+     *
+     * @param {Object} request Folder lifecycle request.
+     * @returns {Promise<Object>} Folder policy response.
+     */
+    activateFolderPolicy: function (request) {
+        return Promise.resolve({
+            code: 'SUC_MED_00008',
+            data: SERVICE.DefaultMediaStoragePolicyService.setFolderPolicyStatus(request, 'ACTIVE')
+        });
+    },
+    /**
+     * Deactivates one effective media folder policy.
+     *
+     * @param {Object} request Folder lifecycle request.
+     * @returns {Promise<Object>} Folder policy response.
+     */
+    deactivateFolderPolicy: function (request) {
+        return Promise.resolve({
+            code: 'SUC_MED_00009',
+            data: SERVICE.DefaultMediaStoragePolicyService.setFolderPolicyStatus(request, 'INACTIVE')
+        });
+    },
+    /**
      * Resolves a provider-neutral storage location descriptor.
      *
      * @param {Object} request Media descriptor request.

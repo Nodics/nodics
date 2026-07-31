@@ -84,6 +84,28 @@ Multipart media upload limits belong to `gFramework/nMedia` under
 `media.upload`. Media business/file policy belongs to `gFramework/nMedia`
 under `media.upload` and `media.folders`.
 
+Media folder management is nMedia-owned and configuration-first. The generated
+`mediaFolder` model may be used for discovery, records, seed/audit workflows,
+and Schema Workbench visibility, but live upload validation reads effective
+`media.folders` policy through `DefaultMediaStoragePolicyService`. Clients must
+not treat generic model CRUD as live upload-policy authority unless an approved
+nMedia governance workflow synchronizes those records into effective
+configuration.
+
+The secured folder-policy mutation routes are:
+
+- `PUT /nodics/media/v0/folders/policy` for create;
+- `PATCH /nodics/media/v0/folders/policy/{folderCode}` for update;
+- `POST /nodics/media/v0/folders/policy/{folderCode}/activate`;
+- `POST /nodics/media/v0/folders/policy/{folderCode}/deactivate`.
+
+All require `media.folder.policy.manage`. They may change only bounded policy
+fields: code/name/description on create, provider-relative `storagePrefix`,
+`access`, extension/MIME allow-lists, maximum size, retention, and active
+status. They must reject absolute paths, traversal, URLs, provider descriptors,
+credentials, signed URLs, and any value that lets a client become storage
+authority. Inactive folders must be rejected for new uploads.
+
 The OOTB local provider default leaves `media.storage.providers.local.basePath`
 empty and uses `fallbackRelativeBasePath: 'temp/media'`. That means local upload
 bytes resolve under the active `NODICS.getServerPath()` by default, for example

@@ -30,6 +30,8 @@ const mediaSchemas = schemas.media;
 assert(!mediaSchemas.mediaContainer, 'nMedia must use mediaSet naming instead of copied mediaContainer terminology');
 assert(!mediaSchemas.mediaContainerEntry, 'nMedia must use mediaSetEntry naming instead of copied mediaContainerEntry terminology');
 assert(mediaSchemas.media.definition.providerCode.required, 'media.providerCode must identify the storage provider');
+assert.deepStrictEqual(mediaSchemas.mediaFolder.definition.status.enum, ['ACTIVE', 'INACTIVE'], 'mediaFolder.status must support activate/deactivate policy');
+assert.strictEqual(mediaSchemas.mediaFolder.definition.status.searchOptions.enabled, true, 'mediaFolder.status must be searchable through Schema Workbench');
 assert(mediaSchemas.media.definition.storageKey.required, 'media.storageKey must preserve provider-relative storage key');
 assert(mediaSchemas.media.definition.originalFileName, 'media.originalFileName must preserve the uploaded filename');
 assert(mediaSchemas.media.definition.storedFileName, 'media.storedFileName must preserve the provider stored filename');

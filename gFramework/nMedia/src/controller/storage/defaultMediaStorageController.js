@@ -67,6 +67,86 @@ module.exports = {
         }
     },
     /**
+     * Creates or updates a backend-owned media folder policy.
+     *
+     * @param {Object} request Nodics request wrapper.
+     * @param {Function} callback Optional callback used by router pipeline.
+     * @returns {Promise<Object>|void} Folder policy response or callback result.
+     */
+    saveFolderPolicy: function (request, callback) {
+        let body = request && request.httpRequest && request.httpRequest.body || {};
+        let params = request && request.httpRequest && request.httpRequest.params || {};
+        let input = Object.assign({}, body, params, {
+            tenant: request && request.tenant,
+            authData: request && request.authData
+        });
+        if (callback) {
+            FACADE.DefaultMediaStorageFacade.saveFolderPolicy(input).then(success => callback(null, success)).catch(error => callback(error));
+        } else {
+            return FACADE.DefaultMediaStorageFacade.saveFolderPolicy(input);
+        }
+    },
+    /**
+     * Creates a backend-owned media folder policy.
+     *
+     * @param {Object} request Nodics request wrapper.
+     * @param {Function} callback Optional callback used by router pipeline.
+     * @returns {Promise<Object>|void} Folder policy response or callback result.
+     */
+    createFolderPolicy: function (request, callback) {
+        let body = request && request.httpRequest && request.httpRequest.body || {};
+        let input = Object.assign({}, body, {
+            create: true,
+            tenant: request && request.tenant,
+            authData: request && request.authData
+        });
+        if (callback) {
+            FACADE.DefaultMediaStorageFacade.saveFolderPolicy(input).then(success => callback(null, success)).catch(error => callback(error));
+        } else {
+            return FACADE.DefaultMediaStorageFacade.saveFolderPolicy(input);
+        }
+    },
+    /**
+     * Activates a backend-owned media folder policy.
+     *
+     * @param {Object} request Nodics request wrapper.
+     * @param {Function} callback Optional callback used by router pipeline.
+     * @returns {Promise<Object>|void} Folder policy response or callback result.
+     */
+    activateFolderPolicy: function (request, callback) {
+        let params = request && request.httpRequest && request.httpRequest.params || {};
+        let input = {
+            folderCode: params.folderCode,
+            tenant: request && request.tenant,
+            authData: request && request.authData
+        };
+        if (callback) {
+            FACADE.DefaultMediaStorageFacade.activateFolderPolicy(input).then(success => callback(null, success)).catch(error => callback(error));
+        } else {
+            return FACADE.DefaultMediaStorageFacade.activateFolderPolicy(input);
+        }
+    },
+    /**
+     * Deactivates a backend-owned media folder policy.
+     *
+     * @param {Object} request Nodics request wrapper.
+     * @param {Function} callback Optional callback used by router pipeline.
+     * @returns {Promise<Object>|void} Folder policy response or callback result.
+     */
+    deactivateFolderPolicy: function (request, callback) {
+        let params = request && request.httpRequest && request.httpRequest.params || {};
+        let input = {
+            folderCode: params.folderCode,
+            tenant: request && request.tenant,
+            authData: request && request.authData
+        };
+        if (callback) {
+            FACADE.DefaultMediaStorageFacade.deactivateFolderPolicy(input).then(success => callback(null, success)).catch(error => callback(error));
+        } else {
+            return FACADE.DefaultMediaStorageFacade.deactivateFolderPolicy(input);
+        }
+    },
+    /**
      * Resolves a safe provider storage location for a media descriptor.
      *
      * @param {Object} request Nodics request wrapper.

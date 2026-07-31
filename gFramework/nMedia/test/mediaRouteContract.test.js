@@ -24,6 +24,10 @@ const routerConfig = require('../src/router/routers');
 const expectedRoutes = [
     { key: '/contexts', method: 'GET', controller: 'DefaultMediaStorageController', operation: 'listMediaContexts', secured: true, permission: 'media.context.view' },
     { key: '/storage/policy', method: 'POST', controller: 'DefaultMediaStorageController', operation: 'resolveStoragePolicy', secured: true, permission: 'media.storage.policy.view' },
+    { key: '/folders/policy', method: 'PUT', controller: 'DefaultMediaStorageController', operation: 'createFolderPolicy', secured: true, permission: 'media.folder.policy.manage' },
+    { key: '/folders/policy/:folderCode', method: 'PATCH', controller: 'DefaultMediaStorageController', operation: 'saveFolderPolicy', secured: true, permission: 'media.folder.policy.manage' },
+    { key: '/folders/policy/:folderCode/activate', method: 'POST', controller: 'DefaultMediaStorageController', operation: 'activateFolderPolicy', secured: true, permission: 'media.folder.policy.manage' },
+    { key: '/folders/policy/:folderCode/deactivate', method: 'POST', controller: 'DefaultMediaStorageController', operation: 'deactivateFolderPolicy', secured: true, permission: 'media.folder.policy.manage' },
     { key: '/storage/location', method: 'POST', controller: 'DefaultMediaStorageController', operation: 'resolveStorageLocation', secured: true, permission: 'media.storage.location.resolve' },
     { key: '/storage/upload', method: 'POST', controller: 'DefaultMediaStorageController', operation: 'uploadMedia', secured: true, permission: 'media.upload.create' },
     { key: '/download/:mediaCode', method: 'GET', controller: 'DefaultMediaStorageController', operation: 'downloadMediaContent', secured: true, permission: 'media.content.download' },

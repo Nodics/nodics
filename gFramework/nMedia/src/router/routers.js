@@ -58,6 +58,68 @@ module.exports = {
                     }
                 }
             },
+            createFolderPolicy: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'media.folder.policy.manage',
+                apiExposure: 'mediaManagement',
+                key: '/folders/policy',
+                method: 'PUT',
+                controller: 'DefaultMediaStorageController',
+                operation: 'createFolderPolicy',
+                help: {
+                    requestType: 'secured',
+                    message: 'Creates a backend-owned media folder policy in effective runtime configuration. Does not accept provider secrets or raw paths.',
+                    method: 'PUT',
+                    url: 'http://host:port/nodics/media/v0/folders/policy',
+                    body: {
+                        code: 'businessDocuments',
+                        name: 'Business documents',
+                        storagePrefix: 'media/business',
+                        access: 'PRIVATE',
+                        allowedExtensions: ['pdf'],
+                        allowedMimeTypes: ['application/pdf'],
+                        maximumFileSizeBytes: 10485760,
+                        retentionDays: 90
+                    }
+                }
+            },
+            updateFolderPolicy: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'media.folder.policy.manage',
+                apiExposure: 'mediaManagement',
+                key: '/folders/policy/:folderCode',
+                method: 'PATCH',
+                controller: 'DefaultMediaStorageController',
+                operation: 'saveFolderPolicy',
+                help: {
+                    requestType: 'secured',
+                    message: 'Updates a backend-owned media folder policy in effective runtime configuration. Does not accept provider secrets or raw paths.',
+                    method: 'PATCH',
+                    url: 'http://host:port/nodics/media/v0/folders/policy/{folderCode}'
+                }
+            },
+            activateFolderPolicy: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'media.folder.policy.manage',
+                apiExposure: 'mediaManagement',
+                key: '/folders/policy/:folderCode/activate',
+                method: 'POST',
+                controller: 'DefaultMediaStorageController',
+                operation: 'activateFolderPolicy'
+            },
+            deactivateFolderPolicy: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'media.folder.policy.manage',
+                apiExposure: 'mediaManagement',
+                key: '/folders/policy/:folderCode/deactivate',
+                method: 'POST',
+                controller: 'DefaultMediaStorageController',
+                operation: 'deactivateFolderPolicy'
+            },
             resolveStorageLocation: {
                 secured: true,
                 accessGroups: ['userGroup'],

@@ -7,7 +7,7 @@
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `media` | `base` | yes | yes | yes | no | no | yes |  | 20 |
-| `mediaFolder` | `base` | yes | yes | yes | no | no | yes |  | 8 |
+| `mediaFolder` | `base` | yes | yes | yes | no | no | yes |  | 9 |
 | `mediaFormat` | `base` | yes | yes | yes | no | no | yes |  | 6 |
 | `mediaReference` | `base` | yes | yes | yes | no | no | yes |  | 9 |
 | `mediaSet` | `base` | yes | yes | yes | no | no | yes |  | 6 |
@@ -45,6 +45,7 @@
 - `maximumFileSizeBytes` `int` optional: Folder-specific upload size limit
 - `name` `string` required: User-facing folder name
 - `retentionDays` `int` optional: Optional retention window for cleanup
+- `status` `object` required: Folder policy lifecycle status. Inactive folders are not eligible for new uploads.
 - `storagePrefix` `string` required: Provider-relative prefix controlled by backend configuration
 
 ### `media.mediaFormat`

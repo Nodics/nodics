@@ -68,6 +68,13 @@ module.exports = {
                     required: false,
                     description: 'Optional retention window for cleanup',
                 },
+                status: {
+                    enum: ['ACTIVE', 'INACTIVE'],
+                    required: true,
+                    default: 'ACTIVE',
+                    searchOptions: { enabled: true },
+                    description: 'Folder policy lifecycle status. Inactive folders are not eligible for new uploads.',
+                },
             },
         },
         mediaFormat: {

@@ -57,6 +57,63 @@ The OOTB key strategy builds:
 | `productAssets` | `media/product` | Product images, manuals, galleries, swatches, and product documents. |
 | `default` | `media/utility` | General documents or uncategorized internal media. |
 
+## Media Folder Policy Management
+
+Media folder policy is configuration-first. The effective upload policy used by
+`DefaultMediaStoragePolicyService` comes from `media.folders`, after normal
+Nodics layered configuration and any approved runtime configuration have been
+applied. The generated `mediaFolder` model exists for discovery, search, audit,
+seed data, and BackOffice record workflows, but the live upload authority is the
+nMedia folder policy service. Axis and other clients must not assume that
+generic model CRUD changes upload behavior unless a deployment explicitly
+synchronizes those records into effective configuration through nMedia-owned
+governance.
+
+nMedia exposes secured policy operations for folder management:
+
+| Operation | Route | Permission | Purpose |
+| --- | --- | --- | --- |
+| Create | `PUT /nodics/media/v0/folders/policy` | `media.folder.policy.manage` | Add one effective folder policy. |
+| Update | `PATCH /nodics/media/v0/folders/policy/{folderCode}` | `media.folder.policy.manage` | Change allowed mutable policy fields. |
+| Activate | `POST /nodics/media/v0/folders/policy/{folderCode}/activate` | `media.folder.policy.manage` | Re-enable future uploads to a folder. |
+| Deactivate | `POST /nodics/media/v0/folders/policy/{folderCode}/deactivate` | `media.folder.policy.manage` | Block future uploads to a folder without deleting historical media. |
+
+The mutable policy fields are intentionally bounded: `name`, `description`,
+provider-relative `storagePrefix`, `access`, `allowedExtensions`,
+`allowedMimeTypes`, `maximumFileSizeBytes`, `retentionDays`, and `status`.
+Storage prefixes must be relative provider keys such as `media/business` or
+`data/import`; absolute filesystem paths, traversal segments, URLs, credentials,
+bucket secrets, signed URLs, and provider descriptors are rejected. Inactive
+folders remain visible as configuration but are rejected by upload validation.
+
+Customer projects should customize folders through a later module
+`config/properties.js` whenever the policy is a deployable default:
+
+```js
+module.exports = {
+    media: {
+        folders: {
+            customerKyc: {
+                code: 'customerKyc',
+                name: 'Customer KYC',
+                storagePrefix: 'media/kyc',
+                access: 'PRIVATE',
+                allowedExtensions: ['pdf'],
+                allowedMimeTypes: ['application/pdf'],
+                maximumFileSizeBytes: 10485760,
+                retentionDays: 365,
+                status: 'ACTIVE'
+            }
+        }
+    }
+};
+```
+
+For operator-driven changes in a running deployment, use the nMedia folder
+policy operations or a deployment-approved runtime configuration workflow that
+preserves the same validation. Do not edit framework source, fork Axis, or
+write directly to provider paths to manage media folders.
+
 For file imports, Axis should pass the selected target schema to nMedia during
 upload, and nMedia stores the uploaded file under the schema segment selected
 by the configured strategy. A partner can replace or remap the strategy without
