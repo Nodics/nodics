@@ -18,10 +18,7 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics.git"
     },
-    "dependencies": {
-        "chai": "^4.5.0",
-        "mocha": "^11.7.6"
-    },
+    "dependencies": {},
     "nodics": {
         "kind": "capability",
         "runtimeModule": true,

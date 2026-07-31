@@ -15,9 +15,7 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics"
     },
-    "dependencies": {
-        "xml-js": "^1.6.11"
-    },
+    "dependencies": {},
     "nodics": {
         "kind": "capability",
         "runtimeModule": true,

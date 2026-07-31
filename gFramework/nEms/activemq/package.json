@@ -15,9 +15,7 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics"
     },
-    "dependencies": {
-        "stompit": "^1.0.0"
-    },
+    "dependencies": {},
     "nodics": {
         "kind": "capability",
         "runtimeModule": true,

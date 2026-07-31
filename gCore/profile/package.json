@@ -15,9 +15,7 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics"
     },
-    "dependencies": {
-        "email-validator": "^2.0.4"
-    },
+    "dependencies": {},
     "nodics": {
         "kind": "capability",
         "runtimeModule": true,

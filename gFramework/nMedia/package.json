@@ -18,9 +18,7 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics.git"
     },
-    "dependencies": {
-        "busboy": "^1.6.0"
-    },
+    "dependencies": {},
     "nodics": {
         "kind": "capability",
         "runtimeModule": true,

@@ -12,14 +12,12 @@
 /**
  * @module nTooling/test/DependencyOwnershipContract
  * @description Verifies package dependency ownership so external providers,
- * runtime frameworks, and shared utilities remain declared by their owning
- * Nodics capability modules while the root package remains the install
- * aggregator for the repository.
+ * runtime frameworks, and shared utilities remain installed only by the root
+ * package while root dependency governance records the owning Nodics modules.
  * @layer test
  * @owner nTooling
- * @override Projects may add project-owned dependencies, but must classify
- * ownership, declare owner module package metadata, and keep provider SDKs out
- * of unrelated modules.
+ * @override Projects may add project-owned dependencies only at the root, but
+ * must classify ownership and keep provider SDKs out of unrelated modules.
  */
 
 const assert = require('assert');
@@ -48,6 +46,18 @@ function walk(directory, files) {
     });
 }
 
+function walkPackageFiles(directory, files) {
+    fs.readdirSync(directory, { withFileTypes: true }).forEach(entry => {
+        if (['.git', 'node_modules', 'docs'].includes(entry.name)) return;
+        const entryPath = path.join(directory, entry.name);
+        if (entry.isDirectory()) {
+            walkPackageFiles(entryPath, files);
+        } else if (entry.name === 'package.json') {
+            files.push(entryPath);
+        }
+    });
+}
+
 function packageImports(filePath, packageName) {
     const source = fs.readFileSync(filePath, 'utf8');
     return source.includes('require("' + packageName) ||
@@ -56,17 +66,19 @@ function packageImports(filePath, packageName) {
         source.includes("from '" + packageName);
 }
 
-function assertOwnerPackageDeclares(packageName, ownerPath) {
+function readJson(filePath) {
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+}
+
+function collectPackageFiles() {
+    let files = [];
+    walkPackageFiles(repositoryRoot, files);
+    return files;
+}
+
+function assertOwnerPackageExists(ownerPath) {
     const packagePath = path.join(repositoryRoot, ownerPath, 'package.json');
     assert(fs.existsSync(packagePath), 'Dependency owner package is missing: ' + ownerPath);
-    const ownerPackage = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
-    const declaredVersion = (ownerPackage.dependencies || {})[packageName] ||
-        (ownerPackage.devDependencies || {})[packageName];
-    assert.strictEqual(
-        declaredVersion,
-        rootDependencies[packageName],
-        ownerPath + ' must declare dependency `' + packageName + '` with the root install version'
-    );
 }
 
 assert(ownedDependencies, 'Root package.json must declare nodics.dependencyGovernance.ownedDependencies');
@@ -82,8 +94,18 @@ Object.keys(rootDependencies).forEach(packageName => {
 Object.keys(ownedDependencies).forEach(packageName => {
     assert(rootDependencies[packageName], 'Owned dependency is not installed by the root package: ' + packageName);
     ownedDependencies[packageName].owners.forEach(ownerPath => {
-        assertOwnerPackageDeclares(packageName, ownerPath);
+        assertOwnerPackageExists(ownerPath);
     });
+});
+
+collectPackageFiles().filter(packagePath => packagePath !== path.join(repositoryRoot, 'package.json')).forEach(packagePath => {
+    const modulePackage = readJson(packagePath);
+    assert.deepStrictEqual(modulePackage.dependencies || {}, {},
+        'Module package.json must not declare dependencies; root package.json is the only install authority: ' +
+        normalizePath(path.relative(repositoryRoot, packagePath)));
+    assert.deepStrictEqual(modulePackage.devDependencies || {}, {},
+        'Module package.json must not declare devDependencies; root package.json is the only install authority: ' +
+        normalizePath(path.relative(repositoryRoot, packagePath)));
 });
 
 const sourceFiles = [];

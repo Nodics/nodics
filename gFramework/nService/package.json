@@ -18,10 +18,7 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics.git"
     },
-    "dependencies": {
-        "jsonwebtoken": "^9.0.3",
-        "node-fetch": "^2.7.0"
-    },
+    "dependencies": {},
     "nodics": {
         "kind": "group",
         "runtimeModule": true,

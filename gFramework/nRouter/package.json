@@ -18,10 +18,7 @@
         "type": "git",
         "url": "https://github.com/Nodics/nodics.git"
     },
-    "dependencies": {
-        "body-parser": "^1.19.2",
-        "express": "^4.17.3"
-    },
+    "dependencies": {},
     "nodics": {
         "kind": "capability",
         "runtimeModule": true,
