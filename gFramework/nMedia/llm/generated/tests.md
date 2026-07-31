@@ -8,12 +8,14 @@
 - `gFramework/nMedia/test/mediaContextPolicyContract.test.js`
 - `gFramework/nMedia/test/mediaDeliveryContract.test.js`
 - `gFramework/nMedia/test/mediaFolderPolicyManagementContract.test.js`
+- `gFramework/nMedia/test/mediaFormatPolicyManagementContract.test.js`
 - `gFramework/nMedia/test/mediaImportSourceResolverContract.test.js`
 - `gFramework/nMedia/test/mediaMultipartUploadBodyParserContract.test.js`
 - `gFramework/nMedia/test/mediaReferenceLookupContract.test.js`
 - `gFramework/nMedia/test/mediaRouteContract.test.js`
 - `gFramework/nMedia/test/mediaSchemaContract.test.js`
 - `gFramework/nMedia/test/mediaSchemaWorkbenchContract.test.js`
+- `gFramework/nMedia/test/mediaSetEntryManagementContract.test.js`
 - `gFramework/nMedia/test/mediaStorageProviderContract.test.js`
 - `gFramework/nMedia/test/mediaUploadContract.test.js`
 

@@ -106,6 +106,34 @@ status. They must reject absolute paths, traversal, URLs, provider descriptors,
 credentials, signed URLs, and any value that lets a client become storage
 authority. Inactive folders must be rejected for new uploads.
 
+The secured format-policy mutation routes are:
+
+- `PUT /nodics/media/v0/formats/policy` for create;
+- `PATCH /nodics/media/v0/formats/policy/{formatCode}` for update;
+- `POST /nodics/media/v0/formats/policy/{formatCode}/activate`;
+- `POST /nodics/media/v0/formats/policy/{formatCode}/deactivate`.
+
+All require `media.format.policy.manage`. Effective format authority is
+`media.formats` plus `DefaultMediaStoragePolicyService`; generic
+`mediaFormat` model CRUD is discovery/audit/workbench support unless an
+approved nMedia workflow synchronizes it into effective configuration. Uploads
+must reject inactive or unknown formats.
+
+The secured media-set entry mutation routes are:
+
+- `POST /nodics/media/v0/sets/{mediaSetCode}/entries`;
+- `PATCH /nodics/media/v0/sets/{mediaSetCode}/entries/{entryCode}`;
+- `DELETE /nodics/media/v0/sets/{mediaSetCode}/entries/{entryCode}`;
+- `POST /nodics/media/v0/sets/{mediaSetCode}/entries/reorder`;
+- `POST /nodics/media/v0/sets/{mediaSetCode}/entries/{entryCode}/primary`.
+
+All require `media.set.manage`. These operations manage reusable
+`mediaSetEntry` membership, order, primary selection, fallback, locale,
+channel, device, breakpoint, role, dimensions, and lifecycle. They must not
+mutate Product, CMS, import, export, or customer business records. Business
+owners reference `mediaCode`/`mediaSetCode` and keep their own publishing,
+placement, merchandising, and lifecycle authority.
+
 The OOTB local provider default leaves `media.storage.providers.local.basePath`
 empty and uses `fallbackRelativeBasePath: 'temp/media'`. That means local upload
 bytes resolve under the active `NODICS.getServerPath()` by default, for example

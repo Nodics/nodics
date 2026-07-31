@@ -74,6 +74,40 @@ module.exports = {
     },
 
     /**
+     * Returns the upload/variant format policy for a caller-supplied format code.
+     *
+     * @param {string} formatCode Format code requested by caller.
+     * @returns {Object} Format policy.
+     */
+    getFormatPolicy: function (formatCode) {
+        let configuration = this.getConfiguration();
+        let formats = configuration.formats || {};
+        let effectiveFormatCode = formatCode || 'original';
+        let format = formats[effectiveFormatCode];
+        if (!format) {
+            throw new CLASSES.NodicsError('ERR_MED_00010', 'Invalid media format');
+        }
+        let policy = Object.assign({}, format, { code: format.code || effectiveFormatCode, status: format.status || 'ACTIVE' });
+        if (policy.status !== 'ACTIVE') {
+            throw new CLASSES.NodicsError('ERR_MED_00010', 'Inactive media format');
+        }
+        return policy;
+    },
+
+    /**
+     * Returns a format policy without applying active-upload eligibility.
+     *
+     * @param {string} formatCode Format code.
+     * @returns {Object|undefined} Existing format policy.
+     */
+    getConfiguredFormatPolicy: function (formatCode) {
+        let configuration = this.getConfiguration();
+        let formats = configuration.formats || {};
+        let format = formats[formatCode];
+        return format ? Object.assign({}, format, { code: format.code || formatCode, status: format.status || 'ACTIVE' }) : undefined;
+    },
+
+    /**
      * Creates or updates one effective media folder policy in runtime configuration.
      *
      * @param {Object} request Folder policy mutation request.
@@ -114,6 +148,46 @@ module.exports = {
     },
 
     /**
+     * Creates or updates one effective media format policy in runtime configuration.
+     *
+     * @param {Object} request Format policy mutation request.
+     * @returns {Object} Safe format policy projection.
+     */
+    saveFormatPolicy: function (request) {
+        request = request || {};
+        let code = this.safeCode(request.code || request.formatCode, 'Format code');
+        let existing = this.getConfiguredFormatPolicy(code);
+        if (request.create === true && existing) {
+            throw new CLASSES.NodicsError('ERR_MED_00011', 'Media format already exists');
+        }
+        if (request.create !== true && !existing) {
+            throw new CLASSES.NodicsError('ERR_MED_00010', 'Invalid media format');
+        }
+        let next = this.normalizeFormatPolicy(code, request, existing || {});
+        this.writeFormatPolicy(code, next, request.tenant);
+        return this.projectConfiguredFormatPolicy(code, next);
+    },
+
+    /**
+     * Activates or deactivates one configured media format policy.
+     *
+     * @param {Object} request Format lifecycle request.
+     * @param {string} status Next status.
+     * @returns {Object} Safe format policy projection.
+     */
+    setFormatPolicyStatus: function (request, status) {
+        request = request || {};
+        let code = this.safeCode(request.code || request.formatCode, 'Format code');
+        let existing = this.getConfiguredFormatPolicy(code);
+        if (!existing) {
+            throw new CLASSES.NodicsError('ERR_MED_00010', 'Invalid media format');
+        }
+        let next = Object.assign({}, existing, { status: status });
+        this.writeFormatPolicy(code, next, request.tenant);
+        return this.projectConfiguredFormatPolicy(code, next);
+    },
+
+    /**
      * Normalizes and validates the mutable folder policy fields.
      *
      * @param {string} code Folder code.
@@ -149,6 +223,35 @@ module.exports = {
     },
 
     /**
+     * Normalizes and validates mutable format policy fields.
+     *
+     * @param {string} code Format code.
+     * @param {Object} request Mutation request.
+     * @param {Object} existing Existing policy.
+     * @returns {Object} Normalized policy.
+     */
+    normalizeFormatPolicy: function (code, request, existing) {
+        let status = request.status !== undefined ? request.status : existing.status || 'ACTIVE';
+        if (!['ACTIVE', 'INACTIVE'].includes(status)) {
+            throw new CLASSES.NodicsError('ERR_MED_00012', 'Invalid media format status');
+        }
+        let formatFamily = request.formatFamily !== undefined ? request.formatFamily : existing.formatFamily || 'CUSTOM';
+        if (!['ORIGINAL', 'RESPONSIVE', 'PREVIEW', 'IMPORT', 'EXPORT', 'DOCUMENT', 'CUSTOM'].includes(formatFamily)) {
+            throw new CLASSES.NodicsError('ERR_MED_00012', 'Invalid media format family');
+        }
+        return {
+            code: code,
+            name: this.safeOptionalText(request.name !== undefined ? request.name : existing.name) || code,
+            description: this.safeOptionalText(request.description !== undefined ? request.description : existing.description) || '',
+            purpose: this.safeOptionalText(request.purpose !== undefined ? request.purpose : existing.purpose) || '',
+            width: this.normalizeNonNegativeOptionalInteger(request.width !== undefined ? request.width : existing.width, 'width'),
+            height: this.normalizeNonNegativeOptionalInteger(request.height !== undefined ? request.height : existing.height, 'height'),
+            formatFamily: formatFamily,
+            status: status
+        };
+    },
+
+    /**
      * Writes an effective folder policy through the existing CONFIG registry.
      *
      * @param {string} code Folder code.
@@ -169,6 +272,30 @@ module.exports = {
         nextProperties.media = Object.assign({}, properties.media || {});
         nextProperties.media.folders = Object.assign({}, nextProperties.media.folders || {});
         nextProperties.media.folders[code] = policy;
+        CONFIG.setProperties(nextProperties, tenant);
+    },
+
+    /**
+     * Writes an effective format policy through the existing CONFIG registry.
+     *
+     * @param {string} code Format code.
+     * @param {Object} policy Normalized policy.
+     * @param {string} tenant Optional tenant.
+     */
+    writeFormatPolicy: function (code, policy, tenant) {
+        if (typeof CONFIG === 'undefined' || !CONFIG.get || !CONFIG.setProperties) {
+            throw new CLASSES.NodicsError('ERR_MED_00013', 'Media format policy runtime configuration is not writable');
+        }
+        let properties = CONFIG.getProperties ? (CONFIG.getProperties(tenant) || CONFIG.getProperties()) : undefined;
+        if (!properties) {
+            properties = {};
+            let currentMedia = CONFIG.get('media', tenant) || CONFIG.get('media') || {};
+            properties.media = currentMedia;
+        }
+        let nextProperties = Object.assign({}, properties);
+        nextProperties.media = Object.assign({}, properties.media || {});
+        nextProperties.media.formats = Object.assign({}, nextProperties.media.formats || {});
+        nextProperties.media.formats[code] = policy;
         CONFIG.setProperties(nextProperties, tenant);
     },
 
@@ -223,6 +350,18 @@ module.exports = {
         let number = Number(value || 0);
         if (!Number.isSafeInteger(number) || number < 0) {
             throw new CLASSES.NodicsError('ERR_MED_00008', 'Invalid media folder ' + label);
+        }
+        return number;
+    },
+
+    /** @param {unknown} value Value. @param {string} label Label. @returns {number|undefined} Optional integer. */
+    normalizeNonNegativeOptionalInteger: function (value, label) {
+        if (value === undefined || value === null || value === '') {
+            return undefined;
+        }
+        let number = Number(value);
+        if (!Number.isSafeInteger(number) || number < 0) {
+            throw new CLASSES.NodicsError('ERR_MED_00012', 'Invalid media format ' + label);
         }
         return number;
     },
@@ -319,6 +458,38 @@ module.exports = {
     },
 
     /**
+     * Projects one format policy as safe client metadata.
+     *
+     * @param {string} formatCode Format code.
+     * @returns {Object} Safe format policy projection.
+     */
+    projectFormatPolicy: function (formatCode) {
+        let format = this.getFormatPolicy(formatCode);
+        return this.projectConfiguredFormatPolicy(format.code, format);
+    },
+
+    /**
+     * Projects one configured format policy as safe client metadata.
+     *
+     * @param {string} formatCode Format code.
+     * @param {Object} format Format policy.
+     * @returns {Object} Safe format policy projection.
+     */
+    projectConfiguredFormatPolicy: function (formatCode, format) {
+        return {
+            formatCode: format.code || formatCode,
+            code: format.code || formatCode,
+            name: format.name || format.code || formatCode,
+            description: format.description || '',
+            purpose: format.purpose || '',
+            width: format.width,
+            height: format.height,
+            formatFamily: format.formatFamily || 'CUSTOM',
+            status: format.status || 'ACTIVE'
+        };
+    },
+
+    /**
      * Copies a string array from configuration while dropping blank values.
      *
      * @param {Array<string>} values Configured values.
@@ -373,6 +544,7 @@ module.exports = {
         let configuration = this.getConfiguration();
         let upload = configuration.upload || {};
         let folder = this.getFolderPolicy(request.folderCode);
+        let format = this.getFormatPolicy(request.formatCode || 'original');
         let allowedExtensions = folder.allowedExtensions && folder.allowedExtensions.length ? folder.allowedExtensions : upload.defaultAllowedExtensions || [];
         let allowedMimeTypes = folder.allowedMimeTypes && folder.allowedMimeTypes.length ? folder.allowedMimeTypes : upload.defaultAllowedMimeTypes || [];
         let maximumFileSizeBytes = Number(folder.maximumFileSizeBytes || upload.maximumFileSizeBytes || 0);
@@ -391,6 +563,8 @@ module.exports = {
             originalFileName: fileName,
             extension: extension,
             folder: folder,
+            format: format,
+            formatCode: format.code,
             uploadPolicy: {
                 maximumFileSizeBytes: maximumFileSizeBytes,
                 allowedExtensions: allowedExtensions,

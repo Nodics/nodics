@@ -120,6 +120,102 @@ module.exports = {
                 controller: 'DefaultMediaStorageController',
                 operation: 'deactivateFolderPolicy'
             },
+            createFormatPolicy: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'media.format.policy.manage',
+                apiExposure: 'mediaManagement',
+                key: '/formats/policy',
+                method: 'PUT',
+                controller: 'DefaultMediaStorageController',
+                operation: 'createFormatPolicy',
+                help: {
+                    requestType: 'secured',
+                    message: 'Creates a backend-owned media format policy in effective runtime configuration.',
+                    method: 'PUT',
+                    url: 'http://host:port/nodics/media/v0/formats/policy'
+                }
+            },
+            updateFormatPolicy: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'media.format.policy.manage',
+                apiExposure: 'mediaManagement',
+                key: '/formats/policy/:formatCode',
+                method: 'PATCH',
+                controller: 'DefaultMediaStorageController',
+                operation: 'saveFormatPolicy'
+            },
+            activateFormatPolicy: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'media.format.policy.manage',
+                apiExposure: 'mediaManagement',
+                key: '/formats/policy/:formatCode/activate',
+                method: 'POST',
+                controller: 'DefaultMediaStorageController',
+                operation: 'activateFormatPolicy'
+            },
+            deactivateFormatPolicy: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'media.format.policy.manage',
+                apiExposure: 'mediaManagement',
+                key: '/formats/policy/:formatCode/deactivate',
+                method: 'POST',
+                controller: 'DefaultMediaStorageController',
+                operation: 'deactivateFormatPolicy'
+            },
+            addMediaSetEntry: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'media.set.manage',
+                apiExposure: 'mediaManagement',
+                key: '/sets/:mediaSetCode/entries',
+                method: 'POST',
+                controller: 'DefaultMediaStorageController',
+                operation: 'addMediaSetEntry'
+            },
+            updateMediaSetEntry: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'media.set.manage',
+                apiExposure: 'mediaManagement',
+                key: '/sets/:mediaSetCode/entries/:entryCode',
+                method: 'PATCH',
+                controller: 'DefaultMediaStorageController',
+                operation: 'updateMediaSetEntry'
+            },
+            removeMediaSetEntry: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'media.set.manage',
+                apiExposure: 'mediaManagement',
+                key: '/sets/:mediaSetCode/entries/:entryCode',
+                method: 'DELETE',
+                controller: 'DefaultMediaStorageController',
+                operation: 'removeMediaSetEntry'
+            },
+            reorderMediaSetEntries: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'media.set.manage',
+                apiExposure: 'mediaManagement',
+                key: '/sets/:mediaSetCode/entries/reorder',
+                method: 'POST',
+                controller: 'DefaultMediaStorageController',
+                operation: 'reorderMediaSetEntries'
+            },
+            setPrimaryMediaSetEntry: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'media.set.manage',
+                apiExposure: 'mediaManagement',
+                key: '/sets/:mediaSetCode/entries/:entryCode/primary',
+                method: 'POST',
+                controller: 'DefaultMediaStorageController',
+                operation: 'setPrimaryMediaSetEntry'
+            },
             resolveStorageLocation: {
                 secured: true,
                 accessGroups: ['userGroup'],

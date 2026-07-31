@@ -8,10 +8,10 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `media` | `base` | yes | yes | yes | no | no | yes |  | 20 |
 | `mediaFolder` | `base` | yes | yes | yes | no | no | yes |  | 9 |
-| `mediaFormat` | `base` | yes | yes | yes | no | no | yes |  | 6 |
+| `mediaFormat` | `base` | yes | yes | yes | no | no | yes |  | 8 |
 | `mediaReference` | `base` | yes | yes | yes | no | no | yes |  | 9 |
 | `mediaSet` | `base` | yes | yes | yes | no | no | yes |  | 6 |
-| `mediaSetEntry` | `base` | yes | yes | yes | no | no | yes |  | 10 |
+| `mediaSetEntry` | `base` | yes | yes | yes | no | no | yes |  | 15 |
 
 ### `media.media`
 
@@ -52,9 +52,11 @@
 
 - `code` `string` required: Unique media format code such as original, thumbnail, desktop, mobile, or importFile
 - `description` `string` optional: Purpose of this format
+- `formatFamily` `object` required: Reusable format family used for filtering and customer extensions
 - `height` `int` optional: Optional expected height in pixels
 - `name` `string` required: User-facing media format name
 - `purpose` `string` optional: Business purpose or rendering purpose for this format
+- `status` `object` required: Format lifecycle status. Inactive formats are not eligible for new uploads or variants.
 - `width` `int` optional: Optional expected width in pixels
 
 ### `media.mediaReference`
@@ -80,13 +82,18 @@
 
 ### `media.mediaSetEntry`
 
+- `breakpointCode` `string` optional: Optional responsive breakpoint qualifier such as sm, md, lg, or xl
+- `channelCode` `string` optional: Optional channel qualifier such as web, app, marketplace, or kiosk
 - `code` `string` required: Unique media set entry code
+- `deviceCode` `string` optional: Optional device qualifier such as desktop, mobile, tablet, or tv
+- `fallbackEntryCode` `string` optional: Optional fallback media set entry code used when this entry is not applicable
 - `formatCode` `string` optional: Format represented by this entry, such as thumbnail, mobile, desktop, zoom, or original
 - `height` `int` optional: Concrete media height in pixels when known
 - `localeCode` `string` optional: Optional locale for localized media
 - `mediaCode` `string` required: Referenced media item code
 - `mediaSetCode` `string` required: Owning media set code
 - `position` `int` optional: Display or fallback order within the media set
+- `primary` `boolean` optional: Marks the default entry inside one media set for generic selection.
 - `status` `object` required: Entry lifecycle status
 - `variantRole` `string` optional: Reusable variant role inside the set without product-specific meaning
 - `width` `int` optional: Concrete media width in pixels when known

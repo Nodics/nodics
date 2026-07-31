@@ -147,6 +147,139 @@ module.exports = {
         }
     },
     /**
+     * Updates a backend-owned media format policy.
+     *
+     * @param {Object} request Nodics request wrapper.
+     * @param {Function} callback Optional callback used by router pipeline.
+     * @returns {Promise<Object>|void} Format policy response or callback result.
+     */
+    saveFormatPolicy: function (request, callback) {
+        let body = request && request.httpRequest && request.httpRequest.body || {};
+        let params = request && request.httpRequest && request.httpRequest.params || {};
+        let input = Object.assign({}, body, params, {
+            tenant: request && request.tenant,
+            authData: request && request.authData
+        });
+        if (callback) {
+            FACADE.DefaultMediaStorageFacade.saveFormatPolicy(input).then(success => callback(null, success)).catch(error => callback(error));
+        } else {
+            return FACADE.DefaultMediaStorageFacade.saveFormatPolicy(input);
+        }
+    },
+    /**
+     * Creates a backend-owned media format policy.
+     *
+     * @param {Object} request Nodics request wrapper.
+     * @param {Function} callback Optional callback used by router pipeline.
+     * @returns {Promise<Object>|void} Format policy response or callback result.
+     */
+    createFormatPolicy: function (request, callback) {
+        let body = request && request.httpRequest && request.httpRequest.body || {};
+        let input = Object.assign({}, body, {
+            create: true,
+            tenant: request && request.tenant,
+            authData: request && request.authData
+        });
+        if (callback) {
+            FACADE.DefaultMediaStorageFacade.saveFormatPolicy(input).then(success => callback(null, success)).catch(error => callback(error));
+        } else {
+            return FACADE.DefaultMediaStorageFacade.saveFormatPolicy(input);
+        }
+    },
+    /**
+     * Activates a backend-owned media format policy.
+     *
+     * @param {Object} request Nodics request wrapper.
+     * @param {Function} callback Optional callback used by router pipeline.
+     * @returns {Promise<Object>|void} Format policy response or callback result.
+     */
+    activateFormatPolicy: function (request, callback) {
+        let params = request && request.httpRequest && request.httpRequest.params || {};
+        let input = {
+            formatCode: params.formatCode,
+            tenant: request && request.tenant,
+            authData: request && request.authData
+        };
+        if (callback) {
+            FACADE.DefaultMediaStorageFacade.activateFormatPolicy(input).then(success => callback(null, success)).catch(error => callback(error));
+        } else {
+            return FACADE.DefaultMediaStorageFacade.activateFormatPolicy(input);
+        }
+    },
+    /**
+     * Deactivates a backend-owned media format policy.
+     *
+     * @param {Object} request Nodics request wrapper.
+     * @param {Function} callback Optional callback used by router pipeline.
+     * @returns {Promise<Object>|void} Format policy response or callback result.
+     */
+    deactivateFormatPolicy: function (request, callback) {
+        let params = request && request.httpRequest && request.httpRequest.params || {};
+        let input = {
+            formatCode: params.formatCode,
+            tenant: request && request.tenant,
+            authData: request && request.authData
+        };
+        if (callback) {
+            FACADE.DefaultMediaStorageFacade.deactivateFormatPolicy(input).then(success => callback(null, success)).catch(error => callback(error));
+        } else {
+            return FACADE.DefaultMediaStorageFacade.deactivateFormatPolicy(input);
+        }
+    },
+    /** Adds a media set entry. */
+    addMediaSetEntry: function (request, callback) {
+        let body = request && request.httpRequest && request.httpRequest.body || {};
+        let params = request && request.httpRequest && request.httpRequest.params || {};
+        let input = Object.assign({}, body, params, { tenant: request && request.tenant, authData: request && request.authData });
+        if (callback) {
+            FACADE.DefaultMediaStorageFacade.addMediaSetEntry(input).then(success => callback(null, success)).catch(error => callback(error));
+        } else {
+            return FACADE.DefaultMediaStorageFacade.addMediaSetEntry(input);
+        }
+    },
+    /** Updates a media set entry. */
+    updateMediaSetEntry: function (request, callback) {
+        let body = request && request.httpRequest && request.httpRequest.body || {};
+        let params = request && request.httpRequest && request.httpRequest.params || {};
+        let input = Object.assign({}, body, params, { tenant: request && request.tenant, authData: request && request.authData });
+        if (callback) {
+            FACADE.DefaultMediaStorageFacade.updateMediaSetEntry(input).then(success => callback(null, success)).catch(error => callback(error));
+        } else {
+            return FACADE.DefaultMediaStorageFacade.updateMediaSetEntry(input);
+        }
+    },
+    /** Removes a media set entry. */
+    removeMediaSetEntry: function (request, callback) {
+        let params = request && request.httpRequest && request.httpRequest.params || {};
+        let input = Object.assign({}, params, { tenant: request && request.tenant, authData: request && request.authData });
+        if (callback) {
+            FACADE.DefaultMediaStorageFacade.removeMediaSetEntry(input).then(success => callback(null, success)).catch(error => callback(error));
+        } else {
+            return FACADE.DefaultMediaStorageFacade.removeMediaSetEntry(input);
+        }
+    },
+    /** Reorders media set entries. */
+    reorderMediaSetEntries: function (request, callback) {
+        let body = request && request.httpRequest && request.httpRequest.body || {};
+        let params = request && request.httpRequest && request.httpRequest.params || {};
+        let input = Object.assign({}, body, params, { tenant: request && request.tenant, authData: request && request.authData });
+        if (callback) {
+            FACADE.DefaultMediaStorageFacade.reorderMediaSetEntries(input).then(success => callback(null, success)).catch(error => callback(error));
+        } else {
+            return FACADE.DefaultMediaStorageFacade.reorderMediaSetEntries(input);
+        }
+    },
+    /** Marks one media set entry primary. */
+    setPrimaryMediaSetEntry: function (request, callback) {
+        let params = request && request.httpRequest && request.httpRequest.params || {};
+        let input = Object.assign({}, params, { tenant: request && request.tenant, authData: request && request.authData });
+        if (callback) {
+            FACADE.DefaultMediaStorageFacade.setPrimaryMediaSetEntry(input).then(success => callback(null, success)).catch(error => callback(error));
+        } else {
+            return FACADE.DefaultMediaStorageFacade.setPrimaryMediaSetEntry(input);
+        }
+    },
+    /**
      * Resolves a safe provider storage location for a media descriptor.
      *
      * @param {Object} request Nodics request wrapper.

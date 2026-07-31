@@ -100,6 +100,102 @@ module.exports = {
         });
     },
     /**
+     * Creates or updates one effective media format policy.
+     *
+     * @param {Object} request Format policy mutation request.
+     * @returns {Promise<Object>} Format policy response.
+     */
+    saveFormatPolicy: function (request) {
+        return Promise.resolve({
+            code: 'SUC_MED_00010',
+            data: SERVICE.DefaultMediaStoragePolicyService.saveFormatPolicy(request)
+        });
+    },
+    /**
+     * Activates one effective media format policy.
+     *
+     * @param {Object} request Format lifecycle request.
+     * @returns {Promise<Object>} Format policy response.
+     */
+    activateFormatPolicy: function (request) {
+        return Promise.resolve({
+            code: 'SUC_MED_00011',
+            data: SERVICE.DefaultMediaStoragePolicyService.setFormatPolicyStatus(request, 'ACTIVE')
+        });
+    },
+    /**
+     * Deactivates one effective media format policy.
+     *
+     * @param {Object} request Format lifecycle request.
+     * @returns {Promise<Object>} Format policy response.
+     */
+    deactivateFormatPolicy: function (request) {
+        return Promise.resolve({
+            code: 'SUC_MED_00012',
+            data: SERVICE.DefaultMediaStoragePolicyService.setFormatPolicyStatus(request, 'INACTIVE')
+        });
+    },
+    /**
+     * Adds a media set entry through nMedia-owned set-entry operations.
+     *
+     * @param {Object} request Set-entry request.
+     * @returns {Promise<Object>} Set-entry response.
+     */
+    addMediaSetEntry: function (request) {
+        return Promise.resolve({
+            code: 'SUC_MED_00013',
+            data: SERVICE.DefaultMediaSetEntryManagementService.addEntry(request)
+        });
+    },
+    /**
+     * Updates a media set entry through nMedia-owned set-entry operations.
+     *
+     * @param {Object} request Set-entry request.
+     * @returns {Promise<Object>} Set-entry response.
+     */
+    updateMediaSetEntry: function (request) {
+        return Promise.resolve({
+            code: 'SUC_MED_00014',
+            data: SERVICE.DefaultMediaSetEntryManagementService.updateEntry(request)
+        });
+    },
+    /**
+     * Removes a media set entry through nMedia-owned set-entry operations.
+     *
+     * @param {Object} request Set-entry request.
+     * @returns {Promise<Object>} Set-entry response.
+     */
+    removeMediaSetEntry: function (request) {
+        return Promise.resolve({
+            code: 'SUC_MED_00015',
+            data: SERVICE.DefaultMediaSetEntryManagementService.removeEntry(request)
+        });
+    },
+    /**
+     * Reorders media set entries through nMedia-owned set-entry operations.
+     *
+     * @param {Object} request Set-entry reorder request.
+     * @returns {Promise<Object>} Set-entry response.
+     */
+    reorderMediaSetEntries: function (request) {
+        return Promise.resolve({
+            code: 'SUC_MED_00016',
+            data: SERVICE.DefaultMediaSetEntryManagementService.reorderEntries(request)
+        });
+    },
+    /**
+     * Marks one media set entry as primary.
+     *
+     * @param {Object} request Set-entry primary request.
+     * @returns {Promise<Object>} Set-entry response.
+     */
+    setPrimaryMediaSetEntry: function (request) {
+        return Promise.resolve({
+            code: 'SUC_MED_00017',
+            data: SERVICE.DefaultMediaSetEntryManagementService.setPrimaryEntry(request)
+        });
+    },
+    /**
      * Resolves a provider-neutral storage location descriptor.
      *
      * @param {Object} request Media descriptor request.

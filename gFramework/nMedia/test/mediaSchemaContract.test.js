@@ -32,6 +32,9 @@ assert(!mediaSchemas.mediaContainerEntry, 'nMedia must use mediaSetEntry naming 
 assert(mediaSchemas.media.definition.providerCode.required, 'media.providerCode must identify the storage provider');
 assert.deepStrictEqual(mediaSchemas.mediaFolder.definition.status.enum, ['ACTIVE', 'INACTIVE'], 'mediaFolder.status must support activate/deactivate policy');
 assert.strictEqual(mediaSchemas.mediaFolder.definition.status.searchOptions.enabled, true, 'mediaFolder.status must be searchable through Schema Workbench');
+assert.deepStrictEqual(mediaSchemas.mediaFormat.definition.status.enum, ['ACTIVE', 'INACTIVE'], 'mediaFormat.status must support activate/deactivate policy');
+assert(Array.isArray(mediaSchemas.mediaFormat.definition.formatFamily.enum), 'mediaFormat.formatFamily must be enum-filterable through Schema Workbench');
+assert.strictEqual(mediaSchemas.mediaFormat.definition.status.searchOptions.enabled, true, 'mediaFormat.status must be searchable through Schema Workbench');
 assert(mediaSchemas.media.definition.storageKey.required, 'media.storageKey must preserve provider-relative storage key');
 assert(mediaSchemas.media.definition.originalFileName, 'media.originalFileName must preserve the uploaded filename');
 assert(mediaSchemas.media.definition.storedFileName, 'media.storedFileName must preserve the provider stored filename');
@@ -50,6 +53,9 @@ assert(mediaSchemas.media.definition.accessUrl, 'media.accessUrl must preserve t
 assert(mediaSchemas.mediaSet.definition.mediaType.required, 'mediaSet.mediaType must classify the logical asset');
 assert(mediaSchemas.mediaSetEntry.definition.mediaSetCode.required, 'mediaSetEntry.mediaSetCode must identify the owning media set');
 assert(mediaSchemas.mediaSetEntry.definition.mediaCode.required, 'mediaSetEntry.mediaCode must identify the concrete media item');
+['channelCode', 'deviceCode', 'breakpointCode', 'fallbackEntryCode', 'primary'].forEach((fieldName) => {
+    assert(mediaSchemas.mediaSetEntry.definition[fieldName], 'mediaSetEntry.' + fieldName + ' must support reusable variant selection');
+});
 assert(mediaSchemas.mediaReference.definition.ownerModule.required, 'mediaReference.ownerModule must identify caller ownership');
 assert(mediaSchemas.mediaReference.definition.ownerSchema.required, 'mediaReference.ownerSchema must identify caller schema ownership');
 assert(mediaSchemas.mediaReference.definition.mediaSetCode, 'mediaReference must be able to reference a media set');

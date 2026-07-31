@@ -118,6 +118,20 @@ module.exports = {
                     searchOptions: { enabled: true },
                     description: 'Business purpose or rendering purpose for this format',
                 },
+                formatFamily: {
+                    enum: ['ORIGINAL', 'RESPONSIVE', 'PREVIEW', 'IMPORT', 'EXPORT', 'DOCUMENT', 'CUSTOM'],
+                    required: true,
+                    default: 'CUSTOM',
+                    searchOptions: { enabled: true },
+                    description: 'Reusable format family used for filtering and customer extensions',
+                },
+                status: {
+                    enum: ['ACTIVE', 'INACTIVE'],
+                    required: true,
+                    default: 'ACTIVE',
+                    searchOptions: { enabled: true },
+                    description: 'Format lifecycle status. Inactive formats are not eligible for new uploads or variants.',
+                },
             },
         },
         media: {
@@ -329,6 +343,37 @@ module.exports = {
                     required: false,
                     searchOptions: { enabled: true },
                     description: 'Optional locale for localized media',
+                },
+                channelCode: {
+                    type: 'string',
+                    required: false,
+                    searchOptions: { enabled: true },
+                    description: 'Optional channel qualifier such as web, app, marketplace, or kiosk',
+                },
+                deviceCode: {
+                    type: 'string',
+                    required: false,
+                    searchOptions: { enabled: true },
+                    description: 'Optional device qualifier such as desktop, mobile, tablet, or tv',
+                },
+                breakpointCode: {
+                    type: 'string',
+                    required: false,
+                    searchOptions: { enabled: true },
+                    description: 'Optional responsive breakpoint qualifier such as sm, md, lg, or xl',
+                },
+                fallbackEntryCode: {
+                    type: 'string',
+                    required: false,
+                    searchOptions: { enabled: true },
+                    description: 'Optional fallback media set entry code used when this entry is not applicable',
+                },
+                primary: {
+                    type: 'boolean',
+                    required: false,
+                    default: false,
+                    searchOptions: { enabled: true },
+                    description: 'Marks the default entry inside one media set for generic selection.',
                 },
                 width: {
                     type: 'int',
