@@ -117,9 +117,13 @@ GET /nodics/media/v0/contexts
 
 The route is secured by `media.context.view` and exposed as
 `mediaManagement`. It returns context labels, allowed/default folders, allowed
-formats, default upload targeting, route templates, manual-upload eligibility,
-and safe folder upload policy. It must not expose provider descriptors,
-storage keys, absolute paths, credentials, or signed URLs.
+formats, source type aliases, default upload targeting, route templates,
+manual-upload eligibility, and safe folder upload policy. Axis should use the
+backend-published `sourceType`, `code`, and `aliases` to map media records and
+upload choices. Regex or hardcoded browser inference is only a temporary
+compatibility fallback when the backend context contract is unavailable. The
+contract must not expose provider descriptors, storage keys, absolute paths,
+credentials, or signed URLs.
 
 Project, environment, server, node, tenant, or customer layers may customize
 contexts by overriding only the relevant `media.contexts` entries. A customer

@@ -68,6 +68,8 @@ function installConfiguration(mediaConfiguration) {
     assert(utility, 'utility media context must be published');
 
     assert.strictEqual(imports.label, 'Data imports');
+    assert.strictEqual(imports.sourceType, 'Data imports');
+    assert.deepStrictEqual(imports.aliases, ['dataImport', 'dataImports', 'importSources']);
     assert.strictEqual(imports.defaultFolderCode, 'importSources');
     assert.strictEqual(imports.defaultFormatCode, 'importFile');
     assert.strictEqual(imports.defaultModuleName, 'import');
@@ -79,6 +81,7 @@ function installConfiguration(mediaConfiguration) {
     assert.strictEqual(imports.allowedFolders[0].uploadPolicy.allowedExtensions.includes('csv'), true);
 
     assert.strictEqual(exports.defaultFolderCode, 'exportFiles');
+    assert.deepStrictEqual(exports.aliases, ['dataExport', 'dataExports', 'exportFiles', 'exportResults']);
     assert.strictEqual(exports.defaultFormatCode, 'exportFile');
     assert.strictEqual(exports.manualUploadEnabled, false, 'data exports must stay generated-only by default');
     assert.strictEqual(exports.storageRouteTemplate.includes('data/export'), true);

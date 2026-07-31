@@ -138,6 +138,7 @@ The default context descriptors are configuration-backed under
 `media.contexts`. Each context declares:
 
 - stable context code and business label;
+- backend-owned source type and compatibility aliases;
 - default and allowed folder codes;
 - default and allowed format codes;
 - default upload module/schema hints when relevant;
@@ -152,12 +153,14 @@ GET /nodics/media/v0/contexts
 ```
 
 It is exposed through `mediaManagement` with permission `media.context.view`.
-The response is a safe projection only. It may include folder codes, storage
-prefixes, access mode, retention, allowed extensions, allowed MIME types,
-maximum upload size, checksum algorithm, source labels, and manual-upload
-flags. It must not include provider credentials, provider descriptors, storage
-keys, full paths, object-store keys, bucket names, signed URLs, or any value
-that would let a client become storage authority.
+The response is a safe projection only. It may include source type, aliases,
+folder codes, storage prefixes, access mode, retention, allowed extensions,
+allowed MIME types, maximum upload size, checksum algorithm, source labels, and
+manual-upload flags. Axis should use the backend-published `sourceType`, `code`,
+and `aliases` instead of regex or browser-owned source-type inference whenever
+this contract is available. It must not include provider credentials, provider
+descriptors, storage keys, full paths, object-store keys, bucket names, signed
+URLs, or any value that would let a client become storage authority.
 
 OOTB contexts:
 

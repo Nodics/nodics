@@ -90,6 +90,8 @@ module.exports = {
         let allowedFolderCodes = folderCodes.length ? folderCodes : [defaultFolderCode];
         return {
             code: context.code || code,
+            sourceType: context.sourceType || context.label || context.code || code,
+            aliases: this.copyStringList(context.aliases),
             label: context.label || context.code || code,
             description: context.description || '',
             folderCodes: allowedFolderCodes,
