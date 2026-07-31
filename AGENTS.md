@@ -320,7 +320,14 @@ why rather than silently omit it.
 
 ## Canonical Guidance
 
+- The repository root must not contain a parallel `llm/` directory. Global,
+  tool-neutral AI guidance belongs exclusively under `gSetup/llm`; individual
+  module-shaped packages retain their own module-local `llm/` context.
+- The repository root must not contain a parallel `memory/` directory. Curated,
+  repo-owned shared memory belongs under `gSetup/llm/memory`; raw private
+  assistant memory and tool transcripts stay outside the repository.
 - Global AI guidance: `gSetup/llm/README.md`
+- Shared decision memory: `gSetup/llm/memory/README.md`
 - Module standard: `gSetup/llm/standards/module-standard.md`
 - AI contracts: `gSetup/llm/contracts/`
 - Change process: `gSetup/llm/feature-process.md`

@@ -76,8 +76,10 @@ Load detailed files only when their subject is affected:
 27. `prompts/testing-prompt.md`
 28. `prompts/schema-change-prompt.md`
 29. `prompts/runtime-governance-prompt.md`
-30. `module-generation-guide.md`
-31. `examples/README.md`
+30. `memory/README.md`
+31. `memory/decisions.md`
+32. `module-generation-guide.md`
+33. `examples/README.md`
 
 Load `change-gate-contract.md` only at commit, merge/release, periodic-audit, or
 explicit comprehensive-review time. Canonical rules should be referenced rather
@@ -153,6 +155,8 @@ without modifying out-of-the-box Nodics code.
   mutation planning: `npm run mcp:validate`, `npm run mcp:runtime-context`, and
   `npm run mcp:mutation-plan`.
 - AI prompts, enterprise review expectations, and decision memory for future sessions.
+- Curated, source-controlled shared memory under `memory/`; raw private assistant
+  memory and vendor-specific transcripts must stay outside the repository.
 - Workflow-specific prompts for review, refactor, testing, schema changes, and
   runtime governance.
 - Portable AI-agent contracts, tool bridge files, and `npm run ai:validate`
@@ -176,6 +180,12 @@ without modifying out-of-the-box Nodics code.
 
 ## Important Boundaries
 
+- Do not create a repository-root `llm/` directory. `gSetup/llm` is the
+  exclusive global AI-guidance authority; module-shaped packages keep only
+  their own module-local `llm/` context.
+- Do not create a repository-root `memory/` directory. Curated shared project
+  and platform memory belongs under `gSetup/llm/memory`; raw tool memory and
+  private session transcripts stay outside the repository.
 - In application-developer mode, treat released Nodics code as immutable and
   already qualified. Apply these contracts to project-owned code and overrides,
   not to a new repository-wide framework audit, unless explicitly requested.

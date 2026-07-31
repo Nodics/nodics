@@ -1,6 +1,8 @@
 # Inventory Agent Contract
 
-Follow the root Nodics contract and `gComm/AGENTS.md`.
+Follow the root Nodics contract: `../../AGENTS.md`.
+Follow the commerce group contract: `../AGENTS.md`.
+Follow global AI/development guidance: `../../gSetup/llm/README.md`.
 
 - Warehouse and warehouse location records are always tenant- and authenticated-enterprise scoped.
 - `code` is a derived internal primary identity. Business users supply `warehouseCode` or `locationCode`.

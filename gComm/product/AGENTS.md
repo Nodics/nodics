@@ -1,6 +1,8 @@
 # Product Agent Contract
 
-Follow the root Nodics contract and `gComm/AGENTS.md`.
+Follow the root Nodics contract: `../../AGENTS.md`.
+Follow the commerce group contract: `../AGENTS.md`.
+Follow global AI/development guidance: `../../gSetup/llm/README.md`.
 
 - Product owns enterprise-scoped Product Item and alternate Identifier identity,
   descriptive data, Product Category hierarchy, Item-to-Category assignments,

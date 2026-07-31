@@ -1,6 +1,9 @@
 # Gemini Provider Agent Contract
 
-- Follow `../../../AGENTS.md`, `../../AGENTS.md`, `../AGENTS.md`, and repository guidance.
+- Follow the root Nodics contract: `../../../AGENTS.md`.
+- Follow the `gAi` contract: `../../AGENTS.md`.
+- Follow the AI Providers contract: `../AGENTS.md`.
+- Follow global AI/development guidance: `../../../gSetup/llm/README.md`.
 - Own only Gemini/Vertex AI protocol/SDK translation and safe capability
   registration.
 - Register through `aiProviders`; never expose a Gemini service directly to

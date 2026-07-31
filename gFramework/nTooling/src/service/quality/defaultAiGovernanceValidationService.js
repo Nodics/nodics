@@ -43,7 +43,9 @@ const requiredRootFiles = [
     'gSetup/llm/contracts/module-structure-contract.md',
     'gSetup/llm/contracts/documentation-impact-contract.md',
     'gSetup/llm/contracts/testing-and-release-contract.md',
-    'gSetup/llm/contracts/customer-project-mode-contract.md'
+    'gSetup/llm/contracts/customer-project-mode-contract.md',
+    'gSetup/llm/memory/README.md',
+    'gSetup/llm/memory/decisions.md'
 ];
 
 /**
@@ -95,6 +97,25 @@ function findPackageDirectories() {
 }
 
 /**
+ * Finds all AGENTS.md files governed by the workspace instruction contract.
+ *
+ * @returns {string[]} AGENTS.md file paths sorted by relative path.
+ */
+function findAgentFiles() {
+    let files = [];
+    let rootAgents = path.join(rootPath, 'AGENTS.md');
+    if (fs.existsSync(rootAgents)) {
+        files.push(rootAgents);
+    }
+    walk(rootPath, (entryPath, entry) => {
+        if (entry.isFile() && entry.name === 'AGENTS.md') {
+            files.push(entryPath);
+        }
+    });
+    return Array.from(new Set(files)).sort((left, right) => toRelative(left).localeCompare(toRelative(right)));
+}
+
+/**
  * Reads a UTF-8 file when it exists.
  *
  * @param {string} relativePath Workspace-relative path.
@@ -126,6 +147,18 @@ function validateRootFiles(failures) {
             fail(failures, 'Missing AI governance file: ' + relativePath);
         }
     });
+    if (fs.existsSync(path.join(rootPath, 'llm'))) {
+        fail(
+            failures,
+            'Repository root must not contain a parallel llm directory; global AI guidance belongs in gSetup/llm'
+        );
+    }
+    if (fs.existsSync(path.join(rootPath, 'memory'))) {
+        fail(
+            failures,
+            'Repository root must not contain a parallel memory directory; curated shared memory belongs in gSetup/llm/memory'
+        );
+    }
 
     let rootAgents = readRelative('AGENTS.md');
     let normalizedRootAgents = rootAgents.toLowerCase();
@@ -183,15 +216,17 @@ function validatePackageFiles(failures) {
         if (!fs.existsSync(path.join(directory, 'AGENTS.md'))) {
             fail(failures, 'Package is missing AGENTS.md: ' + relativePath);
         }
-        [
-            'llm/README.md',
-            'llm/contracts/README.md',
-            'llm/examples/README.md'
-        ].forEach(relativeFile => {
-            if (!fs.existsSync(path.join(directory, relativeFile))) {
-                fail(failures, 'Package is missing mandatory AI/documentation file: ' + relativePath + '/' + relativeFile);
-            }
-        });
+        if (directory !== rootPath) {
+            [
+                'llm/README.md',
+                'llm/contracts/README.md',
+                'llm/examples/README.md'
+            ].forEach(relativeFile => {
+                if (!fs.existsSync(path.join(directory, relativeFile))) {
+                    fail(failures, 'Package is missing mandatory AI/documentation file: ' + relativePath + '/' + relativeFile);
+                }
+            });
+        }
         if (directory !== rootPath && fs.existsSync(path.join(directory, 'docs'))) {
             fail(
                 failures,
@@ -220,6 +255,44 @@ function validateReadmeCasing(failures) {
 }
 
 /**
+ * Validates AGENTS.md inheritance links and canonical AI guidance references.
+ *
+ * @param {string[]} failures Mutable failure list.
+ */
+function validateAgentFiles(failures) {
+    let rootAgentsPath = path.join(rootPath, 'AGENTS.md');
+    let globalGuidancePath = path.join(rootPath, 'gSetup', 'llm', 'README.md');
+    findAgentFiles().forEach(filePath => {
+        if (filePath === rootAgentsPath) return;
+
+        let relativePath = toRelative(filePath);
+        let content = fs.readFileSync(filePath, 'utf8');
+        let references = Array.from(content.matchAll(/`([^`]*(?:AGENTS\.md|gSetup\/llm\/README\.md|llm\/README\.md))`/g))
+            .map(match => match[1]);
+        let resolvedReferences = references.map(reference => ({
+            reference,
+            resolvedPath: path.resolve(path.dirname(filePath), reference)
+        }));
+
+        resolvedReferences.forEach(resolvedReference => {
+            if (!fs.existsSync(resolvedReference.resolvedPath)) {
+                fail(
+                    failures,
+                    'AGENTS.md reference must resolve: ' + relativePath + ' -> ' + resolvedReference.reference
+                );
+            }
+        });
+
+        if (!resolvedReferences.some(resolvedReference => resolvedReference.resolvedPath === rootAgentsPath)) {
+            fail(failures, 'AGENTS.md must reference the root AI contract: ' + relativePath);
+        }
+        if (!resolvedReferences.some(resolvedReference => resolvedReference.resolvedPath === globalGuidancePath)) {
+            fail(failures, 'AGENTS.md must reference global gSetup/llm guidance: ' + relativePath);
+        }
+    });
+}
+
+/**
  * Runs AI governance validation and exits with a non-zero code on failure.
  */
 function run() {
@@ -227,6 +300,7 @@ function run() {
     validateRootFiles(failures);
     validatePackageFiles(failures);
     validateReadmeCasing(failures);
+    validateAgentFiles(failures);
 
     if (failures.length > 0) {
         console.error('Nodics AI governance validation failed:');
@@ -245,5 +319,7 @@ module.exports = {
     validateRootFiles,
     validatePackageFiles,
     validateReadmeCasing,
+    validateAgentFiles,
+    findAgentFiles,
     findPackageDirectories
 };

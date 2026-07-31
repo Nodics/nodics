@@ -11,6 +11,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const aiGovernanceValidationService = require('./defaultAiGovernanceValidationService');
 
 /**
  * @module nTooling/service/quality/defaultDesignPrincipleAuditService
@@ -148,6 +149,21 @@ function auditCommandGates(failures) {
 }
 
 /**
+ * Runs the canonical AI-governance checks as a prerequisite for the broader
+ * design-principle audit.
+ *
+ * @param {string[]} failures Mutable failure list.
+ * @param {Object} validator AI-governance validator, injectable for focused tests.
+ * @returns {void}
+ */
+function auditAiGovernance(failures, validator = aiGovernanceValidationService) {
+    validator.validateRootFiles(failures);
+    validator.validatePackageFiles(failures);
+    validator.validateReadmeCasing(failures);
+    validator.validateAgentFiles(failures);
+}
+
+/**
  * Validates source-of-truth principle and contract files.
  *
  * @param {string[]} failures Mutable failure list.
@@ -244,6 +260,7 @@ function auditGeneratedContextEntrypoints(failures) {
  */
 function audit() {
     const failures = [];
+    auditAiGovernance(failures);
     auditCommandGates(failures);
     auditPrincipleContracts(failures);
     auditLlmGuidance(failures);
@@ -272,6 +289,7 @@ if (require.main === module) {
 
 module.exports = {
     audit,
+    auditAiGovernance,
     auditCommandGates,
     auditPrincipleContracts,
     auditLlmGuidance,

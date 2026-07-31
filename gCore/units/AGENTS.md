@@ -1,6 +1,8 @@
 # Units Agent Contract
 
-Follow root and `gCore/AGENTS.md` contracts.
+Follow the root Nodics contract: `../../AGENTS.md`.
+Follow the core group contract: `../AGENTS.md`.
+Follow global AI/development guidance: `../../gSetup/llm/README.md`.
 
 - Units is the shared authority for dimensions, units, exact conversions, rounding, and regional conversion meaning.
 - Never use JavaScript binary floating-point for authoritative measured quantities or conversion factors.
