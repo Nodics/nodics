@@ -104,4 +104,4 @@ finalization failures.
 - Data family: [nData](../README.md)
 - Import lifecycle: [nImport](../nImport/README.md)
 - Export lifecycle: [nExport](../nExport/README.md)
-- Public data guide: [How To Work With Data](../../../gDocs/data/how-to-work-with-data.md)
+- Public data guide: [How To Work With Data](https://github.com/Nodics/nodicsdocs)

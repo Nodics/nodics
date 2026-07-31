@@ -60,7 +60,10 @@ const request = {
     runService: repository, ingestionService: ingestion, services: services,
     body: {
         indexVersion: 'candidate-1',
-        source: { sourceCode: 'docs', corpusCode: 'nodics', sourceType: 'GDOCS', path: 'gDocs/ai' },
+        source: {
+            sourceCode: 'docs', corpusCode: 'nodics',
+            sourceType: 'PARTNER_DOCUMENTATION', path: 'nodicsdocs/source/pages/ai'
+        },
         documents: [{
             sourceIdentity: 'guide', title: 'Guide', locator: '/guide',
             content: '# Guide\nProvider-neutral Knowledge search.', audience: 'DEVELOPER',

@@ -27,6 +27,20 @@ environment, server, node, tenant, or runtime governance, prefer
 resolves that value from effective configuration before checking the
 authenticated principal's permissions.
 
+Route authorization consumes identity; it does not own identity. If an
+authenticated token contains explicit permissions, nRouter checks those
+permissions directly. Human tokens produced by Profile may carry group-derived
+permissions as `userGroupPermissions`; nRouter treats that claim as governed
+authorization input and does not require the same grants to be copied into a
+generic `permissions` claim. If the token contains group codes, nRouter may
+resolve the current group permission set from the nAuth-owned
+`identityGovernance` configuration, including inherited parent groups. This lets
+a running system enforce newly introduced route permissions such as media
+download access from the governed identity catalog without duplicating
+module-specific permissions inside router configuration. Keep the permission
+definition with the capability or identity governance owner, and keep the route
+itself in the module that owns the API behavior.
+
 Routes that must accept only a particular authenticated token class may declare
 `authTokenTypes`, for example `authTokenTypes: ['service']` on an internal
 module-to-module operation. This check runs before access-group and permission
@@ -233,7 +247,7 @@ integration tests.
 
 ## Continue
 
-- Public API guide: [How To Create APIs](../../gDocs/development/how-to-create-apis.md)
-- Security guide: [How Users, Tenants, And Permissions Work](../../gDocs/security/how-users-tenants-and-permissions-work.md)
+- Public API guide: [How To Create APIs](https://github.com/Nodics/nodicsdocs)
+- Security guide: [How Users, Tenants, And Permissions Work](https://github.com/Nodics/nodicsdocs)
 - Detailed framework: Router Framework (canonical documentation: `capability.apis-routing.technical-reference`)
 - Framework map: [gFramework](../README.md)

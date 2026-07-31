@@ -331,7 +331,7 @@ run `npm run test:basic` before release or shared-branch publication.
 
 ## Continue
 
-- Public guide: [How Configuration Works](../../gDocs/configuration/how-configuration-works.md)
-- Runtime structure: [How Nodics Is Organized](../../gDocs/architecture/how-nodics-is-organized.md)
+- Public guide: [How Configuration Works](https://github.com/Nodics/nodicsdocs)
+- Runtime structure: [How Nodics Is Organized](https://github.com/Nodics/nodicsdocs)
 - Lifecycle detail: Runtime Lifecycle And Resilience Contract (canonical documentation: `capability.configuration.technical-reference`)
 - Framework map: [gFramework](../README.md)

@@ -12,7 +12,7 @@ The management API submits a Price List release through `POST /management/public
 
 The modular runtime acceptance suite proves this contract against distinct Staged and Online databases. It covers manual approval, manual rejection, automatic approval, idempotent replay, target authentication, cache invalidation, Online restart recovery, rollback, failed-closed target outage, and recovery publication. Pricing composes the existing Units, Workflow, nPublish, cache, and NEMS authorities; it does not replace them.
 
-Read Pricing Architecture and Operations (canonical documentation: `capability.commerce.technical-reference`) and the [business guide](../../gDocs/commerce/how-to-configure-and-operate-pricing.md).
+Read Pricing Architecture and Operations (canonical documentation: `capability.commerce.technical-reference`) and the [business guide](https://github.com/Nodics/nodicsdocs).
 
 ## Verification
 

@@ -100,9 +100,9 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gAi/aiKnowledge/config/prescripts.js` | `config` | `documented` | 0/0 | Defines generated config/prescripts startup extension declarations for aiKnowledge. |  |
 | `gAi/aiKnowledge/config/properties.js` | `config` | `documented` | 0/0 | Defines fail-closed, layered defaults for reusable Knowledge ingestion and retrieval. |  |
 | `gAi/aiKnowledge/data/init/data/knowledge/defaultKnowledgeCorpusData.js` | `data` | `documented` | 0/0 | Defines the inactive OOTB corpus for explicitly contributed Nodics documentation. |  |
-| `gAi/aiKnowledge/data/init/data/knowledge/defaultKnowledgeSourceData.js` | `data` | `documented` | 0/0 | Registers gDocs as an explicit source without transferring publication authority. |  |
+| `gAi/aiKnowledge/data/init/data/knowledge/defaultKnowledgeSourceData.js` | `data` | `documented` | 0/0 | Registers the external Nodics documentation content pack as an explicit source without transferring publication authority. |  |
 | `gAi/aiKnowledge/data/init/headers/knowledge/defaultKnowledgeCorpusHeader.js` | `data` | `documented` | 0/0 | Imports the OOTB Nodics documentation corpus through the generated schema service. |  |
-| `gAi/aiKnowledge/data/init/headers/knowledge/defaultKnowledgeSourceHeader.js` | `data` | `documented` | 0/0 | Imports the explicit gDocs source registration through the generated schema service. |  |
+| `gAi/aiKnowledge/data/init/headers/knowledge/defaultKnowledgeSourceHeader.js` | `data` | `documented` | 0/0 | Imports the explicit external documentation content-pack source registration through the generated schema service. |  |
 | `gAi/aiKnowledge/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gAi/aiKnowledge/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gAi/aiKnowledge/nodics.js` | `module` | `documented` | 2/2 | Generated Nodics lifecycle entrypoint for aiKnowledge. |  |
@@ -133,7 +133,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gAi/aiKnowledge/test/aiKnowledgeRouteSecurityContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies service-token and employee-permission boundaries on Knowledge runtime routes. | add @override |
 | `gAi/aiKnowledge/test/aiKnowledgeRuntimeOperationsContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies durable ingestion, replay, failure recording, readiness, and activation conflicts. | add @override |
 | `gAi/aiKnowledge/test/aiKnowledgeSearchModelAlignmentContract.test.js` | `test` | `partially-documented` | 0/0 | Prevents database, search, and active-version authority paths from diverging. | add @override |
-| `gAi/aiKnowledge/test/aiKnowledgeVerticalSliceContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies explicit gDocs ingestion, nSearch delegation, citations, isolation, and root-doc rejection. | add @override |
+| `gAi/aiKnowledge/test/aiKnowledgeVerticalSliceContract.test.js` | `test` | `partially-documented` | 0/0 | Verifies explicit documentation-pack ingestion, nSearch delegation, citations, isolation, and root-doc rejection. | add @override |
 
 ## Extension Contract
 

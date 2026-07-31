@@ -25,6 +25,6 @@ authority for each record, policy, and lifecycle.
 
 ## Continue
 
-- Business overview: [Business Capabilities And Outcomes](../gDocs/business/business-capabilities-and-outcomes.md)
-- Capability maturity: [Provider And Capability Maturity Matrix](../gDocs/reference/provider-capability-maturity-matrix.md)
-- Module index: [Module Documentation Index](../gDocs/reference/module-documentation-index.md)
+- Business overview: [Business Capabilities And Outcomes](https://github.com/Nodics/nodicsdocs)
+- Capability maturity: [Provider And Capability Maturity Matrix](https://github.com/Nodics/nodicsdocs)
+- Module index: [Module Documentation Index](https://github.com/Nodics/nodicsdocs)

@@ -125,7 +125,7 @@ request tenant code so Axis can display the same tenant context without
 guessing, parsing an unverified browser token, or hardcoding `default`. It does
 not expose service or Cron
 credentials, registration secrets, or internal lease-expiry state. See
-[`gDocs/security/backoffice-browser-security.md`](../../gDocs/security/backoffice-browser-security.md).
+[`nodicsdocs/security/backoffice-browser-security.md`](https://github.com/Nodics/nodicsdocs).
 
 Projects add documentation by contributing `backofficeCapabilities.<module>
 .documentation` from their owning backend module. Source IDs must be unique,

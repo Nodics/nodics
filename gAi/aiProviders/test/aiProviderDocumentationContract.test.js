@@ -11,7 +11,7 @@
 
 /**
  * @module aiProviders/test/aiProviderDocumentationContract
- * @description Ensures local and public AI ledger guidance remains discoverable and covers mandatory audiences and use cases.
+ * @description Ensures module and external content-pack AI ledger guidance remains discoverable and covers mandatory audiences and use cases.
  * @layer test
  * @owner aiProviders
  */
@@ -29,41 +29,41 @@ function includesAll(relativePath, clauses) {
         relativePath + ' must preserve documentation contract clause: ' + clause));
 }
 
-includesAll('gAi/aiProviders/docs/persistent-token-ledger-guide.md', [
-    '## Who This Guide Is For',
-    '## Ownership And Source Map',
-    '## Administrator Configuration',
-    '## Roles And Permissions',
-    '### Use Case 1: Successful Employee Request',
-    '### Use Case 2: Duplicate Browser Retry',
-    '### Use Case 3: Unauthorized Operator',
-    '### Use Case 4: Concurrent Budget Boundary',
-    '### Use Case 5: Failure Before Provider Invocation',
-    '### Use Case 6: Timeout After Provider Invocation',
-    '### Use Case 7: Partner Customization',
-    '## Security And Privacy',
-    '## Performance And Scale',
-    '## Observability',
-    '## Deployment And Topology',
-    '## Backup, Restore, And Migration',
-    '## Troubleshooting',
-    '## Developer Extension Checklist',
+includesAll('../nodicsdocs/source/pages/reference/ai.json', [
+    'Who This Guide Is For',
+    'Ownership And Source Map',
+    'Administrator Configuration',
+    'Roles And Permissions',
+    'Use Case 1: Successful Employee Request',
+    'Use Case 2: Duplicate Browser Retry',
+    'Use Case 3: Unauthorized Operator',
+    'Use Case 4: Concurrent Budget Boundary',
+    'Use Case 5: Failure Before Provider Invocation',
+    'Use Case 6: Timeout After Provider Invocation',
+    'Use Case 7: Partner Customization',
+    'Security And Privacy',
+    'Performance And Scale',
+    'Observability',
+    'Deployment And Topology',
+    'Backup, Restore, And Migration',
+    'Troubleshooting',
+    'Developer Extension Checklist',
     'bounded transitional-state repair',
     'automatic provider lookup',
-    '### Preview Or Apply Repair',
-    '### Reconcile Positive Provider Evidence',
-    '### Manual Approval Mode',
+    'Preview Or Apply Repair',
+    'Reconcile Positive Provider Evidence',
+    'Manual Approval Mode',
     '`ai.ledger.repair.approve`'
 ]);
 
-includesAll('gDocs/ai/how-ai-cost-governance-works.md', [
-    '## Why A Business Needs This',
-    '## A Simple Example',
-    '## What Administrators Can Do',
-    '## Security And Accuracy',
-    '## Important Current Limitations',
-    '## For Developers',
-    '## Continue'
+includesAll('../nodicsdocs/source/pages/capabilities/ai/token-governance.json', [
+    'Why A Business Needs This',
+    'A Simple Example',
+    'What Administrators Can Do',
+    'Security And Accuracy',
+    'Important Current Limitations',
+    'For Developers',
+    'Continue'
 ]);
 
 includesAll('gAi/aiProviders/AGENTS.md', [

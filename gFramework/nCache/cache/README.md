@@ -13,7 +13,7 @@ Nodics exposes two primary business-cache layers:
 
 Both layers use the same adapter contract and layered channel mapping. A cache change is not complete unless router/API-response behavior and DAO/schema-item behavior are reviewed together, including tenant isolation, principal isolation where relevant, TTL semantics, response envelopes, invalidation, and overrideability through later modules.
 
-For user-facing cache concepts, configuration examples, invalidation rules, diagnostics, and troubleshooting, read [How Cache Works](../../../gDocs/platform/how-cache-works.md). This module README is the implementation contract for the shared cache capability.
+For user-facing cache concepts, configuration examples, invalidation rules, diagnostics, and troubleshooting, read [How Cache Works](https://github.com/Nodics/nodicsdocs). This module README is the implementation contract for the shared cache capability.
 
 ## What cache means in Nodics
 
@@ -220,4 +220,4 @@ serialization contract is unavailable.
 - Provider selection: [nCache](../README.md)
 - Local provider: [nodeCache](../nodeCache/README.md)
 - Distributed provider: [redisCache](../redisCache/README.md)
-- Public guide: [How Cache Works](../../../gDocs/platform/how-cache-works.md)
+- Public guide: [How Cache Works](https://github.com/Nodics/nodicsdocs)

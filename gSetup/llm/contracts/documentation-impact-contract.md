@@ -36,13 +36,15 @@ must be recreated from source definitions.
 
 Canonical public documentation content belongs in the separate `nodicsdocs`
 repository and is projected into Nodics CMS through the governed content-pack
-contract. `gDocs` is frozen migration evidence until its retirement gate
-passes; it is not the authority for new public guidance. Root `docs/` is
-temporary, untracked, and non-runtime unless implemented material is explicitly
-promoted. The Nodics root README remains the repository entry point and must
-link readers toward canonical capability journeys for business evaluators,
-beginners, builders, architects, security reviewers, and operators. Public task
-pages must link to their next useful action and owning module detail.
+contract. Retired `gDocs` content may remain only as temporary migration
+evidence under ignored root `docs/`; it is not the authority for new public
+guidance and must not be reintroduced as a runtime or documentation module.
+Root `docs/` is temporary, untracked, and non-runtime unless implemented
+material is explicitly promoted. The Nodics root README remains the repository
+entry point and must link readers toward canonical capability journeys for
+business evaluators, beginners, builders, architects, security reviewers, and
+operators. Public task pages must link to their next useful action and owning
+module detail.
 
 Run Nodics documentation-governance checks for repository links, ownership,
 module coverage, and generated AI context. Run the `nodicsdocs` coverage, depth,

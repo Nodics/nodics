@@ -83,10 +83,24 @@ function collectPackageReadmes(rootDir) {
 }
 
 function collectNavigationReport(rootDir, policy) {
+    if (policy && policy.enabled === false) {
+        return {
+            disabled: true,
+            markdownFiles: 0,
+            publicPages: 0,
+            packageReadmes: collectPackageReadmes(rootDir).length,
+            brokenLinks: [],
+            caseMismatches: [],
+            unreachablePages: [],
+            deadEndPages: [],
+            missingRequiredEntryPoints: [],
+            missingModuleReadmes: []
+        };
+    }
     const entryPoint = policy.entryPoint || 'README.md';
-    const publicRoot = policy.publicRoot || 'gDocs';
-    const publicIndex = policy.publicIndex || 'gDocs/README.md';
-    const moduleCatalog = policy.moduleCatalog || 'gDocs/reference/module-catalog.md';
+    const publicRoot = policy.publicRoot || 'publicDocs';
+    const publicIndex = policy.publicIndex || 'publicDocs/README.md';
+    const moduleCatalog = policy.moduleCatalog || 'publicDocs/reference/module-catalog.md';
     const excluded = new Set(policy.excludedPublicPages || []);
     const markdownFiles = [entryPoint].concat(walkFiles(
         rootDir,
@@ -165,6 +179,11 @@ function printItems(label, items) {
 }
 
 function printReport(report) {
+    if (report.disabled === true) {
+        console.log('\nSKIPPED: public documentation navigation');
+        console.log('Reason: canonical public content is governed outside this repository.');
+        return;
+    }
     console.log('\nENFORCED: public documentation navigation');
     console.log('Markdown entry/public files : ' + report.markdownFiles);
     console.log('Governed public pages       : ' + report.publicPages);

@@ -158,7 +158,7 @@ availability.
 
 ## Continue
 
-- Build application behavior: [How To Create Application Functionality](../../gDocs/development/how-to-create-application-functionality.md)
-- Module communication and APIs: [How To Create APIs](../../gDocs/development/how-to-create-apis.md)
+- Build application behavior: [How To Create Application Functionality](https://github.com/Nodics/nodicsdocs)
+- Module communication and APIs: [How To Create APIs](https://github.com/Nodics/nodicsdocs)
 - Service variant: [vService](vService/README.md)
 - Framework map: [gFramework](../README.md)

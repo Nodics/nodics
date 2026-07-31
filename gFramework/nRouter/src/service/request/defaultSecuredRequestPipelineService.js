@@ -219,7 +219,8 @@ module.exports = {
     hasAccessGroup: function (request) {
         let userGroups = request.authData && request.authData.userGroups ? request.authData.userGroups : [];
         let accessGroups = request.router && request.router.accessGroups ? request.router.accessGroups : [];
-        return userGroups.filter(userGroup => accessGroups.includes(userGroup)).length > 0;
+        let effectiveUserGroupCodes = this.getEffectiveUserGroupCodes(userGroups);
+        return effectiveUserGroupCodes.filter(userGroup => accessGroups.includes(userGroup)).length > 0;
     },
 
     /**
@@ -298,29 +299,130 @@ module.exports = {
     getGrantedPermissions: function (request) {
         let authData = request.authData || {};
         let permissions = [];
-        ['permissions', 'actionPermissions', 'authorities', 'scopes'].forEach(property => {
+        ['permissions', 'userGroupPermissions', 'actionPermissions', 'authorities', 'scopes'].forEach(property => {
             if (Array.isArray(authData[property])) {
                 permissions = permissions.concat(authData[property]);
             }
         });
+        permissions = permissions.concat(this.getHydratedGroupPermissions(authData.userGroups || []));
         permissions = permissions.concat(this.getGroupPermissions(authData.userGroups || []));
-        return Array.from(new Set(permissions));
+        return Array.from(new Set(permissions.filter(Boolean)));
+    },
+
+    /**
+     * Returns permissions embedded in hydrated group objects carried by an
+     * authenticated principal. Token claims normally carry group codes, but API
+     * key authorization and some custom providers may carry full group objects.
+     *
+     * @param {Array<string|Object>} userGroups Authenticated group codes or objects.
+     * @returns {string[]} Permissions attached to hydrated group objects.
+     */
+    getHydratedGroupPermissions: function (userGroups) {
+        if (typeof UTILS === 'undefined' || typeof UTILS.getUserGroupPermissions !== 'function') {
+            return [];
+        }
+        return UTILS.getUserGroupPermissions((userGroups || []).filter(userGroup => {
+            return userGroup && typeof userGroup === 'object';
+        })) || [];
     },
 
     /**
      * Returns permissions granted by authenticated user groups.
+     *
+     * Route-local group grants are read first for backward compatibility. When
+     * authenticated human or service tokens carry only group codes, the router
+     * also resolves current governed group permissions from the identity
+     * governance contract. This keeps permission ownership in nAuth/Profile
+     * while allowing the router to enforce newly introduced route permissions
+     * without duplicating module-specific grants in router configuration.
      *
      * @param {string[]} userGroups Authenticated user group codes.
      * @returns {string[]} Group-derived permissions.
      */
     getGroupPermissions: function (userGroups) {
         let groupPermissions = this.getRouteActionAuthorizationConfig().groupPermissions || {};
-        return userGroups.reduce((permissions, userGroup) => {
-            if (Array.isArray(groupPermissions[userGroup])) {
-                return permissions.concat(groupPermissions[userGroup]);
+        let configuredPermissions = userGroups.reduce((permissions, userGroup) => {
+            let userGroupCode = this.resolveUserGroupCode(userGroup);
+            if (Array.isArray(groupPermissions[userGroupCode])) {
+                return permissions.concat(groupPermissions[userGroupCode]);
             }
             return permissions;
         }, []);
+        return Array.from(new Set(configuredPermissions.concat(this.getGovernedGroupPermissions(userGroups))));
+    },
+
+    /**
+     * Resolves permissions from the nAuth-owned identity governance group catalog.
+     *
+     * @param {Array<string|Object>} userGroups Authenticated user group codes or group objects.
+     * @returns {string[]} Governed group and inherited parent group permissions.
+     */
+    getGovernedGroupPermissions: function (userGroups) {
+        let identityGovernance = this.getConfigurationValue('identityGovernance') || {};
+        let groupTargets = identityGovernance.migration && identityGovernance.migration.groupTargets
+            ? identityGovernance.migration.groupTargets
+            : {};
+        let permissions = [];
+        let visited = {};
+        let visitGroup = userGroup => {
+            let userGroupCode = this.resolveUserGroupCode(userGroup);
+            if (!userGroupCode || visited[userGroupCode]) return;
+            visited[userGroupCode] = true;
+            let groupTarget = groupTargets[userGroupCode];
+            if (!groupTarget) return;
+            if (Array.isArray(groupTarget.permissions)) {
+                permissions = permissions.concat(groupTarget.permissions);
+            }
+            if (Array.isArray(groupTarget.parentGroups)) {
+                groupTarget.parentGroups.forEach(parentGroup => visitGroup(parentGroup));
+            }
+        };
+        (userGroups || []).forEach(userGroup => visitGroup(userGroup));
+        return Array.from(new Set(permissions.filter(Boolean)));
+    },
+
+    /**
+     * Returns all effective group codes for the authenticated principal,
+     * including inherited parent groups declared on hydrated group objects or in
+     * the nAuth-owned identity governance catalog.
+     *
+     * @param {Array<string|Object>} userGroups Authenticated group codes or objects.
+     * @returns {string[]} User group and inherited parent group codes.
+     */
+    getEffectiveUserGroupCodes: function (userGroups) {
+        let identityGovernance = this.getConfigurationValue('identityGovernance') || {};
+        let groupTargets = identityGovernance.migration && identityGovernance.migration.groupTargets
+            ? identityGovernance.migration.groupTargets
+            : {};
+        let groupCodes = [];
+        let visited = {};
+        let visitGroup = userGroup => {
+            let userGroupCode = this.resolveUserGroupCode(userGroup);
+            if (!userGroupCode || visited[userGroupCode]) return;
+            visited[userGroupCode] = true;
+            groupCodes.push(userGroupCode);
+            if (userGroup && typeof userGroup === 'object' && Array.isArray(userGroup.parentGroups)) {
+                userGroup.parentGroups.forEach(parentGroup => visitGroup(parentGroup));
+            }
+            let groupTarget = groupTargets[userGroupCode];
+            if (groupTarget && Array.isArray(groupTarget.parentGroups)) {
+                groupTarget.parentGroups.forEach(parentGroup => visitGroup(parentGroup));
+            }
+        };
+        (userGroups || []).forEach(userGroup => visitGroup(userGroup));
+        return groupCodes;
+    },
+
+    /**
+     * Resolves a user group code from token claims or hydrated group objects.
+     *
+     * @param {string|Object} userGroup User group code or object.
+     * @returns {string|undefined} User group code.
+     */
+    resolveUserGroupCode: function (userGroup) {
+        if (typeof userGroup === 'string') return userGroup;
+        if (userGroup && typeof userGroup.code === 'string') return userGroup.code;
+        return undefined;
     },
 
     /**

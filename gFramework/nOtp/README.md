@@ -145,5 +145,5 @@ requests must follow the application's resend and idempotency policy.
 
 - Generic lifecycle: [nToken](../nToken/README.md)
 - Authentication boundary: [nAuth](../nAuth/README.md)
-- Public security guide: [How Users, Tenants, And Permissions Work](../../gDocs/security/how-users-tenants-and-permissions-work.md)
+- Public security guide: [How Users, Tenants, And Permissions Work](https://github.com/Nodics/nodicsdocs)
 - Framework map: [gFramework](../README.md)

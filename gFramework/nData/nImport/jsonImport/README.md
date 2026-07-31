@@ -99,4 +99,4 @@ Define encoding, size, record-count, malformed-input, batching, and partial-fail
 - Import family: [nImport](../README.md)
 - Shared engine: [import](../import/README.md)
 - Data processing: [dataCore](../../dataCore/README.md)
-- Public data guide: [How To Work With Data](../../../../gDocs/data/how-to-work-with-data.md)
+- Public data guide: [How To Work With Data](https://github.com/Nodics/nodicsdocs)

@@ -11,7 +11,7 @@
 
 /**
  * @module aiKnowledge/test/AiKnowledgeVerticalSliceContract
- * @description Verifies explicit gDocs ingestion, nSearch delegation, citations, isolation, and root-doc rejection.
+ * @description Verifies explicit documentation-pack ingestion, nSearch delegation, citations, isolation, and root-doc rejection.
  * @layer test
  * @owner aiKnowledge
  */
@@ -34,7 +34,10 @@ const services = {
 };
 const input = {
     tenant: 'default', authData: { tokenType: 'service' }, configuration: configuration,
-    source: { sourceCode: 'nodics-docs', corpusCode: 'nodics', sourceType: 'GDOCS', path: 'gDocs/ai' },
+    source: {
+        sourceCode: 'nodics-docs', corpusCode: 'nodics',
+        sourceType: 'PARTNER_DOCUMENTATION', path: 'nodicsdocs/source/pages/ai'
+    },
     indexVersion: 'candidate-1', services: services,
     documents: [{
         sourceIdentity: 'ai/providers', title: 'AI Providers', locator: '/ai/providers',

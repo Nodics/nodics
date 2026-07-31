@@ -85,4 +85,4 @@ correctness of a project's business flow.
 - Core capability family: [gCore](../README.md)
 - Framework lifecycle integration: [nbpm](../../gFramework/nbpm/README.md)
 - Events and messaging: [nEvent](../../gFramework/nEvent/README.md)
-- Capability maturity: [Provider And Capability Maturity Matrix](../../gDocs/reference/provider-capability-maturity-matrix.md)
+- Capability maturity: [Provider And Capability Maturity Matrix](https://github.com/Nodics/nodicsdocs)

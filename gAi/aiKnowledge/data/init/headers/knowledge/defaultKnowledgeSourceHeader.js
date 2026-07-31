@@ -11,10 +11,10 @@
 
 /**
  * @module aiKnowledge/data/init/headers/knowledge/defaultKnowledgeSourceHeader
- * @description Imports the explicit gDocs source registration through the generated schema service.
+ * @description Imports the explicit external documentation content-pack source registration through the generated schema service.
  * @layer data
  * @owner aiKnowledge
- * @override Later modules may override the source projection without bypassing gDocs authority.
+ * @override Later modules may override the source projection without bypassing the documentation content-pack authority.
  */
 module.exports = {
     aiKnowledge: {

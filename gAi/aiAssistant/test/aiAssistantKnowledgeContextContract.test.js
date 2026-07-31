@@ -55,7 +55,7 @@ service.retrieve({
                     citation: {
                         citationId: 'chunk-1',
                         documentId: 'document-1',
-                        sourceId: 'gDocs',
+                        sourceId: 'nodicsdocs',
                         title: 'Enterprise guide',
                         locator: '/profile/enterprise',
                         version: 'v2'

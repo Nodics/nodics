@@ -39,24 +39,16 @@ module.exports = {
         documentationGovernance: {
             description: 'Documentation gates owned by non-runtime Nodics quality tooling. Add a gate only after that module/layer is fully documented.',
             navigation: {
+                enabled: false,
+                canonicalContentRepository: 'nodicsdocs',
+                canonicalContentPack: 'manifest/docs-content-pack.json',
+                reason: 'Canonical public documentation content moved to the separate nodicsdocs content-pack repository.',
                 entryPoint: 'README.md',
-                publicRoot: 'gDocs',
-                publicIndex: 'gDocs/README.md',
-                moduleCatalog: 'gDocs/reference/module-catalog.md',
-                excludedPublicPages: [
-                    'gDocs/assets/images/README.md'
-                ],
-                requiredEntryPoints: [
-                    'gDocs/business/why-businesses-choose-nodics.md',
-                    'gDocs/business/business-capabilities-and-outcomes.md',
-                    'gDocs/business/how-nodics-compares.md',
-                    'gDocs/business/evaluation-checklist.md',
-                    'gDocs/getting-started/build-your-first-capability.md',
-                    'gDocs/reference/glossary.md',
-                    'gDocs/reference/module-documentation-index.md',
-                    'gDocs/reference/module-catalog.md',
-                    'gDocs/reference/provider-capability-maturity-matrix.md'
-                ]
+                publicRoot: '../nodicsdocs/source/pages',
+                publicIndex: '../nodicsdocs/source/pages/discover/what-is-nodics.json',
+                moduleCatalog: '../nodicsdocs/manifest/migration-report.json',
+                excludedPublicPages: [],
+                requiredEntryPoints: []
             },
             enforcedGates: [
                 {

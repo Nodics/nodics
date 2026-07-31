@@ -84,7 +84,7 @@ const runtime = {
                 evidenceId: 'e1', documentId: 'd1', chunkId: 'c1', score: 1,
                 content: 'Enterprise records are Profile-owned.',
                 citation: {
-                    citationId: 'c1', documentId: 'd1', sourceId: 'gDocs',
+                    citationId: 'c1', documentId: 'd1', sourceId: 'nodicsdocs',
                     title: 'Profile', locator: '/profile', version: 'v1'
                 }
             }]

@@ -140,7 +140,7 @@ and fail-closed delivery behavior.
 
 For a beginner-friendly business journey, configuration examples,
 customization path, operations checklist, and verification commands, read
-[`gDocs/content/how-to-approve-and-publish-content.md`](../../gDocs/content/how-to-approve-and-publish-content.md).
+[`nodicsdocs/content/how-to-approve-and-publish-content.md`](https://github.com/Nodics/nodicsdocs).
 
 The CMS module owns generic content contracts. Project modules own
 project-specific content types, templates, and sample/core data.

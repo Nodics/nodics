@@ -106,5 +106,5 @@ tenant isolation, and cleanup in an isolated provider environment.
 
 - Generic contract: [search](../search/README.md)
 - Provider selection: [nSearch](../README.md)
-- Maturity matrix: [Provider And Capability Maturity Matrix](../../../gDocs/reference/provider-capability-maturity-matrix.md)
-- Public platform guide: [How Platform Capabilities Work](../../../gDocs/platform/how-platform-capabilities-work.md)
+- Maturity matrix: [Provider And Capability Maturity Matrix](https://github.com/Nodics/nodicsdocs)
+- Public platform guide: [How Platform Capabilities Work](https://github.com/Nodics/nodicsdocs)

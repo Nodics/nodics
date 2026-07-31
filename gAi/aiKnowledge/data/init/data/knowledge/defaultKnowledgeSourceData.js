@@ -11,21 +11,22 @@
 
 /**
  * @module aiKnowledge/data/init/data/knowledge/defaultKnowledgeSourceData
- * @description Registers gDocs as an explicit source without transferring publication authority.
+ * @description Registers the external Nodics documentation content pack as an explicit source without transferring publication authority.
  * @layer data
  * @owner aiKnowledge
  * @override Projects may contribute explicit sources and projections through later initial-data layers.
  */
 module.exports = {
     record0: {
-        code: 'nodicsGDocs',
-        sourceCode: 'nodicsGDocs',
+        code: 'nodicsDocumentationContentPack',
+        sourceCode: 'nodicsDocumentationContentPack',
         corpusCode: 'nodicsDocumentation',
-        ownerModule: 'gDocs',
-        sourceType: 'GDOCS',
+        ownerModule: 'nodicsdocs',
+        sourceType: 'PARTNER_DOCUMENTATION',
         tenantCode: 'default',
         projection: {
-            root: 'gDocs',
+            root: '../nodicsdocs/source/pages',
+            contentPack: '../nodicsdocs/manifest/docs-content-pack.json',
             publishedOnly: true,
             excludeTemporaryRootDocs: true
         },

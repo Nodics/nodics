@@ -42,8 +42,9 @@ module.exports = {
                 !contractValues.classifications.includes(document.classification))) {
             throw new Error('Knowledge source or document contract values are invalid');
         }
-        if (input.source.sourceType === 'GDOCS' && input.source.path &&
-            /(^|[/\\])docs([/\\]|$)/.test(input.source.path) && !/gDocs/.test(input.source.path)) {
+        if (input.source.path &&
+            /(^|[/\\])docs([/\\]|$)/.test(input.source.path) &&
+            !/(^|[/\\])nodicsdocs([/\\]|$)/.test(input.source.path)) {
             throw new Error('Temporary root docs cannot be a Knowledge source');
         }
         const services = input.services || {

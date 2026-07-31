@@ -45,7 +45,7 @@ Every DEAP flow should define:
 
 ## Continue
 
-- Public DaaS guide: [How To Use Nodics As Data As A Service](../gDocs/data/how-to-use-nodics-as-data-as-a-service.md)
+- Public DaaS guide: [How To Use Nodics As Data As A Service](https://github.com/Nodics/nodicsdocs)
 - Data movement family: [nData](../gFramework/nData/README.md)
 - Messaging: [nEms](../gFramework/nEms/README.md)
 - Search: [nSearch](../gFramework/nSearch/README.md)

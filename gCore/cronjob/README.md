@@ -153,4 +153,4 @@ topology tests in the deployment environment.
 - Profile and service identity: [profile](../profile/README.md)
 - Messaging and events: [nEms](../../gFramework/nEms/README.md)
 - Runtime module lifecycle: [nService](../../gFramework/nService/README.md)
-- Capability maturity: [Provider And Capability Maturity Matrix](../../gDocs/reference/provider-capability-maturity-matrix.md)
+- Capability maturity: [Provider And Capability Maturity Matrix](https://github.com/Nodics/nodicsdocs)

@@ -25,7 +25,7 @@ needs; it does not expose Units master-data CRUD.
 
 Read Units Foundation (canonical documentation: `capability.units.technical-reference`), the
 deployment and integration guide (canonical documentation: `capability.units.technical-reference`),
-and the [business guide](../../gDocs/data/how-to-use-units-and-land-measurements.md).
+and the [business guide](https://github.com/Nodics/nodicsdocs).
 
 ## Verification
 

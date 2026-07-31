@@ -110,7 +110,7 @@ node gFramework/nTooling/test/mcpReadOnlyGovernanceContract.test.js
 
 The documentation quality gate validates source documentation coverage and
 public information architecture. It checks local link targets and path case,
-root-to-`gDocs` reachability, page continuation links, required business and
+root-to-`nodicsdocs` reachability, page continuation links, required business and
 beginner entry points, and complete package-module README coverage through the
 public module catalog. Projects may change entry paths through
 `tooling.documentationGovernance.navigation` without creating a second

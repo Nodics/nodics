@@ -111,5 +111,5 @@ chain.
 
 - Broker messaging: [nEms](../nEms/README.md)
 - Persisted event distribution: [nems](../../gCore/nems/README.md)
-- Public platform guide: [How Platform Capabilities Work](../../gDocs/platform/how-platform-capabilities-work.md)
+- Public platform guide: [How Platform Capabilities Work](https://github.com/Nodics/nodicsdocs)
 - Framework map: [gFramework](../README.md)

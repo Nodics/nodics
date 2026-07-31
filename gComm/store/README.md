@@ -16,7 +16,7 @@ Implemented now:
 
 Not implemented in this slice: BackOffice frontend screens, storefront rendering, stock quantities, availability, reservations, sourcing decisions, store opening hours, POS operations, address ownership, or product behavior. Pricing already validates Store-scoped assignments through the Store-owned reference contract.
 
-Read Store Foundation (canonical documentation: `capability.commerce.technical-reference`), Store, Site, and Integration (canonical documentation: `capability.commerce.technical-reference`), the [Store and website modeling guide](../../gDocs/commerce/how-to-model-stores-and-websites.md), and the [business guide](../../gDocs/commerce/how-to-manage-stores.md).
+Read Store Foundation (canonical documentation: `capability.commerce.technical-reference`), Store, Site, and Integration (canonical documentation: `capability.commerce.technical-reference`), the [Store and website modeling guide](https://github.com/Nodics/nodicsdocs), and the [business guide](https://github.com/Nodics/nodicsdocs).
 
 Focused verification:
 

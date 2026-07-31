@@ -19,11 +19,19 @@ let routeActionAuthorization = {
         userGroup: ['*']
     }
 };
+let identityGovernance = {
+    migration: {
+        groupTargets: {}
+    }
+};
 
 global.CONFIG = {
     get: function (key) {
         if (key === 'routeActionAuthorization') {
             return routeActionAuthorization;
+        }
+        if (key === 'identityGovernance') {
+            return identityGovernance;
         }
         if (key === 'authSecurity') {
             return {
@@ -130,6 +138,85 @@ let groupGranted = executeCheckAccess(createRequest({
     permissions: []
 }));
 assert.strictEqual(groupGranted.success, true, 'Group-derived permission should allow matching route action');
+
+routeActionAuthorization = {
+    enabled: true,
+    strict: true,
+    groupPermissions: {}
+};
+identityGovernance = {
+    migration: {
+        groupTargets: {
+            runtimeConfigAdminUserGroup: {
+                permissions: ['media.content.download'],
+                parentGroups: ['runtimeConfigOperatorUserGroup']
+            },
+            runtimeConfigOperatorUserGroup: {
+                permissions: ['system.health.readiness.view'],
+                parentGroups: []
+            }
+        }
+    }
+};
+let governedGroupPermissionGranted = executeCheckAccess(createRequest({
+    userGroups: ['runtimeConfigAdminUserGroup'],
+    accessGroups: ['runtimeConfigAdminUserGroup'],
+    permission: 'media.content.download',
+    permissions: []
+}));
+assert.strictEqual(governedGroupPermissionGranted.success, true,
+    'Identity-governed group permission should authorize a matching route action without router-local duplication');
+
+let tokenUserGroupPermissionGranted = executeCheckAccess({
+    authData: {
+        entCode: 'defaultEnterprise',
+        tenant: 'default',
+        userGroups: ['runtimeConfigAdminUserGroup'],
+        userGroupPermissions: ['media.content.download']
+    },
+    router: {
+        accessGroups: ['runtimeConfigAdminUserGroup'],
+        permission: 'media.content.download'
+    }
+});
+assert.strictEqual(tokenUserGroupPermissionGranted.success, true,
+    'Token userGroupPermissions should authorize route actions without requiring duplicated permissions claims');
+
+let governedParentGroupPermissionGranted = executeCheckAccess(createRequest({
+    userGroups: ['runtimeConfigAdminUserGroup'],
+    accessGroups: ['runtimeConfigAdminUserGroup'],
+    permission: 'system.health.readiness.view',
+    permissions: []
+}));
+assert.strictEqual(governedParentGroupPermissionGranted.success, true,
+    'Identity-governed parent group permission should authorize inherited route actions');
+
+let governedParentAccessGroupGranted = executeCheckAccess(createRequest({
+    userGroups: ['runtimeConfigAdminUserGroup'],
+    accessGroups: ['runtimeConfigOperatorUserGroup'],
+    permission: 'system.health.readiness.view',
+    permissions: []
+}));
+assert.strictEqual(governedParentAccessGroupGranted.success, true,
+    'Identity-governed parent groups should satisfy inherited route access groups');
+
+let unownedGovernedPermissionDenied = executeCheckAccess(createRequest({
+    userGroups: ['runtimeConfigAdminUserGroup'],
+    accessGroups: ['runtimeConfigAdminUserGroup'],
+    permission: 'export.run',
+    permissions: []
+}));
+assert.strictEqual(unownedGovernedPermissionDenied.success, false,
+    'Identity-governed group resolution must not grant unrelated route permissions');
+assert.strictEqual(unownedGovernedPermissionDenied.error.code, 'ERR_AUTH_00003');
+
+routeActionAuthorization = {
+    enabled: true,
+    strict: true,
+    groupPermissions: {
+        runtimeApproverGroup: ['runtime.config.request.approve']
+    }
+};
 
 let configuredPermissionGranted = executeCheckAccess({
     authData: {

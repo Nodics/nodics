@@ -110,4 +110,4 @@ Large workbooks require explicit size, row, sheet, batching, and memory limits. 
 - Import family: [nImport](../README.md)
 - Shared engine: [import](../import/README.md)
 - Data processing: [dataCore](../../dataCore/README.md)
-- Public data guide: [How To Work With Data](../../../../gDocs/data/how-to-work-with-data.md)
+- Public data guide: [How To Work With Data](https://github.com/Nodics/nodicsdocs)

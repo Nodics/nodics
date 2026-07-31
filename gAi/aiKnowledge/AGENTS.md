@@ -27,7 +27,7 @@
   embedding profiles, and adapter capability are explicitly configured.
 - AI Knowledge calls only the `aiProviders` gateway for embeddings or other
   model capabilities. It must not select or invoke an individual vendor.
-- `gDocs`, CMS, and contributing modules retain publication and source
+- `nodicsdocs`, CMS, and contributing modules retain publication and source
   authority. Temporary root `docs/` is never a runtime knowledge source.
 - Generic schema crawling, direct database reads, retrieved-content writes,
   and embedding of sensitive fields are prohibited by default.

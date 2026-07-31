@@ -113,40 +113,40 @@ Choose the route that best matches why you are here.
 
 ### I Am Evaluating Nodics For A Business
 
-- [Why Businesses Choose Nodics](gDocs/business/why-businesses-choose-nodics.md)
-- [Why Businesses Can Trust Nodics](gDocs/business/security-and-trust.md)
-- [Business Capabilities And Outcomes](gDocs/business/business-capabilities-and-outcomes.md)
-- [How Nodics Compares With Other Approaches](gDocs/business/how-nodics-compares.md)
-- [Business And Technical Evaluation Checklist](gDocs/business/evaluation-checklist.md)
+- [Why Businesses Choose Nodics](https://github.com/Nodics/nodicsdocs)
+- [Why Businesses Can Trust Nodics](https://github.com/Nodics/nodicsdocs)
+- [Business Capabilities And Outcomes](https://github.com/Nodics/nodicsdocs)
+- [How Nodics Compares With Other Approaches](https://github.com/Nodics/nodicsdocs)
+- [Business And Technical Evaluation Checklist](https://github.com/Nodics/nodicsdocs)
 
 These pages explain business value, delivery speed, long-term operating risk,
 fit, trade-offs, and the questions to validate before adopting Nodics. They do
 not require detailed software-framework knowledge.
 
-For security evaluation, continue with the [Security Shared-Responsibility Model](gDocs/security/shared-responsibility-model.md)
-and the expert [Security Evidence Guide](gDocs/security/security-evidence-guide.md).
+For security evaluation, continue with the [Security Shared-Responsibility Model](https://github.com/Nodics/nodicsdocs)
+and the expert [Security Evidence Guide](https://github.com/Nodics/nodicsdocs).
 
 ### I Am New To Nodics
 
-- [Nodics Documentation](gDocs/README.md)
-- [What Nodics Is](gDocs/overview/what-is-nodics.md)
-- [How To Set Up Nodics](gDocs/getting-started/how-to-setup-nodics.md)
-- [Build Your First Nodics Capability](gDocs/getting-started/build-your-first-capability.md)
+- [Nodics Documentation](https://github.com/Nodics/nodicsdocs)
+- [What Nodics Is](https://github.com/Nodics/nodicsdocs)
+- [How To Set Up Nodics](https://github.com/Nodics/nodicsdocs)
+- [Build Your First Nodics Capability](https://github.com/Nodics/nodicsdocs)
 
 ### I Am Designing, Building, Or Operating An Application
 
-- [How Nodics Is Organized](gDocs/architecture/how-nodics-is-organized.md)
-- [How Configuration Works](gDocs/configuration/how-configuration-works.md)
-- [How To Create Application Functionality](gDocs/development/how-to-create-application-functionality.md)
-- [How To Test Nodics Changes](gDocs/testing/how-to-test-nodics-changes.md)
-- [How To Run And Debug Nodics](gDocs/operations/how-to-run-and-debug-nodics.md)
+- [How Nodics Is Organized](https://github.com/Nodics/nodicsdocs)
+- [How Configuration Works](https://github.com/Nodics/nodicsdocs)
+- [How To Create Application Functionality](https://github.com/Nodics/nodicsdocs)
+- [How To Test Nodics Changes](https://github.com/Nodics/nodicsdocs)
+- [How To Run And Debug Nodics](https://github.com/Nodics/nodicsdocs)
 
 ### I Need Exact Capability Details
 
-- [Module Documentation Index](gDocs/reference/module-documentation-index.md)
-- [Complete Module Catalog](gDocs/reference/module-catalog.md)
-- [Nodics Glossary](gDocs/reference/glossary.md)
-- [Provider And Capability Maturity Matrix](gDocs/reference/provider-capability-maturity-matrix.md)
+- [Module Documentation Index](https://github.com/Nodics/nodicsdocs)
+- [Complete Module Catalog](https://github.com/Nodics/nodicsdocs)
+- [Nodics Glossary](https://github.com/Nodics/nodicsdocs)
+- [Provider And Capability Maturity Matrix](https://github.com/Nodics/nodicsdocs)
 
 ## Common Commands
 
@@ -208,8 +208,8 @@ npm run release:check -- --execute --full
 
 ## Documentation Map
 
-- Public business, user, and developer guides: [gDocs](gDocs/README.md)
-- Module-specific guides: [Module Documentation Index](gDocs/reference/module-documentation-index.md) and each module `README.md`
+- Public business, user, and developer guides: [nodicsdocs](https://github.com/Nodics/nodicsdocs)
+- Module-specific guides: [Module Documentation Index](https://github.com/Nodics/nodicsdocs) and each module `README.md`
 - AI and implementation rules: [AGENTS.md](AGENTS.md) and [gSetup/llm](gSetup/llm/README.md)
 - Generated API documentation: generated during build
 - Generated AI context: generated with `npm run llm:generate`
@@ -224,4 +224,4 @@ When adding or changing functionality:
 4. Add or update tests.
 5. Update public and module documentation when behavior changes.
 
-Use [How To Create Application Functionality](gDocs/development/how-to-create-application-functionality.md) for the recommended development flow.
+Use [How To Create Application Functionality](https://github.com/Nodics/nodicsdocs) for the recommended development flow.

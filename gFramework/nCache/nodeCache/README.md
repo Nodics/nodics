@@ -103,4 +103,4 @@ or capability.
 - Generic cache contract: [cache](../cache/README.md)
 - Distributed cache: [redisCache](../redisCache/README.md)
 - Provider selection: [nCache](../README.md)
-- Public guide: [How Cache Works](../../../gDocs/platform/how-cache-works.md)
+- Public guide: [How Cache Works](https://github.com/Nodics/nodicsdocs)

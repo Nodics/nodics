@@ -26,7 +26,7 @@ module.exports = {
             exposeOriginDiagnostics: true
         },
         sourcePolicy: {
-            allowedSourceTypes: ['GDOCS'],
+            allowedSourceTypes: ['PARTNER_DOCUMENTATION'],
             excludeTemporaryRootDocs: true,
             requireExplicitModelProjection: true,
             allowGenericSchemaDiscovery: false,

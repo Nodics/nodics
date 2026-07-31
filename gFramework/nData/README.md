@@ -146,7 +146,7 @@ raw credentials or unrestricted sensitive records.
 
 ## Continue
 
-- Public data guide: [How To Work With Data](../../gDocs/data/how-to-work-with-data.md)
-- Data-as-a-Service pattern: [How To Use Nodics As Data As A Service](../../gDocs/data/how-to-use-nodics-as-data-as-a-service.md)
+- Public data guide: [How To Work With Data](https://github.com/Nodics/nodicsdocs)
+- Data-as-a-Service pattern: [How To Use Nodics As Data As A Service](https://github.com/Nodics/nodicsdocs)
 - Import family: [nImport](nImport/README.md)
 - Export family: [nExport](nExport/README.md)

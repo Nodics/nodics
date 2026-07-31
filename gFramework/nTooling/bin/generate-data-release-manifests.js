@@ -17,7 +17,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(__dirname, '../../..');
 const dataTypes = new Set(['init', 'core', 'sample']);
 const releaseIndex = process.argv.indexOf('--release');
 const requestedRelease = releaseIndex >= 0 ? String(process.argv[releaseIndex + 1] || '') : '';
