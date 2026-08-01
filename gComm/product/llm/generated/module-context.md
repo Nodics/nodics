@@ -34,9 +34,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 41 |
-| Test files | 28 |
+| Test files | 29 |
 | Data files | 7 |
-| All module-owned files | 66 |
+| All module-owned files | 67 |
 | Local schema definitions | 18 |
 
 ## Ownership And Dependencies
@@ -69,7 +69,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 7 |
+| Documented | 8 |
 | Partially documented | 54 |
 | Undocumented | 0 |
 | Inventory only | 5 |
@@ -148,6 +148,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/product/src/utils/enums.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/src/utils/statusDefinitions.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/product/src/utils/utils.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/product/test/productBackofficeNavigationContract.test.js` | `test` | `documented` | 0/0 | Protects the backend-driven Axis Catalog navigation model, schema targets, and roadmap placeholders. |  |
 | `gComm/product/test/productCategoryContract.test.js` | `test` | `documented` | 0/0 | Proves Product Category hierarchy, assignment references, ordering, dates, cycles, depth, retirement dependencies, and extension hooks. |  |
 | `gComm/product/test/productClassificationContract.test.js` | `test` | `documented` | 0/0 | Proves Product typed attributes, localization, enumeration, exact decimals, Units validation, cardinality, required classes, lifecycle dependencies, and overrideable policy. |  |
 | `gComm/product/test/productCompositionContract.test.js` | `test` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |

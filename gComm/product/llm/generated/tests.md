@@ -4,6 +4,7 @@
 
 ## Hand-Authored Tests
 
+- `gComm/product/test/productBackofficeNavigationContract.test.js`
 - `gComm/product/test/productCategoryContract.test.js`
 - `gComm/product/test/productClassificationContract.test.js`
 - `gComm/product/test/productCompositionContract.test.js`

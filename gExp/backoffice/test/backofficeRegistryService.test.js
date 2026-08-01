@@ -16,275 +16,725 @@
  * @owner backoffice
  * @override Project registry storage implementations must preserve these observed-state invariants.
  */
-const assert = require('assert');
+const assert = require("assert");
 
-global.CONFIG = { get: key => key === 'backofficeRegistry' ? {
-    leaseTtlMs: 20,
-    sweepIntervalMs: 1000,
-    allowedSchemes: ['http', 'https'],
-    requireBoundServiceIdentity: true,
-    store: {
-        mode: 'memory',
-        moduleName: 'backoffice',
-        engineName: 'redis',
-        keyPrefix: 'registry:lease:'
-    },
-    modulePermissions: {},
-    compatibility: { registryContractVersion: 1, minimumClientContractVersion: 1 },
-    publicBootstrap: {
-        enabled: true, contractVersion: 1, requiredModules: { profile: 'profile', cms: 'cms' },
-        uiComposition: { site: 'axisCmsSite', catalog: 'axisContentCatalog', defaultPublicPage: '/login',
-            defaultAuthenticatedPage: '/dashboard', locale: 'en', channel: 'web', fallbackMode: 'STATIC_RECOVERY_SHELL' }
-    },
-    clientSafeMetadata: ['moduleName', 'instanceId', 'environment', 'server', 'node', 'clientCallable', 'endpoint', 'state',
-        'lastSeenAt', 'backoffice']
-} : undefined };
-let storeDefinition = require('../src/service/registry/defaultBackofficeRegistryStoreService');
+global.CONFIG = {
+  get: (key) =>
+    key === "backofficeRegistry"
+      ? {
+          leaseTtlMs: 20,
+          sweepIntervalMs: 1000,
+          allowedSchemes: ["http", "https"],
+          requireBoundServiceIdentity: true,
+          store: {
+            mode: "memory",
+            moduleName: "backoffice",
+            engineName: "redis",
+            keyPrefix: "registry:lease:",
+          },
+          modulePermissions: {},
+          compatibility: {
+            registryContractVersion: 1,
+            minimumClientContractVersion: 1,
+          },
+          publicBootstrap: {
+            enabled: true,
+            contractVersion: 1,
+            requiredModules: { profile: "profile", cms: "cms" },
+            uiComposition: {
+              site: "axisCmsSite",
+              catalog: "axisContentCatalog",
+              defaultPublicPage: "/login",
+              defaultAuthenticatedPage: "/dashboard",
+              locale: "en",
+              channel: "web",
+              fallbackMode: "STATIC_RECOVERY_SHELL",
+            },
+          },
+          clientSafeMetadata: [
+            "moduleName",
+            "instanceId",
+            "environment",
+            "server",
+            "node",
+            "clientCallable",
+            "endpoint",
+            "state",
+            "lastSeenAt",
+            "backoffice",
+          ],
+        }
+      : undefined,
+};
+let storeDefinition = require("../src/service/registry/defaultBackofficeRegistryStoreService");
 let store = Object.assign({}, storeDefinition, { _instances: new Map() });
-let contractService = require('../src/service/contract/defaultBackofficeContractService');
+let contractService = require("../src/service/contract/defaultBackofficeContractService");
 let auditEvents = [];
 let discoveryAuthData = [];
 let diagnosticsAuthData;
 let availabilitySchedules = [];
 global.SERVICE = {
-    DefaultAxisExperiencePolicyService: {
-        getEffective: () => Promise.resolve({
-            contractVersion: 1, screenLockEnabled: true, idleTimeoutSeconds: 900,
-            recentNavigationLimit: 12, revision: 0, source: 'DEFAULT'
-        })
+  DefaultAxisExperiencePolicyService: {
+    getEffective: () =>
+      Promise.resolve({
+        contractVersion: 1,
+        screenLockEnabled: true,
+        idleTimeoutSeconds: 900,
+        recentNavigationLimit: 12,
+        revision: 0,
+        source: "DEFAULT",
+      }),
+  },
+  DefaultBackofficeAdministrativeSecurityService: {
+    validate: () => true,
+    getAuditContext: () => ({ principalId: "operator" }),
+    executeRefresh: (request, moduleName, executor) => executor(),
+  },
+  DefaultBackofficeRegistryStoreService: store,
+  DefaultBackofficeContractService: contractService,
+  DefaultBackofficeAuditService: {
+    record: (event) => {
+      auditEvents.push(event);
+      return Promise.resolve(event);
     },
-    DefaultBackofficeAdministrativeSecurityService: { validate: () => true, getAuditContext: () => ({ principalId: 'operator' }),
-        executeRefresh: (request, moduleName, executor) => executor() },
-    DefaultBackofficeRegistryStoreService: store,
-    DefaultBackofficeContractService: contractService,
-    DefaultBackofficeAuditService: { record: event => { auditEvents.push(event); return Promise.resolve(event); } },
-    DefaultBackofficeContractRepositoryService: { getOperationalDiagnostics: request => {
-        diagnosticsAuthData = request && request.authData;
-        return Promise.resolve({ persistenceStatus: 'AVAILABLE', pendingApprovals: 1, activeSelections: 2 });
-    } },
-    DefaultBackofficeAvailabilityService: {
-        scheduleObservation: registration => { availabilitySchedules.push(registration.instanceId); return Promise.resolve(true); },
-        observe: registration => { availabilitySchedules.push('refresh:' + registration.instanceId); return Promise.resolve(true); },
-        getModuleAvailability: instances => ({ state: 'UP', activeInstances: instances.length, healthyInstances: instances.length,
-            unavailableInstances: 0, unknownInstances: 0 }),
-        getInstanceAvailability: instanceId => instanceId === 'runtime-1' ?
-            { state: 'UP', freshness: 'FRESH', observedAt: '2026-07-27T00:00:00.000Z' } :
-            { state: 'UNKNOWN', freshness: 'MISSING', reasonCode: 'OBSERVATION_MISSING' },
-        getDiagnostics: () => ({ trackedInstances: 1, inflight: 0, metrics: {} }),
-        removeInstance: () => true
+  },
+  DefaultBackofficeContractRepositoryService: {
+    getOperationalDiagnostics: (request) => {
+      diagnosticsAuthData = request && request.authData;
+      return Promise.resolve({
+        persistenceStatus: "AVAILABLE",
+        pendingApprovals: 1,
+        activeSelections: 2,
+      });
     },
-    DefaultBackofficeDiscoveryService: {
-        scheduleDiscovery: (registration, authData) => { discoveryAuthData.push(authData); return Promise.resolve(true); },
-        discover: (registration, document, authData) => { discoveryAuthData.push(authData); return Promise.resolve(true); },
-        getSnapshot: moduleName => moduleName === 'cms' ? { moduleName: 'cms', hash: 'contract-hash', operations: [] } : undefined,
-        getDiagnostics: () => ({ attempts: 1, successes: 1 })
-    }
+  },
+  DefaultBackofficeAvailabilityService: {
+    scheduleObservation: (registration) => {
+      availabilitySchedules.push(registration.instanceId);
+      return Promise.resolve(true);
+    },
+    observe: (registration) => {
+      availabilitySchedules.push("refresh:" + registration.instanceId);
+      return Promise.resolve(true);
+    },
+    getModuleAvailability: (instances) => ({
+      state: "UP",
+      activeInstances: instances.length,
+      healthyInstances: instances.length,
+      unavailableInstances: 0,
+      unknownInstances: 0,
+    }),
+    getInstanceAvailability: (instanceId) =>
+      instanceId === "runtime-1"
+        ? {
+            state: "UP",
+            freshness: "FRESH",
+            observedAt: "2026-07-27T00:00:00.000Z",
+          }
+        : {
+            state: "UNKNOWN",
+            freshness: "MISSING",
+            reasonCode: "OBSERVATION_MISSING",
+          },
+    getDiagnostics: () => ({ trackedInstances: 1, inflight: 0, metrics: {} }),
+    removeInstance: () => true,
+  },
+  DefaultBackofficeDiscoveryService: {
+    scheduleDiscovery: (registration, authData) => {
+      discoveryAuthData.push(authData);
+      return Promise.resolve(true);
+    },
+    discover: (registration, document, authData) => {
+      discoveryAuthData.push(authData);
+      return Promise.resolve(true);
+    },
+    getSnapshot: (moduleName) =>
+      moduleName === "cms"
+        ? { moduleName: "cms", hash: "contract-hash", operations: [] }
+        : undefined,
+    getDiagnostics: () => ({ attempts: 1, successes: 1 }),
+  },
 };
 global.CLASSES = { NodicsError: class NodicsError extends Error {} };
 
-const definition = require('../src/service/registry/defaultBackofficeRegistryService');
+const definition = require("../src/service/registry/defaultBackofficeRegistryService");
 const service = Object.assign({}, definition, {
-    _store: store,
-    _metrics: { registrations: 0, renewals: 0, deregistrations: 0, expirations: 0, rejected: 0 },
-    _sweepTimer: null
+  _store: store,
+  _metrics: {
+    registrations: 0,
+    renewals: 0,
+    deregistrations: 0,
+    expirations: 0,
+    rejected: 0,
+  },
+  _sweepTimer: null,
 });
 
 async function run() {
-    let registration = {
-        moduleName: 'cms', displayName: 'Content Management', parentModule: 'gContent',
-        canonicalIdentity: 'gContent/cms', instanceId: 'cms-1', endpoint: 'http://cms:3040/nodics/cms',
-        version: '1.0.0', capabilities: ['router'], clientCallable: true, leaseTtlMs: 1000,
-        backoffice: { enabled: true, capabilityId: 'content-management', displayName: 'Content', category: 'content',
-            contractVersion: 2, minimumClientContractVersion: 1, roles: ['UI_COMPOSITION_PROVIDER'],
-            discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
-            uiComposition: { site: 'nodicsBackOffice', catalog: 'nodicsBackOfficeContentCatalog',
-                defaultPage: 'backofficeDashboard', fallbackMode: 'STATIC_RECOVERY_SHELL' },
-            requiredPermissions: ['cms.backoffice.view'] }
-    };
-    let identity = { tokenType: 'service', runtimeInstanceId: 'cms-1', modules: ['cms'], userGroups: ['serviceAccountUserGroup'] };
-    let first = await service.register({ body: registration, authData: identity });
-    assert.strictEqual(first.data.moduleName, 'cms');
-    assert.strictEqual(first.data.backoffice.capabilityId, 'content-management');
-    await service.register({ body: registration, authData: identity });
-    assert.strictEqual(store._instances.size, 1, 'lease renewal must be idempotent');
-    assert.strictEqual(service._metrics.renewals, 1);
+  let registration = {
+    moduleName: "cms",
+    displayName: "Content Management",
+    parentModule: "gContent",
+    canonicalIdentity: "gContent/cms",
+    instanceId: "cms-1",
+    endpoint: "http://cms:3040/nodics/cms",
+    version: "1.0.0",
+    capabilities: ["router"],
+    clientCallable: true,
+    leaseTtlMs: 1000,
+    backoffice: {
+      enabled: true,
+      capabilityId: "content-management",
+      displayName: "Content",
+      category: "content",
+      contractVersion: 2,
+      minimumClientContractVersion: 1,
+      roles: ["UI_COMPOSITION_PROVIDER"],
+      discovery: {
+        openApiPath: "/nodics/system/v0/contract/openapi/internal",
+        contractVersion: 1,
+      },
+      uiComposition: {
+        site: "nodicsBackOffice",
+        catalog: "nodicsBackOfficeContentCatalog",
+        defaultPage: "backofficeDashboard",
+        fallbackMode: "STATIC_RECOVERY_SHELL",
+      },
+      requiredPermissions: ["cms.backoffice.view"],
+    },
+  };
+  let identity = {
+    tokenType: "service",
+    runtimeInstanceId: "cms-1",
+    modules: ["cms"],
+    userGroups: ["serviceAccountUserGroup"],
+  };
+  let first = await service.register({
+    body: registration,
+    authData: identity,
+  });
+  assert.strictEqual(first.data.moduleName, "cms");
+  assert.strictEqual(first.data.backoffice.capabilityId, "content-management");
+  await service.register({ body: registration, authData: identity });
+  assert.strictEqual(
+    store._instances.size,
+    1,
+    "lease renewal must be idempotent",
+  );
+  assert.strictEqual(service._metrics.renewals, 1);
 
-    let list = await service.list({ authData: { permissions: ['cms.backoffice.view'] } });
-    assert.strictEqual(list.data.modules.cms.length, 1);
-    assert.strictEqual((await service.list({ authData: { permissions: [] } })).data.modules.cms, undefined,
-        'discovery must omit modules the caller is not authorized to use');
-    await assert.rejects(service.register({
-        body: { moduleName: 'cms', instanceId: 'bad', endpoint: 'file:///secret', clientCallable: true },
-        authData: { tokenType: 'service', runtimeInstanceId: 'bad', modules: ['cms'] }
-    }));
-    await assert.rejects(service.register({
-        body: { moduleName: 'cms', instanceId: 'bad', endpoint: 'https://user:secret@cms.example/nodics/cms', clientCallable: true },
-        authData: { tokenType: 'service', runtimeInstanceId: 'bad', modules: ['cms'] }
-    }), 'registered endpoints must never contain credentials that public bootstrap could disclose');
-    await assert.rejects(service.register({ body: registration, authData: { tokenType: 'service', runtimeInstanceId: 'other', modules: ['cms'] } }));
+  let list = await service.list({
+    authData: { permissions: ["cms.backoffice.view"] },
+  });
+  assert.strictEqual(list.data.modules.cms.length, 1);
+  assert.strictEqual(
+    (await service.list({ authData: { permissions: [] } })).data.modules.cms,
+    undefined,
+    "discovery must omit modules the caller is not authorized to use",
+  );
+  await assert.rejects(
+    service.register({
+      body: {
+        moduleName: "cms",
+        instanceId: "bad",
+        endpoint: "file:///secret",
+        clientCallable: true,
+      },
+      authData: {
+        tokenType: "service",
+        runtimeInstanceId: "bad",
+        modules: ["cms"],
+      },
+    }),
+  );
+  await assert.rejects(
+    service.register({
+      body: {
+        moduleName: "cms",
+        instanceId: "bad",
+        endpoint: "https://user:secret@cms.example/nodics/cms",
+        clientCallable: true,
+      },
+      authData: {
+        tokenType: "service",
+        runtimeInstanceId: "bad",
+        modules: ["cms"],
+      },
+    }),
+    "registered endpoints must never contain credentials that public bootstrap could disclose",
+  );
+  await assert.rejects(
+    service.register({
+      body: registration,
+      authData: {
+        tokenType: "service",
+        runtimeInstanceId: "other",
+        modules: ["cms"],
+      },
+    }),
+  );
 
-    await assert.rejects(service.deregister({ params: { instanceId: 'cms-1' }, authData: {
-        tokenType: 'service', runtimeInstanceId: 'other'
-    } }));
-    await service.deregister({ params: { instanceId: 'cms-1' }, body: { moduleName: 'cms' }, authData: identity });
-    assert.strictEqual(store._instances.size, 0);
+  await assert.rejects(
+    service.deregister({
+      params: { instanceId: "cms-1" },
+      authData: {
+        tokenType: "service",
+        runtimeInstanceId: "other",
+      },
+    }),
+  );
+  await service.deregister({
+    params: { instanceId: "cms-1" },
+    body: { moduleName: "cms" },
+    authData: identity,
+  });
+  assert.strictEqual(store._instances.size, 0);
 
-    await service.register({ body: registration, authData: identity });
-    let profileRegistration = {
-        moduleName: 'profile', displayName: 'Profile and Identity', parentModule: 'gCore',
-        canonicalIdentity: 'gCore/profile', instanceId: 'profile-1', endpoint: 'http://profile:3000/nodics/profile',
-        clientCallable: true, leaseTtlMs: 1000
-    };
-    await service.register({ body: profileRegistration, authData: {
-        tokenType: 'service', runtimeInstanceId: 'profile-1', modules: ['profile'], userGroups: ['serviceAccountUserGroup']
-    } });
-    let publicBootstrap = await service.publicBootstrap({
-        headers: { 'x-nodics-client-contract-version': '1' }
-    });
-    assert.deepStrictEqual(publicBootstrap.data.endpoints, {
-        profile: 'http://profile:3000/nodics/profile',
-        cms: 'http://cms:3040/nodics/cms'
-    });
-    assert.strictEqual(publicBootstrap.data.uiComposition.site, 'axisCmsSite');
-    assert.strictEqual(JSON.stringify(publicBootstrap).includes('instanceId'), false,
-        'public bootstrap must not disclose registry topology');
-    assert.strictEqual(JSON.stringify(publicBootstrap).includes('lastSeenAt'), false,
-        'public bootstrap must not disclose lease metadata');
-    await assert.rejects(service.publicBootstrap({ headers: { 'x-nodics-client-contract-version': '2' } }));
-    store._instances.delete('profile:profile-1');
-    await assert.rejects(service.publicBootstrap({ headers: { 'x-nodics-client-contract-version': '1' } }),
-        'public bootstrap must fail closed when a required module is unavailable');
-    store._instances.get('cms:cms-1').expiresAt = Date.now() - 1;
-    await service.expireStale();
-    assert.strictEqual(store._instances.size, 0);
-    assert.strictEqual(service._metrics.expirations, 1);
+  await service.register({ body: registration, authData: identity });
+  let profileRegistration = {
+    moduleName: "profile",
+    displayName: "Profile and Identity",
+    parentModule: "gCore",
+    canonicalIdentity: "gCore/profile",
+    instanceId: "profile-1",
+    endpoint: "http://profile:3000/nodics/profile",
+    clientCallable: true,
+    leaseTtlMs: 1000,
+  };
+  await service.register({
+    body: profileRegistration,
+    authData: {
+      tokenType: "service",
+      runtimeInstanceId: "profile-1",
+      modules: ["profile"],
+      userGroups: ["serviceAccountUserGroup"],
+    },
+  });
+  let publicBootstrap = await service.publicBootstrap({
+    headers: { "x-nodics-client-contract-version": "1" },
+  });
+  assert.deepStrictEqual(publicBootstrap.data.endpoints, {
+    profile: "http://profile:3000/nodics/profile",
+    cms: "http://cms:3040/nodics/cms",
+  });
+  assert.strictEqual(publicBootstrap.data.uiComposition.site, "axisCmsSite");
+  assert.strictEqual(
+    JSON.stringify(publicBootstrap).includes("instanceId"),
+    false,
+    "public bootstrap must not disclose registry topology",
+  );
+  assert.strictEqual(
+    JSON.stringify(publicBootstrap).includes("lastSeenAt"),
+    false,
+    "public bootstrap must not disclose lease metadata",
+  );
+  await assert.rejects(
+    service.publicBootstrap({
+      headers: { "x-nodics-client-contract-version": "2" },
+    }),
+  );
+  store._instances.delete("profile:profile-1");
+  await assert.rejects(
+    service.publicBootstrap({
+      headers: { "x-nodics-client-contract-version": "1" },
+    }),
+    "public bootstrap must fail closed when a required module is unavailable",
+  );
+  store._instances.get("cms:cms-1").expiresAt = Date.now() - 1;
+  await service.expireStale();
+  assert.strictEqual(store._instances.size, 0);
+  assert.strictEqual(service._metrics.expirations, 1);
 
-    let batch = await service.register({ body: {
-        instanceId: 'runtime-1',
-        environment: 'local',
-        server: 'cms-server',
-        node: 'cms-node',
-        registrations: [
-            { moduleName: 'gContent', displayName: 'Content', canonicalIdentity: 'gContent',
-                instanceId: 'runtime-1', moduleKind: 'group', clientCallable: false },
-            { moduleName: 'cms', displayName: 'Content Management', parentModule: 'gContent',
-                canonicalIdentity: 'gContent/cms', instanceId: 'runtime-1',
-                endpoint: 'http://cms/nodics/cms', clientCallable: true,
-                backoffice: registration.backoffice },
-            { moduleName: 'workflow', displayName: 'Workflow', canonicalIdentity: 'workflow',
-                instanceId: 'runtime-1', moduleKind: 'group', clientCallable: false },
-            { moduleName: 'workflowCore', displayName: 'Workflow Core', parentModule: 'workflow',
-                canonicalIdentity: 'gCore/workflow/workflowCore', instanceId: 'runtime-1',
-                clientCallable: false, capabilities: ['service'] }
-        ]
-    }, authData: { tokenType: 'service', runtimeInstanceId: 'runtime-1',
-        modules: ['gContent', 'cms', 'workflow', 'workflowCore'],
-        userGroups: ['serviceAccountUserGroup'] } });
-    assert.strictEqual(batch.data.registeredModules, 4);
-    assert.deepStrictEqual({ environment: store._instances.get('cms:runtime-1').environment,
-        server: store._instances.get('cms:runtime-1').server, node: store._instances.get('cms:runtime-1').node },
-    { environment: 'local', server: 'cms-server', node: 'cms-node' }, 'runtime coordinates must remain available for sanitized telemetry');
-    assert.deepStrictEqual(discoveryAuthData.slice(-2).map(authData => authData.userGroups),
-        [['serviceAccountUserGroup'], ['serviceAccountUserGroup']], 'batch discovery must preserve authenticated service groups');
-    assert(availabilitySchedules.includes('runtime-1'), 'client-callable batch registration must schedule availability observation');
-    let adminList = await service.adminList({ query: { environment: 'local', state: 'UP', limit: '10' } });
-    assert.strictEqual(adminList.data.total, 4);
-    assert.strictEqual(adminList.data.items[0].environments[0], 'local');
-    let cmsSummary = adminList.data.items.find(item => item.moduleName === 'cms');
-    assert.strictEqual(cmsSummary.displayName, 'Content Management');
-    assert.strictEqual(cmsSummary.parentModule, 'gContent');
-    assert.strictEqual(cmsSummary.canonicalIdentity, 'gContent/cms');
-    assert.deepStrictEqual(service.aggregateModuleAvailability([
-        { availability: { state: 'UP', activeInstances: 1, healthyInstances: 1,
-            unavailableInstances: 0, unknownInstances: 0 } },
-        { availability: { state: 'UNAVAILABLE', activeInstances: 1, healthyInstances: 0,
-            unavailableInstances: 1, unknownInstances: 0 } }
-    ]), { state: 'DEGRADED', activeInstances: 2, healthyInstances: 1,
-        unavailableInstances: 1, unknownInstances: 0 },
-    'group readiness must derive from observed non-group descendants');
-    await assert.rejects(() => service.adminList({ query: { limit: '101' } }));
-    let adminDetail = await service.adminDetail({ params: { moduleName: 'cms' } });
-    assert.strictEqual(adminDetail.data.displayName, 'Content Management');
-    assert.strictEqual(adminDetail.data.instances.length, 1);
-    assert.deepStrictEqual({ environment: adminDetail.data.instances[0].environment, server: adminDetail.data.instances[0].server,
-        node: adminDetail.data.instances[0].node }, { environment: 'local', server: 'cms-server', node: 'cms-node' },
-    'administrative detail must expose only the safe runtime coordinates required to distinguish instances');
-    assert.deepStrictEqual(adminDetail.data.instances[0].availability, {
-        state: 'UP', freshness: 'FRESH', observedAt: '2026-07-27T00:00:00.000Z'
-    }, 'administrative detail must merge sanitized instance readiness without exposing raw probe data');
-    let httpAdminDetail = await service.adminDetail({ httpRequest: { params: { moduleName: 'cms' } } });
-    assert.strictEqual(httpAdminDetail.data.moduleName, 'cms',
-        'HTTP router path parameters must resolve through the wrapped request contract');
-    let refreshed = await service.refresh({ params: { moduleName: 'cms' }, authData: { principalId: 'operator' } });
-    assert.strictEqual(refreshed.data.refreshedInstances, 1);
-    assert(availabilitySchedules.includes('refresh:runtime-1'));
-    await assert.rejects(() => service.refresh({ params: { moduleName: 'missing' }, authData: {} }));
-    list = await service.list({ authData: { permissions: ['cms.backoffice.view'] } });
-    assert.strictEqual(list.data.modules.workflowCore, undefined, 'non-API modules must not appear in client discovery');
-    let diagnostics = await service.diagnostics({ authData: { userGroups: ['runtimeConfigAdminUserGroup'] } });
-    assert.strictEqual(diagnostics.data.activeInstances, 4, 'diagnostics must retain all active module leases');
-    assert.strictEqual(diagnostics.data.contracts.pendingApprovals, 1);
-    assert.deepStrictEqual(diagnosticsAuthData.userGroups, ['runtimeConfigAdminUserGroup']);
-    let bootstrap = await service.bootstrap({ tenant: 'default', authData: { permissions: ['cms.backoffice.view'] },
-        headers: { 'x-nodics-client-contract-version': '1' } });
-    assert.strictEqual(bootstrap.data.compatibility.registryContractVersion, 1);
-    assert.strictEqual(bootstrap.data.compatibility.status, 'DEGRADED');
-    assert.strictEqual(bootstrap.data.catalogue.cms.compatibility.status, 'DEGRADED');
-    assert.strictEqual(service.evaluateCompatibility({ contractVersion: 2, minimumClientContractVersion: 2 }, 1).status, 'INCOMPATIBLE');
-    assert.strictEqual(service.evaluateCompatibility({ contractVersion: 2, minimumClientContractVersion: 1 }, 2).status, 'COMPATIBLE');
-    assert.strictEqual(bootstrap.data.availability.cms.activeInstances, 1);
-    assert.strictEqual(bootstrap.data.availability.cms.state, 'UP');
-    assert.strictEqual(bootstrap.data.catalogue.cms.contract.hash, 'contract-hash');
-    assert.strictEqual(bootstrap.data.uiComposition.providerModule, 'cms');
-    assert.strictEqual(bootstrap.data.uiComposition.fallbackMode, 'STATIC_RECOVERY_SHELL');
-    assert.strictEqual(bootstrap.data.axisPolicy.idleTimeoutSeconds, 900);
-    assert.strictEqual(bootstrap.data.axisPolicy.recentNavigationLimit, 12);
-    assert(Array.isArray(bootstrap.data.documentationSources));
-    assert.strictEqual(bootstrap.data.tenantCode, 'default');
-    assert.strictEqual(bootstrap.data.modules.workflowCore, undefined,
-        'bootstrap must never expose modules that are not browser callable');
-    assert.strictEqual(bootstrap.data.catalogue.workflowCore, undefined,
-        'bootstrap catalogue must contain only authorized browser-callable modules');
-    assert.strictEqual(JSON.stringify(bootstrap).includes('expiresAt'), false,
-        'bootstrap must not expose internal lease-expiry state');
-    let navigationMetadata = {
-        requiredPermissions: ['backoffice.registry.view'],
-        navigation: [
-            { id: 'administration', requiredPermissions: ['system.schema.workbench.view'] },
-            { id: 'workbench', parentId: 'administration', requiredPermissions: ['system.schema.workbench.view'] },
-            { id: 'registry', requiredPermissions: ['backoffice.registry.view'] },
-            { id: 'hidden', featureState: 'HIDDEN' }
-        ]
-    };
-    let authorizedCatalogue = service.buildCatalogue({
-        backoffice: [{ backoffice: navigationMetadata }]
-    }, 1, { permissions: ['backoffice.registry.view', 'system.schema.workbench.view'] });
-    assert.deepStrictEqual(authorizedCatalogue.backoffice.navigation.map(item => item.id), ['administration', 'workbench', 'registry'],
-        'bootstrap should retain every navigation item independently authorized for the employee');
-    let restrictedCatalogue = service.buildCatalogue({
-        backoffice: [{ backoffice: navigationMetadata }]
-    }, 1, { permissions: ['backoffice.registry.view'] });
-    assert.deepStrictEqual(restrictedCatalogue.backoffice.navigation.map(item => item.id), ['registry'],
-        'bootstrap must remove unauthorized parents, their orphaned descendants, and hidden features');
-    assert.deepStrictEqual(service.buildDocumentationSources({
-        backoffice: { documentation: [
-            { id: 'public-guide', label: 'Guide', order: 1 },
-            { id: 'restricted-guide', label: 'Restricted', order: 2, requiredPermissions: ['docs.private'] }
-        ] }
-    }, { permissions: [] }).map(item => item.id), ['public-guide'],
-    'documentation aggregation must permission-filter module-owned sources');
-    await assert.rejects(() => Promise.resolve().then(() => service.bootstrap({ authData: { permissions: [] },
-        headers: { 'x-nodics-client-contract-version': 'invalid' } })));
-    assert(auditEvents.some(event => event.eventType === 'backoffice.registry.registration'));
+  let batch = await service.register({
+    body: {
+      instanceId: "runtime-1",
+      environment: "local",
+      server: "cms-server",
+      node: "cms-node",
+      registrations: [
+        {
+          moduleName: "gContent",
+          displayName: "Content",
+          canonicalIdentity: "gContent",
+          instanceId: "runtime-1",
+          moduleKind: "group",
+          clientCallable: false,
+        },
+        {
+          moduleName: "cms",
+          displayName: "Content Management",
+          parentModule: "gContent",
+          canonicalIdentity: "gContent/cms",
+          instanceId: "runtime-1",
+          endpoint: "http://cms/nodics/cms",
+          clientCallable: true,
+          backoffice: registration.backoffice,
+        },
+        {
+          moduleName: "workflow",
+          displayName: "Workflow",
+          canonicalIdentity: "workflow",
+          instanceId: "runtime-1",
+          moduleKind: "group",
+          clientCallable: false,
+        },
+        {
+          moduleName: "workflowCore",
+          displayName: "Workflow Core",
+          parentModule: "workflow",
+          canonicalIdentity: "gCore/workflow/workflowCore",
+          instanceId: "runtime-1",
+          clientCallable: false,
+          capabilities: ["service"],
+        },
+      ],
+    },
+    authData: {
+      tokenType: "service",
+      runtimeInstanceId: "runtime-1",
+      modules: ["gContent", "cms", "workflow", "workflowCore"],
+      userGroups: ["serviceAccountUserGroup"],
+    },
+  });
+  assert.strictEqual(batch.data.registeredModules, 4);
+  assert.deepStrictEqual(
+    {
+      environment: store._instances.get("cms:runtime-1").environment,
+      server: store._instances.get("cms:runtime-1").server,
+      node: store._instances.get("cms:runtime-1").node,
+    },
+    { environment: "local", server: "cms-server", node: "cms-node" },
+    "runtime coordinates must remain available for sanitized telemetry",
+  );
+  assert.deepStrictEqual(
+    discoveryAuthData.slice(-2).map((authData) => authData.userGroups),
+    [["serviceAccountUserGroup"], ["serviceAccountUserGroup"]],
+    "batch discovery must preserve authenticated service groups",
+  );
+  assert(
+    availabilitySchedules.includes("runtime-1"),
+    "client-callable batch registration must schedule availability observation",
+  );
+  let adminList = await service.adminList({
+    query: { environment: "local", state: "UP", limit: "10" },
+  });
+  assert.strictEqual(adminList.data.total, 4);
+  assert.strictEqual(adminList.data.items[0].environments[0], "local");
+  let cmsSummary = adminList.data.items.find(
+    (item) => item.moduleName === "cms",
+  );
+  assert.strictEqual(cmsSummary.displayName, "Content Management");
+  assert.strictEqual(cmsSummary.parentModule, "gContent");
+  assert.strictEqual(cmsSummary.canonicalIdentity, "gContent/cms");
+  assert.deepStrictEqual(
+    service.aggregateModuleAvailability([
+      {
+        availability: {
+          state: "UP",
+          activeInstances: 1,
+          healthyInstances: 1,
+          unavailableInstances: 0,
+          unknownInstances: 0,
+        },
+      },
+      {
+        availability: {
+          state: "UNAVAILABLE",
+          activeInstances: 1,
+          healthyInstances: 0,
+          unavailableInstances: 1,
+          unknownInstances: 0,
+        },
+      },
+    ]),
+    {
+      state: "DEGRADED",
+      activeInstances: 2,
+      healthyInstances: 1,
+      unavailableInstances: 1,
+      unknownInstances: 0,
+    },
+    "group readiness must derive from observed non-group descendants",
+  );
+  await assert.rejects(() => service.adminList({ query: { limit: "101" } }));
+  let adminDetail = await service.adminDetail({
+    params: { moduleName: "cms" },
+  });
+  assert.strictEqual(adminDetail.data.displayName, "Content Management");
+  assert.strictEqual(adminDetail.data.instances.length, 1);
+  assert.deepStrictEqual(
+    {
+      environment: adminDetail.data.instances[0].environment,
+      server: adminDetail.data.instances[0].server,
+      node: adminDetail.data.instances[0].node,
+    },
+    { environment: "local", server: "cms-server", node: "cms-node" },
+    "administrative detail must expose only the safe runtime coordinates required to distinguish instances",
+  );
+  assert.deepStrictEqual(
+    adminDetail.data.instances[0].availability,
+    {
+      state: "UP",
+      freshness: "FRESH",
+      observedAt: "2026-07-27T00:00:00.000Z",
+    },
+    "administrative detail must merge sanitized instance readiness without exposing raw probe data",
+  );
+  let httpAdminDetail = await service.adminDetail({
+    httpRequest: { params: { moduleName: "cms" } },
+  });
+  assert.strictEqual(
+    httpAdminDetail.data.moduleName,
+    "cms",
+    "HTTP router path parameters must resolve through the wrapped request contract",
+  );
+  let refreshed = await service.refresh({
+    params: { moduleName: "cms" },
+    authData: { principalId: "operator" },
+  });
+  assert.strictEqual(refreshed.data.refreshedInstances, 1);
+  assert(availabilitySchedules.includes("refresh:runtime-1"));
+  await assert.rejects(() =>
+    service.refresh({ params: { moduleName: "missing" }, authData: {} }),
+  );
+  list = await service.list({
+    authData: { permissions: ["cms.backoffice.view"] },
+  });
+  assert.strictEqual(
+    list.data.modules.workflowCore,
+    undefined,
+    "non-API modules must not appear in client discovery",
+  );
+  let diagnostics = await service.diagnostics({
+    authData: { userGroups: ["runtimeConfigAdminUserGroup"] },
+  });
+  assert.strictEqual(
+    diagnostics.data.activeInstances,
+    4,
+    "diagnostics must retain all active module leases",
+  );
+  assert.strictEqual(diagnostics.data.contracts.pendingApprovals, 1);
+  assert.deepStrictEqual(diagnosticsAuthData.userGroups, [
+    "runtimeConfigAdminUserGroup",
+  ]);
+  let bootstrap = await service.bootstrap({
+    tenant: "default",
+    authData: { permissions: ["cms.backoffice.view"] },
+    headers: { "x-nodics-client-contract-version": "1" },
+  });
+  assert.strictEqual(bootstrap.data.compatibility.registryContractVersion, 1);
+  assert.strictEqual(bootstrap.data.compatibility.status, "DEGRADED");
+  assert.strictEqual(
+    bootstrap.data.catalogue.cms.compatibility.status,
+    "DEGRADED",
+  );
+  assert.strictEqual(
+    service.evaluateCompatibility(
+      { contractVersion: 2, minimumClientContractVersion: 2 },
+      1,
+    ).status,
+    "INCOMPATIBLE",
+  );
+  assert.strictEqual(
+    service.evaluateCompatibility(
+      { contractVersion: 2, minimumClientContractVersion: 1 },
+      2,
+    ).status,
+    "COMPATIBLE",
+  );
+  assert.strictEqual(bootstrap.data.availability.cms.activeInstances, 1);
+  assert.strictEqual(bootstrap.data.availability.cms.state, "UP");
+  assert.strictEqual(
+    bootstrap.data.catalogue.cms.contract.hash,
+    "contract-hash",
+  );
+  assert.strictEqual(bootstrap.data.uiComposition.providerModule, "cms");
+  assert.strictEqual(
+    bootstrap.data.uiComposition.fallbackMode,
+    "STATIC_RECOVERY_SHELL",
+  );
+  assert.strictEqual(bootstrap.data.axisPolicy.idleTimeoutSeconds, 900);
+  assert.strictEqual(bootstrap.data.axisPolicy.recentNavigationLimit, 12);
+  assert(Array.isArray(bootstrap.data.documentationSources));
+  assert.strictEqual(bootstrap.data.tenantCode, "default");
+  assert.strictEqual(
+    bootstrap.data.modules.workflowCore,
+    undefined,
+    "bootstrap must never expose modules that are not browser callable",
+  );
+  assert.strictEqual(
+    bootstrap.data.catalogue.workflowCore,
+    undefined,
+    "bootstrap catalogue must contain only authorized browser-callable modules",
+  );
+  assert.strictEqual(
+    JSON.stringify(bootstrap).includes("expiresAt"),
+    false,
+    "bootstrap must not expose internal lease-expiry state",
+  );
+  let navigationMetadata = {
+    requiredPermissions: ["backoffice.registry.view"],
+    navigation: [
+      {
+        id: "administration",
+        requiredPermissions: ["system.schema.workbench.view"],
+      },
+      {
+        id: "workbench",
+        parentId: "administration",
+        requiredPermissions: ["system.schema.workbench.view"],
+      },
+      { id: "registry", requiredPermissions: ["backoffice.registry.view"] },
+      { id: "hidden", featureState: "HIDDEN" },
+    ],
+  };
+  let authorizedCatalogue = service.buildCatalogue(
+    {
+      backoffice: [{ backoffice: navigationMetadata }],
+    },
+    1,
+    {
+      permissions: ["backoffice.registry.view", "system.schema.workbench.view"],
+    },
+  );
+  assert.deepStrictEqual(
+    authorizedCatalogue.backoffice.navigation.map((item) => item.id),
+    ["administration", "workbench", "registry"],
+    "bootstrap should retain every navigation item independently authorized for the employee",
+  );
+  let restrictedCatalogue = service.buildCatalogue(
+    {
+      backoffice: [{ backoffice: navigationMetadata }],
+    },
+    1,
+    { permissions: ["backoffice.registry.view"] },
+  );
+  assert.deepStrictEqual(
+    restrictedCatalogue.backoffice.navigation.map((item) => item.id),
+    ["registry"],
+    "bootstrap must remove unauthorized parents, their orphaned descendants, and hidden features",
+  );
+  let crossModuleCatalogue = service.buildCatalogue(
+    {
+      gComm: [
+        {
+          backoffice: {
+            navigation: [
+              { id: "commerce-operations", label: "Commerce Operations" },
+            ],
+          },
+        },
+      ],
+      pricing: [
+        {
+          backoffice: {
+            navigation: [
+              {
+                id: "pricing",
+                label: "Pricing",
+                parentId: "commerce-operations",
+                parentModuleName: "gComm",
+              },
+            ],
+          },
+        },
+      ],
+    },
+    1,
+    { permissions: [] },
+  );
+  assert.deepStrictEqual(
+    crossModuleCatalogue.pricing.navigation.map((item) => item.id),
+    ["pricing"],
+    "bootstrap must retain explicit cross-module children when their authorized parent is present",
+  );
+  let missingCrossModuleParentCatalogue = service.buildCatalogue(
+    {
+      pricing: [
+        {
+          backoffice: {
+            navigation: [
+              {
+                id: "pricing",
+                label: "Pricing",
+                parentId: "commerce-operations",
+                parentModuleName: "gComm",
+              },
+            ],
+          },
+        },
+      ],
+    },
+    1,
+    { permissions: [] },
+  );
+  assert.deepStrictEqual(
+    missingCrossModuleParentCatalogue.pricing.navigation,
+    [],
+    "bootstrap must remove explicit cross-module children when their authorized parent is absent",
+  );
+  assert.deepStrictEqual(
+    service
+      .buildDocumentationSources(
+        {
+          backoffice: {
+            documentation: [
+              { id: "public-guide", label: "Guide", order: 1 },
+              {
+                id: "restricted-guide",
+                label: "Restricted",
+                order: 2,
+                requiredPermissions: ["docs.private"],
+              },
+            ],
+          },
+        },
+        { permissions: [] },
+      )
+      .map((item) => item.id),
+    ["public-guide"],
+    "documentation aggregation must permission-filter module-owned sources",
+  );
+  await assert.rejects(() =>
+    Promise.resolve().then(() =>
+      service.bootstrap({
+        authData: { permissions: [] },
+        headers: { "x-nodics-client-contract-version": "invalid" },
+      }),
+    ),
+  );
+  assert(
+    auditEvents.some(
+      (event) => event.eventType === "backoffice.registry.registration",
+    ),
+  );
 
-    let sharedStoreDefinition = require('../src/service/registry/defaultBackofficeRegistryStoreService');
-    let sharedStore = Object.assign({}, sharedStoreDefinition, { _instances: new Map() });
-    let replicaOne = Object.assign({}, definition, { _store: sharedStore, _metrics: Object.assign({}, service._metrics) });
-    let replicaTwo = Object.assign({}, definition, { _store: sharedStore, _metrics: Object.assign({}, service._metrics) });
-    await replicaOne.register({ body: registration, authData: identity });
-    assert.strictEqual((await replicaTwo.list({ authData: { permissions: ['cms.backoffice.view'] } })).data.modules.cms.length, 1,
-        'registry replicas must reconcile through the configured shared store contract');
-    console.log('BackOffice registry service validated');
+  let sharedStoreDefinition = require("../src/service/registry/defaultBackofficeRegistryStoreService");
+  let sharedStore = Object.assign({}, sharedStoreDefinition, {
+    _instances: new Map(),
+  });
+  let replicaOne = Object.assign({}, definition, {
+    _store: sharedStore,
+    _metrics: Object.assign({}, service._metrics),
+  });
+  let replicaTwo = Object.assign({}, definition, {
+    _store: sharedStore,
+    _metrics: Object.assign({}, service._metrics),
+  });
+  await replicaOne.register({ body: registration, authData: identity });
+  assert.strictEqual(
+    (
+      await replicaTwo.list({
+        authData: { permissions: ["cms.backoffice.view"] },
+      })
+    ).data.modules.cms.length,
+    1,
+    "registry replicas must reconcile through the configured shared store contract",
+  );
+  console.log("BackOffice registry service validated");
 }
 
-run().catch(error => { console.error(error); process.exit(1); });
+run().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

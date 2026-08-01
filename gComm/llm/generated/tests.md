@@ -4,7 +4,7 @@
 
 ## Hand-Authored Tests
 
-- No hand-authored tests were found.
+- `gComm/test/commerceOperationsBackofficeNavigationContract.test.js`
 
 ## Generated Tests
 

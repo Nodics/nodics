@@ -17,15 +17,16 @@
 ## Module-Owned Folders
 
 - `config`
+- `test`
 
 ## Source Summary
 
 | Area | Count |
 | --- | ---: |
 | Source files | 0 |
-| Test files | 0 |
+| Test files | 1 |
 | Data files | 0 |
-| All module-owned files | 8 |
+| All module-owned files | 9 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -48,7 +49,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 4 |
+| Documented | 5 |
 | Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -77,6 +78,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/nodics.js` | `module` | `documented` | 2/2 | Registers the gComm module lifecycle hooks and module-level startup behavior. |  |
 | `gComm/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gComm/test/commerceOperationsBackofficeNavigationContract.test.js` | `test` | `documented` | 0/0 | Protects the backend-driven Axis Commerce Operations navigation model across pricing, inventory, store, cart, and order. |  |
 
 ## Extension Contract
 

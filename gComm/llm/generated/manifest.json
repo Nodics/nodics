@@ -14,12 +14,12 @@
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to gComm"
   },
   "sourceFiles": 0,
-  "testFiles": 0,
+  "testFiles": 1,
   "dataFiles": 0,
-  "ownedFiles": 8,
-  "sourceFingerprint": "ecc33084ec45139da4492343fdf09138371b56260d16121bb453d0373be3122a",
+  "ownedFiles": 9,
+  "sourceFingerprint": "9e5ac45896432f168c37d97ca14ab667bd1f207e3ae578a65bee76ff2ff80ef2",
   "documentation": {
-    "documented": 4,
+    "documented": 5,
     "partially-documented": 0,
     "undocumented": 0,
     "inventory-only": 4

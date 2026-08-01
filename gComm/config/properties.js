@@ -16,6 +16,4 @@
  * @owner gComm
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
-module.exports = {
-
-};
+module.exports = {};

@@ -17,208 +17,611 @@
  * @override Project, environment, server, node, tenant, or customer layers may override these defaults through Nodics configuration layering.
  */
 module.exports = {
-    backofficeCapabilities: {
-        inventory: {
-            enabled: true, capabilityId: 'stock-management', displayName: 'Stock and Inventory',
-            category: 'commerce', icon: 'stock', contractVersion: 1,
-            minimumClientContractVersion: 1, roles: ['FUNCTIONAL_CAPABILITY_PROVIDER'],
-            discovery: { openApiPath: '/nodics/system/v0/contract/openapi/internal', contractVersion: 1 },
-            navigation: [{ id: 'stock', label: 'Stock', route: '/commerce/stock', icon: 'stock',
-                order: 400, group: { id: 'commerce', label: 'Commerce', order: 300 },
-                perspectives: ['operations', 'commerce'],
-                contexts: ['environment', 'tenant', 'enterprise'],
-                featureState: 'DISABLED' },
-            { id: 'stock-levels', parentId: 'stock', label: 'Stock Levels',
-                route: '/commerce/stock/levels', icon: 'stock', order: 410,
-                group: { id: 'commerce', label: 'Commerce', order: 300 },
-                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
-                featureState: 'DISABLED' },
-            { id: 'stock-pools', parentId: 'stock', label: 'Stock Pools',
-                route: '/commerce/stock/pools', icon: 'stock', order: 420,
-                group: { id: 'commerce', label: 'Commerce', order: 300 },
-                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
-                featureState: 'DISABLED' },
-            { id: 'warehouses', parentId: 'stock', label: 'Warehouses',
-                route: '/commerce/stock/warehouses', icon: 'stock', order: 430,
-                group: { id: 'commerce', label: 'Commerce', order: 300 },
-                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
-                featureState: 'DISABLED' },
-            { id: 'availability', parentId: 'stock', label: 'Availability',
-                route: '/commerce/stock/availability', icon: 'stock', order: 440,
-                group: { id: 'commerce', label: 'Commerce', order: 300 },
-                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
-                featureState: 'DISABLED' }]
-        }
-    },
-    cache: {
-        inventory: {
-            channels: {
-                sourcing: { enabled: true, fallback: true, engine: 'local', ttl: 30 },
-                availability: { enabled: true, fallback: true, engine: 'local', ttl: 15 }
-            }
-        }
-    },
+  backofficeCapabilities: {
     inventory: {
-        enterpriseScope: { required: true },
-        identity: {
-            separator: '::',
-            maxCodeLength: 128,
-            codePattern: '^[A-Za-z0-9][A-Za-z0-9._-]*$'
+      enabled: true,
+      capabilityId: "stock-management",
+      displayName: "Stock and Inventory",
+      category: "commerce",
+      icon: "stock",
+      contractVersion: 1,
+      minimumClientContractVersion: 1,
+      roles: ["FUNCTIONAL_CAPABILITY_PROVIDER"],
+      discovery: {
+        openApiPath: "/nodics/system/v0/contract/openapi/internal",
+        contractVersion: 1,
+      },
+      requiredPermissions: ["inventory.operations.read"],
+      navigation: [
+        {
+          id: "stock-inventory",
+          parentId: "commerce-operations",
+          parentModuleName: "pricing",
+          label: "Stock and Inventory",
+          route: "/commerce/operations/stock",
+          icon: "stock",
+          order: 540,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["inventory.operations.read"],
+          workbenchTarget: {
+            moduleName: "inventory",
+            schemaName: "stockBalance",
+          },
+          help: {
+            summary:
+              "Manage stock, warehouses, reservations, allocations, transfers, reconciliation, and sourcing records through Inventory.",
+            documentationRoute: "/docs/capabilities/commerce/stock/operations",
+          },
         },
-        warehouse: {
-            statuses: ['DRAFT', 'ACTIVE', 'SUSPENDED', 'RETIRED'],
-            types: ['PHYSICAL', 'VIRTUAL', 'STORE', 'DARK_STORE', 'DISTRIBUTION_CENTER', 'SUPPLIER', 'DROPSHIP', 'RETURNS', 'TRANSIT'],
-            allowedTransitions: {
-                DRAFT: ['ACTIVE', 'RETIRED'],
-                ACTIVE: ['SUSPENDED', 'RETIRED'],
-                SUSPENDED: ['ACTIVE', 'RETIRED'],
-                RETIRED: []
-            }
+        {
+          id: "stock-levels",
+          parentId: "stock-inventory",
+          label: "Stock Levels",
+          route: "/commerce/operations/stock/levels",
+          icon: "stock",
+          order: 541,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["inventory.operations.read"],
+          workbenchTarget: {
+            moduleName: "inventory",
+            schemaName: "stockBalance",
+          },
+          help: {
+            summary:
+              "Review stock-balance records by warehouse, location, item, unit, quantity, reservation, and revision.",
+            documentationRoute:
+              "/docs/capabilities/commerce/stock/availability",
+          },
         },
-        location: {
-            maxDepth: 12,
-            statuses: ['DRAFT', 'ACTIVE', 'SUSPENDED', 'RETIRED'],
-            types: ['RECEIVING', 'STORAGE', 'ZONE', 'AISLE', 'RACK', 'BIN', 'SALES_FLOOR', 'BACK_ROOM', 'PICKUP', 'PACKING', 'RETURNS', 'QUARANTINE', 'DAMAGED', 'TRANSIT', 'VIRTUAL']
+        {
+          id: "stock-pools",
+          parentId: "stock-inventory",
+          label: "Stock Pools",
+          route: "/commerce/operations/stock/pools",
+          icon: "stock",
+          order: 542,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["inventory.operations.read"],
+          workbenchTarget: { moduleName: "inventory", schemaName: "stockPool" },
+          help: {
+            summary:
+              "Maintain stock pools that group warehouses for fulfillment, pickup, replenishment, returns, or general availability.",
+            documentationRoute: "/docs/capabilities/commerce/stock/pools",
+          },
         },
-        referenceLookup: {
-            requireServiceToken: true,
-            maximumResultCount: 1
+        {
+          id: "stock-pool-members",
+          parentId: "stock-inventory",
+          label: "Stock Pool Members",
+          route: "/commerce/operations/stock/pool-members",
+          icon: "stock",
+          order: 543,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["inventory.operations.read"],
+          workbenchTarget: {
+            moduleName: "inventory",
+            schemaName: "stockPoolMember",
+          },
+          help: {
+            summary:
+              "Connect warehouses to stock pools with priority, effective dates, and lifecycle state.",
+            documentationRoute: "/docs/capabilities/commerce/stock/pools",
+          },
         },
-        unitsReference: {
-            moduleName: 'units',
-            apiVersion: 'v0',
-            apiName: '/references/units/convert',
-            requestTimeoutMs: 2000,
-            maximumAttempts: 2,
-            preferLocal: true
+        {
+          id: "warehouses",
+          parentId: "stock-inventory",
+          label: "Warehouses",
+          route: "/commerce/operations/stock/warehouses",
+          icon: "stock",
+          order: 544,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["inventory.operations.read"],
+          workbenchTarget: { moduleName: "inventory", schemaName: "warehouse" },
+          help: {
+            summary:
+              "Manage warehouse records, types, country, timezone, address reference, capabilities, and lifecycle status.",
+            documentationRoute: "/docs/capabilities/commerce/stock/warehouses",
+          },
         },
-        stock: {
-            movementTypes: ['RECEIPT', 'ISSUE', 'ADJUSTMENT', 'TRANSFER_IN', 'TRANSFER_OUT', 'RETURN', 'DAMAGE', 'CORRECTION'],
-            movementStates: ['PENDING', 'APPLIED', 'REJECTED'],
-            allowNegative: false,
-            defaultScale: 6,
-            roundingMode: 'UNNECESSARY',
-            maximumRetries: 3
+        {
+          id: "warehouse-locations",
+          parentId: "stock-inventory",
+          label: "Warehouse Locations",
+          route: "/commerce/operations/stock/warehouse-locations",
+          icon: "stock",
+          order: 545,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["inventory.operations.read"],
+          workbenchTarget: {
+            moduleName: "inventory",
+            schemaName: "warehouseLocation",
+          },
+          help: {
+            summary:
+              "Maintain recursive warehouse-location records such as zones, aisles, racks, bins, pickup, and returns areas.",
+            documentationRoute: "/docs/capabilities/commerce/stock/warehouses",
+          },
         },
-        stockPool: {
-            statuses: ['DRAFT', 'ACTIVE', 'SUSPENDED', 'RETIRED'],
-            types: ['GENERAL', 'FULFILLMENT', 'PICKUP', 'REPLENISHMENT', 'RETURNS'],
-            allowedTransitions: { DRAFT: ['ACTIVE', 'RETIRED'], ACTIVE: ['SUSPENDED', 'RETIRED'],
-                SUSPENDED: ['ACTIVE', 'RETIRED'], RETIRED: [] }
+        {
+          id: "availability",
+          parentId: "stock-inventory",
+          label: "Availability",
+          route: "/commerce/operations/stock/availability",
+          icon: "stock",
+          order: 546,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["inventory.operations.read"],
+          workbenchTarget: {
+            moduleName: "inventory",
+            schemaName: "stockBalance",
+          },
+          help: {
+            summary:
+              "Inspect availability evidence through stock balances; direct availability resolution remains service-token governed.",
+            documentationRoute:
+              "/docs/capabilities/commerce/stock/availability",
+          },
         },
-        stockPoolMember: {
-            statuses: ['DRAFT', 'ACTIVE', 'SUSPENDED', 'RETIRED'],
-            minimumPriority: 0,
-            maximumPriority: 999999,
-            allowedTransitions: { DRAFT: ['ACTIVE', 'RETIRED'], ACTIVE: ['SUSPENDED', 'RETIRED'],
-                SUSPENDED: ['ACTIVE', 'RETIRED'], RETIRED: [] }
+        {
+          id: "reservations",
+          parentId: "stock-inventory",
+          label: "Reservations",
+          route: "/commerce/operations/stock/reservations",
+          icon: "stock",
+          order: 547,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["inventory.operations.read"],
+          workbenchTarget: {
+            moduleName: "inventory",
+            schemaName: "stockReservation",
+          },
+          help: {
+            summary:
+              "Review stock reservation lifecycle records, expiration, ownership, requested terminal state, and failure codes.",
+            documentationRoute:
+              "/docs/capabilities/commerce/stock/reservations",
+          },
         },
-        stockSourcing: {
-            statuses: ['DRAFT', 'ACTIVE', 'SUSPENDED', 'RETIRED'],
-            selectionModes: ['FIRST_MATCH', 'COLLECT_MATCHES'],
-            ruleOutcomes: ['INCLUDE', 'EXCLUDE'],
-            contextKeys: ['countryCode', 'zoneCode', 'storeCode', 'channelCode', 'customerSegmentCode',
-                'fulfillmentType', 'itemType', 'itemCode'],
-            minimumPriority: 0,
-            maximumPriority: 999999,
-            maximumPoolsPerRule: 100,
-            allowedTransitions: { DRAFT: ['ACTIVE', 'RETIRED'], ACTIVE: ['SUSPENDED', 'RETIRED'],
-                SUSPENDED: ['ACTIVE', 'RETIRED'], RETIRED: [] }
+        {
+          id: "allocations",
+          parentId: "stock-inventory",
+          label: "Allocations",
+          route: "/commerce/operations/stock/allocations",
+          icon: "stock",
+          order: 548,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["inventory.operations.read"],
+          workbenchTarget: {
+            moduleName: "inventory",
+            schemaName: "stockAllocation",
+          },
+          help: {
+            summary:
+              "Review allocation records for demand lines, allocated, backordered, fulfilled, released, or failed quantities.",
+            documentationRoute: "/docs/capabilities/commerce/stock/allocation",
+          },
         },
-        stockSourcingIntent: {
-            requireServiceToken: true,
-            maximumRequestBytes: 16384,
-            maximumContextKeys: 16,
-            maximumValuesPerKey: 50,
-            maximumValueLength: 256,
-            maximumResultCount: 100
+        {
+          id: "transfers",
+          parentId: "stock-inventory",
+          label: "Transfers",
+          route: "/commerce/operations/stock/transfers",
+          icon: "stock",
+          order: 549,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["inventory.operations.read"],
+          workbenchTarget: {
+            moduleName: "inventory",
+            schemaName: "stockTransfer",
+          },
+          help: {
+            summary:
+              "Manage transfer records across source and destination stock locations with dispatched, received, damaged, or lost quantities.",
+            documentationRoute: "/docs/capabilities/commerce/stock/transfers",
+          },
         },
-        stockSourcingCache: {
-            enabled: true,
-            moduleName: 'inventory',
-            channelName: 'sourcing',
-            keyPrefix: 'stockSourcing:',
-            ttlSeconds: 30,
-            maximumKeyLength: 256,
-            cacheExplicitEvaluationTime: false
+        {
+          id: "reconciliation",
+          parentId: "stock-inventory",
+          label: "Reconciliation",
+          route: "/commerce/operations/stock/reconciliation",
+          icon: "stock",
+          order: 550,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["inventory.operations.read"],
+          workbenchTarget: {
+            moduleName: "inventory",
+            schemaName: "stockReconciliationRun",
+          },
+          help: {
+            summary:
+              "Review stock reconciliation runs that scan stock state and produce findings.",
+            documentationRoute:
+              "/docs/capabilities/commerce/stock/reconciliation",
+          },
         },
-        stockAvailability: {
-            requireServiceToken: true,
-            maximumWarehouses: 500,
-            maximumBalances: 5000,
-            maximumEvidence: 5000,
-            defaultScale: 6,
-            roundingMode: 'UNNECESSARY'
+        {
+          id: "reconciliation-findings",
+          parentId: "stock-inventory",
+          label: "Reconciliation Findings",
+          route: "/commerce/operations/stock/reconciliation-findings",
+          icon: "stock",
+          order: 551,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["inventory.operations.read"],
+          workbenchTarget: {
+            moduleName: "inventory",
+            schemaName: "stockReconciliationFinding",
+          },
+          help: {
+            summary:
+              "Review reconciliation findings, severities, subjects, expected versus actual evidence, approval, and repair state.",
+            documentationRoute:
+              "/docs/capabilities/commerce/stock/reconciliation",
+          },
         },
-        storefrontContext: {
-            headerName: 'x-nodics-storefront-context',
-            moduleName: 'storefront',
-            apiVersion: 'v0',
-            apiName: '/context/introspect',
-            bootstrapTenant: 'default',
-            preferLocal: true,
-            requestTimeoutMs: 1000,
-            maximumAttempts: 1,
-            maximumResponseBytes: 32768
+        {
+          id: "sourcing-policies",
+          parentId: "stock-inventory",
+          label: "Sourcing Policies",
+          route: "/commerce/operations/stock/sourcing-policies",
+          icon: "stock",
+          order: 552,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["inventory.operations.read"],
+          workbenchTarget: {
+            moduleName: "inventory",
+            schemaName: "stockSourcingPolicy",
+          },
+          help: {
+            summary:
+              "Maintain stock sourcing policies that choose pools for fulfillment based on governed context.",
+            documentationRoute: "/docs/capabilities/commerce/stock/sourcing",
+          },
         },
-        stockAvailabilityCache: {
-            enabled: true,
-            moduleName: 'inventory',
-            channelName: 'availability',
-            keyPrefix: 'stockAvailability:',
-            ttlSeconds: 15,
-            maximumKeyLength: 256,
-            cacheExplicitEvaluationTime: false,
-            validateEvidenceOnHit: true
+        {
+          id: "sourcing-rules",
+          parentId: "stock-inventory",
+          label: "Sourcing Rules",
+          route: "/commerce/operations/stock/sourcing-rules",
+          icon: "stock",
+          order: 553,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["inventory.operations.read"],
+          workbenchTarget: {
+            moduleName: "inventory",
+            schemaName: "stockSourcingRule",
+          },
+          help: {
+            summary:
+              "Maintain sourcing rules that include or exclude stock pools by declarative context criteria.",
+            documentationRoute: "/docs/capabilities/commerce/stock/sourcing",
+          },
         },
-        operations: {
-            maximumResultCount: 500,
-            readPermission: 'inventory.operations.read'
+        {
+          id: "stock-movements",
+          parentId: "stock-inventory",
+          label: "Stock Movements",
+          route: "/commerce/operations/stock/movements",
+          icon: "stock",
+          order: 554,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["inventory.operations.read"],
+          workbenchTarget: {
+            moduleName: "inventory",
+            schemaName: "stockMovementRecord",
+          },
+          help: {
+            summary:
+              "Review immutable stock movement records and their state, revision, reason, source, correlation, and failure data.",
+            documentationRoute: "/docs/capabilities/commerce/stock/movements",
+          },
         },
-        movementCheckpoint: { batchSize: 1000, requireServiceToken: true },
-        externalProviders: {
-            enabled: false,
-            maximumPayloadBytes: 262144,
-            maximumAttempts: 3,
-            timeoutMs: 5000,
-            providers: {}
+      ],
+    },
+  },
+  cache: {
+    inventory: {
+      channels: {
+        sourcing: { enabled: true, fallback: true, engine: "local", ttl: 30 },
+        availability: {
+          enabled: true,
+          fallback: true,
+          engine: "local",
+          ttl: 15,
         },
-        stockReservation: {
-            states: ['PENDING', 'ACTIVE', 'RELEASE_PENDING', 'CONSUMED', 'RELEASED', 'EXPIRED', 'CANCELLED', 'REJECTED'],
-            defaultTtlSeconds: 900,
-            minimumTtlSeconds: 1,
-            maximumTtlSeconds: 86400,
-            maximumRetries: 3,
-            expiryBatchSize: 500,
-            requireServiceToken: true
-        },
-        stockAllocation: {
-            states: ['PENDING', 'ALLOCATED', 'PARTIALLY_ALLOCATED', 'BACKORDERED', 'PARTIALLY_FULFILLED', 'FULFILLED', 'RELEASED', 'CANCELLED', 'FAILED'],
-            maximumAssignments: 100,
-            allowPartial: true,
-            requireServiceToken: true
-        },
-        stockTransfer: {
-            states: ['DRAFT', 'IN_TRANSIT', 'PARTIALLY_RECEIVED', 'RECEIVED', 'COMPLETED_WITH_DISCREPANCY', 'CANCELLED', 'RECONCILIATION_REQUIRED'],
-            discrepancyTypes: ['DAMAGED', 'LOST', 'REJECTED'],
-            maximumOperations: 1000,
-            requireServiceToken: true
-        },
-        stockReconciliation: {
-            batchSize: 500,
-            maximumFindings: 5000,
-            pendingAgeSeconds: 300,
-            dryRunDefault: true,
-            requireServiceTokenForScan: true,
-            approvalPermission: 'inventory.reconciliation.approve',
-            repairPermission: 'inventory.reconciliation.repair',
-            workflow: {
-                enabled: true,
-                defaultMode: 'MANUAL',
-                manualWorkflowCode: 'stockReconciliationManualFlow',
-                automaticWorkflowCode: 'stockReconciliationAutomaticFlow',
-                findingModes: { NEGATIVE_BALANCE: 'MANUAL' }
-            }
-        }
-    }
+      },
+    },
+  },
+  inventory: {
+    enterpriseScope: { required: true },
+    identity: {
+      separator: "::",
+      maxCodeLength: 128,
+      codePattern: "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+    },
+    warehouse: {
+      statuses: ["DRAFT", "ACTIVE", "SUSPENDED", "RETIRED"],
+      types: [
+        "PHYSICAL",
+        "VIRTUAL",
+        "STORE",
+        "DARK_STORE",
+        "DISTRIBUTION_CENTER",
+        "SUPPLIER",
+        "DROPSHIP",
+        "RETURNS",
+        "TRANSIT",
+      ],
+      allowedTransitions: {
+        DRAFT: ["ACTIVE", "RETIRED"],
+        ACTIVE: ["SUSPENDED", "RETIRED"],
+        SUSPENDED: ["ACTIVE", "RETIRED"],
+        RETIRED: [],
+      },
+    },
+    location: {
+      maxDepth: 12,
+      statuses: ["DRAFT", "ACTIVE", "SUSPENDED", "RETIRED"],
+      types: [
+        "RECEIVING",
+        "STORAGE",
+        "ZONE",
+        "AISLE",
+        "RACK",
+        "BIN",
+        "SALES_FLOOR",
+        "BACK_ROOM",
+        "PICKUP",
+        "PACKING",
+        "RETURNS",
+        "QUARANTINE",
+        "DAMAGED",
+        "TRANSIT",
+        "VIRTUAL",
+      ],
+    },
+    referenceLookup: {
+      requireServiceToken: true,
+      maximumResultCount: 1,
+    },
+    unitsReference: {
+      moduleName: "units",
+      apiVersion: "v0",
+      apiName: "/references/units/convert",
+      requestTimeoutMs: 2000,
+      maximumAttempts: 2,
+      preferLocal: true,
+    },
+    stock: {
+      movementTypes: [
+        "RECEIPT",
+        "ISSUE",
+        "ADJUSTMENT",
+        "TRANSFER_IN",
+        "TRANSFER_OUT",
+        "RETURN",
+        "DAMAGE",
+        "CORRECTION",
+      ],
+      movementStates: ["PENDING", "APPLIED", "REJECTED"],
+      allowNegative: false,
+      defaultScale: 6,
+      roundingMode: "UNNECESSARY",
+      maximumRetries: 3,
+    },
+    stockPool: {
+      statuses: ["DRAFT", "ACTIVE", "SUSPENDED", "RETIRED"],
+      types: ["GENERAL", "FULFILLMENT", "PICKUP", "REPLENISHMENT", "RETURNS"],
+      allowedTransitions: {
+        DRAFT: ["ACTIVE", "RETIRED"],
+        ACTIVE: ["SUSPENDED", "RETIRED"],
+        SUSPENDED: ["ACTIVE", "RETIRED"],
+        RETIRED: [],
+      },
+    },
+    stockPoolMember: {
+      statuses: ["DRAFT", "ACTIVE", "SUSPENDED", "RETIRED"],
+      minimumPriority: 0,
+      maximumPriority: 999999,
+      allowedTransitions: {
+        DRAFT: ["ACTIVE", "RETIRED"],
+        ACTIVE: ["SUSPENDED", "RETIRED"],
+        SUSPENDED: ["ACTIVE", "RETIRED"],
+        RETIRED: [],
+      },
+    },
+    stockSourcing: {
+      statuses: ["DRAFT", "ACTIVE", "SUSPENDED", "RETIRED"],
+      selectionModes: ["FIRST_MATCH", "COLLECT_MATCHES"],
+      ruleOutcomes: ["INCLUDE", "EXCLUDE"],
+      contextKeys: [
+        "countryCode",
+        "zoneCode",
+        "storeCode",
+        "channelCode",
+        "customerSegmentCode",
+        "fulfillmentType",
+        "itemType",
+        "itemCode",
+      ],
+      minimumPriority: 0,
+      maximumPriority: 999999,
+      maximumPoolsPerRule: 100,
+      allowedTransitions: {
+        DRAFT: ["ACTIVE", "RETIRED"],
+        ACTIVE: ["SUSPENDED", "RETIRED"],
+        SUSPENDED: ["ACTIVE", "RETIRED"],
+        RETIRED: [],
+      },
+    },
+    stockSourcingIntent: {
+      requireServiceToken: true,
+      maximumRequestBytes: 16384,
+      maximumContextKeys: 16,
+      maximumValuesPerKey: 50,
+      maximumValueLength: 256,
+      maximumResultCount: 100,
+    },
+    stockSourcingCache: {
+      enabled: true,
+      moduleName: "inventory",
+      channelName: "sourcing",
+      keyPrefix: "stockSourcing:",
+      ttlSeconds: 30,
+      maximumKeyLength: 256,
+      cacheExplicitEvaluationTime: false,
+    },
+    stockAvailability: {
+      requireServiceToken: true,
+      maximumWarehouses: 500,
+      maximumBalances: 5000,
+      maximumEvidence: 5000,
+      defaultScale: 6,
+      roundingMode: "UNNECESSARY",
+    },
+    storefrontContext: {
+      headerName: "x-nodics-storefront-context",
+      moduleName: "storefront",
+      apiVersion: "v0",
+      apiName: "/context/introspect",
+      bootstrapTenant: "default",
+      preferLocal: true,
+      requestTimeoutMs: 1000,
+      maximumAttempts: 1,
+      maximumResponseBytes: 32768,
+    },
+    stockAvailabilityCache: {
+      enabled: true,
+      moduleName: "inventory",
+      channelName: "availability",
+      keyPrefix: "stockAvailability:",
+      ttlSeconds: 15,
+      maximumKeyLength: 256,
+      cacheExplicitEvaluationTime: false,
+      validateEvidenceOnHit: true,
+    },
+    operations: {
+      maximumResultCount: 500,
+      readPermission: "inventory.operations.read",
+    },
+    movementCheckpoint: { batchSize: 1000, requireServiceToken: true },
+    externalProviders: {
+      enabled: false,
+      maximumPayloadBytes: 262144,
+      maximumAttempts: 3,
+      timeoutMs: 5000,
+      providers: {},
+    },
+    stockReservation: {
+      states: [
+        "PENDING",
+        "ACTIVE",
+        "RELEASE_PENDING",
+        "CONSUMED",
+        "RELEASED",
+        "EXPIRED",
+        "CANCELLED",
+        "REJECTED",
+      ],
+      defaultTtlSeconds: 900,
+      minimumTtlSeconds: 1,
+      maximumTtlSeconds: 86400,
+      maximumRetries: 3,
+      expiryBatchSize: 500,
+      requireServiceToken: true,
+    },
+    stockAllocation: {
+      states: [
+        "PENDING",
+        "ALLOCATED",
+        "PARTIALLY_ALLOCATED",
+        "BACKORDERED",
+        "PARTIALLY_FULFILLED",
+        "FULFILLED",
+        "RELEASED",
+        "CANCELLED",
+        "FAILED",
+      ],
+      maximumAssignments: 100,
+      allowPartial: true,
+      requireServiceToken: true,
+    },
+    stockTransfer: {
+      states: [
+        "DRAFT",
+        "IN_TRANSIT",
+        "PARTIALLY_RECEIVED",
+        "RECEIVED",
+        "COMPLETED_WITH_DISCREPANCY",
+        "CANCELLED",
+        "RECONCILIATION_REQUIRED",
+      ],
+      discrepancyTypes: ["DAMAGED", "LOST", "REJECTED"],
+      maximumOperations: 1000,
+      requireServiceToken: true,
+    },
+    stockReconciliation: {
+      batchSize: 500,
+      maximumFindings: 5000,
+      pendingAgeSeconds: 300,
+      dryRunDefault: true,
+      requireServiceTokenForScan: true,
+      approvalPermission: "inventory.reconciliation.approve",
+      repairPermission: "inventory.reconciliation.repair",
+      workflow: {
+        enabled: true,
+        defaultMode: "MANUAL",
+        manualWorkflowCode: "stockReconciliationManualFlow",
+        automaticWorkflowCode: "stockReconciliationAutomaticFlow",
+        findingModes: { NEGATIVE_BALANCE: "MANUAL" },
+      },
+    },
+  },
 };

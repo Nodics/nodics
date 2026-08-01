@@ -16,355 +16,788 @@
  * @owner backoffice
  * @override Later modules may replace these schemas while preserving field meaning, security boundaries, and contract versions.
  */
-const moduleName = { type: 'string', pattern: '^[A-Za-z][A-Za-z0-9_-]{0,127}$' };
-const moduleRole = { enum: ['AUTHENTICATION_PROVIDER', 'CONTROL_PLANE_PROVIDER', 'UI_COMPOSITION_PROVIDER',
-    'FUNCTIONAL_CAPABILITY_PROVIDER', 'MONITORING_PROVIDER', 'ASSISTANT_PROVIDER'] };
+const moduleName = {
+  type: "string",
+  pattern: "^[A-Za-z][A-Za-z0-9_-]{0,127}$",
+};
+const moduleRole = {
+  enum: [
+    "AUTHENTICATION_PROVIDER",
+    "CONTROL_PLANE_PROVIDER",
+    "UI_COMPOSITION_PROVIDER",
+    "FUNCTIONAL_CAPABILITY_PROVIDER",
+    "MONITORING_PROVIDER",
+    "ASSISTANT_PROVIDER",
+  ],
+};
 const uiComposition = {
-    type: 'object', additionalProperties: false, required: ['site', 'catalog', 'defaultPage', 'fallbackMode'],
-    properties: {
-        site: { type: 'string' }, catalog: { type: 'string' }, defaultPage: { type: 'string' },
-        fallbackMode: { enum: ['STATIC_RECOVERY_SHELL'] }
-    }
+  type: "object",
+  additionalProperties: false,
+  required: ["site", "catalog", "defaultPage", "fallbackMode"],
+  properties: {
+    site: { type: "string" },
+    catalog: { type: "string" },
+    defaultPage: { type: "string" },
+    fallbackMode: { enum: ["STATIC_RECOVERY_SHELL"] },
+  },
 };
 const discovery = {
-    type: 'object', additionalProperties: false,
-    properties: {
-        openApiPath: { type: 'string' }, contractVersion: { type: 'integer', minimum: 1 }
-    }
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    openApiPath: { type: "string" },
+    contractVersion: { type: "integer", minimum: 1 },
+  },
 };
 const documentationSource = {
-    type: 'object', additionalProperties: false,
-    required: ['id', 'label', 'type', 'route', 'order', 'connectionModule'],
-    properties: {
-        id: { type: 'string', minLength: 1, maxLength: 128 },
-        label: { type: 'string', minLength: 1, maxLength: 256 },
-        labelKey: { type: 'string', minLength: 1, maxLength: 256 },
-        type: { enum: ['CMS', 'OPENAPI'] },
-        route: { type: 'string', pattern: '^/(?!/)', maxLength: 512 },
-        order: { type: 'integer' },
-        connectionModule: moduleName,
-        site: { type: 'string', minLength: 1, maxLength: 128 },
-        catalog: { type: 'string', minLength: 1, maxLength: 128 },
-        defaultPage: { type: 'string', pattern: '^/(?!/)', maxLength: 512 },
-        packCode: { type: 'string', minLength: 1, maxLength: 128 },
-        openApiPath: { type: 'string', pattern: '^/(?!/)', maxLength: 512 },
-        swaggerPath: { type: 'string', pattern: '^/(?!/)', maxLength: 512 },
-        requiredPermissions: { type: 'array', uniqueItems: true, items: { type: 'string' } }
-    }
+  type: "object",
+  additionalProperties: false,
+  required: ["id", "label", "type", "route", "order", "connectionModule"],
+  properties: {
+    id: { type: "string", minLength: 1, maxLength: 128 },
+    label: { type: "string", minLength: 1, maxLength: 256 },
+    labelKey: { type: "string", minLength: 1, maxLength: 256 },
+    type: { enum: ["CMS", "OPENAPI"] },
+    route: { type: "string", pattern: "^/(?!/)", maxLength: 512 },
+    order: { type: "integer" },
+    connectionModule: moduleName,
+    site: { type: "string", minLength: 1, maxLength: 128 },
+    catalog: { type: "string", minLength: 1, maxLength: 128 },
+    defaultPage: { type: "string", pattern: "^/(?!/)", maxLength: 512 },
+    packCode: { type: "string", minLength: 1, maxLength: 128 },
+    openApiPath: { type: "string", pattern: "^/(?!/)", maxLength: 512 },
+    swaggerPath: { type: "string", pattern: "^/(?!/)", maxLength: 512 },
+    requiredPermissions: {
+      type: "array",
+      uniqueItems: true,
+      items: { type: "string" },
+    },
+  },
 };
 const documentationSelection = {
-    type: 'object', additionalProperties: false,
-    required: documentationSource.required.concat(['ownerModule']),
-    properties: Object.assign({ ownerModule: moduleName }, documentationSource.properties)
+  type: "object",
+  additionalProperties: false,
+  required: documentationSource.required.concat(["ownerModule"]),
+  properties: Object.assign(
+    { ownerModule: moduleName },
+    documentationSource.properties,
+  ),
 };
 const capabilityOperation = {
-    type: 'object', additionalProperties: false, required: ['operationId', 'path', 'method', 'permissions'],
-    properties: {
-        operationId: { type: 'string' }, path: { type: 'string' }, method: { enum: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'] },
-        schemaName: { type: 'string' }, operation: { type: 'string' },
-        permissions: { type: 'array', uniqueItems: true, items: { type: 'string' } }
-    }
+  type: "object",
+  additionalProperties: false,
+  required: ["operationId", "path", "method", "permissions"],
+  properties: {
+    operationId: { type: "string" },
+    path: { type: "string" },
+    method: {
+      enum: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
+    },
+    schemaName: { type: "string" },
+    operation: { type: "string" },
+    permissions: {
+      type: "array",
+      uniqueItems: true,
+      items: { type: "string" },
+    },
+  },
 };
 const capabilitySnapshot = {
-    type: 'object', additionalProperties: false,
-    required: ['moduleName', 'contractType', 'contractVersion', 'operations', 'schemas', 'hash', 'discoveredAt', 'changeClassification'],
-    properties: {
-        moduleName: moduleName, contractType: { enum: ['OPENAPI'] }, contractVersion: { type: 'integer', minimum: 1 },
-        operations: { type: 'array', items: capabilityOperation }, schemas: { type: 'array', uniqueItems: true, items: { type: 'string' } },
-        hash: { type: 'string', pattern: '^[a-f0-9]{64}$' }, discoveredAt: { type: 'string', format: 'date-time' },
-        changeClassification: { enum: ['INITIAL', 'UNCHANGED', 'NON_BREAKING', 'POTENTIALLY_BREAKING', 'BREAKING'] },
-        latestChangeClassification: { enum: ['INITIAL', 'UNCHANGED', 'NON_BREAKING', 'POTENTIALLY_BREAKING', 'BREAKING'] },
-        candidateHash: { type: 'string', pattern: '^[a-f0-9]{64}$' }
-    }
+  type: "object",
+  additionalProperties: false,
+  required: [
+    "moduleName",
+    "contractType",
+    "contractVersion",
+    "operations",
+    "schemas",
+    "hash",
+    "discoveredAt",
+    "changeClassification",
+  ],
+  properties: {
+    moduleName: moduleName,
+    contractType: { enum: ["OPENAPI"] },
+    contractVersion: { type: "integer", minimum: 1 },
+    operations: { type: "array", items: capabilityOperation },
+    schemas: { type: "array", uniqueItems: true, items: { type: "string" } },
+    hash: { type: "string", pattern: "^[a-f0-9]{64}$" },
+    discoveredAt: { type: "string", format: "date-time" },
+    changeClassification: {
+      enum: [
+        "INITIAL",
+        "UNCHANGED",
+        "NON_BREAKING",
+        "POTENTIALLY_BREAKING",
+        "BREAKING",
+      ],
+    },
+    latestChangeClassification: {
+      enum: [
+        "INITIAL",
+        "UNCHANGED",
+        "NON_BREAKING",
+        "POTENTIALLY_BREAKING",
+        "BREAKING",
+      ],
+    },
+    candidateHash: { type: "string", pattern: "^[a-f0-9]{64}$" },
+  },
 };
 const uiCompositionSelection = {
-    type: 'object', required: ['enabled', 'fallbackMode'], properties: {
-        enabled: { type: 'boolean' }, providerModule: moduleName, site: { type: 'string' }, catalog: { type: 'string' },
-        defaultPage: { type: 'string' }, fallbackMode: { enum: ['STATIC_RECOVERY_SHELL'] }
-    }
+  type: "object",
+  required: ["enabled", "fallbackMode"],
+  properties: {
+    enabled: { type: "boolean" },
+    providerModule: moduleName,
+    site: { type: "string" },
+    catalog: { type: "string" },
+    defaultPage: { type: "string" },
+    fallbackMode: { enum: ["STATIC_RECOVERY_SHELL"] },
+  },
 };
 const moduleAvailability = {
-    type: 'object', additionalProperties: false,
-    required: ['state', 'activeInstances', 'healthyInstances', 'unavailableInstances', 'unknownInstances'],
-    properties: {
-        state: { enum: ['UP', 'DEGRADED', 'UNAVAILABLE', 'UNKNOWN'] },
-        activeInstances: { type: 'integer', minimum: 0 }, healthyInstances: { type: 'integer', minimum: 0 },
-        unavailableInstances: { type: 'integer', minimum: 0 }, unknownInstances: { type: 'integer', minimum: 0 }
-    }
+  type: "object",
+  additionalProperties: false,
+  required: [
+    "state",
+    "activeInstances",
+    "healthyInstances",
+    "unavailableInstances",
+    "unknownInstances",
+  ],
+  properties: {
+    state: { enum: ["UP", "DEGRADED", "UNAVAILABLE", "UNKNOWN"] },
+    activeInstances: { type: "integer", minimum: 0 },
+    healthyInstances: { type: "integer", minimum: 0 },
+    unavailableInstances: { type: "integer", minimum: 0 },
+    unknownInstances: { type: "integer", minimum: 0 },
+  },
 };
 const instanceAvailability = {
-    type: 'object', additionalProperties: false, required: ['state', 'freshness'],
-    properties: {
-        state: { enum: ['UP', 'UNAVAILABLE', 'UNKNOWN'] },
-        freshness: { enum: ['FRESH', 'STALE', 'MISSING'] },
-        observedAt: { type: 'string', format: 'date-time' },
-        reasonCode: { enum: ['READINESS_NOT_UP', 'OBSERVATION_TIMEOUT', 'HEALTH_OBSERVATION_FAILED',
-            'OBSERVATION_STALE', 'OBSERVATION_MISSING'] }
-    }
+  type: "object",
+  additionalProperties: false,
+  required: ["state", "freshness"],
+  properties: {
+    state: { enum: ["UP", "UNAVAILABLE", "UNKNOWN"] },
+    freshness: { enum: ["FRESH", "STALE", "MISSING"] },
+    observedAt: { type: "string", format: "date-time" },
+    reasonCode: {
+      enum: [
+        "READINESS_NOT_UP",
+        "OBSERVATION_TIMEOUT",
+        "HEALTH_OBSERVATION_FAILED",
+        "OBSERVATION_STALE",
+        "OBSERVATION_MISSING",
+      ],
+    },
+  },
 };
 const contractDecision = {
-    type: 'object', additionalProperties: false, required: ['reason', 'expectedRevision'], properties: {
-        reason: { type: 'string', minLength: 1, maxLength: 1024 }, expectedRevision: { type: 'integer', minimum: 0 }
-    }
+  type: "object",
+  additionalProperties: false,
+  required: ["reason", "expectedRevision"],
+  properties: {
+    reason: { type: "string", minLength: 1, maxLength: 1024 },
+    expectedRevision: { type: "integer", minimum: 0 },
+  },
 };
 const axisPolicy = {
-    type: 'object',
-    additionalProperties: false,
-    required: ['contractVersion', 'screenLockEnabled', 'idleTimeoutSeconds', 'recentNavigationLimit', 'revision', 'source'],
-    properties: {
-        contractVersion: { type: 'integer', minimum: 1 },
-        screenLockEnabled: { type: 'boolean' },
-        idleTimeoutSeconds: { type: 'integer', minimum: 60, maximum: 86400 },
-        recentNavigationLimit: { type: 'integer', minimum: 1, maximum: 24 },
-        revision: { type: 'integer', minimum: 0 },
-        source: { enum: ['DEFAULT', 'PERSISTED'] }
-    }
+  type: "object",
+  additionalProperties: false,
+  required: [
+    "contractVersion",
+    "screenLockEnabled",
+    "idleTimeoutSeconds",
+    "recentNavigationLimit",
+    "revision",
+    "source",
+  ],
+  properties: {
+    contractVersion: { type: "integer", minimum: 1 },
+    screenLockEnabled: { type: "boolean" },
+    idleTimeoutSeconds: { type: "integer", minimum: 60, maximum: 86400 },
+    recentNavigationLimit: { type: "integer", minimum: 1, maximum: 24 },
+    revision: { type: "integer", minimum: 0 },
+    source: { enum: ["DEFAULT", "PERSISTED"] },
+  },
 };
 const axisPolicyUpdate = {
-    type: 'object',
-    additionalProperties: false,
-    required: ['screenLockEnabled', 'idleTimeoutSeconds', 'expectedRevision'],
-    properties: {
-        screenLockEnabled: { type: 'boolean' },
-        idleTimeoutSeconds: { type: 'integer', minimum: 60, maximum: 86400 },
-        recentNavigationLimit: { type: 'integer', minimum: 1, maximum: 24 },
-        expectedRevision: { type: 'integer', minimum: 0 }
-    }
+  type: "object",
+  additionalProperties: false,
+  required: ["screenLockEnabled", "idleTimeoutSeconds", "expectedRevision"],
+  properties: {
+    screenLockEnabled: { type: "boolean" },
+    idleTimeoutSeconds: { type: "integer", minimum: 60, maximum: 86400 },
+    recentNavigationLimit: { type: "integer", minimum: 1, maximum: 24 },
+    expectedRevision: { type: "integer", minimum: 0 },
+  },
 };
 const contractHistorySnapshot = {
-    type: 'object', additionalProperties: false,
-    required: ['moduleName', 'contractType', 'contractVersion', 'contractHash', 'operations', 'schemas', 'state', 'changeClassification', 'revision', 'discoveredAt'],
-    properties: {
-        moduleName: moduleName, contractType: { enum: ['OPENAPI'] }, contractVersion: { type: 'integer', minimum: 1 },
-        contractHash: { type: 'string', pattern: '^[a-f0-9]{64}$' }, operations: { type: 'array', items: capabilityOperation },
-        schemas: { type: 'array', uniqueItems: true, items: { type: 'string' } },
-        state: { enum: ['DISCOVERED', 'ACTIVE', 'PENDING_APPROVAL', 'REJECTED', 'SUPERSEDED'] },
-        changeClassification: { enum: ['INITIAL', 'UNCHANGED', 'NON_BREAKING', 'POTENTIALLY_BREAKING', 'BREAKING'] },
-        revision: { type: 'integer', minimum: 0 }, activationRevision: { type: 'integer', minimum: 1 },
-        discoveredAt: { type: 'string', format: 'date-time' }, decidedAt: { type: 'string', format: 'date-time' },
-        decidedBy: { type: 'string' }, decisionReason: { type: 'string', maxLength: 1024 }
-    }
+  type: "object",
+  additionalProperties: false,
+  required: [
+    "moduleName",
+    "contractType",
+    "contractVersion",
+    "contractHash",
+    "operations",
+    "schemas",
+    "state",
+    "changeClassification",
+    "revision",
+    "discoveredAt",
+  ],
+  properties: {
+    moduleName: moduleName,
+    contractType: { enum: ["OPENAPI"] },
+    contractVersion: { type: "integer", minimum: 1 },
+    contractHash: { type: "string", pattern: "^[a-f0-9]{64}$" },
+    operations: { type: "array", items: capabilityOperation },
+    schemas: { type: "array", uniqueItems: true, items: { type: "string" } },
+    state: {
+      enum: [
+        "DISCOVERED",
+        "ACTIVE",
+        "PENDING_APPROVAL",
+        "REJECTED",
+        "SUPERSEDED",
+      ],
+    },
+    changeClassification: {
+      enum: [
+        "INITIAL",
+        "UNCHANGED",
+        "NON_BREAKING",
+        "POTENTIALLY_BREAKING",
+        "BREAKING",
+      ],
+    },
+    revision: { type: "integer", minimum: 0 },
+    activationRevision: { type: "integer", minimum: 1 },
+    discoveredAt: { type: "string", format: "date-time" },
+    decidedAt: { type: "string", format: "date-time" },
+    decidedBy: { type: "string" },
+    decisionReason: { type: "string", maxLength: 1024 },
+  },
 };
 const contractActivation = {
-    type: 'object', required: ['moduleName', 'activeHash', 'revision'], properties: {
-        moduleName: moduleName, activeHash: { type: 'string', pattern: '^[a-f0-9]{64}$' },
-        previousHash: { type: 'string', pattern: '^[a-f0-9]{64}$' }, revision: { type: 'integer', minimum: 1 }
-    }
+  type: "object",
+  required: ["moduleName", "activeHash", "revision"],
+  properties: {
+    moduleName: moduleName,
+    activeHash: { type: "string", pattern: "^[a-f0-9]{64}$" },
+    previousHash: { type: "string", pattern: "^[a-f0-9]{64}$" },
+    revision: { type: "integer", minimum: 1 },
+  },
 };
 const navigationGroup = {
-    type: 'object', additionalProperties: false, required: ['id', 'label'],
-    properties: {
-        id: { type: 'string', minLength: 1, maxLength: 128 },
-        label: { type: 'string', minLength: 1, maxLength: 256 },
-        labelKey: { type: 'string', minLength: 1, maxLength: 256 },
-        order: { type: 'integer' }
-    }
+  type: "object",
+  additionalProperties: false,
+  required: ["id", "label"],
+  properties: {
+    id: { type: "string", minLength: 1, maxLength: 128 },
+    label: { type: "string", minLength: 1, maxLength: 256 },
+    labelKey: { type: "string", minLength: 1, maxLength: 256 },
+    order: { type: "integer" },
+  },
 };
 const navigationBadgeProvider = {
-    type: 'object', additionalProperties: false, required: ['moduleName', 'operationId'],
-    properties: {
-        moduleName: moduleName,
-        operationId: { type: 'string', minLength: 1, maxLength: 256 }
-    }
+  type: "object",
+  additionalProperties: false,
+  required: ["moduleName", "operationId"],
+  properties: {
+    moduleName: moduleName,
+    operationId: { type: "string", minLength: 1, maxLength: 256 },
+  },
 };
 const navigationWorkbenchTarget = {
-    type: 'object', additionalProperties: false, required: ['moduleName', 'schemaName'],
-    properties: {
-        moduleName: moduleName,
-        schemaName: { type: 'string', minLength: 1, maxLength: 128, pattern: '^[A-Za-z][A-Za-z0-9._-]{0,127}$' },
-        mode: { enum: ['create'] }
-    }
+  type: "object",
+  additionalProperties: false,
+  required: ["moduleName", "schemaName"],
+  properties: {
+    moduleName: moduleName,
+    schemaName: {
+      type: "string",
+      minLength: 1,
+      maxLength: 128,
+      pattern: "^[A-Za-z][A-Za-z0-9._-]{0,127}$",
+    },
+    mode: { enum: ["create"] },
+  },
+};
+const navigationDetailPanelRelation = {
+  type: "object",
+  additionalProperties: false,
+  required: ["sourceField", "targetField"],
+  properties: {
+    sourceField: { type: "string", minLength: 1, maxLength: 128 },
+    targetField: { type: "string", minLength: 1, maxLength: 128 },
+    cardinality: { enum: ["ONE", "MANY"] },
+  },
+};
+const navigationDetailPanel = {
+  type: "object",
+  additionalProperties: false,
+  required: ["id", "label", "target"],
+  properties: {
+    id: { type: "string", minLength: 1, maxLength: 128 },
+    label: { type: "string", minLength: 1, maxLength: 256 },
+    summary: { type: "string", minLength: 1, maxLength: 320 },
+    order: { type: "integer" },
+    target: navigationWorkbenchTarget,
+    relation: navigationDetailPanelRelation,
+  },
 };
 const navigationHelp = {
-    type: 'object', additionalProperties: false, required: ['summary'],
-    properties: {
-        summary: { type: 'string', minLength: 1, maxLength: 320 },
-        documentationRoute: { type: 'string', pattern: '^/docs(?:$|/)', maxLength: 512 },
-        documentationFragment: { type: 'string', pattern: '^[A-Za-z0-9._:-]{1,128}$' }
-    }
+  type: "object",
+  additionalProperties: false,
+  required: ["summary"],
+  properties: {
+    summary: { type: "string", minLength: 1, maxLength: 320 },
+    documentationRoute: {
+      type: "string",
+      pattern: "^/docs(?:$|/)",
+      maxLength: 512,
+    },
+    documentationFragment: {
+      type: "string",
+      pattern: "^[A-Za-z0-9._:-]{1,128}$",
+    },
+  },
 };
 const backofficeMetadata = {
-    type: 'object', additionalProperties: false,
-    properties: {
-        enabled: { type: 'boolean' }, capabilityId: { type: 'string' }, displayName: { type: 'string' },
-        category: { type: 'string' }, icon: { type: 'string' }, contractVersion: { type: 'integer', minimum: 1 },
-        minimumClientContractVersion: { type: 'integer', minimum: 1 },
-        roles: { type: 'array', uniqueItems: true, items: moduleRole }, discovery: discovery,
-        uiComposition: uiComposition,
-        documentation: { type: 'array', maxItems: 32, items: documentationSource },
-        requiredPermissions: { type: 'array', uniqueItems: true, items: { type: 'string' } },
-        navigation: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['id', 'label'], properties: {
-            id: { type: 'string' }, label: { type: 'string' }, route: { type: 'string' },
-            icon: { type: 'string', maxLength: 64 }, order: { type: 'integer' },
-            labelKey: { type: 'string', maxLength: 256 },
-            parentId: { type: 'string', maxLength: 128 },
-            group: navigationGroup,
-            perspectives: { type: 'array', uniqueItems: true, maxItems: 16, items: { type: 'string', maxLength: 128 } },
-            contexts: { type: 'array', uniqueItems: true, maxItems: 8,
-                items: { enum: ['environment', 'tenant', 'enterprise', 'site', 'catalog'] } },
-            featureState: { enum: ['ACTIVE', 'PREVIEW', 'DISABLED', 'HIDDEN'] },
-            badgeProvider: navigationBadgeProvider,
-            workbenchTarget: navigationWorkbenchTarget,
-            help: navigationHelp,
-            requiredPermissions: { type: 'array', uniqueItems: true, items: { type: 'string' } }
-        } } }
-    }
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    enabled: { type: "boolean" },
+    capabilityId: { type: "string" },
+    displayName: { type: "string" },
+    category: { type: "string" },
+    icon: { type: "string" },
+    contractVersion: { type: "integer", minimum: 1 },
+    minimumClientContractVersion: { type: "integer", minimum: 1 },
+    roles: { type: "array", uniqueItems: true, items: moduleRole },
+    discovery: discovery,
+    uiComposition: uiComposition,
+    documentation: { type: "array", maxItems: 32, items: documentationSource },
+    requiredPermissions: {
+      type: "array",
+      uniqueItems: true,
+      items: { type: "string" },
+    },
+    navigation: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: ["id", "label"],
+        properties: {
+          id: { type: "string" },
+          label: { type: "string" },
+          route: { type: "string" },
+          icon: { type: "string", maxLength: 64 },
+          order: { type: "integer" },
+          labelKey: { type: "string", maxLength: 256 },
+          parentId: { type: "string", maxLength: 128 },
+          parentModuleName: moduleName,
+          group: navigationGroup,
+          perspectives: {
+            type: "array",
+            uniqueItems: true,
+            maxItems: 16,
+            items: { type: "string", maxLength: 128 },
+          },
+          contexts: {
+            type: "array",
+            uniqueItems: true,
+            maxItems: 8,
+            items: {
+              enum: ["environment", "tenant", "enterprise", "site", "catalog"],
+            },
+          },
+          featureState: { enum: ["ACTIVE", "PREVIEW", "DISABLED", "HIDDEN"] },
+          badgeProvider: navigationBadgeProvider,
+          workbenchTarget: navigationWorkbenchTarget,
+          detailPanels: {
+            type: "array",
+            uniqueItems: true,
+            maxItems: 16,
+            items: navigationDetailPanel,
+          },
+          help: navigationHelp,
+          requiredPermissions: {
+            type: "array",
+            uniqueItems: true,
+            items: { type: "string" },
+          },
+        },
+      },
+    },
+  },
 };
 const registration = {
-    type: 'object', additionalProperties: false,
-    required: ['moduleName', 'displayName', 'canonicalIdentity', 'instanceId', 'clientCallable'],
-    properties: {
-        moduleName: moduleName, displayName: { type: 'string', minLength: 1, maxLength: 160 },
-        parentModule: moduleName, canonicalIdentity: { type: 'string', minLength: 1, maxLength: 2048 },
-        instanceId: { type: 'string', minLength: 1 }, version: { type: 'string' },
-        moduleKind: { type: 'string' }, capabilities: { type: 'array', uniqueItems: true, items: { type: 'string' } },
-        clientCallable: { type: 'boolean' }, endpoint: { type: 'string' },
-        healthPath: { type: 'string', maxLength: 512, pattern: '^/(?!/)' },
-        leaseTtlMs: { type: 'integer', minimum: 1000 }, runtime: { type: 'object', additionalProperties: false, properties: {
-            router: { type: 'boolean' }, publish: { type: 'boolean' }, web: { type: 'boolean' }
-        } }, backoffice: backofficeMetadata
-    }
+  type: "object",
+  additionalProperties: false,
+  required: [
+    "moduleName",
+    "displayName",
+    "canonicalIdentity",
+    "instanceId",
+    "clientCallable",
+  ],
+  properties: {
+    moduleName: moduleName,
+    displayName: { type: "string", minLength: 1, maxLength: 160 },
+    parentModule: moduleName,
+    canonicalIdentity: { type: "string", minLength: 1, maxLength: 2048 },
+    instanceId: { type: "string", minLength: 1 },
+    version: { type: "string" },
+    moduleKind: { type: "string" },
+    capabilities: {
+      type: "array",
+      uniqueItems: true,
+      items: { type: "string" },
+    },
+    clientCallable: { type: "boolean" },
+    endpoint: { type: "string" },
+    healthPath: { type: "string", maxLength: 512, pattern: "^/(?!/)" },
+    leaseTtlMs: { type: "integer", minimum: 1000 },
+    runtime: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        router: { type: "boolean" },
+        publish: { type: "boolean" },
+        web: { type: "boolean" },
+      },
+    },
+    backoffice: backofficeMetadata,
+  },
 };
 const moduleLease = {
-    type: 'object', required: ['moduleName', 'instanceId', 'state', 'lastSeenAt'],
-    properties: {
-        moduleName: moduleName, displayName: { type: 'string', maxLength: 160 }, parentModule: moduleName,
-        canonicalIdentity: { type: 'string', maxLength: 2048 },
-        instanceId: { type: 'string' }, environment: { type: 'string' }, server: { type: 'string' },
-        node: { type: 'string', nullable: true }, version: { type: 'string' }, moduleKind: { type: 'string' },
-        capabilities: { type: 'array', items: { type: 'string' } }, clientCallable: { type: 'boolean' },
-        endpoint: { type: 'string' }, healthPath: { type: 'string' },
-        state: { enum: ['UP'] }, lastSeenAt: { type: 'string', format: 'date-time' },
-        availability: instanceAvailability, backoffice: backofficeMetadata
-    }
+  type: "object",
+  required: ["moduleName", "instanceId", "state", "lastSeenAt"],
+  properties: {
+    moduleName: moduleName,
+    displayName: { type: "string", maxLength: 160 },
+    parentModule: moduleName,
+    canonicalIdentity: { type: "string", maxLength: 2048 },
+    instanceId: { type: "string" },
+    environment: { type: "string" },
+    server: { type: "string" },
+    node: { type: "string", nullable: true },
+    version: { type: "string" },
+    moduleKind: { type: "string" },
+    capabilities: { type: "array", items: { type: "string" } },
+    clientCallable: { type: "boolean" },
+    endpoint: { type: "string" },
+    healthPath: { type: "string" },
+    state: { enum: ["UP"] },
+    lastSeenAt: { type: "string", format: "date-time" },
+    availability: instanceAvailability,
+    backoffice: backofficeMetadata,
+  },
 };
 
 module.exports = {
-    axisPolicy: axisPolicy,
-    axisPolicyUpdate: axisPolicyUpdate,
-    moduleName: moduleName,
-    moduleRole: moduleRole,
-    uiComposition: uiComposition,
-    discovery: discovery,
-    documentationSource: documentationSource,
-    documentationSelection: documentationSelection,
-    capabilityOperation: capabilityOperation,
-    capabilitySnapshot: capabilitySnapshot,
-    uiCompositionSelection: uiCompositionSelection,
-    moduleAvailability: moduleAvailability,
-    instanceAvailability: instanceAvailability,
-    adminListData: { type: 'object', required: ['total', 'offset', 'limit', 'items'], properties: {
-        total: { type: 'integer', minimum: 0 }, offset: { type: 'integer', minimum: 0 }, limit: { type: 'integer', minimum: 1, maximum: 100 },
-        items: { type: 'array', items: { type: 'object', required: ['moduleName', 'capabilities', 'availability', 'compatibility', 'activeInstances'], properties: {
-            moduleName: moduleName, displayName: { type: 'string', maxLength: 160 },
-            parentModule: moduleName, canonicalIdentity: { type: 'string', maxLength: 2048 },
-            version: { type: 'string' }, moduleKind: { type: 'string' }, capabilities: { type: 'array', items: { type: 'string' } },
-            environments: { type: 'array', items: { type: 'string' } }, servers: { type: 'array', items: { type: 'string' } },
-            availability: moduleAvailability, compatibility: { type: 'object' }, activeInstances: { type: 'integer', minimum: 0 }
-        } } }
-    } },
-    adminDetailData: { type: 'object', required: ['moduleName', 'instances'], properties: {
-        moduleName: moduleName, displayName: { type: 'string', maxLength: 160 },
-        availability: moduleAvailability, instances: { type: 'array', items: moduleLease }
-    } },
-    refreshData: { type: 'object', required: ['moduleName', 'refreshedInstances', 'discoveryRequested'], properties: {
-        moduleName: moduleName, refreshedInstances: { type: 'integer', minimum: 0 }, discoveryRequested: { type: 'boolean' }
-    } },
-    contractDecision: contractDecision,
-    navigationGroup: navigationGroup,
-    navigationBadgeProvider: navigationBadgeProvider,
-    navigationWorkbenchTarget: navigationWorkbenchTarget,
-    navigationHelp: navigationHelp,
-    contractHistorySnapshot: contractHistorySnapshot,
-    contractActivation: contractActivation,
-    contractCurrentData: { type: 'object', required: ['snapshot'], properties: {
-        snapshot: Object.assign({}, contractHistorySnapshot, { nullable: true })
-    } },
-    contractHistoryData: { type: 'object', required: ['moduleName', 'snapshots'], properties: {
-        moduleName: moduleName, snapshots: { type: 'array', items: contractHistorySnapshot }
-    } },
-    contractComparisonData: { type: 'object', required: ['moduleName', 'activeHash', 'candidateHash', 'changeClassification', 'addedOperations', 'removedOperations'], properties: {
-        moduleName: moduleName, activeHash: { type: 'string', nullable: true, pattern: '^[a-f0-9]{64}$' },
-        candidateHash: { type: 'string', pattern: '^[a-f0-9]{64}$' },
-        changeClassification: { enum: ['INITIAL', 'UNCHANGED', 'NON_BREAKING', 'POTENTIALLY_BREAKING', 'BREAKING'] },
-        addedOperations: { type: 'array', items: { type: 'string' } }, removedOperations: { type: 'array', items: { type: 'string' } }
-    } },
-    contractDecisionData: { type: 'object', required: ['snapshot'], properties: {
-        snapshot: contractHistorySnapshot, activation: contractActivation
-    } },
-    backofficeMetadata: backofficeMetadata,
-    registration: registration,
-    registrationBatch: {
-        type: 'object', additionalProperties: false, required: ['instanceId', 'registrations'],
-        properties: {
-            instanceId: { type: 'string', minLength: 1 }, environment: { type: 'string' }, server: { type: 'string' },
-            node: { type: 'string', nullable: true }, registrations: { type: 'array', minItems: 1, items: registration }
-        }
+  axisPolicy: axisPolicy,
+  axisPolicyUpdate: axisPolicyUpdate,
+  moduleName: moduleName,
+  moduleRole: moduleRole,
+  uiComposition: uiComposition,
+  discovery: discovery,
+  documentationSource: documentationSource,
+  documentationSelection: documentationSelection,
+  capabilityOperation: capabilityOperation,
+  capabilitySnapshot: capabilitySnapshot,
+  uiCompositionSelection: uiCompositionSelection,
+  moduleAvailability: moduleAvailability,
+  instanceAvailability: instanceAvailability,
+  adminListData: {
+    type: "object",
+    required: ["total", "offset", "limit", "items"],
+    properties: {
+      total: { type: "integer", minimum: 0 },
+      offset: { type: "integer", minimum: 0 },
+      limit: { type: "integer", minimum: 1, maximum: 100 },
+      items: {
+        type: "array",
+        items: {
+          type: "object",
+          required: [
+            "moduleName",
+            "capabilities",
+            "availability",
+            "compatibility",
+            "activeInstances",
+          ],
+          properties: {
+            moduleName: moduleName,
+            displayName: { type: "string", maxLength: 160 },
+            parentModule: moduleName,
+            canonicalIdentity: { type: "string", maxLength: 2048 },
+            version: { type: "string" },
+            moduleKind: { type: "string" },
+            capabilities: { type: "array", items: { type: "string" } },
+            environments: { type: "array", items: { type: "string" } },
+            servers: { type: "array", items: { type: "string" } },
+            availability: moduleAvailability,
+            compatibility: { type: "object" },
+            activeInstances: { type: "integer", minimum: 0 },
+          },
+        },
+      },
     },
-    moduleLease: moduleLease,
-    discoveryData: { type: 'object', required: ['modules'], properties: {
-        modules: { type: 'object', additionalProperties: { type: 'array', items: moduleLease } }
-    } },
-    compatibility: { type: 'object', required: ['clientContractVersion', 'status'], properties: {
-        clientContractVersion: { type: 'integer', minimum: 1 }, moduleContractVersion: { type: 'integer', minimum: 1 },
-        minimumClientContractVersion: { type: 'integer', minimum: 1 }, status: { enum: ['COMPATIBLE', 'DEGRADED', 'INCOMPATIBLE'] }
-    } },
-    publicBootstrapData: {
-        type: 'object',
+  },
+  adminDetailData: {
+    type: "object",
+    required: ["moduleName", "instances"],
+    properties: {
+      moduleName: moduleName,
+      displayName: { type: "string", maxLength: 160 },
+      availability: moduleAvailability,
+      instances: { type: "array", items: moduleLease },
+    },
+  },
+  refreshData: {
+    type: "object",
+    required: ["moduleName", "refreshedInstances", "discoveryRequested"],
+    properties: {
+      moduleName: moduleName,
+      refreshedInstances: { type: "integer", minimum: 0 },
+      discoveryRequested: { type: "boolean" },
+    },
+  },
+  contractDecision: contractDecision,
+  navigationGroup: navigationGroup,
+  navigationBadgeProvider: navigationBadgeProvider,
+  navigationWorkbenchTarget: navigationWorkbenchTarget,
+  navigationDetailPanel: navigationDetailPanel,
+  navigationHelp: navigationHelp,
+  contractHistorySnapshot: contractHistorySnapshot,
+  contractActivation: contractActivation,
+  contractCurrentData: {
+    type: "object",
+    required: ["snapshot"],
+    properties: {
+      snapshot: Object.assign({}, contractHistorySnapshot, { nullable: true }),
+    },
+  },
+  contractHistoryData: {
+    type: "object",
+    required: ["moduleName", "snapshots"],
+    properties: {
+      moduleName: moduleName,
+      snapshots: { type: "array", items: contractHistorySnapshot },
+    },
+  },
+  contractComparisonData: {
+    type: "object",
+    required: [
+      "moduleName",
+      "activeHash",
+      "candidateHash",
+      "changeClassification",
+      "addedOperations",
+      "removedOperations",
+    ],
+    properties: {
+      moduleName: moduleName,
+      activeHash: { type: "string", nullable: true, pattern: "^[a-f0-9]{64}$" },
+      candidateHash: { type: "string", pattern: "^[a-f0-9]{64}$" },
+      changeClassification: {
+        enum: [
+          "INITIAL",
+          "UNCHANGED",
+          "NON_BREAKING",
+          "POTENTIALLY_BREAKING",
+          "BREAKING",
+        ],
+      },
+      addedOperations: { type: "array", items: { type: "string" } },
+      removedOperations: { type: "array", items: { type: "string" } },
+    },
+  },
+  contractDecisionData: {
+    type: "object",
+    required: ["snapshot"],
+    properties: {
+      snapshot: contractHistorySnapshot,
+      activation: contractActivation,
+    },
+  },
+  backofficeMetadata: backofficeMetadata,
+  registration: registration,
+  registrationBatch: {
+    type: "object",
+    additionalProperties: false,
+    required: ["instanceId", "registrations"],
+    properties: {
+      instanceId: { type: "string", minLength: 1 },
+      environment: { type: "string" },
+      server: { type: "string" },
+      node: { type: "string", nullable: true },
+      registrations: { type: "array", minItems: 1, items: registration },
+    },
+  },
+  moduleLease: moduleLease,
+  discoveryData: {
+    type: "object",
+    required: ["modules"],
+    properties: {
+      modules: {
+        type: "object",
+        additionalProperties: { type: "array", items: moduleLease },
+      },
+    },
+  },
+  compatibility: {
+    type: "object",
+    required: ["clientContractVersion", "status"],
+    properties: {
+      clientContractVersion: { type: "integer", minimum: 1 },
+      moduleContractVersion: { type: "integer", minimum: 1 },
+      minimumClientContractVersion: { type: "integer", minimum: 1 },
+      status: { enum: ["COMPATIBLE", "DEGRADED", "INCOMPATIBLE"] },
+    },
+  },
+  publicBootstrapData: {
+    type: "object",
+    additionalProperties: false,
+    required: [
+      "contractVersion",
+      "clientContractVersion",
+      "endpoints",
+      "uiComposition",
+    ],
+    properties: {
+      contractVersion: { type: "integer", minimum: 1 },
+      clientContractVersion: { type: "integer", minimum: 1 },
+      endpoints: {
+        type: "object",
         additionalProperties: false,
-        required: ['contractVersion', 'clientContractVersion', 'endpoints', 'uiComposition'],
+        required: ["profile", "cms"],
         properties: {
-            contractVersion: { type: 'integer', minimum: 1 },
-            clientContractVersion: { type: 'integer', minimum: 1 },
-            endpoints: {
-                type: 'object', additionalProperties: false, required: ['profile', 'cms'],
-                properties: { profile: { type: 'string', format: 'uri' }, cms: { type: 'string', format: 'uri' } }
-            },
-            uiComposition: {
-                type: 'object', additionalProperties: false,
-                required: ['site', 'catalog', 'defaultPublicPage', 'defaultAuthenticatedPage', 'locale', 'channel', 'fallbackMode'],
-                properties: {
-                    site: { type: 'string' }, catalog: { type: 'string' },
-                    defaultPublicPage: { type: 'string', pattern: '^/(?!/)' },
-                    defaultAuthenticatedPage: { type: 'string', pattern: '^/(?!/)' },
-                    locale: { type: 'string' }, channel: { type: 'string' },
-                    fallbackMode: { enum: ['STATIC_RECOVERY_SHELL'] }
-                }
-            }
-        }
+          profile: { type: "string", format: "uri" },
+          cms: { type: "string", format: "uri" },
+        },
+      },
+      uiComposition: {
+        type: "object",
+        additionalProperties: false,
+        required: [
+          "site",
+          "catalog",
+          "defaultPublicPage",
+          "defaultAuthenticatedPage",
+          "locale",
+          "channel",
+          "fallbackMode",
+        ],
+        properties: {
+          site: { type: "string" },
+          catalog: { type: "string" },
+          defaultPublicPage: { type: "string", pattern: "^/(?!/)" },
+          defaultAuthenticatedPage: { type: "string", pattern: "^/(?!/)" },
+          locale: { type: "string" },
+          channel: { type: "string" },
+          fallbackMode: { enum: ["STATIC_RECOVERY_SHELL"] },
+        },
+      },
     },
-    bootstrapData: { type: 'object', required: ['compatibility', 'modules', 'catalogue', 'availability', 'uiComposition', 'documentationSources', 'axisPolicy', 'tenantCode'], properties: {
-        compatibility: { type: 'object' }, modules: { type: 'object' }, catalogue: { type: 'object' },
-        availability: { type: 'object', additionalProperties: moduleAvailability }, uiComposition: uiCompositionSelection,
-        documentationSources: { type: 'array', items: documentationSelection },
-        axisPolicy: axisPolicy, tenantCode: { type: 'string' }
-    } },
-    diagnosticsData: { type: 'object', required: ['activeModuleLeases', 'metrics', 'store'], properties: {
-        activeModuleLeases: { type: 'integer', minimum: 0 }, metrics: { type: 'object' }, store: { type: 'object' },
-        discovery: { type: 'object' }, availability: { type: 'object', properties: {
-            trackedInstances: { type: 'integer', minimum: 0 }, trackedModules: { type: 'integer', minimum: 0 },
-            inflight: { type: 'integer', minimum: 0 }, queued: { type: 'integer', minimum: 0 },
-            activeObservations: { type: 'integer', minimum: 0 }, inflightTransitions: { type: 'integer', minimum: 0 },
-            metrics: { type: 'object', properties: {
-                attempts: { type: 'integer', minimum: 0 }, successes: { type: 'integer', minimum: 0 },
-                failures: { type: 'integer', minimum: 0 }, readinessFailures: { type: 'integer', minimum: 0 },
-                transportFailures: { type: 'integer', minimum: 0 }, timeouts: { type: 'integer', minimum: 0 },
-                staleReads: { type: 'integer', minimum: 0 }, suppressedRefreshes: { type: 'integer', minimum: 0 },
-                inflightDeduplications: { type: 'integer', minimum: 0 }, queued: { type: 'integer', minimum: 0 },
-                queueRejected: { type: 'integer', minimum: 0 }, maxConcurrentObserved: { type: 'integer', minimum: 0 },
-                transitions: { type: 'integer', minimum: 0 },
-                publicationAttempts: { type: 'integer', minimum: 0 }, publicationSuccesses: { type: 'integer', minimum: 0 },
-                publicationFailures: { type: 'integer', minimum: 0 }, totalDurationMs: { type: 'integer', minimum: 0 },
-                maxDurationMs: { type: 'integer', minimum: 0 }, lastDurationMs: { type: 'integer', minimum: 0 }
-            } }
-        } }, security: { type: 'object' }, operations: { type: 'object', properties: {
-            state: { enum: ['READY', 'DEGRADED', 'NOT_READY'] }, alerts: { type: 'array', items: { type: 'string' } },
-            checkedAt: { type: 'string', format: 'date-time' }
-        } }, contracts: { type: 'object', properties: {
-            persistenceStatus: { enum: ['AVAILABLE', 'UNAVAILABLE', 'AUTH_CONTEXT_REQUIRED'] },
-            pendingApprovals: { type: 'integer', nullable: true, minimum: 0 },
-            activeSelections: { type: 'integer', nullable: true, minimum: 0 },
-            countsCappedAt: { type: 'integer', minimum: 1 }, lastFailureCode: { type: 'string' }, metrics: { type: 'object' }
-        } }
-    } }
+  },
+  bootstrapData: {
+    type: "object",
+    required: [
+      "compatibility",
+      "modules",
+      "catalogue",
+      "availability",
+      "uiComposition",
+      "documentationSources",
+      "axisPolicy",
+      "tenantCode",
+    ],
+    properties: {
+      compatibility: { type: "object" },
+      modules: { type: "object" },
+      catalogue: { type: "object" },
+      availability: {
+        type: "object",
+        additionalProperties: moduleAvailability,
+      },
+      uiComposition: uiCompositionSelection,
+      documentationSources: { type: "array", items: documentationSelection },
+      axisPolicy: axisPolicy,
+      tenantCode: { type: "string" },
+    },
+  },
+  diagnosticsData: {
+    type: "object",
+    required: ["activeModuleLeases", "metrics", "store"],
+    properties: {
+      activeModuleLeases: { type: "integer", minimum: 0 },
+      metrics: { type: "object" },
+      store: { type: "object" },
+      discovery: { type: "object" },
+      availability: {
+        type: "object",
+        properties: {
+          trackedInstances: { type: "integer", minimum: 0 },
+          trackedModules: { type: "integer", minimum: 0 },
+          inflight: { type: "integer", minimum: 0 },
+          queued: { type: "integer", minimum: 0 },
+          activeObservations: { type: "integer", minimum: 0 },
+          inflightTransitions: { type: "integer", minimum: 0 },
+          metrics: {
+            type: "object",
+            properties: {
+              attempts: { type: "integer", minimum: 0 },
+              successes: { type: "integer", minimum: 0 },
+              failures: { type: "integer", minimum: 0 },
+              readinessFailures: { type: "integer", minimum: 0 },
+              transportFailures: { type: "integer", minimum: 0 },
+              timeouts: { type: "integer", minimum: 0 },
+              staleReads: { type: "integer", minimum: 0 },
+              suppressedRefreshes: { type: "integer", minimum: 0 },
+              inflightDeduplications: { type: "integer", minimum: 0 },
+              queued: { type: "integer", minimum: 0 },
+              queueRejected: { type: "integer", minimum: 0 },
+              maxConcurrentObserved: { type: "integer", minimum: 0 },
+              transitions: { type: "integer", minimum: 0 },
+              publicationAttempts: { type: "integer", minimum: 0 },
+              publicationSuccesses: { type: "integer", minimum: 0 },
+              publicationFailures: { type: "integer", minimum: 0 },
+              totalDurationMs: { type: "integer", minimum: 0 },
+              maxDurationMs: { type: "integer", minimum: 0 },
+              lastDurationMs: { type: "integer", minimum: 0 },
+            },
+          },
+        },
+      },
+      security: { type: "object" },
+      operations: {
+        type: "object",
+        properties: {
+          state: { enum: ["READY", "DEGRADED", "NOT_READY"] },
+          alerts: { type: "array", items: { type: "string" } },
+          checkedAt: { type: "string", format: "date-time" },
+        },
+      },
+      contracts: {
+        type: "object",
+        properties: {
+          persistenceStatus: {
+            enum: ["AVAILABLE", "UNAVAILABLE", "AUTH_CONTEXT_REQUIRED"],
+          },
+          pendingApprovals: { type: "integer", nullable: true, minimum: 0 },
+          activeSelections: { type: "integer", nullable: true, minimum: 0 },
+          countsCappedAt: { type: "integer", minimum: 1 },
+          lastFailureCode: { type: "string" },
+          metrics: { type: "object" },
+        },
+      },
+    },
+  },
 };
