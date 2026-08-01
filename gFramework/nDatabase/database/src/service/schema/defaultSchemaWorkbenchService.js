@@ -484,18 +484,21 @@ module.exports = {
         let workbenchConfig = CONFIG.get('schemaWorkbench') || {};
         let fields = Object.keys(schema.definition || {});
         let excluded = new Set((config.excludedFields || []).concat(['password', 'apiKey', 'apiKeyHash', 'accessGroups']));
-        let searchableFields = fields.filter((name) => {
+        let configuredSearchableFields = this.configuredFieldList(config.searchableFields, fields, excluded);
+        let searchableFields = (configuredSearchableFields || fields).filter((name) => {
             let property = schema.definition[name] || {};
-            return !excluded.has(name) && property.searchOptions && property.searchOptions.enabled === true && ['string', undefined].includes(property.type);
+            return !excluded.has(name) && ['string', undefined].includes(property.type) && (configuredSearchableFields || (property.searchOptions && property.searchOptions.enabled === true));
         });
-        let sortableFields = fields.filter((name) => {
+        let configuredSortableFields = this.configuredFieldList(config.sortableFields, fields, excluded);
+        let sortableFields = (configuredSortableFields || fields).filter((name) => {
             let property = schema.definition[name] || {};
             return !excluded.has(name) && !['array', 'object'].includes(property.type);
         });
         if (!sortableFields.includes(displayProperty)) {
             sortableFields.unshift(displayProperty);
         }
-        let filterFields = fields
+        let configuredFilterFields = this.configuredFieldList(config.filterFields, fields, excluded);
+        let filterFields = (configuredFilterFields || fields)
             .filter((name) => {
                 let property = schema.definition[name] || {};
                 return !excluded.has(name) && !['array', 'object'].includes(property.type) && this.getFilterOperators(property).length > 0;
@@ -524,6 +527,22 @@ module.exports = {
                 direction: config.defaultSortDirection || 'ASC',
             },
         };
+    },
+
+    /**
+     * Returns configured Workbench field names that exist on the effective
+     * schema and are not explicitly excluded. Undefined means use schema
+     * defaults; an empty configured list intentionally produces no fields.
+     * @param {string[]|undefined} configured Explicit field names.
+     * @param {string[]} fields Effective schema field names.
+     * @param {Set<string>} excluded Browser-hidden field names.
+     * @returns {string[]|undefined} Safe configured field list.
+     */
+    configuredFieldList: function (configured, fields, excluded) {
+        if (!Array.isArray(configured)) {
+            return undefined;
+        }
+        return Array.from(new Set(configured)).filter((name) => fields.includes(name) && !excluded.has(name));
     },
 
     /**
@@ -589,8 +608,17 @@ module.exports = {
      */
     buildRecordProjection: function (descriptor) {
         let projection = { _id: 0 };
+        let fieldNames = (descriptor.fields || []).filter((field) => field && field.name).map((field) => field.name);
+        let parentFields = new Set(
+            fieldNames
+                .filter((name) => name.includes('.'))
+                .map((name) => name.split('.')[0]),
+        );
         (descriptor.fields || []).forEach((field) => {
             if (field && field.name) {
+                if (parentFields.has(field.name)) {
+                    return;
+                }
                 projection[field.name] = 1;
             }
         });

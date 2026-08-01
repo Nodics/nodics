@@ -33,6 +33,22 @@ module.exports = {
         type: 'schema', item: 'cmsComponentDetail', trigger: 'preSave', active: 'true', index: 10,
         handler: 'DefaultCmsContractValidationService.validateAssociation'
     },
+    validateCmsSlotDefinition: {
+        type: 'schema', item: 'cmsSlotDefinition', trigger: 'preSave', active: 'true', index: 10,
+        handler: 'DefaultCmsContractValidationService.validateSlotDefinition'
+    },
+    validateCmsNavigationNode: {
+        type: 'schema', item: 'cmsNavigationNode', trigger: 'preSave', active: 'true', index: 10,
+        handler: 'DefaultCmsContractValidationService.validateNavigationNode'
+    },
+    validateCmsRestrictionType: {
+        type: 'schema', item: 'cmsRestrictionType', trigger: 'preSave', active: 'true', index: 10,
+        handler: 'DefaultCmsContractValidationService.validateRestrictionType'
+    },
+    validateCmsRestriction: {
+        type: 'schema', item: 'cmsRestriction', trigger: 'preSave', active: 'true', index: 10,
+        handler: 'DefaultCmsContractValidationService.validateRestriction'
+    },
     validateCmsComponentMedia: {
         type: 'schema', item: 'cmsComponentMedia', trigger: 'preSave', active: 'true', index: 10,
         handler: 'DefaultCmsContractValidationService.validateComponentMedia'
@@ -53,6 +69,12 @@ module.exports = {
     invalidateCmsAssociationDeliveryAfterSave: { type: 'schema', item: 'cmsComponentDetail', trigger: 'postSave', active: 'true', index: 100, handler: 'DefaultCmsDeliveryCacheInvalidationService.invalidate' },
     invalidateCmsAssociationDeliveryAfterUpdate: { type: 'schema', item: 'cmsComponentDetail', trigger: 'postUpdate', active: 'true', index: 100, handler: 'DefaultCmsDeliveryCacheInvalidationService.invalidate' },
     invalidateCmsAssociationDeliveryAfterRemove: { type: 'schema', item: 'cmsComponentDetail', trigger: 'postRemove', active: 'true', index: 100, handler: 'DefaultCmsDeliveryCacheInvalidationService.invalidate' },
+    invalidateCmsNavigationDeliveryAfterSave: { type: 'schema', item: 'cmsNavigationNode', trigger: 'postSave', active: 'true', index: 100, handler: 'DefaultCmsDeliveryCacheInvalidationService.invalidate' },
+    invalidateCmsNavigationDeliveryAfterUpdate: { type: 'schema', item: 'cmsNavigationNode', trigger: 'postUpdate', active: 'true', index: 100, handler: 'DefaultCmsDeliveryCacheInvalidationService.invalidate' },
+    invalidateCmsNavigationDeliveryAfterRemove: { type: 'schema', item: 'cmsNavigationNode', trigger: 'postRemove', active: 'true', index: 100, handler: 'DefaultCmsDeliveryCacheInvalidationService.invalidate' },
+    invalidateCmsRestrictionDeliveryAfterSave: { type: 'schema', item: 'cmsRestriction', trigger: 'postSave', active: 'true', index: 100, handler: 'DefaultCmsDeliveryCacheInvalidationService.invalidate' },
+    invalidateCmsRestrictionDeliveryAfterUpdate: { type: 'schema', item: 'cmsRestriction', trigger: 'postUpdate', active: 'true', index: 100, handler: 'DefaultCmsDeliveryCacheInvalidationService.invalidate' },
+    invalidateCmsRestrictionDeliveryAfterRemove: { type: 'schema', item: 'cmsRestriction', trigger: 'postRemove', active: 'true', index: 100, handler: 'DefaultCmsDeliveryCacheInvalidationService.invalidate' },
     generateCmsComponentDetailCode: {
         type: 'schema',
         item: 'cmsComponentDetail',

@@ -48,6 +48,7 @@ module.exports = {
                     group: { id: 'media-management', label: 'Media Management', order: 250 },
                     perspectives: ['operations'],
                     contexts: ['environment', 'tenant', 'enterprise'],
+                    help: { summary: 'Manage governed media files, folders, formats, sets, usage references, and delivery through nMedia-owned lifecycle policies.', documentationRoute: '/docs/reference/media-management', documentationFragment: 'what-media-means-in-nodics' },
                     featureState: 'ACTIVE',
                     requiredPermissions: ['media.storage.policy.view']
                 },
@@ -61,6 +62,7 @@ module.exports = {
                     group: { id: 'media-management', label: 'Media Management', order: 250 },
                     perspectives: ['operations'],
                     contexts: ['environment', 'tenant', 'enterprise'],
+                    help: { summary: 'Upload, preview, search, select, and inspect media records while nMedia owns storage, metadata, and delivery policy.', documentationRoute: '/docs/reference/media-management', documentationFragment: 'current-implementation-scope' },
                     featureState: 'PREVIEW',
                     requiredPermissions: ['media.storage.policy.view']
                 },
@@ -74,6 +76,7 @@ module.exports = {
                     group: { id: 'media-management', label: 'Media Management', order: 250 },
                     perspectives: ['operations'],
                     contexts: ['environment', 'tenant', 'enterprise'],
+                    help: { summary: 'Review and manage purpose-based media folder policy, upload constraints, storage routing, and lifecycle boundaries.', documentationRoute: '/docs/reference/media-management', documentationFragment: 'storage-provider-configuration' },
                     featureState: 'PREVIEW',
                     requiredPermissions: ['media.storage.policy.view']
                 },
@@ -87,6 +90,7 @@ module.exports = {
                     group: { id: 'media-management', label: 'Media Management', order: 250 },
                     perspectives: ['operations'],
                     contexts: ['environment', 'tenant', 'enterprise'],
+                    help: { summary: 'Manage ordered media sets such as galleries while callers reference media-set identity instead of duplicating file metadata.', documentationRoute: '/docs/reference/media-management', documentationFragment: 'how-product-galleries-should-use-media-sets' },
                     featureState: 'PREVIEW',
                     requiredPermissions: ['media.storage.policy.view']
                 },
@@ -100,6 +104,7 @@ module.exports = {
                     group: { id: 'media-management', label: 'Media Management', order: 250 },
                     perspectives: ['operations'],
                     contexts: ['environment', 'tenant', 'enterprise'],
+                    help: { summary: 'Manage allowed media formats, MIME policy, extensions, and conversion or delivery expectations through nMedia configuration.', documentationRoute: '/docs/reference/media-management', documentationFragment: 'core-schemas' },
                     featureState: 'PREVIEW',
                     requiredPermissions: ['media.storage.policy.view']
                 },
@@ -113,6 +118,7 @@ module.exports = {
                     group: { id: 'media-management', label: 'Media Management', order: 250 },
                     perspectives: ['operations'],
                     contexts: ['environment', 'tenant', 'enterprise'],
+                    help: { summary: 'Inspect which business records reference media items or media sets without transferring ownership away from the caller module.', documentationRoute: '/docs/reference/media-management', documentationFragment: 'reference-lookup-for-caller-modules' },
                     featureState: 'PREVIEW',
                     requiredPermissions: ['media.storage.policy.view']
                 },
@@ -126,6 +132,7 @@ module.exports = {
                     group: { id: 'media-management', label: 'Media Management', order: 250 },
                     perspectives: ['operations'],
                     contexts: ['environment', 'tenant', 'enterprise'],
+                    help: { summary: 'Review storage providers, access URLs, delivery, downloads, and private/public media behavior without exposing provider secrets or raw paths.', documentationRoute: '/docs/reference/media-management', documentationFragment: 'delivering-media-safely' },
                     featureState: 'PREVIEW',
                     requiredPermissions: ['media.storage.policy.view']
                 }

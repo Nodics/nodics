@@ -22,16 +22,22 @@ module.exports = {
                 group: { id: 'commerce', label: 'Commerce', order: 300 },
                 perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
                 featureState: 'ACTIVE', requiredPermissions: ['pricing.backoffice.read'] },
-            ...['Prices', 'Price Lists', 'Price Groups', 'Price Assignment'].map((label, index) => ({
-                id: ['prices', 'price-lists', 'price-groups', 'price-assignment'][index],
-                parentId: 'pricing', label,
-                route: '/pricing/' + ['prices', 'lists', 'groups', 'assignment'][index],
-                icon: 'pricing', order: 430 + index * 10,
-                group: { id: 'commerce', label: 'Commerce', order: 300 },
-                perspectives: ['operations', 'commerce'],
-                contexts: ['environment', 'tenant', 'enterprise'],
-                featureState: 'DISABLED'
-            }))]
+            { id: 'prices', parentId: 'pricing', label: 'Prices', route: '/pricing/prices',
+                icon: 'pricing', order: 430, group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED' },
+            { id: 'price-lists', parentId: 'pricing', label: 'Price Lists', route: '/pricing/lists',
+                icon: 'pricing', order: 440, group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED' },
+            { id: 'price-groups', parentId: 'pricing', label: 'Price Groups', route: '/pricing/groups',
+                icon: 'pricing', order: 450, group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED' },
+            { id: 'price-assignment', parentId: 'pricing', label: 'Price Assignment', route: '/pricing/assignment',
+                icon: 'pricing', order: 460, group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED' }]
         }
     },
     cache: { pricing: { channels: { resolution: { enabled: true, fallback: true, engine: 'local', ttl: 30 } } } },

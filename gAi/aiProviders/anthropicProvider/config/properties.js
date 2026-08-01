@@ -21,7 +21,7 @@ module.exports = {
         providers: {
             anthropic: {
                 enabled: false,
-                secretReference: undefined,
+                secretReference: null,
                 baseUrl: 'https://api.anthropic.com/v1',
                 apiVersion: '2023-06-01',
                 timeoutMs: 30000,

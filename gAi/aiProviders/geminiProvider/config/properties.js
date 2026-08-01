@@ -21,11 +21,11 @@ module.exports = {
         providers: {
             gemini: {
                 enabled: false,
-                secretReference: undefined,
+                secretReference: null,
                 connectionMode: 'GEMINI_API',
                 baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
                 vertexBaseUrl: 'https://aiplatform.googleapis.com/v1',
-                projectId: undefined,
+                projectId: null,
                 location: 'global',
                 timeoutMs: 30000,
                 maximumResponseBytes: 1048576

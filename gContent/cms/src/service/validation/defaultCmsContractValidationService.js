@@ -63,6 +63,85 @@ module.exports = {
         return true;
     },
 
+    /** Validates template slot authoring rules without duplicating component type authority. */
+    validateSlotDefinition: async function (request) {
+        let model = request.model || {};
+        if (model.minItems !== undefined && (!Number.isInteger(Number(model.minItems)) || Number(model.minItems) < 0)) {
+            throw this.error('ERR_CMS_00095', 'CMS slot minItems must be a non-negative integer');
+        }
+        if (model.maxItems !== undefined && (!Number.isInteger(Number(model.maxItems)) || Number(model.maxItems) < 0)) {
+            throw this.error('ERR_CMS_00095', 'CMS slot maxItems must be a non-negative integer');
+        }
+        if (model.minItems !== undefined && model.maxItems !== undefined && Number(model.maxItems) < Number(model.minItems)) {
+            throw this.error('ERR_CMS_00095', 'CMS slot maxItems must be greater than or equal to minItems');
+        }
+        ['allowedComponentTypes', 'allowedComponentTypeGroups'].forEach(property => {
+            if (model[property] !== undefined && !Array.isArray(model[property])) {
+                throw this.error('ERR_CMS_00095', 'CMS slot allowlists must be arrays');
+            }
+        });
+        if (model.template) await this.validateReference(request, 'DefaultCmsPageTemplateService', { code: model.template, active: true }, 'ERR_CMS_00095', 'CMS slot template is unavailable', true);
+        return true;
+    },
+
+    /** Validates navigation targets, URL safety, and parent tree cycles. */
+    validateNavigationNode: async function (request) {
+        let model = request.model || {};
+        let nodeType = model.nodeType || 'PAGE';
+        if (!['PAGE', 'ROUTE', 'EXTERNAL', 'CONTAINER'].includes(nodeType)) {
+            throw this.error('ERR_CMS_00096', 'CMS navigation node type is invalid');
+        }
+        if (model.parent && model.code && model.parent === model.code) {
+            throw this.error('ERR_CMS_00096', 'CMS navigation node cannot be its own parent');
+        }
+        if (nodeType === 'PAGE') await this.validateReference(request, 'DefaultCmsPageService', { code: model.targetPage, active: true }, 'ERR_CMS_00096', 'CMS navigation target page is unavailable');
+        if (nodeType === 'ROUTE') await this.validateReference(request, 'DefaultCmsPageRouteService', { code: model.targetRoute, active: true }, 'ERR_CMS_00096', 'CMS navigation target route is unavailable');
+        if (nodeType === 'EXTERNAL' && !this.safeExternalUrl(model.externalUrl)) {
+            throw this.error('ERR_CMS_00096', 'CMS navigation external URL is unsafe');
+        }
+        if (nodeType === 'CONTAINER' && (model.targetPage || model.targetRoute || model.externalUrl)) {
+            throw this.error('ERR_CMS_00096', 'CMS navigation container nodes must not declare a target');
+        }
+        if (model.parent) await this.validateNavigationCycle(request, model);
+        return true;
+    },
+
+    /** Validates declarative restriction type contracts. */
+    validateRestrictionType: function (request) {
+        let model = request.model || {};
+        let allowedTargets = this.restrictionPolicy().targetTypes;
+        if (model.targetTypes !== undefined && (!Array.isArray(model.targetTypes) || model.targetTypes.some(target => !allowedTargets.includes(target)))) {
+            throw this.error('ERR_CMS_00097', 'CMS restriction type targetTypes are invalid');
+        }
+        if (model.propertySchema !== undefined && (!model.propertySchema || typeof model.propertySchema !== 'object' || Array.isArray(model.propertySchema))) {
+            throw this.error('ERR_CMS_00097', 'CMS restriction type propertySchema must be a declarative object');
+        }
+        if (model.evaluator !== undefined && !this.safeLogicalKey(model.evaluator)) {
+            throw this.error('ERR_CMS_00097', 'CMS restriction evaluator must be a logical backend key');
+        }
+        return Promise.resolve(true);
+    },
+
+    /** Validates restriction assignment targets and declarative property values. */
+    validateRestriction: async function (request) {
+        let model = request.model || {};
+        let allowedTargets = this.restrictionPolicy().targetTypes;
+        if (model.targetType && !allowedTargets.includes(model.targetType)) {
+            throw this.error('ERR_CMS_00098', 'CMS restriction targetType is invalid');
+        }
+        if (model.mode && !['INCLUDE', 'EXCLUDE'].includes(model.mode)) {
+            throw this.error('ERR_CMS_00098', 'CMS restriction mode is invalid');
+        }
+        if (model.properties !== undefined && (!model.properties || typeof model.properties !== 'object' || Array.isArray(model.properties))) {
+            throw this.error('ERR_CMS_00098', 'CMS restriction properties must be declarative object values');
+        }
+        if (model.restrictionType) await this.validateReference(request, 'DefaultCmsRestrictionTypeService', { code: model.restrictionType, active: true }, 'ERR_CMS_00098', 'CMS restriction type is unavailable');
+        if (model.targetType && model.targetCode) {
+            await this.validateReference(request, this.restrictionTargetService(model.targetType), { code: model.targetCode, active: true }, 'ERR_CMS_00098', 'CMS restriction target is unavailable', true);
+        }
+        return true;
+    },
+
     /** Validates one CMS-owned association to an nMedia-owned Media item or Media Set. */
     validateComponentMedia: async function (request) {
         let model = request.model || {};
@@ -164,6 +243,80 @@ module.exports = {
         return response && Array.isArray(response.result) ? response.result : [];
     },
 
+    /** Validates a generated-service reference when the service is present. */
+    validateReference: async function (request, serviceName, query, code, message, optionalWhenServiceMissing) {
+        let service = serviceName && typeof SERVICE !== 'undefined' && SERVICE ? SERVICE[serviceName] : null;
+        if (!service || typeof service.get !== 'function') {
+            if (optionalWhenServiceMissing) return true;
+            throw this.error(code, message);
+        }
+        if (!query || Object.keys(query).some(key => query[key] === undefined || query[key] === null || query[key] === '')) {
+            throw this.error(code, message);
+        }
+        let response = await service.get({
+            tenant: request.tenant,
+            authData: request.authData,
+            options: Object.assign({}, request.options || {}, { recursive: false }),
+            query: query,
+            searchOptions: { limit: 2 }
+        });
+        if (this.items(response).length !== 1) throw this.error(code, message);
+        return true;
+    },
+
+    /** Follows navigation parents to reject cycles when the navigation service is available. */
+    validateNavigationCycle: async function (request, model) {
+        let service = typeof SERVICE !== 'undefined' && SERVICE ? SERVICE.DefaultCmsNavigationNodeService : null;
+        if (!service || typeof service.get !== 'function' || !model.code) return true;
+        let seen = new Set([model.code]);
+        let parent = model.parent;
+        let depth = 0;
+        let maxDepth = Number(this.navigationPolicy().maxParentDepth || 50);
+        while (parent) {
+            if (seen.has(parent)) throw this.error('ERR_CMS_00096', 'CMS navigation node parent cycle is invalid');
+            seen.add(parent);
+            if (++depth > maxDepth) throw this.error('ERR_CMS_00096', 'CMS navigation tree exceeds configured parent depth');
+            let response = await service.get({
+                tenant: request.tenant,
+                authData: request.authData,
+                options: Object.assign({}, request.options || {}, { recursive: false }),
+                query: { code: parent, active: true },
+                searchOptions: { limit: 2 }
+            });
+            let next = this.items(response)[0];
+            parent = next && next.parent;
+        }
+        return true;
+    },
+
+    /** Returns whether a value is a safe logical backend key. */
+    safeLogicalKey: function (value) {
+        return typeof value === 'string' && new RegExp(this.rendererPolicy().keyPattern).test(value) &&
+            !this.rendererPolicy().prohibitedSchemes.some(scheme => value.toLowerCase().startsWith(scheme));
+    },
+
+    /** Returns whether an external URL is permitted for navigation authoring. */
+    safeExternalUrl: function (value) {
+        if (typeof value !== 'string') return false;
+        try {
+            let parsed = new URL(value);
+            return ['https:', 'http:'].includes(parsed.protocol) && !!parsed.hostname;
+        } catch (error) {
+            return false;
+        }
+    },
+
+    /** Maps restriction target types to generated CMS services. */
+    restrictionTargetService: function (targetType) {
+        return {
+            PAGE: 'DefaultCmsPageService',
+            COMPONENT: 'DefaultCmsComponentService',
+            SLOT: 'DefaultCmsSlotDefinitionService',
+            NAVIGATION: 'DefaultCmsNavigationNodeService',
+            ROUTE: 'DefaultCmsPageRouteService'
+        }[targetType];
+    },
+
     /** Returns the effective layered renderer policy. */
     rendererPolicy: function () {
         let configured = typeof CONFIG !== 'undefined' && CONFIG.get ? (CONFIG.get('cms') || {}).renderer : {};
@@ -187,6 +340,20 @@ module.exports = {
             mediaTypes: ['IMAGE', 'VIDEO', 'DOCUMENT', 'FILE', 'MIXED'],
             roles: ['primary', 'background', 'thumbnail', 'icon', 'gallery', 'document', 'video', 'mobile', 'desktop'],
             localePattern: '^[A-Za-z]{2,3}(?:[-_][A-Za-z0-9]{2,8})*$'
+        }, configured || {});
+    },
+
+    /** Returns effective layered CMS navigation policy. */
+    navigationPolicy: function () {
+        let configured = typeof CONFIG !== 'undefined' && CONFIG.get ? (CONFIG.get('cms') || {}).navigation : {};
+        return Object.assign({ maxParentDepth: 50 }, configured || {});
+    },
+
+    /** Returns effective layered CMS restriction policy. */
+    restrictionPolicy: function () {
+        let configured = typeof CONFIG !== 'undefined' && CONFIG.get ? (CONFIG.get('cms') || {}).restrictions : {};
+        return Object.assign({
+            targetTypes: ['PAGE', 'COMPONENT', 'SLOT', 'NAVIGATION', 'ROUTE']
         }, configured || {});
     },
 

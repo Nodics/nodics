@@ -257,21 +257,25 @@ path:
 streams the file into an import-run-owned staging directory, and then executes
 the existing file import pipeline. Axis never sees provider paths.
 
-## Public media delivery
+## Authenticated media delivery
 
-Public CMS or Product media should be displayed through the nMedia delivery URL:
+CMS, Product, Axis, or BackOffice media previews should be displayed through the
+secured nMedia delivery URL:
 
 ```text
 GET /nodics/media/v0/content/{mediaCode}
+Authorization: Bearer <employee-token>
 ```
 
 The route reloads the media model, checks delivery policy, resolves the
 provider-owned file on the backend, and streams bytes only when allowed. The
 browser receives content, not the provider root or storage key.
 
-`PUBLIC` media is deliverable when `media.delivery.publicAccessEnabled` is true.
-`PRIVATE` operational media, such as generated export files, should be
-downloaded through the secured attachment route:
+`PUBLIC` media is a visibility value, not anonymous internet access. Public
+website/CDN delivery requires a separate explicit public or signed route.
+`PRIVATE` operational media, such as generated export files, may also be
+downloaded through the secured attachment route when the UI needs attachment
+semantics:
 
 ```text
 GET /nodics/media/v0/download/{mediaCode}

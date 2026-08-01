@@ -561,6 +561,16 @@ module.exports = {
         employee: {
             super: 'user',
             schemaPolicies: ['administrative'],
+            backoffice: {
+                displayProperty: 'loginId',
+                displayProperties: ['loginId', 'name.firstName', 'name.lastName'],
+                searchableFields: ['loginId', 'code', 'name.firstName', 'name.lastName'],
+                sortableFields: ['loginId', 'code', 'name.firstName', 'name.lastName', 'created', 'updated'],
+                filterFields: ['loginId', 'code', 'name.firstName', 'name.lastName', 'principalType', 'created', 'updated'],
+                defaultSortField: 'loginId',
+                defaultSortDirection: 'ASC',
+                excludedFields: ['apiKeyPrefix', 'apiKeyStatus', 'apiKeyCreatedAt', 'apiKeyExpiresAt', 'apiKeyScopes']
+            },
             model: true,
             service: {
                 enabled: true

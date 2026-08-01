@@ -35,9 +35,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 53 |
-| Test files | 49 |
+| Test files | 50 |
 | Data files | 24 |
-| All module-owned files | 102 |
+| All module-owned files | 103 |
 | Local schema definitions | 11 |
 
 ## Ownership And Dependencies
@@ -73,7 +73,7 @@
 | --- | ---: |
 | Documented | 80 |
 | Partially documented | 3 |
-| Undocumented | 9 |
+| Undocumented | 10 |
 | Inventory only | 10 |
 
 ## Important Files
@@ -188,6 +188,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/test/identityGovernanceP2Integration.test.js` | `test` | `documented` | 0/0 | Exercises preview, persisted apply, idempotent repeat, service credential rotation, failure audit, and rollback using an isolated durable test repository. |  |
 | `gCore/profile/test/initRequiredFlag.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/mandatoryIdentityBootstrapService.test.js` | `test` | `documented` | 0/0 | Verifies idempotent, audited creation of missing configured identity groups and non-secret reconciliation of configured service principals without overwriting tenant secrets. |  |
+| `gCore/profile/test/principalRecursiveInterceptorContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileAuthenticationRouteSecurity.test.js` | `test` | `documented` | 0/0 | Verifies username/password login uses the pre-authentication enterprise-resolution pipeline while module-to-module internal token retrieval remains a secured service capability. |  |
 | `gCore/profile/test/profileAuthenticationServiceContract.test.js` | `test` | `documented` | 0/0 | Verifies profile password authentication, failed-login state updates, customer/employee lookup boundaries, refresh-token creation, security-stamp registration, audit events, and API-key authentication. |  |
 | `gCore/profile/test/profileBrowserSessionService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

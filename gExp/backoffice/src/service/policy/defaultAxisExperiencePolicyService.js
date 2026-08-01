@@ -62,10 +62,18 @@ module.exports = {
         if (typeof policy.screenLockEnabled !== 'boolean' || !Number.isInteger(timeout) || timeout < minimum || timeout > maximum) {
             throw new CLASSES.NodicsError('ERR_BOF_00000', 'Invalid Axis employee screen-lock policy');
         }
+        let minimumRecent = Number(configuration.minimumRecentNavigationLimit || 1);
+        let maximumRecent = Number(configuration.maximumRecentNavigationLimit || 24);
+        let recentLimit = Number(policy.recentNavigationLimit !== undefined ?
+            policy.recentNavigationLimit : configuration.recentNavigationLimit || 12);
+        if (!Number.isInteger(recentLimit) || recentLimit < minimumRecent || recentLimit > maximumRecent) {
+            throw new CLASSES.NodicsError('ERR_BOF_00000', 'Invalid Axis recent navigation policy');
+        }
         return {
             contractVersion: Number(configuration.contractVersion || 1),
             screenLockEnabled: policy.screenLockEnabled,
-            idleTimeoutSeconds: timeout
+            idleTimeoutSeconds: timeout,
+            recentNavigationLimit: recentLimit
         };
     },
     /** Returns the configured fail-safe policy when no persistent override exists. */
@@ -73,7 +81,8 @@ module.exports = {
         let configuration = this.getConfiguration();
         return Object.assign(this.normalize({
             screenLockEnabled: configuration.screenLockEnabled !== false,
-            idleTimeoutSeconds: Number(configuration.idleTimeoutSeconds || 900)
+            idleTimeoutSeconds: Number(configuration.idleTimeoutSeconds || 900),
+            recentNavigationLimit: Number(configuration.recentNavigationLimit || 12)
         }), { revision: 0, source: 'DEFAULT' });
     },
     /** Loads the tenant-scoped persistent policy or the safe layered default. */

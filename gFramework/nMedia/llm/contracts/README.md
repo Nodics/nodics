@@ -389,17 +389,19 @@ media-code based nMedia endpoint such as:
 /nodics/media/v0/content/{mediaCode}
 ```
 
-Private operational media, including generated export files, must use the
-secured download endpoint:
+Media preview and inline delivery must use the secured content endpoint with an
+authenticated caller. Private operational media, including generated export
+files, may also use the secured download endpoint when attachment semantics are
+required:
 
 ```text
 /nodics/media/v0/download/{mediaCode}
 ```
 
-The download endpoint is still media-code based. It requires an authenticated
-caller, applies the nMedia delivery policy, and returns an attachment
-disposition so BackOffice clients can download bytes without seeing local paths
-or provider storage keys.
+Both endpoints are media-code based. They require an authenticated caller, apply
+the nMedia delivery policy, and return bytes without exposing local paths or
+provider storage keys. The download endpoint additionally returns an attachment
+disposition so BackOffice clients can save files.
 
 The delivery and download routes must:
 
@@ -413,12 +415,15 @@ The delivery and download routes must:
 
 OOTB behavior is intentionally strict:
 
-- `PUBLIC` media can be streamed when `publicAccessEnabled` is true;
+- inline media content is streamed only through secured nMedia routes;
+- `PUBLIC` is a media visibility value, not anonymous internet access;
+- public website/CDN delivery requires a separate explicit public or signed
+  route with tenant, enterprise, lifecycle, and token policy;
 - `SIGNED` media must remain blocked until a signed-token policy validates
   expiry, signature, audience, tenant, and media code;
-- `PRIVATE` media may be downloaded only through the secured route by an
-  authenticated principal with the route permission. Richer tenant, enterprise,
-  usage, or owner checks belong in the nMedia policy layer or a project
+- `PRIVATE` media may be streamed or downloaded only through secured routes by
+  an authenticated principal with the route permission. Richer tenant,
+  enterprise, usage, or owner checks belong in the nMedia policy layer or a project
   override.
 
 Do not implement signed delivery or domain-specific private delivery by simply

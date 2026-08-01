@@ -25,13 +25,13 @@ module.exports = {
     // Local-only sample credentials keep the startio developer environment runnable.
     // Real deployments must override these values through governed secret configuration.
     defaultAuthDetail: {
-        apiKey: process.env.NODICS_BOOTSTRAP_API_KEY || '944515ac-bbac-51cd-ac7e-3bbbb3c81bff'
+        apiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff'
     },
     bootstrapIdentity: {
         source: 'localSample',
-        adminPassword: process.env.NODICS_BOOTSTRAP_ADMIN_PASSWORD || 'adminPassword',
-        servicePassword: process.env.NODICS_BOOTSTRAP_SERVICE_PASSWORD || 'servicePassword',
-        serviceApiKey: process.env.NODICS_BOOTSTRAP_API_KEY || '944515ac-bbac-51cd-ac7e-3bbbb3c81bff'
+        adminPassword: 'adminPassword',
+        servicePassword: 'servicePassword',
+        serviceApiKey: '944515ac-bbac-51cd-ac7e-3bbbb3c81bff'
     },
     apiExposure: {
         categories: {
@@ -112,7 +112,7 @@ module.exports = {
     },
     authSecurity: {
         jwt: {
-            secret: process.env.NODICS_JWT_SECRET || 'startio-local-only-jwt-secret-change-before-deployment'
+            secret: 'startio-local-only-jwt-secret-change-before-deployment'
         },
         compatibility: {
             allowInsecureDevelopmentSecret: true,
@@ -125,7 +125,7 @@ module.exports = {
             requireScopes: false,
             allowLegacyHumanPrincipals: true,
             allowLegacyPlaintextLookup: true,
-            pepper: process.env.NODICS_API_KEY_PEPPER || 'startio-local-api-key-pepper-change-before-deployment'
+            pepper: 'startio-local-api-key-pepper-change-before-deployment'
         },
         securityStamp: {
             failClosed: false,
@@ -156,7 +156,7 @@ module.exports = {
                 redis: {
                     enabled: true,
                     options: {
-                        url: process.env.NODICS_CACHE_REDIS_URL || 'redis://127.0.0.1:6379'
+                        url: 'redis://127.0.0.1:6379'
                     }
                 }
             }

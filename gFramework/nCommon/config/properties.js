@@ -21,7 +21,7 @@
  */
 module.exports = {
     returnErrorStack: false,
-    externalDataLocation: NODICS.getServerPath() + '/data',
+    externalDataLocation: 'data',
 
     defaultErrorCodes: {
         NodicsError: 'ERR_SYS_00000'

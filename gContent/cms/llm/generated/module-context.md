@@ -33,10 +33,10 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 29 |
-| Test files | 46 |
+| Test files | 63 |
 | Data files | 26 |
-| All module-owned files | 70 |
-| Local schema definitions | 15 |
+| All module-owned files | 71 |
+| Local schema definitions | 19 |
 
 ## Ownership And Dependencies
 
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 58 |
+| Documented | 59 |
 | Partially documented | 3 |
 | Undocumented | 3 |
 | Inventory only | 6 |
@@ -149,7 +149,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gContent/cms/src/service/publication/defaultCmsPublicationModuleTransportService.js` | `src` | `documented` | 6/6 | Sends authenticated release operations from Staged CMS to a separately configured Online CMS module runtime. |  |
 | `gContent/cms/src/service/publication/defaultCmsPublicationTargetService.js` | `src` | `documented` | 9/9 | Imports, activates, reports, and rolls back immutable releases inside the independently deployed Online CMS target. |  |
 | `gContent/cms/src/service/publication/defaultCmsPublicationVersionProviderService.js` | `src` | `documented` | 10/10 | Implements the nPublish version-provider contract with CMS immutable manifests and atomic Online pointers. |  |
-| `gContent/cms/src/service/validation/defaultCmsContractValidationService.js` | `src` | `documented` | 13/13 | Validates CMS-owned renderer, route, and ordered-composition contracts before persistence. |  |
+| `gContent/cms/src/service/validation/defaultCmsContractValidationService.js` | `src` | `documented` | 24/24 | Validates CMS-owned renderer, route, and ordered-composition contracts before persistence. |  |
 | `gContent/cms/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared cms enum definition exports. |  |
 | `gContent/cms/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared cms status and error definition exports. |  |
 | `gContent/cms/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for CMS-specific helper functions. |  |
@@ -158,6 +158,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gContent/cms/test/cmsPublicationManifestContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gContent/cms/test/cmsSiteReferenceContract.test.js` | `test` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gContent/cms/test/cmsStorefrontDeliveryContract.test.js` | `test` | `partially-documented` | 0/0 | Validates CMS audience introspection, trusted Site isolation, override rejection, modular transport, and fail-closed Storefront delivery. | add @override |
+| `gContent/cms/test/cmsWcmsAuthoringSchemaContract.test.js` | `test` | `documented` | 0/0 | Validates CMS-owned WCMS authoring schemas for configuration-first, component-based, customizable Axis BackOffice management. |  |
 | `gContent/cms/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Reserved common CMS test contribution showing the module-owned test-suite shape for shared CMS behavior. | add JSDoc for 7 exported method(s) |
 | `gContent/cms/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Reserved local-environment CMS test contribution showing how environment-specific test suites can be attached. | add JSDoc for 7 exported method(s) |
 

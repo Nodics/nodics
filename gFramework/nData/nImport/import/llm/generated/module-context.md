@@ -67,9 +67,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 59 |
+| Documented | 60 |
 | Partially documented | 9 |
-| Undocumented | 14 |
+| Undocumented | 13 |
 | Inventory only | 13 |
 
 ## Important Files
@@ -174,7 +174,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/nImport/import/test/importTenantPrecedence.test.js` | `test` | `documented` | 0/0 | Verifies that request-scoped tenants narrow effective import-header tenants, never broaden them, and fail closed for inactive or unauthorized tenant targets. |  |
 | `gFramework/nData/nImport/import/test/mandatoryInitDataImportContract.test.js` | `test` | `documented` | 0/0 | Verifies mandatory profile bootstrap records and proves that init imports preserve selected modules, tenant scope, init type, and diagnostics through processing. |  |
 | `gFramework/nData/nImport/import/test/mediaImportDefinitionContract.test.js` | `test` | `documented` | 0/0 | Validates importDefinition-owned header generation for media-backed imports. |  |
-| `gFramework/nData/nImport/import/test/mediaImportFinalizedValidationContract.test.js` | `test` | `undocumented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override; add JSDoc for 2 exported method(s) |
+| `gFramework/nData/nImport/import/test/mediaImportFinalizedValidationContract.test.js` | `test` | `documented` | 2/2 | Validates finalized nImport media validation reports and validate-only failure projection. |  |
 | `gFramework/nData/nImport/import/test/mediaImportSourceStagingContract.test.js` | `test` | `documented` | 0/0 | Validates nImport staging for nMedia-owned import source files. |  |
 | `gFramework/nData/nImport/import/test/multiFormatDataProcessors.test.js` | `test` | `documented` | 0/0 | Validates JavaScript, JSON, CSV, and Excel import data processors against shared import diagnostics behavior. |  |
 | `gFramework/nData/nImport/import/test/profileTenantLocalFileImportContract.test.js` | `test` | `documented` | 0/0 | Validates the Profile-owned tenant sample data import use case for CSV and XLSX files with real headers. |  |

@@ -19,6 +19,6 @@
 module.exports = {
     eventFetchSize: 100,
     publishEventOnNode: '0',
-    eventResetTimeInMinutes: 5 * 60,
+    eventResetTimeInMinutes: 300,
     nemsModuleName: 'nems',
 };

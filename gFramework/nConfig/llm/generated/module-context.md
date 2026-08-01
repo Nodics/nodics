@@ -27,9 +27,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 15 |
-| Test files | 10 |
+| Test files | 11 |
 | Data files | 0 |
-| All module-owned files | 36 |
+| All module-owned files | 37 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -56,7 +56,7 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 30 |
-| Partially documented | 2 |
+| Partially documented | 3 |
 | Undocumented | 0 |
 | Inventory only | 4 |
 
@@ -109,6 +109,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nConfig/test/layeredCustomizationContract.test.js` | `test` | `documented` | 13/13 | Proves that a project-neutral framework, project, environment, server, and node hierarchy can customize configuration, schemas, routers, services, pipelines, facades, controllers, data, and tests before isolated tenant/runtime governance is applied. |  |
 | `gFramework/nConfig/test/loggerRedactionContract.test.js` | `test` | `documented` | 0/0 | Verifies that central logger serialization redacts sensitive tokens, credentials, and secret-bearing fields before logs reach transports. |  |
 | `gFramework/nConfig/test/nonRuntimePackageDiscovery.test.js` | `test` | `documented` | 0/0 | Verifies that setup and other explicitly non-runtime packages are excluded from Nodics runtime module discovery while canonical capability modules remain discoverable. |  |
+| `gFramework/nConfig/test/propertiesDeclarativeContract.test.js` | `test` | `partially-documented` | 0/0 | Guards `config/properties.js` files as declarative layered configuration, not executable builders or service logic. | add @layer; add @owner; add @override |
 | `gFramework/nConfig/test/routerOverrideGovernance.test.js` | `test` | `documented` | 4/4 | Verifies additive and replacement router merging across ordered module layers, including route removal, breaking-change warnings, and contribution trace metadata. |  |
 | `gFramework/nConfig/test/runtimeLifecycleService.test.js` | `test` | `partially-documented` | 0/0 | Validates deterministic state, contributor ordering, idempotency, timeout isolation, and signal ownership for the Nodics runtime lifecycle. | add @override |
 | `gFramework/nConfig/test/runtimeOverrideGovernance.test.js` | `test` | `documented` | 0/0 | Verifies that persisted runtime schema and router contributions obey the same additive, replacement, removal, warning, and traceability rules as file-based module layers. |  |

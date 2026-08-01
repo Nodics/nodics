@@ -49,7 +49,8 @@ let availabilitySchedules = [];
 global.SERVICE = {
     DefaultAxisExperiencePolicyService: {
         getEffective: () => Promise.resolve({
-            contractVersion: 1, screenLockEnabled: true, idleTimeoutSeconds: 900, revision: 0, source: 'DEFAULT'
+            contractVersion: 1, screenLockEnabled: true, idleTimeoutSeconds: 900,
+            recentNavigationLimit: 12, revision: 0, source: 'DEFAULT'
         })
     },
     DefaultBackofficeAdministrativeSecurityService: { validate: () => true, getAuditContext: () => ({ principalId: 'operator' }),
@@ -237,6 +238,7 @@ async function run() {
     assert.strictEqual(bootstrap.data.uiComposition.providerModule, 'cms');
     assert.strictEqual(bootstrap.data.uiComposition.fallbackMode, 'STATIC_RECOVERY_SHELL');
     assert.strictEqual(bootstrap.data.axisPolicy.idleTimeoutSeconds, 900);
+    assert.strictEqual(bootstrap.data.axisPolicy.recentNavigationLimit, 12);
     assert(Array.isArray(bootstrap.data.documentationSources));
     assert.strictEqual(bootstrap.data.tenantCode, 'default');
     assert.strictEqual(bootstrap.data.modules.workflowCore, undefined,

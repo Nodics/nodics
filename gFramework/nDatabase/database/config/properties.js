@@ -48,7 +48,7 @@ module.exports = {
     },
     schemaPolicies: {},
 
-    externalSchemaLocation: CONFIG.get('externalDataLocation') + '/schema',
+    externalSchemaLocation: 'data/schema',
     accessPoints: {
         readAccessPoint: 1,
         writeAccessPoint: 2,

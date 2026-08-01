@@ -42,7 +42,10 @@ module.exports = {
         screenLockEnabled: true,
         idleTimeoutSeconds: 900,
         minimumIdleTimeoutSeconds: 60,
-        maximumIdleTimeoutSeconds: 86400
+        maximumIdleTimeoutSeconds: 86400,
+        recentNavigationLimit: 12,
+        minimumRecentNavigationLimit: 1,
+        maximumRecentNavigationLimit: 24
     },
     backofficeCapabilities: {
         backoffice: {
@@ -104,48 +107,67 @@ module.exports = {
                 { id: 'schema-workbench', label: 'Schema Workbench', route: '/schema-workbench', icon: 'schema',
                     order: 100, group: { id: 'administration', label: 'Administration', order: 700 },
                     perspectives: ['operations'], contexts: ['environment', 'tenant', 'enterprise'],
+                    help: { summary: 'Discover authorized backend schemas, query records, and use allowed operations without making Axis a schema or API authority.', documentationRoute: '/docs/solutions/backoffice/schema-workbench', documentationFragment: 'what-this-screen-does' },
                     featureState: 'ACTIVE', requiredPermissions: ['system.schema.workbench.view'] },
                 { id: 'registry', label: 'Module Registry', route: '/registry', icon: 'registry',
                     order: 100, group: { id: 'operations', label: 'Operations and Integration', order: 600 },
                     perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                    help: { summary: 'Review registered BackOffice capabilities and module catalogue data contributed by owning modules.', documentationRoute: '/docs/reference/backoffice', documentationFragment: 'capability-discovery' },
                     featureState: 'ACTIVE', requiredPermissions: ['backoffice.registry.view'] },
                 { id: 'module-health', label: 'Module Health', route: '/operations/module-health', icon: 'health',
                     order: 110, group: { id: 'operations', label: 'Operations and Integration', order: 600 },
                     perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                    help: { summary: 'Inspect module registrations, availability, readiness, and refresh behavior from the BackOffice registry without replacing module-owned health authority.', documentationRoute: '/docs/reference/backoffice', documentationFragment: 'module-health-operations' },
                     featureState: 'ACTIVE', requiredPermissions: ['backoffice.registry.admin.view'] },
                 { id: 'imports-exports', label: 'Imports and Exports', route: '/operations/imports-exports', icon: 'import',
                     order: 120, group: { id: 'operations', label: 'Operations and Integration', order: 600 },
                     perspectives: ['operations'], contexts: ['environment', 'tenant', 'enterprise'],
+                    help: { summary: 'Review governed import and export flows, source files, run history, validation, and outbound data contracts owned by nImport and nExport.', documentationRoute: '/docs/capabilities/data-exchange', documentationFragment: 'import-and-export' },
                     featureState: 'ACTIVE', requiredPermissions: ['import.core.run'] },
-                ...['Integrations', 'Events', 'Audit Trail',
-                    'Operational Failures'].map((label, index) => ({
-                    id: ['integrations', 'events', 'audit-trail',
-                        'operational-failures'][index],
-                    label,
-                    route: '/operations/' + ['integrations', 'events',
-                        'audit-trail', 'operational-failures'][index],
-                    icon: 'module',
-                    order: 130 + index * 10,
-                    group: { id: 'operations', label: 'Operations and Integration', order: 600 },
-                    perspectives: ['operations'],
-                    contexts: ['environment', 'tenant'],
-                    featureState: 'DISABLED'
-                })),
-                ...['Axis Configuration', 'Module Configuration', 'Localization', 'Units',
-                    'Security Policies', 'Themes and Branding', 'System Information'].map((label, index) => ({
-                    id: ['axis-configuration', 'module-configuration', 'localization', 'units',
-                        'security-policies', 'themes-branding', 'system-information'][index],
-                    label,
-                    route: '/administration/' + ['axis-configuration', 'module-configuration',
-                        'localization', 'units', 'security-policies', 'themes-branding',
-                        'system-information'][index],
-                    icon: 'settings',
-                    order: 110 + index * 10,
-                    group: { id: 'administration', label: 'Administration', order: 700 },
-                    perspectives: ['operations'],
-                    contexts: ['environment', 'tenant'],
-                    featureState: 'DISABLED'
-                }))
+                { id: 'integrations', label: 'Integrations', route: '/operations/integrations', icon: 'module',
+                    order: 130, group: { id: 'operations', label: 'Operations and Integration', order: 600 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                    featureState: 'DISABLED' },
+                { id: 'events', label: 'Events', route: '/operations/events', icon: 'module',
+                    order: 140, group: { id: 'operations', label: 'Operations and Integration', order: 600 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                    featureState: 'DISABLED' },
+                { id: 'audit-trail', label: 'Audit Trail', route: '/operations/audit-trail', icon: 'module',
+                    order: 150, group: { id: 'operations', label: 'Operations and Integration', order: 600 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                    featureState: 'DISABLED' },
+                { id: 'operational-failures', label: 'Operational Failures', route: '/operations/operational-failures', icon: 'module',
+                    order: 160, group: { id: 'operations', label: 'Operations and Integration', order: 600 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                    featureState: 'DISABLED' },
+                { id: 'axis-configuration', label: 'Axis Configuration', route: '/administration/axis-configuration', icon: 'settings',
+                    order: 110, group: { id: 'administration', label: 'Administration', order: 700 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                    featureState: 'DISABLED' },
+                { id: 'module-configuration', label: 'Module Configuration', route: '/administration/module-configuration', icon: 'settings',
+                    order: 120, group: { id: 'administration', label: 'Administration', order: 700 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                    featureState: 'DISABLED' },
+                { id: 'localization', label: 'Localization', route: '/administration/localization', icon: 'settings',
+                    order: 130, group: { id: 'administration', label: 'Administration', order: 700 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                    featureState: 'DISABLED' },
+                { id: 'units', label: 'Units', route: '/administration/units', icon: 'settings',
+                    order: 140, group: { id: 'administration', label: 'Administration', order: 700 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                    featureState: 'DISABLED' },
+                { id: 'security-policies', label: 'Security Policies', route: '/administration/security-policies', icon: 'settings',
+                    order: 150, group: { id: 'administration', label: 'Administration', order: 700 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                    featureState: 'DISABLED' },
+                { id: 'themes-branding', label: 'Themes and Branding', route: '/administration/themes-branding', icon: 'settings',
+                    order: 160, group: { id: 'administration', label: 'Administration', order: 700 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                    featureState: 'DISABLED' },
+                { id: 'system-information', label: 'System Information', route: '/administration/system-information', icon: 'settings',
+                    order: 170, group: { id: 'administration', label: 'Administration', order: 700 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                    featureState: 'DISABLED' }
             ]
         }
     },
@@ -218,7 +240,7 @@ module.exports = {
         uiComposition: {
             enabled: true,
             providerRole: 'UI_COMPOSITION_PROVIDER',
-            preferredModule: undefined
+            preferredModule: null
         },
         contractHistory: {
             enabled: true,
@@ -231,7 +253,7 @@ module.exports = {
         audit: {
             enabled: true,
             failClosed: false,
-            publisherService: undefined,
+            publisherService: null,
             requireAcknowledgement: false
         },
         administration: {
@@ -266,7 +288,7 @@ module.exports = {
                 enabled: false,
                 failClosed: false,
                 requireAcknowledgement: false,
-                publisherService: undefined
+                publisherService: null
             },
             thresholds: {
                 availabilityFailurePercent: 25,

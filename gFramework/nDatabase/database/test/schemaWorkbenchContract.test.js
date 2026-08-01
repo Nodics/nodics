@@ -84,6 +84,51 @@ const profileModule = {
                 },
             },
         },
+        employee: {
+            model: true,
+            accessGroups: { adminGroup: 10 },
+            backoffice: {
+                displayProperty: 'loginId',
+                displayProperties: ['loginId', 'name.firstName', 'name.lastName'],
+                searchableFields: ['loginId', 'code', 'name.firstName', 'name.lastName'],
+                sortableFields: ['loginId', 'code', 'name.firstName', 'name.lastName'],
+                filterFields: ['loginId', 'code', 'name.firstName', 'name.lastName'],
+                defaultSortField: 'loginId',
+                defaultSortDirection: 'ASC',
+                excludedFields: ['apiKeyPrefix', 'apiKeyStatus', 'apiKeyCreatedAt', 'apiKeyExpiresAt', 'apiKeyScopes'],
+            },
+            definition: {
+                code: {
+                    type: 'string',
+                    primary: true,
+                    searchOptions: { enabled: true },
+                },
+                loginId: {
+                    type: 'string',
+                    required: true,
+                    searchOptions: { enabled: true },
+                },
+                name: { type: 'object', required: true },
+                'name.firstName': {
+                    type: 'string',
+                    required: true,
+                    searchOptions: { enabled: true },
+                },
+                'name.lastName': {
+                    type: 'string',
+                    required: true,
+                    searchOptions: { enabled: true },
+                },
+                userGroups: { type: 'array', required: true },
+                apiKeyPrefix: { type: 'string' },
+                apiKeyStatus: { type: 'string' },
+                apiKeyCreatedAt: { type: 'date' },
+                apiKeyExpiresAt: { type: 'date' },
+                apiKeyScopes: { type: 'array' },
+                apiKey: { type: 'string' },
+                apiKeyHash: { type: 'string' },
+            },
+        },
     },
 };
 
@@ -130,6 +175,15 @@ global.SERVICE = {
             });
         },
     },
+    DefaultEmployeeService: {
+        get: (input) => {
+            lastSearchInput = input;
+            return Promise.resolve({
+                count: 1,
+                result: [{ code: 'admin', loginId: 'admin' }],
+            });
+        },
+    },
 };
 global.CLASSES = {
     NodicsError: class NodicsError extends Error {
@@ -149,7 +203,7 @@ const service = require('../src/service/schema/defaultSchemaWorkbenchService');
         httpRequest: { params: { schema: 'address' } },
     };
     let listed = await service.list(request);
-    assert.deepStrictEqual(listed.data.schemas.map((schema) => schema.schemaName).sort(), ['address', 'enterprise'], 'all authorized model schemas must be searchable by default');
+    assert.deepStrictEqual(listed.data.schemas.map((schema) => schema.schemaName).sort(), ['address', 'employee', 'enterprise'], 'all authorized model schemas must be searchable by default');
     assert.deepStrictEqual(
         listed.data.schemas.find((schema) => schema.schemaName === 'enterprise').operations,
         ['search', 'read', 'create', 'update', 'delete'],
@@ -334,6 +388,73 @@ const service = require('../src/service/schema/defaultSchemaWorkbenchService');
             contacts: 1,
         },
         'record search must project only descriptor-safe Workbench fields',
+    );
+    let employeeDescriptor = (
+        await service.get(
+            Object.assign({}, request, {
+                httpRequest: { params: { schema: 'employee' } },
+            }),
+        )
+    ).data;
+    assert.deepStrictEqual(
+        employeeDescriptor.displayProperties,
+        ['loginId', 'name.firstName', 'name.lastName'],
+        'employee Workbench descriptor must use configured non-secret identity fields',
+    );
+    assert.strictEqual(
+        employeeDescriptor.displayProperty,
+        'loginId',
+        'employee Workbench descriptor must use login id as the configured display identity',
+    );
+    assert.deepStrictEqual(
+        employeeDescriptor.queryCapabilities.searchableFields,
+        ['loginId', 'code', 'name.firstName', 'name.lastName'],
+        'employee Workbench descriptor must use configured searchable identity fields',
+    );
+    assert.deepStrictEqual(
+        employeeDescriptor.queryCapabilities.sortableFields,
+        ['loginId', 'code', 'name.firstName', 'name.lastName'],
+        'employee Workbench descriptor must use configured sortable identity fields',
+    );
+    assert.deepStrictEqual(
+        employeeDescriptor.queryCapabilities.defaultSort,
+        { field: 'loginId', direction: 'ASC' },
+        'employee Workbench descriptor must default to login id sorting',
+    );
+    assert(!employeeDescriptor.fields.some((field) => field.name === 'apiKey'), 'employee Workbench descriptor must never expose plaintext API key');
+    assert(!employeeDescriptor.fields.some((field) => field.name === 'apiKeyHash'), 'employee Workbench descriptor must never expose API-key hash');
+    assert(!employeeDescriptor.fields.some((field) => field.name === 'apiKeyPrefix'), 'employee Workbench descriptor must allow profile to exclude non-secret credential metadata');
+    let employeeSearch = await service.search(
+        Object.assign({}, request, {
+            tenant: 'default',
+            httpRequest: {
+                params: { schema: 'employee' },
+                body: {
+                    search: 'admin',
+                    pageNumber: 1,
+                    pageSize: 10,
+                    sort: { field: 'loginId', direction: 'ASC' },
+                },
+            },
+        }),
+    );
+    assert.strictEqual(employeeSearch.data.totalCount, 1);
+    assert.deepStrictEqual(
+        lastSearchInput.options,
+        { recursive: false },
+        'employee Schema Workbench search must ask the generated service for a flat record projection',
+    );
+    assert.deepStrictEqual(
+        lastSearchInput.searchOptions.projection,
+        {
+            _id: 0,
+            code: 1,
+            loginId: 1,
+            'name.firstName': 1,
+            'name.lastName': 1,
+            userGroups: 1,
+        },
+        'employee Schema Workbench search must project only explicitly safe employee fields without parent-child path collisions',
     );
     assert.throws(
         () =>

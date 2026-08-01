@@ -28,16 +28,26 @@ module.exports = {
                 perspectives: ['operations', 'commerce'],
                 contexts: ['environment', 'tenant', 'enterprise'],
                 featureState: 'DISABLED' },
-            ...['Stock Levels', 'Stock Pools', 'Warehouses', 'Availability'].map((label, index) => ({
-                id: ['stock-levels', 'stock-pools', 'warehouses', 'availability'][index],
-                parentId: 'stock', label,
-                route: '/commerce/stock/' + ['levels', 'pools', 'warehouses', 'availability'][index],
-                icon: 'stock', order: 410 + index * 10,
+            { id: 'stock-levels', parentId: 'stock', label: 'Stock Levels',
+                route: '/commerce/stock/levels', icon: 'stock', order: 410,
                 group: { id: 'commerce', label: 'Commerce', order: 300 },
-                perspectives: ['operations', 'commerce'],
-                contexts: ['environment', 'tenant', 'enterprise'],
-                featureState: 'DISABLED'
-            }))]
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED' },
+            { id: 'stock-pools', parentId: 'stock', label: 'Stock Pools',
+                route: '/commerce/stock/pools', icon: 'stock', order: 420,
+                group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED' },
+            { id: 'warehouses', parentId: 'stock', label: 'Warehouses',
+                route: '/commerce/stock/warehouses', icon: 'stock', order: 430,
+                group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED' },
+            { id: 'availability', parentId: 'stock', label: 'Availability',
+                route: '/commerce/stock/availability', icon: 'stock', order: 440,
+                group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED' }]
         }
     },
     cache: {

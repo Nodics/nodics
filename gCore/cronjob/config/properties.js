@@ -27,14 +27,18 @@ module.exports = {
                 group: { id: 'automation', label: 'Process and Automation', order: 500 },
                 perspectives: ['operations'], contexts: ['environment', 'tenant'],
                 featureState: 'ACTIVE', requiredPermissions: ['cronjob.backoffice.view'] },
-            ...['Triggers', 'Execution History', 'Job Failures'].map((label, index) => ({
-                id: ['job-triggers', 'job-execution-history', 'job-failures'][index],
-                label, route: '/jobs/' + ['triggers', 'history', 'failures'][index], icon: 'cronjob',
-                order: 310 + index * 10,
-                group: { id: 'automation', label: 'Process and Automation', order: 500 },
+            { id: 'job-triggers', label: 'Triggers', route: '/jobs/triggers', icon: 'cronjob',
+                order: 310, group: { id: 'automation', label: 'Process and Automation', order: 500 },
                 perspectives: ['operations'], contexts: ['environment', 'tenant'],
-                featureState: 'DISABLED'
-            }))]
+                featureState: 'DISABLED' },
+            { id: 'job-execution-history', label: 'Execution History', route: '/jobs/history', icon: 'cronjob',
+                order: 320, group: { id: 'automation', label: 'Process and Automation', order: 500 },
+                perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                featureState: 'DISABLED' },
+            { id: 'job-failures', label: 'Job Failures', route: '/jobs/failures', icon: 'cronjob',
+                order: 330, group: { id: 'automation', label: 'Process and Automation', order: 500 },
+                perspectives: ['operations'], contexts: ['environment', 'tenant'],
+                featureState: 'DISABLED' }]
         }
     },
 

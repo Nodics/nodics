@@ -17,10 +17,12 @@
  * @override Later project/customer modules may override set-entry selection or persistence while preserving Product/CMS ownership boundaries.
  */
 module.exports = {
+    /** Initializes the media set entry management lifecycle. */
     init: function () {
         return Promise.resolve(true);
     },
 
+    /** Completes the media set entry management lifecycle after service loading. */
     postInit: function () {
         return Promise.resolve(true);
     },

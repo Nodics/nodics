@@ -38,14 +38,14 @@ module.exports = {
         profiles: {
             assistantGeneration: {
                 capability: 'GENERATION',
-                provider: undefined,
-                model: undefined,
+                provider: null,
+                model: null,
                 fallbackProviders: []
             },
             knowledgeEmbedding: {
                 capability: 'EMBEDDING',
-                provider: undefined,
-                model: undefined,
+                provider: null,
+                model: null,
                 fallbackProviders: []
             }
         },

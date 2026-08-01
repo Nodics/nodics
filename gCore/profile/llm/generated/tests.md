@@ -13,6 +13,7 @@
 - `gCore/profile/test/identityGovernanceP2Integration.test.js`
 - `gCore/profile/test/initRequiredFlag.test.js`
 - `gCore/profile/test/mandatoryIdentityBootstrapService.test.js`
+- `gCore/profile/test/principalRecursiveInterceptorContract.test.js`
 - `gCore/profile/test/profileAuthenticationRouteSecurity.test.js`
 - `gCore/profile/test/profileAuthenticationServiceContract.test.js`
 - `gCore/profile/test/profileBrowserSessionService.test.js`

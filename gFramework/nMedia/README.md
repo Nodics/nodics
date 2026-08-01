@@ -649,14 +649,18 @@ local paths or provider storage keys.
 
 OOTB delivery is intentionally conservative:
 
-- `PUBLIC` media can be delivered when `media.delivery.publicAccessEnabled` is
-  `true`.
+- Inline media content is delivered through secured nMedia routes. The caller
+  must be authenticated and route-authorized before nMedia evaluates media
+  visibility and lifecycle policy.
+- `PUBLIC` media remains a visibility value, not anonymous internet access.
+  Public website/CDN delivery must be introduced through a separate explicit
+  public or signed route with tenant, enterprise, lifecycle, and token policy.
 - `SIGNED` media is blocked until a real signed-token validation policy is
   implemented by nMedia or a project override.
-- `PRIVATE` media is deliverable only through the secured download route when
-  the caller is authenticated and has the route permission. Projects that need
-  richer domain rules should extend the nMedia policy layer instead of exposing
-  provider URLs.
+- `PRIVATE` media is deliverable only through secured nMedia routes when the
+  caller is authenticated and has the route permission. Projects that need richer
+  domain rules should extend the nMedia policy layer instead of exposing provider
+  URLs.
 - Delivery can be disabled entirely with `media.delivery.enabled = false`.
 
 This prevents a dangerous shortcut where private files become visible just

@@ -10,15 +10,19 @@
 | `cmsComponent` | `cmsBase` | yes | yes | yes | no | no | no |  | 5 |
 | `cmsComponentDetail` | `base` | yes | yes | no | yes | no | no |  | 4 |
 | `cmsComponentMedia` | `cmsBase` | yes | yes | yes | no | no | no |  | 11 |
+| `cmsComponentTypeGroup` | `cmsBase` | yes | yes | yes | yes | no | no |  | 5 |
 | `cmsMigrationAudit` | `base` | yes | yes | no | no | no | no |  | 8 |
+| `cmsNavigationNode` | `cmsBase` | yes | yes | yes | yes | no | no |  | 13 |
 | `cmsOnlinePublicationPointer` | `base` | yes | yes | no | no | no | no |  | 10 |
 | `cmsPage` | `cmsBase` | yes | yes | yes | no | no | no |  | 6 |
 | `cmsPageRoute` | `cmsBase` | yes | yes | yes | yes | no | no |  | 9 |
 | `cmsPageTemplate` | `cmsBase` | yes | yes | yes | no | no | no |  | 4 |
 | `cmsPublicationDeploymentReceipt` | `base` | yes | yes | no | no | no | no |  | 6 |
 | `cmsPublicationManifest` | `base` | yes | yes | no | no | no | no |  | 9 |
+| `cmsRestriction` | `cmsBase` | yes | yes | yes | yes | no | no |  | 8 |
+| `cmsRestrictionType` | `cmsBase` | yes | yes | yes | yes | no | no |  | 6 |
 | `cmsSite` | `cmsBase` | yes | yes | yes | no | no | no |  | 2 |
-| `cmsSlotDefinition` | `cmsBase` | yes | yes | no | no | no | no |  | 5 |
+| `cmsSlotDefinition` | `cmsBase` | yes | yes | no | no | no | no |  | 6 |
 | `cmsTypeCode` | `base` | yes | yes | yes | yes | no | no |  | 4 |
 | `cmsTypeCode2Renderer` | `base` | yes | yes | yes | yes | no | no |  | 5 |
 
@@ -55,6 +59,14 @@
 - `role` `string` required: CMS-owned role such as primary, background, thumbnail, icon, gallery, or document
 - `slot` `string` optional: Optional logical media slot within the component
 
+### `cms.cmsComponentTypeGroup`
+
+- `componentTypeCodes` `array` required: CMS component type codes belonging to this authoring group
+- `description` `string` optional: Business description of the component type group
+- `name` `string` required: Human-readable component type group name
+- `sortOrder` `int` required: Authoring display order for this component type group
+- `status` `string` required: Authoring availability for this component type group
+
 ### `cms.cmsMigrationAudit`
 
 - `correlationId` `string` optional
@@ -65,6 +77,22 @@
 - `snapshot` `object` optional
 - `status` `string` required
 - `tenant` `string` required
+
+### `cms.cmsNavigationNode`
+
+- `channel` `string` required: Delivery channel scope
+- `externalUrl` `string` optional: Safe external URL when nodeType is EXTERNAL; validation remains service-owned
+- `locale` `string` required: Locale scope or default fallback
+- `name` `string` required: Internal navigation node name
+- `nodeType` `string` required: Navigation target behavior
+- `parent` `string` optional: Optional parent navigation node code
+- `position` `int` required: Sibling ordering position
+- `restrictions` `array` optional: Optional CMS restriction codes applied to this navigation node
+- `site` `string` required: CMS site code owning this navigation node
+- `status` `string` required: Authoring availability for this navigation node
+- `targetPage` `string` optional: Target CMS page when nodeType is PAGE
+- `targetRoute` `string` optional: Target CMS page route when nodeType is ROUTE
+- `title` `string` optional: Display title for navigation renderers
 
 ### `cms.cmsOnlinePublicationPointer`
 
@@ -128,6 +156,26 @@
 - `snapshot` `object` required: Immutable client-safe CMS delivery graph
 - `sourceVersion` `string` required
 
+### `cms.cmsRestriction`
+
+- `mode` `string` required: Whether matching users or contexts can access or are excluded from the target
+- `name` `string` required: Human-readable restriction name
+- `priority` `int` required: Evaluation order for multiple restrictions on the same target
+- `properties` `object` optional: Declarative restriction values validated against the restriction type propertySchema
+- `restrictionType` `string` required: CMS restriction type code
+- `status` `string` required: Restriction lifecycle state
+- `targetCode` `string` required: Code of the page, component, slot, navigation node, or route guarded by this restriction
+- `targetType` `string` required: CMS target kind guarded by this restriction
+
+### `cms.cmsRestrictionType`
+
+- `description` `string` optional: Business description of the restriction type
+- `evaluator` `string` optional: Logical backend evaluator key resolved by CMS services; never executable code or a client path
+- `name` `string` required: Human-readable restriction type name
+- `propertySchema` `object` optional: Declarative restriction property contract; executable code is prohibited
+- `status` `string` required: Authoring availability for this restriction type
+- `targetTypes` `array` required: CMS target kinds to which this restriction type can apply
+
 ### `cms.cmsSite`
 
 - `catalog` `string` required: Required Code of associated catalog
@@ -135,6 +183,7 @@
 
 ### `cms.cmsSlotDefinition`
 
+- `allowedComponentTypeGroups` `array` optional: Optional allowlist of CMS component type group codes
 - `allowedComponentTypes` `array` optional: Optional allowlist of component type codes
 - `maxItems` `int` optional: Maximum allowed component count
 - `minItems` `int` optional: Minimum allowed component count

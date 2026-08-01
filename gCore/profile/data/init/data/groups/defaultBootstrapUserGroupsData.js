@@ -147,6 +147,7 @@ module.exports = {
             'media.storage.policy.view',
             'media.storage.location.resolve',
             'media.upload.create',
+            'media.content.read',
             'media.content.download',
             'system.log.level.update',
             'system.schema.index.rebuild',

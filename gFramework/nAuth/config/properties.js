@@ -30,18 +30,18 @@
 module.exports = {
     authSecurity: {
         jwt: {
-            secret: process.env.NODICS_JWT_SECRET,
+            secret: null,
             minimumSecretLength: 32,
-            issuer: process.env.NODICS_JWT_ISSUER || 'nodics',
-            audience: process.env.NODICS_JWT_AUDIENCE || 'nodics-services',
+            issuer: 'nodics',
+            audience: 'nodics-services',
             algorithms: ['HS256'],
             requireJti: true,
             accessTokenExpiresIn: '3h',
             serviceTokenExpiresIn: '15m',
-            serviceTokenRefreshIntervalMs: 10 * 60 * 1000
+            serviceTokenRefreshIntervalMs: 600000
         },
         refreshToken: {
-            expiresInSeconds: 60 * 60 * 24 * 30,
+            expiresInSeconds: 2592000,
             rotateOnUse: true,
             requireDistributedCache: true
         },
@@ -54,16 +54,16 @@ module.exports = {
             rejectServiceAndCronCredentials: true
         },
         apiKey: {
-            defaultLifetimeSeconds: 60 * 60 * 24 * 90,
+            defaultLifetimeSeconds: 7776000,
             requireScopes: true,
             allowLegacyHumanPrincipals: false,
             allowLegacyPlaintextLookup: false,
-            pepper: process.env.NODICS_API_KEY_PEPPER,
+            pepper: null,
             minimumPepperLength: 32
         },
         audit: {
             enabled: true,
-            publisherService: undefined,
+            publisherService: null,
             failClosed: false
         },
         securityStamp: {
@@ -96,10 +96,10 @@ module.exports = {
         profile: {
             channels: {
                 auth: {
-                    ttl: 60 * 60,
+                    ttl: 3600,
                     enabled: true,
                     fallback: true,
-                    engine: process.env.NODICS_AUTH_CACHE_ENGINE || 'local',
+                    engine: 'local',
                     events: {
                         expired: 'DefaultAuthTokenInvalidationService.publishTokenExpiredEvent',
                         del: 'DefaultAuthTokenInvalidationService.publishTokenDeletedEvent',
@@ -199,6 +199,7 @@ module.exports = {
             'media.set.manage',
             'media.storage.location.resolve',
             'media.upload.create',
+            'media.content.read',
             'media.content.download',
             'system.log.level.update',
             'system.schema.index.rebuild',
@@ -336,6 +337,7 @@ module.exports = {
                         'media.set.manage',
                         'media.storage.location.resolve',
                         'media.upload.create',
+                        'media.content.read',
                         'media.content.download',
                         'system.log.level.update',
                         'system.schema.index.rebuild',

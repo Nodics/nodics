@@ -45,6 +45,24 @@ module.exports = {
             contracts.moduleName.pattern && new RegExp(contracts.moduleName.pattern).test(provider.moduleName || '') &&
             this.isString(provider.operationId);
     },
+    /** Validates one bounded non-executable schema-workbench navigation target. */
+    validateNavigationWorkbenchTarget: function (target) {
+        return target && typeof target === 'object' && !Array.isArray(target) &&
+            !Object.keys(target).some(key => !['moduleName', 'schemaName', 'mode'].includes(key)) &&
+            contracts.moduleName.pattern && new RegExp(contracts.moduleName.pattern).test(target.moduleName || '') &&
+            this.isString(target.schemaName, 128) &&
+            /^[A-Za-z][A-Za-z0-9._-]{0,127}$/.test(target.schemaName) &&
+            (target.mode === undefined || target.mode === 'create');
+    },
+    /** Validates bounded non-executable navigation help metadata for Axis workspaces. */
+    validateNavigationHelp: function (help) {
+        return help && typeof help === 'object' && !Array.isArray(help) &&
+            !Object.keys(help).some(key => !['summary', 'documentationRoute', 'documentationFragment'].includes(key)) &&
+            this.isString(help.summary, 320) &&
+            (help.documentationRoute === undefined || this.isSafeDocumentationRoute(help.documentationRoute)) &&
+            (help.documentationFragment === undefined ||
+                typeof help.documentationFragment === 'string' && /^[A-Za-z0-9._:-]{1,128}$/.test(help.documentationFragment));
+    },
     /** Validates bounded module-owned navigation metadata and hierarchy. */
     validateNavigation: function (navigation) {
         if (!Array.isArray(navigation) || navigation.length > 64) return false;
@@ -54,7 +72,7 @@ module.exports = {
         if (ids.some(id => !this.isString(id, 128)) || new Set(ids).size !== ids.length) return false;
         if (!navigation.every(item => item && !Object.keys(item).some(key =>
             !['id', 'label', 'route', 'icon', 'order', 'requiredPermissions', 'labelKey', 'parentId',
-                'group', 'perspectives', 'contexts', 'featureState', 'badgeProvider'].includes(key)) &&
+                'group', 'perspectives', 'contexts', 'featureState', 'badgeProvider', 'workbenchTarget', 'help'].includes(key)) &&
             this.isString(item.label) && (item.route === undefined || this.isString(item.route, 512)) &&
             (item.order === undefined || Number.isInteger(item.order)) &&
             (item.icon === undefined || this.isString(item.icon, 64)) &&
@@ -66,6 +84,8 @@ module.exports = {
                 item.contexts.every(context => allowedContexts.includes(context))) &&
             (item.featureState === undefined || allowedFeatureStates.includes(item.featureState)) &&
             (item.badgeProvider === undefined || this.validateNavigationBadgeProvider(item.badgeProvider)) &&
+            (item.workbenchTarget === undefined || this.validateNavigationWorkbenchTarget(item.workbenchTarget)) &&
+            (item.help === undefined || this.validateNavigationHelp(item.help)) &&
             (item.requiredPermissions === undefined || this.isStringList(item.requiredPermissions)))) return false;
         let byId = Object.fromEntries(navigation.map(item => [item.id, item]));
         if (navigation.some(item => item.parentId && !byId[item.parentId])) return false;
@@ -106,6 +126,10 @@ module.exports = {
     /** Returns whether a string is a bounded application-relative path. */
     isSafePath: function (value) {
         return this.isString(value, 512) && value.startsWith('/') && !value.startsWith('//') && !value.includes('://');
+    },
+    /** Returns whether a string is a bounded application-relative documentation route. */
+    isSafeDocumentationRoute: function (value) {
+        return this.isSafePath(value) && value.startsWith('/docs');
     },
     /** Validates optional module-owned BackOffice catalogue metadata. */
     validateBackofficeMetadata: function (metadata) {

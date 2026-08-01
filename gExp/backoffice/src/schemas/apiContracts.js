@@ -110,11 +110,12 @@ const contractDecision = {
 const axisPolicy = {
     type: 'object',
     additionalProperties: false,
-    required: ['contractVersion', 'screenLockEnabled', 'idleTimeoutSeconds', 'revision', 'source'],
+    required: ['contractVersion', 'screenLockEnabled', 'idleTimeoutSeconds', 'recentNavigationLimit', 'revision', 'source'],
     properties: {
         contractVersion: { type: 'integer', minimum: 1 },
         screenLockEnabled: { type: 'boolean' },
         idleTimeoutSeconds: { type: 'integer', minimum: 60, maximum: 86400 },
+        recentNavigationLimit: { type: 'integer', minimum: 1, maximum: 24 },
         revision: { type: 'integer', minimum: 0 },
         source: { enum: ['DEFAULT', 'PERSISTED'] }
     }
@@ -126,6 +127,7 @@ const axisPolicyUpdate = {
     properties: {
         screenLockEnabled: { type: 'boolean' },
         idleTimeoutSeconds: { type: 'integer', minimum: 60, maximum: 86400 },
+        recentNavigationLimit: { type: 'integer', minimum: 1, maximum: 24 },
         expectedRevision: { type: 'integer', minimum: 0 }
     }
 };
@@ -165,6 +167,22 @@ const navigationBadgeProvider = {
         operationId: { type: 'string', minLength: 1, maxLength: 256 }
     }
 };
+const navigationWorkbenchTarget = {
+    type: 'object', additionalProperties: false, required: ['moduleName', 'schemaName'],
+    properties: {
+        moduleName: moduleName,
+        schemaName: { type: 'string', minLength: 1, maxLength: 128, pattern: '^[A-Za-z][A-Za-z0-9._-]{0,127}$' },
+        mode: { enum: ['create'] }
+    }
+};
+const navigationHelp = {
+    type: 'object', additionalProperties: false, required: ['summary'],
+    properties: {
+        summary: { type: 'string', minLength: 1, maxLength: 320 },
+        documentationRoute: { type: 'string', pattern: '^/docs(?:$|/)', maxLength: 512 },
+        documentationFragment: { type: 'string', pattern: '^[A-Za-z0-9._:-]{1,128}$' }
+    }
+};
 const backofficeMetadata = {
     type: 'object', additionalProperties: false,
     properties: {
@@ -186,6 +204,8 @@ const backofficeMetadata = {
                 items: { enum: ['environment', 'tenant', 'enterprise', 'site', 'catalog'] } },
             featureState: { enum: ['ACTIVE', 'PREVIEW', 'DISABLED', 'HIDDEN'] },
             badgeProvider: navigationBadgeProvider,
+            workbenchTarget: navigationWorkbenchTarget,
+            help: navigationHelp,
             requiredPermissions: { type: 'array', uniqueItems: true, items: { type: 'string' } }
         } } }
     }
@@ -253,6 +273,8 @@ module.exports = {
     contractDecision: contractDecision,
     navigationGroup: navigationGroup,
     navigationBadgeProvider: navigationBadgeProvider,
+    navigationWorkbenchTarget: navigationWorkbenchTarget,
+    navigationHelp: navigationHelp,
     contractHistorySnapshot: contractHistorySnapshot,
     contractActivation: contractActivation,
     contractCurrentData: { type: 'object', required: ['snapshot'], properties: {

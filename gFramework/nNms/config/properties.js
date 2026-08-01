@@ -18,5 +18,5 @@
  */
 module.exports = {
     activateNodePing: false,
-    nodePingTimeout: 10 * 1000
+    nodePingTimeout: 10000
 };

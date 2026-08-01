@@ -35,7 +35,7 @@ module.exports = {
                 consumerOptions: {
                     autoCommit: true,
                     fetchMaxWaitMs: 1000,
-                    fetchMaxBytes: 1024 * 1024,
+                    fetchMaxBytes: 1048576,
                     keyEncoding: 'utf8'
                 },
                 connectionOptions: {
@@ -48,8 +48,8 @@ module.exports = {
                     connectRetryOptions: {
                         retries: 5,
                         factor: 3,
-                        minTimeout: 1 * 10,
-                        maxTimeout: 60 * 10,
+                        minTimeout: 10,
+                        maxTimeout: 600,
                         randomize: true,
                     }
                 },

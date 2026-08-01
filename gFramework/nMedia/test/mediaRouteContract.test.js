@@ -51,12 +51,13 @@ const downloadRoute = routes.find(route => route.key === '/download/:mediaCode')
 assert(contentRoute, 'nMedia content route must be registered');
 assert(downloadRoute, 'nMedia download route must be registered');
 assert.strictEqual(contentRoute.responseHandler, 'mediaContentResponseHandler', 'inline media content must remain on nMedia content handler');
+assert.strictEqual(contentRoute.secured, true, 'inline content route must require authenticated media delivery');
+assert.strictEqual(contentRoute.permission, 'media.content.read', 'inline content route must use governed media read permission');
+assert.notStrictEqual(contentRoute.publicAccess, true, 'inline content route must not be anonymously public');
 assert.strictEqual(downloadRoute.responseHandler, 'fileDownloadResponseHandler', 'download media content must reuse nRouter file-download response handler');
 routes.forEach(route => {
     assert(['mediaManagement', 'moduleInternal'].includes(route.apiExposure), route.key + ' must be intentionally exposure-gated');
-    if (route.key !== '/content/:mediaCode') {
-        assert.notStrictEqual(route.publicAccess, true, route.key + ' must not be public');
-    }
+    assert.notStrictEqual(route.publicAccess, true, route.key + ' must not be public');
     if (route.permission) {
         assert(
             authProperties.identityGovernance.permissionCatalog.includes(route.permission),

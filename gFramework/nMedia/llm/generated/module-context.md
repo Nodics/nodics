@@ -61,8 +61,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 43 |
-| Partially documented | 1 |
+| Documented | 44 |
+| Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
 
@@ -101,7 +101,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nMedia/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines provider-neutral media lifecycle schemas. |  |
 | `gFramework/nMedia/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Blank generated-module service scaffold. Do not place business behavior here. |  |
 | `gFramework/nMedia/src/service/reference/defaultMediaReferenceLookupService.js` | `src` | `documented` | 8/8 | Provides a bounded nMedia-owned reference validation contract for domain modules. |  |
-| `gFramework/nMedia/src/service/set/defaultMediaSetEntryManagementService.js` | `src` | `partially-documented` | 18/20 | Provides nMedia-owned operations for media set entry lifecycle. | add JSDoc for 2 exported method(s) |
+| `gFramework/nMedia/src/service/set/defaultMediaSetEntryManagementService.js` | `src` | `documented` | 20/20 | Provides nMedia-owned operations for media set entry lifecycle. |  |
 | `gFramework/nMedia/src/service/storage/defaultMediaContentResponseHandlerService.js` | `src` | `documented` | 11/11 | Sends nMedia-authorized binary content inline or as a download without exposing provider paths to callers. |  |
 | `gFramework/nMedia/src/service/storage/defaultMediaDeliveryService.js` | `src` | `documented` | 10/10 | Resolves media-code based content delivery through nMedia-owned access policy and provider storage descriptors. |  |
 | `gFramework/nMedia/src/service/storage/defaultMediaImportSourceResolverService.js` | `src` | `documented` | 7/7 | Resolves backend-only media descriptors that nImport can stage as governed import sources. |  |

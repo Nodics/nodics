@@ -12,6 +12,7 @@
 const assert = require('assert');
 
 let removed;
+let consumed;
 global.CONFIG = {
     get: key => {
         if (key === 'profileBrowserSession') return {
@@ -45,8 +46,9 @@ global.CLASSES = {
 };
 global.SERVICE = {
     DefaultAuthenticationProviderService: {
-        findToken: (moduleName, token) => {
+        consumeToken: (moduleName, token) => {
             assert.strictEqual(moduleName, 'profile');
+            consumed = { moduleName, token };
             if (token === 'missing-refresh') {
                 return Promise.reject(Object.assign(new Error('Cache miss'), {
                     code: 'ERR_CACHE_00001'
@@ -58,6 +60,10 @@ global.SERVICE = {
                 }));
             }
             return Promise.resolve({ loginId: 'admin' });
+        },
+        findToken: (moduleName, token) => {
+            assert.strictEqual(moduleName, 'profile');
+            return Promise.resolve({ loginId: 'admin', token });
         },
         rotateRefreshToken: request => {
             assert.strictEqual(request.refreshToken, 'old-refresh');
@@ -113,12 +119,12 @@ function request(headers) {
         authToken: 'replacement-access',
         refreshToken: 'replacement-refresh'
     });
-    assert.deepStrictEqual(removed, {
+    assert.deepStrictEqual(consumed, {
         moduleName: 'profile',
         token: 'previous-refresh'
     });
 
-    removed = undefined;
+    consumed = undefined;
     let stale = request({
         origin: 'https://axis.example.com',
         cookie: 'refresh=missing-refresh'
@@ -127,7 +133,10 @@ function request(headers) {
         authToken: 'replacement-access',
         refreshToken: 'replacement-refresh'
     });
-    assert.strictEqual(removed, undefined);
+    assert.deepStrictEqual(consumed, {
+        moduleName: 'profile',
+        token: 'missing-refresh'
+    });
     assert(stale.responseHeaders['Set-Cookie'][0].includes('replacement-refresh'));
 
     await assert.rejects(async () => service.start(request({

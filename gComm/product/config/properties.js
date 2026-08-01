@@ -21,16 +21,22 @@ module.exports = {
                 group: { id: 'commerce', label: 'Commerce', order: 300 },
                 perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
                 featureState: 'ACTIVE', requiredPermissions: ['product.backoffice.read'] },
-            ...['Categories', 'Product Catalogs', 'Classifications', 'Bundles'].map((label, index) => ({
-                id: ['categories', 'product-catalogs', 'classifications', 'bundles'][index],
-                parentId: 'products', label,
-                route: '/products/' + ['categories', 'catalogs', 'classifications', 'bundles'][index],
-                icon: 'product', order: 440 + index * 10,
-                group: { id: 'commerce', label: 'Commerce', order: 300 },
-                perspectives: ['operations', 'commerce'],
-                contexts: ['environment', 'tenant', 'enterprise'],
-                featureState: 'DISABLED'
-            }))]
+            { id: 'categories', parentId: 'products', label: 'Categories', route: '/products/categories',
+                icon: 'product', order: 440, group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED' },
+            { id: 'product-catalogs', parentId: 'products', label: 'Product Catalogs', route: '/products/catalogs',
+                icon: 'product', order: 450, group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED' },
+            { id: 'classifications', parentId: 'products', label: 'Classifications', route: '/products/classifications',
+                icon: 'product', order: 460, group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED' },
+            { id: 'bundles', parentId: 'products', label: 'Bundles', route: '/products/bundles',
+                icon: 'product', order: 470, group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED' }]
         }
     },
     product: {

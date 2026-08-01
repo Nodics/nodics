@@ -14,13 +14,13 @@
     "description": "Build configuration related functionalities for Nodics"
   },
   "sourceFiles": 15,
-  "testFiles": 10,
+  "testFiles": 11,
   "dataFiles": 0,
-  "ownedFiles": 36,
-  "sourceFingerprint": "92ca6414f86eef0f8add721b02b86cdd2f5b77dd9d8bf0706077112ad690622b",
+  "ownedFiles": 37,
+  "sourceFingerprint": "8197412955e02521a3fa767eccc2d7428cd3d55636244c597f0d1f4a00196ee4",
   "documentation": {
     "documented": 30,
-    "partially-documented": 2,
+    "partially-documented": 3,
     "undocumented": 0,
     "inventory-only": 4
   },

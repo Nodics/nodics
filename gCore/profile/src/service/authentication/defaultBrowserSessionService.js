@@ -175,9 +175,7 @@ module.exports = {
         if (!token) return Promise.resolve(false);
         let authentication = SERVICE.DefaultAuthenticationProviderService;
         let moduleName = CONFIG.get('profileModuleName') || 'profile';
-        return authentication.findToken(moduleName, token).then(() =>
-            authentication.removeToken(moduleName, token).then(() => true)
-        ).catch(error => {
+        return authentication.consumeToken(moduleName, token).then(() => true).catch(error => {
             if (error && error.code === 'ERR_CACHE_00001') return false;
             throw error;
         });

@@ -41,17 +41,26 @@ module.exports = {
                 group: { id: 'content', label: 'Content and Experience', order: 200 },
                 perspectives: ['operations', 'content'], contexts: ['environment', 'tenant', 'enterprise', 'site'],
                 featureState: 'ACTIVE' },
-            ...['Sites', 'Domains', 'Store Bindings', 'Catalog Bindings'].map((label, index) => ({
-                id: ['sites', 'domains', 'store-bindings', 'catalog-bindings'][index],
-                parentId: 'storefronts', label,
-                route: '/experience/storefronts/' + ['sites', 'domains', 'store-bindings',
-                    'catalog-bindings'][index],
-                icon: 'storefront', order: 310 + index * 10,
+            { id: 'sites', parentId: 'storefronts', label: 'Sites',
+                route: '/experience/storefronts/sites', icon: 'storefront', order: 310,
                 group: { id: 'content', label: 'Content and Experience', order: 200 },
-                perspectives: ['operations', 'content'],
-                contexts: ['environment', 'tenant', 'enterprise', 'site'],
-                featureState: 'DISABLED'
-            }))]
+                perspectives: ['operations', 'content'], contexts: ['environment', 'tenant', 'enterprise', 'site'],
+                featureState: 'DISABLED' },
+            { id: 'domains', parentId: 'storefronts', label: 'Domains',
+                route: '/experience/storefronts/domains', icon: 'storefront', order: 320,
+                group: { id: 'content', label: 'Content and Experience', order: 200 },
+                perspectives: ['operations', 'content'], contexts: ['environment', 'tenant', 'enterprise', 'site'],
+                featureState: 'DISABLED' },
+            { id: 'store-bindings', parentId: 'storefronts', label: 'Store Bindings',
+                route: '/experience/storefronts/store-bindings', icon: 'storefront', order: 330,
+                group: { id: 'content', label: 'Content and Experience', order: 200 },
+                perspectives: ['operations', 'content'], contexts: ['environment', 'tenant', 'enterprise', 'site'],
+                featureState: 'DISABLED' },
+            { id: 'catalog-bindings', parentId: 'storefronts', label: 'Catalog Bindings',
+                route: '/experience/storefronts/catalog-bindings', icon: 'storefront', order: 340,
+                group: { id: 'content', label: 'Content and Experience', order: 200 },
+                perspectives: ['operations', 'content'], contexts: ['environment', 'tenant', 'enterprise', 'site'],
+                featureState: 'DISABLED' }]
         }
     },
     storefront: {
@@ -130,7 +139,7 @@ module.exports = {
             audit: {
                 enabled: true,
                 issueSuccessSampleRate: 0.1,
-                publisherService: undefined,
+                publisherService: null,
                 events: { enabled: false, publisherService: 'DefaultEventService', eventName: 'storefront.context.lifecycle', target: 'storefront', type: 'ASYNC' }
             },
             tokenBytes: 32,

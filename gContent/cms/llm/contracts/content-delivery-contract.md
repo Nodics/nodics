@@ -7,6 +7,19 @@
   consumer implementation names.
 - Extend `cmsTypeCode` as the page/component type authority; do not add a
   parallel component-type registry.
+- Model WCMS BackOffice authoring concepts through backend-owned schemas and
+  configuration: `cmsComponentTypeGroup` groups existing `cmsTypeCode`
+  component types, `cmsNavigationNode` owns site-scoped navigation trees,
+  `cmsRestrictionType` owns declarative restriction contracts, and
+  `cmsRestriction` assigns configured restrictions to pages, components, slots,
+  navigation nodes, or routes.
+- Keep WCMS schemas configuration-first and customer-customizable through later
+  module layers. Axis may render these records and provide authoring UX, but it
+  must not hardcode customer page types, component groups, slot rules,
+  restrictions, navigation behavior, or publication logic.
+- Restriction type `propertySchema` and evaluator keys are declarative backend
+  contracts only. Do not store executable predicates, scripts, client component
+  imports, or frontend implementation paths in CMS data.
 - Resolve delivery graphs with tenant context, bounded breadth-first batches,
   explicit depth/size limits, and a client-safe allowlisted projection.
 - Invalidate the configured effective delivery router prefixes through

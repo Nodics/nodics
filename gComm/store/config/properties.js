@@ -27,16 +27,16 @@ module.exports = {
                 group: { id: 'commerce', label: 'Commerce', order: 300 },
                 perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
                 featureState: 'ACTIVE' },
-            ...['Locations', 'Fulfillment Associations'].map((label, index) => ({
-                id: ['store-locations', 'fulfillment-associations'][index],
-                parentId: 'stores', label,
-                route: '/commerce/stores/' + ['locations', 'fulfillment-associations'][index],
-                icon: 'store', order: 420 + index * 10,
+            { id: 'store-locations', parentId: 'stores', label: 'Locations',
+                route: '/commerce/stores/locations', icon: 'store', order: 420,
                 group: { id: 'commerce', label: 'Commerce', order: 300 },
-                perspectives: ['operations', 'commerce'],
-                contexts: ['environment', 'tenant', 'enterprise'],
-                featureState: 'DISABLED'
-            }))]
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED' },
+            { id: 'fulfillment-associations', parentId: 'stores', label: 'Fulfillment Associations',
+                route: '/commerce/stores/fulfillment-associations', icon: 'store', order: 430,
+                group: { id: 'commerce', label: 'Commerce', order: 300 },
+                perspectives: ['operations', 'commerce'], contexts: ['environment', 'tenant', 'enterprise'],
+                featureState: 'DISABLED' }]
         }
     },
     store: {

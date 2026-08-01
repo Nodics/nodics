@@ -31,5 +31,9 @@ module.exports = {
     ERR_CMS_00081: { code: '400', message: 'CMS Site reference input is invalid' },
     ERR_CMS_00082: { code: '401', message: 'Active Storefront context is required' },
     ERR_CMS_00083: { code: '500', message: 'CMS delivery configuration is incomplete' },
-    ERR_CMS_00094: { code: '400', message: 'CMS component media is invalid' }
+    ERR_CMS_00094: { code: '400', message: 'CMS component media is invalid' },
+    ERR_CMS_00095: { code: '400', message: 'CMS slot definition is invalid' },
+    ERR_CMS_00096: { code: '400', message: 'CMS navigation node is invalid' },
+    ERR_CMS_00097: { code: '400', message: 'CMS restriction type is invalid' },
+    ERR_CMS_00098: { code: '400', message: 'CMS restriction is invalid' }
 };

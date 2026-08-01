@@ -31,7 +31,10 @@ global.CONFIG = {
         screenLockEnabled: true,
         idleTimeoutSeconds: 900,
         minimumIdleTimeoutSeconds: 60,
-        maximumIdleTimeoutSeconds: 86400
+        maximumIdleTimeoutSeconds: 86400,
+        recentNavigationLimit: 12,
+        minimumRecentNavigationLimit: 1,
+        maximumRecentNavigationLimit: 24
     } : key === 'defaultTenant' ? 'default' : undefined
 };
 
@@ -67,6 +70,7 @@ const service = require(path.resolve(__dirname, '../src/service/policy/defaultAx
         contractVersion: 1,
         screenLockEnabled: true,
         idleTimeoutSeconds: 900,
+        recentNavigationLimit: 12,
         revision: 0,
         source: 'DEFAULT'
     });
@@ -74,23 +78,26 @@ const service = require(path.resolve(__dirname, '../src/service/policy/defaultAx
     let created = await service.update({
         tenant: 'tenantA',
         authData: { tokenType: 'human', principalId: 'axis.admin' },
-        body: { screenLockEnabled: true, idleTimeoutSeconds: 600, expectedRevision: 0 }
+        body: { screenLockEnabled: true, idleTimeoutSeconds: 600, recentNavigationLimit: 8, expectedRevision: 0 }
     });
     assert.strictEqual(created.data.revision, 1);
     assert.strictEqual(persisted.idleTimeoutSeconds, 600);
+    assert.strictEqual(persisted.recentNavigationLimit, 8);
     assert.strictEqual(audit.eventType, 'backoffice.axis.policy.updated');
 
     let effective = await service.getEffective({ tenant: 'tenantA' });
     assert.strictEqual(effective.source, 'PERSISTED');
     assert.strictEqual(effective.idleTimeoutSeconds, 600);
+    assert.strictEqual(effective.recentNavigationLimit, 8);
 
     let updated = await service.update({
         tenant: 'tenantA',
         authData: { tokenType: 'human', principalId: 'axis.admin' },
-        body: { screenLockEnabled: false, idleTimeoutSeconds: 1200, expectedRevision: 1 }
+        body: { screenLockEnabled: false, idleTimeoutSeconds: 1200, recentNavigationLimit: 10, expectedRevision: 1 }
     });
     assert.strictEqual(updated.data.revision, 2);
     assert.strictEqual(updated.data.screenLockEnabled, false);
+    assert.strictEqual(updated.data.recentNavigationLimit, 10);
 
     await assert.rejects(() => service.update({
         tenant: 'tenantA',
@@ -102,6 +109,11 @@ const service = require(path.resolve(__dirname, '../src/service/policy/defaultAx
         authData: { tokenType: 'human', principalId: 'axis.admin' },
         body: { screenLockEnabled: true, idleTimeoutSeconds: 900, expectedRevision: 1 }
     }), /revision conflict/);
+    await assert.rejects(() => service.update({
+        tenant: 'tenantA',
+        authData: { tokenType: 'human', principalId: 'axis.admin' },
+        body: { screenLockEnabled: true, idleTimeoutSeconds: 900, recentNavigationLimit: 25, expectedRevision: 2 }
+    }), /Invalid Axis recent navigation policy/);
     await assert.rejects(() => service.update({
         tenant: 'tenantA',
         authData: { tokenType: 'service', principalId: 'module' },

@@ -84,6 +84,7 @@ module.exports = {
                 contractVersion: { type: 'int', required: true, default: 1, description: 'Version of the client-safe Axis policy contract' },
                 screenLockEnabled: { type: 'bool', required: true, default: true, description: 'Whether authenticated Axis sessions lock after inactivity' },
                 idleTimeoutSeconds: { type: 'int', required: true, default: 900, description: 'Inactivity duration in seconds before Axis enters lock mode' },
+                recentNavigationLimit: { type: 'int', required: true, default: 12, description: 'Maximum number of recent Axis navigation entries shown in the shell component' },
                 revision: { type: 'int', required: true, default: 1, description: 'Optimistic-concurrency revision for operator updates' },
                 updatedAt: { type: 'date', required: true, description: 'Time the effective persistent policy was last changed' },
                 updatedBy: { type: 'string', required: true, description: 'Authenticated employee that changed the policy' }

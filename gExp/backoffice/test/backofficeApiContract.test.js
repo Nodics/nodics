@@ -41,6 +41,9 @@ assert(contracts.bootstrapData.required.includes('documentationSources'));
 assert.deepStrictEqual(contracts.documentationSource.properties.type.enum, ['CMS', 'OPENAPI']);
 assert.deepStrictEqual(contracts.axisPolicyUpdate.required,
     ['screenLockEnabled', 'idleTimeoutSeconds', 'expectedRevision']);
+assert(contracts.axisPolicy.required.includes('recentNavigationLimit'));
+assert.strictEqual(contracts.axisPolicy.properties.recentNavigationLimit.maximum, 24);
+assert.strictEqual(contracts.axisPolicyUpdate.properties.recentNavigationLimit.minimum, 1);
 assert.deepStrictEqual(contracts.publicBootstrapData.required,
     ['contractVersion', 'clientContractVersion', 'endpoints', 'uiComposition']);
 assert.deepStrictEqual(contracts.moduleAvailability.properties.state.enum, ['UP', 'DEGRADED', 'UNAVAILABLE', 'UNKNOWN']);
@@ -50,6 +53,14 @@ assert(contracts.backofficeMetadata.properties.navigation.items.properties.group
     'navigation must expose the governed business-group contract');
 assert(contracts.backofficeMetadata.properties.navigation.items.properties.badgeProvider,
     'navigation badges must remain non-executable provider references');
+assert(contracts.backofficeMetadata.properties.navigation.items.properties.workbenchTarget,
+    'navigation must expose bounded schema-workbench targets for backend-driven Axis routes');
+assert(contracts.backofficeMetadata.properties.navigation.items.properties.help,
+    'navigation must expose bounded help metadata for backend-driven Axis workspace context');
+assert.strictEqual(contracts.navigationWorkbenchTarget.additionalProperties, false);
+assert.strictEqual(contracts.navigationWorkbenchTarget.properties.mode.enum[0], 'create');
+assert.strictEqual(contracts.navigationHelp.additionalProperties, false);
+assert.strictEqual(contracts.navigationHelp.properties.documentationRoute.pattern, '^/docs(?:$|/)');
 assert(contracts.moduleAvailability.required.includes('unknownInstances'));
 assert(contracts.adminDetailData.properties.instances.items.properties.environment);
 assert(contracts.adminDetailData.properties.instances.items.properties.server);
@@ -79,7 +90,10 @@ assert(service.validateBackofficeMetadata({
     navigation: [{ id: 'records', label: 'Records', route: '/records', icon: 'registry', order: 1,
         group: { id: 'operations', label: 'Operations', labelKey: 'axis.group.operations', order: 600 },
         perspectives: ['operations'], contexts: ['environment', 'tenant'], featureState: 'ACTIVE',
-        badgeProvider: { moduleName: 'cms', operationId: 'cms.pending.count' } }]
+        badgeProvider: { moduleName: 'cms', operationId: 'cms.pending.count' },
+        workbenchTarget: { moduleName: 'cms', schemaName: 'cmsPage' },
+        help: { summary: 'Review backend-owned records with a short business explanation.',
+            documentationRoute: '/docs/capabilities/content-publishing/wcms-authoring-model', documentationFragment: 'pages' } }]
 }));
 assert.strictEqual(service.validateBackofficeMetadata({
     enabled: true, capabilityId: 'invalid-icon-contract',
@@ -97,6 +111,23 @@ assert.strictEqual(service.validateBackofficeMetadata({
 assert.strictEqual(service.validateBackofficeMetadata({
     navigation: [{ id: 'hidden', label: 'Hidden', contexts: ['secret-context'] }]
 }), false, 'unknown context dimensions must fail registration');
+assert.strictEqual(service.validateBackofficeMetadata({
+    navigation: [{ id: 'unsafe-target', label: 'Unsafe target',
+        workbenchTarget: { moduleName: 'cms', schemaName: '../cmsPage' } }]
+}), false, 'unsafe workbench schema names must fail registration');
+assert.strictEqual(service.validateBackofficeMetadata({
+    navigation: [{ id: 'unsafe-mode', label: 'Unsafe mode',
+        workbenchTarget: { moduleName: 'cms', schemaName: 'cmsPage', mode: 'delete' } }]
+}), false, 'unsupported workbench target modes must fail registration');
+assert.strictEqual(service.validateBackofficeMetadata({
+    navigation: [{ id: 'unsafe-help', label: 'Unsafe help',
+        help: { summary: 'Unsafe docs target', documentationRoute: 'https://evil.example/docs' } }]
+}), false, 'external navigation help documentation routes must fail registration');
+assert.strictEqual(service.validateBackofficeMetadata({
+    navigation: [{ id: 'unsafe-help-fragment', label: 'Unsafe help fragment',
+        help: { summary: 'Unsafe docs fragment', documentationRoute: '/docs/capabilities/content-publishing/wcms-authoring-model',
+            documentationFragment: '../bad' } }]
+}), false, 'unsafe navigation help documentation fragments must fail registration');
 assert(service.validateBackofficeMetadata({
     documentation: [
         { id: 'guide', label: 'Guide', type: 'CMS', route: '/docs/guide', order: 1,

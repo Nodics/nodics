@@ -54,6 +54,17 @@ The existing `cmsTypeCode` model remains the single page/component type
 authority and carries the declarative type contract; CMS does not introduce a
 parallel component-type registry.
 
+WCMS-style BackOffice authoring uses the same backend-owned CMS authority. CMS
+provides `cmsComponentTypeGroup` for authoring groupings of existing
+`cmsTypeCode` component types, `cmsNavigationNode` for site-scoped navigation
+trees, `cmsRestrictionType` for declarative restriction contracts, and
+`cmsRestriction` for assigning restriction values to pages, components, slots,
+navigation nodes, or routes. These schemas are manageable through generated
+secured CRUD routes and remain non-versioned until a deployment layer opts into
+versioned CMS authoring. Customer/project modules may extend these schemas,
+initializer data, and validation services through later layers; Axis must
+discover and render them rather than hardcoding one customer WCMS model.
+
 ## CMS Media Components
 
 CMS owns the meaning of a content component, not the binary media lifecycle.
@@ -173,7 +184,8 @@ CMS framework behavior.
 Run `node gContent/cms/test/cmsContentDeliveryContract.test.js`,
 `node gContent/cms/test/cmsStorefrontDeliveryContract.test.js`,
 `node gContent/cms/test/cmsSiteReferenceContract.test.js`, and
-`node gContent/cms/test/cmsPublicationManifestContract.test.js` before broader
+`node gContent/cms/test/cmsPublicationManifestContract.test.js`, and
+`node gContent/cms/test/cmsWcmsAuthoringSchemaContract.test.js` before broader
 generated and integration suites. CMS contract upgrades use secured
 `/migration/preview`, `/migration/apply`, and `/migration/rollback` operations.
 Preview never mutates data; apply is versioned and audited; repeat execution is

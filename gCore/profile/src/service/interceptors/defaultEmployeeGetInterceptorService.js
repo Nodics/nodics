@@ -26,7 +26,10 @@ module.exports = {
      */
     getEmployeeRecursive: function (request, response) {
         return new Promise((resolve, reject) => {
-            request.options.recursive = request.options.recursive || true;
+            request.options = request.options || {};
+            if (request.options.recursive === undefined) {
+                request.options.recursive = true;
+            }
             resolve(true);
         });
     },

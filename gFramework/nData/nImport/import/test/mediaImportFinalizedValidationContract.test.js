@@ -9,6 +9,13 @@
 
  */
 
+/**
+ * @module import/test/mediaImportFinalizedValidationContract
+ * @description Validates finalized nImport media validation reports and validate-only failure projection.
+ * @layer test
+ * @owner import
+ * @override Extend when media import finalization changes validation report shape or pipeline handoff behavior.
+ */
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
@@ -16,6 +23,11 @@ const path = require('path');
 
 const importService = require('../src/service/import/defaultImportService');
 
+/**
+ * Validates finalized media import validation reports and validate-only import failure projection.
+ *
+ * @returns {Promise<void>} Resolves after all finalized validation assertions pass.
+ */
 async function main() {
     let workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'nodics-media-import-validation-'));
     let dataPath = path.join(workspace, 'data');
@@ -75,6 +87,12 @@ async function main() {
     let service = Object.assign({}, importService);
     global.SERVICE = {
         DefaultMediaImportDefinitionService: {
+            /**
+             * Prepares a deterministic media import workspace for validate-only import assertions.
+             *
+             * @param {Object} mediaRequest Import request mutated with a synthetic import run.
+             * @returns {Promise<Object>} Prepared import workspace paths and source metadata.
+             */
             prepare: function (mediaRequest) {
                 mediaRequest.importRun = {
                     runId: 'media_validation_run',
@@ -97,6 +115,12 @@ async function main() {
             }
         },
         DefaultPipelineService: {
+            /**
+             * Captures the pipeline selected by validate-only media import execution.
+             *
+             * @param {string} pipelineName Pipeline name requested by the import service.
+             * @returns {Promise<Object>} Synthetic pipeline start response.
+             */
             start: function (pipelineName) {
                 assert.strictEqual(pipelineName, 'localDataImportInitializerPipeline');
                 return Promise.resolve({ code: 'SUC_IMP_READY' });

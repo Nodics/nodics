@@ -302,8 +302,8 @@ module.exports = {
                 responses: { '200': { description: 'Stored media metadata descriptor' } }
             },
             deliverMediaContent: {
-                secured: false,
-                publicAccess: true,
+                secured: true,
+                permission: 'media.content.read',
                 accessGroups: ['userGroup'],
                 apiExposure: 'mediaManagement',
                 key: '/content/:mediaCode',
@@ -312,7 +312,7 @@ module.exports = {
                 operation: 'deliverMediaContent',
                 responseHandler: 'mediaContentResponseHandler',
                 help: {
-                    requestType: 'publicWhenMediaPolicyAllows',
+                    requestType: 'authenticatedMediaDelivery',
                     message: 'Delivers media content by media code after nMedia access policy validation.',
                     method: 'GET',
                     url: 'http://host:port/nodics/media/v0/content/{mediaCode}'

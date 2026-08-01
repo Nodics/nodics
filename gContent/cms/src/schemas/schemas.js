@@ -117,6 +117,73 @@ module.exports = {
             definition: {
             }
         },
+        cmsComponentTypeGroup: {
+            super: 'cmsBase',
+            isVersionedEnabled: false,
+            model: true,
+            service: {
+                enabled: true
+            },
+            cache: {
+                enabled: true,
+                ttl: 10000
+            },
+            router: {
+                enabled: true
+            },
+            search: {
+                enabled: false,
+                idPropertyName: 'code',
+            },
+            refSchema: {
+                componentTypeCodes: {
+                    enabled: true,
+                    schemaName: 'cmsTypeCode',
+                    type: 'many',
+                    propertyName: 'code',
+                    searchEnabled: true
+                }
+            },
+            definition: {
+                name: {
+                    type: 'string',
+                    required: true,
+                    description: 'Human-readable component type group name',
+                    searchOptions: {
+                        enabled: true,
+                    }
+                },
+                description: {
+                    type: 'string',
+                    required: false,
+                    description: 'Business description of the component type group'
+                },
+                componentTypeCodes: {
+                    type: 'array',
+                    required: true,
+                    description: 'CMS component type codes belonging to this authoring group',
+                    searchOptions: {
+                        enabled: true,
+                    }
+                },
+                status: {
+                    type: 'string',
+                    required: true,
+                    default: 'ACTIVE',
+                    enum: ['ACTIVE', 'INACTIVE'],
+                    description: 'Authoring availability for this component type group',
+                    searchOptions: {
+                        enabled: true,
+                    }
+                },
+                sortOrder: {
+                    type: 'int',
+                    required: true,
+                    default: 100,
+                    description: 'Authoring display order for this component type group'
+                }
+            }
+        },
         cmsSite: {
             super: 'cmsBase',
             model: true,
@@ -515,6 +582,56 @@ module.exports = {
                 }
             }
         },
+        cmsNavigationNode: {
+            super: 'cmsBase',
+            isVersionedEnabled: false,
+            model: true,
+            service: { enabled: true },
+            router: { enabled: true },
+            cache: { enabled: true, ttl: 10000 },
+            search: {
+                enabled: false,
+                idPropertyName: 'code',
+            },
+            refSchema: {
+                site: { enabled: true, schemaName: 'cmsSite', type: 'one', propertyName: 'code', searchEnabled: true },
+                parent: { enabled: true, schemaName: 'cmsNavigationNode', type: 'one', propertyName: 'code', searchEnabled: true },
+                targetPage: { enabled: true, schemaName: 'cmsPage', type: 'one', propertyName: 'code', searchEnabled: true },
+                targetRoute: { enabled: true, schemaName: 'cmsPageRoute', type: 'one', propertyName: 'code', searchEnabled: true },
+                restrictions: { enabled: true, schemaName: 'cmsRestriction', type: 'many', propertyName: 'code', searchEnabled: true }
+            },
+            definition: {
+                site: { type: 'string', required: true, description: 'CMS site code owning this navigation node', searchOptions: { enabled: true } },
+                parent: { type: 'string', required: false, description: 'Optional parent navigation node code', searchOptions: { enabled: true } },
+                name: { type: 'string', required: true, description: 'Internal navigation node name', searchOptions: { enabled: true } },
+                title: { type: 'string', required: false, description: 'Display title for navigation renderers', searchOptions: { enabled: true } },
+                nodeType: { type: 'string', required: true, default: 'PAGE', enum: ['PAGE', 'ROUTE', 'EXTERNAL', 'CONTAINER'], description: 'Navigation target behavior' },
+                targetPage: { type: 'string', required: false, description: 'Target CMS page when nodeType is PAGE', searchOptions: { enabled: true } },
+                targetRoute: { type: 'string', required: false, description: 'Target CMS page route when nodeType is ROUTE', searchOptions: { enabled: true } },
+                externalUrl: { type: 'string', required: false, description: 'Safe external URL when nodeType is EXTERNAL; validation remains service-owned' },
+                position: { type: 'int', required: true, default: 100, description: 'Sibling ordering position' },
+                status: { type: 'string', required: true, default: 'ACTIVE', enum: ['ACTIVE', 'INACTIVE'], description: 'Authoring availability for this navigation node', searchOptions: { enabled: true } },
+                locale: { type: 'string', required: true, default: 'default', description: 'Locale scope or default fallback', searchOptions: { enabled: true } },
+                channel: { type: 'string', required: true, default: 'web', description: 'Delivery channel scope', searchOptions: { enabled: true } },
+                restrictions: { type: 'array', required: false, description: 'Optional CMS restriction codes applied to this navigation node' }
+            },
+            indexes: {
+                composite: {
+                    site: { enabled: true, name: 'site', options: { unique: true } },
+                    parent: { enabled: true, name: 'parent', options: { unique: true } },
+                    position: { enabled: true, name: 'position', options: { unique: true } },
+                    locale: { enabled: true, name: 'locale', options: { unique: true } },
+                    channel: { enabled: true, name: 'channel', options: { unique: true } }
+                },
+                individual: {
+                    site: { enabled: true, name: 'site' },
+                    parent: { enabled: true, name: 'parent' },
+                    targetPage: { enabled: true, name: 'targetPage' },
+                    targetRoute: { enabled: true, name: 'targetRoute' },
+                    status: { enabled: true, name: 'status' }
+                }
+            }
+        },
         cmsPageTemplate: {
             super: 'cmsBase',
             isVersionedEnabled: false,
@@ -542,7 +659,66 @@ module.exports = {
                 name: { type: 'string', required: true, description: 'Stable logical slot name' },
                 minItems: { type: 'int', required: false, default: 0, description: 'Minimum allowed component count' },
                 maxItems: { type: 'int', required: false, description: 'Maximum allowed component count' },
-                allowedComponentTypes: { type: 'array', required: false, description: 'Optional allowlist of component type codes' }
+                allowedComponentTypes: { type: 'array', required: false, description: 'Optional allowlist of component type codes' },
+                allowedComponentTypeGroups: { type: 'array', required: false, description: 'Optional allowlist of CMS component type group codes' }
+            }
+        },
+        cmsRestrictionType: {
+            super: 'cmsBase',
+            isVersionedEnabled: false,
+            model: true,
+            service: { enabled: true },
+            router: { enabled: true },
+            cache: { enabled: true, ttl: 10000 },
+            search: {
+                enabled: false,
+                idPropertyName: 'code',
+            },
+            definition: {
+                name: { type: 'string', required: true, description: 'Human-readable restriction type name', searchOptions: { enabled: true } },
+                description: { type: 'string', required: false, description: 'Business description of the restriction type' },
+                targetTypes: { type: 'array', required: true, default: ['PAGE', 'COMPONENT', 'SLOT', 'NAVIGATION', 'ROUTE'], description: 'CMS target kinds to which this restriction type can apply', searchOptions: { enabled: true } },
+                propertySchema: { type: 'object', required: false, description: 'Declarative restriction property contract; executable code is prohibited' },
+                evaluator: { type: 'string', required: false, description: 'Logical backend evaluator key resolved by CMS services; never executable code or a client path' },
+                status: { type: 'string', required: true, default: 'ACTIVE', enum: ['ACTIVE', 'INACTIVE'], description: 'Authoring availability for this restriction type', searchOptions: { enabled: true } }
+            }
+        },
+        cmsRestriction: {
+            super: 'cmsBase',
+            isVersionedEnabled: false,
+            model: true,
+            service: { enabled: true },
+            router: { enabled: true },
+            cache: { enabled: true, ttl: 10000 },
+            search: {
+                enabled: false,
+                idPropertyName: 'code',
+            },
+            refSchema: {
+                restrictionType: { enabled: true, schemaName: 'cmsRestrictionType', type: 'one', propertyName: 'code', searchEnabled: true }
+            },
+            definition: {
+                name: { type: 'string', required: true, description: 'Human-readable restriction name', searchOptions: { enabled: true } },
+                restrictionType: { type: 'string', required: true, description: 'CMS restriction type code', searchOptions: { enabled: true } },
+                targetType: { type: 'string', required: true, enum: ['PAGE', 'COMPONENT', 'SLOT', 'NAVIGATION', 'ROUTE'], description: 'CMS target kind guarded by this restriction', searchOptions: { enabled: true } },
+                targetCode: { type: 'string', required: true, description: 'Code of the page, component, slot, navigation node, or route guarded by this restriction', searchOptions: { enabled: true } },
+                mode: { type: 'string', required: true, default: 'INCLUDE', enum: ['INCLUDE', 'EXCLUDE'], description: 'Whether matching users or contexts can access or are excluded from the target' },
+                properties: { type: 'object', required: false, description: 'Declarative restriction values validated against the restriction type propertySchema' },
+                status: { type: 'string', required: true, default: 'ACTIVE', enum: ['ACTIVE', 'INACTIVE'], description: 'Restriction lifecycle state', searchOptions: { enabled: true } },
+                priority: { type: 'int', required: true, default: 100, description: 'Evaluation order for multiple restrictions on the same target' }
+            },
+            indexes: {
+                composite: {
+                    targetType: { enabled: true, name: 'targetType', options: { unique: true } },
+                    targetCode: { enabled: true, name: 'targetCode', options: { unique: true } },
+                    restrictionType: { enabled: true, name: 'restrictionType', options: { unique: true } }
+                },
+                individual: {
+                    restrictionType: { enabled: true, name: 'restrictionType' },
+                    targetType: { enabled: true, name: 'targetType' },
+                    targetCode: { enabled: true, name: 'targetCode' },
+                    status: { enabled: true, name: 'status' }
+                }
             }
         },
         cmsMigrationAudit: {
