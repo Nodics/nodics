@@ -18,6 +18,7 @@
  */
 const assert = require('assert');
 const properties = require('../config/properties');
+const interceptors = require('../src/interceptors/interceptors');
 
 global.ENUMS = {
     ReasonType: {
@@ -38,6 +39,9 @@ const abstractEntry = cartSchemas.default.abstractCartEntry;
 assert.strictEqual(properties.checkoutEntry, undefined);
 assert(properties.order.checkoutEntry.policy.immutableFields.includes('orderCode'));
 assert(properties.order.checkoutEntry.policy.immutableFields.includes('totalPrice'));
+assert.strictEqual(interceptors.orderEntryPreSavePolicy.handler, 'DefaultOrderEntryPolicyService.prepareEntry');
+assert.strictEqual(interceptors.orderEntryPreUpdatePolicy.handler, 'DefaultOrderEntryPolicyService.prepareEntryUpdate');
+assert.strictEqual(interceptors.orderEntryPreRemovePolicy.handler, 'DefaultOrderEntryPolicyService.rejectHardDelete');
 
 assert.strictEqual(orderEntry.super, 'abstractCartEntry');
 assert.strictEqual(abstractEntry.model, false);
@@ -134,11 +138,25 @@ global.CLASSES = {
     },
 };
 const serviceConvertedEntry = orderEntryPolicyService.buildFromCartEntry(cartEntryPayload, { orderCode: 'order-2' });
+global.SERVICE = {
+    DefaultOrderEntryService: {
+        get: async () => ({ result: [serviceConvertedEntry] }),
+    },
+};
 assert.strictEqual(serviceConvertedEntry.orderCode, 'order-2');
 assert.strictEqual(serviceConvertedEntry.status, 'ORDERED');
 assert.throws(
     () => orderEntryPolicyService.validateUpdate(serviceConvertedEntry, { totalPrice: '10.00' }),
     /totalPrice is immutable/,
 );
-
-console.log('Order entry foundation contract validated');
+(async () => {
+    await orderEntryPolicyService.prepareEntryUpdate({ query: { code: 'entry-1' }, model: { status: 'ALLOCATED' } });
+    await assert.rejects(
+        () => orderEntryPolicyService.rejectHardDelete(),
+        /Order Entry history cannot be hard-deleted/,
+    );
+    console.log('Order entry foundation contract validated');
+})().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+});

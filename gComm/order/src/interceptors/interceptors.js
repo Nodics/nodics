@@ -33,4 +33,28 @@ module.exports = {
         index: 1,
         handler: 'DefaultOrderCodeGeneratorInterceptorService.generateOrderCode'
     },
+    orderEntryPreSavePolicy: {
+        type: 'schema',
+        item: 'orderEntry',
+        trigger: 'preSave',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultOrderEntryPolicyService.prepareEntry'
+    },
+    orderEntryPreUpdatePolicy: {
+        type: 'schema',
+        item: 'orderEntry',
+        trigger: 'preUpdate',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultOrderEntryPolicyService.prepareEntryUpdate'
+    },
+    orderEntryPreRemovePolicy: {
+        type: 'schema',
+        item: 'orderEntry',
+        trigger: 'preRemove',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultOrderEntryPolicyService.rejectHardDelete'
+    },
 };

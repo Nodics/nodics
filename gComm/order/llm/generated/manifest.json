@@ -14,12 +14,12 @@
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to order"
   },
   "sourceFiles": 13,
-  "testFiles": 17,
+  "testFiles": 18,
   "dataFiles": 9,
-  "ownedFiles": 33,
-  "sourceFingerprint": "2d13103be983c2defc5c250ddf7822ac6183f098965ae3fd19f66caa63860b7e",
+  "ownedFiles": 34,
+  "sourceFingerprint": "706eba295a06d65f98d733949b58525ec9e2ffadfe01a9161f6b4b6e0fc9cd70",
   "documentation": {
-    "documented": 26,
+    "documented": 27,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 5
@@ -28,6 +28,7 @@
     "order": [
       "order",
       "orderEntry",
+      "orderHistoryEntry",
       "orderstatus",
       "paymentstatus",
       "reasons",

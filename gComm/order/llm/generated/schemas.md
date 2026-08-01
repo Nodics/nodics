@@ -8,6 +8,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `order` | `abstractCart` | yes | yes | yes | no | no | no |  | 0 |
 | `orderEntry` | `abstractCartEntry` | yes | yes | no | no | no | no |  | 4 |
+| `orderHistoryEntry` | `base` | yes | yes | no | no | no | no |  | 13 |
 | `orderstatus` | `base` | yes | yes | yes | no | no | no |  | 2 |
 | `paymentstatus` | `orderstatus` | no | no | no | no | no | no |  | 0 |
 | `reasons` | `super` | yes | yes | yes | no | no | no |  | 2 |
@@ -23,6 +24,22 @@
 - `cartCode` `string` optional: Optional source cart code retained as conversion evidence
 - `orderCode` `string` required: Parent order code. Order owns lifecycle while entries own immutable line-level evidence.
 - `reservationCode` `string` optional: Optional Inventory reservation evidence consumed by this order line
+
+### `order.orderHistoryEntry`
+
+- `actorCode` `string` optional: Actor identity captured for audit and support review
+- `actorType` `string` optional: Actor category that produced the event, such as EMPLOYEE, CUSTOMER, SERVICE, or SYSTEM
+- `entCode` `string` required: Enterprise code that owns the order lifecycle history entry
+- `eventType` `string` required: Business event type such as STATUS_CHANGE, PAYMENT_EVENT, FULFILLMENT_EVENT, NOTE, or SYSTEM_EVENT
+- `evidenceCode` `string` optional: Optional external evidence, workflow, payment, inventory, fulfillment, or audit reference
+- `historyCode` `string` required: Stable business identity for this order history event
+- `message` `string` optional: Human-readable lifecycle note. Do not store secrets, payment credentials, or raw provider payloads.
+- `orderCode` `string` required: Parent order code for this history entry
+- `reasonCode` `string` optional: Optional order reason code captured as evidence for this event
+- `sourceModule` `string` optional: Owning module that emitted or recorded the event
+- `sourceOperation` `string` optional: Operation, workflow step, pipeline node, or API that produced the event
+- `statusFrom` `string` optional: Previous order status when the event represents a status transition
+- `statusTo` `string` optional: New order status when the event represents a status transition
 
 ### `order.orderstatus`
 

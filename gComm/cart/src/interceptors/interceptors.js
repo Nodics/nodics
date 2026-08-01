@@ -41,4 +41,28 @@ module.exports = {
         index: 1,
         handler: 'defaultCartTokenDetailInterceptorService.loadCartToken'
     },
+    cartEntryPreSavePolicy: {
+        type: 'schema',
+        item: 'cartEntry',
+        trigger: 'preSave',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultCartEntryPolicyService.prepareEntry'
+    },
+    cartEntryPreUpdatePolicy: {
+        type: 'schema',
+        item: 'cartEntry',
+        trigger: 'preUpdate',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultCartEntryPolicyService.prepareEntryUpdate'
+    },
+    cartEntryPreRemovePolicy: {
+        type: 'schema',
+        item: 'cartEntry',
+        trigger: 'preRemove',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultCartEntryPolicyService.rejectHardDelete'
+    },
 };

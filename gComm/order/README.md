@@ -27,3 +27,12 @@ order-entry evidence and builds order-entry payloads from cart entries through
 pricing, tax, promotion, inventory allocation, payment, and fulfillment remain
 separate authorities and can attach evidence codes without being copied into
 Order.
+
+## Order history
+
+`orderHistoryEntry` is the order-owned lifecycle evidence model. It references
+the parent order through `orderCode` and records event type, status transition
+evidence, actor identity, reason code, source module/operation, evidence code,
+and a safe human-readable message. It does not replace global audit, workflow,
+payment, inventory, or fulfillment records; it provides an order-centered
+support timeline that Axis can render as a related detail panel.

@@ -28,11 +28,35 @@ module.exports = {
     /** Creates a stable Order Entry policy error. */
     error: function (message) { return new CLASSES.NodicsError(message, null, 'ERR_ORD_00001'); },
     /** Validates an Order Entry payload before persistence or import. */
-    validateEntry: function (request) {
+    prepareEntry: function (request) {
         const result = checkoutEntryPolicy.validateEntry((request || {}).model, this.policy(), { parentField: 'orderCode' });
         if (!result.valid) throw this.error(result.errors.join('; '));
         request.model = result.model;
         return result.model;
+    },
+    /** Backward-compatible alias for direct service consumers. */
+    validateEntry: function (request) {
+        return this.prepareEntry(request);
+    },
+    /** Loads the current Order Entry for an update request. */
+    loadCurrent: async function (request) {
+        const service = SERVICE.DefaultOrderEntryService;
+        if (!service || typeof service.get !== 'function') throw this.error('Order Entry generated service is unavailable');
+        const response = await service.get({
+            tenant: request.tenant,
+            authData: request.authData,
+            query: request.query,
+            searchOptions: { limit: 2 },
+        });
+        const items = response && Array.isArray(response.result) ? response.result : [];
+        if (items.length !== 1) throw this.error('Order Entry update target must resolve exactly one record');
+        return items[0];
+    },
+    /** Validates immutable Order Entry update payloads before persistence. */
+    prepareEntryUpdate: async function (request) {
+        const current = request.currentModel || await this.loadCurrent(request);
+        this.validateUpdate(current, request.model || {});
+        return true;
     },
     /** Validates immutable Order Entry updates and lifecycle transitions. */
     validateUpdate: function (current, patch) {
@@ -52,5 +76,9 @@ module.exports = {
     /** Builds many Order Entries from Cart Entries. */
     buildFromCartEntries: function (cartEntries, orderContext) {
         return (cartEntries || []).map((entry) => this.buildFromCartEntry(entry, orderContext));
+    },
+    /** Rejects destructive Order Entry deletion; callers must retire entries through lifecycle state. */
+    rejectHardDelete: function () {
+        return Promise.reject(this.error('Order Entry history cannot be hard-deleted; retire it'));
     },
 };

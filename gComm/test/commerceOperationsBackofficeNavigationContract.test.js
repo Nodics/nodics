@@ -80,7 +80,7 @@ const runtimeAdminGroup = Object.values(userGroups).find(
 );
 const requiredDetailPanelIds = {
   carts: ["cart-entries"],
-  orders: ["order-entries"],
+  orders: ["order-entries", "order-history"],
   pricing: ["price-list-prices", "price-list-assignments"],
   "price-lists": ["price-list-prices", "price-list-assignments"],
   "price-groups": ["price-group-members"],
@@ -139,6 +139,11 @@ assert.strictEqual(byId["cart-entries"].workbenchTarget.schemaName, "cartEntry")
 assert.strictEqual(byId.orders.workbenchTarget.schemaName, "order");
 assert.strictEqual(byId["order-entries"].parentId, "checkout");
 assert.strictEqual(byId["order-entries"].workbenchTarget.schemaName, "orderEntry");
+assert.strictEqual(byId["order-history"].parentId, "checkout");
+assert.strictEqual(
+  byId["order-history"].workbenchTarget.schemaName,
+  "orderHistoryEntry",
+);
 assert.strictEqual(byId["price-lists"].workbenchTarget.schemaName, "priceList");
 assert.strictEqual(byId.prices.workbenchTarget.schemaName, "price");
 assert.strictEqual(

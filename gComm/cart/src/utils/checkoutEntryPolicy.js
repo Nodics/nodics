@@ -78,8 +78,20 @@ const clone = function (value) {
     return JSON.parse(JSON.stringify(value || {}));
 };
 
+const mergeObject = function (base, override) {
+    const result = clone(base);
+    Object.entries(override || {}).forEach(([key, value]) => {
+        if (value && typeof value === 'object' && !Array.isArray(value) && result[key] && typeof result[key] === 'object' && !Array.isArray(result[key])) {
+            result[key] = mergeObject(result[key], value);
+        } else {
+            result[key] = clone(value);
+        }
+    });
+    return result;
+};
+
 const mergePolicy = function (policy) {
-    return Object.assign(clone(DEFAULT_POLICY), clone(policy));
+    return mergeObject(DEFAULT_POLICY, policy);
 };
 
 const digits = function (value) {

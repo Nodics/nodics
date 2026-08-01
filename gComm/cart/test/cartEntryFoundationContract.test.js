@@ -18,6 +18,7 @@
  */
 const assert = require('assert');
 const properties = require('../config/properties');
+const interceptors = require('../src/interceptors/interceptors');
 const schemas = require('../src/schemas/schemas');
 const policy = require('../src/utils/checkoutEntryPolicy');
 const cartEntryPolicyService = require('../src/service/entry/defaultCartEntryPolicyService');
@@ -29,6 +30,9 @@ const cartEntry = schemas.cart.cartEntry;
 assert.strictEqual(properties.checkoutEntry, undefined);
 assert(Array.isArray(properties.cart.checkoutEntry.policy.requiredFields));
 assert(properties.cart.checkoutEntry.policy.immutableFields.includes('cartCode'));
+assert.strictEqual(interceptors.cartEntryPreSavePolicy.handler, 'DefaultCartEntryPolicyService.prepareEntry');
+assert.strictEqual(interceptors.cartEntryPreUpdatePolicy.handler, 'DefaultCartEntryPolicyService.prepareEntryUpdate');
+assert.strictEqual(interceptors.cartEntryPreRemovePolicy.handler, 'DefaultCartEntryPolicyService.rejectHardDelete');
 
 assert.strictEqual(abstractEntry.model, false);
 assert.strictEqual(abstractEntry.service.enabled, false);
@@ -138,11 +142,25 @@ global.CLASSES = {
         }
     },
 };
+global.SERVICE = {
+    DefaultCartEntryService: {
+        get: async () => ({ result: [validEntry] }),
+    },
+};
 const serviceRequest = { model: Object.assign({}, validEntry) };
 assert.strictEqual(cartEntryPolicyService.validateEntry(serviceRequest).status, 'ACTIVE');
 assert.throws(
     () => cartEntryPolicyService.validateEntry({ model: Object.assign({}, validEntry, { cartCode: undefined }) }),
     /cartCode is required/,
 );
-
-console.log('Cart entry foundation contract validated');
+(async () => {
+    await cartEntryPolicyService.prepareEntryUpdate({ query: { code: 'entry-1' }, model: { status: 'HELD' } });
+    await assert.rejects(
+        () => cartEntryPolicyService.rejectHardDelete(),
+        /Cart Entry history cannot be hard-deleted/,
+    );
+    console.log('Cart entry foundation contract validated');
+})().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+});
