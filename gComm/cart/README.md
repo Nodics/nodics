@@ -20,3 +20,12 @@ state and evidence required by checkout.
 
 Customer projects should extend `cartEntry` through later schema layers and
 additional validators/interceptors instead of modifying this framework source.
+
+`DefaultCartEntryPolicyService` and the shared `checkoutEntryPolicy` utility
+protect the reusable entry contract. The policy validates required identity
+fields, positive exact decimal-string quantities, non-negative exact monetary
+evidence, parent `cartCode`, allowed statuses, immutable fields, and configured
+lifecycle transitions. Projects customize these rules through layered
+`cart.checkoutEntry.policy` configuration or by replacing the service, while Product,
+Pricing, Units, Tax, Promotion, Inventory, Payment, and Fulfillment remain
+authoritative for their own rules.

@@ -19,3 +19,11 @@ payment state. Those authorities stay in their owning modules and may attach
 evidence codes to the entry. Customer projects can extend `orderEntry` through
 later schema layers and stricter lifecycle services while keeping this
 framework contract stable.
+
+`DefaultOrderEntryPolicyService` reuses the Cart-owned `checkoutEntryPolicy`
+utility because Cart contributes `abstractCartEntry`. It validates immutable
+order-entry evidence and builds order-entry payloads from cart entries through
+`order.checkoutEntry.policy` conversion field mappings. This is only the checkout-entry contract:
+pricing, tax, promotion, inventory allocation, payment, and fulfillment remain
+separate authorities and can attach evidence codes without being copied into
+Order.

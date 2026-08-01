@@ -31,10 +31,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 18 |
+| Source files | 20 |
 | Test files | 7 |
 | Data files | 0 |
-| All module-owned files | 29 |
+| All module-owned files | 31 |
 | Local schema definitions | 4 |
 
 ## Ownership And Dependencies
@@ -65,7 +65,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 23 |
+| Documented | 25 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -105,12 +105,14 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/cart/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Cart schema contribution defining abstract cart ownership fields and the concrete persisted cart model. |  |
 | `gComm/cart/src/service/cart/DefaultCartService.js` | `src` | `documented` | 4/4 | Cart service implementation that prepares cart persistence context, starts the create-cart pipeline, and wraps cart read errors. |  |
 | `gComm/cart/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements cart default sample service business behavior and extension logic. |  |
+| `gComm/cart/src/service/entry/defaultCartEntryPolicyService.js` | `src` | `documented` | 7/7 | Validates Cart Entry identity, exact quantity and money evidence, parent ownership, and update lifecycle without owning Product, Pricing, Inventory, Tax, Payment, or Fulfillment rules. |  |
 | `gComm/cart/src/service/handler/defaultOrderSchemaValueHandlerService.js` | `src` | `documented` | 4/4 | Helper service for order/cart token value generation and expiry calculation. |  |
 | `gComm/cart/src/service/interceptor/defaultCartCodeGeneratorInterceptorService.js` | `src` | `documented` | 3/3 | Cart pre-save interceptor service that creates the persisted cart code when callers provide only an enterprise and reference code. |  |
 | `gComm/cart/src/service/interceptor/defaultCartSchemaInterceptorService.js` | `src` | `documented` | 3/3 | Cart pre-save interceptor service that derives missing enterprise ownership from authenticated request metadata. |  |
 | `gComm/cart/src/service/interceptor/defaultCartTokenDetailInterceptorService.js` | `src` | `documented` | 3/3 | Cart post-load interceptor that expands a stored token value into token reference details and expiry state. |  |
 | `gComm/cart/src/service/pipeline/defaultCreateCartPipelineService.js` | `src` | `documented` | 7/7 | Pipeline node service for create-cart orchestration, including request validation, nested cart validation, persistence, and terminal handling. |  |
 | `gComm/cart/src/service/pipeline/defaultValidateCartPipelineService.js` | `src` | `documented` | 9/9 | Pipeline node service for validating cart payload structure, generated token readiness, related items, consignments, payments, and final cart state. |  |
+| `gComm/cart/src/utils/checkoutEntryPolicy.js` | `src` | `documented` | 0/0 | Shared checkout line-entry policy helpers owned by Cart because Cart contributes the abstractCartEntry schema used by Cart and Order entries. |  |
 | `gComm/cart/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared cart enum definition exports. |  |
 | `gComm/cart/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Cart status and error-code definitions used by services, pipelines, and API responses. |  |
 | `gComm/cart/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for cart-specific helper functions. |  |

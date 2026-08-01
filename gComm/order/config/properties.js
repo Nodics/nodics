@@ -17,6 +17,58 @@
  * @override Project modules may provide later property contributions for order lifecycle, validation, and integration settings.
  */
 module.exports = {
+  order: {
+    checkoutEntry: {
+      policy: {
+        statuses: ["ORDERED", "ALLOCATED", "CANCELLED", "RETURNED"],
+        immutableFields: [
+          "code",
+          "entCode",
+          "entryCode",
+          "orderCode",
+          "cartCode",
+          "catalogCode",
+          "itemType",
+          "itemCode",
+          "quantity",
+          "unitCode",
+          "currencyCode",
+          "unitPrice",
+          "totalPrice",
+          "taxTotal",
+          "discountTotal",
+          "priceEvidenceCode",
+        ],
+        allowedTransitions: {
+          ORDERED: ["ALLOCATED", "CANCELLED"],
+          ALLOCATED: ["CANCELLED", "RETURNED"],
+          CANCELLED: [],
+          RETURNED: [],
+        },
+        conversion: {
+          sourceParentField: "cartCode",
+          targetParentField: "orderCode",
+          targetStatus: "ORDERED",
+          copiedFields: [
+            "entCode",
+            "entryCode",
+            "lineNumber",
+            "catalogCode",
+            "itemType",
+            "itemCode",
+            "quantity",
+            "unitCode",
+            "currencyCode",
+            "unitPrice",
+            "totalPrice",
+            "taxTotal",
+            "discountTotal",
+            "priceEvidenceCode",
+          ],
+        },
+      },
+    },
+  },
   backofficeCapabilities: {
     order: {
       enabled: true,

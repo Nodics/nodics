@@ -17,6 +17,66 @@
  * @override Project modules may provide later property contributions for cart-specific behavior, validation, and integration settings.
  */
 module.exports = {
+  cart: {
+    checkoutEntry: {
+      policy: {
+        requiredFields: [
+          "entCode",
+          "entryCode",
+          "lineNumber",
+          "catalogCode",
+          "itemType",
+          "itemCode",
+          "quantity",
+          "unitCode",
+          "currencyCode",
+        ],
+        quantityPattern: "^(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+        moneyPattern: "^(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+        maximumDigits: 38,
+        maximumScale: 18,
+        statuses: ["ACTIVE", "HELD", "RETIRED"],
+        moneyFields: ["unitPrice", "totalPrice", "taxTotal", "discountTotal"],
+        immutableFields: [
+          "code",
+          "entCode",
+          "entryCode",
+          "cartCode",
+          "catalogCode",
+          "itemType",
+          "itemCode",
+          "unitCode",
+          "currencyCode",
+        ],
+        allowedTransitions: {
+          ACTIVE: ["HELD", "RETIRED"],
+          HELD: ["ACTIVE", "RETIRED"],
+          RETIRED: [],
+        },
+        conversion: {
+          sourceParentField: "cartCode",
+          targetParentField: "orderCode",
+          targetStatus: "ORDERED",
+          copiedFields: [
+            "entCode",
+            "entryCode",
+            "lineNumber",
+            "catalogCode",
+            "itemType",
+            "itemCode",
+            "quantity",
+            "unitCode",
+            "currencyCode",
+            "unitPrice",
+            "totalPrice",
+            "taxTotal",
+            "discountTotal",
+            "priceEvidenceCode",
+          ],
+        },
+      },
+    },
+  },
   backofficeCapabilities: {
     cart: {
       enabled: true,

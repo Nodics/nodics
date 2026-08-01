@@ -30,10 +30,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 12 |
+| Source files | 13 |
 | Test files | 17 |
 | Data files | 9 |
-| All module-owned files | 32 |
+| All module-owned files | 33 |
 | Local schema definitions | 6 |
 
 ## Ownership And Dependencies
@@ -63,7 +63,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 25 |
+| Documented | 26 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 5 |
@@ -109,6 +109,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/order/src/router/routers.js` | `src` | `documented` | 0/0 | Reserved order route contribution for custom order APIs beyond generated schema routes. |  |
 | `gComm/order/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Order schema contribution defining order, order status, payment status, shipping status, and reason models. |  |
 | `gComm/order/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements order default sample service business behavior and extension logic. |  |
+| `gComm/order/src/service/entry/defaultOrderEntryPolicyService.js` | `src` | `documented` | 8/8 | Validates Order Entry immutable evidence and builds Order Entries from Cart Entries through the shared checkout entry policy. |  |
 | `gComm/order/src/service/interceptor/defaultOrderCodeGeneratorInterceptorService.js` | `src` | `documented` | 3/3 | Order pre-save interceptor service that derives missing enterprise ownership from the request context. |  |
 | `gComm/order/src/service/order/DefaultOrderService.js` | `src` | `documented` | 3/3 | Order service implementation that prepares tenant-aware order persistence context and starts the create-order pipeline. |  |
 | `gComm/order/src/service/pipeline/defaultCreateOrderPipelineService.js` | `src` | `documented` | 12/12 | Pipeline node service for order creation validation, associated data checks, persistence, and terminal handling. |  |
