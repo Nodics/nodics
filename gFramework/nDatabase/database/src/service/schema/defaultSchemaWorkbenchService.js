@@ -27,16 +27,16 @@ module.exports = {
      * @returns {Promise<Object>} Client-safe descriptor collection.
      */
     list: function (request) {
-        let moduleObject = this.getModule(request.moduleName);
-        let schemas = Object.keys(moduleObject.rawSchema || {})
+        let schemaModule = this.resolveSchemaModule(request.moduleName);
+        let schemas = Object.keys(schemaModule.moduleObject.rawSchema || {})
             .map((schemaName) => {
-                return this.buildDescriptor(request, moduleObject, schemaName);
+                return this.buildDescriptor(request, schemaModule.moduleObject, schemaName, schemaModule.moduleName);
             })
             .filter(Boolean);
         return Promise.resolve({
             code: 'SUC_DBS_00000',
             data: {
-                moduleName: request.moduleName,
+                moduleName: schemaModule.moduleName,
                 schemas: schemas,
             },
         });
@@ -48,9 +48,9 @@ module.exports = {
      * @returns {Promise<Object>} Client-safe schema descriptor.
      */
     get: function (request) {
-        let moduleObject = this.getModule(request.moduleName);
+        let schemaModule = this.resolveSchemaModule(request.moduleName);
         let schemaName = request.httpRequest && request.httpRequest.params ? request.httpRequest.params.schema : undefined;
-        let descriptor = this.buildDescriptor(request, moduleObject, schemaName);
+        let descriptor = this.buildDescriptor(request, schemaModule.moduleObject, schemaName, schemaModule.moduleName);
         if (!descriptor) {
             return Promise.reject(new CLASSES.NodicsError('ERR_DBS_00004', 'Schema is not available to Schema Workbench'));
         }
@@ -67,9 +67,9 @@ module.exports = {
      * @returns {Promise<Object>} Paged client-safe record response.
      */
     search: function (request) {
-        let moduleObject = this.getModule(request.moduleName);
+        let schemaModule = this.resolveSchemaModule(request.moduleName);
         let schemaName = request.httpRequest && request.httpRequest.params ? request.httpRequest.params.schema : undefined;
-        let descriptor = this.buildDescriptor(request, moduleObject, schemaName);
+        let descriptor = this.buildDescriptor(request, schemaModule.moduleObject, schemaName, schemaModule.moduleName);
         if (!descriptor || !descriptor.operations.includes('search')) {
             return Promise.reject(new CLASSES.NodicsError('ERR_DBS_00004', 'Schema search is not available to Schema Workbench'));
         }
@@ -101,16 +101,32 @@ module.exports = {
     },
 
     /**
-     * Resolves the active owning module and its effective schemas.
-     * @param {string} moduleName Owning module name.
-     * @returns {Object} Active module object.
+     * Resolves the active schema-owning module and its effective schemas.
+     * API modules may expose a public prefix for a semantic module whose schemas
+     * are contributed by another implementation module. Schema Workbench follows
+     * the exported schema hierarchy, not the physical contributor or router host.
+     * @param {string} moduleName Requested route module name.
+     * @returns {Object} Resolved schema module context.
      */
-    getModule: function (moduleName) {
+    resolveSchemaModule: function (moduleName) {
         let moduleObject = NODICS.getModule(moduleName);
-        if (!moduleObject || !moduleObject.rawSchema) {
-            throw new CLASSES.NodicsError('ERR_DBS_00004', 'Module schemas are not available');
+        if (moduleObject && moduleObject.rawSchema) {
+            return {
+                moduleName: moduleName,
+                moduleObject: moduleObject,
+            };
         }
-        return moduleObject;
+        let prefixedModuleName = moduleObject && moduleObject.metaData ? moduleObject.metaData.prefix : undefined;
+        if (prefixedModuleName && prefixedModuleName !== moduleName) {
+            let prefixedModule = NODICS.getModule(prefixedModuleName);
+            if (prefixedModule && prefixedModule.rawSchema) {
+                return {
+                    moduleName: prefixedModuleName,
+                    moduleObject: prefixedModule,
+                };
+            }
+        }
+        throw new CLASSES.NodicsError('ERR_DBS_00004', 'Module schemas are not available');
     },
 
     /**
@@ -120,10 +136,12 @@ module.exports = {
      * @param {Object} request Authenticated Nodics request.
      * @param {Object} moduleObject Active owning module.
      * @param {string} schemaName Schema name.
+     * @param {string} moduleName Resolved schema-owning module name.
      * @returns {Object|undefined} Safe descriptor or undefined.
      */
-    buildDescriptor: function (request, moduleObject, schemaName) {
+    buildDescriptor: function (request, moduleObject, schemaName, moduleName) {
         let schema = moduleObject.rawSchema[schemaName];
+        moduleName = moduleName || request.moduleName;
         let workbenchConfig = CONFIG.get('schemaWorkbench') || {};
         let explicitConfig = schema && schema.backoffice;
         let discoverByDefault = workbenchConfig.discoverModelsByDefault !== false;
@@ -156,7 +174,7 @@ module.exports = {
                 ? config.displayProperties.slice()
                 : this.getDefaultDisplayProperties(schema, displayProperty);
         return {
-            moduleName: request.moduleName,
+            moduleName: moduleName,
             schemaName: schemaName,
             label: config.label || this.humanize(schemaName),
             description: config.description || '',
@@ -169,7 +187,7 @@ module.exports = {
             mutationMode: config.mutationMode,
             operations: operations,
             fields: this.buildFields(schema, config),
-            relationships: this.buildRelationships(request.moduleName, schema, config),
+            relationships: this.buildRelationships(moduleName, schema, config),
         };
     },
 
@@ -179,16 +197,16 @@ module.exports = {
      * @returns {Promise<Object>} Safe delete-impact response.
      */
     previewDeleteImpact: function (request) {
-        let moduleObject = this.getModule(request.moduleName);
+        let schemaModule = this.resolveSchemaModule(request.moduleName);
         let schemaName = request.httpRequest && request.httpRequest.params ? request.httpRequest.params.schema : undefined;
-        let descriptor = this.buildDescriptor(request, moduleObject, schemaName);
+        let descriptor = this.buildDescriptor(request, schemaModule.moduleObject, schemaName, schemaModule.moduleName);
         if (!descriptor || !descriptor.operations.includes('delete')) {
             return Promise.reject(new CLASSES.NodicsError('ERR_DBS_00004', 'Schema delete impact is not available'));
         }
         let body = (request.httpRequest && request.httpRequest.body) || {};
         let identity = this.buildIdentityQuery(body.identity, descriptor);
         let modelName = UTILS.createModelName(schemaName);
-        let models = NODICS.getModels(request.moduleName, request.tenant);
+        let models = NODICS.getModels(schemaModule.moduleName, request.tenant);
         let schemaModel = models && models[modelName];
         if (!schemaModel) {
             return Promise.reject(new CLASSES.NodicsError('ERR_DBS_00004', 'Schema model is not available'));
@@ -204,15 +222,45 @@ module.exports = {
     },
 
     /**
+     * Deletes one authorized schema record through the owning generated remove
+     * service. Bulk delete remains explicitly opt-in; this path is for the
+     * selected-record detail action exposed by Schema Workbench.
+     * @param {Object} request Authenticated Workbench request.
+     * @returns {Promise<Object>} Existing generated remove result.
+     */
+    deleteRecord: function (request) {
+        let schemaModule = this.resolveSchemaModule(request.moduleName);
+        let schemaName = request.httpRequest && request.httpRequest.params ? request.httpRequest.params.schema : undefined;
+        let descriptor = this.buildDescriptor(request, schemaModule.moduleObject, schemaName, schemaModule.moduleName);
+        if (!descriptor || !descriptor.operations.includes('delete')) {
+            return Promise.reject(new CLASSES.NodicsError('ERR_DBS_00004', 'Schema delete is not available to Schema Workbench'));
+        }
+        let body = (request.httpRequest && request.httpRequest.body) || {};
+        let identity = this.buildIdentityQuery(body.identity, descriptor);
+        let service = this.getGeneratedService(schemaName);
+        return service
+            .remove({
+                tenant: request.tenant,
+                authData: request.authData,
+                query: identity,
+                options: { returnModified: false },
+                idempotencyKey: this.getIdempotencyKey(request),
+            })
+            .then((result) => {
+                return { code: 'SUC_DBS_00000', data: result };
+            });
+    },
+
+    /**
      * Executes an explicitly enabled, bounded, idempotent bulk delete through
      * the existing generated remove service.
      * @param {Object} request Authenticated Workbench request.
      * @returns {Promise<Object>} Existing generated remove result.
      */
     bulk: function (request) {
-        let moduleObject = this.getModule(request.moduleName);
+        let schemaModule = this.resolveSchemaModule(request.moduleName);
         let schemaName = request.httpRequest && request.httpRequest.params ? request.httpRequest.params.schema : undefined;
-        let descriptor = this.buildDescriptor(request, moduleObject, schemaName);
+        let descriptor = this.buildDescriptor(request, schemaModule.moduleObject, schemaName, schemaModule.moduleName);
         let body = (request.httpRequest && request.httpRequest.body) || {};
         if (!descriptor || body.operation !== 'DELETE' || !descriptor.bulkCapabilities.operations.includes('DELETE')) {
             return Promise.reject(new CLASSES.NodicsError('ERR_DBS_00004', 'Bulk operation is not available'));
@@ -255,9 +303,10 @@ module.exports = {
      * @returns {Promise<Object>} Module-owned aggregate response.
      */
     aggregate: function (request) {
-        let moduleObject = this.getModule(request.moduleName);
+        let schemaModule = this.resolveSchemaModule(request.moduleName);
+        let moduleObject = schemaModule.moduleObject;
         let schemaName = request.httpRequest && request.httpRequest.params ? request.httpRequest.params.schema : undefined;
-        let descriptor = this.buildDescriptor(request, moduleObject, schemaName);
+        let descriptor = this.buildDescriptor(request, moduleObject, schemaName, schemaModule.moduleName);
         let body = (request.httpRequest && request.httpRequest.body) || {};
         let operation = descriptor && descriptor.aggregateOperations.find((item) => item.name === body.operation);
         let schema = moduleObject.rawSchema[schemaName];
@@ -609,20 +658,39 @@ module.exports = {
     buildRecordProjection: function (descriptor) {
         let projection = { _id: 0 };
         let fieldNames = (descriptor.fields || []).filter((field) => field && field.name).map((field) => field.name);
+        let presentationFields = [descriptor.displayProperty].concat(descriptor.displayProperties || []).filter((name) => {
+            return this.isSafeProjectionField(name);
+        });
+        fieldNames = Array.from(new Set(fieldNames.concat(presentationFields)));
         let parentFields = new Set(
             fieldNames
                 .filter((name) => name.includes('.'))
                 .map((name) => name.split('.')[0]),
         );
-        (descriptor.fields || []).forEach((field) => {
-            if (field && field.name) {
-                if (parentFields.has(field.name)) {
+        fieldNames.forEach((fieldName) => {
+            if (fieldName) {
+                if (parentFields.has(fieldName)) {
                     return;
                 }
-                projection[field.name] = 1;
+                projection[fieldName] = 1;
             }
         });
         return projection;
+    },
+
+    /**
+     * Allows descriptor-declared presentation paths to participate in record
+     * projection without exposing known secret or internal fields.
+     * @param {string|undefined} name Candidate field path.
+     * @returns {boolean} True when the field path is safe to request.
+     */
+    isSafeProjectionField: function (name) {
+        if (typeof name !== 'string' || !name || name === '_id') {
+            return false;
+        }
+        let excluded = new Set(['password', 'apiKey', 'apiKeyHash', 'accessGroups']);
+        let root = name.split('.')[0];
+        return !excluded.has(name) && !excluded.has(root) && /^[A-Za-z0-9_.]+$/.test(name);
     },
 
     /**

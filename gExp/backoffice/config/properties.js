@@ -57,17 +57,47 @@ module.exports = {
                 {
                     id: 'framework', label: 'Framework', type: 'CMS', route: '/docs/framework', order: 100,
                     connectionModule: 'cms', site: 'axisCmsSite', catalog: 'nodicsDocumentationContentCatalog',
-                    defaultPage: '/docs', packCode: 'nodicsDocumentation'
+                    defaultPage: '/docs', packCode: 'nodicsDocumentation',
+                    dashboard: {
+                        kind: 'Framework guide', icon: 'content',
+                        summary: 'Core Nodics architecture, module layering, configuration-first extension, lifecycle, and customization guidance.',
+                        audiences: ['architect', 'developer', 'operator', 'ai-tool'],
+                        coverage: {
+                            score: 85, status: 'STRONG',
+                            signals: ['Architecture model', 'Module lifecycle', 'Customization guidance', 'AI-tool standards'],
+                            gaps: ['More troubleshooting recipes', 'More customer-extension examples']
+                        }
+                    }
                 },
                 {
                     id: 'swaggers', label: 'Swaggers', type: 'OPENAPI', route: '/docs/swaggers', order: 200,
                     connectionModule: 'system', openApiPath: '/nodics/system/v0/contract/openapi',
-                    swaggerPath: '/nodics/system/v0/contract/swagger'
+                    swaggerPath: '/nodics/system/v0/contract/swagger',
+                    dashboard: {
+                        kind: 'API contracts', icon: 'reference',
+                        summary: 'Generated OpenAPI and Swagger contracts for authorized backend modules and runtime APIs.',
+                        audiences: ['developer', 'operator', 'integration'],
+                        coverage: {
+                            score: 100, status: 'REFERENCE',
+                            signals: ['Generated from backend contracts', 'Module API discovery', 'Swagger UI access'],
+                            gaps: ['Narrative examples belong in framework capability docs']
+                        }
+                    }
                 },
                 {
                     id: 'nodics-axis', label: 'Nodics Axis', type: 'CMS', route: '/docs/nodics-axis', order: 300,
                     connectionModule: 'cms', site: 'axisDocumentationSite', catalog: 'axisDocumentationContentCatalog',
-                    defaultPage: '/docs/nodics-axis', packCode: 'axisDocumentation'
+                    defaultPage: '/docs/nodics-axis', packCode: 'axisDocumentation',
+                    dashboard: {
+                        kind: 'Application guide', icon: 'schema',
+                        summary: 'Short user-facing guidance for the Nodics Axis BackOffice client, shell, workbench, and business workspaces.',
+                        audiences: ['administrator', 'business-user', 'operator'],
+                        coverage: {
+                            score: 45, status: 'PARTIAL',
+                            signals: ['Application shell guidance', 'Schema Workbench entry points', 'Media Management flow notes'],
+                            gaps: ['More end-to-end user journeys', 'More page-level operator help', 'More role-specific recipes']
+                        }
+                    }
                 }
             ],
             navigation: [
@@ -102,6 +132,21 @@ module.exports = {
                     featureState: 'DISABLED' },
                 { id: 'documentation', label: 'Nodics Documentation', route: '/docs', icon: 'content',
                     order: 100, group: { id: 'documentation', label: 'Documentation', order: 650 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'ACTIVE' },
+                { id: 'documentation-framework', parentId: 'documentation', label: 'Framework',
+                    route: '/docs/framework', icon: 'content', order: 110,
+                    group: { id: 'documentation', label: 'Documentation', order: 650 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'ACTIVE' },
+                { id: 'documentation-swaggers', parentId: 'documentation', label: 'Swaggers',
+                    route: '/docs/swaggers', icon: 'reference', order: 120,
+                    group: { id: 'documentation', label: 'Documentation', order: 650 },
+                    perspectives: ['operations'], contexts: ['environment', 'tenant', 'enterprise'],
+                    featureState: 'ACTIVE' },
+                { id: 'documentation-nodics-axis', parentId: 'documentation', label: 'Nodics Axis',
+                    route: '/docs/nodics-axis', icon: 'content', order: 130,
+                    group: { id: 'documentation', label: 'Documentation', order: 650 },
                     perspectives: ['operations'], contexts: ['environment', 'tenant', 'enterprise'],
                     featureState: 'ACTIVE' },
                 { id: 'schema-workbench', label: 'Schema Workbench', route: '/schema-workbench', icon: 'schema',

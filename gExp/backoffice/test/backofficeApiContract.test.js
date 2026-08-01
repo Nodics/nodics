@@ -55,6 +55,15 @@ assert.deepStrictEqual(contracts.documentationSource.properties.type.enum, [
   "CMS",
   "OPENAPI",
 ]);
+assert.strictEqual(
+  contracts.documentationSource.properties.dashboard.additionalProperties,
+  false,
+);
+assert.strictEqual(
+  contracts.documentationSource.properties.dashboard.properties.coverage.properties
+    .score.maximum,
+  100,
+);
 assert.deepStrictEqual(contracts.axisPolicyUpdate.required, [
   "screenLockEnabled",
   "idleTimeoutSeconds",
@@ -379,6 +388,18 @@ assert(
         catalog: "guideCatalog",
         defaultPage: "/docs/guide",
         packCode: "guideDocumentation",
+        dashboard: {
+          summary: "Guide documentation",
+          kind: "Guide",
+          icon: "content",
+          audiences: ["developer"],
+          coverage: {
+            score: 80,
+            status: "STRONG",
+            signals: ["Overview"],
+            gaps: ["Recipes"],
+          },
+        },
       },
       {
         id: "apis",
@@ -392,6 +413,28 @@ assert(
       },
     ],
   }),
+);
+assert.strictEqual(
+  service.validateBackofficeMetadata({
+    documentation: [
+      {
+        id: "bad-coverage",
+        label: "Bad coverage",
+        type: "OPENAPI",
+        route: "/docs/bad",
+        order: 1,
+        connectionModule: "system",
+        openApiPath: "/openapi",
+        swaggerPath: "/swagger",
+        dashboard: {
+          summary: "Bad coverage",
+          coverage: { score: 101, status: "STRONG" },
+        },
+      },
+    ],
+  }),
+  false,
+  "documentation dashboard coverage must remain bounded",
 );
 assert.strictEqual(
   service.validateBackofficeMetadata({

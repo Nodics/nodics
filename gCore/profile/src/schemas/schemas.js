@@ -317,10 +317,7 @@ module.exports = {
                 individual: {
                     entTenant: {
                         name: 'tenant',
-                        enabled: true,
-                        options: {
-                            unique: true
-                        }
+                        enabled: true
                     }
                 }
             }

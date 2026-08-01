@@ -34,13 +34,16 @@ assert.strictEqual(routes.listSchemas.method, 'GET');
 assert.strictEqual(routes.getSchema.key, '/schema/workbench/:schema');
 assert.strictEqual(routes.searchRecords.method, 'POST');
 assert.strictEqual(routes.searchRecords.key, '/schema/workbench/:schema/records');
-['bulkRecords', 'aggregateOperation'].forEach(routeName => {
+['deleteRecord', 'bulkRecords', 'aggregateOperation'].forEach(routeName => {
     let route = routes[routeName];
     assert.strictEqual(route.secured, true);
     assert.strictEqual(route.permission, 'system.schema.workbench.manage');
     assert.strictEqual(route.apiExposure, 'schemaWorkbench');
     assert.strictEqual(route.controller, 'DefaultSchemaWorkbenchController');
-    assert.strictEqual(route.method, 'POST');
 });
+assert.strictEqual(routes.deleteRecord.method, 'DELETE');
+assert.strictEqual(routes.deleteRecord.key, '/schema/workbench/:schema/record');
+assert.strictEqual(routes.bulkRecords.method, 'POST');
+assert.strictEqual(routes.aggregateOperation.method, 'POST');
 
 console.log('Schema Workbench router security contract validated');

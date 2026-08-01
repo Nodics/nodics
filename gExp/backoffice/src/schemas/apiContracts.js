@@ -72,6 +72,42 @@ const documentationSource = {
       uniqueItems: true,
       items: { type: "string" },
     },
+    dashboard: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        summary: { type: "string", minLength: 1, maxLength: 320 },
+        kind: { type: "string", minLength: 1, maxLength: 64 },
+        icon: { type: "string", minLength: 1, maxLength: 64 },
+        audiences: {
+          type: "array",
+          uniqueItems: true,
+          maxItems: 12,
+          items: { type: "string", minLength: 1, maxLength: 64 },
+        },
+        coverage: {
+          type: "object",
+          additionalProperties: false,
+          required: ["score", "status"],
+          properties: {
+            score: { type: "integer", minimum: 0, maximum: 100 },
+            status: { enum: ["STRONG", "PARTIAL", "NEEDS_WORK", "REFERENCE"] },
+            signals: {
+              type: "array",
+              uniqueItems: true,
+              maxItems: 12,
+              items: { type: "string", minLength: 1, maxLength: 160 },
+            },
+            gaps: {
+              type: "array",
+              uniqueItems: true,
+              maxItems: 12,
+              items: { type: "string", minLength: 1, maxLength: 160 },
+            },
+          },
+        },
+      },
+    },
   },
 };
 const documentationSelection = {

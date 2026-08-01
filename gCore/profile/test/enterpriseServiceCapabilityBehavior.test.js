@@ -25,6 +25,15 @@ global.CONFIG = {
     }
 };
 
+global.ENUMS = {
+    ContactType: {
+        EMAIL: { key: 'EMAIL' },
+        PHONE: { key: 'PHONE' },
+        FAX: { key: 'FAX' },
+        PAGER: { key: 'PAGER' }
+    }
+};
+
 global.SERVICE = {
     DefaultIdentityGovernanceService: {
         getSystemAuthData: function () {
@@ -73,6 +82,7 @@ global.CLASSES = {
 };
 
 const enterpriseService = require('../src/service/enterprise/defaultEnterpriseService');
+const profileSchemas = require('../src/schemas/schemas');
 
 (async function () {
     let getCalls = [];
@@ -136,6 +146,18 @@ const enterpriseService = require('../src/service/enterprise/defaultEnterpriseSe
     assert(notFoundError instanceof global.CLASSES.NodicsError);
     assert.strictEqual(notFoundError.code, 'ERR_PRFL_00003');
     assert(notFoundError.message.includes('missing'));
+
+    let enterpriseSchema = profileSchemas.profile.enterprise;
+    assert.strictEqual(enterpriseSchema.definition.tenant.required, true,
+        'Enterprise must keep tenant as required scope');
+    assert.strictEqual(enterpriseSchema.indexes.individual.entTenant.name, 'tenant',
+        'Enterprise tenant index supports tenant-scoped lookup');
+    assert.notStrictEqual(
+        enterpriseSchema.indexes.individual.entTenant.options &&
+        enterpriseSchema.indexes.individual.entTenant.options.unique,
+        true,
+        'Tenant must not be unique because one tenant can own multiple enterprises'
+    );
 
     console.log('Profile enterprise service capability behavior validated');
 })().catch((error) => {

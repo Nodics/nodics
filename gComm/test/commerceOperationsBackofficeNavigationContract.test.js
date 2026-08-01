@@ -76,6 +76,21 @@ const permissionCatalog = authProperties.identityGovernance.permissionCatalog;
 const runtimeAdminGroup = Object.values(userGroups).find(
   (group) => group.code === "runtimeConfigAdminUserGroup",
 );
+const requiredDetailPanelIds = {
+  pricing: ["price-list-prices", "price-list-assignments"],
+  "price-lists": ["price-list-prices", "price-list-assignments"],
+  "price-groups": ["price-group-members"],
+  "stock-pools": ["stock-pool-members"],
+  warehouses: [
+    "warehouse-locations",
+    "warehouse-stock",
+    "warehouse-reservations",
+    "warehouse-pool-members",
+  ],
+  reconciliation: ["reconciliation-findings"],
+  "sourcing-policies": ["sourcing-rules"],
+  stores: ["store-warehouse-assignments"],
+};
 
 capabilities.forEach((capability) => {
   assert(
@@ -131,6 +146,15 @@ assert.strictEqual(
   byId["fulfillment-associations"].workbenchTarget.schemaName,
   "storeWarehouseAssignment",
 );
+Object.entries(requiredDetailPanelIds).forEach(([id, panelIds]) => {
+  const actualIds = (byId[id].detailPanels || []).map((panel) => panel.id);
+  panelIds.forEach((panelId) => {
+    assert(
+      actualIds.includes(panelId),
+      id + " must expose backend-driven related panel " + panelId,
+    );
+  });
+});
 disabledIds.forEach((id) => {
   assert.strictEqual(
     byId[id].featureState,
@@ -220,6 +244,40 @@ navigation.forEach((item) => {
       item.id + " must target an implemented backend schema",
     );
   }
+  (item.detailPanels || []).forEach((panel) => {
+    const sourceSchema = item.workbenchTarget
+      ? knownSchemas[item.workbenchTarget.moduleName]?.[
+          item.workbenchTarget.schemaName
+        ]
+      : undefined;
+    const targetSchema = knownSchemas[panel.target.moduleName]?.[
+      panel.target.schemaName
+    ];
+    assert(
+      targetSchema,
+      item.id + " detail panel " + panel.id + " must target an implemented schema",
+    );
+    if (panel.relation) {
+      assert(
+        sourceSchema,
+        item.id + " detail panel " + panel.id + " must have a source schema",
+      );
+      assert(
+        sourceSchema.definition[panel.relation.sourceField],
+        item.id +
+          " detail panel " +
+          panel.id +
+          " must map from an existing source field",
+      );
+      assert(
+        targetSchema.definition[panel.relation.targetField],
+        item.id +
+          " detail panel " +
+          panel.id +
+          " must map to an existing target field",
+      );
+    }
+  });
 });
 
 console.log("Commerce Operations BackOffice navigation contract validated");

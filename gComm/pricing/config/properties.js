@@ -57,6 +57,29 @@ module.exports = {
           featureState: "ACTIVE",
           requiredPermissions: ["pricing.backoffice.read"],
           workbenchTarget: { moduleName: "pricing", schemaName: "priceList" },
+          detailPanels: [
+            {
+              id: "price-list-prices",
+              label: "Prices",
+              target: { moduleName: "pricing", schemaName: "price" },
+              relation: {
+                sourceField: "priceListCode",
+                targetField: "priceListCode",
+              },
+            },
+            {
+              id: "price-list-assignments",
+              label: "Assignments",
+              target: {
+                moduleName: "pricing",
+                schemaName: "priceListAssignment",
+              },
+              relation: {
+                sourceField: "priceListCode",
+                targetField: "priceListCode",
+              },
+            },
+          ],
           help: {
             summary:
               "Manage pricing lists, prices, assignments, groups, and publication records through the Pricing capability.",
@@ -76,6 +99,29 @@ module.exports = {
           featureState: "PREVIEW",
           requiredPermissions: ["pricing.backoffice.read"],
           workbenchTarget: { moduleName: "pricing", schemaName: "priceList" },
+          detailPanels: [
+            {
+              id: "price-list-prices",
+              label: "Prices",
+              target: { moduleName: "pricing", schemaName: "price" },
+              relation: {
+                sourceField: "priceListCode",
+                targetField: "priceListCode",
+              },
+            },
+            {
+              id: "price-list-assignments",
+              label: "Assignments",
+              target: {
+                moduleName: "pricing",
+                schemaName: "priceListAssignment",
+              },
+              relation: {
+                sourceField: "priceListCode",
+                targetField: "priceListCode",
+              },
+            },
+          ],
           help: {
             summary:
               "Maintain governed price-list records with priority, currencies, tax mode, stacking mode, and lifecycle state.",
@@ -114,6 +160,20 @@ module.exports = {
           featureState: "PREVIEW",
           requiredPermissions: ["pricing.backoffice.read"],
           workbenchTarget: { moduleName: "pricing", schemaName: "priceGroup" },
+          detailPanels: [
+            {
+              id: "price-group-members",
+              label: "Members",
+              target: {
+                moduleName: "pricing",
+                schemaName: "priceGroupMember",
+              },
+              relation: {
+                sourceField: "priceGroupCode",
+                targetField: "priceGroupCode",
+              },
+            },
+          ],
           help: {
             summary:
               "Maintain item, customer, segment, or contract price groups used during price resolution.",

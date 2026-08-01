@@ -132,8 +132,44 @@ const profileModule = {
     },
 };
 
+const workflowModule = {
+    rawSchema: {
+        workflow: {
+            model: false,
+            accessGroups: { adminGroup: 10 },
+            definition: {
+                code: { type: 'string', primary: true },
+            },
+        },
+        workflowAction: {
+            model: true,
+            accessGroups: { adminGroup: 10 },
+            definition: {
+                code: {
+                    type: 'string',
+                    primary: true,
+                    searchOptions: { enabled: true },
+                },
+                position: { type: 'string' },
+            },
+        },
+    },
+};
+
+const flowApiModule = {
+    metaData: {
+        name: 'flowApi',
+        prefix: 'workflow',
+    },
+};
+
 global.NODICS = {
-    getModule: (name) => (name === 'profile' ? profileModule : undefined),
+    getModule: (name) => {
+        if (name === 'profile') return profileModule;
+        if (name === 'workflow') return workflowModule;
+        if (name === 'flowApi') return flowApiModule;
+        return undefined;
+    },
 };
 global.CONFIG = {
     get: (key) => {
@@ -312,6 +348,33 @@ const service = require('../src/service/schema/defaultSchemaWorkbenchService');
         }),
     );
     assert.deepStrictEqual(denied.data.schemas, [], 'schemas without effective read access must not be disclosed');
+    let workflowListedThroughApiModule = await service.list({
+        moduleName: 'flowApi',
+        authData: { userGroups: ['adminGroup'] },
+        httpRequest: {},
+    });
+    assert.strictEqual(
+        workflowListedThroughApiModule.data.moduleName,
+        'workflow',
+        'Workbench must report the schema authority from the exported module hierarchy, not the API implementation module',
+    );
+    assert.deepStrictEqual(
+        workflowListedThroughApiModule.data.schemas.map((schema) => schema.schemaName),
+        ['workflowAction'],
+        'Workbench must discover model schemas contributed to the workflow hierarchy through a prefixed API module',
+    );
+    let workflowActionThroughApiModule = (
+        await service.get({
+            moduleName: 'flowApi',
+            authData: { userGroups: ['adminGroup'] },
+            httpRequest: { params: { schema: 'workflowAction' } },
+        })
+    ).data;
+    assert.strictEqual(
+        workflowActionThroughApiModule.moduleName,
+        'workflow',
+        'Workbench descriptors must keep workflow as the schema-owning module when reached through flowApi',
+    );
     await assert.rejects(
         service.get(
             Object.assign({}, request, {
@@ -455,6 +518,25 @@ const service = require('../src/service/schema/defaultSchemaWorkbenchService');
             userGroups: 1,
         },
         'employee Schema Workbench search must project only explicitly safe employee fields without parent-child path collisions',
+    );
+    assert.deepStrictEqual(
+        service.buildRecordProjection({
+            displayProperty: 'code',
+            displayProperties: ['code', 'description', 'apiKeyHash'],
+            fields: [
+                { name: 'active' },
+                { name: 'description' },
+                { name: 'properties' },
+            ],
+        }),
+        {
+            _id: 0,
+            active: 1,
+            description: 1,
+            properties: 1,
+            code: 1,
+        },
+        'record projection must include configured display identity fields used by relationship pickers without accepting secret presentation fields',
     );
     assert.throws(
         () =>

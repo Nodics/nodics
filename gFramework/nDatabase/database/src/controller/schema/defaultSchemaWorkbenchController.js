@@ -65,6 +65,10 @@ module.exports = {
     previewDeleteImpact: function (request, callback) {
         return this.execute('previewDeleteImpact', request, callback);
     },
+    /** Deletes one authorized schema record through the generated owner service. */
+    deleteRecord: function (request, callback) {
+        return this.execute('deleteRecord', request, callback);
+    },
     /** Executes one authorized bounded bulk schema operation. */
     bulk: function (request, callback) {
         return this.execute('bulk', request, callback);

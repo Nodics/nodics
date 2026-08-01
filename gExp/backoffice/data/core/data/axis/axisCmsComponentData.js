@@ -164,6 +164,7 @@ module.exports = {
             addToDraftLabel: 'Add to draft', removeRelatedLabel: 'Close',
             noRelatedRecordsLabel: 'No related records are currently available.',
             relatedSearchLabel: 'Search related records',
+            missingReferencePropertyLabel: 'Related records were found, but none expose the required reference property: {property}.',
             actionsLabel: 'Actions', viewLabel: 'View', editLabel: 'Edit',
             updateLabel: 'Update', updatingLabel: 'Updating', closeLabel: 'Close',
             trueLabel: 'Yes', falseLabel: 'No',

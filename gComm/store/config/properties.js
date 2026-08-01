@@ -47,6 +47,17 @@ module.exports = {
           featureState: "ACTIVE",
           requiredPermissions: ["store.backoffice.read"],
           workbenchTarget: { moduleName: "store", schemaName: "store" },
+          detailPanels: [
+            {
+              id: "store-warehouse-assignments",
+              label: "Fulfillment Associations",
+              target: {
+                moduleName: "store",
+                schemaName: "storeWarehouseAssignment",
+              },
+              relation: { sourceField: "storeCode", targetField: "storeCode" },
+            },
+          ],
           help: {
             summary:
               "Manage physical, online, hybrid, dark-store, or pickup-point records through the Store capability.",

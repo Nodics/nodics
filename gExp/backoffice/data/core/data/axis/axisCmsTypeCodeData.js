@@ -116,6 +116,7 @@ module.exports = {
             selectExistingLabel: 'string', createRelatedLabel: 'string',
             addToDraftLabel: 'string', removeRelatedLabel: 'string',
             noRelatedRecordsLabel: 'string', relatedSearchLabel: 'string',
+            missingReferencePropertyLabel: 'string',
             actionsLabel: 'string', viewLabel: 'string', editLabel: 'string',
             updateLabel: 'string', updatingLabel: 'string', closeLabel: 'string',
             trueLabel: 'string', falseLabel: 'string',

@@ -67,6 +67,16 @@ module.exports = {
                 controller: 'DefaultSchemaWorkbenchController',
                 operation: 'previewDeleteImpact'
             },
+            deleteRecord: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                permission: 'system.schema.workbench.manage',
+                apiExposure: 'schemaWorkbench',
+                key: '/schema/workbench/:schema/record',
+                method: 'DELETE',
+                controller: 'DefaultSchemaWorkbenchController',
+                operation: 'deleteRecord'
+            },
             bulkRecords: {
                 secured: true,
                 accessGroups: ['userGroup'],

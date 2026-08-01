@@ -92,6 +92,17 @@ module.exports = {
           featureState: "PREVIEW",
           requiredPermissions: ["inventory.operations.read"],
           workbenchTarget: { moduleName: "inventory", schemaName: "stockPool" },
+          detailPanels: [
+            {
+              id: "stock-pool-members",
+              label: "Pool Members",
+              target: {
+                moduleName: "inventory",
+                schemaName: "stockPoolMember",
+              },
+              relation: { sourceField: "poolCode", targetField: "poolCode" },
+            },
+          ],
           help: {
             summary:
               "Maintain stock pools that group warehouses for fulfillment, pickup, replenishment, returns, or general availability.",
@@ -133,6 +144,53 @@ module.exports = {
           featureState: "PREVIEW",
           requiredPermissions: ["inventory.operations.read"],
           workbenchTarget: { moduleName: "inventory", schemaName: "warehouse" },
+          detailPanels: [
+            {
+              id: "warehouse-locations",
+              label: "Locations",
+              target: {
+                moduleName: "inventory",
+                schemaName: "warehouseLocation",
+              },
+              relation: {
+                sourceField: "warehouseCode",
+                targetField: "warehouseCode",
+              },
+            },
+            {
+              id: "warehouse-stock",
+              label: "Stock Levels",
+              target: { moduleName: "inventory", schemaName: "stockBalance" },
+              relation: {
+                sourceField: "warehouseCode",
+                targetField: "warehouseCode",
+              },
+            },
+            {
+              id: "warehouse-reservations",
+              label: "Reservations",
+              target: {
+                moduleName: "inventory",
+                schemaName: "stockReservation",
+              },
+              relation: {
+                sourceField: "warehouseCode",
+                targetField: "warehouseCode",
+              },
+            },
+            {
+              id: "warehouse-pool-members",
+              label: "Pool Memberships",
+              target: {
+                moduleName: "inventory",
+                schemaName: "stockPoolMember",
+              },
+              relation: {
+                sourceField: "warehouseCode",
+                targetField: "warehouseCode",
+              },
+            },
+          ],
           help: {
             summary:
               "Manage warehouse records, types, country, timezone, address reference, capabilities, and lifecycle status.",
@@ -267,6 +325,17 @@ module.exports = {
             moduleName: "inventory",
             schemaName: "stockReconciliationRun",
           },
+          detailPanels: [
+            {
+              id: "reconciliation-findings",
+              label: "Findings",
+              target: {
+                moduleName: "inventory",
+                schemaName: "stockReconciliationFinding",
+              },
+              relation: { sourceField: "runCode", targetField: "runCode" },
+            },
+          ],
           help: {
             summary:
               "Review stock reconciliation runs that scan stock state and produce findings.",
@@ -313,6 +382,17 @@ module.exports = {
             moduleName: "inventory",
             schemaName: "stockSourcingPolicy",
           },
+          detailPanels: [
+            {
+              id: "sourcing-rules",
+              label: "Rules",
+              target: {
+                moduleName: "inventory",
+                schemaName: "stockSourcingRule",
+              },
+              relation: { sourceField: "policyCode", targetField: "policyCode" },
+            },
+          ],
           help: {
             summary:
               "Maintain stock sourcing policies that choose pools for fulfillment based on governed context.",

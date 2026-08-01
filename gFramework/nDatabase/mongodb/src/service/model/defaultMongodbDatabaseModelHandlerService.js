@@ -403,7 +403,7 @@ module.exports = {
             finalIndexes.create = [];
             for (let counter = 0; counter < indexedFields.length; counter++) {
                 let indexData = indexedFields[counter];
-                if (!_self.isIndexLive(indexData.fields, indexes)) {
+                if (!_self.isIndexLive(indexData, indexes)) {
                     finalIndexes.create.push(indexData);
                 }
             }
@@ -422,16 +422,18 @@ module.exports = {
     /**
      * Determines whether a desired index already exists in the live index list.
      *
-     * @param {Object} key Desired MongoDB index key.
+     * @param {Object} indexData Desired MongoDB index configuration.
      * @param {Object[]} liveIndex Mutable live index list.
      * @returns {boolean} True when the desired index already exists.
      * @sideEffects Removes matched live index entries from `liveIndex`.
      */
-    isIndexLive: function (key, liveIndex) {
+    isIndexLive: function (indexData, liveIndex) {
         let available = false;
+        let key = indexData && indexData.fields ? indexData.fields : indexData;
+        let options = indexData && indexData.fields ? indexData.options || {} : {};
         if (liveIndex && liveIndex.length > 0) {
             for (let counter = 0; counter < liveIndex.length; counter++) {
-                if (_.isEqual(liveIndex[counter].key, key)) {
+                if (_.isEqual(liveIndex[counter].key, key) && this.isIndexOptionMatch(options, liveIndex[counter])) {
                     available = true;
                     liveIndex.splice(counter, 1);
                     break;
@@ -439,6 +441,31 @@ module.exports = {
             }
         }
         return available;
+    },
+
+    /**
+     * Compares schema-declared index options with live MongoDB options.
+     *
+     * @param {Object} desiredOptions Schema-declared index options.
+     * @param {Object} liveIndex Live MongoDB index metadata.
+     * @returns {boolean} True when meaningful index options match.
+     */
+    isIndexOptionMatch: function (desiredOptions, liveIndex) {
+        let desired = desiredOptions || {};
+        let comparedOptions = ['unique', 'sparse', 'expireAfterSeconds', 'partialFilterExpression', 'collation'];
+        for (let counter = 0; counter < comparedOptions.length; counter++) {
+            let optionName = comparedOptions[counter];
+            let desiredValue = desired[optionName];
+            let liveValue = liveIndex ? liveIndex[optionName] : undefined;
+            if (optionName === 'unique' || optionName === 'sparse') {
+                desiredValue = desiredValue === true;
+                liveValue = liveValue === true;
+            }
+            if (!_.isEqual(desiredValue, liveValue)) {
+                return false;
+            }
+        }
+        return true;
     },
 
     /**

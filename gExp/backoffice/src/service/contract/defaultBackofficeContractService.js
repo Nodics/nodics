@@ -283,6 +283,7 @@ module.exports = {
         "openApiPath",
         "swaggerPath",
         "requiredPermissions",
+        "dashboard",
       ];
       if (
         Object.keys(source).some((key) => !allowed.includes(key)) ||
@@ -295,7 +296,8 @@ module.exports = {
         ) ||
         (source.labelKey !== undefined && !this.isString(source.labelKey)) ||
         (source.requiredPermissions !== undefined &&
-          !this.isStringList(source.requiredPermissions))
+          !this.isStringList(source.requiredPermissions)) ||
+        !this.validateDocumentationDashboard(source.dashboard)
       )
         return false;
       if (source.type === "CMS") {
@@ -316,6 +318,48 @@ module.exports = {
         )
       );
     });
+  },
+  /** Validates bounded presentation and coverage metadata for the documentation dashboard. */
+  validateDocumentationDashboard: function (dashboard) {
+    if (dashboard === undefined) return true;
+    if (!dashboard || typeof dashboard !== "object" || Array.isArray(dashboard))
+      return false;
+    let allowed = ["summary", "kind", "icon", "audiences", "coverage"];
+    if (Object.keys(dashboard).some((key) => !allowed.includes(key)))
+      return false;
+    if (
+      ["summary", "kind", "icon"].some(
+        (key) =>
+          dashboard[key] !== undefined &&
+          !this.isString(dashboard[key], key === "summary" ? 320 : 64),
+      )
+    )
+      return false;
+    if (
+      dashboard.audiences !== undefined &&
+      !this.isStringList(dashboard.audiences, 12)
+    )
+      return false;
+    if (dashboard.coverage === undefined) return true;
+    let coverage = dashboard.coverage;
+    if (!coverage || typeof coverage !== "object" || Array.isArray(coverage))
+      return false;
+    let coverageAllowed = ["score", "status", "signals", "gaps"];
+    if (Object.keys(coverage).some((key) => !coverageAllowed.includes(key)))
+      return false;
+    if (
+      !Number.isInteger(coverage.score) ||
+      coverage.score < 0 ||
+      coverage.score > 100 ||
+      !["STRONG", "PARTIAL", "NEEDS_WORK", "REFERENCE"].includes(coverage.status)
+    )
+      return false;
+    return ["signals", "gaps"].every(
+      (key) =>
+        coverage[key] === undefined ||
+        (this.isStringList(coverage[key], 12) &&
+          coverage[key].every((item) => this.isString(item, 160))),
+    );
   },
   /** Returns whether a string is a bounded application-relative path. */
   isSafePath: function (value) {

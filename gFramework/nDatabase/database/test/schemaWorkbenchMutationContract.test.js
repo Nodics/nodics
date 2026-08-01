@@ -125,6 +125,17 @@ const request = {
     assert.deepStrictEqual(inspected.query, { code: 'DXB' });
     assert.strictEqual(inspected.tenant, 'default');
 
+    await service.deleteRecord({
+        ...request,
+        httpRequest: {
+            params: { schema: 'address' },
+            body: { identity: { code: 'DXB' } }
+        }
+    });
+    assert.deepStrictEqual(removed.query, { code: 'DXB' });
+    assert.strictEqual(removed.idempotencyKey, 'axis-test-0001');
+    assert.strictEqual(removed.tenant, 'default');
+
     await service.bulk({
         ...request,
         httpRequest: {
