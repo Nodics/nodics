@@ -31,10 +31,10 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 12 |
-| Test files | 16 |
+| Test files | 17 |
 | Data files | 9 |
-| All module-owned files | 31 |
-| Local schema definitions | 5 |
+| All module-owned files | 32 |
+| Local schema definitions | 6 |
 
 ## Ownership And Dependencies
 
@@ -63,7 +63,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 24 |
+| Documented | 25 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 5 |
@@ -117,6 +117,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/order/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for order-specific helper functions. |  |
 | `gComm/order/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Reserved common order test contribution showing the module-owned test-suite shape for shared order behavior. | add JSDoc for 7 exported method(s) |
 | `gComm/order/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Reserved local-environment order test contribution showing how environment-specific test suites can be attached. | add JSDoc for 7 exported method(s) |
+| `gComm/order/test/orderEntryFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects the order line-entry schema foundation, immutable evidence fields, parent-code relationship, and later-layer extension boundary. |  |
 
 ## Extension Contract
 

@@ -58,6 +58,8 @@ const navigation = capabilities.flatMap(
   (capability) => capability.navigation || [],
 );
 const byId = Object.fromEntries(navigation.map((item) => [item.id, item]));
+const schemaHasField = (schema, field) =>
+  field === "code" || Boolean(schema.definition[field]);
 const disabledIds = [
   "promotions",
   "coupons",
@@ -77,6 +79,8 @@ const runtimeAdminGroup = Object.values(userGroups).find(
   (group) => group.code === "runtimeConfigAdminUserGroup",
 );
 const requiredDetailPanelIds = {
+  carts: ["cart-entries"],
+  orders: ["order-entries"],
   pricing: ["price-list-prices", "price-list-assignments"],
   "price-lists": ["price-list-prices", "price-list-assignments"],
   "price-groups": ["price-group-members"],
@@ -130,7 +134,11 @@ assert.strictEqual(byId.checkout.route, "/commerce/operations/checkout");
 });
 assert.strictEqual(byId.carts.parentId, "checkout");
 assert.strictEqual(byId.carts.workbenchTarget.moduleName, "cart");
+assert.strictEqual(byId["cart-entries"].parentId, "checkout");
+assert.strictEqual(byId["cart-entries"].workbenchTarget.schemaName, "cartEntry");
 assert.strictEqual(byId.orders.workbenchTarget.schemaName, "order");
+assert.strictEqual(byId["order-entries"].parentId, "checkout");
+assert.strictEqual(byId["order-entries"].workbenchTarget.schemaName, "orderEntry");
 assert.strictEqual(byId["price-lists"].workbenchTarget.schemaName, "priceList");
 assert.strictEqual(byId.prices.workbenchTarget.schemaName, "price");
 assert.strictEqual(
@@ -263,7 +271,7 @@ navigation.forEach((item) => {
         item.id + " detail panel " + panel.id + " must have a source schema",
       );
       assert(
-        sourceSchema.definition[panel.relation.sourceField],
+        schemaHasField(sourceSchema, panel.relation.sourceField),
         item.id +
           " detail panel " +
           panel.id +

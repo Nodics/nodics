@@ -38,6 +38,92 @@ module.exports = {
 
             }
         },
+        orderEntry: {
+            super: 'abstractCartEntry',
+            model: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: false
+            },
+            cache: {
+                enabled: false
+            },
+            search: {
+                enabled: false
+            },
+            refSchema: {
+                orderCode: {
+                    enabled: true,
+                    schemaName: "order",
+                    type: 'one',
+                    propertyName: 'code',
+                    onTargetDelete: 'RESTRICT'
+                }
+            },
+            definition: {
+                orderCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Parent order code. Order owns lifecycle while entries own immutable line-level evidence.',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                cartCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional source cart code retained as conversion evidence',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                allocationCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional Inventory allocation evidence for this order line'
+                },
+                reservationCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional Inventory reservation evidence consumed by this order line'
+                }
+            },
+            indexes: {
+                common: {
+                    entCode: {
+                        name: 'entCode',
+                        enabled: true
+                    },
+                    orderCode: {
+                        name: 'orderCode',
+                        enabled: true
+                    }
+                },
+                individual: {
+                    entryCode: {
+                        name: 'entryCode',
+                        enabled: true,
+                        options: {
+                            unique: true
+                        }
+                    },
+                    lineNumber: {
+                        name: 'lineNumber',
+                        enabled: true
+                    },
+                    itemCode: {
+                        name: 'itemCode',
+                        enabled: true
+                    },
+                    status: {
+                        name: 'status',
+                        enabled: true
+                    }
+                }
+            }
+        },
         orderstatus: {
             super: 'base',
             model: true,

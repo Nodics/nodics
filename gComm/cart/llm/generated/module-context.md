@@ -32,10 +32,10 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 18 |
-| Test files | 6 |
+| Test files | 7 |
 | Data files | 0 |
-| All module-owned files | 28 |
-| Local schema definitions | 2 |
+| All module-owned files | 29 |
+| Local schema definitions | 4 |
 
 ## Ownership And Dependencies
 
@@ -65,7 +65,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 22 |
+| Documented | 23 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -114,6 +114,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/cart/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared cart enum definition exports. |  |
 | `gComm/cart/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Cart status and error-code definitions used by services, pipelines, and API responses. |  |
 | `gComm/cart/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for cart-specific helper functions. |  |
+| `gComm/cart/test/cartEntryFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects the cart line-entry schema foundation, exact value storage, parent-code relationship, and later-layer extension boundary. |  |
 | `gComm/cart/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Reserved common cart test contribution showing the module-owned test-suite shape for shared cart behavior. | add JSDoc for 7 exported method(s) |
 | `gComm/cart/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Reserved local-environment cart test contribution showing how environment-specific test suites can be attached. | add JSDoc for 7 exported method(s) |
 

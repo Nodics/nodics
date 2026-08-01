@@ -7,6 +7,7 @@
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `order` | `abstractCart` | yes | yes | yes | no | no | no |  | 0 |
+| `orderEntry` | `abstractCartEntry` | yes | yes | no | no | no | no |  | 4 |
 | `orderstatus` | `base` | yes | yes | yes | no | no | no |  | 2 |
 | `paymentstatus` | `orderstatus` | no | no | no | no | no | no |  | 0 |
 | `reasons` | `super` | yes | yes | yes | no | no | no |  | 2 |
@@ -15,6 +16,13 @@
 ### `order.order`
 
 - No direct properties defined.
+
+### `order.orderEntry`
+
+- `allocationCode` `string` optional: Optional Inventory allocation evidence for this order line
+- `cartCode` `string` optional: Optional source cart code retained as conversion evidence
+- `orderCode` `string` required: Parent order code. Order owns lifecycle while entries own immutable line-level evidence.
+- `reservationCode` `string` optional: Optional Inventory reservation evidence consumed by this order line
 
 ### `order.orderstatus`
 

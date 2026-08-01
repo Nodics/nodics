@@ -14,22 +14,24 @@
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to cart"
   },
   "sourceFiles": 18,
-  "testFiles": 6,
+  "testFiles": 7,
   "dataFiles": 0,
-  "ownedFiles": 28,
-  "sourceFingerprint": "07035b3a905a4b8e9690d1e05b5208e0c5387d86633504d131a7fa45171e375d",
+  "ownedFiles": 29,
+  "sourceFingerprint": "e7ea24a1be7414b4f7cb0f40c42aacc24aa1c824c0f594df0eb85f907a0934d2",
   "documentation": {
-    "documented": 22,
+    "documented": 23,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4
   },
   "schemaGroups": {
     "cart": [
-      "cart"
+      "cart",
+      "cartEntry"
     ],
     "default": [
-      "abstractCart"
+      "abstractCart",
+      "abstractCartEntry"
     ]
   },
   "schemaLoadError": null,

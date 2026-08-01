@@ -6,6 +6,7 @@
 
 - `gComm/order/test/common/commonTest.js`
 - `gComm/order/test/env-local/envTest.js`
+- `gComm/order/test/orderEntryFoundationContract.test.js`
 
 ## Generated Tests
 

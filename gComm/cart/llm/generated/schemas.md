@@ -7,18 +7,42 @@
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `cart` | `abstractCart` | yes | yes | yes | no | no | no |  | 0 |
+| `cartEntry` | `abstractCartEntry` | yes | yes | no | no | no | no |  | 1 |
 
 ### `cart.cart`
 
 - No direct properties defined.
+
+### `cart.cartEntry`
+
+- `cartCode` `string` required: Parent cart code. Cart owns cart state while entries own line-level evidence.
 
 ## `default` Schemas
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `abstractCart` | `base` | no | no | no | no | no | no |  | 2 |
+| `abstractCartEntry` | `base` | no | no | no | no | no | no |  | 15 |
 
 ### `default.abstractCart`
 
 - `entCode` `string` required: Enterprise code that order belongs
 - `refCode` `string` required: Merchant unique order code
+
+### `default.abstractCartEntry`
+
+- `catalogCode` `string` required: Catalog that owns the referenced product item
+- `currencyCode` `string` required: Currency code used for persisted monetary evidence
+- `discountTotal` `string` optional: Exact decimal-string discount total snapshot; Promotion/Discount remains authoritative for calculation rules
+- `entCode` `string` required: Enterprise code that owns the checkout line entry
+- `entryCode` `string` required: Stable business identity for one cart or order line entry
+- `itemCode` `string` required: Product item code captured for the checkout line
+- `itemType` `string` required: Product item type captured for the checkout line
+- `lineNumber` `int` required: Human-readable line position inside the parent cart or order
+- `priceEvidenceCode` `string` optional: Optional pricing evidence or resolved price reference used to produce the line price
+- `quantity` `string` required: Exact positive decimal-string quantity; never use floating point for commerce quantities
+- `status` `string` required: Line lifecycle status within the parent checkout aggregate
+- `taxTotal` `string` optional: Exact decimal-string tax total snapshot; Tax remains authoritative for calculation rules
+- `totalPrice` `string` optional: Exact decimal-string line total snapshot captured by checkout or pricing evidence
+- `unitCode` `string` required: Units-owned unit of measure reference for the quantity
+- `unitPrice` `string` optional: Exact decimal-string unit price snapshot captured by checkout or pricing evidence

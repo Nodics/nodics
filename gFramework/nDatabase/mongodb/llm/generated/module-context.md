@@ -29,9 +29,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 12 |
-| Test files | 3 |
+| Test files | 4 |
 | Data files | 0 |
-| All module-owned files | 23 |
+| All module-owned files | 24 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -60,7 +60,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 16 |
+| Documented | 17 |
 | Partially documented | 2 |
 | Undocumented | 1 |
 | Inventory only | 4 |
@@ -98,13 +98,14 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDatabase/mongodb/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines nDatabase schema metadata, model contracts, and generated capability settings. |  |
 | `gFramework/nDatabase/mongodb/src/service/connection/defaultMongodbDatabaseConnectionHandlerService.js` | `src` | `documented` | 10/10 | MongoDB implementation of the Nodics database connection handler contract. It creates Mongo clients, discovers collections, detects initial data requirements, reads runtime schema configuration, and closes clients. |  |
 | `gFramework/nDatabase/mongodb/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements mongodb default sample service business behavior and extension logic. |  |
-| `gFramework/nDatabase/mongodb/src/service/model/defaultMongodbDatabaseModelHandlerService.js` | `src` | `documented` | 12/12 | MongoDB implementation of the Nodics database model handler contract. It converts effective schemas into MongoDB jsonSchema validators, collection options, indexes, collection wrappers, and ObjectId values. |  |
+| `gFramework/nDatabase/mongodb/src/service/model/defaultMongodbDatabaseModelHandlerService.js` | `src` | `documented` | 13/13 | MongoDB implementation of the Nodics database model handler contract. It converts effective schemas into MongoDB jsonSchema validators, collection options, indexes, collection wrappers, and ObjectId values. |  |
 | `gFramework/nDatabase/mongodb/src/service/schema/defaultMongodbDatabaseSchemaHandlerService.js` | `src` | `documented` | 2/2 | MongoDB schema handler placeholder for database-specific schema behavior. The generic database schema handler owns effective schema merging; this adapter exists so MongoDB-specific schema behavior can be layered later. |  |
 | `gFramework/nDatabase/mongodb/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared mongodb enum definition exports. |  |
 | `gFramework/nDatabase/mongodb/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared mongodb status and error definition exports. |  |
 | `gFramework/nDatabase/mongodb/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nDatabase utility exports for utils. |  |
 | `gFramework/nDatabase/mongodb/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nDatabase test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nDatabase/mongodb/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nDatabase test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nDatabase/mongodb/test/mongodbIndexReconciliationContract.test.js` | `test` | `documented` | 0/0 | Verifies MongoDB index reconciliation compares index options as well as fields so stale unique indexes can be replaced by configuration. |  |
 | `gFramework/nDatabase/mongodb/test/mongodbTransactionContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 
 ## Extension Contract

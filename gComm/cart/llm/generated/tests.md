@@ -4,6 +4,7 @@
 
 ## Hand-Authored Tests
 
+- `gComm/cart/test/cartEntryFoundationContract.test.js`
 - `gComm/cart/test/common/commonTest.js`
 - `gComm/cart/test/env-local/envTest.js`
 
