@@ -25,6 +25,8 @@
             "data",
             "schema",
             "router",
+            "controller",
+            "facade",
             "service",
             "pipeline",
             "interceptor",

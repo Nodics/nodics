@@ -28,6 +28,24 @@ module.exports = {
   postInit: function () {
     return Promise.resolve(true);
   },
+  config: function () {
+    return (CONFIG.get("cart") || {}).calculation || {};
+  },
+  error: function (message) {
+    if (typeof CLASSES !== "undefined" && CLASSES.NodicsError) {
+      return new CLASSES.NodicsError(message, null, "ERR_ORD_00000");
+    }
+    const error = new Error(message);
+    error.code = "ERR_ORD_00000";
+    return error;
+  },
+  items: function (value) {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    if (Array.isArray(value.result)) return value.result;
+    if (Array.isArray(value.items)) return value.items;
+    return [value];
+  },
   envelope: function (request, response) {
     response.success = response.success || {
       cartCode: request && request.cartCode,
@@ -45,6 +63,27 @@ module.exports = {
     this.mark(request, response, step);
     process.nextSuccess(request, response);
   },
+  loadEntries: async function (request) {
+    if (request.cartEntries) return this.items(request.cartEntries);
+    const modelEntries = request.model && request.model.cartEntries;
+    if (modelEntries) return this.items(modelEntries);
+    if (!request.cartCode) return [];
+    const service = SERVICE.DefaultCartEntryService;
+    if (!service || typeof service.get !== "function") return [];
+    const query = {
+      cartCode: request.cartCode,
+    };
+    if (request.entCode) query.entCode = request.entCode;
+    const response = await service.get({
+      tenant: request.tenant,
+      authData: request.authData,
+      query: query,
+      searchOptions: {
+        limit: Number(this.config().maximumAggregateRecords || 1000),
+      },
+    });
+    return this.items(response);
+  },
   validateCartContext: function (request, response, process) {
     this.next(request, response, process, "validateCartContext");
   },
@@ -60,8 +99,42 @@ module.exports = {
   validateMoneyEvidence: function (request, response, process) {
     this.next(request, response, process, "validateMoneyEvidence");
   },
-  calculateEntries: function (request, response, process) {
-    this.next(request, response, process, "calculateEntries");
+  calculateEntries: async function (request, response, process) {
+    try {
+      const entries = await this.loadEntries(request);
+      const entryPipeline =
+        (this.config().entryPipeline || {}).name ||
+        "cartEntryCalculationPipeline";
+      const calculatedEntries = [];
+      if (
+        !SERVICE.DefaultPipelineService ||
+        typeof SERVICE.DefaultPipelineService.start !== "function"
+      ) {
+        throw this.error("Cart calculation requires the Pipeline service");
+      }
+      for (const entry of entries) {
+        const result = await SERVICE.DefaultPipelineService.start(
+          entryPipeline,
+          Object.assign({}, request, {
+            entry: entry,
+            entryCode: entry && entry.entryCode,
+          }),
+          {},
+        );
+        calculatedEntries.push(result);
+      }
+      const envelope = this.envelope(request, response);
+      envelope.evidence.entries = entries;
+      envelope.evidence.calculatedEntries = calculatedEntries;
+      envelope.evidence.entryPipelineName = entryPipeline;
+      this.next(request, response, process, "calculateEntries");
+    } catch (error) {
+      process.error(
+        request,
+        response,
+        error.code ? error : this.error((error && error.message) || error),
+      );
+    }
   },
   calculateDeliveryCharges: function (request, response, process) {
     this.next(request, response, process, "calculateDeliveryCharges");

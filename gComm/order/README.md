@@ -25,6 +25,14 @@ The module contributes three related pipelines:
   validation, triggers order-entry calculation, then reconciles delivery,
   promotion, tax, payment, and final order totals from accepted evidence.
 
+The backend runtime entry point is `DefaultOrderService.calculateOrder`,
+exposed through the secured `POST /nodics/order/code/:code/calculate` route.
+Because orders preserve historical checkout evidence, the route requires an
+explicit `lifecycleOperation` such as `AMENDMENT`, `RETURN`, `REFUND`,
+`ADJUSTMENT`, or `RECONCILIATION`. Axis or other clients may request a governed
+reconciliation, but they must not recalculate order money, tax, inventory,
+payment, or fulfillment evidence in the browser.
+
 Checkout placement and reverse processing remain Workflow-owned business
 processes. Order calculation pipelines divide one technical calculation or
 reconciliation task; they must not replace Workflow or hide Payment, Inventory,

@@ -9,7 +9,7 @@
 
  */
 
-const _ = require('lodash');
+const _ = require("lodash");
 
 /**
  * @module cart/controller/DefaultCartController
@@ -20,128 +20,162 @@ const _ = require('lodash');
  * @property {Object} FACADE.DefaultCartFacade Delegates cart create and load operations to the facade layer.
  */
 module.exports = {
-    /**
-     * Initializes the cart controller during Nodics service registration.
-     *
-     * @param {Object} options Module loader options supplied during startup.
-     * @returns {Promise<boolean>} Resolves when controller initialization is complete.
-     */
-    init: function (options) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-        });
-    },
-    /**
-     * Finalizes cart controller startup after all module artifacts are registered.
-     *
-     * @param {Object} options Module loader options supplied during startup.
-     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
-     */
-    postInit: function (options) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-        });
-    },
+  /**
+   * Initializes the cart controller during Nodics service registration.
+   *
+   * @param {Object} options Module loader options supplied during startup.
+   * @returns {Promise<boolean>} Resolves when controller initialization is complete.
+   */
+  init: function (options) {
+    return new Promise((resolve, reject) => {
+      resolve(true);
+    });
+  },
+  /**
+   * Finalizes cart controller startup after all module artifacts are registered.
+   *
+   * @param {Object} options Module loader options supplied during startup.
+   * @returns {Promise<boolean>} Resolves when post-initialization is complete.
+   */
+  postInit: function (options) {
+    return new Promise((resolve, reject) => {
+      resolve(true);
+    });
+  },
 
-    /**
-     * Creates a cart from the HTTP request body.
-     *
-     * @param {Object} request Nodics request context.
-     * @param {Object} request.httpRequest Express request wrapper.
-     * @param {Object} request.httpRequest.body Cart payload to persist.
-     * @param {Function} [callback] Optional Node-style callback.
-     * @returns {Promise|undefined} Promise when no callback is supplied.
-     * @sideEffects Copies `httpRequest.body` into `request.model` before facade delegation.
-     * @throws Propagates facade errors through callback or rejected promise.
-     */
-    createCart: function (request, callback) {
-        request.model = request.httpRequest.body;
-        if (callback) {
-            FACADE.DefaultCartFacade.createCart(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultCartFacade.createCart(request);
-        }
-    },
-    /**
-     * Loads a cart by merchant reference code for the authenticated enterprise.
-     *
-     * @param {Object} request Nodics request context.
-     * @param {Object} request.httpRequest Express request wrapper containing `params.refCode`.
-     * @param {Object} request.authData Authenticated user and enterprise metadata.
-     * @param {Function} [callback] Optional Node-style callback.
-     * @returns {Promise|undefined} Promise when no callback is supplied.
-     * @sideEffects Builds `request.query` with `refCode` and authenticated `entCode`.
-     * @throws Propagates facade errors through callback or rejected promise.
-     */
-    loadCartByRefCode: function (request, callback) {
-        request.query = {
-            refCode: request.httpRequest.params.refCode,
-            entCode: request.authData.entCode
-        }
-        if (callback) {
-            FACADE.DefaultCartFacade.loadCart(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultCartFacade.loadCart(request);
-        }
-    },
-    /**
-     * Loads a cart by generated cart code for the authenticated enterprise.
-     *
-     * @param {Object} request Nodics request context.
-     * @param {Object} request.httpRequest Express request wrapper containing `params.code`.
-     * @param {Object} request.authData Authenticated user and enterprise metadata.
-     * @param {Function} [callback] Optional Node-style callback.
-     * @returns {Promise|undefined} Promise when no callback is supplied.
-     * @sideEffects Builds `request.query` with `code` and authenticated `entCode`.
-     * @throws Propagates facade errors through callback or rejected promise.
-     */
-    loadCartByCode: function (request, callback) {
-        request.query = {
-            code: request.httpRequest.params.code,
-            entCode: request.authData.entCode
-        }
-        if (callback) {
-            FACADE.DefaultCartFacade.loadCart(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultCartFacade.loadCart(request);
-        }
-    },
-    /**
-     * Loads a cart by token for the authenticated enterprise.
-     *
-     * @param {Object} request Nodics request context.
-     * @param {Object} request.httpRequest Express request wrapper containing `params.token`.
-     * @param {Object} request.authData Authenticated user and enterprise metadata.
-     * @param {Function} [callback] Optional Node-style callback.
-     * @returns {Promise|undefined} Promise when no callback is supplied.
-     * @sideEffects Builds `request.query` with `token` and authenticated `entCode`.
-     * @throws Propagates facade errors through callback or rejected promise.
-     */
-    loadCartByToken: function (request, callback) {
-        request.query = {
-            token: request.httpRequest.params.token,
-            entCode: request.authData.entCode
-        }
-        if (callback) {
-            FACADE.DefaultCartFacade.loadCart(request).then(success => {
-                callback(null, success);
-            }).catch(error => {
-                callback(error);
-            });
-        } else {
-            return FACADE.DefaultCartFacade.loadCart(request);
-        }
-    },
+  /**
+   * Creates a cart from the HTTP request body.
+   *
+   * @param {Object} request Nodics request context.
+   * @param {Object} request.httpRequest Express request wrapper.
+   * @param {Object} request.httpRequest.body Cart payload to persist.
+   * @param {Function} [callback] Optional Node-style callback.
+   * @returns {Promise|undefined} Promise when no callback is supplied.
+   * @sideEffects Copies `httpRequest.body` into `request.model` before facade delegation.
+   * @throws Propagates facade errors through callback or rejected promise.
+   */
+  createCart: function (request, callback) {
+    request.model = request.httpRequest.body;
+    if (callback) {
+      FACADE.DefaultCartFacade.createCart(request)
+        .then((success) => {
+          callback(null, success);
+        })
+        .catch((error) => {
+          callback(error);
+        });
+    } else {
+      return FACADE.DefaultCartFacade.createCart(request);
+    }
+  },
+  /**
+   * Loads a cart by merchant reference code for the authenticated enterprise.
+   *
+   * @param {Object} request Nodics request context.
+   * @param {Object} request.httpRequest Express request wrapper containing `params.refCode`.
+   * @param {Object} request.authData Authenticated user and enterprise metadata.
+   * @param {Function} [callback] Optional Node-style callback.
+   * @returns {Promise|undefined} Promise when no callback is supplied.
+   * @sideEffects Builds `request.query` with `refCode` and authenticated `entCode`.
+   * @throws Propagates facade errors through callback or rejected promise.
+   */
+  loadCartByRefCode: function (request, callback) {
+    request.query = {
+      refCode: request.httpRequest.params.refCode,
+      entCode: request.authData.entCode,
+    };
+    if (callback) {
+      FACADE.DefaultCartFacade.loadCart(request)
+        .then((success) => {
+          callback(null, success);
+        })
+        .catch((error) => {
+          callback(error);
+        });
+    } else {
+      return FACADE.DefaultCartFacade.loadCart(request);
+    }
+  },
+  /**
+   * Loads a cart by generated cart code for the authenticated enterprise.
+   *
+   * @param {Object} request Nodics request context.
+   * @param {Object} request.httpRequest Express request wrapper containing `params.code`.
+   * @param {Object} request.authData Authenticated user and enterprise metadata.
+   * @param {Function} [callback] Optional Node-style callback.
+   * @returns {Promise|undefined} Promise when no callback is supplied.
+   * @sideEffects Builds `request.query` with `code` and authenticated `entCode`.
+   * @throws Propagates facade errors through callback or rejected promise.
+   */
+  loadCartByCode: function (request, callback) {
+    request.query = {
+      code: request.httpRequest.params.code,
+      entCode: request.authData.entCode,
+    };
+    if (callback) {
+      FACADE.DefaultCartFacade.loadCart(request)
+        .then((success) => {
+          callback(null, success);
+        })
+        .catch((error) => {
+          callback(error);
+        });
+    } else {
+      return FACADE.DefaultCartFacade.loadCart(request);
+    }
+  },
+  /**
+   * Loads a cart by token for the authenticated enterprise.
+   *
+   * @param {Object} request Nodics request context.
+   * @param {Object} request.httpRequest Express request wrapper containing `params.token`.
+   * @param {Object} request.authData Authenticated user and enterprise metadata.
+   * @param {Function} [callback] Optional Node-style callback.
+   * @returns {Promise|undefined} Promise when no callback is supplied.
+   * @sideEffects Builds `request.query` with `token` and authenticated `entCode`.
+   * @throws Propagates facade errors through callback or rejected promise.
+   */
+  loadCartByToken: function (request, callback) {
+    request.query = {
+      token: request.httpRequest.params.token,
+      entCode: request.authData.entCode,
+    };
+    if (callback) {
+      FACADE.DefaultCartFacade.loadCart(request)
+        .then((success) => {
+          callback(null, success);
+        })
+        .catch((error) => {
+          callback(error);
+        });
+    } else {
+      return FACADE.DefaultCartFacade.loadCart(request);
+    }
+  },
+  /**
+   * Calculates a cart by generated cart code for the authenticated enterprise.
+   *
+   * @param {Object} request Nodics request context.
+   * @param {Object} request.httpRequest Express request wrapper containing `params.code` and optional aggregate body.
+   * @param {Function} [callback] Optional Node-style callback.
+   * @returns {Promise|undefined} Promise when no callback is supplied.
+   * @sideEffects Copies route/body context into the calculation request before facade delegation.
+   * @throws Propagates facade errors through callback or rejected promise.
+   */
+  calculateCartByCode: function (request, callback) {
+    request.model = request.httpRequest.body || {};
+    request.cartCode = request.httpRequest.params.code;
+    request.entCode = request.authData && request.authData.entCode;
+    if (callback) {
+      FACADE.DefaultCartFacade.calculateCart(request)
+        .then((success) => {
+          callback(null, success);
+        })
+        .catch((error) => {
+          callback(error);
+        });
+    } else {
+      return FACADE.DefaultCartFacade.calculateCart(request);
+    }
+  },
 };

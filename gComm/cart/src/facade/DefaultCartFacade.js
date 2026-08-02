@@ -18,46 +18,56 @@
  * @property {Object} SERVICE.DefaultCartService Owns cart persistence and pipeline execution.
  */
 module.exports = {
-    /**
-     * Initializes the cart facade during Nodics service registration.
-     *
-     * @param {Object} options Module loader options supplied during startup.
-     * @returns {Promise<boolean>} Resolves when facade initialization is complete.
-     */
-    init: function (options) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-        });
-    },
-    /**
-     * Finalizes cart facade startup after module services are available.
-     *
-     * @param {Object} options Module loader options supplied during startup.
-     * @returns {Promise<boolean>} Resolves when post-initialization is complete.
-     */
-    postInit: function (options) {
-        return new Promise((resolve, reject) => {
-            resolve(true);
-        });
-    },
-    /**
-     * Delegates cart creation to the cart service.
-     *
-     * @param {Object} request Nodics request context containing `model`, `tenant`, and auth metadata.
-     * @returns {Promise<Object>} Cart persistence result from the service layer.
-     * @throws Propagates service errors as rejected promises.
-     */
-    createCart: function (request) {
-        return SERVICE.DefaultCartService.createCart(request);
-    },
-    /**
-     * Delegates cart loading to the cart service.
-     *
-     * @param {Object} request Nodics request context containing a prepared cart query.
-     * @returns {Promise<Object>} Cart query result from the service layer.
-     * @throws Propagates service errors as rejected promises.
-     */
-    loadCart: function (request) {
-        return SERVICE.DefaultCartService.loadCart(request);
-    }
+  /**
+   * Initializes the cart facade during Nodics service registration.
+   *
+   * @param {Object} options Module loader options supplied during startup.
+   * @returns {Promise<boolean>} Resolves when facade initialization is complete.
+   */
+  init: function (options) {
+    return new Promise((resolve, reject) => {
+      resolve(true);
+    });
+  },
+  /**
+   * Finalizes cart facade startup after module services are available.
+   *
+   * @param {Object} options Module loader options supplied during startup.
+   * @returns {Promise<boolean>} Resolves when post-initialization is complete.
+   */
+  postInit: function (options) {
+    return new Promise((resolve, reject) => {
+      resolve(true);
+    });
+  },
+  /**
+   * Delegates cart creation to the cart service.
+   *
+   * @param {Object} request Nodics request context containing `model`, `tenant`, and auth metadata.
+   * @returns {Promise<Object>} Cart persistence result from the service layer.
+   * @throws Propagates service errors as rejected promises.
+   */
+  createCart: function (request) {
+    return SERVICE.DefaultCartService.createCart(request);
+  },
+  /**
+   * Delegates cart loading to the cart service.
+   *
+   * @param {Object} request Nodics request context containing a prepared cart query.
+   * @returns {Promise<Object>} Cart query result from the service layer.
+   * @throws Propagates service errors as rejected promises.
+   */
+  loadCart: function (request) {
+    return SERVICE.DefaultCartService.loadCart(request);
+  },
+  /**
+   * Delegates backend-owned cart calculation to the cart service.
+   *
+   * @param {Object} request Nodics request context containing a cart code or aggregate payload.
+   * @returns {Promise<Object>} Cart calculation result from the service layer.
+   * @throws Propagates service errors as rejected promises.
+   */
+  calculateCart: function (request) {
+    return SERVICE.DefaultCartService.calculateCart(request);
+  },
 };

@@ -23,6 +23,8 @@ const assert = require("assert");
 
 const properties = require("../config/properties");
 const pipelines = require("../src/pipelines/pipelines");
+const routers = require("../src/router/routers");
+const cartService = require("../src/service/cart/DefaultCartService");
 const cartCalculationService = require("../src/service/pipeline/defaultCartCalculationPipelineService");
 const cartEntryCalculationService = require("../src/service/pipeline/defaultCartEntryCalculationPipelineService");
 
@@ -110,37 +112,126 @@ assert.strictEqual(
   pipelines.cartCalculationPipeline.nodes.calculatePaymentPlan.handler,
   "DefaultCartCalculationPipelineService.calculatePaymentPlan",
 );
+assert.strictEqual(
+  routers.cart.cartOperations.calculateCartByCode.key,
+  "/code/:code/calculate",
+);
+assert.strictEqual(
+  routers.cart.cartOperations.calculateCartByCode.method,
+  "POST",
+);
+assert.strictEqual(
+  routers.cart.cartOperations.calculateCartByCode.operation,
+  "calculateCartByCode",
+);
+
+global.CONFIG = {
+  get: (key) => (key === "cart" ? properties.cart : undefined),
+};
+global.CLASSES = {
+  NodicsError: class NodicsError extends Error {
+    constructor(message, cause, code) {
+      super(String(message));
+      this.code = code;
+      this.cause = cause;
+    }
+  },
+};
 
 const invoked = [];
-const process = {
+const pipelineProcess = {
   nextSuccess: () => invoked.push("next"),
   resolve: (value) => invoked.push(["resolve", value]),
   reject: (error) => invoked.push(["reject", error]),
+  error: (request, response, error) => {
+    throw error;
+  },
 };
-const response = {};
-cartEntryCalculationService.resolveBasePrice(
-  { entryCode: "entry-1" },
-  response,
-  process,
-);
-cartEntryCalculationService.calculateEntryTax(
-  { entryCode: "entry-1" },
-  response,
-  process,
-);
-assert(response.success.steps.includes("resolveBasePrice"));
-assert(response.success.steps.includes("calculateEntryTax"));
-cartCalculationService.calculateEntries(
-  { cartCode: "cart-1" },
-  response,
-  process,
-);
-cartCalculationService.prepareCartTotals(
-  { cartCode: "cart-1" },
-  response,
-  process,
-);
-assert(response.success.steps.includes("calculateEntries"));
-assert(response.success.steps.includes("prepareCartTotals"));
 
-console.log("Cart calculation pipeline contract validated");
+(async () => {
+  const response = {};
+  cartEntryCalculationService.resolveBasePrice(
+    { entryCode: "entry-1" },
+    response,
+    pipelineProcess,
+  );
+  cartEntryCalculationService.calculateEntryTax(
+    { entryCode: "entry-1" },
+    response,
+    pipelineProcess,
+  );
+  assert(response.success.steps.includes("resolveBasePrice"));
+  assert(response.success.steps.includes("calculateEntryTax"));
+
+  const startedPipelines = [];
+  global.SERVICE = {
+    DefaultPipelineService: {
+      start: async (pipelineName, request) => {
+        startedPipelines.push({
+          pipelineName,
+          entryCode: request.entryCode,
+          cartCode: request.cartCode,
+        });
+        return {
+          pipelineName,
+          entryCode: request.entryCode,
+          steps: ["resolveProductContext", "prepareEntryTotals"],
+        };
+      },
+    },
+  };
+
+  await cartCalculationService.calculateEntries(
+    {
+      tenant: "default",
+      cartCode: "cart-1",
+      entCode: "default",
+      cartEntries: [
+        { entryCode: "entry-1", cartCode: "cart-1" },
+        { entryCode: "entry-2", cartCode: "cart-1" },
+      ],
+    },
+    response,
+    pipelineProcess,
+  );
+  cartCalculationService.prepareCartTotals(
+    { cartCode: "cart-1" },
+    response,
+    pipelineProcess,
+  );
+  assert(response.success.steps.includes("calculateEntries"));
+  assert(response.success.steps.includes("prepareCartTotals"));
+  assert.deepStrictEqual(
+    startedPipelines.map((item) => item.pipelineName),
+    ["cartEntryCalculationPipeline", "cartEntryCalculationPipeline"],
+  );
+  assert.deepStrictEqual(
+    response.success.evidence.calculatedEntries.map((entry) => entry.entryCode),
+    ["entry-1", "entry-2"],
+  );
+
+  global.SERVICE.DefaultPipelineService.start = async (
+    pipelineName,
+    request,
+  ) => {
+    assert.strictEqual(pipelineName, "cartCalculationPipeline");
+    assert.strictEqual(request.cartCode, "cart-9");
+    assert.strictEqual(request.entCode, "default");
+    return {
+      cartCode: request.cartCode,
+      pipelineName,
+    };
+  };
+  const calculated = await cartService.calculateCart({
+    tenant: "default",
+    authData: { entCode: "default" },
+    model: { code: "cart-9" },
+  });
+  assert.strictEqual(calculated.cartCode, "cart-9");
+  assert.strictEqual(calculated.pipelineName, "cartCalculationPipeline");
+
+  console.log("Cart calculation pipeline contract validated");
+})().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

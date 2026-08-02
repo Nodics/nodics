@@ -23,6 +23,8 @@ const assert = require("assert");
 
 const properties = require("../config/properties");
 const pipelines = require("../src/pipelines/pipelines");
+const routers = require("../src/router/routers");
+const orderService = require("../src/service/order/DefaultOrderService");
 const orderCalculationService = require("../src/service/pipeline/defaultOrderCalculationPipelineService");
 const orderEntryCalculationService = require("../src/service/pipeline/defaultOrderEntryCalculationPipelineService");
 
@@ -117,6 +119,18 @@ assert.strictEqual(
   pipelines.orderCalculationPipeline.nodes.reconcilePaymentEvidence.handler,
   "DefaultOrderCalculationPipelineService.reconcilePaymentEvidence",
 );
+assert.strictEqual(
+  routers.order.orderOperations.calculateOrderByCode.key,
+  "/code/:code/calculate",
+);
+assert.strictEqual(
+  routers.order.orderOperations.calculateOrderByCode.method,
+  "POST",
+);
+assert.strictEqual(
+  routers.order.orderOperations.calculateOrderByCode.operation,
+  "calculateOrderByCode",
+);
 
 assert.strictEqual(
   properties.order.checkoutPlacement.pipeline.name,
@@ -134,36 +148,129 @@ assert.strictEqual(
   "Payment calculation/reconciliation belongs in explicit calculation or Payment-owned nodes, not placement-run evidence",
 );
 
+global.CONFIG = {
+  get: (key) => (key === "order" ? properties.order : undefined),
+};
+global.CLASSES = {
+  NodicsError: class NodicsError extends Error {
+    constructor(message, cause, code) {
+      super(String(message));
+      this.code = code;
+      this.cause = cause;
+    }
+  },
+};
+
 const invoked = [];
-const process = {
+const pipelineProcess = {
   nextSuccess: () => invoked.push("next"),
   resolve: (value) => invoked.push(["resolve", value]),
   reject: (error) => invoked.push(["reject", error]),
+  error: (request, response, error) => {
+    throw error;
+  },
 };
-const response = {};
-orderEntryCalculationService.reconcileEntryTax(
-  { entryCode: "entry-1" },
-  response,
-  process,
-);
-orderEntryCalculationService.reconcileInventoryEvidence(
-  { entryCode: "entry-1" },
-  response,
-  process,
-);
-assert(response.success.steps.includes("reconcileEntryTax"));
-assert(response.success.steps.includes("reconcileInventoryEvidence"));
-orderCalculationService.calculateEntries(
-  { orderCode: "order-1" },
-  response,
-  process,
-);
-orderCalculationService.prepareOrderTotals(
-  { orderCode: "order-1" },
-  response,
-  process,
-);
-assert(response.success.steps.includes("calculateEntries"));
-assert(response.success.steps.includes("prepareOrderTotals"));
 
-console.log("Order calculation pipeline contract validated");
+(async () => {
+  const response = {};
+  orderEntryCalculationService.reconcileEntryTax(
+    { entryCode: "entry-1" },
+    response,
+    pipelineProcess,
+  );
+  orderEntryCalculationService.reconcileInventoryEvidence(
+    { entryCode: "entry-1" },
+    response,
+    pipelineProcess,
+  );
+  assert(response.success.steps.includes("reconcileEntryTax"));
+  assert(response.success.steps.includes("reconcileInventoryEvidence"));
+
+  const startedPipelines = [];
+  global.SERVICE = {
+    DefaultPipelineService: {
+      start: async (pipelineName, request) => {
+        startedPipelines.push({
+          pipelineName,
+          entryCode: request.entryCode,
+          orderCode: request.orderCode,
+        });
+        return {
+          pipelineName,
+          entryCode: request.entryCode,
+          steps: ["resolveOrderEntryContext", "prepareOrderEntryTotals"],
+        };
+      },
+    },
+  };
+
+  await orderCalculationService.calculateEntries(
+    {
+      tenant: "default",
+      orderCode: "order-1",
+      entCode: "default",
+      lifecycleOperation: "ADJUSTMENT",
+      orderEntries: [
+        { entryCode: "entry-1", orderCode: "order-1" },
+        { entryCode: "entry-2", orderCode: "order-1" },
+      ],
+    },
+    response,
+    pipelineProcess,
+  );
+  orderCalculationService.prepareOrderTotals(
+    { orderCode: "order-1" },
+    response,
+    pipelineProcess,
+  );
+  assert(response.success.steps.includes("calculateEntries"));
+  assert(response.success.steps.includes("prepareOrderTotals"));
+  assert.deepStrictEqual(
+    startedPipelines.map((item) => item.pipelineName),
+    ["orderEntryCalculationPipeline", "orderEntryCalculationPipeline"],
+  );
+  assert.deepStrictEqual(
+    response.success.evidence.calculatedEntries.map((entry) => entry.entryCode),
+    ["entry-1", "entry-2"],
+  );
+
+  await assert.rejects(
+    () =>
+      orderService.calculateOrder({
+        tenant: "default",
+        authData: { entCode: "default" },
+        model: { code: "order-9" },
+      }),
+    (error) =>
+      error.code === "ERR_ORD_00000" &&
+      error.message.includes("requires an explicit lifecycleOperation"),
+  );
+
+  global.SERVICE.DefaultPipelineService.start = async (
+    pipelineName,
+    request,
+  ) => {
+    assert.strictEqual(pipelineName, "orderCalculationPipeline");
+    assert.strictEqual(request.orderCode, "order-9");
+    assert.strictEqual(request.entCode, "default");
+    assert.strictEqual(request.lifecycleOperation, "ADJUSTMENT");
+    return {
+      orderCode: request.orderCode,
+      pipelineName,
+      lifecycleOperation: request.lifecycleOperation,
+    };
+  };
+  const calculated = await orderService.calculateOrder({
+    tenant: "default",
+    authData: { entCode: "default" },
+    model: { code: "order-9", lifecycleOperation: "ADJUSTMENT" },
+  });
+  assert.strictEqual(calculated.orderCode, "order-9");
+  assert.strictEqual(calculated.pipelineName, "orderCalculationPipeline");
+  assert.strictEqual(calculated.lifecycleOperation, "ADJUSTMENT");
+
+  console.log("Order calculation pipeline contract validated");
+})().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

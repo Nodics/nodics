@@ -17,5 +17,31 @@
  * @override Project modules may add, remove, or replace order routes through governed router hierarchy contributions.
  */
 module.exports = {
-
+  order: {
+    orderOperations: {
+      calculateOrderByCode: {
+        secured: true,
+        accessGroups: ["userGroup"],
+        key: "/code/:code/calculate",
+        method: "POST",
+        controller: "DefaultOrderController",
+        operation: "calculateOrderByCode",
+        help: {
+          requestType: "secured",
+          message: "authToken need to set within header",
+          method: "POST",
+          url: "http://host:port/nodics/order/code/:code/calculate",
+          body: {
+            lifecycleOperation:
+              "Required order lifecycle operation such as AMENDMENT, RETURN, REFUND, ADJUSTMENT, or RECONCILIATION",
+            orderEntries: "Optional preloaded order entries for calculation",
+            orderDeliveryGroups: "Optional preloaded delivery groups",
+            orderPaymentGroups: "Optional preloaded payment groups",
+            orderDeliveryAllocations: "Optional preloaded delivery allocations",
+            orderPaymentAllocations: "Optional preloaded payment allocations",
+          },
+        },
+      },
+    },
+  },
 };

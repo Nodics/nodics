@@ -25,6 +25,13 @@ contributes three related pipelines:
   validation, triggers entry calculation, then prepares delivery-charge,
   cart-promotion, cart-tax, payment-plan, and final-total evidence.
 
+The backend runtime entry point is `DefaultCartService.calculateCart`, exposed
+through the secured `POST /nodics/cart/code/:code/calculate` route. The route
+accepts optional preloaded cart aggregate data for orchestration/testing, but
+Cart remains the owner of invoking the calculation pipeline. Axis or other
+clients must not coordinate entry, price, tax, inventory, payment, or
+fulfillment calculations through separate browser-side calls.
+
 This shape is mandatory. Customer modules may add, replace, or reorder nodes,
 but they should not collapse calculation into a monolithic service or duplicate
 Pricing, Promotion, Tax, Inventory, Payment, or Fulfillment authority inside

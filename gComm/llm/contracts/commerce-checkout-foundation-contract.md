@@ -176,6 +176,21 @@ replace `calculateEntryTax` with a country-specific Tax adapter, or add a
 payment-deposit validation node before `calculatePaymentPlan`. The customer
 does not need to fork the whole Cart or Order calculation flow.
 
+The default Cart runtime entry point is `DefaultCartService.calculateCart`,
+which starts `cartCalculationPipeline`. The secured route
+`POST /nodics/cart/code/:code/calculate` exists so clients can request a
+backend-owned recalculation. Axis, storefronts, and integrations may pass
+context or preloaded aggregate evidence, but they must not calculate prices,
+taxes, promotions, inventory, payment plans, or fulfillment decisions in the
+browser.
+
+The default Order runtime entry point is `DefaultOrderService.calculateOrder`,
+which starts `orderCalculationPipeline`. The secured route
+`POST /nodics/order/code/:code/calculate` requires an explicit
+`lifecycleOperation` because Order must preserve historical checkout evidence
+unless a governed amendment, return, refund, adjustment, or reconciliation
+operation says recalculation is allowed.
+
 The same distinction applies to process orchestration. nPipeline divides one
 technical task into small deterministic nodes. Workflow coordinates business
 processes such as checkout placement, approval, return/refund, third-party
