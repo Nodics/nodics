@@ -392,6 +392,22 @@ const navigationWorkbenchRecoveryAction = {
     order: { type: "integer" },
   },
 };
+const navigationWorkbenchDetailSection = {
+  type: "object",
+  additionalProperties: false,
+  required: ["id", "label", "fields"],
+  properties: {
+    id: { type: "string", minLength: 1, maxLength: 128 },
+    label: { type: "string", minLength: 1, maxLength: 128 },
+    fields: {
+      type: "array",
+      uniqueItems: true,
+      maxItems: 64,
+      items: { type: "string", minLength: 1, maxLength: 256 },
+    },
+    order: { type: "integer" },
+  },
+};
 const navigationWorkbenchPresentation = {
   type: "object",
   additionalProperties: false,
@@ -425,6 +441,12 @@ const navigationWorkbenchPresentation = {
       uniqueItems: true,
       maxItems: 64,
       items: { type: "string", minLength: 1, maxLength: 256 },
+    },
+    detailSections: {
+      type: "array",
+      uniqueItems: true,
+      maxItems: 24,
+      items: navigationWorkbenchDetailSection,
     },
     quickFilters: {
       type: "array",

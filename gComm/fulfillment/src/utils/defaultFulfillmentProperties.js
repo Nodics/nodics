@@ -143,16 +143,65 @@ module.exports = {
         },
       },
       carrierProviderStatuses: ["ACTIVE", "INACTIVE", "SUSPENDED"],
-      carrierProviderTypes: ["CARRIER", "AGGREGATOR", "PICKUP_NETWORK", "LOCAL_DELIVERY", "DIGITAL_DELIVERY", "FREIGHT", "WMS", "ERP"],
-      consignmentStatuses: ["RELEASED", "PICKING", "PACKED", "SHIPPED", "PARTIALLY_SHIPPED", "DELIVERED", "CANCELLED", "FAILED"],
-      shipmentStatuses: ["CREATED", "LABELLED", "DISPATCHED", "IN_TRANSIT", "DELIVERED", "FAILED", "CANCELLED"],
-      trackingEventTypes: ["PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "EXCEPTION", "FAILED"],
+      carrierProviderTypes: [
+        "CARRIER",
+        "AGGREGATOR",
+        "PICKUP_NETWORK",
+        "LOCAL_DELIVERY",
+        "DIGITAL_DELIVERY",
+        "FREIGHT",
+        "WMS",
+        "ERP",
+      ],
+      consignmentStatuses: [
+        "RELEASED",
+        "PICKING",
+        "PACKED",
+        "SHIPPED",
+        "PARTIALLY_SHIPPED",
+        "DELIVERED",
+        "CANCELLED",
+        "FAILED",
+      ],
+      shipmentStatuses: [
+        "CREATED",
+        "LABELLED",
+        "DISPATCHED",
+        "IN_TRANSIT",
+        "DELIVERED",
+        "FAILED",
+        "CANCELLED",
+      ],
+      trackingEventTypes: [
+        "PICKED_UP",
+        "IN_TRANSIT",
+        "OUT_FOR_DELIVERY",
+        "DELIVERED",
+        "EXCEPTION",
+        "FAILED",
+      ],
       trackingEventStatuses: ["ACCEPTED", "IGNORED", "APPLIED", "FAILED"],
       returnTypes: ["CUSTOMER_RETURN", "FAILED_DELIVERY", "EXCHANGE", "REPAIR"],
-      returnStatuses: ["REQUESTED", "APPROVED", "PICKUP_REQUESTED", "IN_TRANSIT", "RECEIVED", "INSPECTED", "CLOSED", "CANCELLED", "FAILED"],
+      returnStatuses: [
+        "REQUESTED",
+        "APPROVED",
+        "PICKUP_REQUESTED",
+        "IN_TRANSIT",
+        "RECEIVED",
+        "INSPECTED",
+        "CLOSED",
+        "CANCELLED",
+        "FAILED",
+      ],
       returnTransitions: {
         REQUESTED: ["APPROVED", "CANCELLED", "FAILED"],
-        APPROVED: ["PICKUP_REQUESTED", "IN_TRANSIT", "RECEIVED", "CANCELLED", "FAILED"],
+        APPROVED: [
+          "PICKUP_REQUESTED",
+          "IN_TRANSIT",
+          "RECEIVED",
+          "CANCELLED",
+          "FAILED",
+        ],
         PICKUP_REQUESTED: ["IN_TRANSIT", "RECEIVED", "CANCELLED", "FAILED"],
         IN_TRANSIT: ["RECEIVED", "FAILED"],
         RECEIVED: ["INSPECTED", "CLOSED"],
@@ -163,7 +212,13 @@ module.exports = {
       },
       returnDisposition: {
         defaultDispositionCode: "INSPECT",
-        supportedDispositionCodes: ["INSPECT", "RESTOCK", "REPAIR", "SCRAP", "QUARANTINE"],
+        supportedDispositionCodes: [
+          "INSPECT",
+          "RESTOCK",
+          "REPAIR",
+          "SCRAP",
+          "QUARANTINE",
+        ],
         inventoryMovement: {
           enabled: true,
           ownerModule: "inventory",
@@ -190,7 +245,13 @@ module.exports = {
         FAILED: "FAILED",
       },
       warehouseTaskTypes: ["PICK", "PACK", "HANDOFF"],
-      warehouseTaskStatuses: ["OPEN", "IN_PROGRESS", "COMPLETED", "CANCELLED", "FAILED"],
+      warehouseTaskStatuses: [
+        "OPEN",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "CANCELLED",
+        "FAILED",
+      ],
       warehouseTaskTransitions: {
         OPEN: ["IN_PROGRESS", "COMPLETED", "CANCELLED", "FAILED"],
         IN_PROGRESS: ["COMPLETED", "CANCELLED", "FAILED"],
@@ -240,11 +301,11 @@ module.exports = {
       requiredPermissions: ["fulfillment.backoffice.read"],
       navigation: [
         {
-          id: "fulfillment",
+          id: "shipping-operations",
           parentId: "commerce-operations",
           parentModuleName: "pricing",
-          label: "Fulfillment",
-          route: "/commerce/operations/fulfillment",
+          label: "Shipping Operations",
+          route: "/commerce/shipping",
           icon: "shipment",
           order: 620,
           group: { id: "commerce", label: "Commerce", order: 300 },
@@ -252,13 +313,58 @@ module.exports = {
           contexts: ["environment", "tenant", "enterprise"],
           featureState: "PREVIEW",
           requiredPermissions: ["fulfillment.backoffice.read"],
-          workbenchTarget: { moduleName: "fulfillment", schemaName: "fulfillmentConsignment" },
+          workbenchTarget: {
+            moduleName: "fulfillment",
+            schemaName: "fulfillmentConsignment",
+          },
+          workbenchPresentation: {
+            defaultColumns: [
+              "consignmentCode",
+              "orderCode",
+              "deliveryGroupCode",
+              "deliveryModeCode",
+              "carrierCode",
+              "warehouseCode",
+              "shipmentCode",
+              "status",
+            ],
+            detailSections: [
+              {
+                id: "shipping-summary",
+                label: "Shipping summary",
+                fields: [
+                  "consignmentCode",
+                  "orderCode",
+                  "deliveryGroupCode",
+                  "deliveryModeCode",
+                  "carrierCode",
+                  "warehouseCode",
+                  "shipmentCode",
+                  "status",
+                ],
+              },
+              {
+                id: "fulfillment-evidence",
+                label: "Fulfillment evidence",
+                fields: [
+                  "allocationCodes",
+                  "inventoryAllocationCodes",
+                  "releasedAt",
+                  "failureCode",
+                  "failureMessage",
+                ],
+              },
+            ],
+          },
           lifecycleActions: [
             {
               id: "review-fulfillment-exceptions",
               label: "Review exceptions",
               intent: "RECONCILE",
               permission: "fulfillment.backoffice.manage",
+              handlerAction:
+                "DefaultFulfillmentOperationsLifecycleService.reviewExceptions",
+              operationRoute: "/operations/lifecycle",
               summary:
                 "Review failed consignments, shipment exceptions, and delayed warehouse tasks through Fulfillment governance.",
               targetStatuses: ["FAILED", "RELEASED"],
@@ -273,9 +379,9 @@ module.exports = {
         },
         {
           id: "fulfillment-consignments",
-          parentId: "fulfillment",
+          parentId: "shipping-operations",
           label: "Consignments",
-          route: "/commerce/operations/fulfillment/consignments",
+          route: "/commerce/shipping/consignments",
           icon: "shipment",
           order: 621,
           group: { id: "commerce", label: "Commerce", order: 300 },
@@ -283,13 +389,19 @@ module.exports = {
           contexts: ["environment", "tenant", "enterprise"],
           featureState: "PREVIEW",
           requiredPermissions: ["fulfillment.backoffice.read"],
-          workbenchTarget: { moduleName: "fulfillment", schemaName: "fulfillmentConsignment" },
+          workbenchTarget: {
+            moduleName: "fulfillment",
+            schemaName: "fulfillmentConsignment",
+          },
           lifecycleActions: [
             {
               id: "release-consignment",
               label: "Release consignment",
               intent: "CREATE",
               permission: "fulfillment.backoffice.manage",
+              handlerAction:
+                "DefaultFulfillmentOperationsLifecycleService.releaseConsignment",
+              operationRoute: "/operations/lifecycle",
               summary:
                 "Release order delivery allocations into a Fulfillment-owned consignment.",
               featureState: "PREVIEW",
@@ -299,6 +411,9 @@ module.exports = {
               label: "Cancel consignment",
               intent: "CANCEL",
               permission: "fulfillment.backoffice.manage",
+              handlerAction:
+                "DefaultFulfillmentOperationsLifecycleService.cancelConsignment",
+              operationRoute: "/operations/lifecycle",
               summary:
                 "Cancel a consignment only through Fulfillment lifecycle checks and Inventory release policy.",
               targetStatuses: ["RELEASED", "PICKING", "PACKED"],
@@ -309,7 +424,10 @@ module.exports = {
             {
               id: "consignment-shipments",
               label: "Shipments",
-              target: { moduleName: "fulfillment", schemaName: "fulfillmentShipment" },
+              target: {
+                moduleName: "fulfillment",
+                schemaName: "fulfillmentShipment",
+              },
               relation: {
                 sourceField: "consignmentCode",
                 targetField: "consignmentCode",
@@ -321,7 +439,10 @@ module.exports = {
             {
               id: "consignment-warehouse-tasks",
               label: "Warehouse tasks",
-              target: { moduleName: "fulfillment", schemaName: "fulfillmentWarehouseTask" },
+              target: {
+                moduleName: "fulfillment",
+                schemaName: "fulfillmentWarehouseTask",
+              },
               relation: {
                 sourceField: "consignmentCode",
                 targetField: "consignmentCode",
@@ -333,7 +454,10 @@ module.exports = {
             {
               id: "consignment-tracking-events",
               label: "Tracking events",
-              target: { moduleName: "fulfillment", schemaName: "fulfillmentTrackingEvent" },
+              target: {
+                moduleName: "fulfillment",
+                schemaName: "fulfillmentTrackingEvent",
+              },
               relation: {
                 sourceField: "consignmentCode",
                 targetField: "consignmentCode",
@@ -351,9 +475,9 @@ module.exports = {
         },
         {
           id: "fulfillment-shipments",
-          parentId: "fulfillment",
+          parentId: "shipping-operations",
           label: "Shipments",
-          route: "/commerce/operations/fulfillment/shipments",
+          route: "/commerce/shipping/shipments",
           icon: "shipment",
           order: 622,
           group: { id: "commerce", label: "Commerce", order: 300 },
@@ -361,13 +485,67 @@ module.exports = {
           contexts: ["environment", "tenant", "enterprise"],
           featureState: "PREVIEW",
           requiredPermissions: ["fulfillment.backoffice.read"],
-          workbenchTarget: { moduleName: "fulfillment", schemaName: "fulfillmentShipment" },
+          workbenchTarget: {
+            moduleName: "fulfillment",
+            schemaName: "fulfillmentShipment",
+          },
+          workbenchPresentation: {
+            defaultColumns: [
+              "shipmentCode",
+              "consignmentCode",
+              "orderCode",
+              "carrierCode",
+              "trackingNumber",
+              "deliveryModeCode",
+              "status",
+            ],
+            detailSections: [
+              {
+                id: "shipment-summary",
+                label: "Shipment summary",
+                fields: [
+                  "shipmentCode",
+                  "consignmentCode",
+                  "orderCode",
+                  "carrierCode",
+                  "deliveryModeCode",
+                  "trackingNumber",
+                  "trackingUrl",
+                  "status",
+                ],
+              },
+              {
+                id: "label-evidence",
+                label: "Label and lifecycle evidence",
+                fields: [
+                  "labelRef",
+                  "idempotencyKey",
+                  "shippedAt",
+                  "deliveredAt",
+                  "inventoryFulfillmentCodes",
+                  "failureCode",
+                  "failureMessage",
+                ],
+              },
+            ],
+            forbiddenFields: [
+              "rawProviderPayload",
+              "rawCarrierPayload",
+              "labelPayload",
+              "secret",
+              "apiKey",
+              "accessToken",
+            ],
+          },
           lifecycleActions: [
             {
               id: "request-label",
               label: "Request label",
               intent: "CREATE",
               permission: "fulfillment.backoffice.manage",
+              handlerAction:
+                "DefaultFulfillmentOperationsLifecycleService.requestLabel",
+              operationRoute: "/operations/lifecycle",
               summary:
                 "Request a carrier label through the configured Fulfillment provider adapter.",
               targetStatuses: ["CREATED"],
@@ -378,6 +556,9 @@ module.exports = {
               label: "Dispatch shipment",
               intent: "UPDATE",
               permission: "fulfillment.backoffice.manage",
+              handlerAction:
+                "DefaultFulfillmentOperationsLifecycleService.dispatchShipment",
+              operationRoute: "/operations/lifecycle",
               summary:
                 "Move a labelled shipment into dispatch lifecycle after warehouse checks.",
               targetStatuses: ["LABELLED", "CREATED"],
@@ -392,9 +573,9 @@ module.exports = {
         },
         {
           id: "fulfillment-modes",
-          parentId: "fulfillment",
+          parentId: "shipping-operations",
           label: "Shipping modes",
-          route: "/commerce/operations/fulfillment/modes",
+          route: "/commerce/shipping/modes",
           icon: "shipment",
           order: 623,
           group: { id: "commerce", label: "Commerce", order: 300 },
@@ -402,13 +583,44 @@ module.exports = {
           contexts: ["environment", "tenant", "enterprise"],
           featureState: "PREVIEW",
           requiredPermissions: ["fulfillment.backoffice.read"],
-          workbenchTarget: { moduleName: "fulfillment", schemaName: "fulfillmentMode" },
+          workbenchTarget: {
+            moduleName: "fulfillment",
+            schemaName: "fulfillmentMode",
+          },
+          workbenchPresentation: {
+            defaultColumns: [
+              "modeCode",
+              "displayName",
+              "defaultCarrierCode",
+              "carrierRequired",
+              "labelRequired",
+              "status",
+            ],
+            detailSections: [
+              {
+                id: "mode-policy",
+                label: "Mode policy",
+                fields: [
+                  "modeCode",
+                  "displayName",
+                  "defaultCarrierCode",
+                  "carrierRequired",
+                  "labelRequired",
+                  "allowedProviderTypes",
+                  "status",
+                ],
+              },
+            ],
+          },
           lifecycleActions: [
             {
               id: "create-shipping-mode",
               label: "Create mode",
               intent: "CREATE",
               permission: "fulfillment.backoffice.manage",
+              handlerAction:
+                "DefaultFulfillmentOperationsLifecycleService.validateShippingMode",
+              operationRoute: "/operations/lifecycle",
               summary:
                 "Create an enterprise-scoped shipping mode through Fulfillment authority.",
               featureState: "PREVIEW",
@@ -418,6 +630,9 @@ module.exports = {
               label: "Retire mode",
               intent: "UPDATE",
               permission: "fulfillment.backoffice.manage",
+              handlerAction:
+                "DefaultFulfillmentOperationsLifecycleService.retireShippingMode",
+              operationRoute: "/operations/lifecycle",
               summary:
                 "Retire a shipping mode after dependency and active-delivery validation.",
               targetStatuses: ["ACTIVE"],
@@ -432,9 +647,9 @@ module.exports = {
         },
         {
           id: "fulfillment-carrier-providers",
-          parentId: "fulfillment",
+          parentId: "shipping-operations",
           label: "Carrier providers",
-          route: "/commerce/operations/fulfillment/carrier-providers",
+          route: "/commerce/shipping/carrier-providers",
           icon: "shipment",
           order: 624,
           group: { id: "commerce", label: "Commerce", order: 300 },
@@ -442,15 +657,85 @@ module.exports = {
           contexts: ["environment", "tenant", "enterprise"],
           featureState: "PREVIEW",
           requiredPermissions: ["fulfillment.backoffice.read"],
-          workbenchTarget: { moduleName: "fulfillment", schemaName: "fulfillmentCarrierProvider" },
+          workbenchTarget: {
+            moduleName: "fulfillment",
+            schemaName: "fulfillmentCarrierProvider",
+          },
+          workbenchPresentation: {
+            defaultColumns: [
+              "carrierCode",
+              "name",
+              "providerType",
+              "modeCodes",
+              "supportsLabels",
+              "supportsTracking",
+              "adapterService",
+              "status",
+            ],
+            detailSections: [
+              {
+                id: "provider-summary",
+                label: "Provider summary",
+                fields: [
+                  "carrierCode",
+                  "name",
+                  "providerType",
+                  "modeCodes",
+                  "supportedDeliveryModes",
+                  "supportedCountries",
+                  "supportsLabels",
+                  "supportsTracking",
+                  "status",
+                ],
+              },
+              {
+                id: "integration-governance",
+                label: "Integration governance",
+                fields: [
+                  "adapterService",
+                  "policyService",
+                  "serviceAdapter",
+                  "configurationRef",
+                ],
+              },
+            ],
+            forbiddenFields: [
+              "secret",
+              "apiKey",
+              "accessToken",
+              "refreshToken",
+              "password",
+              "credentials",
+              "rawCarrierPayload",
+              "rawProviderPayload",
+              "labelPayload",
+              "providerPayload",
+            ],
+          },
           lifecycleActions: [
             {
               id: "create-carrier-provider",
               label: "Create provider",
               intent: "CREATE",
               permission: "fulfillment.backoffice.manage",
+              handlerAction:
+                "DefaultFulfillmentOperationsLifecycleService.validateCarrierProvider",
+              operationRoute: "/operations/lifecycle",
               summary:
                 "Register a safe carrier provider and adapter reference. Credentials remain outside Fulfillment records.",
+              featureState: "PREVIEW",
+            },
+            {
+              id: "test-carrier-provider",
+              label: "Test provider",
+              intent: "TEST",
+              permission: "fulfillment.backoffice.manage",
+              handlerAction:
+                "DefaultFulfillmentOperationsLifecycleService.testCarrierProvider",
+              operationRoute: "/operations/lifecycle",
+              summary:
+                "Validate carrier adapter readiness without exposing credentials or storing raw provider payloads.",
+              targetStatuses: ["ACTIVE"],
               featureState: "PREVIEW",
             },
             {
@@ -458,6 +743,9 @@ module.exports = {
               label: "Suspend provider",
               intent: "UPDATE",
               permission: "fulfillment.backoffice.manage",
+              handlerAction:
+                "DefaultFulfillmentOperationsLifecycleService.suspendCarrierProvider",
+              operationRoute: "/operations/lifecycle",
               summary:
                 "Suspend a carrier provider through Fulfillment governance and active-shipment checks.",
               targetStatuses: ["ACTIVE"],
@@ -472,9 +760,9 @@ module.exports = {
         },
         {
           id: "fulfillment-warehouse-tasks",
-          parentId: "fulfillment",
+          parentId: "shipping-operations",
           label: "Warehouse tasks",
-          route: "/commerce/operations/fulfillment/warehouse-tasks",
+          route: "/commerce/shipping/warehouse-tasks",
           icon: "warehouse",
           order: 625,
           group: { id: "commerce", label: "Commerce", order: 300 },
@@ -482,13 +770,67 @@ module.exports = {
           contexts: ["environment", "tenant", "enterprise"],
           featureState: "PREVIEW",
           requiredPermissions: ["fulfillment.backoffice.read"],
-          workbenchTarget: { moduleName: "fulfillment", schemaName: "fulfillmentWarehouseTask" },
+          workbenchTarget: {
+            moduleName: "fulfillment",
+            schemaName: "fulfillmentWarehouseTask",
+          },
+          workbenchPresentation: {
+            defaultColumns: [
+              "taskCode",
+              "taskType",
+              "consignmentCode",
+              "shipmentCode",
+              "orderCode",
+              "warehouseCode",
+              "assignedTo",
+              "status",
+            ],
+            detailSections: [
+              {
+                id: "warehouse-task-summary",
+                label: "Warehouse task summary",
+                fields: [
+                  "taskCode",
+                  "taskType",
+                  "consignmentCode",
+                  "shipmentCode",
+                  "orderCode",
+                  "warehouseCode",
+                  "assignedTo",
+                  "priority",
+                  "status",
+                ],
+              },
+              {
+                id: "warehouse-task-evidence",
+                label: "Task evidence",
+                fields: [
+                  "allocationCodes",
+                  "inventoryAllocationCodes",
+                  "startedAt",
+                  "completedAt",
+                  "failureCode",
+                  "failureMessage",
+                ],
+              },
+            ],
+            forbiddenFields: [
+              "deviceSecret",
+              "rawDevicePayload",
+              "secret",
+              "apiKey",
+              "accessToken",
+            ],
+          },
           lifecycleActions: [
             {
               id: "complete-warehouse-task",
               label: "Complete task",
               intent: "UPDATE",
               permission: "fulfillment.backoffice.manage",
+              handlerAction:
+                "DefaultFulfillmentOperationsLifecycleService.completeWarehouseTask",
+              operationRoute: "/operations/lifecycle",
               summary:
                 "Complete pick, pack, or handoff task evidence before shipment dispatch.",
               targetStatuses: ["OPEN", "IN_PROGRESS"],
@@ -503,9 +845,9 @@ module.exports = {
         },
         {
           id: "fulfillment-tracking-events",
-          parentId: "fulfillment",
+          parentId: "shipping-operations",
           label: "Tracking events",
-          route: "/commerce/operations/fulfillment/tracking-events",
+          route: "/commerce/shipping/tracking-events",
           icon: "shipment",
           order: 626,
           group: { id: "commerce", label: "Commerce", order: 300 },
@@ -513,13 +855,67 @@ module.exports = {
           contexts: ["environment", "tenant", "enterprise"],
           featureState: "PREVIEW",
           requiredPermissions: ["fulfillment.backoffice.read"],
-          workbenchTarget: { moduleName: "fulfillment", schemaName: "fulfillmentTrackingEvent" },
+          workbenchTarget: {
+            moduleName: "fulfillment",
+            schemaName: "fulfillmentTrackingEvent",
+          },
+          workbenchPresentation: {
+            defaultColumns: [
+              "eventCode",
+              "shipmentCode",
+              "carrierCode",
+              "trackingNumber",
+              "normalizedEventType",
+              "appliedShipmentStatus",
+              "status",
+            ],
+            detailSections: [
+              {
+                id: "tracking-summary",
+                label: "Tracking summary",
+                fields: [
+                  "eventCode",
+                  "shipmentCode",
+                  "consignmentCode",
+                  "orderCode",
+                  "carrierCode",
+                  "trackingNumber",
+                  "providerEventCode",
+                  "normalizedEventType",
+                  "appliedShipmentStatus",
+                  "status",
+                ],
+              },
+              {
+                id: "tracking-evidence",
+                label: "Tracking evidence",
+                fields: [
+                  "eventTime",
+                  "locationCode",
+                  "locationLabel",
+                  "message",
+                  "failureCode",
+                  "failureMessage",
+                ],
+              },
+            ],
+            forbiddenFields: [
+              "rawCarrierPayload",
+              "rawProviderPayload",
+              "secret",
+              "apiKey",
+              "accessToken",
+            ],
+          },
           lifecycleActions: [
             {
               id: "reconcile-tracking",
               label: "Reconcile tracking",
               intent: "RECONCILE",
               permission: "fulfillment.backoffice.manage",
+              handlerAction:
+                "DefaultFulfillmentOperationsLifecycleService.reconcileTracking",
+              operationRoute: "/operations/lifecycle",
               summary:
                 "Reconcile normalized carrier tracking events with shipment lifecycle evidence.",
               targetStatuses: ["ACCEPTED", "FAILED"],
@@ -534,9 +930,9 @@ module.exports = {
         },
         {
           id: "fulfillment-returns",
-          parentId: "fulfillment",
+          parentId: "shipping-operations",
           label: "Returns",
-          route: "/commerce/operations/fulfillment/returns",
+          route: "/commerce/shipping/returns",
           icon: "return",
           order: 627,
           group: { id: "commerce", label: "Commerce", order: 300 },
@@ -544,13 +940,69 @@ module.exports = {
           contexts: ["environment", "tenant", "enterprise"],
           featureState: "PREVIEW",
           requiredPermissions: ["fulfillment.backoffice.read"],
-          workbenchTarget: { moduleName: "fulfillment", schemaName: "fulfillmentReturnRequest" },
+          workbenchTarget: {
+            moduleName: "fulfillment",
+            schemaName: "fulfillmentReturnRequest",
+          },
+          workbenchPresentation: {
+            defaultColumns: [
+              "returnCode",
+              "orderCode",
+              "consignmentCode",
+              "shipmentCode",
+              "returnType",
+              "requestedQuantity",
+              "receivedQuantity",
+              "status",
+            ],
+            detailSections: [
+              {
+                id: "return-summary",
+                label: "Return summary",
+                fields: [
+                  "returnCode",
+                  "orderCode",
+                  "consignmentCode",
+                  "shipmentCode",
+                  "returnShipmentCode",
+                  "returnReasonCode",
+                  "returnType",
+                  "status",
+                ],
+              },
+              {
+                id: "return-evidence",
+                label: "Return evidence",
+                fields: [
+                  "requestedQuantity",
+                  "receivedQuantity",
+                  "dispositionCode",
+                  "dispositionAt",
+                  "inspectionResult",
+                  "inventoryDispositionIntent",
+                  "refundPolicyCode",
+                  "requestedAt",
+                  "receivedAt",
+                ],
+              },
+            ],
+            forbiddenFields: [
+              "rawCarrierPayload",
+              "rawProviderPayload",
+              "secret",
+              "apiKey",
+              "accessToken",
+            ],
+          },
           lifecycleActions: [
             {
               id: "approve-return",
               label: "Approve return",
               intent: "APPROVE",
               permission: "fulfillment.backoffice.manage",
+              handlerAction:
+                "DefaultFulfillmentOperationsLifecycleService.approveReturn",
+              operationRoute: "/operations/lifecycle",
               summary:
                 "Approve a governed return request and create pickup or receipt follow-up evidence.",
               targetStatuses: ["REQUESTED"],
@@ -561,6 +1013,9 @@ module.exports = {
               label: "Close return",
               intent: "UPDATE",
               permission: "fulfillment.backoffice.manage",
+              handlerAction:
+                "DefaultFulfillmentOperationsLifecycleService.closeReturn",
+              operationRoute: "/operations/lifecycle",
               summary:
                 "Close a return after inspection and Inventory disposition evidence is complete.",
               targetStatuses: ["RECEIVED", "INSPECTED"],

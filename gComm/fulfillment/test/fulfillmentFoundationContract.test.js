@@ -16,301 +16,818 @@
  * @owner fulfillment
  * @override Project modules may customize fulfillment release behavior without adding shipment authority to Order.
  */
-const assert = require('assert');
-const fs = require('fs');
-const path = require('path');
+const assert = require("assert");
+const fs = require("fs");
+const path = require("path");
 
-const properties = require('../config/properties');
-const schemas = require('../src/schemas/schemas');
-const interceptors = require('../src/interceptors/interceptors');
-const policyService = require('../src/service/policy/defaultFulfillmentPolicyService');
-const modePolicyService = require('../src/service/carrier/defaultFulfillmentModePolicyService');
-const carrierRegistryService = require('../src/service/carrier/defaultFulfillmentCarrierRegistryService');
-const carrierPolicyService = require('../src/service/carrier/defaultFulfillmentCarrierPolicyService');
+const properties = require("../config/properties");
+const packageMetadata = require("../package.json");
+const routers = require("../src/router/routers");
+const schemas = require("../src/schemas/schemas");
+const interceptors = require("../src/interceptors/interceptors");
+const lifecycleController = require("../src/controller/operations/defaultFulfillmentOperationsLifecycleController");
+const lifecycleFacade = require("../src/facade/operations/defaultFulfillmentOperationsLifecycleFacade");
+const policyService = require("../src/service/policy/defaultFulfillmentPolicyService");
+const modePolicyService = require("../src/service/carrier/defaultFulfillmentModePolicyService");
+const carrierRegistryService = require("../src/service/carrier/defaultFulfillmentCarrierRegistryService");
+const carrierPolicyService = require("../src/service/carrier/defaultFulfillmentCarrierPolicyService");
+const labelGatewayService = require("../src/service/carrier/defaultCarrierLabelGatewayService");
+const lifecycleService = require("../src/service/operations/defaultFulfillmentOperationsLifecycleService");
+const statusDefinitions = require("../src/utils/statusDefinitions");
 
 global.CONFIG = {
-    get: (key) => key === 'fulfillment' ? properties.fulfillment : undefined,
+  get: (key) => (key === "fulfillment" ? properties.fulfillment : undefined),
 };
 global.CLASSES = {
-    NodicsError: class NodicsError extends Error {
-        constructor(message, cause, code) {
-            super(String(message));
-            this.cause = cause;
-            this.code = code;
-        }
-    },
+  NodicsError: class NodicsError extends Error {
+    constructor(message, cause, code) {
+      super(String(message));
+      this.cause = cause;
+      this.code = code;
+    }
+  },
 };
 global.SERVICE = {
-    DefaultFulfillmentPolicyService: policyService,
-    DefaultFulfillmentModePolicyService: modePolicyService,
-    DefaultFulfillmentCarrierRegistryService: carrierRegistryService,
-    DefaultFulfillmentCarrierPolicyService: carrierPolicyService,
+  DefaultFulfillmentPolicyService: policyService,
+  DefaultFulfillmentModePolicyService: modePolicyService,
+  DefaultFulfillmentCarrierRegistryService: carrierRegistryService,
+  DefaultFulfillmentCarrierPolicyService: carrierPolicyService,
+  DefaultCarrierLabelGatewayService: labelGatewayService,
+  DefaultFulfillmentOperationsLifecycleService: lifecycleService,
+};
+global.FACADE = {
+  DefaultFulfillmentOperationsLifecycleFacade: lifecycleFacade,
 };
 
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.groupingStrategy, 'DELIVERY_GROUP');
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.modes.STANDARD.defaultCarrierCode, 'defaultCarrierProvider');
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.modes.EXPRESS.labelRequired, true);
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.modes.SAME_DAY.defaultCarrierCode, 'defaultLocalDeliveryProvider');
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.modes.SCHEDULED.allowedProviderTypes.includes('AGGREGATOR'), true);
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.modes.DIGITAL_DELIVERY.carrierRequired, false);
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.modes.FREIGHT.defaultCarrierCode, 'defaultFreightProvider');
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.carrierProviders.defaultCarrierProvider.adapterService, 'DefaultCarrierLabelGatewayService');
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.carrierProviders.defaultLocalDeliveryProvider.modeCodes.includes('SAME_DAY'), true);
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.carrierProviders.defaultDigitalDeliveryProvider.providerType, 'DIGITAL_DELIVERY');
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.carrierProviders.defaultFreightProvider.supportsLabels, true);
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.carrierProviderStatuses.includes('ACTIVE'), true);
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.carrierProviderTypes.includes('WMS'), true);
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.carrierProviderTypes.includes('ERP'), true);
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.labelPolicy.defaultLabelGatewayService, 'DefaultCarrierLabelGatewayService');
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.warehouseTaskTypes.includes('PICK'), true);
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.warehouseTaskPolicy.requireCompletedTasksBeforeDispatch, false);
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.trackingEventTypes.includes('DELIVERED'), true);
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.trackingEventShipmentStatusMap.OUT_FOR_DELIVERY, 'IN_TRANSIT');
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.returnTypes.includes('CUSTOMER_RETURN'), true);
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.returnStatuses.includes('RECEIVED'), true);
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.returnTransitions.APPROVED.includes('PICKUP_REQUESTED'), true);
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.consignmentStatuses.includes('RELEASED'), true);
-assert.strictEqual(properties.backofficeCapabilities.fulfillment.navigation[0].workbenchTarget.schemaName, 'fulfillmentConsignment');
-assert.strictEqual(properties.backofficeCapabilities.fulfillment.navigation.some((item) => item.workbenchTarget && item.workbenchTarget.schemaName === 'fulfillmentMode'), true);
-assert.strictEqual(properties.backofficeCapabilities.fulfillment.navigation.some((item) => item.workbenchTarget && item.workbenchTarget.schemaName === 'fulfillmentReturnRequest'), true);
-assert.strictEqual(properties.backofficeCapabilities.fulfillment.navigation.find((item) => item.id === 'fulfillment-shipments').lifecycleActions.some((action) => action.id === 'request-label'), true);
-assert.strictEqual(properties.backofficeCapabilities.fulfillment.navigation.find((item) => item.id === 'fulfillment-returns').lifecycleActions.some((action) => action.intent === 'APPROVE'), true);
+global.SERVICE.DefaultFulfillmentCarrierProviderService = {
+  get: async function (request) {
+    let query = request.query || {};
+    let records = [
+      Object.assign(
+        {},
+        properties.fulfillment.fulfillmentPolicy.carrierProviders
+          .defaultCarrierProvider,
+        {
+          enterpriseCode: "enterpriseA",
+          configurationRef: "secure-carrier-default",
+        },
+      ),
+    ];
+    return {
+      result: records.filter((record) =>
+        Object.keys(query).every((key) => record[key] === query[key]),
+      ),
+    };
+  },
+  save: async function (request) {
+    global.__savedCarrierProvider = request.model;
+    return { result: [request.model] };
+  },
+};
+
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.groupingStrategy,
+  "DELIVERY_GROUP",
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.modes.STANDARD.defaultCarrierCode,
+  "defaultCarrierProvider",
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.modes.EXPRESS.labelRequired,
+  true,
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.modes.SAME_DAY.defaultCarrierCode,
+  "defaultLocalDeliveryProvider",
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.modes.SCHEDULED.allowedProviderTypes.includes(
+    "AGGREGATOR",
+  ),
+  true,
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.modes.DIGITAL_DELIVERY
+    .carrierRequired,
+  false,
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.modes.FREIGHT.defaultCarrierCode,
+  "defaultFreightProvider",
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.carrierProviders
+    .defaultCarrierProvider.adapterService,
+  "DefaultCarrierLabelGatewayService",
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.carrierProviders.defaultLocalDeliveryProvider.modeCodes.includes(
+    "SAME_DAY",
+  ),
+  true,
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.carrierProviders
+    .defaultDigitalDeliveryProvider.providerType,
+  "DIGITAL_DELIVERY",
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.carrierProviders
+    .defaultFreightProvider.supportsLabels,
+  true,
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.carrierProviderStatuses.includes(
+    "ACTIVE",
+  ),
+  true,
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.carrierProviderTypes.includes("WMS"),
+  true,
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.carrierProviderTypes.includes("ERP"),
+  true,
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.labelPolicy
+    .defaultLabelGatewayService,
+  "DefaultCarrierLabelGatewayService",
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.warehouseTaskTypes.includes("PICK"),
+  true,
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.warehouseTaskPolicy
+    .requireCompletedTasksBeforeDispatch,
+  false,
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.trackingEventTypes.includes(
+    "DELIVERED",
+  ),
+  true,
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.trackingEventShipmentStatusMap
+    .OUT_FOR_DELIVERY,
+  "IN_TRANSIT",
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.returnTypes.includes(
+    "CUSTOMER_RETURN",
+  ),
+  true,
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.returnStatuses.includes("RECEIVED"),
+  true,
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.returnTransitions.APPROVED.includes(
+    "PICKUP_REQUESTED",
+  ),
+  true,
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.consignmentStatuses.includes(
+    "RELEASED",
+  ),
+  true,
+);
+assert.strictEqual(packageMetadata.nodics.owns.includes("router"), true);
+assert.strictEqual(packageMetadata.nodics.owns.includes("controller"), true);
+assert.strictEqual(packageMetadata.nodics.owns.includes("facade"), true);
+assert.strictEqual(packageMetadata.nodics.runtime.router, true);
+assert.strictEqual(
+  properties.backofficeCapabilities.fulfillment.navigation[0].id,
+  "shipping-operations",
+);
+assert.strictEqual(
+  properties.backofficeCapabilities.fulfillment.navigation[0].label,
+  "Shipping Operations",
+);
+assert.strictEqual(
+  properties.backofficeCapabilities.fulfillment.navigation[0].route,
+  "/commerce/shipping",
+);
+assert.strictEqual(
+  properties.backofficeCapabilities.fulfillment.navigation[0].workbenchTarget
+    .schemaName,
+  "fulfillmentConsignment",
+);
+assert.strictEqual(
+  properties.backofficeCapabilities.fulfillment.navigation.some(
+    (item) =>
+      item.workbenchTarget &&
+      item.workbenchTarget.schemaName === "fulfillmentMode",
+  ),
+  true,
+);
+assert.strictEqual(
+  properties.backofficeCapabilities.fulfillment.navigation.some(
+    (item) =>
+      item.workbenchTarget &&
+      item.workbenchTarget.schemaName === "fulfillmentReturnRequest",
+  ),
+  true,
+);
+assert.strictEqual(
+  properties.backofficeCapabilities.fulfillment.navigation
+    .find((item) => item.id === "fulfillment-shipments")
+    .lifecycleActions.some((action) => action.id === "request-label"),
+  true,
+);
+assert.strictEqual(
+  properties.backofficeCapabilities.fulfillment.navigation
+    .find((item) => item.id === "fulfillment-returns")
+    .lifecycleActions.some((action) => action.intent === "APPROVE"),
+  true,
+);
+assert.strictEqual(
+  properties.backofficeCapabilities.fulfillment.navigation
+    .find((item) => item.id === "fulfillment-carrier-providers")
+    .lifecycleActions.some((action) => action.id === "test-carrier-provider"),
+  true,
+);
+assert.strictEqual(
+  properties.backofficeCapabilities.fulfillment.navigation
+    .find((item) => item.id === "fulfillment-carrier-providers")
+    .lifecycleActions.every(
+      (action) => action.operationRoute === "/operations/lifecycle",
+    ),
+  true,
+);
+assert.strictEqual(
+  properties.backofficeCapabilities.fulfillment.navigation
+    .find((item) => item.id === "fulfillment-carrier-providers")
+    .workbenchPresentation.defaultColumns.slice(0, 4)
+    .join(","),
+  "carrierCode,name,providerType,modeCodes",
+);
+assert.strictEqual(
+  properties.backofficeCapabilities.fulfillment.navigation
+    .find((item) => item.id === "fulfillment-carrier-providers")
+    .workbenchPresentation.forbiddenFields.includes("apiKey"),
+  true,
+);
+assert.strictEqual(
+  properties.backofficeCapabilities.fulfillment.navigation
+    .find((item) => item.id === "fulfillment-shipments")
+    .workbenchPresentation.forbiddenFields.includes("rawProviderPayload"),
+  true,
+);
+assert.strictEqual(
+  routers.fulfillment.operationsLifecycle.execute.secured,
+  true,
+);
+assert.strictEqual(
+  routers.fulfillment.operationsLifecycle.execute.permission,
+  "fulfillment.backoffice.manage",
+);
+assert.strictEqual(
+  routers.fulfillment.operationsLifecycle.execute.key,
+  "/operations/lifecycle",
+);
+assert.strictEqual(
+  routers.fulfillment.operationsLifecycle.execute.controller,
+  "DefaultFulfillmentOperationsLifecycleController",
+);
+assert.strictEqual(statusDefinitions.SUC_FUL_00001.code, "200");
 
 assert.strictEqual(schemas.fulfillment.fulfillmentMode.router.enabled, false);
-assert.strictEqual(schemas.fulfillment.fulfillmentCarrierProvider.router.enabled, false);
-assert.strictEqual(schemas.fulfillment.fulfillmentConsignment.router.enabled, false);
-assert.strictEqual(schemas.fulfillment.fulfillmentWarehouseTask.router.enabled, false);
-assert.strictEqual(schemas.fulfillment.fulfillmentTrackingEvent.router.enabled, false);
-assert.strictEqual(schemas.fulfillment.fulfillmentReturnRequest.router.enabled, false);
-assert.strictEqual(schemas.fulfillment.fulfillmentShipment.router.enabled, false);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentCarrierProvider.router.enabled,
+  false,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentConsignment.router.enabled,
+  false,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentWarehouseTask.router.enabled,
+  false,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentTrackingEvent.router.enabled,
+  false,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentReturnRequest.router.enabled,
+  false,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentShipment.router.enabled,
+  false,
+);
 assert.strictEqual(schemas.fulfillment.fulfillmentMode.service.enabled, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentCarrierProvider.service.enabled, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentConsignment.service.enabled, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentWarehouseTask.service.enabled, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentTrackingEvent.service.enabled, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentReturnRequest.service.enabled, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentShipment.service.enabled, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentMode.indexes.common.enterpriseCode.enabled, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentMode.indexes.common.modeCode.enabled, true);
-assert.notStrictEqual(schemas.fulfillment.fulfillmentMode.indexes.individual.modeCode.options && schemas.fulfillment.fulfillmentMode.indexes.individual.modeCode.options.unique, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentCarrierProvider.indexes.common.enterpriseCode.enabled, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentCarrierProvider.indexes.common.carrierCode.enabled, true);
-assert.notStrictEqual(schemas.fulfillment.fulfillmentCarrierProvider.indexes.individual.carrierCode.options && schemas.fulfillment.fulfillmentCarrierProvider.indexes.individual.carrierCode.options.unique, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentMode.definition.modeCode.required, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentCarrierProvider.definition.carrierCode.required, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentCarrierProvider.definition.configurationRef.required, false);
-assert.strictEqual(schemas.fulfillment.fulfillmentCarrierProvider.definition.secret, undefined);
-assert.strictEqual(schemas.fulfillment.fulfillmentCarrierProvider.definition.adapterService.required, false);
-assert.strictEqual(schemas.fulfillment.fulfillmentConsignment.definition.allocationCodes.type, 'array');
-assert.strictEqual(schemas.fulfillment.fulfillmentWarehouseTask.definition.taskType.required, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentWarehouseTask.definition.deviceSecret, undefined);
-assert.strictEqual(schemas.fulfillment.fulfillmentTrackingEvent.definition.normalizedEventType.required, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentTrackingEvent.definition.rawCarrierPayload, undefined);
-assert.strictEqual(schemas.fulfillment.fulfillmentReturnRequest.definition.returnCode.required, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentReturnRequest.definition.receivedQuantity.type, 'string');
-assert.strictEqual(schemas.fulfillment.fulfillmentReturnRequest.definition.inventoryDispositionIntent.type, 'object');
-assert.strictEqual(schemas.fulfillment.fulfillmentReturnRequest.definition.rawProviderPayload, undefined);
-assert.strictEqual(schemas.fulfillment.fulfillmentShipment.definition.status.default, 'CREATED');
-assert.strictEqual(schemas.fulfillment.fulfillmentShipment.definition.idempotencyKey.required, true);
-assert.strictEqual(schemas.fulfillment.fulfillmentShipment.definition.deliveryModeCode.required, false);
-assert.strictEqual(schemas.fulfillment.fulfillmentShipment.definition.rawProviderPayload, undefined);
-assert.strictEqual(schemas.fulfillment.fulfillmentShipment.definition.secret, undefined);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentCarrierProvider.service.enabled,
+  true,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentConsignment.service.enabled,
+  true,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentWarehouseTask.service.enabled,
+  true,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentTrackingEvent.service.enabled,
+  true,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentReturnRequest.service.enabled,
+  true,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentShipment.service.enabled,
+  true,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentMode.indexes.common.enterpriseCode.enabled,
+  true,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentMode.indexes.common.modeCode.enabled,
+  true,
+);
+assert.notStrictEqual(
+  schemas.fulfillment.fulfillmentMode.indexes.individual.modeCode.options &&
+    schemas.fulfillment.fulfillmentMode.indexes.individual.modeCode.options
+      .unique,
+  true,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentCarrierProvider.indexes.common.enterpriseCode
+    .enabled,
+  true,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentCarrierProvider.indexes.common.carrierCode
+    .enabled,
+  true,
+);
+assert.notStrictEqual(
+  schemas.fulfillment.fulfillmentCarrierProvider.indexes.individual.carrierCode
+    .options &&
+    schemas.fulfillment.fulfillmentCarrierProvider.indexes.individual
+      .carrierCode.options.unique,
+  true,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentMode.definition.modeCode.required,
+  true,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentCarrierProvider.definition.carrierCode
+    .required,
+  true,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentCarrierProvider.definition.configurationRef
+    .required,
+  false,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentCarrierProvider.definition.secret,
+  undefined,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentCarrierProvider.definition.adapterService
+    .required,
+  false,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentConsignment.definition.allocationCodes.type,
+  "array",
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentWarehouseTask.definition.taskType.required,
+  true,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentWarehouseTask.definition.deviceSecret,
+  undefined,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentTrackingEvent.definition.normalizedEventType
+    .required,
+  true,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentTrackingEvent.definition.rawCarrierPayload,
+  undefined,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentReturnRequest.definition.returnCode.required,
+  true,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentReturnRequest.definition.receivedQuantity.type,
+  "string",
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentReturnRequest.definition
+    .inventoryDispositionIntent.type,
+  "object",
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentReturnRequest.definition.rawProviderPayload,
+  undefined,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentShipment.definition.status.default,
+  "CREATED",
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentShipment.definition.idempotencyKey.required,
+  true,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentShipment.definition.deliveryModeCode.required,
+  false,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentShipment.definition.rawProviderPayload,
+  undefined,
+);
+assert.strictEqual(
+  schemas.fulfillment.fulfillmentShipment.definition.secret,
+  undefined,
+);
 
-assert.strictEqual(interceptors.fulfillmentModePreSavePolicy.handler, 'DefaultFulfillmentPolicyService.prepareMode');
-assert.strictEqual(interceptors.fulfillmentCarrierProviderPreSavePolicy.handler, 'DefaultFulfillmentPolicyService.prepareCarrierProvider');
-assert.strictEqual(interceptors.fulfillmentConsignmentPreSavePolicy.handler, 'DefaultFulfillmentPolicyService.prepareConsignment');
-assert.strictEqual(interceptors.fulfillmentShipmentPreSavePolicy.handler, 'DefaultFulfillmentPolicyService.prepareShipment');
-assert.strictEqual(interceptors.fulfillmentWarehouseTaskPreSavePolicy.handler, 'DefaultFulfillmentPolicyService.prepareWarehouseTask');
-assert.strictEqual(interceptors.fulfillmentTrackingEventPreSavePolicy.handler, 'DefaultFulfillmentPolicyService.prepareTrackingEvent');
-assert.strictEqual(interceptors.fulfillmentReturnRequestPreSavePolicy.handler, 'DefaultFulfillmentPolicyService.prepareReturnRequest');
-assert.strictEqual(interceptors.fulfillmentConsignmentPreRemovePolicy.handler, 'DefaultFulfillmentPolicyService.rejectHardDelete');
-assert.strictEqual(interceptors.fulfillmentCarrierProviderPreRemovePolicy.handler, 'DefaultFulfillmentPolicyService.rejectHardDelete');
-assert.strictEqual(interceptors.fulfillmentWarehouseTaskPreRemovePolicy.handler, 'DefaultFulfillmentPolicyService.rejectHardDelete');
-assert.strictEqual(interceptors.fulfillmentTrackingEventPreRemovePolicy.handler, 'DefaultFulfillmentPolicyService.rejectHardDelete');
-assert.strictEqual(interceptors.fulfillmentReturnRequestPreRemovePolicy.handler, 'DefaultFulfillmentPolicyService.rejectHardDelete');
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.returnDisposition.supportedDispositionCodes.includes('RESTOCK'), true);
-assert.strictEqual(properties.fulfillment.fulfillmentPolicy.returnDisposition.inventoryMovement.ownerModule, 'inventory');
-assert.strictEqual(modePolicyService.mode('STANDARD').labelRequired, false);
-assert.strictEqual(carrierRegistryService.provider('defaultCarrierProvider').modeCodes.includes('EXPRESS'), true);
-assert.strictEqual(carrierPolicyService.resolve({ deliveryModeCode: 'EXPRESS' }).adapterService, 'DefaultCarrierLabelGatewayService');
-assert.strictEqual(carrierPolicyService.resolve({ deliveryModeCode: 'SAME_DAY' }).carrierCode, 'defaultLocalDeliveryProvider');
-assert.strictEqual(carrierPolicyService.resolve({ deliveryModeCode: 'FREIGHT' }).providerType, 'FREIGHT');
-assert.strictEqual(carrierPolicyService.resolve({ deliveryModeCode: 'DIGITAL_DELIVERY' }).labelRequired, false);
+assert.strictEqual(
+  interceptors.fulfillmentModePreSavePolicy.handler,
+  "DefaultFulfillmentPolicyService.prepareMode",
+);
+assert.strictEqual(
+  interceptors.fulfillmentCarrierProviderPreSavePolicy.handler,
+  "DefaultFulfillmentPolicyService.prepareCarrierProvider",
+);
+assert.strictEqual(
+  interceptors.fulfillmentConsignmentPreSavePolicy.handler,
+  "DefaultFulfillmentPolicyService.prepareConsignment",
+);
+assert.strictEqual(
+  interceptors.fulfillmentShipmentPreSavePolicy.handler,
+  "DefaultFulfillmentPolicyService.prepareShipment",
+);
+assert.strictEqual(
+  interceptors.fulfillmentWarehouseTaskPreSavePolicy.handler,
+  "DefaultFulfillmentPolicyService.prepareWarehouseTask",
+);
+assert.strictEqual(
+  interceptors.fulfillmentTrackingEventPreSavePolicy.handler,
+  "DefaultFulfillmentPolicyService.prepareTrackingEvent",
+);
+assert.strictEqual(
+  interceptors.fulfillmentReturnRequestPreSavePolicy.handler,
+  "DefaultFulfillmentPolicyService.prepareReturnRequest",
+);
+assert.strictEqual(
+  interceptors.fulfillmentConsignmentPreRemovePolicy.handler,
+  "DefaultFulfillmentPolicyService.rejectHardDelete",
+);
+assert.strictEqual(
+  interceptors.fulfillmentCarrierProviderPreRemovePolicy.handler,
+  "DefaultFulfillmentPolicyService.rejectHardDelete",
+);
+assert.strictEqual(
+  interceptors.fulfillmentWarehouseTaskPreRemovePolicy.handler,
+  "DefaultFulfillmentPolicyService.rejectHardDelete",
+);
+assert.strictEqual(
+  interceptors.fulfillmentTrackingEventPreRemovePolicy.handler,
+  "DefaultFulfillmentPolicyService.rejectHardDelete",
+);
+assert.strictEqual(
+  interceptors.fulfillmentReturnRequestPreRemovePolicy.handler,
+  "DefaultFulfillmentPolicyService.rejectHardDelete",
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.returnDisposition.supportedDispositionCodes.includes(
+    "RESTOCK",
+  ),
+  true,
+);
+assert.strictEqual(
+  properties.fulfillment.fulfillmentPolicy.returnDisposition.inventoryMovement
+    .ownerModule,
+  "inventory",
+);
+assert.strictEqual(modePolicyService.mode("STANDARD").labelRequired, false);
+assert.strictEqual(
+  carrierRegistryService
+    .provider("defaultCarrierProvider")
+    .modeCodes.includes("EXPRESS"),
+  true,
+);
+assert.strictEqual(
+  carrierPolicyService.resolve({ deliveryModeCode: "EXPRESS" }).adapterService,
+  "DefaultCarrierLabelGatewayService",
+);
+assert.strictEqual(
+  carrierPolicyService.resolve({ deliveryModeCode: "SAME_DAY" }).carrierCode,
+  "defaultLocalDeliveryProvider",
+);
+assert.strictEqual(
+  carrierPolicyService.resolve({ deliveryModeCode: "FREIGHT" }).providerType,
+  "FREIGHT",
+);
+assert.strictEqual(
+  carrierPolicyService.resolve({ deliveryModeCode: "DIGITAL_DELIVERY" })
+    .labelRequired,
+  false,
+);
 
-const readme = fs.readFileSync(path.join(__dirname, '../README.md'), 'utf8');
+const readme = fs.readFileSync(path.join(__dirname, "../README.md"), "utf8");
 [
-    'Shipping modes versus carrier providers',
-    'How to add a shipping mode',
-    'How to add a delivery partner or carrier provider',
-    'External delivery partner integration',
-    'Customer modules can replace carrier integration',
-    'Credentials belong in governed secure configuration',
+  "Shipping modes versus carrier providers",
+  "How to add a shipping mode",
+  "How to add a delivery partner or carrier provider",
+  "External delivery partner integration",
+  "Customer modules can replace carrier integration",
+  "Credentials belong in governed secure configuration",
 ].forEach((fragment) => {
-    assert(readme.includes(fragment), 'Fulfillment README must document customization guidance: ' + fragment);
+  assert(
+    readme.includes(fragment),
+    "Fulfillment README must document customization guidance: " + fragment,
+  );
 });
 
 const mode = policyService.prepareMode({
-    model: {
-        enterpriseCode: 'enterpriseA',
-        modeCode: 'SAME_DAY',
-        displayName: 'Same day shipping',
-        defaultCarrierCode: 'sameDayCarrier',
-        carrierRequired: true,
-        labelRequired: true,
-        allowedProviderTypes: ['LOCAL_DELIVERY', 'AGGREGATOR'],
-    },
+  model: {
+    enterpriseCode: "enterpriseA",
+    modeCode: "SAME_DAY",
+    displayName: "Same day shipping",
+    defaultCarrierCode: "sameDayCarrier",
+    carrierRequired: true,
+    labelRequired: true,
+    allowedProviderTypes: ["LOCAL_DELIVERY", "AGGREGATOR"],
+  },
 });
-assert.strictEqual(mode.status, 'ACTIVE');
+assert.strictEqual(mode.status, "ACTIVE");
 
 const provider = policyService.prepareCarrierProvider({
-    model: {
-        enterpriseCode: 'enterpriseA',
-        carrierCode: 'carrierA',
-        name: 'Carrier A',
-        modeCodes: ['STANDARD'],
-        adapterService: 'DefaultCarrierLabelGatewayService',
-        supportsLabels: true,
-        supportsTracking: true,
-    },
+  model: {
+    enterpriseCode: "enterpriseA",
+    carrierCode: "carrierA",
+    name: "Carrier A",
+    modeCodes: ["STANDARD"],
+    adapterService: "DefaultCarrierLabelGatewayService",
+    supportsLabels: true,
+    supportsTracking: true,
+  },
 });
-assert.strictEqual(provider.status, 'ACTIVE');
-assert.strictEqual(provider.providerType, 'CARRIER');
-assert.strictEqual(provider.supportedDeliveryModes[0], 'STANDARD');
+assert.strictEqual(provider.status, "ACTIVE");
+assert.strictEqual(provider.providerType, "CARRIER");
+assert.strictEqual(provider.supportedDeliveryModes[0], "STANDARD");
 assert.strictEqual(provider.supportsLabels, true);
 
 const consignment = policyService.prepareConsignment({
-    model: {
-        enterpriseCode: 'enterpriseA',
-        consignmentCode: 'consignment-1',
-        idempotencyKey: 'idem-1',
-        orderCode: 'order-1',
-        deliveryGroupCode: 'home',
-        allocationCodes: ['allocation-1'],
-    },
+  model: {
+    enterpriseCode: "enterpriseA",
+    consignmentCode: "consignment-1",
+    idempotencyKey: "idem-1",
+    orderCode: "order-1",
+    deliveryGroupCode: "home",
+    allocationCodes: ["allocation-1"],
+  },
 });
-assert.strictEqual(consignment.status, 'RELEASED');
+assert.strictEqual(consignment.status, "RELEASED");
 assert(consignment.releasedAt instanceof Date);
 
 const task = policyService.prepareWarehouseTask({
-    model: {
-        enterpriseCode: 'enterpriseA',
-        taskCode: 'task-1',
-        idempotencyKey: 'idem-task-1',
-        taskType: 'PICK',
-        consignmentCode: 'consignment-1',
-        orderCode: 'order-1',
-    },
+  model: {
+    enterpriseCode: "enterpriseA",
+    taskCode: "task-1",
+    idempotencyKey: "idem-task-1",
+    taskType: "PICK",
+    consignmentCode: "consignment-1",
+    orderCode: "order-1",
+  },
 });
-assert.strictEqual(task.status, 'OPEN');
+assert.strictEqual(task.status, "OPEN");
 
 const trackingEvent = policyService.prepareTrackingEvent({
-    model: {
-        enterpriseCode: 'enterpriseA',
-        eventCode: 'event-1',
-        idempotencyKey: 'idem-event-1',
-        shipmentCode: 'shipment-1',
-        consignmentCode: 'consignment-1',
-        orderCode: 'order-1',
-        normalizedEventType: 'IN_TRANSIT',
-    },
+  model: {
+    enterpriseCode: "enterpriseA",
+    eventCode: "event-1",
+    idempotencyKey: "idem-event-1",
+    shipmentCode: "shipment-1",
+    consignmentCode: "consignment-1",
+    orderCode: "order-1",
+    normalizedEventType: "IN_TRANSIT",
+  },
 });
-assert.strictEqual(trackingEvent.status, 'ACCEPTED');
+assert.strictEqual(trackingEvent.status, "ACCEPTED");
 
 const shipment = policyService.prepareShipment({
-    model: {
-        enterpriseCode: 'enterpriseA',
-        shipmentCode: 'shipment-1',
-        idempotencyKey: 'idem-shipment-1',
-        consignmentCode: 'consignment-1',
-        orderCode: 'order-1',
-    },
+  model: {
+    enterpriseCode: "enterpriseA",
+    shipmentCode: "shipment-1",
+    idempotencyKey: "idem-shipment-1",
+    consignmentCode: "consignment-1",
+    orderCode: "order-1",
+  },
 });
-assert.strictEqual(shipment.status, 'CREATED');
+assert.strictEqual(shipment.status, "CREATED");
 
 const returnRequest = policyService.prepareReturnRequest({
-    model: {
-        enterpriseCode: 'enterpriseA',
-        returnCode: 'return-1',
-        idempotencyKey: 'idem-return-1',
-        orderCode: 'order-1',
-        returnReasonCode: 'DAMAGED',
-        returnType: 'CUSTOMER_RETURN',
-        requestedQuantity: '1',
-    },
+  model: {
+    enterpriseCode: "enterpriseA",
+    returnCode: "return-1",
+    idempotencyKey: "idem-return-1",
+    orderCode: "order-1",
+    returnReasonCode: "DAMAGED",
+    returnType: "CUSTOMER_RETURN",
+    requestedQuantity: "1",
+  },
 });
-assert.strictEqual(returnRequest.status, 'REQUESTED');
+assert.strictEqual(returnRequest.status, "REQUESTED");
 assert(returnRequest.requestedAt instanceof Date);
 
 assert.throws(
-    () => policyService.prepareCarrierProvider({
-        model: {
-            enterpriseCode: 'enterpriseA',
-            carrierCode: 'carrierB',
-            name: 'Carrier B',
-            providerPayload: { token: 'never-store' },
-        },
+  () =>
+    policyService.prepareCarrierProvider({
+      model: {
+        enterpriseCode: "enterpriseA",
+        carrierCode: "carrierB",
+        name: "Carrier B",
+        providerPayload: { token: "never-store" },
+      },
     }),
-    (error) => error.code === 'ERR_FUL_00001' && error.message.includes('must not store provider secrets')
+  (error) =>
+    error.code === "ERR_FUL_00001" &&
+    error.message.includes("must not store provider secrets"),
 );
 
 assert.throws(
-    () => policyService.prepareWarehouseTask({
-        model: {
-            enterpriseCode: 'enterpriseA',
-            taskCode: 'task-2',
-            idempotencyKey: 'idem-task-2',
-            taskType: 'PICK',
-            consignmentCode: 'consignment-1',
-            orderCode: 'order-1',
-            deviceSecret: 'never-store',
-        },
+  () =>
+    policyService.prepareWarehouseTask({
+      model: {
+        enterpriseCode: "enterpriseA",
+        taskCode: "task-2",
+        idempotencyKey: "idem-task-2",
+        taskType: "PICK",
+        consignmentCode: "consignment-1",
+        orderCode: "order-1",
+        deviceSecret: "never-store",
+      },
     }),
-    (error) => error.code === 'ERR_FUL_00001' && error.message.includes('must not store provider secrets')
+  (error) =>
+    error.code === "ERR_FUL_00001" &&
+    error.message.includes("must not store provider secrets"),
 );
 
 assert.throws(
-    () => policyService.prepareShipment({
-        model: {
-            enterpriseCode: 'enterpriseA',
-            shipmentCode: 'shipment-2',
-            idempotencyKey: 'idem-shipment-2',
-            consignmentCode: 'consignment-1',
-            orderCode: 'order-1',
-            rawProviderPayload: { secret: 'never-store' },
-        },
+  () =>
+    policyService.prepareShipment({
+      model: {
+        enterpriseCode: "enterpriseA",
+        shipmentCode: "shipment-2",
+        idempotencyKey: "idem-shipment-2",
+        consignmentCode: "consignment-1",
+        orderCode: "order-1",
+        rawProviderPayload: { secret: "never-store" },
+      },
     }),
-    (error) => error.code === 'ERR_FUL_00001' && error.message.includes('must not store provider secrets')
+  (error) =>
+    error.code === "ERR_FUL_00001" &&
+    error.message.includes("must not store provider secrets"),
 );
 
 assert.throws(
-    () => policyService.prepareTrackingEvent({
-        model: {
-            enterpriseCode: 'enterpriseA',
-            eventCode: 'event-2',
-            idempotencyKey: 'idem-event-2',
-            shipmentCode: 'shipment-1',
-            consignmentCode: 'consignment-1',
-            orderCode: 'order-1',
-            normalizedEventType: 'IN_TRANSIT',
-            rawCarrierPayload: { token: 'never-store' },
-        },
+  () =>
+    policyService.prepareTrackingEvent({
+      model: {
+        enterpriseCode: "enterpriseA",
+        eventCode: "event-2",
+        idempotencyKey: "idem-event-2",
+        shipmentCode: "shipment-1",
+        consignmentCode: "consignment-1",
+        orderCode: "order-1",
+        normalizedEventType: "IN_TRANSIT",
+        rawCarrierPayload: { token: "never-store" },
+      },
     }),
-    (error) => error.code === 'ERR_FUL_00001' && error.message.includes('must not store provider secrets')
+  (error) =>
+    error.code === "ERR_FUL_00001" &&
+    error.message.includes("must not store provider secrets"),
 );
 
 assert.throws(
-    () => policyService.prepareReturnRequest({
-        model: {
-            enterpriseCode: 'enterpriseA',
-            returnCode: 'return-2',
-            idempotencyKey: 'idem-return-2',
-            orderCode: 'order-1',
-            returnReasonCode: 'DAMAGED',
-            returnType: 'CUSTOMER_RETURN',
-            rawCarrierPayload: { token: 'never-store' },
-        },
+  () =>
+    policyService.prepareReturnRequest({
+      model: {
+        enterpriseCode: "enterpriseA",
+        returnCode: "return-2",
+        idempotencyKey: "idem-return-2",
+        orderCode: "order-1",
+        returnReasonCode: "DAMAGED",
+        returnType: "CUSTOMER_RETURN",
+        rawCarrierPayload: { token: "never-store" },
+      },
     }),
-    (error) => error.code === 'ERR_FUL_00001' && error.message.includes('must not store provider secrets')
+  (error) =>
+    error.code === "ERR_FUL_00001" &&
+    error.message.includes("must not store provider secrets"),
 );
 
-console.log('Fulfillment foundation contract validated');
+(async function validateLifecycleBoundary() {
+  let providerValidation = await lifecycleService.execute({
+    tenant: "default",
+    authData: { code: "admin" },
+    actionId: "validate-carrier-provider",
+    model: {
+      enterpriseCode: "enterpriseA",
+      carrierCode: "defaultCarrierProvider",
+      name: "Default carrier provider",
+      providerType: "CARRIER",
+      modeCodes: ["STANDARD", "EXPRESS"],
+      supportsLabels: true,
+      supportsTracking: true,
+      adapterService: "DefaultCarrierLabelGatewayService",
+      configurationRef: "secure-carrier-default",
+    },
+  });
+  assert.strictEqual(providerValidation.actionId, "validate-carrier-provider");
+  assert.strictEqual(providerValidation.valid, true);
+  assert.strictEqual(providerValidation.secretsStoredInFulfillment, false);
+  assert.strictEqual(providerValidation.credentialsResolved, false);
+
+  let providerTest = await lifecycleService.execute({
+    tenant: "default",
+    authData: { code: "admin" },
+    actionId: "test-carrier-provider",
+    model: {
+      enterpriseCode: "enterpriseA",
+      carrierCode: "defaultCarrierProvider",
+      name: "Default carrier provider",
+      providerType: "CARRIER",
+      modeCodes: ["STANDARD", "EXPRESS"],
+      supportsLabels: true,
+      supportsTracking: true,
+      adapterService: "DefaultCarrierLabelGatewayService",
+    },
+  });
+  assert.strictEqual(providerTest.testStatus, "CONFIGURATION_READY");
+  assert.strictEqual(providerTest.liveProviderCall, false);
+
+  let providerSuspension = await lifecycleFacade.execute({
+    tenant: "default",
+    authData: { code: "admin" },
+    actionId: "suspend-carrier-provider",
+    model: {
+      enterpriseCode: "enterpriseA",
+      carrierCode: "defaultCarrierProvider",
+      name: "Default carrier provider",
+      providerType: "CARRIER",
+      modeCodes: ["STANDARD"],
+      supportsLabels: true,
+      supportsTracking: true,
+      adapterService: "DefaultCarrierLabelGatewayService",
+    },
+  });
+  assert.strictEqual(providerSuspension.code, "SUC_FUL_00001");
+  assert.strictEqual(providerSuspension.data.status, "SUSPENDED");
+  assert.strictEqual(global.__savedCarrierProvider.status, "SUSPENDED");
+
+  let controllerResult = await lifecycleController.execute({
+    tenant: "default",
+    authData: { code: "admin" },
+    entCode: "enterpriseA",
+    httpRequest: {
+      body: {
+        actionId: "review-fulfillment-exceptions",
+        model: {
+          enterpriseCode: "enterpriseA",
+        },
+      },
+    },
+  });
+  assert.strictEqual(controllerResult.code, "SUC_FUL_00001");
+  assert.strictEqual(controllerResult.data.valid, true);
+
+  await assert.rejects(
+    () =>
+      lifecycleService.execute({
+        tenant: "default",
+        authData: { code: "admin" },
+        actionId: "delete-carrier-provider",
+        model: { carrierCode: "defaultCarrierProvider" },
+      }),
+    (error) =>
+      error.code === "ERR_FUL_00009" && error.message.includes("unsupported"),
+  );
+
+  console.log("Fulfillment foundation contract validated");
+})().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

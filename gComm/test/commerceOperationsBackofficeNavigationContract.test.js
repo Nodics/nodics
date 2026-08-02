@@ -45,6 +45,8 @@ const orderCapability = require("../order/config/properties")
   .backofficeCapabilities.order;
 const paymentCapability = require("../payment/config/properties")
   .backofficeCapabilities.payment;
+const fulfillmentCapability = require("../fulfillment/config/properties")
+  .backofficeCapabilities.fulfillment;
 const reverseActions = require("../order/data/init/data/reverse/defaultCheckoutReverseWorkflowActionData");
 
 const knownSchemas = {
@@ -63,6 +65,7 @@ const capabilities = [
   cartCapability,
   orderCapability,
   paymentCapability,
+  fulfillmentCapability,
 ];
 const navigation = capabilities.flatMap(
   (capability) => capability.navigation || [],
@@ -74,9 +77,6 @@ const disabledIds = [
   "promotions",
   "coupons",
   "store-locations",
-  "shipments",
-  "returns",
-  "consignments",
   "delivery-modes",
   "tax-records",
   "fraud-checks",
@@ -330,6 +330,8 @@ assert(runtimeAdminGroup, "Runtime admin group must be seeded");
   "order.backoffice.read",
   "payment.backoffice.read",
   "payment.backoffice.manage",
+  "fulfillment.backoffice.read",
+  "fulfillment.backoffice.manage",
 ].forEach((permission) => {
   assert(
     permissionCatalog.includes(permission),
@@ -346,7 +348,9 @@ navigation.forEach((item) => {
     item.route === "/commerce/operations" ||
       item.route.startsWith("/commerce/operations/") ||
       item.route === "/commerce/payments" ||
-      item.route.startsWith("/commerce/payments/"),
+      item.route.startsWith("/commerce/payments/") ||
+      item.route === "/commerce/shipping" ||
+      item.route.startsWith("/commerce/shipping/"),
     item.id + " must stay in the Commerce or Payment Operations route family",
   );
   assert(
@@ -390,6 +394,16 @@ navigation.forEach((item) => {
       item.requiredPermissions.includes("payment.backoffice.read"),
       item.id +
         " must be visibility-gated by Payment BackOffice read permission",
+    );
+  }
+  if (
+    item.route === "/commerce/shipping" ||
+    item.route.startsWith("/commerce/shipping/")
+  ) {
+    assert(
+      item.requiredPermissions.includes("fulfillment.backoffice.read"),
+      item.id +
+        " must be visibility-gated by Fulfillment BackOffice read permission",
     );
   }
   if (item.featureState !== "DISABLED" && item.id !== "commerce-operations") {

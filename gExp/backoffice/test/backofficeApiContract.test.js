@@ -245,6 +245,13 @@ assert(
           editableFields: ["name", "status"],
           readonlyFields: ["created", "updated"],
           forbiddenFields: ["secret", "password", "rawPayload"],
+          detailSections: [
+            {
+              id: "summary",
+              label: "Summary",
+              fields: ["code", "name", "status"],
+            },
+          ],
           quickFilters: [
             {
               id: "active",

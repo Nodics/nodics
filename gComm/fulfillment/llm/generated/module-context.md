@@ -9,7 +9,7 @@
 | Module | `fulfillment` |
 | Path | `gComm/fulfillment` |
 | Kind | `capability` |
-| Runtime | `none` |
+| Runtime | `router` |
 | Index | `40.9` |
 | Version | `0.0.1` |
 | Description | Enterprise-scoped fulfillment, consignment, shipment, carrier, and delivery-release evidence capability. |
@@ -18,6 +18,9 @@
 
 - `config`
 - `src/schemas`
+- `src/router`
+- `src/controller`
+- `src/facade`
 - `src/service`
 - `src/interceptors`
 - `src/utils`
@@ -27,10 +30,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 17 |
+| Source files | 21 |
 | Test files | 14 |
 | Data files | 0 |
-| All module-owned files | 32 |
+| All module-owned files | 36 |
 | Local schema definitions | 7 |
 
 ## Ownership And Dependencies
@@ -39,6 +42,9 @@
 
 - `configuration`
 - `schema`
+- `router`
+- `controller`
+- `facade`
 - `service`
 - `interceptor`
 - `utility`
@@ -57,7 +63,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 21 |
+| Documented | 25 |
 | Partially documented | 7 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -72,6 +78,7 @@
 - `gComm/fulfillment/config/prescripts.js`
 - `gComm/fulfillment/config/postscripts.js`
 - `gComm/fulfillment/src/schemas/schemas.js`
+- `gComm/fulfillment/src/router/routers.js`
 
 ## File Inventory
 
@@ -87,13 +94,17 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/fulfillment/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/fulfillment/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/fulfillment/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gComm/fulfillment/src/controller/operations/defaultFulfillmentOperationsLifecycleController.js` | `src` | `documented` | 4/4 | Maps secured Fulfillment lifecycle HTTP operations to the Fulfillment facade. |  |
+| `gComm/fulfillment/src/facade/operations/defaultFulfillmentOperationsLifecycleFacade.js` | `src` | `documented` | 3/3 | Delegates safe shipping lifecycle execution to the Fulfillment-owned lifecycle service. |  |
 | `gComm/fulfillment/src/interceptors/interceptors.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/fulfillment/src/router/routers.js` | `src` | `documented` | 0/0 | Declares secured Fulfillment-owned operational APIs for BackOffice clients. |  |
 | `gComm/fulfillment/src/schemas/schemas.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/fulfillment/src/service/carrier/defaultCarrierLabelGatewayService.js` | `src` | `documented` | 4/4 | Default safe carrier-label gateway that returns label references without storing provider payloads. |  |
 | `gComm/fulfillment/src/service/carrier/defaultFulfillmentCarrierPolicyService.js` | `src` | `documented` | 4/4 | Builds effective carrier execution policy from shipping mode, carrier provider, shipment, and request context. |  |
 | `gComm/fulfillment/src/service/carrier/defaultFulfillmentCarrierRegistryService.js` | `src` | `documented` | 8/8 | Resolves carrier provider metadata separately from shipping modes and provider adapters. |  |
 | `gComm/fulfillment/src/service/carrier/defaultFulfillmentModePolicyService.js` | `src` | `documented` | 6/6 | Resolves shipping mode policy independently from carrier provider implementation. |  |
 | `gComm/fulfillment/src/service/carrier/defaultShipmentLabelService.js` | `src` | `documented` | 10/10 | Requests carrier label references through configurable Fulfillment provider adapters and updates shipment lifecycle evidence. |  |
+| `gComm/fulfillment/src/service/operations/defaultFulfillmentOperationsLifecycleService.js` | `src` | `documented` | 25/25 | Operates safe Fulfillment lifecycle actions for Axis without storing carrier credentials, raw labels, or raw provider payloads. |  |
 | `gComm/fulfillment/src/service/policy/defaultFulfillmentPolicyService.js` | `src` | `documented` | 25/25 | Validates safe fulfillment consignment and shipment evidence and builds release drafts from Order delivery evidence. |  |
 | `gComm/fulfillment/src/service/release/defaultFulfillmentReleaseService.js` | `src` | `documented` | 12/12 | Creates idempotent Fulfillment-owned consignments from Order-owned delivery groups and allocations. |  |
 | `gComm/fulfillment/src/service/return/defaultReturnRequestService.js` | `src` | `documented` | 16/16 | Creates and transitions Fulfillment-owned return request, pickup, and received evidence. |  |

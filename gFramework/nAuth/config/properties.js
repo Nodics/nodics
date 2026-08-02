@@ -169,6 +169,8 @@ module.exports = {
       "pricing.backoffice.manage",
       "payment.backoffice.read",
       "payment.backoffice.manage",
+      "fulfillment.backoffice.read",
+      "fulfillment.backoffice.manage",
       "product.backoffice.read",
       "product.backoffice.manage",
       "product.online.read",
@@ -232,7 +234,7 @@ module.exports = {
       "dynamo.class.execute",
     ],
     migration: {
-      version: 2,
+      version: 3,
       reconcileMissingGroupsOnStartup: true,
       servicePrincipalCodes: ["apiAdmin"],
       servicePrincipalScopes: {
@@ -331,6 +333,8 @@ module.exports = {
             "pricing.backoffice.manage",
             "payment.backoffice.read",
             "payment.backoffice.manage",
+            "fulfillment.backoffice.read",
+            "fulfillment.backoffice.manage",
             "product.backoffice.read",
             "product.backoffice.manage",
             "inventory.operations.read",

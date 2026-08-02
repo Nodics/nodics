@@ -150,6 +150,7 @@ module.exports = {
             "editableFields",
             "readonlyFields",
             "forbiddenFields",
+            "detailSections",
             "quickFilters",
             "recoveryActions",
           ].includes(key),
@@ -181,6 +182,36 @@ module.exports = {
       !this.isStringList(presentation.forbiddenFields, 64)
     )
       return false;
+    if (presentation.detailSections !== undefined) {
+      if (
+        !Array.isArray(presentation.detailSections) ||
+        presentation.detailSections.length > 24
+      )
+        return false;
+      let ids = presentation.detailSections.map(
+        (section) => section && section.id,
+      );
+      if (
+        ids.some((id) => !this.isString(id, 128)) ||
+        new Set(ids).size !== ids.length
+      )
+        return false;
+      if (
+        !presentation.detailSections.every(
+          (section) =>
+            section &&
+            typeof section === "object" &&
+            !Array.isArray(section) &&
+            !Object.keys(section).some(
+              (key) => !["id", "label", "fields", "order"].includes(key),
+            ) &&
+            this.isString(section.label, 128) &&
+            this.isStringList(section.fields, 64) &&
+            (section.order === undefined || Number.isInteger(section.order)),
+        )
+      )
+        return false;
+    }
     if (presentation.quickFilters !== undefined) {
       if (
         !Array.isArray(presentation.quickFilters) ||

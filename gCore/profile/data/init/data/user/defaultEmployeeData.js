@@ -9,10 +9,18 @@
 
  */
 
-const crypto = require('crypto');
-const authSecurity = require('../../../../../../gFramework/nAuth/src/service/security/defaultAuthSecurityService');
-const bootstrapConfig = typeof CONFIG !== 'undefined' ? CONFIG : { get: function () { return undefined; } };
-const bootstrapIdentity = authSecurity.validateBootstrapIdentity(bootstrapConfig);
+const crypto = require("crypto");
+const authSecurity = require("../../../../../../gFramework/nAuth/src/service/security/defaultAuthSecurityService");
+const bootstrapConfig =
+  typeof CONFIG !== "undefined"
+    ? CONFIG
+    : {
+        get: function () {
+          return undefined;
+        },
+      };
+const bootstrapIdentity =
+  authSecurity.validateBootstrapIdentity(bootstrapConfig);
 
 /**
  * @module gCore/profile/data/init/data/user/defaultEmployeeData
@@ -23,84 +31,87 @@ const bootstrapIdentity = authSecurity.validateBootstrapIdentity(bootstrapConfig
  * @override Projects may override or extend this initializer data through layered import data rather than editing out-of-the-box framework records.
  */
 module.exports = {
-    record0: {
-        code: 'admin',
-        active: true,
-        name: {
-            title: 'Mr.',
-            firstName: 'Nodics',
-            lastName: 'Employee',
-        },
-        loginId: 'admin',
-        password: {
-            loginId: 'admin',
-            password: bootstrapIdentity.adminPassword,
-            active: true
-        },
-        principalType: 'human',
-        userGroups: ['adminGroup', 'runtimeConfigAdminUserGroup'],
-        addresses: ['defaultEmployeeAddress'],
-        contacts: ['defaultEmployeeContact']
+  record0: {
+    code: "admin",
+    active: true,
+    name: {
+      title: "Mr.",
+      firstName: "Nodics",
+      lastName: "Employee",
     },
-    record1: {
-        code: 'apiAdmin',
-        active: true,
-        name: {
-            title: 'Mr.',
-            firstName: 'apiAdmin',
-            lastName: 'Employee',
-        },
-        loginId: 'apiAdmin',
-        password: {
-            loginId: 'apiAdmin',
-            password: bootstrapIdentity.servicePassword,
-            active: true
-        },
-        apiKey: bootstrapIdentity.serviceApiKey,
-        apiKeyScopes: ['auth.internal.token.read', 'auth.internal.token.read.anyTenant'],
-        apiKeyStatus: 'active',
-        identityMigrationVersion: 2,
-        principalType: 'service',
-        userGroups: ['serviceAccountUserGroup'],
-        addresses: ['defaultEmployeeAddress'],
-        contacts: ['defaultEmployeeContact']
+    loginId: "admin",
+    password: {
+      loginId: "admin",
+      password: bootstrapIdentity.adminPassword,
+      active: true,
     },
-    record2: {
-        code: 'contentCreator',
-        active: false,
-        name: {
-            title: 'Mr.',
-            firstName: 'Content',
-            lastName: 'Creator',
-        },
-        loginId: 'contentCreator',
-        password: {
-            loginId: 'contentCreator',
-            password: crypto.randomBytes(32).toString('base64url'),
-            active: true
-        },
-        principalType: 'human',
-        userGroups: ['contentCreatorUserGroup'],
-        addresses: ['defaultEmployeeAddress'],
-        contacts: ['defaultEmployeeContact']
+    principalType: "human",
+    userGroups: ["adminGroup", "runtimeConfigAdminUserGroup"],
+    addresses: ["defaultEmployeeAddress"],
+    contacts: ["defaultEmployeeContact"],
+  },
+  record1: {
+    code: "apiAdmin",
+    active: true,
+    name: {
+      title: "Mr.",
+      firstName: "apiAdmin",
+      lastName: "Employee",
     },
-    record3: {
-        code: 'contentApprover',
-        active: false,
-        name: {
-            title: 'Mr.',
-            firstName: 'Content',
-            lastName: 'Approver',
-        },
-        loginId: 'contentApprover',
-        password: {
-            loginId: 'contentApprover',
-            password: crypto.randomBytes(32).toString('base64url'),
-            active: true
-        },
-        principalType: 'human',
-        userGroups: ['contentApproverUserGroup'],
-        addresses: ['defaultEmployeeAddress'],
-        contacts: ['defaultEmployeeContact']
-    }
+    loginId: "apiAdmin",
+    password: {
+      loginId: "apiAdmin",
+      password: bootstrapIdentity.servicePassword,
+      active: true,
+    },
+    apiKey: bootstrapIdentity.serviceApiKey,
+    apiKeyScopes: [
+      "auth.internal.token.read",
+      "auth.internal.token.read.anyTenant",
+    ],
+    apiKeyStatus: "active",
+    identityMigrationVersion: 3,
+    principalType: "service",
+    userGroups: ["serviceAccountUserGroup"],
+    addresses: ["defaultEmployeeAddress"],
+    contacts: ["defaultEmployeeContact"],
+  },
+  record2: {
+    code: "contentCreator",
+    active: false,
+    name: {
+      title: "Mr.",
+      firstName: "Content",
+      lastName: "Creator",
+    },
+    loginId: "contentCreator",
+    password: {
+      loginId: "contentCreator",
+      password: crypto.randomBytes(32).toString("base64url"),
+      active: true,
+    },
+    principalType: "human",
+    userGroups: ["contentCreatorUserGroup"],
+    addresses: ["defaultEmployeeAddress"],
+    contacts: ["defaultEmployeeContact"],
+  },
+  record3: {
+    code: "contentApprover",
+    active: false,
+    name: {
+      title: "Mr.",
+      firstName: "Content",
+      lastName: "Approver",
+    },
+    loginId: "contentApprover",
+    password: {
+      loginId: "contentApprover",
+      password: crypto.randomBytes(32).toString("base64url"),
+      active: true,
+    },
+    principalType: "human",
+    userGroups: ["contentApproverUserGroup"],
+    addresses: ["defaultEmployeeAddress"],
+    contacts: ["defaultEmployeeContact"],
+  },
 };

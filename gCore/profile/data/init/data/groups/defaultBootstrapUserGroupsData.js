@@ -180,6 +180,8 @@ module.exports = {
       "pricing.backoffice.manage",
       "payment.backoffice.read",
       "payment.backoffice.manage",
+      "fulfillment.backoffice.read",
+      "fulfillment.backoffice.manage",
       "product.backoffice.read",
       "product.backoffice.manage",
       "inventory.operations.read",
