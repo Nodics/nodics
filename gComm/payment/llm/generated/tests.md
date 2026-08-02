@@ -4,16 +4,11 @@
 
 ## Hand-Authored Tests
 
-- `gComm/payment/test/paymentCheckoutAuthorizationContract.test.js`
-- `gComm/payment/test/paymentFoundationContract.test.js`
-- `gComm/payment/test/paymentRefundCalculationContract.test.js`
-- `gComm/payment/test/paymentRefundContract.test.js`
+- No hand-authored tests were found.
 
 ## Generated Tests
 
-- `gComm/payment/test/gen/schema/paymentMethodSchemaContract.test.js`
-- `gComm/payment/test/gen/schema/paymentProviderSchemaContract.test.js`
-- `gComm/payment/test/gen/schema/paymentTransactionSchemaContract.test.js`
+- No generated tests were found. Run `npm run build` when schema/router generation is expected.
 
 ## Testing Rules
 

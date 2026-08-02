@@ -15,6 +15,13 @@ fulfillment, return, refund, or promotion behavior. It explains the beginner
 model, schema relationships, current implementation, and customer-module
 customization rules.
 
+The `checkout` child module owns shared checkout orchestration helpers such as
+`checkout/src/utils/commerceCalculationDelegateUtils`. Cart and Order use that
+helper to delegate to Product, Pricing, Promotion, Tax, Inventory, Payment, and
+Fulfillment adapters without duplicating those modules' authority. The helper
+records explicit delegated or deferred evidence; it must not become a new
+calculation engine.
+
 Pricing provides reusable scoped Price Lists, Price Groups, exact Price records,
 deterministic Online resolution, and Workflow/nPublish-controlled Staged-to-Online
 release. See [Pricing](pricing/README.md).

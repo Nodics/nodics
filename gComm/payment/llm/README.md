@@ -1,4 +1,6 @@
-# payment AI Guidance
+# Payment Family LLM Context
 
-Use this folder for Payment-specific AI/developer contracts. Start with
-`contracts/README.md` before changing payment checkout behavior.
+Payment is a family group. Use this module to understand placement of payment
+core, payment methods, and payment providers.
+
+Do not add runtime payment lifecycle behavior directly to this group.

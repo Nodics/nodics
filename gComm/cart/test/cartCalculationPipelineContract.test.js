@@ -65,6 +65,7 @@ assert.deepStrictEqual(calculation.cartPipeline.steps, [
   "prepareCartTotals",
 ]);
 assert.deepStrictEqual(calculation.authority, {
+  product: "product",
   pricing: "pricing",
   promotion: "promotion",
   tax: "tax",
@@ -72,6 +73,15 @@ assert.deepStrictEqual(calculation.authority, {
   payment: "payment",
   fulfillment: "fulfillment",
 });
+assert.strictEqual(
+  calculation.delegates.basePrice.serviceNames[0],
+  "DefaultPriceResolutionService",
+);
+assert.strictEqual(calculation.delegates.basePrice.operations[0], "resolve");
+assert.strictEqual(
+  calculation.delegates.inventoryPromise.ownerModule,
+  "inventory",
+);
 
 assert(pipelines.cartValidationPipeline);
 assert(pipelines.cartEntryCalculationPipeline);
@@ -150,18 +160,93 @@ const pipelineProcess = {
 
 (async () => {
   const response = {};
-  cartEntryCalculationService.resolveBasePrice(
+  global.SERVICE = {};
+  await cartEntryCalculationService.resolveBasePrice(
     { entryCode: "entry-1" },
     response,
     pipelineProcess,
   );
-  cartEntryCalculationService.calculateEntryTax(
+  await cartEntryCalculationService.calculateEntryTax(
     { entryCode: "entry-1" },
     response,
     pipelineProcess,
   );
   assert(response.success.steps.includes("resolveBasePrice"));
   assert(response.success.steps.includes("calculateEntryTax"));
+  assert.strictEqual(response.success.evidence.basePrice.status, "DEFERRED");
+  assert.strictEqual(response.success.evidence.entryTax.status, "DEFERRED");
+
+  const delegatedResponse = {};
+  const delegatedCalls = [];
+  global.SERVICE = {
+    DefaultProductCalculationContextService: {
+      resolveEntryContext: async (request) => {
+        delegatedCalls.push(request.calculationDelegate);
+        return { itemCode: request.calculationInput.entry.itemCode };
+      },
+    },
+    DefaultPriceResolutionService: {
+      resolve: async (request) => {
+        delegatedCalls.push(request.calculationDelegate);
+        return { priceEvidenceCode: "price-1", unitPrice: "10.00" };
+      },
+    },
+    DefaultPromotionEvaluationService: {
+      evaluateEntry: async (request) => {
+        delegatedCalls.push(request.calculationDelegate);
+        return { discountTotal: "1.00" };
+      },
+    },
+    DefaultTaxCalculationService: {
+      calculateEntryTax: async (request) => {
+        delegatedCalls.push(request.calculationDelegate);
+        return { taxTotal: "0.90", taxIncluded: false };
+      },
+    },
+    DefaultInventoryPromiseReadinessService: {
+      verifyEntryPromise: async (request) => {
+        delegatedCalls.push(request.calculationDelegate);
+        return { promiseState: "AVAILABLE" };
+      },
+    },
+  };
+  await cartEntryCalculationService.resolveProductContext(
+    { entryCode: "entry-7", entry: { itemCode: "sku-1" } },
+    delegatedResponse,
+    pipelineProcess,
+  );
+  await cartEntryCalculationService.resolveBasePrice(
+    { entryCode: "entry-7", entry: { itemCode: "sku-1" } },
+    delegatedResponse,
+    pipelineProcess,
+  );
+  await cartEntryCalculationService.evaluateEntryPromotions(
+    { entryCode: "entry-7", entry: { itemCode: "sku-1" } },
+    delegatedResponse,
+    pipelineProcess,
+  );
+  await cartEntryCalculationService.calculateEntryTax(
+    { entryCode: "entry-7", entry: { itemCode: "sku-1" } },
+    delegatedResponse,
+    pipelineProcess,
+  );
+  await cartEntryCalculationService.verifyInventoryPromise(
+    { entryCode: "entry-7", entry: { itemCode: "sku-1" } },
+    delegatedResponse,
+    pipelineProcess,
+  );
+  assert.deepStrictEqual(
+    delegatedCalls.map((delegate) => delegate.ownerModule),
+    ["product", "pricing", "promotion", "tax", "inventory"],
+  );
+  assert.strictEqual(
+    delegatedResponse.success.evidence.basePrice.status,
+    "DELEGATED",
+  );
+  assert.strictEqual(
+    delegatedResponse.success.evidence.inventoryPromise.result.promiseState,
+    "AVAILABLE",
+  );
 
   const startedPipelines = [];
   global.SERVICE = {

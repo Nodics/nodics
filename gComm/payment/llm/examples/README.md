@@ -1,10 +1,13 @@
-# Payment Examples
+# Payment Family Examples
 
-This folder is reserved for focused Payment customization examples.
+## Add a new payment provider
 
-Useful future examples:
+Add a provider module under `payment/paymentProviders/<providerName>Provider`.
+Register adapter defaults through layered configuration. Do not add provider
+secrets to framework properties.
 
-- replace the default provider boundary with a project-owned PSP connector;
-- add a project payment mode through layered `payment.paymentPolicy`;
-- map capture/refund/void lifecycle to provider-safe transaction evidence;
-- preserve safe evidence while keeping credentials outside schemas and config.
+## Add a new payment method
+
+Add a method module under `payment/paymentMethods/<methodName>Payment`.
+Method modules describe method policy; provider execution remains in provider
+modules and payment lifecycle remains in `paymentCore`.

@@ -45,7 +45,7 @@ const cartCapability = require("../cart/config/properties")
   .backofficeCapabilities.cart;
 const orderCapability = require("../order/config/properties")
   .backofficeCapabilities.order;
-const paymentCapability = require("../payment/config/properties")
+const paymentCapability = require("../payment/paymentCore/config/properties")
   .backofficeCapabilities.payment;
 const taxCapability = require("../tax/config/properties").backofficeCapabilities
   .tax;
@@ -62,7 +62,7 @@ const knownSchemas = {
   cart: cartSchemas.cart,
   order: require("../order/src/schemas/schemas").order,
   fulfillment: require("../fulfillment/src/schemas/schemas").fulfillment,
-  payment: require("../payment/src/schemas/schemas").payment,
+  payment: require("../payment/paymentCore/src/schemas/schemas").payment,
   promotion: require("../promotion/src/schemas/schemas").promotion,
   tax: require("../tax/src/schemas/schemas").tax,
 };

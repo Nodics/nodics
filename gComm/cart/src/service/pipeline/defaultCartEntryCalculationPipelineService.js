@@ -20,6 +20,8 @@
  * @override Project modules may replace individual nodes while keeping Pricing,
  * Promotion, Tax, and Inventory authority in their owning modules.
  */
+const commerceCalculationDelegateUtils = require("../../../../checkout/src/utils/commerceCalculationDelegateUtils");
+
 module.exports = {
   init: function () {
     return Promise.resolve(true);
@@ -41,20 +43,81 @@ module.exports = {
     this.envelope(request, response).steps.push(step);
     process.nextSuccess(request, response);
   },
-  resolveProductContext: function (request, response, process) {
-    this.next(request, response, process, "resolveProductContext");
+  input: function (request) {
+    return {
+      entryCode: request && request.entryCode,
+      cartCode: request && request.cartCode,
+      entry: request && request.entry,
+    };
   },
-  resolveBasePrice: function (request, response, process) {
-    this.next(request, response, process, "resolveBasePrice");
+  delegate: async function (delegateKey, evidenceKey, request, response) {
+    this.envelope(request, response).evidence[evidenceKey] =
+      await commerceCalculationDelegateUtils.resolveDelegate(
+        "cart",
+        delegateKey,
+        request,
+        this.input(request),
+      );
   },
-  evaluateEntryPromotions: function (request, response, process) {
-    this.next(request, response, process, "evaluateEntryPromotions");
+  fail: function (request, response, process, error) {
+    if (process && typeof process.error === "function")
+      return process.error(request, response, error);
+    throw error;
   },
-  calculateEntryTax: function (request, response, process) {
-    this.next(request, response, process, "calculateEntryTax");
+  resolveProductContext: async function (request, response, process) {
+    try {
+      await this.delegate(
+        "productContext",
+        "productContext",
+        request,
+        response,
+      );
+      this.next(request, response, process, "resolveProductContext");
+    } catch (error) {
+      this.fail(request, response, process, error);
+    }
   },
-  verifyInventoryPromise: function (request, response, process) {
-    this.next(request, response, process, "verifyInventoryPromise");
+  resolveBasePrice: async function (request, response, process) {
+    try {
+      await this.delegate("basePrice", "basePrice", request, response);
+      this.next(request, response, process, "resolveBasePrice");
+    } catch (error) {
+      this.fail(request, response, process, error);
+    }
+  },
+  evaluateEntryPromotions: async function (request, response, process) {
+    try {
+      await this.delegate(
+        "entryPromotions",
+        "entryPromotions",
+        request,
+        response,
+      );
+      this.next(request, response, process, "evaluateEntryPromotions");
+    } catch (error) {
+      this.fail(request, response, process, error);
+    }
+  },
+  calculateEntryTax: async function (request, response, process) {
+    try {
+      await this.delegate("entryTax", "entryTax", request, response);
+      this.next(request, response, process, "calculateEntryTax");
+    } catch (error) {
+      this.fail(request, response, process, error);
+    }
+  },
+  verifyInventoryPromise: async function (request, response, process) {
+    try {
+      await this.delegate(
+        "inventoryPromise",
+        "inventoryPromise",
+        request,
+        response,
+      );
+      this.next(request, response, process, "verifyInventoryPromise");
+    } catch (error) {
+      this.fail(request, response, process, error);
+    }
   },
   prepareEntryTotals: function (request, response, process) {
     this.next(request, response, process, "prepareEntryTotals");

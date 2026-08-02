@@ -176,6 +176,24 @@ replace `calculateEntryTax` with a country-specific Tax adapter, or add a
 payment-deposit validation node before `calculatePaymentPlan`. The customer
 does not need to fork the whole Cart or Order calculation flow.
 
+Default entry pipeline nodes are adapter-driven. Cart and Order both use the
+shared `gComm/checkout/src/utils/commerceCalculationDelegateUtils` helper,
+which reads `cart.calculation.delegates` or `order.calculation.delegates`, looks
+for the configured owning service and operation, and records either:
+
+- `DELEGATED` evidence when the owning service ran successfully;
+- `DEFERRED` evidence when the configured service is not installed in the
+  current runtime; or
+- a pipeline error when an installed owning service rejects the request.
+
+This preserves the platform boundary. Cart and Order may coordinate the
+calculation task, but Product, Pricing, Promotion, Tax, Inventory, Payment, and
+Fulfillment remain authoritative for their own rules. The default Pricing
+delegate points at `DefaultPriceResolutionService.resolve` because that owning
+service exists. Promotion and Tax calculation delegates are intentionally
+configurable/deferred until their evaluator services are installed by the
+owning module or by a later customer layer.
+
 The default Cart runtime entry point is `DefaultCartService.calculateCart`,
 which starts `cartCalculationPipeline`. The secured route
 `POST /nodics/cart/code/:code/calculate` exists so clients can request a

@@ -65,6 +65,7 @@ assert.deepStrictEqual(calculation.orderPipeline.steps, [
   "prepareOrderTotals",
 ]);
 assert.deepStrictEqual(calculation.authority, {
+  product: "product",
   pricing: "pricing",
   promotion: "promotion",
   tax: "tax",
@@ -79,6 +80,18 @@ assert.strictEqual(
 assert.strictEqual(
   calculation.historicalEvidencePolicy.recalculationRequiresLifecycleOperation,
   true,
+);
+assert.strictEqual(
+  calculation.delegates.priceEvidence.serviceNames[0],
+  "DefaultPriceResolutionService",
+);
+assert.strictEqual(
+  calculation.delegates.priceEvidence.operations[0],
+  "resolve",
+);
+assert.strictEqual(
+  calculation.delegates.inventoryEvidence.ownerModule,
+  "inventory",
 );
 
 assert(pipelines.orderValidationPipeline);
@@ -173,18 +186,117 @@ const pipelineProcess = {
 
 (async () => {
   const response = {};
-  orderEntryCalculationService.reconcileEntryTax(
+  global.SERVICE = {};
+  await orderEntryCalculationService.reconcileEntryTax(
     { entryCode: "entry-1" },
     response,
     pipelineProcess,
   );
-  orderEntryCalculationService.reconcileInventoryEvidence(
+  await orderEntryCalculationService.reconcileInventoryEvidence(
     { entryCode: "entry-1" },
     response,
     pipelineProcess,
   );
   assert(response.success.steps.includes("reconcileEntryTax"));
   assert(response.success.steps.includes("reconcileInventoryEvidence"));
+  assert.strictEqual(response.success.evidence.taxEvidence.status, "DEFERRED");
+  assert.strictEqual(
+    response.success.evidence.inventoryEvidence.status,
+    "DEFERRED",
+  );
+
+  const delegatedResponse = {};
+  const delegatedCalls = [];
+  global.SERVICE = {
+    DefaultOrderEntryContextService: {
+      resolve: async (request) => {
+        delegatedCalls.push(request.calculationDelegate);
+        return { entryCode: request.calculationInput.entryCode };
+      },
+    },
+    DefaultPriceResolutionService: {
+      resolve: async (request) => {
+        delegatedCalls.push(request.calculationDelegate);
+        return { priceEvidenceCode: "price-order-1" };
+      },
+    },
+    DefaultPromotionEvaluationService: {
+      reconcileEntry: async (request) => {
+        delegatedCalls.push(request.calculationDelegate);
+        return { promotionEvidenceCode: "promotion-order-1" };
+      },
+    },
+    DefaultTaxCalculationService: {
+      reconcileEntryTax: async (request) => {
+        delegatedCalls.push(request.calculationDelegate);
+        return { taxQuoteLineCode: "tax-order-1" };
+      },
+    },
+    DefaultInventoryPromiseReadinessService: {
+      reconcileEntryPromise: async (request) => {
+        delegatedCalls.push(request.calculationDelegate);
+        return { promiseEvidenceCode: "promise-order-1" };
+      },
+    },
+  };
+  await orderEntryCalculationService.resolveOrderEntryContext(
+    {
+      entryCode: "entry-8",
+      orderCode: "order-8",
+      lifecycleOperation: "ADJUSTMENT",
+    },
+    delegatedResponse,
+    pipelineProcess,
+  );
+  await orderEntryCalculationService.reconcileEntryPriceEvidence(
+    {
+      entryCode: "entry-8",
+      orderCode: "order-8",
+      lifecycleOperation: "ADJUSTMENT",
+    },
+    delegatedResponse,
+    pipelineProcess,
+  );
+  await orderEntryCalculationService.reconcileEntryPromotions(
+    {
+      entryCode: "entry-8",
+      orderCode: "order-8",
+      lifecycleOperation: "ADJUSTMENT",
+    },
+    delegatedResponse,
+    pipelineProcess,
+  );
+  await orderEntryCalculationService.reconcileEntryTax(
+    {
+      entryCode: "entry-8",
+      orderCode: "order-8",
+      lifecycleOperation: "ADJUSTMENT",
+    },
+    delegatedResponse,
+    pipelineProcess,
+  );
+  await orderEntryCalculationService.reconcileInventoryEvidence(
+    {
+      entryCode: "entry-8",
+      orderCode: "order-8",
+      lifecycleOperation: "ADJUSTMENT",
+    },
+    delegatedResponse,
+    pipelineProcess,
+  );
+  assert.deepStrictEqual(
+    delegatedCalls.map((delegate) => delegate.ownerModule),
+    ["order", "pricing", "promotion", "tax", "inventory"],
+  );
+  assert.strictEqual(
+    delegatedResponse.success.evidence.priceEvidence.status,
+    "DELEGATED",
+  );
+  assert.strictEqual(
+    delegatedResponse.success.evidence.inventoryEvidence.result
+      .promiseEvidenceCode,
+    "promise-order-1",
+  );
 
   const startedPipelines = [];
   global.SERVICE = {

@@ -38,6 +38,21 @@ processes. Order calculation pipelines divide one technical calculation or
 reconciliation task; they must not replace Workflow or hide Payment, Inventory,
 Fulfillment, Promotion, Pricing, or Tax side effects inside Order.
 
+The default order-entry pipeline uses the same shared
+`gComm/checkout/src/utils/commerceCalculationDelegateUtils` helper as Cart. Each
+reconciliation node reads `order.calculation.delegates` and calls a configured
+owning adapter only when it is available. If a delegate is not installed, the
+node records `DEFERRED` evidence. If an installed delegate fails, the pipeline
+fails instead of hiding an uncertain order recalculation result.
+
+For a beginner, Order calculation is not "re-run checkout whenever someone
+opens the order." It is a governed reconciliation action. Order keeps what was
+accepted at checkout, then, only during an explicit lifecycle operation such as
+an amendment, return, refund, adjustment, or reconciliation, it asks Pricing,
+Promotion, Tax, Inventory, Payment, and Fulfillment for new or verified
+evidence. Customer modules customize this by changing delegate configuration or
+replacing one node, not by copying a whole order-calculation service.
+
 ## Order entries
 
 `orderEntry` is the order-owned line-entry model. It references its parent

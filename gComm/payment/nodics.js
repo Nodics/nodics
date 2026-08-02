@@ -9,10 +9,19 @@
 
  */
 
-/** @module payment @description Lifecycle entrypoint for the Payment capability. @layer module @owner payment */
+/**
+ * @module payment
+ * @description Lifecycle entrypoint for the Payment family group.
+ * @layer module
+ * @owner payment
+ * @override Later modules may add payment-family composition while keeping
+ * runtime payment authority in child modules.
+ */
 module.exports = {
-    /** Executes the init Payment contract. */
-    init: function () { return Promise.resolve(true); },
-    /** Executes the postInit Payment contract. */
-    postInit: function () { return Promise.resolve(true); }
+  init: function () {
+    return Promise.resolve(true);
+  },
+  postInit: function () {
+    return Promise.resolve(true);
+  },
 };

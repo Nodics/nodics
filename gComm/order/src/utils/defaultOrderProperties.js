@@ -54,6 +54,7 @@ module.exports = {
         ],
       },
       authority: {
+        product: "product",
         pricing: "pricing",
         promotion: "promotion",
         tax: "tax",
@@ -64,6 +65,36 @@ module.exports = {
       historicalEvidencePolicy: {
         preserveCheckoutEvidence: true,
         recalculationRequiresLifecycleOperation: true,
+      },
+      delegates: {
+        orderEntryContext: {
+          ownerModule: "order",
+          serviceNames: ["DefaultOrderEntryContextService"],
+          operations: ["resolve"],
+        },
+        priceEvidence: {
+          ownerModule: "pricing",
+          serviceNames: ["DefaultPriceResolutionService"],
+          operations: ["resolve"],
+        },
+        promotionEvidence: {
+          ownerModule: "promotion",
+          serviceNames: ["DefaultPromotionEvaluationService"],
+          operations: ["reconcileEntry"],
+        },
+        taxEvidence: {
+          ownerModule: "tax",
+          serviceNames: ["DefaultTaxCalculationService"],
+          operations: ["reconcileEntryTax"],
+        },
+        inventoryEvidence: {
+          ownerModule: "inventory",
+          serviceNames: [
+            "DefaultInventoryPromiseReadinessService",
+            "DefaultStockAvailabilityIntentService",
+          ],
+          operations: ["reconcileEntryPromise", "resolve"],
+        },
       },
     },
     checkoutEntry: {

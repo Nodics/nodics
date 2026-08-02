@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "paymentProviders",
+  "path": "gComm/payment/paymentProviders",
+  "kind": "group",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "40.76",
+    "version": "0.0.1",
+    "description": "Provider-family boundary for payment provider adapters registered with the Payment authority."
+  },
+  "sourceFiles": 3,
+  "testFiles": 2,
+  "dataFiles": 0,
+  "ownedFiles": 13,
+  "sourceFingerprint": "8db16883542a0b70712a553fd87fc4c696315b5ebc009195c76db792639abd05",
+  "documentation": {
+    "documented": 6,
+    "partially-documented": 3,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

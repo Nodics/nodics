@@ -9,5 +9,12 @@
 
  */
 
-/** @module payment/config/properties @description Thin payment property contribution. @layer configuration @owner payment */
-module.exports = require("../src/utils/defaultPaymentProperties");
+/**
+ * @module payment/config/properties
+ * @description Reserved Payment family configuration contribution point.
+ * @layer config
+ * @owner payment
+ * @override Later layers may add payment-family composition settings without
+ * copying core payment, method, or provider policy.
+ */
+module.exports = {};

@@ -1,0 +1,25 @@
+{
+    "name": "walletPayment",
+    "index": "40.723",
+    "description": "Wallet payment-method family configuration boundary.",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "SEE LICENSE IN LICENSE",
+    "nodics": {
+        "kind": "capability",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "configuration",
+            "llm"
+        ],
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        },
+        "displayName": "Wallet Payment"
+    },
+    "scripts": {}
+}

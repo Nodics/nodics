@@ -9,5 +9,5 @@
 
  */
 
-/** @module payment/config/prescripts @description Reserved Payment pre-start contribution point. @layer configuration @owner payment */
+/** @module payment/config/prescripts @description Reserved Payment family pre-script contribution point. @layer config @owner payment @override Later layers may add payment-family startup hooks. */
 module.exports = {};

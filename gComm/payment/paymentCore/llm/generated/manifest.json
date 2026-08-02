@@ -1,0 +1,37 @@
+{
+  "contextVersion": 3,
+  "moduleName": "paymentCore",
+  "path": "gComm/payment/paymentCore",
+  "kind": "capability",
+  "runtime": {
+    "router": true,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "40.71",
+    "version": "0.0.1",
+    "description": "Payment lifecycle authority for payment methods, providers, transactions, authorization, capture, refund, and safe evidence."
+  },
+  "sourceFiles": 23,
+  "testFiles": 7,
+  "dataFiles": 5,
+  "ownedFiles": 40,
+  "sourceFingerprint": "a047fafe378bf68bb8c2e166cf1eec76ae9d791307c6f3db845a199f9eb5ef8b",
+  "documentation": {
+    "documented": 28,
+    "partially-documented": 7,
+    "undocumented": 0,
+    "inventory-only": 5
+  },
+  "schemaGroups": {
+    "payment": [
+      "paymentMethod",
+      "paymentProvider",
+      "paymentProviderExecutionPolicy",
+      "paymentTransaction"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

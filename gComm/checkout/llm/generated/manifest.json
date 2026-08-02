@@ -1,0 +1,30 @@
+{
+  "contextVersion": 3,
+  "moduleName": "checkout",
+  "path": "gComm/checkout",
+  "kind": "capability",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "40.55",
+    "version": "0.0.1",
+    "description": "Shared checkout orchestration contracts and utilities for Nodics commerce applications."
+  },
+  "sourceFiles": 4,
+  "testFiles": 0,
+  "dataFiles": 0,
+  "ownedFiles": 12,
+  "sourceFingerprint": "ce8a4686b38e17d91cbfcff49d30b865f326bdbca16d5b9e5270a0eb45cf45c3",
+  "documentation": {
+    "documented": 6,
+    "partially-documented": 2,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {},
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

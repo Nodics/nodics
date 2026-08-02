@@ -37,6 +37,25 @@ but they should not collapse calculation into a monolithic service or duplicate
 Pricing, Promotion, Tax, Inventory, Payment, or Fulfillment authority inside
 Cart.
 
+The default entry pipeline nodes use the shared
+`gComm/checkout/src/utils/commerceCalculationDelegateUtils` adapter helper. Each
+node reads `cart.calculation.delegates` and calls the configured owning service
+only when that adapter exists. For example, `resolveBasePrice` delegates to
+`DefaultPriceResolutionService.resolve`, while tax and promotion nodes record
+deferred evidence until a Tax or Promotion evaluator service is provided by the
+owning module or a customer layer. This is deliberate: Cart can orchestrate the
+checkout calculation task, but it must not invent price, tax, discount, or
+stock rules itself.
+
+For a beginner, think of Cart as the checkout worksheet. It asks Product "what
+is this item?", asks Pricing "what price applies?", asks Promotion "what
+discount applies?", asks Tax "what tax evidence applies?", and asks Inventory
+"can this quantity be promised?". If one of those owning calculators has not
+yet been installed, the default pipeline records `DEFERRED` evidence instead
+of pretending to calculate the answer. A customer project adds a real adapter
+by layering `cart.calculation.delegates.<step>` configuration to point at its
+own service, or by replacing only that one pipeline node.
+
 ## Cart entries
 
 `cartEntry` is the cart-owned line-entry model. It references its parent through

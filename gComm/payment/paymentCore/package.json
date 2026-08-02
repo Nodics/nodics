@@ -1,0 +1,34 @@
+{
+    "name": "paymentCore",
+    "index": "40.71",
+    "description": "Payment lifecycle authority for payment methods, providers, transactions, authorization, capture, refund, and safe evidence.",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "SEE LICENSE IN LICENSE",
+    "nodics": {
+        "kind": "capability",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "configuration",
+            "data",
+            "schema",
+            "router",
+            "controller",
+            "facade",
+            "service",
+            "interceptor",
+            "utility",
+            "test",
+            "llm"
+        ],
+        "runtime": {
+            "router": true,
+            "publish": false,
+            "web": false
+        },
+        "displayName": "Payment Core"
+    },
+    "scripts": {}
+}

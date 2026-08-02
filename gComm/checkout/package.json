@@ -1,0 +1,31 @@
+{
+    "name": "checkout",
+    "index": "40.55",
+    "description": "Shared checkout orchestration contracts and utilities for Nodics commerce applications.",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "SEE LICENSE IN LICENSE",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Nodics/nodics"
+    },
+    "nodics": {
+        "kind": "capability",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "configuration",
+            "utility",
+            "llm"
+        ],
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        },
+        "displayName": "Checkout"
+    },
+    "scripts": {},
+    "dependencies": {}
+}

@@ -8,54 +8,39 @@
 | --- | --- |
 | Module | `payment` |
 | Path | `gComm/payment` |
-| Kind | `capability` |
-| Runtime | `router` |
-| Index | `40.75` |
+| Kind | `group` |
+| Runtime | `none` |
+| Index | `40.70` |
 | Version | `0.0.1` |
-| Description | Enterprise-scoped payment provider, transaction, authorization, capture, and refund evidence capability. |
+| Description | Payment family group for payment core, payment methods, and payment providers. |
 
 ## Module-Owned Folders
 
 - `config`
-- `data`
-- `src/schemas`
-- `src/router`
-- `src/controller`
-- `src/facade`
-- `src/service`
-- `src/interceptors`
-- `src/utils`
-- `test`
 
 ## Source Summary
 
 | Area | Count |
 | --- | ---: |
-| Source files | 23 |
-| Test files | 7 |
-| Data files | 5 |
-| All module-owned files | 40 |
-| Local schema definitions | 4 |
+| Source files | 0 |
+| Test files | 0 |
+| Data files | 0 |
+| All module-owned files | 8 |
+| Local schema definitions | 0 |
 
 ## Ownership And Dependencies
 
 **Owned extension areas**
 
+- `composition`
 - `configuration`
-- `data`
-- `schema`
-- `router`
-- `controller`
-- `facade`
-- `service`
-- `interceptor`
-- `utility`
-- `test`
 - `llm`
 
 **Required modules**
 
-- No required modules are declared.
+- `paymentCore`
+- `paymentMethods`
+- `paymentProviders`
 
 **Contained modules**
 
@@ -65,10 +50,10 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 28 |
-| Partially documented | 7 |
+| Documented | 3 |
+| Partially documented | 1 |
 | Undocumented | 0 |
-| Inventory only | 5 |
+| Inventory only | 4 |
 
 ## Important Files
 
@@ -79,8 +64,6 @@
 - `gComm/payment/config/properties.js`
 - `gComm/payment/config/prescripts.js`
 - `gComm/payment/config/postscripts.js`
-- `gComm/payment/src/schemas/schemas.js`
-- `gComm/payment/src/router/routers.js`
 
 ## File Inventory
 
@@ -90,44 +73,12 @@ This inventory covers every module-owned file included in the context fingerprin
 | --- | --- | --- | ---: | --- | --- |
 | `gComm/payment/AGENTS.md` | `AGENTS.md` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/payment/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/payment/config/postscripts.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
-| `gComm/payment/config/prescripts.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
-| `gComm/payment/config/properties.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
-| `gComm/payment/data/init/data/defaultPaymentMethodData.js` | `data` | `documented` | 0/0 | Governed default Payment Method records visible in Axis Payment Operations. |  |
-| `gComm/payment/data/init/data/defaultPaymentProviderData.js` | `data` | `documented` | 0/0 | Safe default Payment Provider records visible in Axis Payment Operations. |  |
-| `gComm/payment/data/init/header/defaultPaymentMethodHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for governed Payment Method records. |  |
-| `gComm/payment/data/init/header/defaultPaymentProviderHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for governed Payment Provider records. |  |
-| `gComm/payment/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
+| `gComm/payment/config/postscripts.js` | `config` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
+| `gComm/payment/config/prescripts.js` | `config` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
+| `gComm/payment/config/properties.js` | `config` | `documented` | 0/0 | Reserved Payment family configuration contribution point. |  |
 | `gComm/payment/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/payment/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/payment/nodics.js` | `module` | `partially-documented` | 0/2 | Lifecycle entrypoint for the Payment family group. | add JSDoc for 2 exported method(s) |
 | `gComm/payment/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/payment/src/controller/provider/defaultPaymentProviderLifecycleController.js` | `src` | `documented` | 4/4 | Maps secured Payment provider lifecycle HTTP operations to the Payment facade. |  |
-| `gComm/payment/src/facade/provider/defaultPaymentProviderLifecycleFacade.js` | `src` | `documented` | 3/3 | Delegates safe provider lifecycle execution to the Payment-owned lifecycle service. |  |
-| `gComm/payment/src/interceptors/interceptors.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
-| `gComm/payment/src/router/appConfig.js` | `src` | `documented` | 0/0 | Router application configuration registry for this boundary. |  |
-| `gComm/payment/src/router/routers.js` | `src` | `documented` | 0/0 | Declares secured Payment-owned operational APIs for BackOffice clients. |  |
-| `gComm/payment/src/schemas/schemas.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
-| `gComm/payment/src/service/checkout/defaultPaymentCheckoutAuthorizationService.js` | `src` | `documented` | 10/10 | Authorizes checkout/order payment groups through Payment-owned provider and transaction evidence services. |  |
-| `gComm/payment/src/service/policy/defaultPaymentPolicyService.js` | `src` | `documented` | 14/14 | Validates safe payment provider and transaction evidence and builds checkout authorization transaction drafts. |  |
-| `gComm/payment/src/service/provider/defaultCardPaymentProviderAdapterService.js` | `src` | `documented` | 9/9 | Safe default adapter for card-like providers; customer modules replace or extend this for CyberSource, Stripe, PayPal card, or acquirer integrations. |  |
-| `gComm/payment/src/service/provider/defaultDeferredPaymentProviderAdapterService.js` | `src` | `documented` | 9/9 | Safe adapter for deferred payment methods such as cash on delivery or bank transfer. |  |
-| `gComm/payment/src/service/provider/defaultManualPaymentProviderAdapterService.js` | `src` | `documented` | 9/9 | Safe local adapter that produces governed transaction evidence without calling a real provider. |  |
-| `gComm/payment/src/service/provider/defaultPaymentMethodPolicyService.js` | `src` | `documented` | 9/9 | Resolves payment method policy independently from provider implementation so customers can add methods without changing checkout or provider code. |  |
-| `gComm/payment/src/service/provider/defaultPaymentProviderConnectorPolicyService.js` | `src` | `documented` | 8/8 | Validates safe connector references for Payment Providers without resolving or exposing credential values. |  |
-| `gComm/payment/src/service/provider/defaultPaymentProviderGatewayService.js` | `src` | `documented` | 16/16 | Safe replaceable payment-provider boundary used by checkout authorization before real gateway connectors are introduced. |  |
-| `gComm/payment/src/service/provider/defaultPaymentProviderLifecycleService.js` | `src` | `documented` | 14/14 | Operates safe Payment Provider lifecycle actions for Axis without storing credentials or raw gateway payloads. |  |
-| `gComm/payment/src/service/provider/defaultPaymentProviderPolicyService.js` | `src` | `documented` | 13/13 | Builds effective payment provider execution policy from method, provider, operation, and request context. |  |
-| `gComm/payment/src/service/provider/defaultPaymentProviderRegistryService.js` | `src` | `documented` | 21/21 | Resolves payment provider definitions separately from payment methods and gateway adapters. |  |
-| `gComm/payment/src/service/refund/defaultPaymentRefundCalculationService.js` | `src` | `documented` | 13/13 | Calculates safe refundable amounts from Order-provided payment allocation evidence before Payment creates refund transaction evidence. |  |
-| `gComm/payment/src/service/refund/defaultPaymentRefundService.js` | `src` | `documented` | 13/13 | Creates Payment-owned refund transaction evidence for returns or order adjustments. |  |
-| `gComm/payment/src/utils/defaultPaymentProperties.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
-| `gComm/payment/src/utils/enums.js` | `src` | `documented` | 0/0 | Reserved Payment enum registry. |  |
-| `gComm/payment/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Reserved Payment status-definition registry. |  |
-| `gComm/payment/src/utils/utils.js` | `src` | `documented` | 0/0 | Utility registry for Payment-owned static defaults. |  |
-| `gComm/payment/test/paymentCheckoutAuthorizationContract.test.js` | `test` | `documented` | 0/0 | Protects checkout payment authorization as Payment-owned orchestration over order payment groups, provider boundaries, and transaction evidence. |  |
-| `gComm/payment/test/paymentFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects Payment as the owner of provider metadata, transaction evidence, exact money policy, and safe payment lifecycle boundaries. |  |
-| `gComm/payment/test/paymentRefundCalculationContract.test.js` | `test` | `documented` | 0/0 | Protects Payment-owned refund calculation from Order payment allocation evidence before provider refund execution. |  |
-| `gComm/payment/test/paymentRefundContract.test.js` | `test` | `documented` | 0/0 | Protects Payment-owned refund transaction evidence for return and order-adjustment flows. |  |
 
 ## Extension Contract
 

@@ -54,12 +54,43 @@ module.exports = {
         ],
       },
       authority: {
+        product: "product",
         pricing: "pricing",
         promotion: "promotion",
         tax: "tax",
         inventory: "inventory",
         payment: "payment",
         fulfillment: "fulfillment",
+      },
+      delegates: {
+        productContext: {
+          ownerModule: "product",
+          serviceNames: ["DefaultProductCalculationContextService"],
+          operations: ["resolveEntryContext"],
+        },
+        basePrice: {
+          ownerModule: "pricing",
+          serviceNames: ["DefaultPriceResolutionService"],
+          operations: ["resolve"],
+        },
+        entryPromotions: {
+          ownerModule: "promotion",
+          serviceNames: ["DefaultPromotionEvaluationService"],
+          operations: ["evaluateEntry"],
+        },
+        entryTax: {
+          ownerModule: "tax",
+          serviceNames: ["DefaultTaxCalculationService"],
+          operations: ["calculateEntryTax"],
+        },
+        inventoryPromise: {
+          ownerModule: "inventory",
+          serviceNames: [
+            "DefaultInventoryPromiseReadinessService",
+            "DefaultStockAvailabilityIntentService",
+          ],
+          operations: ["verifyEntryPromise", "resolve"],
+        },
       },
     },
     checkoutEntry: {
