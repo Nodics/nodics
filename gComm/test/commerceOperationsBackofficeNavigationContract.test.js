@@ -49,6 +49,8 @@ const paymentCapability = require("../payment/config/properties")
   .backofficeCapabilities.payment;
 const taxCapability = require("../tax/config/properties").backofficeCapabilities
   .tax;
+const promotionCapability = require("../promotion/config/properties")
+  .backofficeCapabilities.promotion;
 const fulfillmentCapability = require("../fulfillment/config/properties")
   .backofficeCapabilities.fulfillment;
 const reverseActions = require("../order/data/init/data/reverse/defaultCheckoutReverseWorkflowActionData");
@@ -61,6 +63,7 @@ const knownSchemas = {
   order: require("../order/src/schemas/schemas").order,
   fulfillment: require("../fulfillment/src/schemas/schemas").fulfillment,
   payment: require("../payment/src/schemas/schemas").payment,
+  promotion: require("../promotion/src/schemas/schemas").promotion,
   tax: require("../tax/src/schemas/schemas").tax,
 };
 const inheritedSchemas = {
@@ -75,6 +78,7 @@ const capabilities = [
   cartCapability,
   orderCapability,
   taxCapability,
+  promotionCapability,
   paymentCapability,
   fulfillmentCapability,
 ];
@@ -90,8 +94,6 @@ const schemaHasField = (schema, field) =>
     inheritedSchemas[inheritedSchemas[schema.super]?.super]?.definition[field],
   );
 const disabledIds = [
-  "promotions",
-  "coupons",
   "store-locations",
   "delivery-modes",
   "tax-records",
@@ -126,6 +128,10 @@ const requiredDetailPanelIds = {
   pricing: ["price-list-prices", "price-list-assignments"],
   "price-lists": ["price-list-prices", "price-list-assignments"],
   "price-groups": ["price-group-members"],
+  promotions: ["promotion-rules", "coupon-campaigns"],
+  "promotion-rules": ["promotion-conditions", "promotion-actions"],
+  coupons: ["coupon-codes"],
+  "promotion-evaluations": ["applied-promotions"],
   "stock-pools": ["stock-pool-members"],
   "stock-levels": ["serialized-units"],
   allocations: ["serialized-units"],
@@ -169,11 +175,19 @@ assert.strictEqual(cartCapability.navigation.length, 0);
 assert.strictEqual(byId["commerce-operations"].route, "/commerce/operations");
 assert.strictEqual(byId["payment-operations"].route, "/commerce/payments");
 assert.strictEqual(byId.pricing.route, "/commerce/operations/pricing");
+assert.strictEqual(byId.promotions.route, "/commerce/operations/promotions");
 assert.strictEqual(byId["stock-inventory"].route, "/commerce/operations/stock");
 assert.strictEqual(byId.stores.route, "/commerce/operations/stores");
 assert.strictEqual(byId.checkout.route, "/commerce/operations/checkout");
 assert.strictEqual(byId.tax.route, "/commerce/operations/tax");
-["pricing", "stock-inventory", "stores", "checkout", "tax"].forEach((id) => {
+[
+  "pricing",
+  "promotions",
+  "stock-inventory",
+  "stores",
+  "checkout",
+  "tax",
+].forEach((id) => {
   assert.strictEqual(byId[id].parentId, "commerce-operations");
   if (id === "pricing") {
     assert.strictEqual(byId[id].parentModuleName, undefined);
@@ -208,6 +222,52 @@ assert.deepStrictEqual(
     (section) => section.id,
   ),
   ["entry-identity", "price-tax-display", "tax-authority-links"],
+);
+assert.strictEqual(
+  byId.promotions.workbenchTarget.schemaName,
+  "promotionCampaign",
+);
+assert.strictEqual(
+  byId["promotion-rules"].workbenchTarget.schemaName,
+  "promotionRule",
+);
+assert.deepStrictEqual(
+  byId["promotion-rules"].workbenchPresentation.defaultColumns,
+  [
+    "ruleCode",
+    "campaignCode",
+    "ruleType",
+    "priority",
+    "couponRequired",
+    "exclusive",
+    "status",
+  ],
+);
+assert.strictEqual(byId.coupons.workbenchTarget.schemaName, "couponCampaign");
+assert.strictEqual(
+  byId["coupon-codes"].workbenchTarget.schemaName,
+  "couponCode",
+);
+assert.strictEqual(
+  byId["promotion-evaluations"].workbenchTarget.schemaName,
+  "promotionEvaluationRun",
+);
+assert.strictEqual(
+  byId["applied-promotions"].workbenchTarget.schemaName,
+  "appliedPromotion",
+);
+assert.deepStrictEqual(
+  byId["applied-promotions"].workbenchPresentation.defaultColumns,
+  [
+    "appliedPromotionCode",
+    "ruleCode",
+    "sourceType",
+    "targetType",
+    "discountAmount",
+    "currencyCode",
+    "taxTreatment",
+    "status",
+  ],
 );
 assert.strictEqual(
   byId["cart-delivery-groups"].workbenchTarget.schemaName,

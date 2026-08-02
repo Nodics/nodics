@@ -41,6 +41,7 @@ Each module owns one part of the truth.
 | `payment`     | Payment providers, transaction evidence, authorization/deferred payment boundaries, future capture/refund/void lifecycle | Cart/order lifecycle, product authority, physical stock, shipment fulfillment |
 | `fulfillment` | Consignments, shipment/tracking evidence, delivery release, future carrier and return-pickup lifecycle                   | Order demand authority, Inventory stock counters, Payment capture/refund      |
 | `pricing`     | Price lists, price records, price group resolution, online price publication evidence                                    | Cart ownership or payment capture                                             |
+| `promotion`   | Promotion campaigns, rules, conditions, actions, coupons, evaluation runs, and applied-discount evidence                 | Base price, tax calculation, cart/order lifecycle, payment capture            |
 | `product`     | Product identity, classifications, variants, product media, product publication evidence                                 | Cart/order ownership or stock quantities                                      |
 | `store`       | Store and warehouse assignment context                                                                                   | Stock balances or checkout allocation state                                   |
 
@@ -289,6 +290,20 @@ provider or provisioning policy evidence.
 `inventoryPromise`. It can reserve a `STANDARD` promise bucket or an
 `OVERBOOKED` bucket. For counterless promises it still records the demand, but
 does not decrement Promise counters.
+
+### Promotion side
+
+`promotionCampaign`, `promotionRule`, `promotionCondition`, `promotionAction`,
+`couponCampaign`, and `couponCode` define safe promotion authoring metadata.
+
+`promotionEvaluationRun` records the result of evaluating one Cart, Order,
+Quote, or Preview context.
+
+`appliedPromotion` records the actual discount evidence that Cart and Order can
+accept into their own frozen totals. Promotion can say "this rule produced a
+12.00 USD entry discount before tax"; Cart/Order decide whether and when that
+evidence becomes part of the checkout/order snapshot. Tax still decides tax
+calculation, and Payment still authorizes/captures the final payable amount.
 
 ## 4. Quantity split example
 

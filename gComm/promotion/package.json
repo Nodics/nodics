@@ -1,0 +1,29 @@
+{
+    "name": "promotion",
+    "index": "40.74",
+    "description": "Enterprise-scoped promotion, coupon, rule, and applied-discount evidence capability for Nodics commerce.",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "SEE LICENSE IN LICENSE",
+    "nodics": {
+        "kind": "capability",
+        "displayName": "Promotion",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "configuration",
+            "schema",
+            "service",
+            "interceptor",
+            "test",
+            "llm"
+        ],
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        }
+    },
+    "scripts": {}
+}

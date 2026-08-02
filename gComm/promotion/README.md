@@ -1,0 +1,210 @@
+# Promotion
+
+`promotion` is the Nodics Commerce capability for promotion campaigns, promotion
+rules, rule conditions, rule actions, coupon campaigns, coupon codes,
+promotion-evaluation evidence, and applied-discount evidence.
+
+Promotion does not own base prices, tax calculation, cart lifecycle, order
+lifecycle, payment capture, inventory, fulfillment, or customer identity. Those
+capabilities stay in their own modules. Promotion produces or records discount
+evidence that Cart and Order may accept as frozen commercial snapshot values.
+
+## Beginner explanation
+
+A promotion is a business offer, such as:
+
+- "10% off if the cart total is at least 100 USD";
+- "Use coupon `SUMMER10` to get 10 USD off";
+- "Buy this product and get free shipping";
+- "Give a free gift when the customer buys a bundle".
+
+In a scalable commerce platform, we should not store only one field named
+`discountTotal` and call it done. Business users need to know:
+
+1. which campaign the discount came from;
+2. which rule was evaluated;
+3. which conditions matched;
+4. which action created the discount;
+5. whether a coupon was used;
+6. which cart/order/entry/delivery/payment target received the discount;
+7. how the discount interacts with tax, payment, refund, and order history.
+
+That is why Nodics separates authoring records from applied evidence.
+
+## Implemented foundation
+
+- `promotionCampaign` groups business promotions.
+- `promotionRule` stores safe rule metadata such as rule type, priority,
+  exclusivity, coupon requirement, condition mode, and evaluation strategy.
+- `promotionCondition` stores bounded condition metadata. It is not executable
+  code.
+- `promotionAction` stores bounded action metadata such as fixed discount,
+  percentage discount, free shipping, or free gift.
+- `couponCampaign` groups coupon behavior and redemption limits.
+- `couponCode` stores safe coupon-code lifecycle and redemption counters.
+- `promotionEvaluationRun` records one evaluation request/result for Cart,
+  Order, Quote, or Preview.
+- `appliedPromotion` records the actual applied discount evidence that Cart,
+  Order, Tax, Payment, Refund, and reporting can trace.
+
+All records are enterprise-scoped, generated-service backed, and not exposed
+through public generated CRUD routes by default.
+
+## Example: cart coupon discount
+
+A business creates a campaign:
+
+```json
+{
+  "campaignCode": "summer-sale",
+  "name": "Summer Sale",
+  "campaignType": "MERCHANDISING",
+  "status": "ACTIVE"
+}
+```
+
+Then it creates a rule:
+
+```json
+{
+  "ruleCode": "summer-cart-10",
+  "campaignCode": "summer-sale",
+  "name": "10 percent off cart",
+  "ruleType": "CART",
+  "couponRequired": true,
+  "conditionMode": "ALL",
+  "priority": 50,
+  "status": "ACTIVE"
+}
+```
+
+Then it creates a condition:
+
+```json
+{
+  "conditionCode": "summer-cart-total",
+  "ruleCode": "summer-cart-10",
+  "conditionType": "CART_TOTAL",
+  "operator": "GREATER_THAN_OR_EQUALS",
+  "value": {
+    "currencyCode": "USD",
+    "amount": "100.00"
+  }
+}
+```
+
+Then it creates an action:
+
+```json
+{
+  "actionCode": "summer-cart-10-action",
+  "ruleCode": "summer-cart-10",
+  "actionType": "ORDER_PERCENTAGE_DISCOUNT",
+  "targetType": "CART",
+  "currencyCode": "USD",
+  "discountRate": "10.00",
+  "maxDiscountAmount": "25.00"
+}
+```
+
+When Cart asks Promotion to evaluate `cart-100`, Promotion can create:
+
+```json
+{
+  "evaluationCode": "cart-100-promo-eval",
+  "sourceType": "CART",
+  "sourceCode": "cart-100",
+  "subtotalAmount": "120.00",
+  "discountTotal": "12.00",
+  "currencyCode": "USD",
+  "appliedRuleCodes": ["summer-cart-10"],
+  "status": "EVALUATED"
+}
+```
+
+And line-level applied evidence:
+
+```json
+{
+  "appliedPromotionCode": "cart-100-line-1-summer-cart-10",
+  "evaluationCode": "cart-100-promo-eval",
+  "ruleCode": "summer-cart-10",
+  "couponCode": "SUMMER10",
+  "sourceType": "CART",
+  "sourceCode": "cart-100",
+  "targetType": "ENTRY",
+  "targetCode": "line-1",
+  "actionType": "ORDER_PERCENTAGE_DISCOUNT",
+  "discountAmount": "12.00",
+  "currencyCode": "USD",
+  "taxTreatment": "BEFORE_TAX",
+  "status": "APPLIED"
+}
+```
+
+Cart can then copy the accepted total into `cartEntry.discountTotal`. Order can
+later freeze the same commercial evidence during checkout placement.
+
+## Tax and payment relationship
+
+Promotion records discount evidence. Tax decides whether tax is calculated
+before or after the discount according to jurisdiction and pricing context.
+Payment authorizes or captures the final amount accepted by Checkout/Order.
+
+For example, if the promotion is `BEFORE_TAX`, Tax may reduce the taxable base.
+If it is `AFTER_TAX`, Tax may calculate first and then the discount is applied
+to the gross amount. Promotion stores the `taxTreatment` decision as evidence,
+but Tax remains authoritative for tax calculation.
+
+## Customization
+
+Customer modules can add:
+
+- new campaign types;
+- new condition types;
+- new action types;
+- project-specific evaluation strategies;
+- stricter coupon redemption policies;
+- a custom promotion evaluator service;
+- integration with an external promotion engine.
+
+The smallest supported override is to layer `promotion.rule` configuration in a
+customer module:
+
+```js
+module.exports = {
+  promotion: {
+    rule: {
+      conditionTypes: [
+        "ITEM",
+        "CATEGORY",
+        "CART_TOTAL",
+        "CUSTOMER_GROUP",
+        "CHANNEL",
+        "COUPON",
+        "LOYALTY_TIER",
+      ],
+      actionTypes: [
+        "ENTRY_FIXED_DISCOUNT",
+        "ENTRY_PERCENTAGE_DISCOUNT",
+        "ORDER_FIXED_DISCOUNT",
+        "ORDER_PERCENTAGE_DISCOUNT",
+        "FREE_SHIPPING",
+        "FREE_GIFT",
+        "LOYALTY_POINTS",
+      ],
+    },
+  },
+};
+```
+
+Do not fork Cart, Order, Pricing, or Tax to add a promotion rule. Add or replace
+Promotion-owned policy/evaluation services and keep the applied result as
+Promotion-owned evidence.
+
+## Verification
+
+```bash
+node gComm/promotion/test/promotionFoundationContract.test.js
+node gComm/test/commerceOperationsBackofficeNavigationContract.test.js
+```
