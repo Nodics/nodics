@@ -6,8 +6,8 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
-| `inventoryPromise` | `base` | yes | yes | no | no | no | no |  | 26 |
-| `inventoryPromiseReservation` | `base` | yes | yes | no | no | no | no |  | 21 |
+| `inventoryPromise` | `base` | yes | yes | no | no | no | no |  | 31 |
+| `inventoryPromiseReservation` | `base` | yes | yes | no | no | no | no |  | 26 |
 | `serializedStockUnit` | `base` | yes | yes | no | no | no | no |  | 26 |
 | `stockAllocation` | `base` | yes | yes | no | no | no | no |  | 21 |
 | `stockBalance` | `base` | yes | yes | no | no | no | no |  | 16 |
@@ -27,8 +27,10 @@
 
 ### `inventory.inventoryPromise`
 
+- `capacityMode` `string` optional
 - `commercialPolicyCode` `string` optional
 - `correlationId` `string` optional
+- `counterManaged` `bool` optional
 - `effectiveFrom` `date` optional
 - `effectiveTo` `date` optional
 - `enterpriseCode` `string` required
@@ -43,6 +45,9 @@
 - `promiseCode` `string` required
 - `promiseType` `string` required
 - `promisedQuantity` `string` required
+- `providerCode` `string` optional
+- `provisioningPolicyCode` `string` optional
+- `provisioningRequired` `bool` optional
 - `reasonCode` `string` optional
 - `reservedQuantity` `string` required
 - `revision` `int` required
@@ -56,9 +61,11 @@
 
 ### `inventory.inventoryPromiseReservation`
 
+- `capacityMode` `string` optional
 - `checkoutAllocationCode` `string` optional
 - `commercialPolicyCode` `string` optional
 - `correlationId` `string` optional
+- `counterManaged` `bool` optional
 - `demandCode` `string` required
 - `demandLineCode` `string` required
 - `demandType` `string` required
@@ -71,6 +78,9 @@
 - `promiseBucket` `string` required
 - `promiseCode` `string` required
 - `promiseReservationCode` `string` required
+- `providerCode` `string` optional
+- `provisioningPolicyCode` `string` optional
+- `provisioningRequired` `bool` optional
 - `quantity` `string` required
 - `reasonCode` `string` optional
 - `scale` `int` required

@@ -391,6 +391,19 @@ assert.strictEqual(
   byId["inventory-promises"].workbenchTarget.schemaName,
   "inventoryPromise",
 );
+assert.deepStrictEqual(
+  byId["inventory-promises"].workbenchPresentation.defaultColumns,
+  [
+    "promiseCode",
+    "promiseType",
+    "capacityMode",
+    "itemCode",
+    "promisedQuantity",
+    "reservedQuantity",
+    "provisioningRequired",
+    "state",
+  ],
+);
 assert.strictEqual(
   byId["serialized-units"].workbenchTarget.schemaName,
   "serializedStockUnit",

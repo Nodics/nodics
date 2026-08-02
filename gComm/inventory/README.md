@@ -50,10 +50,15 @@ uses when overbooking requires an advance, deposit, full payment, or balance
 capture. `inventoryPromiseReservation` records link cart/order demand lines or
 allocation codes to either the standard promise bucket or an overbooked bucket.
 `DefaultInventoryPromiseReservationOrchestrationService` reserves and releases
-this promise capacity with idempotency and revision-guarded counter updates.
-Promise reservations do not mutate physical Stock Balance; physical reservation,
-allocation, issue, and fulfillment evidence remain owned by the Stock
-Reservation and Stock Allocation services.
+this promise capacity with idempotency and revision-guarded counter updates when
+the promise is finite and counter-managed. `PERPETUAL` promises are unbounded,
+while `DIGITAL`, `DROP_SHIP`, and `MADE_TO_ORDER` promises are on-demand and can
+carry provider/provisioning policy evidence. These counterless promises still
+create reservation rows for audit and checkout continuity, but they do not
+consume finite Promise counters. Promise reservations do not mutate physical
+Stock Balance; physical reservation, allocation, issue, serialized-unit binding,
+and fulfillment evidence remain owned by the Stock Reservation, Stock
+Allocation, Serialized Inventory, and Fulfillment services.
 
 Serialized Inventory adds an optional identity layer for businesses that must
 track individual units by serial number, asset tag, or external WMS/ERP unit
