@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Provider-family boundary for payment provider adapters registered with the Payment authority."
   },
-  "sourceFiles": 2,
-  "testFiles": 1,
+  "sourceFiles": 3,
+  "testFiles": 2,
   "dataFiles": 0,
-  "ownedFiles": 11,
-  "sourceFingerprint": "0ffc5d8943a3750603a639821975bff3188ca2c83eed1bd7f9c633cb6dac7f4f",
+  "ownedFiles": 13,
+  "sourceFingerprint": "34c1e3d79e75529d2ae7ec963c1cc1b0377a0080b1d7df33d466510783a85177",
   "documentation": {
-    "documented": 4,
+    "documented": 6,
     "partially-documented": 3,
     "undocumented": 0,
     "inventory-only": 4

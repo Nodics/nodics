@@ -141,10 +141,17 @@ module.exports = {
       captureStrategy: record.captureStrategy,
       authorizationTtlMinutes: record.authorizationTtlMinutes,
       retryStrategy: record.retryStrategy,
+      timeoutMs: record.timeoutMs,
       maxRetries: record.maxRetries,
+      retryableFailureCodes: Array.isArray(record.retryableFailureCodes)
+        ? record.retryableFailureCodes.slice()
+        : undefined,
+      failoverEnabled: record.failoverEnabled,
       failoverProviderCodes: Array.isArray(record.failoverProviderCodes)
         ? record.failoverProviderCodes.slice()
         : undefined,
+      reconciliationRequired: record.reconciliationRequired,
+      reconciliationDelayMinutes: record.reconciliationDelayMinutes,
       connectorCode: record.connectorCode || executionPolicy.connectorCode,
       configRef: record.configRef || executionPolicy.configRef,
       configurationSource: "GOVERNED_EXECUTION_POLICY",

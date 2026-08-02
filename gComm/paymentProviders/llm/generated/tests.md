@@ -5,6 +5,7 @@
 ## Hand-Authored Tests
 
 - `gComm/paymentProviders/test/paymentProviderAdapterConformanceContract.test.js`
+- `gComm/paymentProviders/test/paymentProviderExecutionGovernanceContract.test.js`
 
 ## Generated Tests
 

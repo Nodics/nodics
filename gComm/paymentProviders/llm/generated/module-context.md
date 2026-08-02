@@ -24,10 +24,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 2 |
-| Test files | 1 |
+| Source files | 3 |
+| Test files | 2 |
 | Data files | 0 |
-| All module-owned files | 11 |
+| All module-owned files | 13 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -52,7 +52,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 4 |
+| Documented | 6 |
 | Partially documented | 3 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -82,8 +82,10 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/paymentProviders/nodics.js` | `module` | `partially-documented` | 0/2 | Payment provider-family lifecycle entrypoint. | add JSDoc for 2 exported method(s) |
 | `gComm/paymentProviders/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/paymentProviders/src/service/adapter/defaultPaymentProviderAdapterContractService.js` | `src` | `documented` | 2/2 | Validates payment provider adapters against the Payment-owned normalized operation port. |  |
+| `gComm/paymentProviders/src/service/adapter/defaultPaymentProviderExecutionGovernanceService.js` | `src` | `documented` | 14/14 | Builds safe retry, timeout, failover, and reconciliation scheduling plans for provider adapters without executing live PSP calls. |  |
 | `gComm/paymentProviders/src/service/adapter/defaultPaymentProviderSafeEvidenceService.js` | `src` | `documented` | 3/3 | Builds normalized safe provider evidence for mocked provider contract adapters. |  |
 | `gComm/paymentProviders/test/paymentProviderAdapterConformanceContract.test.js` | `test` | `documented` | 0/0 | Protects Stripe, PayPal, CyberSource, and Visa provider modules against the Payment-owned adapter contract. |  |
+| `gComm/paymentProviders/test/paymentProviderExecutionGovernanceContract.test.js` | `test` | `documented` | 0/0 | Protects provider-family timeout, retry, failover, and reconciliation scheduling plans for live PSP adapters. |  |
 
 ## Extension Contract
 

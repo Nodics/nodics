@@ -358,3 +358,20 @@ used by checkout authorization and refunds. Keep idempotency, timeout, retry,
 safe failure mapping, and reconciliation behavior behind Payment-owned
 services/adapters. Axis should only show actions that backend Payment metadata
 and permissions expose.
+
+Provider-family modules may contribute
+`DefaultPaymentProviderExecutionGovernanceService`. Payment passes the generated
+`providerExecutionPlan` into adapters so live PSP modules can read one safe
+contract for:
+
+- operation timeout;
+- maximum attempts after provider-family caps are applied;
+- retry strategy and retryable provider failure codes;
+- failover eligibility and ordered failover provider codes;
+- reconciliation scheduling hints and idempotency key.
+
+The plan does not execute a hidden retry loop by itself. Actual retries,
+failover, delayed reconciliation, and manual recovery are Workflow/runtime
+responsibilities because they are long-running business processes. This avoids
+turning one HTTP request into an unsafe multi-provider transaction while still
+giving every provider adapter the same policy contract.

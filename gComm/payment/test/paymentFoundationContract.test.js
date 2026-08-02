@@ -36,6 +36,7 @@ const lifecycleService = require("../src/service/provider/defaultPaymentProvider
 const manualProviderAdapterService = require("../src/service/provider/defaultManualPaymentProviderAdapterService");
 const cardProviderAdapterService = require("../src/service/provider/defaultCardPaymentProviderAdapterService");
 const deferredProviderAdapterService = require("../src/service/provider/defaultDeferredPaymentProviderAdapterService");
+const providerExecutionGovernanceService = require("../../paymentProviders/src/service/adapter/defaultPaymentProviderExecutionGovernanceService");
 const statusDefinitions = require("../src/utils/statusDefinitions");
 const defaultMethodData = require("../data/init/data/defaultPaymentMethodData");
 const defaultProviderData = require("../data/init/data/defaultPaymentProviderData");
@@ -44,7 +45,27 @@ const providerHeader = require("../data/init/header/defaultPaymentProviderHeader
 const initManifest = require("../data/init/manifest.json");
 
 global.CONFIG = {
-  get: (key) => (key === "payment" ? properties.payment : undefined),
+  get: (key) => {
+    if (key === "payment") return properties.payment;
+    if (key === "paymentProviders") {
+      return {
+        liveProviderCallsEnabled: false,
+        resilience: {
+          timeoutMs: 30000,
+          maximumAttempts: 3,
+          retryStrategy: "NONE",
+          failoverEnabled: false,
+          retryableFailureCodes: ["TIMEOUT", "RATE_LIMIT"],
+        },
+        reconciliation: {
+          enabled: false,
+          schedulerCode: "payment-provider-reconciliation",
+          delayMinutes: 15,
+        },
+      };
+    }
+    return undefined;
+  },
 };
 global.CLASSES = {
   NodicsError: class NodicsError extends Error {
@@ -63,6 +84,8 @@ global.SERVICE = {
   DefaultPaymentProviderConnectorPolicyService: connectorPolicyService,
   DefaultPaymentProviderGatewayService: gatewayService,
   DefaultPaymentProviderLifecycleService: lifecycleService,
+  DefaultPaymentProviderExecutionGovernanceService:
+    providerExecutionGovernanceService,
   DefaultManualPaymentProviderAdapterService: manualProviderAdapterService,
   DefaultCardPaymentProviderAdapterService: cardProviderAdapterService,
   DefaultDeferredPaymentProviderAdapterService: deferredProviderAdapterService,
@@ -92,8 +115,13 @@ const governedExecutionPolicyRecords = [
     captureStrategy: "MANUAL_CAPTURE",
     authorizationTtlMinutes: 30,
     retryStrategy: "EXPONENTIAL_BACKOFF",
+    timeoutMs: 12000,
     maxRetries: 2,
+    retryableFailureCodes: ["TIMEOUT"],
+    failoverEnabled: true,
     failoverProviderCodes: ["manualPaymentProvider"],
+    reconciliationRequired: true,
+    reconciliationDelayMinutes: 5,
     connectorCode: "enterprise-card-policy-connector",
     configRef: "paymentPolicies.defaultCardAuthorize",
     secret: "must-not-leak",
@@ -664,10 +692,15 @@ const baseTransaction = {
   );
   assert.strictEqual(effectivePolicy.captureStrategy, "MANUAL_CAPTURE");
   assert.strictEqual(effectivePolicy.retryStrategy, "EXPONENTIAL_BACKOFF");
+  assert.strictEqual(effectivePolicy.timeoutMs, 12000);
   assert.strictEqual(effectivePolicy.maxRetries, 2);
+  assert.deepStrictEqual(effectivePolicy.retryableFailureCodes, ["TIMEOUT"]);
+  assert.strictEqual(effectivePolicy.failoverEnabled, true);
   assert.deepStrictEqual(effectivePolicy.failoverProviderCodes, [
     "manualPaymentProvider",
   ]);
+  assert.strictEqual(effectivePolicy.reconciliationRequired, true);
+  assert.strictEqual(effectivePolicy.reconciliationDelayMinutes, 5);
   assert.strictEqual(
     effectivePolicy.connectorCode,
     "enterprise-card-policy-connector",
@@ -796,6 +829,21 @@ const baseTransaction = {
     transaction: Object.assign({}, baseTransaction, { operation: "AUTHORIZE" }),
   });
   assert.strictEqual(authorized.status, "AUTHORIZED");
+  let plan = providerExecutionGovernanceService.executionPlan({
+    transaction: Object.assign({}, baseTransaction, { operation: "AUTHORIZE" }),
+    providerPolicy: effectivePolicy,
+  });
+  assert.strictEqual(plan.timeoutMs, 12000);
+  assert.strictEqual(plan.maximumAttempts, 3);
+  assert.strictEqual(plan.retryStrategy, "EXPONENTIAL_BACKOFF");
+  assert.strictEqual(plan.failoverEnabled, true);
+  assert.deepStrictEqual(plan.failoverProviderCodes, ["manualPaymentProvider"]);
+  assert.strictEqual(plan.reconciliation.enabled, true);
+  assert.strictEqual(plan.reconciliation.delayMinutes, 5);
+  assert.strictEqual(
+    plan.reconciliation.idempotencyKey,
+    "payment-reconcile::defaultCardProvider::tx-card-1",
+  );
 
   let captured = await gatewayService.capture({
     transaction: Object.assign({}, baseTransaction, { operation: "CAPTURE" }),

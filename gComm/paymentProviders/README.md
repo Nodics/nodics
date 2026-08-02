@@ -49,6 +49,30 @@ integration requires a project/customer module to provide a real transport,
 secret references, PSP-specific retry/timeout/failover rules, webhook
 verification, and live sandbox evidence.
 
+## Execution governance
+
+`DefaultPaymentProviderExecutionGovernanceService` builds the provider-family
+execution plan that Payment passes to adapters as `providerExecutionPlan`.
+Provider adapters can read this plan, but they must not mutate Payment
+transaction lifecycle directly.
+
+The plan contains only safe policy:
+
+- timeout in milliseconds;
+- bounded maximum attempts;
+- retry strategy and retryable failure codes;
+- failover enablement and safe failover provider codes;
+- whether live provider calls are enabled;
+- reconciliation scheduling hints.
+
+It is intentionally not a secret/connector payload. API keys, client secrets,
+webhook secrets, raw gateway payloads, PAN, CVV, and provider credentials remain
+outside this module family.
+
+The service does not run background jobs. Long-running retry, failover,
+reconciliation, webhook repair, or manual approval flows should be owned by
+Workflow/runtime processes that call Payment-owned APIs with idempotency keys.
+
 ## Extension path
 
 To add a provider:

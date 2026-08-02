@@ -8,7 +8,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `paymentMethod` | `base` | yes | yes | no | no | no | no |  | 9 |
 | `paymentProvider` | `base` | yes | yes | no | no | no | no |  | 15 |
-| `paymentProviderExecutionPolicy` | `base` | yes | yes | no | no | no | no |  | 16 |
+| `paymentProviderExecutionPolicy` | `base` | yes | yes | no | no | no | no |  | 21 |
 | `paymentTransaction` | `base` | yes | yes | no | no | no | no |  | 21 |
 
 ### `payment.paymentMethod`
@@ -49,6 +49,7 @@
 - `configRef` `string` optional: Safe configuration reference override, not raw credentials
 - `connectorCode` `string` optional: Safe connector identity override. Credentials remain in secret stores.
 - `enterpriseCode` `string` required: Authenticated enterprise owner of the payment record
+- `failoverEnabled` `bool` optional: Whether Payment may consider configured failover provider codes after retry exhaustion
 - `failoverProviderCodes` `array` optional: Ordered safe provider codes that Payment may consider during governed failover
 - `maxRetries` `number` optional: Maximum governed retry attempts for recoverable provider operations
 - `methodCode` `string` optional: Optional payment method such as CARD, WALLET, COD, ADVANCE, or project-specific method
@@ -57,8 +58,12 @@
 - `policyCode` `string` required: Stable provider execution policy identity
 - `priority` `number` optional: Lower priority wins when multiple policies match the same provider/method/operation
 - `providerCode` `string` required: Provider identity this policy applies to
+- `reconciliationDelayMinutes` `number` optional: Suggested delay before reconciliation scheduling. Actual scheduling remains workflow/runtime owned.
+- `reconciliationRequired` `bool` optional: Whether successful or ambiguous provider operations should publish reconciliation scheduling evidence
 - `retryStrategy` `string` optional: Safe retry strategy such as NONE, MANUAL, EXPONENTIAL_BACKOFF, or PROVIDER_DEFAULT
+- `retryableFailureCodes` `array` optional: Safe provider failure codes that may be retried by Payment-owned recovery or Workflow scheduling
 - `status` `string` required: Governed lifecycle status
+- `timeoutMs` `number` optional: Provider operation timeout in milliseconds. Live connectors may enforce a lower provider-specific limit.
 
 ### `payment.paymentTransaction`
 

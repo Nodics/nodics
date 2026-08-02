@@ -241,17 +241,49 @@ module.exports = {
             "Safe retry strategy such as NONE, MANUAL, EXPONENTIAL_BACKOFF, or PROVIDER_DEFAULT",
           searchOptions: { enabled: true },
         },
+        timeoutMs: {
+          type: "number",
+          required: false,
+          description:
+            "Provider operation timeout in milliseconds. Live connectors may enforce a lower provider-specific limit.",
+        },
         maxRetries: {
           type: "number",
           required: false,
           description:
             "Maximum governed retry attempts for recoverable provider operations",
         },
+        retryableFailureCodes: {
+          type: "array",
+          required: false,
+          description:
+            "Safe provider failure codes that may be retried by Payment-owned recovery or Workflow scheduling",
+        },
+        failoverEnabled: {
+          type: "bool",
+          required: false,
+          default: false,
+          description:
+            "Whether Payment may consider configured failover provider codes after retry exhaustion",
+        },
         failoverProviderCodes: {
           type: "array",
           required: false,
           description:
             "Ordered safe provider codes that Payment may consider during governed failover",
+        },
+        reconciliationRequired: {
+          type: "bool",
+          required: false,
+          default: false,
+          description:
+            "Whether successful or ambiguous provider operations should publish reconciliation scheduling evidence",
+        },
+        reconciliationDelayMinutes: {
+          type: "number",
+          required: false,
+          description:
+            "Suggested delay before reconciliation scheduling. Actual scheduling remains workflow/runtime owned.",
         },
         connectorCode: {
           type: "string",

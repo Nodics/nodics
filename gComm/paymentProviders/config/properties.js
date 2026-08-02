@@ -17,18 +17,25 @@
  * @override Project modules may layer resilience defaults and provider-specific policy while preserving Payment as the authority.
  */
 module.exports = {
-    paymentProviders: {
-        contractVersion: 1,
-        enabled: true,
-        liveProviderCallsEnabled: false,
-        resilience: {
-            timeoutMs: 30000,
-            maximumAttempts: 1,
-            retryableFailureCodes: ["TIMEOUT", "RATE_LIMIT", "TEMPORARY_UNAVAILABLE"],
-        },
-        evidence: {
-            redactRawPayloads: true,
-            maximumSafeMessageLength: 240,
-        },
+  paymentProviders: {
+    contractVersion: 1,
+    enabled: true,
+    liveProviderCallsEnabled: false,
+    resilience: {
+      timeoutMs: 30000,
+      maximumAttempts: 1,
+      retryStrategy: "NONE",
+      failoverEnabled: false,
+      retryableFailureCodes: ["TIMEOUT", "RATE_LIMIT", "TEMPORARY_UNAVAILABLE"],
     },
+    reconciliation: {
+      enabled: false,
+      schedulerCode: "payment-provider-reconciliation",
+      delayMinutes: 15,
+    },
+    evidence: {
+      redactRawPayloads: true,
+      maximumSafeMessageLength: 240,
+    },
+  },
 };
