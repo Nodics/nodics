@@ -8,6 +8,7 @@
 - `gFramework/nDatabase/mongodb/test/env-local/envTest.js`
 - `gFramework/nDatabase/mongodb/test/mongodbIndexReconciliationContract.test.js`
 - `gFramework/nDatabase/mongodb/test/mongodbTransactionContract.test.js`
+- `gFramework/nDatabase/mongodb/test/mongodbUpdateOperatorContract.test.js`
 
 ## Generated Tests
 

@@ -46,5 +46,5 @@ SERVICE.DefaultProductCategoryServiceValidator = require('../src/service/foundat
     categories.filter(item => item.parentCategoryCode === 'root').forEach(item => { item.status = 'RETIRED'; }); assignments.push({ enterpriseCode: 'entA', catalogCode: 'retail', assignmentCode: 'a1', categoryCode: 'root', status: 'ACTIVE' });
     await assert.rejects(SERVICE.DefaultProductCategoryServiceValidator.prepareCategoryUpdate({ tenant: 't1', authData: authData, query: { enterpriseCode: 'entA', catalogCode: 'retail', categoryCode: 'root' }, model: { status: 'RETIRED' } }), error => error.code === 'ERR_PRODUCT_00016');
     assignments[0].status = 'RETIRED'; await SERVICE.DefaultProductCategoryServiceValidator.prepareCategoryUpdate({ tenant: 't1', authData: authData, query: { enterpriseCode: 'entA', catalogCode: 'retail', categoryCode: 'root' }, model: { status: 'RETIRED' } });
-    console.log('Product P1.1 Category and assignment contract validated');
+    console.log('Product category and assignment contract validated');
 })().catch(error => { console.error(error); process.exit(1); });

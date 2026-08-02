@@ -25,9 +25,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 30 |
-| Test files | 21 |
+| Test files | 22 |
 | Data files | 0 |
-| All module-owned files | 61 |
+| All module-owned files | 62 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -53,7 +53,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 56 |
+| Documented | 57 |
 | Partially documented | 0 |
 | Undocumented | 1 |
 | Inventory only | 4 |
@@ -129,6 +129,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTooling/test/moduleStructure.test.js` | `test` | `documented` | 0/0 | Enforces mandatory configuration files, canonical README naming, safe runtime identifiers, and explicit framework-folder naming across all Nodics modules. |  |
 | `gFramework/nTooling/test/projectPostmanCoverageOwnership.test.js` | `test` | `documented` | 0/0 | Enforces that reference Postman coverage for domain and project APIs remains owned by the active module that defines the capability. |  |
 | `gFramework/nTooling/test/releaseCheckCommandContract.test.js` | `test` | `documented` | 0/0 | Verifies the clean-checkout release gate is configured, dry-runnable, and executable through governed nTooling command contracts. |  |
+| `gFramework/nTooling/test/repositoryGovernanceDocumentsContract.test.js` | `test` | `documented` | 0/0 | Verifies repository-level governance documents exist before external adoption and preserve the legal, support, release, security, and compatibility boundaries expected by Nodics. |  |
 | `gFramework/nTooling/test/repositoryToolingBoundary.test.js` | `test` | `documented` | 0/0 | Prevents executable tooling from returning to the root scripts folder or depending on temporary docs configuration. |  |
 | `gFramework/nTooling/test/structureComplianceAudit.test.js` | `test` | `documented` | 0/0 | Verifies that the structure compliance audit reports Nodics structure-matrix gaps without mutating project files. |  |
 | `gFramework/nTooling/test/structureGeneratorAlignment.test.js` | `test` | `documented` | 0/0 | Verifies that contract-driven structure generation produces modules that pass the canonical structure compliance audit. |  |

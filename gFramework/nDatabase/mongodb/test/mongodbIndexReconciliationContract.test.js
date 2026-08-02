@@ -72,4 +72,60 @@ assert.deepStrictEqual(plan.create, [{
 }]);
 assert.deepStrictEqual(plan.drop, ['loginId_1']);
 
-console.log('MongoDB index reconciliation contract validated');
+let staleCompoundUniqueIndexes = [{
+    name: 'providerCode_1_enterpriseCode_1',
+    key: { providerCode: 1, enterpriseCode: 1 },
+    unique: true
+}, {
+    name: 'unrelated_1',
+    key: { unrelated: 1 }
+}];
+plan = service.finalizeIndexes([{
+    fields: { providerCode: 1, enterpriseCode: 1 },
+    options: {}
+}], staleCompoundUniqueIndexes, false);
+assert.deepStrictEqual(plan.create, [{
+    fields: { providerCode: 1, enterpriseCode: 1 },
+    options: {}
+}]);
+assert.deepStrictEqual(plan.drop, ['providerCode_1_enterpriseCode_1']);
+
+global.SERVICE = {
+    DefaultNodicsPromiseService: {
+        all: function (promises) {
+            return Promise.all(promises);
+        }
+    }
+};
+
+async function verifyStaleIndexIsDroppedBeforeReplacementCreate() {
+    const operations = [];
+    const originalDropIndex = service.dropIndex;
+    const originalCreateIndex = service.createIndex;
+    service.dropIndex = function (model, name) {
+        operations.push('drop:' + name);
+        return Promise.resolve(name);
+    };
+    service.createIndex = function (model, indexData) {
+        operations.push('create:' + Object.keys(indexData.fields).join(','));
+        return Promise.resolve(indexData.fields);
+    };
+    try {
+        await service.executeIndexPlan({ modelName: 'TestModel' }, {
+            drop: ['tenant_1'],
+            create: [{ fields: { tenant: 1 }, options: {} }]
+        });
+    } finally {
+        service.dropIndex = originalDropIndex;
+        service.createIndex = originalCreateIndex;
+    }
+    assert.deepStrictEqual(operations, ['drop:tenant_1', 'create:tenant'],
+        'Stale indexes must be dropped before replacement indexes are created');
+}
+
+verifyStaleIndexIsDroppedBeforeReplacementCreate().then(() => {
+    console.log('MongoDB index reconciliation contract validated');
+}).catch(error => {
+    console.error(error);
+    process.exit(1);
+});

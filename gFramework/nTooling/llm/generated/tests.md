@@ -19,6 +19,7 @@
 - `gFramework/nTooling/test/moduleStructure.test.js`
 - `gFramework/nTooling/test/projectPostmanCoverageOwnership.test.js`
 - `gFramework/nTooling/test/releaseCheckCommandContract.test.js`
+- `gFramework/nTooling/test/repositoryGovernanceDocumentsContract.test.js`
 - `gFramework/nTooling/test/repositoryToolingBoundary.test.js`
 - `gFramework/nTooling/test/structureComplianceAudit.test.js`
 - `gFramework/nTooling/test/structureGeneratorAlignment.test.js`

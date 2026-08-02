@@ -90,6 +90,131 @@ it creates a deterministic safe label reference for local/test providers. A
 customer module replaces that gateway or configures `serviceAdapter` for a real
 carrier integration.
 
+## Shipping modes versus carrier providers
+
+Fulfillment keeps shipping modes and carrier providers as two separate extension
+layers.
+
+A shipping mode is the business option selected during checkout or operations,
+such as `STANDARD`, `EXPRESS`, `SAME_DAY`, `SCHEDULED`, `PICKUP`,
+`LOCAL_DELIVERY`, `DIGITAL_DELIVERY`, or `FREIGHT`. It describes the promise,
+label requirement, and provider types allowed for that delivery experience.
+
+A carrier provider is the operational adapter boundary that can execute the
+mode. Examples include DHL, FedEx, UPS, Aramex, a local fleet, a freight
+partner, a pickup network, WMS/ERP handoff, a carrier aggregator, or a
+customer-specific delivery partner.
+
+This separation lets a customer add a new business shipping option without
+rewriting carrier integration code, and it lets a carrier change without
+rewriting Order, Cart, or checkout allocation models.
+
+## How to add a shipping mode
+
+Customer modules add shipping modes by layering Fulfillment configuration or by
+creating governed `fulfillmentMode` records for the enterprise.
+
+At minimum, a shipping mode needs:
+
+- `modeCode` — stable code such as `EVENING_DELIVERY`;
+- `displayName` — business-facing label;
+- `defaultCarrierCode` — optional default provider;
+- `carrierRequired` — whether a carrier/provider must be resolved;
+- `labelRequired` — whether label generation is normally expected;
+- `allowedProviderTypes` — safe provider categories that can serve the mode.
+
+For example, a customer project can add:
+
+```js
+fulfillment: {
+  fulfillmentPolicy: {
+    modes: {
+      EVENING_DELIVERY: {
+        modeCode: 'EVENING_DELIVERY',
+        displayName: 'Evening delivery',
+        defaultCarrierCode: 'localFleetProvider',
+        carrierRequired: true,
+        labelRequired: false,
+        allowedProviderTypes: ['LOCAL_DELIVERY'],
+      },
+    },
+  },
+}
+```
+
+Order still owns delivery demand and allocations. Fulfillment only interprets
+the mode when releasing consignments, creating shipments, requesting labels,
+or ingesting tracking evidence.
+
+## How to add a delivery partner or carrier provider
+
+Customer modules add delivery partners by layering `carrierProviders` or by
+creating governed `fulfillmentCarrierProvider` records. A provider should carry
+safe metadata only:
+
+- `carrierCode`;
+- `name`;
+- `providerType`;
+- supported `modeCodes` or `supportedDeliveryModes`;
+- `supportsLabels`;
+- `supportsTracking`;
+- adapter or policy service names such as `serviceAdapter` or `adapterService`;
+- a safe `configurationRef` if the adapter needs to look up external settings.
+
+Credentials belong in governed secure configuration, secret stores, or a
+secure connector owned by the customer module. They must not be persisted in
+Fulfillment records, shipment records, tracking events, labels, warehouse
+tasks, or return requests.
+
+Customer modules can replace carrier integration by registering a provider
+adapter service and pointing the provider metadata at it:
+
+```js
+fulfillment: {
+  fulfillmentPolicy: {
+    carrierProviders: {
+      dhlProvider: {
+        carrierCode: 'dhlProvider',
+        name: 'DHL',
+        providerType: 'CARRIER',
+        modeCodes: ['STANDARD', 'EXPRESS'],
+        supportsLabels: true,
+        supportsTracking: true,
+        adapterService: 'CustomerDhlCarrierAdapterService',
+        policyService: 'DefaultFulfillmentCarrierPolicyService',
+        configurationRef: 'secret://customer/dhl/default',
+        status: 'ACTIVE',
+      },
+    },
+  },
+}
+```
+
+The adapter should return normalized evidence only: label references, tracking
+numbers, tracking URLs, carrier event codes, and safe status messages. Raw
+carrier responses, credentials, request payloads, and private keys remain
+outside persisted business records.
+
+## External delivery partner integration
+
+External delivery partner integration follows the same provider-adapter pattern
+used by Payment:
+
+1. Define or persist the business shipping mode.
+2. Register a safe carrier provider record.
+3. Implement a customer-owned adapter service for label, dispatch, cancel,
+   tracking, pickup, return, or reconciliation operations.
+4. Layer provider policy when routing depends on tenant, enterprise, country,
+   region, postal code, channel, product type, weight, warehouse, SLA, risk,
+   or partner availability.
+5. Keep Order and Inventory ownership intact. Order owns demand; Inventory owns
+   stock and allocation counters; Fulfillment owns operational delivery
+   evidence and delegates to external carriers through adapters.
+
+When a real provider is introduced, the customer module should add focused
+contracts for timeout handling, retry/failover behavior, duplicate webhook
+handling, idempotency keys, and reconciliation evidence.
+
 ## Warehouse task execution
 
 Warehouse task execution is Fulfillment-owned operational evidence. It should

@@ -7,7 +7,7 @@
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `paymentMethod` | `base` | yes | yes | no | no | no | no |  | 9 |
-| `paymentProvider` | `base` | yes | yes | no | no | no | no |  | 12 |
+| `paymentProvider` | `base` | yes | yes | no | no | no | no |  | 15 |
 | `paymentTransaction` | `base` | yes | yes | no | no | no | no |  | 21 |
 
 ### `payment.paymentMethod`
@@ -17,19 +17,22 @@
 - `defaultProviderCode` `string` optional: Default provider code for this method
 - `displayName` `string` required
 - `enterpriseCode` `string` required: Authenticated enterprise owner of the payment record
-- `gatewayRequired` `boolean` required: Whether this method normally calls an external provider adapter
+- `gatewayRequired` `bool` required: Whether this method normally calls an external provider adapter
 - `methodCode` `string` required: Business payment method such as CARD, COD, WALLET, ADVANCE, or project-specific method
-- `providerRequired` `boolean` required: Whether this method requires a provider selection
+- `providerRequired` `bool` required: Whether this method requires a provider selection
 - `status` `string` required: Governed lifecycle status
 
 ### `payment.paymentProvider`
 
 - `adapterService` `string` required: Provider adapter service such as a CyberSource, Stripe, PayPal, deferred, or manual adapter
+- `businessEditable` `bool` optional: Whether business users may maintain this safe provider metadata through Axis
 - `configRef` `string` optional: Safe configuration reference, not raw credentials
+- `configurationSource` `string` optional: Whether this record came from module defaults, governed Axis configuration, or project customization
 - `connectorCode` `string` optional: Safe configured connector identity. Credentials remain in secret stores.
 - `displayName` `string` required
 - `enterpriseCode` `string` required: Authenticated enterprise owner of the payment record
 - `methodCodes` `array` required: Payment methods supported by this provider
+- `notes` `string` optional: Safe business notes. Do not store credentials, card data, or raw provider payloads.
 - `operations` `array` required: Operations supported by this provider such as AUTHORIZE, CAPTURE, REFUND, VOID, or DEFER
 - `paymentModes` `array` optional: Legacy alias for methodCodes
 - `policyService` `string` optional: Provider policy service for routing, retries, failover, and enterprise-specific behavior

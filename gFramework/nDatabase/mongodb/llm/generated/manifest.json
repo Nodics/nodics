@@ -14,12 +14,12 @@
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to mongodb"
   },
   "sourceFiles": 12,
-  "testFiles": 4,
+  "testFiles": 5,
   "dataFiles": 0,
-  "ownedFiles": 24,
-  "sourceFingerprint": "e4d9a1f4933e0ef89045777e635f2bc4ecd78293357520e915094b6af4fbf6f5",
+  "ownedFiles": 25,
+  "sourceFingerprint": "971362f5fd5c569967eccb7ae25161a30ca5f6926d01e62388ee0be65e0d863b",
   "documentation": {
-    "documented": 17,
+    "documented": 18,
     "partially-documented": 2,
     "undocumented": 1,
     "inventory-only": 4

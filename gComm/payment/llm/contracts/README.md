@@ -25,5 +25,12 @@ and payment transaction lifecycle.
   evidence, and Order coordinates the business process.
 - Provider selection, allowed operations, deferred/manual modes, and default
   provider mapping must be configuration-backed through `payment.paymentPolicy`.
+- Provider BackOffice lifecycle execution must use the secured Payment-owned
+  `POST /nodics/payment/v0/providers/lifecycle` route. Axis renders action
+  metadata and posts a safe selected-record identity/model only; Payment maps
+  action ids through an explicit service allow-list.
+- Axis and Payment must treat `workbenchPresentation.forbiddenFields` as a
+  redaction boundary. Forbidden provider fields are not displayed, not editable,
+  and not echoed into lifecycle execution payloads.
 - Customer modules customize by layering configuration or replacing Payment
   services. Do not fork Cart/Order payment group models to add gateway behavior.

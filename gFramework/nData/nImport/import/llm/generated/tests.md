@@ -30,6 +30,7 @@
 - `gFramework/nData/nImport/import/test/importRunSummaryContract.test.js`
 - `gFramework/nData/nImport/import/test/importTargetDispatchContract.test.js`
 - `gFramework/nData/nImport/import/test/importTenantPrecedence.test.js`
+- `gFramework/nData/nImport/import/test/initDataActivationEnvironmentGovernance.test.js`
 - `gFramework/nData/nImport/import/test/mandatoryInitDataImportContract.test.js`
 - `gFramework/nData/nImport/import/test/mediaImportDefinitionContract.test.js`
 - `gFramework/nData/nImport/import/test/mediaImportFinalizedValidationContract.test.js`

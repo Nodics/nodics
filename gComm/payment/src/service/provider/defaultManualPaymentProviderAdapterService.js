@@ -34,20 +34,26 @@ module.exports = {
     },
     /** Produces safe authorization evidence. */
     authorize: async function (request) {
-        let transaction = (request || {}).transaction || {};
-        let status = this.successStatus(transaction.operation);
-        return {
-            transactionCode: transaction.transactionCode,
-            idempotencyKey: transaction.idempotencyKey,
-            providerCode: transaction.providerCode,
-            operation: transaction.operation,
-            status: status,
-            providerTransactionRef: [String(status).toLowerCase(), transaction.transactionCode].join('::'),
-            completedAt: new Date(),
-        };
+        return this.localResult(request);
+    },
+    /** Produces safe capture evidence. */
+    capture: async function (request) {
+        return this.localResult(request);
+    },
+    /** Produces safe void evidence. */
+    void: async function (request) {
+        return this.localResult(request);
     },
     /** Produces safe refund evidence. */
     refund: async function (request) {
+        return this.localResult(request);
+    },
+    /** Produces safe reconciliation evidence. */
+    reconcile: async function (request) {
+        return this.localResult(request);
+    },
+    /** Builds safe local transaction evidence for the requested operation. */
+    localResult: function (request) {
         let transaction = (request || {}).transaction || {};
         let status = this.successStatus(transaction.operation);
         return {

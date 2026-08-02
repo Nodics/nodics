@@ -111,6 +111,97 @@ function scanDirectory(directory, suffix, callback) {
     });
 }
 
+function readJsonIfExists(filePath) {
+    if (!fs.existsSync(filePath)) {
+        return null;
+    }
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+}
+
+function countFiles(directory, suffix) {
+    let count = 0;
+    scanDirectory(directory, suffix, () => {
+        count += 1;
+    });
+    return count;
+}
+
+function normalizeModulePath(moduleObject) {
+    return path.relative(projectRootDir, moduleObject.path).split(path.sep).join('/');
+}
+
+function extractReadmeMaturity(modulePath) {
+    let readmePath = path.join(modulePath, 'README.md');
+    if (!fs.existsSync(readmePath)) {
+        return null;
+    }
+    let content = fs.readFileSync(readmePath, 'utf8');
+    let match = content.match(/\*\*Maturity:\s*([^*]+)\*\*/i);
+    return match ? match[1].trim() : null;
+}
+
+function inferMaturity(moduleObject, evidence) {
+    if (evidence.readmeMaturity) {
+        return evidence.readmeMaturity;
+    }
+    if (evidence.sourceFiles > 0 && evidence.testFiles > 0 && evidence.generatedTests > 0) {
+        return 'implemented with generated contract evidence';
+    }
+    if (evidence.sourceFiles > 0 && evidence.testFiles > 0) {
+        return 'implemented with focused test evidence';
+    }
+    if (evidence.sourceFiles > 0) {
+        return 'source-present; test evidence incomplete';
+    }
+    if ((moduleObject.nodics && moduleObject.nodics.runtimeModule) === false) {
+        return 'composition or metadata only';
+    }
+    return 'metadata-only; implementation evidence incomplete';
+}
+
+function collectDependencyPackages(ownedDependencies, modulePath) {
+    return Object.keys(ownedDependencies || {}).filter(packageName => {
+        let ownership = ownedDependencies[packageName] || {};
+        return (ownership.owners || []).some(ownerPath => ownerPath === modulePath || ownerPath.startsWith(modulePath + '/'));
+    }).map(packageName => ({
+        packageName: packageName,
+        type: ownedDependencies[packageName].type,
+        restricted: ownedDependencies[packageName].restricted === true
+    }));
+}
+
+function collectProviderCapabilityMaturitySummary(indexedModules, ownedDependencies) {
+    return indexedModules.map(moduleObject => {
+        let modulePath = normalizeModulePath(moduleObject);
+        let packageJson = readJsonIfExists(path.join(moduleObject.path, 'package.json')) || {};
+        let nodics = packageJson.nodics || {};
+        let dependencyPackages = collectDependencyPackages(ownedDependencies, modulePath);
+        let evidence = {
+            readme: fs.existsSync(path.join(moduleObject.path, 'README.md')),
+            readmeMaturity: extractReadmeMaturity(moduleObject.path),
+            sourceFiles: countFiles(path.join(moduleObject.path, 'src'), '.js'),
+            testFiles: countFiles(path.join(moduleObject.path, 'test'), '.test.js'),
+            generatedTests: countFiles(path.join(moduleObject.path, 'test', 'gen'), '.test.js'),
+            generatedContext: fs.existsSync(path.join(moduleObject.path, 'llm', 'generated', 'manifest.json')),
+            dependencyPackages: dependencyPackages
+        };
+        return {
+            moduleName: moduleObject.name,
+            modulePath: modulePath,
+            displayName: nodics.displayName || packageJson.description || moduleObject.name,
+            kind: nodics.kind || 'unknown',
+            activeRuntimeModule: nodics.runtimeModule !== false,
+            runtime: nodics.runtime || {},
+            owns: nodics.owns || [],
+            providerBacked: dependencyPackages.length > 0 ||
+                String(moduleObject.name).toLowerCase().includes('provider') ||
+                (nodics.owns || []).includes('provider'),
+            maturity: inferMaturity(moduleObject, evidence),
+            evidence: evidence
+        };
+    }).sort((left, right) => left.modulePath.localeCompare(right.modulePath));
+}
+
 function collectArtifactSummary() {
     let layerDefinitions = [
         { layer: 'service', folder: 'src/service', suffix: 'Service.js' },
@@ -189,6 +280,13 @@ async function run() {
     let routes = collectRouterSummary(rawRouters);
     let artifacts = collectArtifactSummary();
     let generatedFiles = collectGeneratedSummary();
+    let rootPackage = readJsonIfExists(path.join(projectRootDir, 'package.json')) || {};
+    let ownedDependencies = rootPackage.nodics && rootPackage.nodics.dependencyGovernance ?
+        rootPackage.nodics.dependencyGovernance.ownedDependencies || {} : {};
+    let providerCapabilityMaturity = collectProviderCapabilityMaturitySummary(
+        Array.from(NODICS.getIndexedModules().values()),
+        ownedDependencies
+    );
     let activeOutputModule = getActiveOutputModule();
     let report = {
         generatedAt: new Date().toISOString(),
@@ -214,12 +312,15 @@ async function run() {
             routeWarnings: routes.reduce((count, route) => count + route.warnings.length, 0),
             artifacts: artifacts.length,
             artifactOverrides: artifacts.filter(artifact => artifact.overridden).length,
-            generatedFiles: generatedFiles.length
+            generatedFiles: generatedFiles.length,
+            providerCapabilityMaturityEntries: providerCapabilityMaturity.length,
+            providerBackedCapabilities: providerCapabilityMaturity.filter(entry => entry.providerBacked).length
         },
         schemas: schemas,
         routes: routes,
         artifacts: artifacts,
-        generatedFiles: generatedFiles
+        generatedFiles: generatedFiles,
+        providerCapabilityMaturity: providerCapabilityMaturity
     };
 
     let outputDirectory = path.join(activeOutputModule.path, 'generated', 'governance');
@@ -230,6 +331,8 @@ async function run() {
     console.log('Generated governance report: ' + toRelative(outputPath));
     console.log('Schemas: ' + report.summary.schemas + ', Routes: ' + report.summary.routes + ', Artifacts: ' + report.summary.artifacts);
     console.log('Overrides - schema: ' + report.summary.schemaOverrides + ', route: ' + report.summary.routeOverrides + ', artifact: ' + report.summary.artifactOverrides);
+    console.log('Provider/capability maturity entries: ' + report.summary.providerCapabilityMaturityEntries +
+        ', provider-backed: ' + report.summary.providerBackedCapabilities);
 }
 
 /** Executes the governance report generator from the command line. */
@@ -241,6 +344,7 @@ function runCli() {
 }
 
 module.exports = {
+    collectProviderCapabilityMaturitySummary: collectProviderCapabilityMaturitySummary,
     run: run,
     runCli: runCli
 };

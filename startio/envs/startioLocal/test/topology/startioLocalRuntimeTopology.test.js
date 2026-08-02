@@ -217,11 +217,10 @@ async function runBackofficeHumanAuthenticationSmoke(profileServer = CONSOLIDATE
         path: '/v0/bootstrap',
         headers: bearerHeaders
     });
-    let insufficientPermission = await requestModuleEndpoint({
+    let administrativeInventory = await requestModuleEndpoint({
         server: backofficeServer,
         moduleName: 'backoffice',
         path: '/v0/registry/admin/modules',
-        expectedStatus: 403,
         headers: bearerHeaders
     });
     let serviceTokenResponse = await requestModuleEndpoint({
@@ -252,7 +251,7 @@ async function runBackofficeHumanAuthenticationSmoke(profileServer = CONSOLIDATE
         authorizedRegistry: registry.statusCode,
         authorizedBootstrap: bootstrap.statusCode,
         tenantPreserved: true,
-        insufficientPermission: insufficientPermission.statusCode,
+        administrativeInventory: administrativeInventory.statusCode,
         serviceTokenRejected: serviceTokenRejected.statusCode
     };
 }
@@ -439,7 +438,7 @@ function requestRegistrySnapshot(runtime) {
         let timeout = setTimeout(() => {
             runtime.child.removeListener('message', listener);
             reject(new Error(runtime.label + ' registry probe timed out'));
-        }, 3000);
+        }, REGISTRY_TIMEOUT_MS);
         function listener(message) {
             if (!message || message.type !== 'nodics-runtime-registry-response' || message.correlationId !== correlationId) return;
             clearTimeout(timeout);

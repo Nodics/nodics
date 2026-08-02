@@ -27,8 +27,21 @@ const path = require('path');
 const repositoryRoot = path.resolve(__dirname, '../../..');
 const rootPackage = require(path.join(repositoryRoot, 'package.json'));
 const rootDependencies = rootPackage.dependencies || {};
+const rootDevDependencies = rootPackage.devDependencies || {};
+const rootOptionalDependencies = rootPackage.optionalDependencies || {};
+const rootInstallDependencies = Object.assign({}, rootDependencies, rootDevDependencies, rootOptionalDependencies);
 const dependencyGovernance = rootPackage.nodics && rootPackage.nodics.dependencyGovernance;
 const ownedDependencies = dependencyGovernance && dependencyGovernance.ownedDependencies;
+const expectedDevDependencies = ['chai', 'mocha'];
+const expectedOptionalProviderDependencies = [
+    '@elastic/elasticsearch',
+    'hazelcast-client',
+    'kafkajs',
+    'node-cache',
+    'redis',
+    'stompit',
+    'winston-elasticsearch'
+];
 
 function normalizePath(filePath) {
     return filePath.split(path.sep).join('/');
@@ -83,7 +96,7 @@ function assertOwnerPackageExists(ownerPath) {
 
 assert(ownedDependencies, 'Root package.json must declare nodics.dependencyGovernance.ownedDependencies');
 
-Object.keys(rootDependencies).forEach(packageName => {
+Object.keys(rootInstallDependencies).forEach(packageName => {
     assert(ownedDependencies[packageName], 'Root dependency must declare owner metadata: ' + packageName);
     assert(Array.isArray(ownedDependencies[packageName].owners) && ownedDependencies[packageName].owners.length > 0,
         'Dependency must declare at least one owner module: ' + packageName);
@@ -92,10 +105,24 @@ Object.keys(rootDependencies).forEach(packageName => {
 });
 
 Object.keys(ownedDependencies).forEach(packageName => {
-    assert(rootDependencies[packageName], 'Owned dependency is not installed by the root package: ' + packageName);
+    assert(rootInstallDependencies[packageName], 'Owned dependency is not installed by the root package: ' + packageName);
     ownedDependencies[packageName].owners.forEach(ownerPath => {
         assertOwnerPackageExists(ownerPath);
     });
+});
+
+expectedDevDependencies.forEach(packageName => {
+    assert(rootDevDependencies[packageName], 'Test/tooling dependency must be declared as devDependency: ' + packageName);
+    assert(!rootDependencies[packageName], 'Test/tooling dependency must not be a runtime dependency: ' + packageName);
+    assert.strictEqual(ownedDependencies[packageName].type, 'test-framework',
+        'Dev dependency must remain classified as test-framework: ' + packageName);
+});
+
+expectedOptionalProviderDependencies.forEach(packageName => {
+    assert(rootOptionalDependencies[packageName], 'Provider dependency must be declared as optionalDependency: ' + packageName);
+    assert(!rootDependencies[packageName], 'Provider adapter must not be mandatory core runtime dependency: ' + packageName);
+    assert(ownedDependencies[packageName].type.includes('provider'),
+        'Optional dependency must remain classified as a provider adapter: ' + packageName);
 });
 
 collectPackageFiles().filter(packagePath => packagePath !== path.join(repositoryRoot, 'package.json')).forEach(packagePath => {
@@ -111,7 +138,7 @@ collectPackageFiles().filter(packagePath => packagePath !== path.join(repository
 const sourceFiles = [];
 walk(repositoryRoot, sourceFiles);
 
-Object.keys(rootDependencies).forEach(packageName => {
+Object.keys(rootInstallDependencies).forEach(packageName => {
     const hits = sourceFiles.filter(filePath => packageImports(filePath, packageName));
     assert(hits.length > 0, 'Root dependency is declared but not imported by repository source: ' + packageName);
 });

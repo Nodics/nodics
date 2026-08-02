@@ -1,6 +1,6 @@
 # Product AI Guidance
 
-Read `../AGENTS.md`, `contracts/product-p0-contract.md`,
+Read `../AGENTS.md`, `contracts/product-capability-contract.md`,
 `examples/extend-product-item-type.md`, and
 `examples/extend-product-classification.md`, and
 `examples/extend-product-variant-policy.md` before changing Product.

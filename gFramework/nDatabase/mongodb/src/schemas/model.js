@@ -20,6 +20,31 @@ function transactionOptions(input, schemaModel) {
     );
 }
 
+function isMongoUpdateOperatorPayload(model) {
+    return model && Object.keys(model).some(key => key.indexOf('$') === 0);
+}
+
+function buildUpdateDocument(model) {
+    if (!isMongoUpdateOperatorPayload(model)) return { $set: model };
+    return Object.keys(model).reduce((updateDocument, key) => {
+        if (key.indexOf('$') === 0) {
+            updateDocument[key] = key === '$set'
+                ? Object.assign({}, updateDocument[key] || {}, model[key] || {})
+                : model[key];
+        } else {
+            updateDocument.$set = Object.assign({}, updateDocument.$set || {}, { [key]: model[key] });
+        }
+        return updateDocument;
+    }, {});
+}
+
+function mergeUpdatedSnapshot(snapshot, model) {
+    if (!isMongoUpdateOperatorPayload(model)) return _.merge(snapshot, model);
+    if (model.$set) _.merge(snapshot, model.$set);
+    if (model.$unset) Object.keys(model.$unset).forEach(key => _.unset(snapshot, key));
+    return snapshot;
+}
+
 /**
  * @module gFramework/nDatabase/mongodb/src/schemas/model
  * @description Defines nDatabase schema metadata, model contracts, and generated capability settings.
@@ -162,14 +187,12 @@ module.exports = {
                             if (error) {
                                 reject(new CLASSES.NodicsError(error, null, 'ERR_MDL_00000'));
                             } else {
-                                this.updateMany(input.query, {
-                                    $set: input.model
-                                }, Object.assign({}, this.dataBase.getOptions().modelUpdateOptions || {
+                                this.updateMany(input.query, buildUpdateDocument(input.model), Object.assign({}, this.dataBase.getOptions().modelUpdateOptions || {
                                     upsert: false,
                                     returnNewDocument: true
                                 }, operationOptions)).then(success => {
                                     response.forEach(element => {
-                                        _.merge(element, input.model);
+                                        mergeUpdatedSnapshot(element, input.model);
                                     });
                                     success.models = response;
                                     resolve(success);
@@ -181,9 +204,7 @@ module.exports = {
                             }
                         });
                     } else {
-                        this.updateMany(input.query, {
-                            $set: input.model
-                        }, Object.assign({}, this.dataBase.getOptions().modelUpdateOptions || {
+                        this.updateMany(input.query, buildUpdateDocument(input.model), Object.assign({}, this.dataBase.getOptions().modelUpdateOptions || {
                             upsert: false,
                             returnNewDocument: true
                         }, operationOptions)).then(success => {

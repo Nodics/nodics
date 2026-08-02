@@ -353,26 +353,11 @@ module.exports = {
                                 });
                             }
                             let finalIndexes = _self.finalizeIndexes(schemaOptions.indexedFields, indexes, cleanOrphan);
-                            let allPromises = [];
-                            if (finalIndexes.create && finalIndexes.create.length > 0) {
-                                finalIndexes.create.forEach(indexData => {
-                                    allPromises.push(_self.createIndex(model, indexData));
-                                });
-                            }
-                            if (finalIndexes.drop && finalIndexes.drop.length > 0) {
-                                finalIndexes.drop.forEach(name => {
-                                    allPromises.push(_self.dropIndex(model, name));
-                                });
-                            }
-                            if (allPromises.length > 0) {
-                                SERVICE.DefaultNodicsPromiseService.all(allPromises).then(success => {
-                                    resolve(success);
-                                }).catch(error => {
-                                    reject(error);
-                                });
-                            } else {
-                                resolve({});
-                            }
+                            _self.executeIndexPlan(model, finalIndexes).then(success => {
+                                resolve(success);
+                            }).catch(error => {
+                                reject(error);
+                            });
                         });
                     } else {
                         let response = {};
@@ -401,22 +386,69 @@ module.exports = {
         let finalIndexes = {};
         if (indexedFields.length > 0) {
             finalIndexes.create = [];
+            finalIndexes.drop = [];
             for (let counter = 0; counter < indexedFields.length; counter++) {
                 let indexData = indexedFields[counter];
                 if (!_self.isIndexLive(indexData, indexes)) {
+                    let staleIndexName = _self.removeStaleIndex(indexData, indexes);
+                    if (staleIndexName && !finalIndexes.drop.includes(staleIndexName)) {
+                        finalIndexes.drop.push(staleIndexName);
+                    }
                     finalIndexes.create.push(indexData);
                 }
             }
         }
 
         if (cleanOrphan && indexes && indexes.length > 0) {
-            finalIndexes.drop = [];
+            finalIndexes.drop = finalIndexes.drop || [];
             for (let counter = 0; counter < indexes.length; counter++) {
-                finalIndexes.drop.push(indexes[counter].name);
+                if (!finalIndexes.drop.includes(indexes[counter].name)) {
+                    finalIndexes.drop.push(indexes[counter].name);
+                }
             }
         }
 
         return finalIndexes;
+    },
+
+    /**
+     * Executes a MongoDB index reconciliation plan.
+     *
+     * Stale indexes with the same generated name but different options must be
+     * dropped before replacement indexes are created; otherwise MongoDB rejects
+     * the create operation before Nodics can reconcile local or long-lived
+     * database state.
+     *
+     * @param {Object} model Generated MongoDB collection wrapper.
+     * @param {Object} finalIndexes Planned `drop` and `create` index work.
+     * @returns {Promise<Object|Array>} Resolved index mutation evidence.
+     */
+    executeIndexPlan: function (model, finalIndexes) {
+        let _self = this;
+        let dropPromises = [];
+        let createPromises = [];
+        finalIndexes = finalIndexes || {};
+        if (finalIndexes.drop && finalIndexes.drop.length > 0) {
+            finalIndexes.drop.forEach(name => {
+                dropPromises.push(_self.dropIndex(model, name));
+            });
+        }
+        if (finalIndexes.create && finalIndexes.create.length > 0) {
+            finalIndexes.create.forEach(indexData => {
+                createPromises.push(_self.createIndex(model, indexData));
+            });
+        }
+        if (dropPromises.length === 0 && createPromises.length === 0) {
+            return Promise.resolve({});
+        }
+        return SERVICE.DefaultNodicsPromiseService.all(dropPromises).then(dropResult => {
+            return SERVICE.DefaultNodicsPromiseService.all(createPromises).then(createResult => {
+                return {
+                    drop: dropResult,
+                    create: createResult
+                };
+            });
+        });
     },
 
     /**
@@ -441,6 +473,33 @@ module.exports = {
             }
         }
         return available;
+    },
+
+    /**
+     * Removes a live index that has the same declared key but incompatible
+     * options.
+     *
+     * This is different from orphan cleanup: the index is still schema-owned,
+     * but MongoDB cannot update index options in place. It must be dropped
+     * before the replacement index is created, even when broad orphan cleanup is
+     * disabled.
+     *
+     * @param {Object} indexData Desired MongoDB index configuration.
+     * @param {Object[]} liveIndex Mutable live index list.
+     * @returns {string|undefined} Stale live index name when a replacement drop is required.
+     */
+    removeStaleIndex: function (indexData, liveIndex) {
+        let key = indexData && indexData.fields ? indexData.fields : indexData;
+        if (liveIndex && liveIndex.length > 0) {
+            for (let counter = 0; counter < liveIndex.length; counter++) {
+                if (_.isEqual(liveIndex[counter].key, key)) {
+                    let staleIndexName = liveIndex[counter].name;
+                    liveIndex.splice(counter, 1);
+                    return staleIndexName;
+                }
+            }
+        }
+        return undefined;
     },
 
     /**

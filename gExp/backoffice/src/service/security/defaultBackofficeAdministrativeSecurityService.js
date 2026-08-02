@@ -51,7 +51,8 @@ module.exports = {
         let policy = this.getConfiguration();
         let auth = request && request.authData || {};
         let principal = this.getPrincipal(request);
-        if (policy.rejectServiceTokens !== false && auth.tokenType === 'service') {
+        if (policy.rejectServiceTokens !== false &&
+            (auth.tokenType === 'service' || auth.principalType === 'service' || Boolean(auth.serviceId))) {
             this._metrics.rejected++;
             this.audit(request, 'rejected', 'SERVICE_IDENTITY_FORBIDDEN', 'authorize');
             throw new CLASSES.NodicsError('ERR_AUTH_00003', 'Service identities cannot perform BackOffice administration');

@@ -46,5 +46,5 @@ const validator = require('../src/service/foundation/defaultProductClassificatio
     await assert.rejects(validator.prepareDefinitionUpdate({ tenant: 't1', authData: authData, query: { enterpriseCode: 'entA', catalogCode: 'retail', attributeCode: 'display-name' }, model: { localized: false } }), error => error.code === 'ERR_PRODUCT_00011');
     await assert.rejects(validator.prepareDefinitionUpdate({ tenant: 't1', authData: authData, query: { enterpriseCode: 'entA', catalogCode: 'retail', attributeCode: 'display-name' }, model: { status: 'RETIRED' } }), error => error.code === 'ERR_PRODUCT_00027');
     configuration.product.attribute.valueTypes.push('PROJECT_VALUE'); assert(configuration.product.attribute.valueTypes.includes('PROJECT_VALUE'));
-    console.log('Product P1.2 classification and typed-attribute contract validated');
+    console.log('Product classification and typed-attribute contract validated');
 })().catch(error => { console.error(error); process.exit(1); });

@@ -1,0 +1,13 @@
+{
+    "contractVersion": 1,
+    "module": "payment",
+    "dataType": "init",
+    "version": "1.0.0",
+    "description": "Payment init data",
+    "files": {
+        "data/defaultPaymentMethodData.js": "a9fc70b7ce4a1fdca8a09d692c936b429d431b7f3e579709b7368104951a91d0",
+        "data/defaultPaymentProviderData.js": "d3cf7e119bef71588487191825b27c647810dac87c748c897a252eee61babdd2",
+        "header/defaultPaymentMethodHeader.js": "6a9e60e7afd0f72fa106444ba58118a8796b81d26d364327d9eea3f6ddc706be",
+        "header/defaultPaymentProviderHeader.js": "1da05867fefaee0afd2e601018711a42bb869e933e42272a729e6ed9824487f0"
+    }
+}

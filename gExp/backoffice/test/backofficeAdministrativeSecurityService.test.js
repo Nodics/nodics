@@ -29,6 +29,10 @@ const request = (principal, idempotencyKey) => ({ tenant: 'tenant-a', authData: 
 
 async function run() {
     assert.throws(() => service.validate({ tenant: 'tenant-a', authData: { tokenType: 'service', tenant: 'tenant-a', principalId: 'runtime' } }));
+    assert.throws(() => service.validate({ tenant: 'tenant-a', authData: { tokenType: 'access', principalType: 'service', tenant: 'tenant-a', principalId: 'runtime' } }),
+        'service principals must be rejected even if token type has been normalized incorrectly');
+    assert.throws(() => service.validate({ tenant: 'tenant-a', authData: { tokenType: 'access', serviceId: 'runtime', tenant: 'tenant-a', principalId: 'runtime' } }),
+        'service identity markers must be rejected even when tokenType is missing or downgraded');
     assert.throws(() => service.validate({ tenant: 'tenant-a', authData: { tokenType: 'access', tenant: 'tenant-b', principalId: 'admin' } }));
     assert.throws(() => service.validate({ tenant: 'tenant-a', authData: { tokenType: 'access', tenant: 'tenant-a' } }));
     assert.strictEqual(service.getAuditContext(request('admin')).correlationId, 'correlation-1');

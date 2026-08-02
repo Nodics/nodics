@@ -54,5 +54,5 @@ const validator = require('../src/service/foundation/defaultProductVariantServic
     await assert.rejects(validator.prepareAxisUpdate({ tenant: 't1', authData, query: { enterpriseCode: 'entA', catalogCode: 'retail', axisCode: 'shirt-color' }, model: { status: 'RETIRED' } }), error => error.code === 'ERR_PRODUCT_00029');
     await assert.rejects(validator.prepareAssignmentUpdate({ tenant: 't1', authData, query: { enterpriseCode: 'entA', catalogCode: 'retail', assignmentCode: 'shirt-red-m' }, model: { axisValues: [] } }), error => error.code === 'ERR_PRODUCT_00011');
     configuration.product.variant.variantItemTypes.push('PROJECT_VARIANT'); assert(configuration.product.variant.variantItemTypes.includes('PROJECT_VARIANT'));
-    console.log('Product P1.3 variant-axis and combination contract validated');
+    console.log('Product variant-axis and combination contract validated');
 })().catch(error => { console.error(error); process.exit(1); });

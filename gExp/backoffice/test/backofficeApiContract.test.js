@@ -60,8 +60,8 @@ assert.strictEqual(
   false,
 );
 assert.strictEqual(
-  contracts.documentationSource.properties.dashboard.properties.coverage.properties
-    .score.maximum,
+  contracts.documentationSource.properties.dashboard.properties.coverage
+    .properties.score.maximum,
   100,
 );
 assert.deepStrictEqual(contracts.axisPolicyUpdate.required, [
@@ -115,12 +115,18 @@ assert(
   "navigation must expose bounded schema-workbench targets for backend-driven Axis routes",
 );
 assert(
-  contracts.backofficeMetadata.properties.navigation.items.properties.detailPanels,
+  contracts.backofficeMetadata.properties.navigation.items.properties
+    .detailPanels,
   "navigation must expose bounded reusable schema detail panel metadata for Axis workspaces",
 );
 assert(
   contracts.backofficeMetadata.properties.navigation.items.properties.help,
   "navigation must expose bounded help metadata for backend-driven Axis workspace context",
+);
+assert(
+  contracts.backofficeMetadata.properties.navigation.items.properties
+    .lifecycleActions,
+  "navigation must expose bounded lifecycle action metadata for Axis workspaces",
 );
 assert.strictEqual(
   contracts.navigationWorkbenchTarget.additionalProperties,
@@ -233,6 +239,21 @@ assert(
         featureState: "ACTIVE",
         badgeProvider: { moduleName: "cms", operationId: "cms.pending.count" },
         workbenchTarget: { moduleName: "cms", schemaName: "cmsPage" },
+        workbenchPresentation: {
+          defaultColumns: ["code", "name", "status"],
+          hiddenFields: ["internalNotes"],
+          editableFields: ["name", "status"],
+          readonlyFields: ["created", "updated"],
+          forbiddenFields: ["secret", "password", "rawPayload"],
+          quickFilters: [
+            {
+              id: "active",
+              label: "Active",
+              field: "status",
+              value: "ACTIVE",
+            },
+          ],
+        },
         detailPanels: [
           {
             id: "slots",
@@ -252,6 +273,18 @@ assert(
             "/docs/capabilities/content-publishing/wcms-authoring-model",
           documentationFragment: "pages",
         },
+        lifecycleActions: [
+          {
+            id: "activate-record",
+            label: "Activate",
+            intent: "ACTIVATE",
+            permission: "cms.backoffice.manage",
+            ownerModule: "cms",
+            handlerAction: "DefaultCmsLifecycleService.activate",
+            operationRoute: "/records/lifecycle",
+            targetStatuses: ["DRAFT"],
+          },
+        ],
       },
     ],
   }),
@@ -339,6 +372,26 @@ assert.strictEqual(
   }),
   false,
   "unsupported workbench target modes must fail registration",
+);
+assert.strictEqual(
+  service.validateBackofficeMetadata({
+    navigation: [
+      {
+        id: "unsafe-action",
+        label: "Unsafe action",
+        lifecycleActions: [
+          {
+            id: "unsafe-action",
+            label: "Unsafe",
+            intent: "EXECUTE",
+            operationRoute: "https://evil.example/execute",
+          },
+        ],
+      },
+    ],
+  }),
+  false,
+  "external lifecycle operation routes must fail registration",
 );
 assert.strictEqual(
   service.validateBackofficeMetadata({

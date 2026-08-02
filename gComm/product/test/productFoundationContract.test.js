@@ -11,7 +11,7 @@
 
 /**
  * @module product/test/ProductFoundationContract
- * @description Proves Product P0 schemas, enterprise isolation, derived identity, type policy, Catalog and Units references, lifecycle, and retained history.
+ * @description Proves Product foundation schemas, enterprise isolation, derived identity, type policy, Catalog and Units references, lifecycle, and retained history.
  * @layer test
  * @owner product
  * @override Projects may extend configured item and identifier types while preserving identity, authority, and lifecycle contracts.
@@ -35,5 +35,5 @@ SERVICE.DefaultProductFoundationService = require('../src/service/foundation/def
     let identifier = { tenant: 't1', authData: authData, model: { catalogCode: 'retail', identifierCode: 'phone-gtin', itemType: 'SKU', itemCode: 'phone', identifierType: 'GTIN', identifierValue: '00012345678905' } };
     await SERVICE.DefaultProductFoundationService.prepareIdentifier(identifier); assert.strictEqual(identifier.model.code, 'entA::identifier::retail::phone-gtin');
     await assert.rejects(SERVICE.DefaultProductFoundationService.rejectHardDelete(), error => error.code === 'ERR_PRODUCT_00011');
-    console.log('Product P0 foundation contract validated');
+    console.log('Product foundation contract validated');
 })().catch(error => { console.error(error); process.exit(1); });

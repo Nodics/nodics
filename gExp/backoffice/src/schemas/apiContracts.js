@@ -362,6 +362,84 @@ const navigationWorkbenchTarget = {
     mode: { enum: ["create"] },
   },
 };
+const navigationWorkbenchQuickFilter = {
+  type: "object",
+  additionalProperties: false,
+  required: ["id", "label", "field"],
+  properties: {
+    id: { type: "string", minLength: 1, maxLength: 128 },
+    label: { type: "string", minLength: 1, maxLength: 128 },
+    field: { type: "string", minLength: 1, maxLength: 128 },
+    value: { type: "string", minLength: 1, maxLength: 128 },
+    values: {
+      type: "array",
+      uniqueItems: true,
+      maxItems: 32,
+      items: { type: "string", minLength: 1, maxLength: 128 },
+    },
+    order: { type: "integer" },
+  },
+};
+const navigationWorkbenchRecoveryAction = {
+  type: "object",
+  additionalProperties: false,
+  required: ["id", "label", "intent"],
+  properties: {
+    id: { type: "string", minLength: 1, maxLength: 128 },
+    label: { type: "string", minLength: 1, maxLength: 128 },
+    intent: { type: "string", minLength: 1, maxLength: 128 },
+    route: { type: "string", minLength: 1, maxLength: 512, pattern: "^/(?!/)" },
+    order: { type: "integer" },
+  },
+};
+const navigationWorkbenchPresentation = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    defaultColumns: {
+      type: "array",
+      uniqueItems: true,
+      maxItems: 32,
+      items: { type: "string", minLength: 1, maxLength: 256 },
+    },
+    hiddenFields: {
+      type: "array",
+      uniqueItems: true,
+      maxItems: 64,
+      items: { type: "string", minLength: 1, maxLength: 256 },
+    },
+    editableFields: {
+      type: "array",
+      uniqueItems: true,
+      maxItems: 64,
+      items: { type: "string", minLength: 1, maxLength: 256 },
+    },
+    readonlyFields: {
+      type: "array",
+      uniqueItems: true,
+      maxItems: 64,
+      items: { type: "string", minLength: 1, maxLength: 256 },
+    },
+    forbiddenFields: {
+      type: "array",
+      uniqueItems: true,
+      maxItems: 64,
+      items: { type: "string", minLength: 1, maxLength: 256 },
+    },
+    quickFilters: {
+      type: "array",
+      uniqueItems: true,
+      maxItems: 24,
+      items: navigationWorkbenchQuickFilter,
+    },
+    recoveryActions: {
+      type: "array",
+      uniqueItems: true,
+      maxItems: 16,
+      items: navigationWorkbenchRecoveryAction,
+    },
+  },
+};
 const navigationDetailPanelRelation = {
   type: "object",
   additionalProperties: false,
@@ -400,6 +478,34 @@ const navigationHelp = {
       type: "string",
       pattern: "^[A-Za-z0-9._:-]{1,128}$",
     },
+  },
+};
+const navigationLifecycleAction = {
+  type: "object",
+  additionalProperties: false,
+  required: ["id", "label", "intent"],
+  properties: {
+    id: { type: "string", minLength: 1, maxLength: 128 },
+    label: { type: "string", minLength: 1, maxLength: 128 },
+    intent: { type: "string", minLength: 1, maxLength: 64 },
+    permission: { type: "string", minLength: 1, maxLength: 128 },
+    summary: { type: "string", minLength: 1, maxLength: 320 },
+    targetStatuses: {
+      type: "array",
+      uniqueItems: true,
+      maxItems: 32,
+      items: { type: "string", minLength: 1, maxLength: 256 },
+    },
+    featureState: { enum: ["ACTIVE", "PREVIEW", "DISABLED", "HIDDEN"] },
+    ownerModule: moduleName,
+    handlerAction: { type: "string", minLength: 1, maxLength: 128 },
+    operationRoute: {
+      type: "string",
+      minLength: 1,
+      maxLength: 512,
+      pattern: "^/(?!/)",
+    },
+    order: { type: "integer" },
   },
 };
 const backofficeMetadata = {
@@ -455,6 +561,7 @@ const backofficeMetadata = {
           featureState: { enum: ["ACTIVE", "PREVIEW", "DISABLED", "HIDDEN"] },
           badgeProvider: navigationBadgeProvider,
           workbenchTarget: navigationWorkbenchTarget,
+          workbenchPresentation: navigationWorkbenchPresentation,
           detailPanels: {
             type: "array",
             uniqueItems: true,
@@ -462,6 +569,12 @@ const backofficeMetadata = {
             items: navigationDetailPanel,
           },
           help: navigationHelp,
+          lifecycleActions: {
+            type: "array",
+            uniqueItems: true,
+            maxItems: 24,
+            items: navigationLifecycleAction,
+          },
           requiredPermissions: {
             type: "array",
             uniqueItems: true,

@@ -258,6 +258,7 @@ module.exports = {
             tooling: [
                 { node: 'gFramework/nTooling/test/toolingCommandOverride.test.js' },
                 { node: 'gFramework/nTooling/test/repositoryToolingBoundary.test.js' },
+                { node: 'gFramework/nTooling/test/repositoryGovernanceDocumentsContract.test.js' },
                 { node: 'gFramework/nTooling/test/documentationNavigationQuality.test.js' },
                 { node: 'gFramework/nTooling/test/dependencyRuntimeContract.test.js' },
                 { node: 'gFramework/nTooling/test/dependencyOwnershipContract.test.js' },
@@ -321,10 +322,10 @@ module.exports = {
             ],
             headers: [
                 { node: 'gFramework/nAuth/test/authSecurityContract.test.js' },
-                { node: 'gFramework/nAuth/test/integration/authP2SharedCacheContract.test.js' },
-                { node: 'gFramework/nAuth/test/integration/authP2IdentityIsolationContract.test.js' },
-                { node: 'gCore/profile/test/identityGovernanceP2Integration.test.js' },
-                { node: 'gFramework/nAuth/test/integration/authP2ModularAuthorizationContract.test.js' },
+                { node: 'gFramework/nAuth/test/integration/authDistributedSharedCacheContract.test.js' },
+                { node: 'gFramework/nAuth/test/integration/authIdentityIsolationContract.test.js' },
+                { node: 'gCore/profile/test/identityGovernanceMigrationIntegration.test.js' },
+                { node: 'gFramework/nAuth/test/integration/authModularAuthorizationContract.test.js' },
                 { node: 'gFramework/nService/test/authTokenInvalidationService.test.js' },
                 { node: 'gFramework/nRouter/test/authHeaderNormalization.test.js' },
                 { node: 'gFramework/nRouter/test/routeActionAuthorization.test.js' },
@@ -333,21 +334,22 @@ module.exports = {
                 { node: 'gFramework/nRouter/test/requestPipelineResponseContract.test.js' },
                 { node: 'gFramework/nRouter/test/jsonResponseStatusResolution.test.js' }
             ],
-            'auth-p2': [
-                { node: 'gFramework/nAuth/test/integration/authP2SharedCacheContract.test.js' },
-                { node: 'gFramework/nAuth/test/integration/authP2IdentityIsolationContract.test.js' },
-                { node: 'gCore/profile/test/identityGovernanceP2Integration.test.js' },
-                { node: 'gFramework/nAuth/test/integration/authP2ModularAuthorizationContract.test.js' },
-                { node: 'gFramework/nAuth/test/integration/authP2RedisLive.test.js' }
+            'auth-distributed': [
+                { node: 'gFramework/nAuth/test/integration/authDistributedSharedCacheContract.test.js' },
+                { node: 'gFramework/nAuth/test/integration/authIdentityIsolationContract.test.js' },
+                { node: 'gCore/profile/test/identityGovernanceMigrationIntegration.test.js' },
+                { node: 'gFramework/nAuth/test/integration/authModularAuthorizationContract.test.js' },
+                { node: 'gFramework/nAuth/test/integration/authRedisLiveIntegration.test.js' }
             ],
-            'auth-p2-redis': [
-                { node: 'gFramework/nAuth/test/integration/authP2RedisLive.test.js' }
+            'auth-redis-live': [
+                { node: 'gFramework/nAuth/test/integration/authRedisLiveIntegration.test.js' }
             ],
             'route-contracts': [
                 { tool: ['test:route-contracts'] },
                 { node: 'gFramework/nRouter/test/openapiContractGeneration.test.js' }
             ],
             generated: [
+                { node: 'gFramework/nTest/test/generatedTestRunnerLifecycleContract.test.js' },
                 { node: 'gFramework/nTest/test/schemaTestGeneratorEffectiveSchema.test.js' },
                 { node: 'gFramework/nTest/test/schemaTestGeneratorCrudFixtureInheritance.test.js' },
                 { node: 'gFramework/nTest/test/schemaTestGeneratorEffectiveOverrideRemoval.test.js' },
@@ -392,7 +394,7 @@ module.exports = {
                 { node: 'gCore/profile/test/mandatoryIdentityBootstrapService.test.js' },
                 { node: 'gCore/profile/test/userGroupPermissionResolution.test.js' },
                 { node: 'gCore/profile/test/identityGovernanceContract.test.js' },
-                { node: 'gCore/profile/test/identityGovernanceP1Contract.test.js' },
+                { node: 'gCore/profile/test/identityGovernanceMigrationContract.test.js' },
                 { node: 'gCore/profile/test/profileAuthenticationServiceContract.test.js' },
                 { node: 'gCore/profile/test/profileRuntimeBoundInternalToken.test.js' },
                 { tool: ['test:capability-behavior', '--area=profile'] }
@@ -469,6 +471,7 @@ module.exports = {
                 { node: 'gFramework/nDynamo/test/runtimePropertyConfigurationGovernance.test.js' },
                 { node: 'gFramework/nDynamo/test/runtimeConfigurationGovernanceSummaryService.test.js' },
                 { node: 'gFramework/nDynamo/test/runtimeConfigurationGovernanceCleanupService.test.js' },
+                { node: 'gFramework/nDynamo/test/governanceReportMaturityMatrix.test.js' },
                 { node: 'gFramework/nDynamo/test/schemaAccessPolicyContractService.test.js' },
                 { node: 'gFramework/nDynamo/test/schemaAccessPolicyResolverService.test.js' },
                 { node: 'gFramework/nDynamo/test/schemaAccessPolicyGovernanceLifecycle.test.js' }
@@ -551,6 +554,7 @@ module.exports = {
                 handler: 'src/service/command/defaultReleaseCheckCommandService.js',
                 steps: [
                     { npm: ['ci'] },
+                    { npm: ['audit', '--omit=dev'] },
                     { npmRun: ['clean'] },
                     { npmRun: ['build'] },
                     { npmRun: ['llm:validate'] },

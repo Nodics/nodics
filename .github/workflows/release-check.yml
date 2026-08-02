@@ -1,0 +1,73 @@
+name: Nodics Release Check
+
+on:
+  push:
+    branches:
+      - development
+      - master
+  pull_request:
+    branches:
+      - development
+      - master
+  workflow_dispatch:
+    inputs:
+      full:
+        description: Run the full Nodics release gate, including test:full.
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+permissions:
+  contents: read
+
+jobs:
+  release-check:
+    name: Release gate / Node ${{ matrix.node-version }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.full != 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - 22.x
+          - 24.x
+    steps:
+      - name: Checkout Nodics
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Print governed release gate
+        run: npm run release:check
+
+      - name: Execute governed release gate
+        run: npm run release:check -- --execute
+
+  full-release-check:
+    name: Full release gate / Node 24
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.full == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout Nodics
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          cache: npm
+
+      - name: Print governed release gate
+        run: npm run release:check -- --full
+
+      - name: Execute full governed release gate
+        run: npm run release:check -- --execute --full

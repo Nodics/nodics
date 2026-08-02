@@ -29,6 +29,7 @@ const {
 const modules = scanModules();
 const globalContextPath = path.join(__dirname, '..', '..', '..', 'gSetup', 'llm', 'README.md');
 const globalContext = fs.readFileSync(globalContextPath, 'utf8');
+const fileInventoryRowPattern = /^\| `([^`]+)` \| `[^`]+` \| `[^`]+` \|/;
 
 assert(globalContext.includes('tool-neutral'), 'Global context must explicitly remain tool-neutral');
 assert(globalContext.includes('Do not make AI guidance specific to one AI vendor.'),
@@ -64,6 +65,13 @@ modules.forEach(module => {
     assert.strictEqual(summaryTotal, ownedFiles.length, 'Documentation summary does not cover every owned file: ' + module.relativePath);
 
     const filesContext = fs.readFileSync(path.join(generatedDirectory, 'module-context.md'), 'utf8');
+    const generatedFileRows = filesContext.split('\n')
+        .map(line => line.match(fileInventoryRowPattern))
+        .filter(Boolean)
+        .map(match => match[1])
+        .sort();
+    assert.deepStrictEqual(generatedFileRows, ownedFiles.slice().sort(),
+        'Generated file inventory must exactly match existing module-owned files: ' + module.relativePath);
     ownedFiles.forEach(relativeFile => {
         const row = filesContext.split('\n').find(line => line.startsWith('| `' + relativeFile + '` |'));
         assert(row, 'Missing file context entry for ' + relativeFile);

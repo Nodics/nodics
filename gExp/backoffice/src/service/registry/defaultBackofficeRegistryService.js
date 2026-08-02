@@ -363,7 +363,7 @@ module.exports = {
     entries.forEach((entry) => {
       let instance = entry.value;
       if (
-        !instance.clientCallable ||
+        !this.isClientDiscoverable(instance) ||
         !this.isModuleAuthorized(
           instance.moduleName,
           request && request.authData,
@@ -375,6 +375,19 @@ module.exports = {
       modules[instance.moduleName].push(this.projectClientSafe(instance));
     });
     return { code: "SUC_BOF_00002", data: { modules: modules } };
+  },
+
+  /** Determines whether Axis may discover a module lease without treating it as a direct HTTP endpoint. */
+  isClientDiscoverable: function (instance) {
+    if (!instance) return false;
+    if (instance.clientCallable === true) return true;
+    let metadata = instance.backoffice || {};
+    return (
+      metadata.enabled !== false &&
+      (Array.isArray(metadata.navigation) ||
+        Array.isArray(metadata.documentation) ||
+        Boolean(metadata.capabilityId))
+    );
   },
 
   /** Determines whether the caller may discover a configured module capability. */

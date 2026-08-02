@@ -75,8 +75,8 @@ function runCli() {
 
     if (tests.length === 0) {
         const typeText = selectedType ? ` for type ${selectedType}` : '';
-        console.log(`No generated tests found${typeText}. Run npm run build to generate them.`);
-        process.exit(0);
+        console.error(`No generated tests found${typeText}. Run npm run build to generate them.`);
+        process.exit(1);
     }
 
     tests.forEach((testPath) => {

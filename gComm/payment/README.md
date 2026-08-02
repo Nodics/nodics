@@ -25,6 +25,42 @@ Do not add provider secrets to schemas or properties.
 Checkout placement should call Payment through a Workflow action. Order remains
 the placement authority, while Payment remains the payment authority.
 
+## Payment module hierarchy
+
+Payment is the authority. Provider modules are adapters.
+
+```text
+gComm/payment
+  Owns methods, provider metadata, transaction evidence, gateway policy,
+  authorization, capture, void, refund, reconciliation, and BackOffice
+  Payment Operations metadata.
+
+gComm/paymentProviders
+  Owns the provider-family adapter contract and conformance tests.
+
+gComm/paymentProviders/stripeProvider
+gComm/paymentProviders/paypalProvider
+gComm/paymentProviders/cyberSourceProvider
+gComm/paymentProviders/visaProvider
+  Own provider-specific protocol translation and mocked public-contract
+  behavior only.
+```
+
+The built-in provider modules are deliberately mocked. They follow public
+provider concepts such as Stripe PaymentIntents, PayPal authorizations and
+captures, CyberSource authorization/capture/refund/reversal, and Visa
+product-specific network operations, but they do not make live HTTP calls.
+
+This gives developers a working adapter contract without requiring credentials
+or unsafe test traffic. Production provider integration should be added by a
+customer/project module that supplies real transport, guarded secret references,
+retry/timeout/failover policy, webhook verification, reconciliation lookup, and
+live sandbox evidence.
+
+Do not put provider-specific execution directly in `gComm/payment` when a
+provider module can register an adapter. Do not put provider execution in Cart,
+Order, Axis, or checkout UI code.
+
 ## Checkout authorization
 
 `DefaultPaymentCheckoutAuthorizationService` accepts produced order payment
@@ -80,3 +116,227 @@ put refund logic in Order, Fulfillment, Cart, or frontend code. A full
 return/refund business process should be coordinated through Workflow so
 approvals, received goods, refund calculation, provider calls, notifications,
 and compensation remain recoverable.
+
+## Payment methods versus payment providers
+
+A payment method is the business option offered during checkout. Examples are
+`CARD`, `COD`, `WALLET`, `ADVANCE`, `OFFLINE`, or `ACCOUNT_CREDIT`.
+
+A payment provider is the technical or operational authority that can execute a
+method. Examples are CyberSource, Stripe, PayPal, a bank transfer process, a
+wallet provider, a manual finance team, or a cash-on-delivery carrier process.
+
+Keep those layers separate:
+
+- methods answer “what can the customer choose?”;
+- providers answer “who or what executes this choice?”;
+- provider policy answers “is this provider allowed for this tenant,
+  enterprise, country, currency, channel, amount, customer, risk context, and
+  operation?”;
+- provider adapters answer “how does Nodics call or simulate that provider
+  safely?”.
+
+The default implementation intentionally includes safe local/manual/deferred
+adapters. Real PSPs must be added as customer/project provider adapters or
+later provider modules. Do not put credentials, card numbers, CVV, raw gateway
+payloads, or provider secrets in schemas, properties, transaction records, or
+Axis.
+
+## How to add a payment method
+
+Add or override method policy through a later customer module by layering
+`payment.paymentPolicy.methods`.
+
+For example, a customer module can add `PAYPAL` without changing framework
+source:
+
+```js
+module.exports = {
+  payment: {
+    paymentPolicy: {
+      methods: {
+        PAYPAL: {
+          methodCode: "PAYPAL",
+          displayName: "PayPal",
+          defaultOperation: "AUTHORIZE",
+          providerRequired: true,
+          gatewayRequired: true,
+          defaultProviderCode: "paypalProvider",
+          allowedProviderTypes: ["WALLET", "PROJECT_PROVIDER"],
+        },
+      },
+      defaultProviderByPaymentMode: {
+        PAYPAL: "paypalProvider",
+      },
+    },
+  },
+};
+```
+
+If the method has enterprise-specific lifecycle or backoffice management needs,
+create or update `paymentMethod` records through Payment-owned services. Do not
+add a flat `paymentMethod` field to Cart or Order as a shortcut; Cart and Order
+should keep payment group/allocation evidence and delegate payment behavior to
+Payment.
+
+## How to add a payment provider
+
+Add provider metadata through layered `payment.paymentPolicy.providers` or
+through governed `paymentProvider` records when the backend flow requires
+editable provider lifecycle.
+
+Axis Payment Operations manages the governed `paymentProvider` records. Those
+records are the business-user configuration layer for provider availability,
+display name, supported methods, supported operations, adapter reference, policy
+service, connector code, status, and safe notes. The runtime provider registry
+prefers a matching active governed record for the request enterprise, then falls
+back to module configuration.
+
+This split is deliberate:
+
+- provider modules supply reusable adapter defaults;
+- Payment owns the governed provider schema and runtime selection;
+- Axis edits only safe provider metadata;
+- credentials, API keys, access tokens, webhooks, PAN, CVV, and raw gateway
+  payloads remain in the secret or connector authority.
+
+## Provider lifecycle in Axis
+
+Payment Provider records are intentionally safe enough for Axis, but activation
+still goes through Payment-owned lifecycle checks:
+
+1. Create or edit a `paymentProvider` record with safe metadata only.
+2. Validate the provider. Payment checks required fields, adapter availability,
+   connector/config references, status, and unsafe-field governance.
+3. Test the provider. Payment runs a safe normalized provider operation such as
+   reconciliation or authorization evidence generation. Mock provider modules
+   return deterministic evidence; customer modules may perform live sandbox
+   probes through their connector layer.
+4. Activate or suspend the provider. Runtime selection excludes draft,
+   suspended, inactive, and retired providers.
+5. Request connector rotation when credentials need to change. Payment returns a
+   safe rotation request descriptor and never reads or writes the credential
+   value itself.
+
+`DefaultPaymentProviderLifecycleService` owns this flow. Axis should invoke the
+backend-owned lifecycle action metadata rather than duplicating provider logic in
+the client.
+
+The executable BackOffice lifecycle endpoint is:
+
+```text
+POST /nodics/payment/v0/providers/lifecycle
+```
+
+Axis discovers this route from `backofficeCapabilities.payment.navigation`
+metadata. Each lifecycle action declares an `id`, label, intent, permission, and
+`operationRoute`. The client posts only the selected safe record identity and the
+safe record model:
+
+```json
+{
+  "actionId": "validate-payment-provider",
+  "identity": { "providerCode": "stripeProvider" },
+  "model": {
+    "providerCode": "stripeProvider",
+    "displayName": "Stripe Provider",
+    "providerType": "CARD_GATEWAY"
+  }
+}
+```
+
+The Payment router, controller, facade, and
+`DefaultPaymentProviderLifecycleService.execute` form the only supported
+execution path. The service uses an explicit allow-list to map action ids to
+safe handlers such as `validateProvider`, `testProvider`, `activateProvider`,
+`suspendProvider`, and `requestConnectorRotation`. Adding an Axis button without
+adding a Payment-owned allow-list handler must not execute anything.
+
+Axis must hide and redact `workbenchPresentation.forbiddenFields` before
+lifecycle execution. This prevents unsafe or customer-specific secrets from
+being echoed back to Payment if a backend response accidentally contains them.
+Payment still performs the final validation and must reject unsafe provider
+fields server-side.
+
+`DefaultPaymentProviderConnectorPolicyService` owns safe connector-reference
+validation. It validates `connectorCode` and `configRef` only. Real credential
+storage, rotation, webhook secrets, PSP certificates, and API tokens belong to a
+customer connector or secret authority.
+
+For example:
+
+```js
+module.exports = {
+  payment: {
+    paymentPolicy: {
+      providers: {
+        paypalProvider: {
+          providerCode: "paypalProvider",
+          providerType: "PROJECT_PROVIDER",
+          displayName: "PayPal provider",
+          methodCodes: ["PAYPAL"],
+          operations: ["AUTHORIZE", "CAPTURE", "REFUND", "VOID"],
+          adapterService: "CustomerPayPalPaymentProviderAdapterService",
+          policyService: "CustomerPaymentProviderPolicyService",
+          status: "ACTIVE",
+        },
+      },
+    },
+  },
+};
+```
+
+Then add `CustomerPayPalPaymentProviderAdapterService` in the customer module.
+The adapter should implement safe operation methods such as `authorize`,
+`capture`, `void`, `refund`, and `reconcile` as required by the provider. It
+must return normalized payment evidence only:
+
+- transaction code;
+- idempotency key;
+- provider code;
+- operation;
+- status;
+- safe provider transaction reference;
+- safe failure code/message;
+- retry/reconciliation metadata when applicable.
+
+Secrets belong in the customer secret store or secure connector configuration.
+Provider metadata may store a `configRef` or `connectorCode`, never raw
+credentials.
+
+For reusable provider products, prefer a provider child module under the
+payment-provider hierarchy rather than adding large provider-specific logic to
+Payment itself:
+
+```text
+myProject/paymentProviders/acmePayProvider
+  config/properties.js
+  src/service/defaultAcmePayPaymentProviderAdapterService.js
+  test/acmePayPaymentProviderAdapterContract.test.js
+```
+
+Register the adapter during module startup with
+`DefaultPaymentProviderGatewayService.register('acmePayProvider', adapter)`.
+The provider remains selectable only through Payment-owned provider policy and
+Payment-owned transaction evidence.
+
+## Provider policy and operation governance
+
+`DefaultPaymentProviderPolicyService` builds the effective execution policy from
+method, provider, operation, and request context. Customer modules replace or
+extend this service when eligibility depends on:
+
+- tenant or enterprise;
+- country, currency, or channel;
+- amount thresholds;
+- customer type or risk score;
+- provider health;
+- retry/failover rules;
+- payment operation such as `AUTHORIZE`, `CAPTURE`, `VOID`, `REFUND`, or
+  `RECONCILE`.
+
+`DefaultPaymentProviderGatewayService` is the single provider execution boundary
+used by checkout authorization and refunds. Keep idempotency, timeout, retry,
+safe failure mapping, and reconciliation behavior behind Payment-owned
+services/adapters. Axis should only show actions that backend Payment metadata
+and permissions expose.

@@ -33,9 +33,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 36 |
-| Test files | 42 |
+| Test files | 43 |
 | Data files | 0 |
-| All module-owned files | 67 |
+| All module-owned files | 68 |
 | Local schema definitions | 7 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 43 |
+| Documented | 44 |
 | Partially documented | 4 |
 | Undocumented | 16 |
 | Inventory only | 4 |
@@ -140,6 +140,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nDynamo/test/dynamoRouteContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/test/dynamoRuntimeAdminSurfaceContract.test.js` | `test` | `documented` | 0/0 | Verifies nDynamo exposes only the intended runtime administration API surfaces and keeps activation request/log governance records internal to services. |  |
 | `gFramework/nDynamo/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nDynamo test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gFramework/nDynamo/test/governanceReportMaturityMatrix.test.js` | `test` | `documented` | 0/0 | Validates source-derived provider and capability maturity evidence emitted by the governance report generator. |  |
 | `gFramework/nDynamo/test/routerConfigurationGovernance.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/test/runtimeConfigurationActivationAudit.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nDynamo/test/runtimeConfigurationActivationPolicyEnforcement.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

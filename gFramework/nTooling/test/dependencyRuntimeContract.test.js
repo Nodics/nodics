@@ -28,11 +28,30 @@ const packageJson = require(path.join(repositoryRoot, 'package.json'));
 const lockfilePath = path.join(repositoryRoot, 'package-lock.json');
 const nvmrcPath = path.join(repositoryRoot, '.nvmrc');
 const governance = packageJson.nodics && packageJson.nodics.dependencyGovernance;
+const runtimeDependencies = packageJson.dependencies || {};
+const devDependencies = packageJson.devDependencies || {};
+const optionalDependencies = packageJson.optionalDependencies || {};
 
 assert(packageJson.engines, 'Root package.json must declare Node.js and npm engines');
 assert.strictEqual(packageJson.engines.node, '>=22 <27', 'Node engine range must cover the supported/forward validation matrix');
 assert.strictEqual(packageJson.engines.npm, '>=10 <12', 'npm engine range must be explicit');
 assert.strictEqual(packageJson.packageManager, 'npm@11.6.2', 'packageManager must pin the npm client used for lockfile updates');
+assert(devDependencies.chai && devDependencies.mocha,
+    'Test-only assertion and runner libraries must be devDependencies');
+assert(!runtimeDependencies.chai && !runtimeDependencies.mocha,
+    'Test-only dependencies must not be mandatory runtime dependencies');
+[
+    '@elastic/elasticsearch',
+    'hazelcast-client',
+    'kafkajs',
+    'node-cache',
+    'redis',
+    'stompit',
+    'winston-elasticsearch'
+].forEach(packageName => {
+    assert(optionalDependencies[packageName], 'Provider adapter must be optional at the root package level: ' + packageName);
+    assert(!runtimeDependencies[packageName], 'Provider adapter must not be mandatory runtime dependency: ' + packageName);
+});
 
 assert(governance, 'Root package.json must declare nodics.dependencyGovernance');
 assert.strictEqual(governance.preferredNodeMajor, 24, 'Node 24 must be the preferred release line');
@@ -52,9 +71,12 @@ assert.strictEqual(governance.lockfile.required, true, 'Lockfile must be require
 assert.strictEqual(governance.lockfile.file, 'package-lock.json', 'Lockfile path must be declared');
 assert.strictEqual(governance.lockfile.installCommand, 'npm ci', 'Release installs must use npm ci');
 assert.strictEqual(governance.lockfile.commitWithPackageJson, true, 'Dependency changes must commit package and lockfile together');
+assert.strictEqual(packageJson.allowScripts && packageJson.allowScripts['@scarf/scarf'], false,
+    'Swagger UI transitive Scarf install script must remain denied until reviewed as a Nodics-owned runtime need');
 
 [
     'npm ci',
+    'npm audit --omit=dev',
     'npm run clean',
     'npm run build',
     'npm run llm:validate',

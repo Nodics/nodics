@@ -35,5 +35,5 @@ const management = require('../src/service/management/defaultProductManagementSe
     await management.retire({ tenant: 't1', authData: human, params: { resource: 'items', businessCode: 'phone' }, query: { catalogCode: 'retail' } }); assert.strictEqual(received.update.model.status, 'RETIRED');
     await assert.rejects(lookup.resolve({ authData: human, body: { catalogCode: 'retail', itemType: 'SKU', itemCode: 'phone' } }), error => error.code === 'ERR_PRODUCT_00030');
     let result = await lookup.resolve({ tenant: 't1', authData: service, body: { catalogCode: 'retail', itemType: 'SKU', itemCode: 'phone' } }); assert.strictEqual(result.found, true); assert.strictEqual(result.item.secret, undefined);
-    console.log('Product P0 management and reference contract validated');
+    console.log('Product foundation management and reference contract validated');
 })().catch(error => { console.error(error); process.exit(1); });

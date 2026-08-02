@@ -113,7 +113,7 @@ assert(runtimeViewerGroup.permissions.includes('backoffice.contract.view'));
     assert(runtimeAdminGroup.permissions.includes(permission), 'Runtime admin must include ' + permission));
 ['ai.knowledge.read', 'ai.knowledge.manage'].forEach(permission =>
     assert(runtimeAdminGroup.permissions.includes(permission), 'Runtime admin must include ' + permission));
-['profile.backoffice.view', 'cms.backoffice.view', 'cronjob.backoffice.view', 'workflow.backoffice.view', 'pricing.backoffice.read', 'pricing.backoffice.preview', 'pricing.backoffice.manage'].forEach(permission =>
+['profile.backoffice.view', 'cms.backoffice.view', 'cronjob.backoffice.view', 'workflow.backoffice.view', 'pricing.backoffice.read', 'pricing.backoffice.preview', 'pricing.backoffice.manage', 'payment.backoffice.read', 'payment.backoffice.manage'].forEach(permission =>
     assert(runtimeAdminGroup.permissions.includes(permission), 'Runtime admin must include ' + permission));
 let contentGroup = Object.values(userGroupsData).find(group => group.code === 'contentUserGroup');
 assert(contentGroup.permissions.includes('cms.backoffice.view'));
@@ -151,7 +151,7 @@ assert(apiAdminEmployee.userGroups.includes('serviceAccountUserGroup'));
 assert(!apiAdminEmployee.userGroups.includes('runtimeConfigAdminUserGroup'));
 assert.strictEqual(apiAdminEmployee.principalType, 'service');
 assert.strictEqual(apiAdminEmployee.apiKeyStatus, 'active');
-assert.strictEqual(apiAdminEmployee.identityMigrationVersion, 1);
+assert.strictEqual(apiAdminEmployee.identityMigrationVersion, authProperties.identityGovernance.migration.version);
 
 let baseUserGroup = Object.values(userGroupsData).find(group => group.code === 'userGroup');
 let adminGroup = Object.values(userGroupsData).find(group => group.code === 'adminGroup');

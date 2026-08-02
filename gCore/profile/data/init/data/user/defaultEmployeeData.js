@@ -59,7 +59,7 @@ module.exports = {
         apiKey: bootstrapIdentity.serviceApiKey,
         apiKeyScopes: ['auth.internal.token.read', 'auth.internal.token.read.anyTenant'],
         apiKeyStatus: 'active',
-        identityMigrationVersion: 1,
+        identityMigrationVersion: 2,
         principalType: 'service',
         userGroups: ['serviceAccountUserGroup'],
         addresses: ['defaultEmployeeAddress'],

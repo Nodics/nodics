@@ -29,9 +29,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 20 |
-| Test files | 7 |
+| Test files | 8 |
 | Data files | 0 |
-| All module-owned files | 35 |
+| All module-owned files | 36 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 28 |
+| Documented | 29 |
 | Partially documented | 0 |
 | Undocumented | 3 |
 | Inventory only | 4 |
@@ -109,6 +109,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nTest/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared nTest enum definition exports. |  |
 | `gFramework/nTest/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nTest status and error definition exports. |  |
 | `gFramework/nTest/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility contribution point for test execution and generated-test helper functions. |  |
+| `gFramework/nTest/test/generatedTestRunnerLifecycleContract.test.js` | `test` | `documented` | 0/0 | Proves generated-test execution fails loudly when deterministic generation has not produced test artifacts. |  |
 | `gFramework/nTest/test/layeredTestDiscovery.test.js` | `test` | `documented` | 2/2 | Proves deterministic test composition across arbitrarily named capability, project, environment, server, and node modules with override traceability and configurable additional paths. |  |
 | `gFramework/nTest/test/liveTestTenantGuard.test.js` | `test` | `documented` | 0/0 | Verifies default and configured protected-tenant resolution plus explicit live-test override behavior. |  |
 | `gFramework/nTest/test/schemaTestGeneratorCrudFixtureInheritance.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

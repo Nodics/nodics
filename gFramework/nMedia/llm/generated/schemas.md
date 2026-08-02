@@ -93,7 +93,7 @@
 - `mediaCode` `string` required: Referenced media item code
 - `mediaSetCode` `string` required: Owning media set code
 - `position` `int` optional: Display or fallback order within the media set
-- `primary` `boolean` optional: Marks the default entry inside one media set for generic selection.
+- `primary` `bool` optional: Marks the default entry inside one media set for generic selection.
 - `status` `object` required: Entry lifecycle status
 - `variantRole` `string` optional: Reusable variant role inside the set without product-specific meaning
 - `width` `int` optional: Concrete media width in pixels when known

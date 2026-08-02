@@ -42,6 +42,19 @@ assert(routers.contractHistory.history.help.parameters.some(parameter => paramet
     assert.strictEqual(route.secured, true);
     assert.strictEqual(route.apiExposure, 'serviceRegistry');
 });
+[
+    routers.registryDiscovery.list,
+    routers.registryDiscovery.bootstrap,
+    routers.registryDiscovery.diagnostics,
+    routers.registryDiscovery.adminList,
+    routers.registryDiscovery.adminDetail,
+    routers.registryDiscovery.refresh,
+    ...Object.values(routers.axisPolicy),
+    ...Object.values(routers.contractHistory)
+].forEach(route => {
+    assert.deepStrictEqual(route.authTokenTypes, ['access'],
+        route.key + ' must be restricted to human/browser access tokens');
+});
 assert(![routers.registryControl.register, routers.registryControl.deregister, routers.registryDiscovery.list,
     routers.registryDiscovery.bootstrap, routers.registryDiscovery.diagnostics].includes(routers.registryDiscovery.publicBootstrap));
 console.log('BackOffice registry route security validated');

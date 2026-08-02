@@ -50,5 +50,5 @@ let manifests = []; SERVICE.DefaultProductReleaseManifestService = { get: async 
     await assert.rejects(target.deploy({ tenant: 't1', authData: { tokenType: 'service' }, body: { manifest: second } }), error => error.code === 'ERR_PRODUCT_00051'); assert.strictEqual(pointers[0].manifestCode, manifest.code);
     let secondDeployment = await target.deploy({ tenant: 't1', authData: { tokenType: 'service' }, body: { manifest: second } }); assert.strictEqual(secondDeployment.version, second.code); assert.strictEqual(pointers[0].manifestCode, second.code);
     let rollback = await target.rollback({ tenant: 't1', authData: { tokenType: 'service' }, body: { enterpriseCode: 'entA', manifestCode: manifest.code } }); assert.strictEqual(rollback.version, manifest.code); assert.strictEqual(pointers[0].manifestCode, manifest.code); assert(receipts.some(receipt => receipt.operation === 'ROLLBACK'));
-    console.log('Product P2-P4 Workflow, publication, and release-readiness contract validated');
+    console.log('Product workflow, publication, and release-readiness contract validated');
 })().catch(error => { console.error(error); process.exit(1); });

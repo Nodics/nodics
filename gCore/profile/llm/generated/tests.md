@@ -9,8 +9,8 @@
 - `gCore/profile/test/enterpriseServiceCapabilityBehavior.test.js`
 - `gCore/profile/test/env/local/localProfileTest.js`
 - `gCore/profile/test/identityGovernanceContract.test.js`
-- `gCore/profile/test/identityGovernanceP1Contract.test.js`
-- `gCore/profile/test/identityGovernanceP2Integration.test.js`
+- `gCore/profile/test/identityGovernanceMigrationContract.test.js`
+- `gCore/profile/test/identityGovernanceMigrationIntegration.test.js`
 - `gCore/profile/test/initRequiredFlag.test.js`
 - `gCore/profile/test/mandatoryIdentityBootstrapService.test.js`
 - `gCore/profile/test/principalRecursiveInterceptorContract.test.js`

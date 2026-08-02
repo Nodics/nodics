@@ -10,6 +10,7 @@
 - `gFramework/nDynamo/test/dynamoRouteContract.test.js`
 - `gFramework/nDynamo/test/dynamoRuntimeAdminSurfaceContract.test.js`
 - `gFramework/nDynamo/test/env-local/envTest.js`
+- `gFramework/nDynamo/test/governanceReportMaturityMatrix.test.js`
 - `gFramework/nDynamo/test/routerConfigurationGovernance.test.js`
 - `gFramework/nDynamo/test/runtimeConfigurationActivationAudit.test.js`
 - `gFramework/nDynamo/test/runtimeConfigurationActivationPolicyEnforcement.test.js`

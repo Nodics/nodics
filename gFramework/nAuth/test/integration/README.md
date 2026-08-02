@@ -1,4 +1,4 @@
-# nAuth P2 Integration Contract
+# nAuth distributed authentication Integration Contract
 
 These tests validate the boundaries that unit contracts cannot prove alone:
 shared-cache atomicity, tenant isolation, distributed security stamps, service
@@ -11,13 +11,13 @@ database names must contain `test`.
 Live shared-cache verification is explicit and never silently skipped:
 
 ```bash
-NODICS_AUTH_P2_REDIS_URL=redis://127.0.0.1:6379 npm run test:suite -- --suite=auth-p2-redis
+NODICS_AUTH_REDIS_LIVE_URL=redis://127.0.0.1:6379 npm run test:suite -- --suite=auth-redis-live
 ```
 
 The release form fails when the live dependency is absent:
 
 ```bash
-NODICS_AUTH_P2_REDIS_URL=redis://127.0.0.1:6379 npm run test:auth-p2:release
+NODICS_AUTH_REDIS_LIVE_URL=redis://127.0.0.1:6379 npm run test:auth:redis:release
 ```
 
 `hazelcast` is not a supported distributed auth engine yet. The current module

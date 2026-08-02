@@ -121,9 +121,9 @@ not decide or activate the same request, and its approver may not activate it.
 Projects may integrate a workflow engine by overriding the corresponding
 services while preserving these governance outcomes.
 
-## P2 threat and acceptance contract
+## Distributed authentication threat and acceptance contract
 
-The P2 boundary assumes attackers may replay refresh tokens concurrently,
+The distributed authentication boundary assumes attackers may replay refresh tokens concurrently,
 present a valid token in another tenant, retain a token after a principal or
 group change, use an expired/revoked/unscoped API key, inspect audit output for
 secrets, or exploit a partially failed migration. It also assumes modular nodes
@@ -135,9 +135,9 @@ change, least-privilege API-key policy, credential-free audit records, and a
 preview/apply/repeat/fail/rollback migration lifecycle that never restores a
 plaintext credential.
 
-Run `npm run test:suite -- --suite=auth-p2` for deterministic P2 contracts plus
+Run `npm run test:suite -- --suite=auth-distributed` for deterministic distributed authentication contracts plus
 an explicitly reported optional live Redis check. Before release, supply an
-isolated Redis endpoint and run `npm run test:auth-p2:release`; absence of the
+isolated Redis endpoint and run `npm run test:auth:redis:release`; absence of the
 endpoint fails that gate. Test tenant and database names must contain a `test`
 marker.
 
@@ -148,7 +148,7 @@ marker.
    a later project, environment, server, node, external, or secret-manager
    layer.
 3. Configure the profile auth channel to use Redis with local fallback disabled.
-4. Run P2 contracts and the required live Redis release test.
+4. Run distributed authentication contracts and the required live Redis release test.
 5. Preview identity migration and retain its correlation identifier.
 6. Apply migration to one test tenant, inspect the redacted audit, and repeat to
    prove `NO_CHANGES`.
@@ -177,11 +177,11 @@ marker.
 
 ```bash
 node gFramework/nAuth/test/authSecurityContract.test.js
-npm run test:suite -- --suite=auth-p2
+npm run test:suite -- --suite=auth-distributed
 npm run quality:docs
 ```
 
-Before a production release, run `npm run test:auth-p2:release` with an isolated
+Before a production release, run `npm run test:auth:redis:release` with an isolated
 Redis endpoint. Verify positive access, invalid signature, expiry, replay,
 revocation, cross-tenant denial, missing permission, service identity, audit
 redaction, and shared-state behavior.

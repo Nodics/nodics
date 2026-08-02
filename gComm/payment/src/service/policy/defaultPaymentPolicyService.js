@@ -68,6 +68,7 @@ module.exports = {
         if (operation === 'CAPTURE') return 'CAPTURED';
         if (operation === 'REFUND') return 'REFUNDED';
         if (operation === 'VOID') return 'VOIDED';
+        if (operation === 'RECONCILE') return 'RECONCILED';
         return 'AUTHORIZED';
     },
     /** Validates safe provider configuration metadata. */
@@ -82,10 +83,22 @@ module.exports = {
         }
         model.paymentModes = model.paymentModes || model.methodCodes.slice();
         if (!Array.isArray(model.operations) || !model.operations.length) throw this.error('Payment Provider operations are required');
+        model.operations.forEach((operation) => {
+            if (!(this.policy().operations || []).includes(operation)) throw this.error('Payment Provider operation is unsupported');
+        });
         model.adapterService = model.adapterService || 'DefaultManualPaymentProviderAdapterService';
         model.policyService = model.policyService || 'DefaultPaymentProviderPolicyService';
-        if (JSON.stringify(model).match(/cvv|cardNumber|pan|secret|password/i)) throw this.error('Payment Provider must not store raw credentials or card data');
+        if (!/^[A-Za-z][A-Za-z0-9]*Service$/.test(model.adapterService)) throw this.error('Payment Provider adapterService is invalid');
+        if (!/^[A-Za-z][A-Za-z0-9]*Service$/.test(model.policyService)) throw this.error('Payment Provider policyService is invalid');
+        if (JSON.stringify(model).match(/cvv|cardNumber|pan|secret|password|rawGateway|gatewayPayload|providerPayload|apiKey|accessToken|refreshToken/i)) {
+            throw this.error('Payment Provider must not store raw credentials, raw provider payloads, or card data');
+        }
+        model.configurationSource = model.configurationSource || 'GOVERNED_RECORD';
+        model.businessEditable = model.businessEditable !== false;
         model.status = model.status || 'ACTIVE';
+        if (!(this.policy().providerStatuses || ['DRAFT', 'ACTIVE', 'SUSPENDED', 'INACTIVE', 'RETIRED']).includes(model.status)) {
+            throw this.error('Payment Provider status is unsupported');
+        }
         request.model = model;
         return model;
     },

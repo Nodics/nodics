@@ -17,6 +17,8 @@
  * @override Project modules may customize fulfillment release behavior without adding shipment authority to Order.
  */
 const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
 
 const properties = require('../config/properties');
 const schemas = require('../src/schemas/schemas');
@@ -47,8 +49,18 @@ global.SERVICE = {
 
 assert.strictEqual(properties.fulfillment.fulfillmentPolicy.groupingStrategy, 'DELIVERY_GROUP');
 assert.strictEqual(properties.fulfillment.fulfillmentPolicy.modes.STANDARD.defaultCarrierCode, 'defaultCarrierProvider');
+assert.strictEqual(properties.fulfillment.fulfillmentPolicy.modes.EXPRESS.labelRequired, true);
+assert.strictEqual(properties.fulfillment.fulfillmentPolicy.modes.SAME_DAY.defaultCarrierCode, 'defaultLocalDeliveryProvider');
+assert.strictEqual(properties.fulfillment.fulfillmentPolicy.modes.SCHEDULED.allowedProviderTypes.includes('AGGREGATOR'), true);
+assert.strictEqual(properties.fulfillment.fulfillmentPolicy.modes.DIGITAL_DELIVERY.carrierRequired, false);
+assert.strictEqual(properties.fulfillment.fulfillmentPolicy.modes.FREIGHT.defaultCarrierCode, 'defaultFreightProvider');
 assert.strictEqual(properties.fulfillment.fulfillmentPolicy.carrierProviders.defaultCarrierProvider.adapterService, 'DefaultCarrierLabelGatewayService');
+assert.strictEqual(properties.fulfillment.fulfillmentPolicy.carrierProviders.defaultLocalDeliveryProvider.modeCodes.includes('SAME_DAY'), true);
+assert.strictEqual(properties.fulfillment.fulfillmentPolicy.carrierProviders.defaultDigitalDeliveryProvider.providerType, 'DIGITAL_DELIVERY');
+assert.strictEqual(properties.fulfillment.fulfillmentPolicy.carrierProviders.defaultFreightProvider.supportsLabels, true);
 assert.strictEqual(properties.fulfillment.fulfillmentPolicy.carrierProviderStatuses.includes('ACTIVE'), true);
+assert.strictEqual(properties.fulfillment.fulfillmentPolicy.carrierProviderTypes.includes('WMS'), true);
+assert.strictEqual(properties.fulfillment.fulfillmentPolicy.carrierProviderTypes.includes('ERP'), true);
 assert.strictEqual(properties.fulfillment.fulfillmentPolicy.labelPolicy.defaultLabelGatewayService, 'DefaultCarrierLabelGatewayService');
 assert.strictEqual(properties.fulfillment.fulfillmentPolicy.warehouseTaskTypes.includes('PICK'), true);
 assert.strictEqual(properties.fulfillment.fulfillmentPolicy.warehouseTaskPolicy.requireCompletedTasksBeforeDispatch, false);
@@ -121,6 +133,21 @@ assert.strictEqual(properties.fulfillment.fulfillmentPolicy.returnDisposition.in
 assert.strictEqual(modePolicyService.mode('STANDARD').labelRequired, false);
 assert.strictEqual(carrierRegistryService.provider('defaultCarrierProvider').modeCodes.includes('EXPRESS'), true);
 assert.strictEqual(carrierPolicyService.resolve({ deliveryModeCode: 'EXPRESS' }).adapterService, 'DefaultCarrierLabelGatewayService');
+assert.strictEqual(carrierPolicyService.resolve({ deliveryModeCode: 'SAME_DAY' }).carrierCode, 'defaultLocalDeliveryProvider');
+assert.strictEqual(carrierPolicyService.resolve({ deliveryModeCode: 'FREIGHT' }).providerType, 'FREIGHT');
+assert.strictEqual(carrierPolicyService.resolve({ deliveryModeCode: 'DIGITAL_DELIVERY' }).labelRequired, false);
+
+const readme = fs.readFileSync(path.join(__dirname, '../README.md'), 'utf8');
+[
+    'Shipping modes versus carrier providers',
+    'How to add a shipping mode',
+    'How to add a delivery partner or carrier provider',
+    'External delivery partner integration',
+    'Customer modules can replace carrier integration',
+    'Credentials belong in governed secure configuration',
+].forEach((fragment) => {
+    assert(readme.includes(fragment), 'Fulfillment README must document customization guidance: ' + fragment);
+});
 
 const mode = policyService.prepareMode({
     model: {

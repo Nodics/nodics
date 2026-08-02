@@ -34,5 +34,5 @@ const catalog = require('../src/service/reference/defaultProductCatalogReference
     assert.strictEqual(await media.validate({ tenant: 't1', authData: {}, enterpriseCode: 'entA', kind: 'mediaSet', code: 'phone-primary-set' }), true); assert.deepStrictEqual(mediaLookupRequest.body, { referenceType: 'MEDIA_SET', referenceCode: 'phone-primary-set' });
     effective.unitsReference.preferLocal = false; assert.strictEqual(await units.validate({ tenant: 't1', authData: {}, enterpriseCode: 'entA', code: 'kg' }), true); assert.strictEqual(moduleRequest.moduleName, 'units'); assert.strictEqual(moduleRequest.header['x-enterprise-code'], 'entA');
     effective.mediaReference.preferLocal = false; SERVICE.DefaultModuleService.fetch = async request => { moduleRequest = request; return { data: { referenceType: 'MEDIA', code: 'phone-primary-file' } }; }; assert.strictEqual(await media.validate({ tenant: 't1', authData: {}, enterpriseCode: 'entA', kind: 'media', code: 'phone-primary-file' }), true); assert.strictEqual(moduleRequest.moduleName, 'media'); assert.strictEqual(moduleRequest.apiName, '/references/media/validate');
-    console.log('Product P0 provider and later-layer override contract validated');
+    console.log('Product foundation provider and later-layer override contract validated');
 })().catch(error => { console.error(error); process.exit(1); });

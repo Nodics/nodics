@@ -42,5 +42,5 @@ const validator = require('../src/service/foundation/defaultProductCompositionSe
     await assert.rejects(validator.prepareMedia({ tenant: 't1', authData, model: Object.assign({}, mediaRequest.model, { code: undefined, productMediaCode: 'unsafe-both', mediaCode: 'phone-primary-file' }) }), error => error.code === 'ERR_PRODUCT_00037');
     await assert.rejects(validator.prepareMedia({ tenant: 't1', authData, model: Object.assign({}, mediaRequest.model, { code: undefined, productMediaCode: 'unsafe-empty', mediaSetCode: undefined }) }), error => error.code === 'ERR_PRODUCT_00037');
     configuration.product.relation.types.push('PROJECT_RELATION'); assert(configuration.product.relation.types.includes('PROJECT_RELATION'));
-    console.log('Product P1.4-P1.7 composition contract validated');
+    console.log('Product composition contract validated');
 })().catch(error => { console.error(error); process.exit(1); });

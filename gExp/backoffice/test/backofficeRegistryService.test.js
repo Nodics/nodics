@@ -201,6 +201,24 @@ async function run() {
         fallbackMode: "STATIC_RECOVERY_SHELL",
       },
       requiredPermissions: ["cms.backoffice.view"],
+      navigation: [
+        {
+          id: "cms-sites",
+          label: "Websites",
+          route: "/content/websites",
+          lifecycleActions: [
+            {
+              id: "publish-site",
+              label: "Publish site",
+              intent: "PUBLISH",
+              permission: "cms.backoffice.manage",
+              summary: "Publish a CMS Site through the CMS-owned lifecycle.",
+              targetStatuses: ["DRAFT"],
+              featureState: "PREVIEW",
+            },
+          ],
+        },
+      ],
     },
   };
   let identity = {
@@ -227,6 +245,12 @@ async function run() {
     authData: { permissions: ["cms.backoffice.view"] },
   });
   assert.strictEqual(list.data.modules.cms.length, 1);
+  assert.strictEqual(
+    list.data.modules.cms[0].backoffice.navigation[0].lifecycleActions[0]
+      .intent,
+    "PUBLISH",
+    "BackOffice registration must preserve bounded declarative lifecycle actions for Axis rendering",
+  );
   assert.strictEqual(
     (await service.list({ authData: { permissions: [] } })).data.modules.cms,
     undefined,
@@ -387,16 +411,48 @@ async function run() {
           clientCallable: false,
           capabilities: ["service"],
         },
+        {
+          moduleName: "payment",
+          displayName: "Payment",
+          parentModule: "gComm",
+          canonicalIdentity: "gComm/payment",
+          instanceId: "runtime-1",
+          clientCallable: false,
+          capabilities: ["schema", "service"],
+          backoffice: {
+            enabled: true,
+            capabilityId: "payment-operations",
+            displayName: "Payment Operations",
+            requiredPermissions: ["payment.backoffice.read"],
+            navigation: [
+              {
+                id: "payment-operations",
+                label: "Payment Operations",
+                requiredPermissions: ["payment.backoffice.read"],
+              },
+              {
+                id: "payment-providers",
+                parentId: "payment-operations",
+                label: "Payment Providers",
+                requiredPermissions: ["payment.backoffice.read"],
+                workbenchTarget: {
+                  moduleName: "payment",
+                  schemaName: "paymentProvider",
+                },
+              },
+            ],
+          },
+        },
       ],
     },
     authData: {
       tokenType: "service",
       runtimeInstanceId: "runtime-1",
-      modules: ["gContent", "cms", "workflow", "workflowCore"],
+      modules: ["gContent", "cms", "workflow", "workflowCore", "payment"],
       userGroups: ["serviceAccountUserGroup"],
     },
   });
-  assert.strictEqual(batch.data.registeredModules, 4);
+  assert.strictEqual(batch.data.registeredModules, 5);
   assert.deepStrictEqual(
     {
       environment: store._instances.get("cms:runtime-1").environment,
@@ -418,7 +474,7 @@ async function run() {
   let adminList = await service.adminList({
     query: { environment: "local", state: "UP", limit: "10" },
   });
-  assert.strictEqual(adminList.data.total, 4);
+  assert.strictEqual(adminList.data.total, 5);
   assert.strictEqual(adminList.data.items[0].environments[0], "local");
   let cmsSummary = adminList.data.items.find(
     (item) => item.moduleName === "cms",
@@ -505,12 +561,35 @@ async function run() {
     undefined,
     "non-API modules must not appear in client discovery",
   );
+  assert.strictEqual(
+    list.data.modules.payment,
+    undefined,
+    "BackOffice metadata modules must still require their own permissions",
+  );
+  list = await service.list({
+    authData: { permissions: ["payment.backoffice.read"] },
+  });
+  assert.strictEqual(
+    list.data.modules.payment[0].clientCallable,
+    false,
+    "schema-backed BackOffice modules must not be promoted to direct endpoint-callable modules",
+  );
+  assert.strictEqual(
+    list.data.modules.payment[0].endpoint,
+    undefined,
+    "schema-backed BackOffice modules must not expose invented endpoints",
+  );
+  assert.strictEqual(
+    list.data.modules.payment[0].backoffice.navigation[1].workbenchTarget.schemaName,
+    "paymentProvider",
+    "BackOffice-visible schema-backed modules should remain discoverable for Axis navigation",
+  );
   let diagnostics = await service.diagnostics({
     authData: { userGroups: ["runtimeConfigAdminUserGroup"] },
   });
   assert.strictEqual(
     diagnostics.data.activeInstances,
-    4,
+    5,
     "diagnostics must retain all active module leases",
   );
   assert.strictEqual(diagnostics.data.contracts.pendingApprovals, 1);
@@ -565,7 +644,27 @@ async function run() {
   assert.strictEqual(
     bootstrap.data.catalogue.workflowCore,
     undefined,
-    "bootstrap catalogue must contain only authorized browser-callable modules",
+    "bootstrap catalogue must contain only authorized BackOffice-discoverable modules",
+  );
+  assert.strictEqual(
+    bootstrap.data.catalogue.payment,
+    undefined,
+    "bootstrap catalogue must keep unauthorized BackOffice modules hidden",
+  );
+  let paymentBootstrap = await service.bootstrap({
+    tenant: "default",
+    authData: { permissions: ["payment.backoffice.read"] },
+    headers: { "x-nodics-client-contract-version": "1" },
+  });
+  assert.strictEqual(
+    paymentBootstrap.data.catalogue.payment.navigation[1].workbenchTarget.schemaName,
+    "paymentProvider",
+    "bootstrap must expose authorized schema-backed BackOffice navigation even when the owning module has no router",
+  );
+  assert.strictEqual(
+    paymentBootstrap.data.modules.payment[0].endpoint,
+    undefined,
+    "bootstrap must not invent HTTP endpoints for schema-backed BackOffice modules",
   );
   assert.strictEqual(
     JSON.stringify(bootstrap).includes("expiresAt"),

@@ -28,7 +28,23 @@ module.exports = {
         error.code = 'ERR_PAY_00008';
         return error;
     },
-    /** Resolves full execution policy for a transaction. */
+    /** Builds a normalized execution policy from method, provider, and operation. */
+    build: function (method, provider, operation) {
+        return {
+            method: method,
+            provider: provider,
+            providerCode: provider.providerCode,
+            providerType: provider.providerType,
+            operation: operation,
+            adapterService: provider.adapterService || 'DefaultManualPaymentProviderAdapterService',
+            gatewayRequired: method.gatewayRequired === true,
+            policyService: provider.policyService || 'DefaultPaymentProviderPolicyService',
+            configurationSource: provider.configurationSource || 'MODULE_CONFIGURATION',
+            connectorCode: provider.connectorCode,
+            configRef: provider.configRef,
+        };
+    },
+    /** Resolves full execution policy from synchronous module configuration. */
     resolve: function (request) {
         let transaction = (request || {}).transaction || request || {};
         let methodService = SERVICE.DefaultPaymentMethodPolicyService;
@@ -40,15 +56,20 @@ module.exports = {
         let providerCode = transaction.providerCode || registryService.defaultProviderCode(method.methodCode);
         let provider = registryService.provider(providerCode);
         registryService.assertSupports(provider, method.methodCode, operation);
-        return {
-            method: method,
-            provider: provider,
-            providerCode: provider.providerCode,
-            providerType: provider.providerType,
-            operation: operation,
-            adapterService: provider.adapterService || 'DefaultManualPaymentProviderAdapterService',
-            gatewayRequired: method.gatewayRequired === true,
-            policyService: provider.policyService || 'DefaultPaymentProviderPolicyService',
-        };
+        return this.build(method, provider, operation);
+    },
+    /** Resolves full execution policy, preferring governed Axis-managed provider records when available. */
+    resolveForRequest: async function (request) {
+        let transaction = (request || {}).transaction || request || {};
+        let methodService = SERVICE.DefaultPaymentMethodPolicyService;
+        let registryService = SERVICE.DefaultPaymentProviderRegistryService;
+        if (!methodService || typeof methodService.method !== 'function') throw this.error('Payment method policy service is unavailable');
+        if (!registryService || typeof registryService.providerForRequest !== 'function') return this.resolve(request);
+        let method = methodService.method(transaction.paymentModeCode);
+        let operation = transaction.operation || method.defaultOperation || 'AUTHORIZE';
+        let providerCode = transaction.providerCode || registryService.defaultProviderCode(method.methodCode);
+        let provider = await registryService.providerForRequest(providerCode, request || {});
+        registryService.assertSupports(provider, method.methodCode, operation);
+        return this.build(method, provider, operation);
     },
 };

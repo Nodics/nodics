@@ -33,9 +33,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 39 |
-| Test files | 48 |
+| Test files | 49 |
 | Data files | 0 |
-| All module-owned files | 95 |
+| All module-owned files | 96 |
 | Local schema definitions | 3 |
 
 ## Ownership And Dependencies
@@ -67,7 +67,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 60 |
+| Documented | 61 |
 | Partially documented | 9 |
 | Undocumented | 13 |
 | Inventory only | 13 |
@@ -172,6 +172,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nData/nImport/import/test/importRunSummaryContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gFramework/nData/nImport/import/test/importTargetDispatchContract.test.js` | `test` | `documented` | 0/0 | Verifies model import target dispatch sends schema imports to generated database services and search imports to search operation services while accepting normal search result response shapes. |  |
 | `gFramework/nData/nImport/import/test/importTenantPrecedence.test.js` | `test` | `documented` | 0/0 | Verifies that request-scoped tenants narrow effective import-header tenants, never broaden them, and fail closed for inactive or unauthorized tenant targets. |  |
+| `gFramework/nData/nImport/import/test/initDataActivationEnvironmentGovernance.test.js` | `test` | `documented` | 0/0 | Verifies init/core/sample data-release activation, protected environment gating, and mandatory bootstrap identity provisioning across the import, auth, profile, and Startio configuration boundary. |  |
 | `gFramework/nData/nImport/import/test/mandatoryInitDataImportContract.test.js` | `test` | `documented` | 0/0 | Verifies mandatory profile bootstrap records and proves that init imports preserve selected modules, tenant scope, init type, and diagnostics through processing. |  |
 | `gFramework/nData/nImport/import/test/mediaImportDefinitionContract.test.js` | `test` | `documented` | 0/0 | Validates importDefinition-owned header generation for media-backed imports. |  |
 | `gFramework/nData/nImport/import/test/mediaImportFinalizedValidationContract.test.js` | `test` | `documented` | 2/2 | Validates finalized nImport media validation reports and validate-only failure projection. |  |

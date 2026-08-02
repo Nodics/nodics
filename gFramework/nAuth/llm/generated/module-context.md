@@ -29,9 +29,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 15 |
-| Test files | 9 |
+| Test files | 10 |
 | Data files | 0 |
-| All module-owned files | 33 |
+| All module-owned files | 34 |
 | Local schema definitions | 0 |
 
 ## Ownership And Dependencies
@@ -59,7 +59,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 24 |
+| Documented | 25 |
 | Partially documented | 3 |
 | Undocumented | 1 |
 | Inventory only | 5 |
@@ -106,15 +106,16 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gFramework/nAuth/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared nAuth utility exports for status definitions. |  |
 | `gFramework/nAuth/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared nAuth utility exports for utils. |  |
 | `gFramework/nAuth/test/authSecurityContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gFramework/nAuth/test/bootstrapCredentialEnvironmentGovernance.test.js` | `test` | `documented` | 0/0 | Proves local bootstrap credentials, local API keys, sample passwords, and local JWT/API-key secrets are accepted only by the explicit local compatibility environment and cannot satisfy protected environment authentication-security validation. |  |
 | `gFramework/nAuth/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines nAuth test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nAuth/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines nAuth test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 | `gFramework/nAuth/test/integration/README.md` | `test` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gFramework/nAuth/test/integration/authP2IdentityIsolationContract.test.js` | `test` | `documented` | 0/0 | Proves tenant-scoped human and service security stamps, API-key lifecycle policy, least-privilege scopes, and credential-free audit records. |  |
-| `gFramework/nAuth/test/integration/authP2ModularAuthorizationContract.test.js` | `test` | `documented` | 0/0 | Proves bounded internal service tokens survive a process boundary while tenant, permission, bootstrap-header, and rotation contracts remain enforced. |  |
-| `gFramework/nAuth/test/integration/authP2RedisLive.test.js` | `test` | `documented` | 0/0 | Runs the exactly-once refresh-token race against two real Redis clients when an isolated live endpoint is explicitly supplied. |  |
-| `gFramework/nAuth/test/integration/authP2SharedCacheContract.test.js` | `test` | `documented` | 0/0 | Proves concurrent single-use refresh consumption and strict distributed auth-cache capability validation. |  |
-| `gFramework/nAuth/test/integration/authP2TestConfiguration.js` | `test` | `documented` | 0/0 | Resolves and validates isolated P2 authentication integration settings without embedding a customer project or production connection. |  |
-| `gFramework/nAuth/test/integration/authP2TokenWorker.js` | `test` | `documented` | 0/0 | Represents a separate modular node that verifies a service JWT and enforces the tenant and permission expected by its request context. |  |
+| `gFramework/nAuth/test/integration/authDistributedSharedCacheContract.test.js` | `test` | `documented` | 0/0 | Proves concurrent single-use refresh consumption and strict distributed auth-cache capability validation. |  |
+| `gFramework/nAuth/test/integration/authIdentityIsolationContract.test.js` | `test` | `documented` | 0/0 | Proves tenant-scoped human and service security stamps, API-key lifecycle policy, least-privilege scopes, and credential-free audit records. |  |
+| `gFramework/nAuth/test/integration/authIntegrationTestConfiguration.js` | `test` | `documented` | 0/0 | Resolves and validates isolated distributed authentication integration settings without embedding a customer project or production connection. |  |
+| `gFramework/nAuth/test/integration/authModularAuthorizationContract.test.js` | `test` | `documented` | 0/0 | Proves bounded internal service tokens survive a process boundary while tenant, permission, bootstrap-header, and rotation contracts remain enforced. |  |
+| `gFramework/nAuth/test/integration/authRedisLiveIntegration.test.js` | `test` | `documented` | 0/0 | Runs the exactly-once refresh-token race against two real Redis clients when an isolated live endpoint is explicitly supplied. |  |
+| `gFramework/nAuth/test/integration/authServiceTokenWorker.js` | `test` | `documented` | 0/0 | Represents a separate modular node that verifies a service JWT and enforces the tenant and permission expected by its request context. |  |
 
 ## Extension Contract
 

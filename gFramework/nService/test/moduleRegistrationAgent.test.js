@@ -30,8 +30,9 @@ global.CONFIG = { get: key => ({
 global.NODICS = {
     getActiveModules: () => ['cms', 'utility'],
     getRawModule: name => ({ parent: 'gContent', canonicalIdentity: 'gContent/' + name,
-        metaData: { version: '1.0.0', nodics: { displayName: name === 'cms' ? 'Content Management' : 'Utilities',
-            runtime: { router: name === 'cms' }, owns: ['router'] } } }),
+        metaData: { version: '1.0.0', nodics: Object.assign({
+            runtime: { router: name === 'cms' }, owns: ['router']
+        }, name === 'cms' ? { displayName: 'Content Management' } : {}) } }),
     getEnvironmentName: () => 'envs', getSelectedEnvironmentName: () => 'local', getServerName: () => 'cmsServer', getNodeName: () => null,
     getInternalAuthToken: () => 'service-token'
 };
@@ -73,6 +74,8 @@ async function run() {
         'later layered configuration must be able to disable module BackOffice exposure');
     assert.strictEqual(requests[0].requestBody.registrations[1].clientCallable, false);
     assert.strictEqual(requests[0].requestBody.registrations[1].endpoint, undefined);
+    assert.strictEqual(requests[0].requestBody.registrations[1].displayName, 'utility',
+        'modules without UI display metadata must still produce valid bounded registration names');
     await contributor.drain();
     assert.strictEqual(requests.length, 2, 'drain should attempt one instance-wide deregistration');
     assert.strictEqual(service._timer, null);

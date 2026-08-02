@@ -1000,23 +1000,6 @@ module.exports = {
           },
         },
         {
-          id: "payments",
-          parentId: "checkout",
-          label: "Payments",
-          route: "/commerce/operations/checkout/payments",
-          icon: "commerce",
-          order: 596,
-          group: { id: "commerce", label: "Commerce", order: 300 },
-          perspectives: ["operations", "commerce"],
-          contexts: ["environment", "tenant", "enterprise"],
-          featureState: "DISABLED",
-          help: {
-            summary:
-              "Planned workspace for payment transaction records once the payment backend model is introduced.",
-            documentationRoute: "/docs/capabilities/commerce/end-to-end",
-          },
-        },
-        {
           id: "shipments",
           parentId: "checkout",
           label: "Shipments",
@@ -1051,23 +1034,6 @@ module.exports = {
           },
         },
         {
-          id: "refunds",
-          parentId: "checkout",
-          label: "Refunds",
-          route: "/commerce/operations/checkout/refunds",
-          icon: "commerce",
-          order: 599,
-          group: { id: "commerce", label: "Commerce", order: 300 },
-          perspectives: ["operations", "commerce"],
-          contexts: ["environment", "tenant", "enterprise"],
-          featureState: "DISABLED",
-          help: {
-            summary:
-              "Planned workspace for refund records once the backend model is introduced.",
-            documentationRoute: "/docs/capabilities/commerce/end-to-end",
-          },
-        },
-        {
           id: "consignments",
           parentId: "checkout",
           label: "Consignments",
@@ -1098,23 +1064,6 @@ module.exports = {
           help: {
             summary:
               "Planned workspace for delivery-mode records once the backend model is introduced.",
-            documentationRoute: "/docs/capabilities/commerce/end-to-end",
-          },
-        },
-        {
-          id: "payment-modes",
-          parentId: "checkout",
-          label: "Payment Modes",
-          route: "/commerce/operations/checkout/payment-modes",
-          icon: "commerce",
-          order: 602,
-          group: { id: "commerce", label: "Commerce", order: 300 },
-          perspectives: ["operations", "commerce"],
-          contexts: ["environment", "tenant", "enterprise"],
-          featureState: "DISABLED",
-          help: {
-            summary:
-              "Planned workspace for payment-mode records once the backend model is introduced.",
             documentationRoute: "/docs/capabilities/commerce/end-to-end",
           },
         },

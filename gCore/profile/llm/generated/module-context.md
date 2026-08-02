@@ -71,9 +71,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 80 |
+| Documented | 81 |
 | Partially documented | 3 |
-| Undocumented | 10 |
+| Undocumented | 9 |
 | Inventory only | 10 |
 
 ## Important Files
@@ -157,7 +157,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/src/service/enterprise/defaultEnterpriseManagementService.js` | `src` | `documented` | 8/8 | Implements bounded, human-only enterprise discovery over the generated Profile enterprise service. |  |
 | `gCore/profile/src/service/enterprise/defaultEnterpriseService.js` | `src` | `documented` | 1/1 | Implements profile default enterprise service business behavior and extension logic. |  |
 | `gCore/profile/src/service/group/defaultUserGroupGovernanceService.js` | `src` | `documented` | 6/6 | Validates active user-group inheritance, permission catalog membership, and acyclic group graphs before persistence. |  |
-| `gCore/profile/src/service/identity/defaultIdentityGovernanceMigrationService.js` | `src` | `documented` | 17/17 | Provides tenant-scoped preview, apply, audit, rollback, ownership backfill, and recoverable service-key rotation for identity governance upgrades. |  |
+| `gCore/profile/src/service/identity/defaultIdentityGovernanceMigrationService.js` | `src` | `documented` | 18/18 | Provides tenant-scoped preview, apply, audit, rollback, ownership backfill, and recoverable service-key rotation for identity governance upgrades. |  |
 | `gCore/profile/src/service/identity/defaultMandatoryIdentityBootstrapService.js` | `src` | `documented` | 10/10 | Reconciles missing, non-secret identity-governance groups and configured service-principal metadata after init data is available. Credential values are never generated, rotated, or overwritten automatically, preserving project and tenant secrets while allowing safe framework upgrades. |  |
 | `gCore/profile/src/service/identity/defaultPrincipalGovernanceService.js` | `src` | `documented` | 8/8 | Enforces principal categories, active group assignment, and service-only API-key ownership before identity persistence. |  |
 | `gCore/profile/src/service/identity/defaultPrincipalSecurityStampGovernanceService.js` | `src` | `documented` | 8/8 | Advances principal security stamps for direct principal, password, and group-membership changes. |  |
@@ -184,8 +184,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/test/enterpriseServiceCapabilityBehavior.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/env/local/localProfileTest.js` | `test` | `documented` | 7/7 | Defines profile test fixtures or suites for module behavior validation. |  |
 | `gCore/profile/test/identityGovernanceContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/profile/test/identityGovernanceP1Contract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
-| `gCore/profile/test/identityGovernanceP2Integration.test.js` | `test` | `documented` | 0/0 | Exercises preview, persisted apply, idempotent repeat, service credential rotation, failure audit, and rollback using an isolated durable test repository. |  |
+| `gCore/profile/test/identityGovernanceMigrationContract.test.js` | `test` | `documented` | 0/0 | Validates identity-governance migration contracts for ownership, principal policy, permission targets, service credential rules, and separation-of-duties behavior without binding the contract to backlog priority labels. |  |
+| `gCore/profile/test/identityGovernanceMigrationIntegration.test.js` | `test` | `documented` | 0/0 | Exercises preview, persisted apply, idempotent repeat, service credential rotation, failure audit, and rollback using an isolated durable test repository. |  |
 | `gCore/profile/test/initRequiredFlag.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/mandatoryIdentityBootstrapService.test.js` | `test` | `documented` | 0/0 | Verifies idempotent, audited creation of missing configured identity groups and non-secret reconciliation of configured service principals without overwriting tenant secrets. |  |
 | `gCore/profile/test/principalRecursiveInterceptorContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

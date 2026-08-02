@@ -14,12 +14,12 @@
     "description": "Runtime control-plane module for schema, router, class, pipeline, property, schema-access policy, activation, audit, rollback, and governance behavior."
   },
   "sourceFiles": 36,
-  "testFiles": 42,
+  "testFiles": 43,
   "dataFiles": 0,
-  "ownedFiles": 67,
-  "sourceFingerprint": "6d6172e0500404b54b765538558cd91daee466ba94c0ee036491d997a32f657a",
+  "ownedFiles": 68,
+  "sourceFingerprint": "917b5c5c2f316260e7d09d78645a14eec3723ffb62f81e0ff0dea7403dd76472",
   "documentation": {
-    "documented": 43,
+    "documented": 44,
     "partially-documented": 4,
     "undocumented": 16,
     "inventory-only": 4

@@ -71,6 +71,7 @@ module.exports = {
                 secured: true,
                 accessGroups: ['userGroup'],
                 permission: 'backoffice.registry.view',
+                authTokenTypes: ['access'],
                 apiExposure: 'serviceRegistry',
                 key: '/registry/modules',
                 method: 'GET',
@@ -84,6 +85,7 @@ module.exports = {
                 secured: true,
                 accessGroups: ['userGroup'],
                 permission: 'backoffice.bootstrap.view',
+                authTokenTypes: ['access'],
                 apiExposure: 'serviceRegistry',
                 key: '/bootstrap',
                 method: 'GET',
@@ -99,6 +101,7 @@ module.exports = {
                 secured: true,
                 accessGroups: ['userGroup'],
                 permission: 'backoffice.registry.diagnostics.view',
+                authTokenTypes: ['access'],
                 apiExposure: 'serviceRegistry',
                 key: '/registry/diagnostics',
                 method: 'GET',
@@ -109,7 +112,8 @@ module.exports = {
                 } } } }
             },
             adminList: {
-                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.registry.admin.view', apiExposure: 'serviceRegistry',
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.registry.admin.view',
+                authTokenTypes: ['access'], apiExposure: 'serviceRegistry',
                 key: '/registry/admin/modules', method: 'GET', controller: 'DefaultBackofficeRegistryController', operation: 'adminList',
                 help: { parameters: ['moduleName', 'capability', 'environment', 'server', 'state', 'compatibility'].map(name =>
                     ({ name: name, in: 'query', required: false, schema: { type: 'string' } })).concat([
@@ -120,14 +124,16 @@ module.exports = {
                 } } } }
             },
             adminDetail: {
-                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.registry.admin.view', apiExposure: 'serviceRegistry',
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.registry.admin.view',
+                authTokenTypes: ['access'], apiExposure: 'serviceRegistry',
                 key: '/registry/admin/modules/:moduleName', method: 'GET', controller: 'DefaultBackofficeRegistryController', operation: 'adminDetail',
                 responses: { '200': { description: 'Sanitized administrative module detail', content: { 'application/json': {
                     schema: successEnvelope(contracts.adminDetailData)
                 } } } }
             },
             refresh: {
-                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.registry.refresh', apiExposure: 'serviceRegistry',
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.registry.refresh',
+                authTokenTypes: ['access'], apiExposure: 'serviceRegistry',
                 key: '/registry/admin/modules/:moduleName/refresh', method: 'POST', controller: 'DefaultBackofficeRegistryController', operation: 'refresh',
                 responses: { '202': { description: 'Existing availability and discovery observers refreshed', content: { 'application/json': {
                     schema: successEnvelope(contracts.refreshData)
@@ -139,6 +145,7 @@ module.exports = {
                 secured: true,
                 accessGroups: ['userGroup'],
                 permission: 'backoffice.axis.policy.view',
+                authTokenTypes: ['access'],
                 apiExposure: 'serviceRegistry',
                 key: '/axis/policy',
                 method: 'GET',
@@ -152,6 +159,7 @@ module.exports = {
                 secured: true,
                 accessGroups: ['userGroup'],
                 permission: 'backoffice.axis.policy.update',
+                authTokenTypes: ['access'],
                 apiExposure: 'serviceRegistry',
                 key: '/axis/policy',
                 method: 'PUT',
@@ -165,14 +173,16 @@ module.exports = {
         },
         contractHistory: {
             current: {
-                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.view', apiExposure: 'serviceRegistry',
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.view',
+                authTokenTypes: ['access'], apiExposure: 'serviceRegistry',
                 key: '/contracts/:moduleName/current', method: 'GET', controller: 'DefaultBackofficeContractController', operation: 'current',
                 responses: { '200': { description: 'Current durable safe contract observation', content: { 'application/json': {
                     schema: successEnvelope(contracts.contractCurrentData)
                 } } } }
             },
             history: {
-                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.view', apiExposure: 'serviceRegistry',
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.view',
+                authTokenTypes: ['access'], apiExposure: 'serviceRegistry',
                 key: '/contracts/:moduleName/history', method: 'GET', controller: 'DefaultBackofficeContractController', operation: 'history',
                 help: { parameters: [{ name: 'limit', in: 'query', required: false, schema: { type: 'integer', minimum: 1 } }] },
                 responses: { '200': { description: 'Bounded durable contract observation history', content: { 'application/json': {
@@ -180,14 +190,16 @@ module.exports = {
                 } } } }
             },
             compare: {
-                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.view', apiExposure: 'serviceRegistry',
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.view',
+                authTokenTypes: ['access'], apiExposure: 'serviceRegistry',
                 key: '/contracts/:moduleName/:hash/compare', method: 'POST', controller: 'DefaultBackofficeContractController', operation: 'compare',
                 responses: { '200': { description: 'Candidate comparison with the active observation', content: { 'application/json': {
                     schema: successEnvelope(contracts.contractComparisonData)
                 } } } }
             },
             approve: {
-                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.approve', apiExposure: 'serviceRegistry',
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.approve',
+                authTokenTypes: ['access'], apiExposure: 'serviceRegistry',
                 key: '/contracts/:moduleName/:hash/approve', method: 'POST', controller: 'DefaultBackofficeContractController', operation: 'approve',
                 requestBody: { required: true, content: { 'application/json': { schema: contracts.contractDecision } } },
                 responses: { '200': { description: 'Approved contract observation', content: { 'application/json': {
@@ -195,7 +207,8 @@ module.exports = {
                 } } } }
             },
             reject: {
-                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.reject', apiExposure: 'serviceRegistry',
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.reject',
+                authTokenTypes: ['access'], apiExposure: 'serviceRegistry',
                 key: '/contracts/:moduleName/:hash/reject', method: 'POST', controller: 'DefaultBackofficeContractController', operation: 'reject',
                 requestBody: { required: true, content: { 'application/json': { schema: contracts.contractDecision } } },
                 responses: { '200': { description: 'Rejected contract observation', content: { 'application/json': {
@@ -203,7 +216,8 @@ module.exports = {
                 } } } }
             },
             rollback: {
-                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.rollback', apiExposure: 'serviceRegistry',
+                secured: true, accessGroups: ['userGroup'], permission: 'backoffice.contract.rollback',
+                authTokenTypes: ['access'], apiExposure: 'serviceRegistry',
                 key: '/contracts/:moduleName/:hash/rollback', method: 'POST', controller: 'DefaultBackofficeContractController', operation: 'rollback',
                 requestBody: { required: true, content: { 'application/json': { schema: contracts.contractDecision } } },
                 responses: { '200': { description: 'Rolled-back active contract observation', content: { 'application/json': {

@@ -48,8 +48,8 @@ module.exports = {
             methodCode: { type: 'string', required: true, description: 'Business payment method such as CARD, COD, WALLET, ADVANCE, or project-specific method', searchOptions: { enabled: true } },
             displayName: { type: 'string', required: true },
             defaultOperation: { type: 'string', required: true, description: 'Default operation such as AUTHORIZE or DEFER', searchOptions: { enabled: true } },
-            providerRequired: { type: 'boolean', required: true, default: true, description: 'Whether this method requires a provider selection' },
-            gatewayRequired: { type: 'boolean', required: true, default: false, description: 'Whether this method normally calls an external provider adapter' },
+            providerRequired: { type: 'bool', required: true, default: true, description: 'Whether this method requires a provider selection' },
+            gatewayRequired: { type: 'bool', required: true, default: false, description: 'Whether this method normally calls an external provider adapter' },
             defaultProviderCode: { type: 'string', required: false, description: 'Default provider code for this method', searchOptions: { enabled: true } },
             allowedProviderTypes: { type: 'array', required: false, description: 'Provider types allowed for this method' },
         }), {
@@ -74,6 +74,9 @@ module.exports = {
             policyService: { type: 'string', required: false, description: 'Provider policy service for routing, retries, failover, and enterprise-specific behavior', searchOptions: { enabled: true } },
             connectorCode: { type: 'string', required: false, description: 'Safe configured connector identity. Credentials remain in secret stores.' },
             configRef: { type: 'string', required: false, description: 'Safe configuration reference, not raw credentials' },
+            configurationSource: { type: 'string', required: false, description: 'Whether this record came from module defaults, governed Axis configuration, or project customization', searchOptions: { enabled: true } },
+            businessEditable: { type: 'bool', required: false, default: true, description: 'Whether business users may maintain this safe provider metadata through Axis' },
+            notes: { type: 'string', required: false, description: 'Safe business notes. Do not store credentials, card data, or raw provider payloads.' },
         }), {
             common: {
                 enterpriseCode: { enabled: true, name: 'enterpriseCode' },

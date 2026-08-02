@@ -4,7 +4,7 @@
   "path": "gComm/payment",
   "kind": "capability",
   "runtime": {
-    "router": false,
+    "router": true,
     "publish": false,
     "web": false
   },
@@ -13,16 +13,16 @@
     "version": "0.0.1",
     "description": "Enterprise-scoped payment provider, transaction, authorization, capture, and refund evidence capability."
   },
-  "sourceFiles": 17,
+  "sourceFiles": 22,
   "testFiles": 7,
-  "dataFiles": 0,
-  "ownedFiles": 29,
-  "sourceFingerprint": "49e94012af4b0eed8d3bba49a4044e70b57a16d98a38fed248f586081d4182f5",
+  "dataFiles": 5,
+  "ownedFiles": 39,
+  "sourceFingerprint": "da61eee1840ebd2dd15c3e4929ff9fd0138fd82bf218407b4b9aae84dde873d6",
   "documentation": {
-    "documented": 18,
+    "documented": 27,
     "partially-documented": 7,
     "undocumented": 0,
-    "inventory-only": 4
+    "inventory-only": 5
   },
   "schemaGroups": {
     "payment": [

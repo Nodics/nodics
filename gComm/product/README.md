@@ -157,7 +157,7 @@ node gComm/product/test/productProviderAndOverrideContract.test.js
 See Product foundation, Category, Classification, and Variant operations (canonical documentation: `capability.commerce.technical-reference`)
 for business and developer procedures and
 Product release-readiness evidence (canonical documentation: `capability.commerce.technical-reference`) for the
-P4 validation matrix.
+release-readiness validation matrix.
 
 ## Not yet implemented
 

@@ -56,6 +56,7 @@ assert(mediaSchemas.mediaSetEntry.definition.mediaCode.required, 'mediaSetEntry.
 ['channelCode', 'deviceCode', 'breakpointCode', 'fallbackEntryCode', 'primary'].forEach((fieldName) => {
     assert(mediaSchemas.mediaSetEntry.definition[fieldName], 'mediaSetEntry.' + fieldName + ' must support reusable variant selection');
 });
+assert.strictEqual(mediaSchemas.mediaSetEntry.definition.primary.type, 'bool', 'mediaSetEntry.primary must use Nodics bool schema type');
 assert(mediaSchemas.mediaReference.definition.ownerModule.required, 'mediaReference.ownerModule must identify caller ownership');
 assert(mediaSchemas.mediaReference.definition.ownerSchema.required, 'mediaReference.ownerSchema must identify caller schema ownership');
 assert(mediaSchemas.mediaReference.definition.mediaSetCode, 'mediaReference must be able to reference a media set');

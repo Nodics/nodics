@@ -87,7 +87,7 @@ module.exports = {
         let config = this.getConfiguration();
         let registration = {
             moduleName: moduleName,
-            displayName: nodicsMetadata.displayName,
+            displayName: nodicsMetadata.displayName || moduleName,
             parentModule: rawModule.parent || undefined,
             canonicalIdentity: rawModule.canonicalIdentity || moduleName,
             instanceId: this.getInstanceId(),

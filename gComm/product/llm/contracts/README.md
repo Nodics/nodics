@@ -1,6 +1,6 @@
 # Product AI Contracts
 
-- [Product capability contract](product-p0-contract.md): identity, authority,
+- [Product capability contract](product-capability-contract.md): identity, authority,
   lifecycle, security, and customization rules.
 
 Release-readiness evidence is maintained in

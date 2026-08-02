@@ -5,14 +5,15 @@
 ## Hand-Authored Tests
 
 - `gFramework/nAuth/test/authSecurityContract.test.js`
+- `gFramework/nAuth/test/bootstrapCredentialEnvironmentGovernance.test.js`
 - `gFramework/nAuth/test/common/commonTest.js`
 - `gFramework/nAuth/test/env-local/envTest.js`
-- `gFramework/nAuth/test/integration/authP2IdentityIsolationContract.test.js`
-- `gFramework/nAuth/test/integration/authP2ModularAuthorizationContract.test.js`
-- `gFramework/nAuth/test/integration/authP2RedisLive.test.js`
-- `gFramework/nAuth/test/integration/authP2SharedCacheContract.test.js`
-- `gFramework/nAuth/test/integration/authP2TestConfiguration.js`
-- `gFramework/nAuth/test/integration/authP2TokenWorker.js`
+- `gFramework/nAuth/test/integration/authDistributedSharedCacheContract.test.js`
+- `gFramework/nAuth/test/integration/authIdentityIsolationContract.test.js`
+- `gFramework/nAuth/test/integration/authIntegrationTestConfiguration.js`
+- `gFramework/nAuth/test/integration/authModularAuthorizationContract.test.js`
+- `gFramework/nAuth/test/integration/authRedisLiveIntegration.test.js`
+- `gFramework/nAuth/test/integration/authServiceTokenWorker.js`
 
 ## Generated Tests
 

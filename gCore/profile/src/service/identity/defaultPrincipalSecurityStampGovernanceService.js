@@ -19,7 +19,7 @@
 module.exports = {
     /** Returns a locally monotonic stamp candidate. */
     nextVersion: function () {
-        this._lastVersion = Math.max(Date.now(), (this._lastVersion || 0) + 1);
+        this._lastVersion = Math.max(Math.floor(Date.now() / 1000), (this._lastVersion || 0) + 1);
         return this._lastVersion;
     },
     /** Resolves the generated principal service for the effective schema. */

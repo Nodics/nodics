@@ -32,22 +32,42 @@ module.exports = {
     },
     /** Creates a trusted generated-service request scoped to the migration tenant. */
     systemRequest: function (request, additions) {
-        return Object.assign({
+        let baseRequest = {
             tenant: this.getTenant(request),
             authData: SERVICE.DefaultIdentityGovernanceService.getSystemAuthData(),
-            options: { recursive: false }
-        }, additions || {});
+            options: { recursive: false, skipItemCache: true }
+        };
+        let mergedRequest = Object.assign({}, baseRequest, additions || {});
+        mergedRequest.options = Object.assign({}, baseRequest.options, additions && additions.options ? additions.options : {});
+        return mergedRequest;
+    },
+    /** Loads governance groups from durable tenant model state, bypassing item-cache snapshots. */
+    loadGroups: function (request) {
+        let tenant = this.getTenant(request);
+        let schemaModel = typeof NODICS !== 'undefined' &&
+            NODICS.getModels &&
+            NODICS.getModels('profile', tenant) &&
+            NODICS.getModels('profile', tenant).UserGroupModel;
+        if (schemaModel && typeof schemaModel.getItems === 'function') {
+            return schemaModel.getItems({
+                tenant: tenant,
+                query: {},
+                searchOptions: { pageSize: 10000, pageNumber: 1 },
+                options: { skipItemCache: true, recursive: false }
+            }).then(response => response.result || []);
+        }
+        return SERVICE.DefaultUserGroupService.get(this.systemRequest(request, { query: {}, searchOptions: { pageSize: 10000, pageNumber: 1 } })).then(response => response.result || []);
     },
     /** Loads groups, principals, and owned profile resources without recursive population. */
     loadState: function (request) {
         return Promise.all([
-            SERVICE.DefaultUserGroupService.get(this.systemRequest(request, { query: {} })),
+            this.loadGroups(request),
             SERVICE.DefaultEmployeeService.get(this.systemRequest(request, { query: {} })),
             SERVICE.DefaultCustomerService.get(this.systemRequest(request, { query: {} })),
             SERVICE.DefaultAddressService.get(this.systemRequest(request, { query: {} })),
             SERVICE.DefaultContactService.get(this.systemRequest(request, { query: {} }))
         ]).then(results => ({
-            groups: results[0].result || [],
+            groups: results[0] || [],
             employees: results[1].result || [],
             customers: results[2].result || [],
             addresses: results[3].result || [],

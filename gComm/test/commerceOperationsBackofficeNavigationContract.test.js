@@ -43,6 +43,8 @@ const cartCapability = require("../cart/config/properties")
   .backofficeCapabilities.cart;
 const orderCapability = require("../order/config/properties")
   .backofficeCapabilities.order;
+const paymentCapability = require("../payment/config/properties")
+  .backofficeCapabilities.payment;
 const reverseActions = require("../order/data/init/data/reverse/defaultCheckoutReverseWorkflowActionData");
 
 const knownSchemas = {
@@ -60,6 +62,7 @@ const capabilities = [
   storeCapability,
   cartCapability,
   orderCapability,
+  paymentCapability,
 ];
 const navigation = capabilities.flatMap(
   (capability) => capability.navigation || [],
@@ -71,13 +74,10 @@ const disabledIds = [
   "promotions",
   "coupons",
   "store-locations",
-  "payments",
   "shipments",
   "returns",
-  "refunds",
   "consignments",
   "delivery-modes",
-  "payment-modes",
   "tax-records",
   "fraud-checks",
 ];
@@ -147,6 +147,7 @@ assert.strictEqual(
 );
 assert.strictEqual(cartCapability.navigation.length, 0);
 assert.strictEqual(byId["commerce-operations"].route, "/commerce/operations");
+assert.strictEqual(byId["payment-operations"].route, "/commerce/payments");
 assert.strictEqual(byId.pricing.route, "/commerce/operations/pricing");
 assert.strictEqual(byId["stock-inventory"].route, "/commerce/operations/stock");
 assert.strictEqual(byId.stores.route, "/commerce/operations/stores");
@@ -273,6 +274,31 @@ assert.strictEqual(
   byId["fulfillment-associations"].workbenchTarget.schemaName,
   "storeWarehouseAssignment",
 );
+assert.strictEqual(byId["payment-methods"].parentId, "payment-operations");
+assert.strictEqual(
+  byId["payment-methods"].workbenchTarget.schemaName,
+  "paymentMethod",
+);
+assert.strictEqual(byId["payment-providers"].parentId, "payment-operations");
+assert.strictEqual(
+  byId["payment-providers"].workbenchTarget.schemaName,
+  "paymentProvider",
+);
+assert.strictEqual(byId["payment-transactions"].parentId, "payment-operations");
+assert.strictEqual(
+  byId["payment-transactions"].workbenchTarget.schemaName,
+  "paymentTransaction",
+);
+assert.strictEqual(
+  byId["payment-refunds-reconciliation"].workbenchTarget.schemaName,
+  "paymentTransaction",
+);
+assert.deepStrictEqual(
+  byId["payment-refunds-reconciliation"].workbenchPresentation.quickFilters.map(
+    (filter) => filter.id,
+  ),
+  ["refunds", "reconciliation", "recoverable"],
+);
 Object.entries(requiredDetailPanelIds).forEach(([id, panelIds]) => {
   const actualIds = (byId[id].detailPanels || []).map((panel) => panel.id);
   panelIds.forEach((panelId) => {
@@ -302,6 +328,8 @@ assert(runtimeAdminGroup, "Runtime admin group must be seeded");
   "store.backoffice.read",
   "cart.backoffice.read",
   "order.backoffice.read",
+  "payment.backoffice.read",
+  "payment.backoffice.manage",
 ].forEach((permission) => {
   assert(
     permissionCatalog.includes(permission),
@@ -316,8 +344,10 @@ assert(runtimeAdminGroup, "Runtime admin group must be seeded");
 navigation.forEach((item) => {
   assert(
     item.route === "/commerce/operations" ||
-      item.route.startsWith("/commerce/operations/"),
-    item.id + " must stay in the Commerce Operations route family",
+      item.route.startsWith("/commerce/operations/") ||
+      item.route === "/commerce/payments" ||
+      item.route.startsWith("/commerce/payments/"),
+    item.id + " must stay in the Commerce or Payment Operations route family",
   );
   assert(
     item.group && item.group.id === "commerce",
@@ -351,6 +381,16 @@ navigation.forEach((item) => {
         item.id + " must not reference a missing parent",
       );
     }
+  }
+  if (
+    item.route === "/commerce/payments" ||
+    item.route.startsWith("/commerce/payments/")
+  ) {
+    assert(
+      item.requiredPermissions.includes("payment.backoffice.read"),
+      item.id +
+        " must be visibility-gated by Payment BackOffice read permission",
+    );
   }
   if (item.featureState !== "DISABLED" && item.id !== "commerce-operations") {
     assert(

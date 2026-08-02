@@ -144,13 +144,41 @@ module.exports = {
     if (
       Object.keys(presentation).some(
         (key) =>
-          !["defaultColumns", "quickFilters", "recoveryActions"].includes(key),
+          ![
+            "defaultColumns",
+            "hiddenFields",
+            "editableFields",
+            "readonlyFields",
+            "forbiddenFields",
+            "quickFilters",
+            "recoveryActions",
+          ].includes(key),
       )
     )
       return false;
     if (
       presentation.defaultColumns !== undefined &&
       !this.isStringList(presentation.defaultColumns, 32)
+    )
+      return false;
+    if (
+      presentation.hiddenFields !== undefined &&
+      !this.isStringList(presentation.hiddenFields, 64)
+    )
+      return false;
+    if (
+      presentation.editableFields !== undefined &&
+      !this.isStringList(presentation.editableFields, 64)
+    )
+      return false;
+    if (
+      presentation.readonlyFields !== undefined &&
+      !this.isStringList(presentation.readonlyFields, 64)
+    )
+      return false;
+    if (
+      presentation.forbiddenFields !== undefined &&
+      !this.isStringList(presentation.forbiddenFields, 64)
     )
       return false;
     if (presentation.quickFilters !== undefined) {
@@ -253,6 +281,60 @@ module.exports = {
           /^[A-Za-z0-9._:-]{1,128}$/.test(help.documentationFragment)))
     );
   },
+  /** Validates bounded non-executable lifecycle action hints for Axis workspaces. */
+  validateNavigationLifecycleActions: function (actions) {
+    if (!Array.isArray(actions) || actions.length > 24) return false;
+    let allowedFeatureStates = ["ACTIVE", "PREVIEW", "DISABLED", "HIDDEN"];
+    let ids = actions.map((action) => action && action.id);
+    if (
+      ids.some((id) => !this.isString(id, 128)) ||
+      new Set(ids).size !== ids.length
+    )
+      return false;
+    return actions.every((action) => {
+      if (!action || typeof action !== "object" || Array.isArray(action))
+        return false;
+      if (
+        Object.keys(action).some(
+          (key) =>
+            ![
+              "id",
+              "label",
+              "intent",
+              "permission",
+              "summary",
+              "targetStatuses",
+              "featureState",
+              "ownerModule",
+              "handlerAction",
+              "operationRoute",
+              "order",
+            ].includes(key),
+        ) ||
+        !this.isString(action.label, 128) ||
+        !this.isString(action.intent, 64) ||
+        (action.permission !== undefined &&
+          !this.isString(action.permission, 128)) ||
+        (action.summary !== undefined && !this.isString(action.summary, 320)) ||
+        (action.targetStatuses !== undefined &&
+          !this.isStringList(action.targetStatuses, 32)) ||
+        (action.featureState !== undefined &&
+          !allowedFeatureStates.includes(action.featureState)) ||
+        (action.ownerModule !== undefined &&
+          !(
+            contracts.moduleName.pattern &&
+            new RegExp(contracts.moduleName.pattern).test(action.ownerModule)
+          )) ||
+        (action.handlerAction !== undefined &&
+          !this.isString(action.handlerAction, 128)) ||
+        (action.operationRoute !== undefined &&
+          !this.isSafePath(action.operationRoute)) ||
+        (action.order !== undefined && !Number.isInteger(action.order))
+      )
+        return false;
+      return true;
+    });
+  },
   /** Validates bounded module-owned navigation metadata and hierarchy. */
   validateNavigation: function (navigation) {
     if (!Array.isArray(navigation) || navigation.length > 64) return false;
@@ -295,6 +377,7 @@ module.exports = {
                 "detailPanels",
                 "workbenchPresentation",
                 "help",
+                "lifecycleActions",
               ].includes(key),
           ) &&
           this.isString(item.label) &&
@@ -332,6 +415,8 @@ module.exports = {
               item.workbenchPresentation,
             )) &&
           (item.help === undefined || this.validateNavigationHelp(item.help)) &&
+          (item.lifecycleActions === undefined ||
+            this.validateNavigationLifecycleActions(item.lifecycleActions)) &&
           (item.requiredPermissions === undefined ||
             this.isStringList(item.requiredPermissions)),
       )

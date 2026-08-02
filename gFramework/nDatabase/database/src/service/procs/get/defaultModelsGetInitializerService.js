@@ -152,7 +152,9 @@ module.exports = {
      */
     lookupCache: function (request, response, process) {
         let cacheConfig = CONFIG.get('cache') || {};
-        if (cacheConfig.enabled !== false &&
+        if (request.options && request.options.skipItemCache) {
+            process.nextSuccess(request, response);
+        } else if (cacheConfig.enabled !== false &&
             request.schemaModel.cache &&
             request.schemaModel.cache.enabled) {
             request.cacheKeyHash = request.cacheKeyHash || SERVICE.DefaultCacheConfigurationService.createItemKey(request);
@@ -364,6 +366,10 @@ module.exports = {
      */
     updateCache: function (request, response, process) {
         this.LOG.debug('Updating cache for new Items');
+        if (request.options && request.options.skipItemCache) {
+            process.nextSuccess(request, response);
+            return;
+        }
         let cacheDecision = SERVICE.DefaultCachePolicyService && typeof SERVICE.DefaultCachePolicyService.isItemCacheable === 'function' ?
             SERVICE.DefaultCachePolicyService.isItemCacheable(request, response.success) :
             { cacheable: UTILS.isItemCashable(response.success.result, request.schemaModel), reason: 'legacyPolicy', reasonCode: 'RSN_CACHE_00010' };

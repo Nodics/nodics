@@ -369,7 +369,7 @@ module.exports = {
                     description: 'Optional fallback media set entry code used when this entry is not applicable',
                 },
                 primary: {
-                    type: 'boolean',
+                    type: 'bool',
                     required: false,
                     default: false,
                     searchOptions: { enabled: true },
