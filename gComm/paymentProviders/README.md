@@ -18,10 +18,11 @@ payment partner.
 
 Provider modules do not make a provider active by themselves. They contribute
 adapter capability and safe defaults. The effective business configuration is
-resolved by Payment from governed `paymentProvider` records first, then module
-defaults. This allows Axis to customize provider availability, methods,
-operations, connector references, and lifecycle status without editing provider
-module source.
+resolved by Payment from governed `paymentProvider` records and optional
+`paymentProviderExecutionPolicy` records first, then module defaults. This
+allows Axis to customize provider availability, methods, operations, connector
+references, lifecycle status, capture strategy, retry policy, and failover
+behavior without editing provider module source.
 
 Provider modules also do not expose BackOffice lifecycle routes. Axis executes
 provider validation, sandbox tests, activation, suspension, and connector
@@ -58,9 +59,11 @@ To add a provider:
    `refund`, and `reconcile`.
 3. Contribute provider metadata through layered
    `payment.paymentPolicy.providers`.
-4. Register the adapter with `DefaultPaymentProviderGatewayService` during
+4. Optionally contribute or create governed `paymentProviderExecutionPolicy`
+   records for capture, retry, reconciliation, and failover behavior.
+5. Register the adapter with `DefaultPaymentProviderGatewayService` during
    module `postInit`.
-5. Run the provider adapter conformance contract and Payment foundation tests.
+6. Run the provider adapter conformance contract and Payment foundation tests.
 
 Do not add provider-specific behavior to Cart, Order, Axis, or the Payment
 transaction schema. Payment remains the authority and the provider module stays

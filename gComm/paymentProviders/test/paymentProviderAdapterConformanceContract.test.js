@@ -27,87 +27,155 @@ const stripeProperties = require("../stripeProvider/config/properties");
 const paypalProperties = require("../paypalProvider/config/properties");
 const cyberSourceProperties = require("../cyberSourceProvider/config/properties");
 const visaProperties = require("../visaProvider/config/properties");
+const paymentProvidersPackage = require("../package.json");
+const stripePackage = require("../stripeProvider/package.json");
+const paypalPackage = require("../paypalProvider/package.json");
+const cyberSourcePackage = require("../cyberSourceProvider/package.json");
+const visaPackage = require("../visaProvider/package.json");
 
 const providers = {
-    stripeProvider: { adapter: stripe, properties: stripeProperties, expectedFamily: "STRIPE" },
-    paypalProvider: { adapter: paypal, properties: paypalProperties, expectedFamily: "PAYPAL" },
-    cyberSourceProvider: { adapter: cyberSource, properties: cyberSourceProperties, expectedFamily: "CYBERSOURCE" },
-    visaProvider: { adapter: visa, properties: visaProperties, expectedFamily: "VISA" },
+  stripeProvider: {
+    adapter: stripe,
+    properties: stripeProperties,
+    package: stripePackage,
+    expectedFamily: "STRIPE",
+  },
+  paypalProvider: {
+    adapter: paypal,
+    properties: paypalProperties,
+    package: paypalPackage,
+    expectedFamily: "PAYPAL",
+  },
+  cyberSourceProvider: {
+    adapter: cyberSource,
+    properties: cyberSourceProperties,
+    package: cyberSourcePackage,
+    expectedFamily: "CYBERSOURCE",
+  },
+  visaProvider: {
+    adapter: visa,
+    properties: visaProperties,
+    package: visaPackage,
+    expectedFamily: "VISA",
+  },
 };
 
 const baseTransaction = {
-    transactionCode: "payment-provider-conformance-1",
-    idempotencyKey: "payment-provider-conformance-key-1",
-    paymentModeCode: "CARD",
-    paymentGroupCode: "payment-group-1",
-    amount: "10.00",
-    currencyCode: "USD",
+  transactionCode: "payment-provider-conformance-1",
+  idempotencyKey: "payment-provider-conformance-key-1",
+  paymentModeCode: "CARD",
+  paymentGroupCode: "payment-group-1",
+  amount: "10.00",
+  currencyCode: "USD",
 };
 
 function request(providerCode, operation) {
-    return {
-        transaction: Object.assign({}, baseTransaction, {
-            providerCode: providerCode,
-            operation: operation,
-        }),
-        providerPolicy: {
-            providerCode: providerCode,
-            operation: operation,
-            adapterService: providers[providerCode].properties.payment.paymentPolicy.providers[providerCode].adapterService,
-        },
-        context: {
-            tenantCode: "tenantA",
-            enterpriseCode: "enterpriseA",
-        },
-    };
+  return {
+    transaction: Object.assign({}, baseTransaction, {
+      providerCode: providerCode,
+      operation: operation,
+    }),
+    providerPolicy: {
+      providerCode: providerCode,
+      operation: operation,
+      adapterService:
+        providers[providerCode].properties.payment.paymentPolicy.providers[
+          providerCode
+        ].adapterService,
+    },
+    context: {
+      tenantCode: "tenantA",
+      enterpriseCode: "enterpriseA",
+    },
+  };
 }
 
 const expectedStatuses = {
-    AUTHORIZE: "AUTHORIZED",
-    CAPTURE: "CAPTURED",
-    VOID: "VOIDED",
-    REFUND: "REFUNDED",
-    RECONCILE: "RECONCILED",
+  AUTHORIZE: "AUTHORIZED",
+  CAPTURE: "CAPTURED",
+  VOID: "VOIDED",
+  REFUND: "REFUNDED",
+  RECONCILE: "RECONCILED",
 };
 
 async function assertOperation(providerCode, adapter, operation, methodName) {
-    const result = contract.normalizeResult(await adapter[methodName](request(providerCode, operation)));
-    assert.strictEqual(result.providerCode, providerCode);
-    assert.strictEqual(result.providerFamily, providers[providerCode].expectedFamily);
-    assert.strictEqual(result.operation, operation);
-    assert.strictEqual(result.status, expectedStatuses[operation]);
-    assert(result.providerTransactionRef.startsWith(providerCode + "::"));
-    assert.strictEqual(result.rawGatewayPayload, undefined);
-    assert.strictEqual(result.secret, undefined);
+  const result = contract.normalizeResult(
+    await adapter[methodName](request(providerCode, operation)),
+  );
+  assert.strictEqual(result.providerCode, providerCode);
+  assert.strictEqual(
+    result.providerFamily,
+    providers[providerCode].expectedFamily,
+  );
+  assert.strictEqual(result.operation, operation);
+  assert.strictEqual(result.status, expectedStatuses[operation]);
+  assert(result.providerTransactionRef.startsWith(providerCode + "::"));
+  assert.strictEqual(result.rawGatewayPayload, undefined);
+  assert.strictEqual(result.secret, undefined);
 }
 
 (async () => {
-    Object.entries(providers).forEach(([providerCode, provider]) => {
-        contract.validate(providerCode, provider.adapter);
-        const configured = provider.properties.payment.paymentPolicy.providers[providerCode];
-        assert.strictEqual(configured.providerCode, providerCode);
-        assert.strictEqual(configured.adapterService.length > 0, true);
-        assert.strictEqual(configured.operations.includes("AUTHORIZE"), true);
-        assert.strictEqual(configured.operations.includes("RECONCILE"), true);
-        assert.strictEqual(provider.properties.paymentProviders[providerCode].mode, "MOCK_CONTRACT");
-    });
+  assert.strictEqual(paymentProvidersPackage.nodics.kind, "group");
+  assert.strictEqual(paymentProvidersPackage.nodics.runtime.router, false);
+  assert.strictEqual(
+    paymentProvidersPackage.nodics.owns.includes("service"),
+    true,
+  );
 
-    for (const [providerCode, provider] of Object.entries(providers)) {
-        await assertOperation(providerCode, provider.adapter, "AUTHORIZE", "authorize");
-        await assertOperation(providerCode, provider.adapter, "CAPTURE", "capture");
-        await assertOperation(providerCode, provider.adapter, "VOID", "void");
-        await assertOperation(providerCode, provider.adapter, "REFUND", "refund");
-        await assertOperation(providerCode, provider.adapter, "RECONCILE", "reconcile");
-    }
+  Object.entries(providers).forEach(([providerCode, provider]) => {
+    assert.strictEqual(provider.package.nodics.kind, "capability");
+    assert.strictEqual(provider.package.nodics.runtime.router, false);
+    assert.strictEqual(provider.package.nodics.runtime.web, false);
+    assert.strictEqual(provider.package.nodics.owns.includes("service"), true);
+    assert.strictEqual(
+      provider.package.nodics.owns.includes("configuration"),
+      true,
+    );
+    contract.validate(providerCode, provider.adapter);
+    const configured =
+      provider.properties.payment.paymentPolicy.providers[providerCode];
+    assert.strictEqual(configured.providerCode, providerCode);
+    assert.strictEqual(configured.adapterService.length > 0, true);
+    assert.strictEqual(configured.operations.includes("AUTHORIZE"), true);
+    assert.strictEqual(configured.operations.includes("RECONCILE"), true);
+    assert.strictEqual(
+      provider.properties.paymentProviders[providerCode].mode,
+      "MOCK_CONTRACT",
+    );
+  });
 
-    gateway.init();
-    gateway.register("stripeProvider", stripe);
-    assert.strictEqual(gateway.adapter("MissingService", "stripeProvider"), stripe);
-    gateway.unregister("stripeProvider");
-    assert.notStrictEqual(gateway.adapter("MissingService", "stripeProvider"), stripe);
+  for (const [providerCode, provider] of Object.entries(providers)) {
+    await assertOperation(
+      providerCode,
+      provider.adapter,
+      "AUTHORIZE",
+      "authorize",
+    );
+    await assertOperation(providerCode, provider.adapter, "CAPTURE", "capture");
+    await assertOperation(providerCode, provider.adapter, "VOID", "void");
+    await assertOperation(providerCode, provider.adapter, "REFUND", "refund");
+    await assertOperation(
+      providerCode,
+      provider.adapter,
+      "RECONCILE",
+      "reconcile",
+    );
+  }
 
-    console.log("Payment provider adapter conformance contract validated");
+  gateway.init();
+  gateway.register("stripeProvider", stripe);
+  assert.strictEqual(
+    gateway.adapter("MissingService", "stripeProvider"),
+    stripe,
+  );
+  gateway.unregister("stripeProvider");
+  assert.notStrictEqual(
+    gateway.adapter("MissingService", "stripeProvider"),
+    stripe,
+  );
+
+  console.log("Payment provider adapter conformance contract validated");
 })().catch((error) => {
-    console.error(error);
-    process.exit(1);
+  console.error(error);
+  process.exit(1);
 });

@@ -13,14 +13,40 @@
 module.exports = {
   payment: {
     paymentPolicy: {
-      operations: ["AUTHORIZE", "CAPTURE", "REFUND", "VOID", "DEFER", "RECONCILE"],
-      transactionStatuses: ["REQUESTED", "AUTHORIZED", "CAPTURED", "REFUNDED", "VOIDED", "DEFERRED", "RECONCILED", "FAILED"],
+      operations: [
+        "AUTHORIZE",
+        "CAPTURE",
+        "REFUND",
+        "VOID",
+        "DEFER",
+        "RECONCILE",
+      ],
+      transactionStatuses: [
+        "REQUESTED",
+        "AUTHORIZED",
+        "CAPTURED",
+        "REFUNDED",
+        "VOIDED",
+        "DEFERRED",
+        "RECONCILED",
+        "FAILED",
+      ],
       providerStatuses: ["DRAFT", "ACTIVE", "SUSPENDED", "INACTIVE", "RETIRED"],
+      providerExecutionPolicyRecordLimit: 25,
       connectorPolicy: {
         requireConnectorReferenceForGateway: true,
         connectorCodePattern: "^[A-Za-z][A-Za-z0-9._:-]{0,127}$",
         configRefPattern: "^[A-Za-z][A-Za-z0-9._:-]{0,255}$",
-        forbiddenReferenceTerms: ["secret", "password", "apikey", "api_key", "token", "credential", "pan", "cvv"],
+        forbiddenReferenceTerms: [
+          "secret",
+          "password",
+          "apikey",
+          "api_key",
+          "token",
+          "credential",
+          "pan",
+          "cvv",
+        ],
         rotationAuthority: "connector-secret-authority",
       },
       methods: {
@@ -203,7 +229,10 @@ module.exports = {
           contexts: ["environment", "tenant", "enterprise"],
           featureState: "PREVIEW",
           requiredPermissions: ["payment.backoffice.read"],
-          workbenchTarget: { moduleName: "payment", schemaName: "paymentTransaction" },
+          workbenchTarget: {
+            moduleName: "payment",
+            schemaName: "paymentTransaction",
+          },
           lifecycleActions: [
             {
               id: "review-failed-payments",
@@ -234,7 +263,10 @@ module.exports = {
           contexts: ["environment", "tenant", "enterprise"],
           featureState: "PREVIEW",
           requiredPermissions: ["payment.backoffice.read"],
-          workbenchTarget: { moduleName: "payment", schemaName: "paymentMethod" },
+          workbenchTarget: {
+            moduleName: "payment",
+            schemaName: "paymentMethod",
+          },
           lifecycleActions: [
             {
               id: "create-payment-method",
@@ -274,7 +306,10 @@ module.exports = {
           contexts: ["environment", "tenant", "enterprise"],
           featureState: "PREVIEW",
           requiredPermissions: ["payment.backoffice.read"],
-          workbenchTarget: { moduleName: "payment", schemaName: "paymentTransaction" },
+          workbenchTarget: {
+            moduleName: "payment",
+            schemaName: "paymentTransaction",
+          },
           lifecycleActions: [
             {
               id: "retry-payment",
@@ -315,7 +350,10 @@ module.exports = {
           contexts: ["environment", "tenant", "enterprise"],
           featureState: "PREVIEW",
           requiredPermissions: ["payment.backoffice.read"],
-          workbenchTarget: { moduleName: "payment", schemaName: "paymentProvider" },
+          workbenchTarget: {
+            moduleName: "payment",
+            schemaName: "paymentProvider",
+          },
           workbenchPresentation: {
             defaultColumns: [
               "providerCode",
@@ -327,9 +365,7 @@ module.exports = {
               "connectorCode",
               "status",
             ],
-            hiddenFields: [
-              "notes",
-            ],
+            hiddenFields: ["notes"],
             editableFields: [
               "enterpriseCode",
               "providerCode",
@@ -398,7 +434,8 @@ module.exports = {
               intent: "CREATE",
               permission: "payment.backoffice.manage",
               ownerModule: "payment",
-              handlerAction: "DefaultPaymentProviderLifecycleService.validateProvider",
+              handlerAction:
+                "DefaultPaymentProviderLifecycleService.validateProvider",
               operationRoute: "/providers/lifecycle",
               summary:
                 "Register a safe provider identity and adapter reference. Secrets remain in the configured secret authority.",
@@ -410,7 +447,8 @@ module.exports = {
               intent: "VALIDATE",
               permission: "payment.backoffice.manage",
               ownerModule: "payment",
-              handlerAction: "DefaultPaymentProviderLifecycleService.validateProvider",
+              handlerAction:
+                "DefaultPaymentProviderLifecycleService.validateProvider",
               operationRoute: "/providers/lifecycle",
               summary:
                 "Validate safe provider metadata, adapter availability, and connector references without reading secrets.",
@@ -423,7 +461,8 @@ module.exports = {
               intent: "TEST",
               permission: "payment.backoffice.manage",
               ownerModule: "payment",
-              handlerAction: "DefaultPaymentProviderLifecycleService.testProvider",
+              handlerAction:
+                "DefaultPaymentProviderLifecycleService.testProvider",
               operationRoute: "/providers/lifecycle",
               summary:
                 "Run a safe provider contract test through normalized Payment evidence.",
@@ -436,7 +475,8 @@ module.exports = {
               intent: "ACTIVATE",
               permission: "payment.backoffice.manage",
               ownerModule: "payment",
-              handlerAction: "DefaultPaymentProviderLifecycleService.activateProvider",
+              handlerAction:
+                "DefaultPaymentProviderLifecycleService.activateProvider",
               operationRoute: "/providers/lifecycle",
               summary:
                 "Activate a provider only after safe metadata and adapter validation.",
@@ -449,7 +489,8 @@ module.exports = {
               intent: "UPDATE",
               permission: "payment.backoffice.manage",
               ownerModule: "payment",
-              handlerAction: "DefaultPaymentProviderLifecycleService.suspendProvider",
+              handlerAction:
+                "DefaultPaymentProviderLifecycleService.suspendProvider",
               operationRoute: "/providers/lifecycle",
               summary:
                 "Suspend an enterprise provider through Payment governance and checkout dependency checks.",
@@ -462,7 +503,8 @@ module.exports = {
               intent: "ROTATE_CONNECTOR",
               permission: "payment.backoffice.manage",
               ownerModule: "payment",
-              handlerAction: "DefaultPaymentProviderLifecycleService.requestConnectorRotation",
+              handlerAction:
+                "DefaultPaymentProviderLifecycleService.requestConnectorRotation",
               operationRoute: "/providers/lifecycle",
               summary:
                 "Request credential rotation through the connector or secret authority without exposing secret values.",
@@ -477,10 +519,10 @@ module.exports = {
           },
         },
         {
-          id: "payment-refunds-reconciliation",
+          id: "payment-provider-policies",
           parentId: "payment-operations",
-          label: "Refunds & Reconciliation",
-          route: "/commerce/payments/refunds-reconciliation",
+          label: "Provider Policies",
+          route: "/commerce/payments/provider-policies",
           icon: "payment",
           order: 614,
           group: { id: "commerce", label: "Commerce", order: 300 },
@@ -488,7 +530,125 @@ module.exports = {
           contexts: ["environment", "tenant", "enterprise"],
           featureState: "PREVIEW",
           requiredPermissions: ["payment.backoffice.read"],
-          workbenchTarget: { moduleName: "payment", schemaName: "paymentTransaction" },
+          workbenchTarget: {
+            moduleName: "payment",
+            schemaName: "paymentProviderExecutionPolicy",
+          },
+          workbenchPresentation: {
+            defaultColumns: [
+              "policyCode",
+              "providerCode",
+              "methodCode",
+              "operation",
+              "captureStrategy",
+              "retryStrategy",
+              "maxRetries",
+              "status",
+            ],
+            hiddenFields: ["notes"],
+            editableFields: [
+              "enterpriseCode",
+              "policyCode",
+              "providerCode",
+              "methodCode",
+              "operation",
+              "priority",
+              "captureStrategy",
+              "authorizationTtlMinutes",
+              "retryStrategy",
+              "maxRetries",
+              "failoverProviderCodes",
+              "connectorCode",
+              "configRef",
+              "status",
+              "businessEditable",
+              "notes",
+            ],
+            readonlyFields: ["created", "updated", "createdBy", "updatedBy"],
+            forbiddenFields: [
+              "secret",
+              "password",
+              "apiKey",
+              "accessToken",
+              "refreshToken",
+              "cardNumber",
+              "cvv",
+              "pan",
+              "rawGatewayPayload",
+              "providerPayload",
+            ],
+            quickFilters: [
+              {
+                id: "active",
+                label: "Active",
+                field: "status",
+                value: "ACTIVE",
+              },
+              {
+                id: "authorize",
+                label: "Authorize",
+                field: "operation",
+                value: "AUTHORIZE",
+              },
+              {
+                id: "capture",
+                label: "Capture",
+                field: "operation",
+                value: "CAPTURE",
+              },
+              {
+                id: "refund",
+                label: "Refund",
+                field: "operation",
+                value: "REFUND",
+              },
+            ],
+          },
+          lifecycleActions: [
+            {
+              id: "create-provider-policy",
+              label: "Create policy",
+              intent: "CREATE",
+              permission: "payment.backoffice.manage",
+              ownerModule: "payment",
+              summary:
+                "Create safe provider execution policy for routing, capture, retry, and failover behavior.",
+              featureState: "PREVIEW",
+            },
+            {
+              id: "retire-provider-policy",
+              label: "Retire policy",
+              intent: "UPDATE",
+              permission: "payment.backoffice.manage",
+              ownerModule: "payment",
+              summary:
+                "Retire a provider execution policy without deleting historical payment evidence.",
+              targetStatuses: ["ACTIVE", "SUSPENDED"],
+              featureState: "PREVIEW",
+            },
+          ],
+          help: {
+            summary:
+              "Configure safe provider execution behavior such as capture, retry, and failover without storing credentials.",
+            documentationRoute: "/docs/capabilities/commerce/end-to-end",
+          },
+        },
+        {
+          id: "payment-refunds-reconciliation",
+          parentId: "payment-operations",
+          label: "Refunds & Reconciliation",
+          route: "/commerce/payments/refunds-reconciliation",
+          icon: "payment",
+          order: 615,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["payment.backoffice.read"],
+          workbenchTarget: {
+            moduleName: "payment",
+            schemaName: "paymentTransaction",
+          },
           workbenchPresentation: {
             defaultColumns: [
               "transactionCode",
@@ -540,7 +700,13 @@ module.exports = {
               permission: "payment.backoffice.manage",
               summary:
                 "Compare Payment evidence with normalized provider reconciliation output.",
-              targetStatuses: ["FAILED", "REQUESTED", "AUTHORIZED", "CAPTURED", "REFUNDED"],
+              targetStatuses: [
+                "FAILED",
+                "REQUESTED",
+                "AUTHORIZED",
+                "CAPTURED",
+                "REFUNDED",
+              ],
               featureState: "PREVIEW",
             },
           ],

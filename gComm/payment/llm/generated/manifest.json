@@ -17,7 +17,7 @@
   "testFiles": 7,
   "dataFiles": 5,
   "ownedFiles": 39,
-  "sourceFingerprint": "da61eee1840ebd2dd15c3e4929ff9fd0138fd82bf218407b4b9aae84dde873d6",
+  "sourceFingerprint": "84365637fe3cd2338dfa196d202db1d05b958717c202d56e863a1fa7350b37b9",
   "documentation": {
     "documented": 27,
     "partially-documented": 7,
@@ -28,6 +28,7 @@
     "payment": [
       "paymentMethod",
       "paymentProvider",
+      "paymentProviderExecutionPolicy",
       "paymentTransaction"
     ]
   },

@@ -80,6 +80,27 @@ const governedProviderRecords = [
   }),
 ];
 
+const governedExecutionPolicyRecords = [
+  {
+    enterpriseCode: "default",
+    policyCode: "default-card-authorize-policy",
+    providerCode: "defaultCardProvider",
+    methodCode: "CARD",
+    operation: "AUTHORIZE",
+    priority: 10,
+    status: "ACTIVE",
+    captureStrategy: "MANUAL_CAPTURE",
+    authorizationTtlMinutes: 30,
+    retryStrategy: "EXPONENTIAL_BACKOFF",
+    maxRetries: 2,
+    failoverProviderCodes: ["manualPaymentProvider"],
+    connectorCode: "enterprise-card-policy-connector",
+    configRef: "paymentPolicies.defaultCardAuthorize",
+    secret: "must-not-leak",
+    rawGatewayPayload: { must: "not-leak" },
+  },
+];
+
 global.SERVICE.DefaultPaymentProviderService = {
   get: async function (request) {
     let query = request.query || {};
@@ -92,6 +113,17 @@ global.SERVICE.DefaultPaymentProviderService = {
   save: async function (request) {
     global.__savedPaymentProvider = request.model;
     return { result: [request.model] };
+  },
+};
+
+global.SERVICE.DefaultPaymentProviderExecutionPolicyService = {
+  get: async function (request) {
+    let query = request.query || {};
+    return {
+      result: governedExecutionPolicyRecords.filter((record) => {
+        return Object.keys(query).every((key) => record[key] === query[key]);
+      }),
+    };
   },
 };
 
@@ -122,6 +154,10 @@ assert.strictEqual(
 assert.strictEqual(
   properties.payment.paymentPolicy.providerStatuses.includes("SUSPENDED"),
   true,
+);
+assert.strictEqual(
+  properties.payment.paymentPolicy.providerExecutionPolicyRecordLimit,
+  25,
 );
 assert.strictEqual(
   properties.payment.paymentPolicy.connectorPolicy.rotationAuthority,
@@ -215,6 +251,24 @@ assert.strictEqual(
 );
 assert.strictEqual(
   properties.backofficeCapabilities.payment.navigation.find(
+    (item) => item.id === "payment-provider-policies",
+  ).workbenchTarget.schemaName,
+  "paymentProviderExecutionPolicy",
+);
+assert.deepStrictEqual(
+  properties.backofficeCapabilities.payment.navigation
+    .find((item) => item.id === "payment-provider-policies")
+    .workbenchPresentation.defaultColumns.slice(0, 4),
+  ["policyCode", "providerCode", "methodCode", "operation"],
+);
+assert.strictEqual(
+  properties.backofficeCapabilities.payment.navigation
+    .find((item) => item.id === "payment-provider-policies")
+    .workbenchPresentation.forbiddenFields.includes("rawGatewayPayload"),
+  true,
+);
+assert.strictEqual(
+  properties.backofficeCapabilities.payment.navigation.find(
     (item) => item.id === "payment-refunds-reconciliation",
   ).workbenchTarget.schemaName,
   "paymentTransaction",
@@ -236,8 +290,16 @@ assert.strictEqual(
 assert.strictEqual(schemas.payment.paymentMethod.router.enabled, false);
 assert.strictEqual(schemas.payment.paymentMethod.service.enabled, true);
 assert.strictEqual(schemas.payment.paymentProvider.router.enabled, false);
+assert.strictEqual(
+  schemas.payment.paymentProviderExecutionPolicy.router.enabled,
+  false,
+);
 assert.strictEqual(schemas.payment.paymentTransaction.router.enabled, false);
 assert.strictEqual(schemas.payment.paymentProvider.service.enabled, true);
+assert.strictEqual(
+  schemas.payment.paymentProviderExecutionPolicy.service.enabled,
+  true,
+);
 assert.strictEqual(schemas.payment.paymentTransaction.service.enabled, true);
 assert.strictEqual(
   schemas.payment.paymentMethod.indexes.common.enterpriseCode.enabled,
@@ -305,6 +367,28 @@ assert.strictEqual(
 assert.strictEqual(
   schemas.payment.paymentProvider.definition.businessEditable.type,
   "bool",
+);
+assert.strictEqual(
+  schemas.payment.paymentProviderExecutionPolicy.definition.policyCode.required,
+  true,
+);
+assert.strictEqual(
+  schemas.payment.paymentProviderExecutionPolicy.definition.providerCode
+    .required,
+  true,
+);
+assert.strictEqual(
+  schemas.payment.paymentProviderExecutionPolicy.definition.captureStrategy
+    .type,
+  "string",
+);
+assert.strictEqual(
+  schemas.payment.paymentProviderExecutionPolicy.definition.secret,
+  undefined,
+);
+assert.strictEqual(
+  schemas.payment.paymentProviderExecutionPolicy.definition.rawGatewayPayload,
+  undefined,
 );
 assert.strictEqual(statusDefinitions.SUC_PAY_00001.code, "200");
 assert.strictEqual(statusDefinitions.ERR_PAY_00009.code, "400");
@@ -570,7 +654,26 @@ const baseTransaction = {
     effectivePolicy.adapterService,
     "DefaultManualPaymentProviderAdapterService",
   );
-  assert.strictEqual(effectivePolicy.configurationSource, "GOVERNED_RECORD");
+  assert.strictEqual(
+    effectivePolicy.configurationSource,
+    "GOVERNED_EXECUTION_POLICY",
+  );
+  assert.strictEqual(
+    effectivePolicy.executionPolicyCode,
+    "default-card-authorize-policy",
+  );
+  assert.strictEqual(effectivePolicy.captureStrategy, "MANUAL_CAPTURE");
+  assert.strictEqual(effectivePolicy.retryStrategy, "EXPONENTIAL_BACKOFF");
+  assert.strictEqual(effectivePolicy.maxRetries, 2);
+  assert.deepStrictEqual(effectivePolicy.failoverProviderCodes, [
+    "manualPaymentProvider",
+  ]);
+  assert.strictEqual(
+    effectivePolicy.connectorCode,
+    "enterprise-card-policy-connector",
+  );
+  assert.strictEqual(effectivePolicy.secret, undefined);
+  assert.strictEqual(effectivePolicy.rawGatewayPayload, undefined);
 
   let validation = await lifecycleService.validateProvider({
     enterpriseCode: "default",

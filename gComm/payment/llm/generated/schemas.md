@@ -8,6 +8,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `paymentMethod` | `base` | yes | yes | no | no | no | no |  | 9 |
 | `paymentProvider` | `base` | yes | yes | no | no | no | no |  | 15 |
+| `paymentProviderExecutionPolicy` | `base` | yes | yes | no | no | no | no |  | 16 |
 | `paymentTransaction` | `base` | yes | yes | no | no | no | no |  | 21 |
 
 ### `payment.paymentMethod`
@@ -38,6 +39,25 @@
 - `policyService` `string` optional: Provider policy service for routing, retries, failover, and enterprise-specific behavior
 - `providerCode` `string` required: Safe provider identity. Never store secrets here.
 - `providerType` `string` required: Provider type such as CARD_GATEWAY, WALLET, MANUAL, DEFERRED, or PROJECT_PROVIDER
+- `status` `string` required: Governed lifecycle status
+
+### `payment.paymentProviderExecutionPolicy`
+
+- `authorizationTtlMinutes` `number` optional: Optional authorization validity window in minutes
+- `businessEditable` `bool` optional: Whether business users may maintain this safe policy through Axis
+- `captureStrategy` `string` optional: Safe capture behavior such as AUTHORIZE_ONLY, AUTHORIZE_AND_CAPTURE, MANUAL_CAPTURE, or PROVIDER_DEFAULT
+- `configRef` `string` optional: Safe configuration reference override, not raw credentials
+- `connectorCode` `string` optional: Safe connector identity override. Credentials remain in secret stores.
+- `enterpriseCode` `string` required: Authenticated enterprise owner of the payment record
+- `failoverProviderCodes` `array` optional: Ordered safe provider codes that Payment may consider during governed failover
+- `maxRetries` `number` optional: Maximum governed retry attempts for recoverable provider operations
+- `methodCode` `string` optional: Optional payment method such as CARD, WALLET, COD, ADVANCE, or project-specific method
+- `notes` `string` optional: Safe business notes. Do not store credentials, card data, or raw provider payloads.
+- `operation` `string` optional: Optional payment operation such as AUTHORIZE, CAPTURE, REFUND, VOID, DEFER, or RECONCILE
+- `policyCode` `string` required: Stable provider execution policy identity
+- `priority` `number` optional: Lower priority wins when multiple policies match the same provider/method/operation
+- `providerCode` `string` required: Provider identity this policy applies to
+- `retryStrategy` `string` optional: Safe retry strategy such as NONE, MANUAL, EXPONENTIAL_BACKOFF, or PROVIDER_DEFAULT
 - `status` `string` required: Governed lifecycle status
 
 ### `payment.paymentTransaction`

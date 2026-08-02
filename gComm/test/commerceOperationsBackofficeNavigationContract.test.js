@@ -284,6 +284,14 @@ assert.strictEqual(
   byId["payment-providers"].workbenchTarget.schemaName,
   "paymentProvider",
 );
+assert.strictEqual(
+  byId["payment-provider-policies"].parentId,
+  "payment-operations",
+);
+assert.strictEqual(
+  byId["payment-provider-policies"].workbenchTarget.schemaName,
+  "paymentProviderExecutionPolicy",
+);
 assert.strictEqual(byId["payment-transactions"].parentId, "payment-operations");
 assert.strictEqual(
   byId["payment-transactions"].workbenchTarget.schemaName,

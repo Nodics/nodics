@@ -192,11 +192,19 @@ service, connector code, status, and safe notes. The runtime provider registry
 prefers a matching active governed record for the request enterprise, then falls
 back to module configuration.
 
+Axis also manages governed `paymentProviderExecutionPolicy` records through the
+Provider Policies page. These records are the business-user configuration layer
+for execution behavior: provider, method, operation, priority, capture strategy,
+authorization time-to-live, retry strategy, max retries, failover provider
+codes, and safe connector/config references. They are not credential records and
+must never contain API keys, tokens, card data, webhook secrets, or raw gateway
+payloads.
+
 This split is deliberate:
 
 - provider modules supply reusable adapter defaults;
 - Payment owns the governed provider schema and runtime selection;
-- Axis edits only safe provider metadata;
+- Axis edits only safe provider metadata and safe execution policy;
 - credentials, API keys, access tokens, webhooks, PAN, CVV, and raw gateway
   payloads remain in the secret or connector authority.
 
@@ -323,8 +331,13 @@ Payment-owned transaction evidence.
 ## Provider policy and operation governance
 
 `DefaultPaymentProviderPolicyService` builds the effective execution policy from
-method, provider, operation, and request context. Customer modules replace or
-extend this service when eligibility depends on:
+method, provider, operation, request context, and optional governed
+`paymentProviderExecutionPolicy` records. The lookup is intentionally optional:
+if no active enterprise policy exists, Payment uses module defaults; if a
+matching policy exists, Payment merges only safe fields into the execution
+policy.
+
+Customer modules replace or extend this service when eligibility depends on:
 
 - tenant or enterprise;
 - country, currency, or channel;
@@ -334,6 +347,11 @@ extend this service when eligibility depends on:
 - retry/failover rules;
 - payment operation such as `AUTHORIZE`, `CAPTURE`, `VOID`, `REFUND`, or
   `RECONCILE`.
+
+The default policy match is scoped by provider and enterprise, then filtered by
+optional method and operation. Lower `priority` wins. This lets a project define
+a broad provider policy first and then add a more specific policy for a method
+or operation without changing framework code.
 
 `DefaultPaymentProviderGatewayService` is the single provider execution boundary
 used by checkout authorization and refunds. Keep idempotency, timeout, retry,

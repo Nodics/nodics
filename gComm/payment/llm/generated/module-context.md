@@ -35,7 +35,7 @@
 | Test files | 7 |
 | Data files | 5 |
 | All module-owned files | 39 |
-| Local schema definitions | 3 |
+| Local schema definitions | 4 |
 
 ## Ownership And Dependencies
 
@@ -115,7 +115,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/payment/src/service/provider/defaultPaymentProviderConnectorPolicyService.js` | `src` | `documented` | 8/8 | Validates safe connector references for Payment Providers without resolving or exposing credential values. |  |
 | `gComm/payment/src/service/provider/defaultPaymentProviderGatewayService.js` | `src` | `documented` | 15/15 | Safe replaceable payment-provider boundary used by checkout authorization before real gateway connectors are introduced. |  |
 | `gComm/payment/src/service/provider/defaultPaymentProviderLifecycleService.js` | `src` | `documented` | 14/14 | Operates safe Payment Provider lifecycle actions for Axis without storing credentials or raw gateway payloads. |  |
-| `gComm/payment/src/service/provider/defaultPaymentProviderPolicyService.js` | `src` | `documented` | 6/6 | Builds effective payment provider execution policy from method, provider, operation, and request context. |  |
+| `gComm/payment/src/service/provider/defaultPaymentProviderPolicyService.js` | `src` | `documented` | 13/13 | Builds effective payment provider execution policy from method, provider, operation, and request context. |  |
 | `gComm/payment/src/service/provider/defaultPaymentProviderRegistryService.js` | `src` | `documented` | 21/21 | Resolves payment provider definitions separately from payment methods and gateway adapters. |  |
 | `gComm/payment/src/service/refund/defaultPaymentRefundCalculationService.js` | `src` | `documented` | 13/13 | Calculates safe refundable amounts from Order-provided payment allocation evidence before Payment creates refund transaction evidence. |  |
 | `gComm/payment/src/service/refund/defaultPaymentRefundService.js` | `src` | `documented` | 13/13 | Creates Payment-owned refund transaction evidence for returns or order adjustments. |  |
