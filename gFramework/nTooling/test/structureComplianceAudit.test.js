@@ -35,7 +35,6 @@ function packageJson(name, kind, owns, extra) {
         description: name + ' fixture module',
         index: '9000.0',
         main: 'nodics.js',
-        dependencies: {},
         nodics: {
             kind: kind,
             displayName: name + ' Fixture',

@@ -2,7 +2,14 @@
 
 `inventory` is the Nodics commerce capability for enterprise-scoped warehouses,
 warehouse locations, Stock balances and movements, Stock Pools, and declarative
-Stock Sourcing, exact Availability, operational Stock Reservations, multi-Warehouse Allocation, coordinated Stock Transfers, and governed Stock Reconciliation.
+Stock Sourcing, exact Availability, operational Stock Reservations,
+multi-Warehouse Allocation, Inventory Promises for preorder/backorder/overbooking
+capacity, coordinated Stock Transfers, and governed Stock Reconciliation.
+
+Read the group-level
+[Commerce Checkout Foundation](../llm/contracts/commerce-checkout-foundation-contract.md)
+for the beginner checkout model and how Inventory Promises connect to cart and
+order delivery/payment allocations.
 
 ## Implemented Capabilities
 
@@ -34,6 +41,36 @@ authorities.
 
 Customer applications call `POST /delivery/storefront/stock-availability/evaluate` with the opaque handle issued by Storefront. Inventory introspects it for the `inventory` audience, derives tenant, enterprise, Store, country, and channel, and delegates to the same authoritative sourcing, Stock Balance, Units, exact-arithmetic, and cache chain. The public response contains customer-safe totals only; operational Pool, Warehouse, Balance, revision, and enterprise evidence remains available only through the service-token intent.
 
+Inventory Promises add a sellable-capacity layer above physical Stock. `inventoryPromise`
+records model configured capacity for `STOCK`, `PRE_ORDER`, `BACKORDER`,
+`PERPETUAL`, `DROP_SHIP`, `MADE_TO_ORDER`, or `DIGITAL` demand. They carry
+exact decimal-string `promisedQuantity`, `reservedQuantity`, optional
+`overbookingQuantity`, and the commercial policy hook that checkout/payment
+uses when overbooking requires an advance, deposit, full payment, or balance
+capture. `inventoryPromiseReservation` records link cart/order demand lines or
+allocation codes to either the standard promise bucket or an overbooked bucket.
+`DefaultInventoryPromiseReservationOrchestrationService` reserves and releases
+this promise capacity with idempotency and revision-guarded counter updates.
+Promise reservations do not mutate physical Stock Balance; physical reservation,
+allocation, issue, and fulfillment evidence remain owned by the Stock
+Reservation and Stock Allocation services.
+
+Return disposition movement execution is implemented through
+`DefaultReturnDispositionMovementService`. Fulfillment records safe return
+disposition intent, and reverse checkout Workflow calls Inventory to convert
+RESTOCK, REPAIR, or SCRAP intent into idempotent Stock Movement evidence.
+Inventory resolves Stock from Stock Allocation and Stock Balance evidence,
+applies exact quantities through `DefaultStockMovementService`, and preserves
+compare-and-set revision protection. Fulfillment and Order never mutate Stock
+counters directly.
+
+Inventory also owns return-disposition recovery review. The same
+`DefaultReturnDispositionMovementService` exposes `reviewDispositionRecovery`
+so Order reverse Workflow can ask whether the idempotent Stock Movement already
+exists or whether Inventory operators must review/adjust the movement through
+Inventory-owned capabilities. The review does not mutate Stock Balance, Stock
+Allocation, or Stock Movement records.
+
 Layer `inventory.identity`, `inventory.warehouse`, and `inventory.location`
 properties to customize classifications or hierarchy depth while preserving
 fail-closed scope, stable identities, hierarchy safety, and retirement history.
@@ -54,6 +91,8 @@ node gComm/inventory/test/stockAvailabilityFoundation.test.js
 node gComm/inventory/test/inventoryStorefrontAvailabilityContract.test.js
 node gComm/inventory/test/stockReservationFoundation.test.js
 node gComm/inventory/test/stockAllocationFoundation.test.js
+node gComm/inventory/test/returnDispositionMovementContract.test.js
+node gComm/inventory/test/inventoryPromiseFoundation.test.js
 node gComm/inventory/test/stockTransferFoundation.test.js
 node gComm/inventory/test/stockReconciliationFoundation.test.js
 ```
@@ -76,6 +115,8 @@ Read the Stock Availability foundation (canonical documentation: `capability.com
 Read the Stock Reservation foundation (canonical documentation: `capability.commerce.technical-reference`) before extending checkout holds, expiry, or fulfillment consumption.
 
 Read the Stock Allocation foundation (canonical documentation: `capability.commerce.technical-reference`) before integrating Order demand, split fulfillment, or backorders.
+
+Read the Inventory Promise foundation (canonical documentation: `capability.commerce.technical-reference`) before extending preorder, backorder, overbooking, commercial-payment requirements, checkout promise reservations, or promise counter orchestration.
 
 Read the Stock Transfer foundation (canonical documentation: `capability.commerce.technical-reference`) before moving Stock between Warehouses or extending discrepancy handling.
 

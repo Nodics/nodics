@@ -76,6 +76,38 @@ module.exports = {
         },
       },
     },
+    checkoutAllocation: {
+      policy: {
+        quantityPattern: "^(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+        moneyPattern: "^(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+        maximumDigits: 38,
+        maximumScale: 18,
+        deliveryGroupTypes: ["ADDRESS", "PICKUP", "DIGITAL", "SERVICE"],
+        deliveryGroupStatuses: [
+          "DRAFT",
+          "ACTIVE",
+          "ALLOCATED",
+          "RELEASED",
+          "CANCELLED",
+        ],
+        paymentGroupStatuses: [
+          "DRAFT",
+          "ACTIVE",
+          "AUTHORIZED",
+          "CAPTURED",
+          "PARTIALLY_REFUNDED",
+          "REFUNDED",
+          "CANCELLED",
+        ],
+        allocationStatuses: [
+          "ACTIVE",
+          "RESERVED",
+          "ALLOCATED",
+          "RELEASED",
+          "CANCELLED",
+        ],
+      },
+    },
   },
   backofficeCapabilities: {
     cart: {

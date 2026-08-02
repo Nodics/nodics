@@ -57,4 +57,68 @@ module.exports = {
         index: -100,
         handler: 'DefaultOrderEntryPolicyService.rejectHardDelete'
     },
+    orderDeliveryGroupPreSavePolicy: {
+        type: 'schema',
+        item: 'orderDeliveryGroup',
+        trigger: 'preSave',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultOrderCheckoutAllocationPolicyService.prepareDeliveryGroup'
+    },
+    orderDeliveryAllocationPreSavePolicy: {
+        type: 'schema',
+        item: 'orderDeliveryAllocation',
+        trigger: 'preSave',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultOrderCheckoutAllocationPolicyService.prepareDeliveryAllocation'
+    },
+    orderPaymentGroupPreSavePolicy: {
+        type: 'schema',
+        item: 'orderPaymentGroup',
+        trigger: 'preSave',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultOrderCheckoutAllocationPolicyService.preparePaymentGroup'
+    },
+    orderPaymentAllocationPreSavePolicy: {
+        type: 'schema',
+        item: 'orderPaymentAllocation',
+        trigger: 'preSave',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultOrderCheckoutAllocationPolicyService.preparePaymentAllocation'
+    },
+    orderDeliveryGroupPreRemovePolicy: {
+        type: 'schema',
+        item: 'orderDeliveryGroup',
+        trigger: 'preRemove',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultOrderCheckoutAllocationPolicyService.rejectHardDelete'
+    },
+    orderDeliveryAllocationPreRemovePolicy: {
+        type: 'schema',
+        item: 'orderDeliveryAllocation',
+        trigger: 'preRemove',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultOrderCheckoutAllocationPolicyService.rejectHardDelete'
+    },
+    orderPaymentGroupPreRemovePolicy: {
+        type: 'schema',
+        item: 'orderPaymentGroup',
+        trigger: 'preRemove',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultOrderCheckoutAllocationPolicyService.rejectHardDelete'
+    },
+    orderPaymentAllocationPreRemovePolicy: {
+        type: 'schema',
+        item: 'orderPaymentAllocation',
+        trigger: 'preRemove',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultOrderCheckoutAllocationPolicyService.rejectHardDelete'
+    },
 };

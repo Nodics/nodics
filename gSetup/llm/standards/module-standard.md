@@ -114,8 +114,9 @@ package description and `package.json.nodics.runtimeModule` as the sole
 module-loader enablement flag.
 
 The root `package.json` is the only npm dependency installation authority.
-Module `package.json` files must keep `dependencies` and `devDependencies`
-empty when present. A module may own or consume a dependency through root
+Module `package.json` files must not declare `dependencies` or
+`devDependencies`; omit those fields instead of adding empty placeholders. A
+module may own or consume a dependency through root
 `nodics.dependencyGovernance.ownedDependencies` metadata and focused tests, but
 it must not duplicate dependency versions in its module manifest. Dependency
 changes must update root `package.json`, root dependency-governance ownership

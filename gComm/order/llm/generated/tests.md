@@ -4,22 +4,47 @@
 
 ## Hand-Authored Tests
 
+- `gComm/order/test/checkoutAllocationCopyServiceContract.test.js`
+- `gComm/order/test/checkoutFulfillmentReleaseWorkflowContract.test.js`
+- `gComm/order/test/checkoutInventoryReservationBridgeContract.test.js`
+- `gComm/order/test/checkoutOrderProjectionServiceContract.test.js`
+- `gComm/order/test/checkoutPaymentAuthorizationWorkflowContract.test.js`
+- `gComm/order/test/checkoutPlacementCompensationContract.test.js`
+- `gComm/order/test/checkoutPlacementCompletionWorkflowContract.test.js`
+- `gComm/order/test/checkoutPlacementValidationServiceContract.test.js`
+- `gComm/order/test/checkoutPlacementWorkflowPipelineContract.test.js`
+- `gComm/order/test/checkoutReverseWorkflowContract.test.js`
 - `gComm/order/test/common/commonTest.js`
 - `gComm/order/test/env-local/envTest.js`
+- `gComm/order/test/orderCheckoutAllocationFoundationContract.test.js`
 - `gComm/order/test/orderEntryFoundationContract.test.js`
 - `gComm/order/test/orderHistoryFoundationContract.test.js`
 
 ## Generated Tests
 
+- `gComm/order/test/gen/api/checkoutPlacementRunApiContract.test.js`
+- `gComm/order/test/gen/api/checkoutReverseRunApiContract.test.js`
 - `gComm/order/test/gen/api/orderApiContract.test.js`
 - `gComm/order/test/gen/api/orderstatusApiContract.test.js`
 - `gComm/order/test/gen/api/reasonsApiContract.test.js`
+- `gComm/order/test/gen/apiScenario/checkoutPlacementRunApiScenario.test.js`
+- `gComm/order/test/gen/apiScenario/checkoutReverseRunApiScenario.test.js`
 - `gComm/order/test/gen/apiScenario/orderApiScenario.test.js`
 - `gComm/order/test/gen/apiScenario/orderstatusApiScenario.test.js`
 - `gComm/order/test/gen/apiScenario/reasonsApiScenario.test.js`
+- `gComm/order/test/gen/crud/checkoutPlacementRunCrudScenario.test.js`
+- `gComm/order/test/gen/crud/checkoutReverseRunCrudScenario.test.js`
 - `gComm/order/test/gen/crud/orderCrudScenario.test.js`
 - `gComm/order/test/gen/crud/orderstatusCrudScenario.test.js`
 - `gComm/order/test/gen/crud/reasonsCrudScenario.test.js`
+- `gComm/order/test/gen/schema/checkoutPlacementRunSchemaContract.test.js`
+- `gComm/order/test/gen/schema/checkoutReverseRunSchemaContract.test.js`
+- `gComm/order/test/gen/schema/orderDeliveryAllocationSchemaContract.test.js`
+- `gComm/order/test/gen/schema/orderDeliveryGroupSchemaContract.test.js`
+- `gComm/order/test/gen/schema/orderEntrySchemaContract.test.js`
+- `gComm/order/test/gen/schema/orderHistoryEntrySchemaContract.test.js`
+- `gComm/order/test/gen/schema/orderPaymentAllocationSchemaContract.test.js`
+- `gComm/order/test/gen/schema/orderPaymentGroupSchemaContract.test.js`
 - `gComm/order/test/gen/schema/orderSchemaContract.test.js`
 - `gComm/order/test/gen/schema/orderstatusSchemaContract.test.js`
 - `gComm/order/test/gen/schema/paymentstatusSchemaContract.test.js`

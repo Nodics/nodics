@@ -11,12 +11,42 @@
 
 /**
  * @module order/pipelines/pipelines
- * @description Pipeline definition for order creation validation, persistence, and terminal handling.
+ * @description Pipeline definitions for atomic Order technical tasks.
  * @layer pipeline
  * @owner order
  * @override Project modules may override pipeline nodes, handlers, or flow order to add customer-specific order lifecycle behavior.
  */
 module.exports = {
+    checkoutPlacementRunPipeline: {
+        startNode: "validateRequest",
+        hardStop: true,
+        handleError: 'handleError',
+        nodes: {
+            validateRequest: {
+                type: 'function',
+                handler: 'DefaultCheckoutPlacementPipelineService.validateRequest',
+                success: 'startPlacementRun'
+            },
+            startPlacementRun: {
+                type: 'function',
+                handler: 'DefaultCheckoutPlacementPipelineService.startPlacementRun',
+                success: 'finalizePlacementRun'
+            },
+            finalizePlacementRun: {
+                type: 'function',
+                handler: 'DefaultCheckoutPlacementPipelineService.finalizePlacementRun',
+                success: 'successEnd'
+            },
+            successEnd: {
+                type: 'function',
+                handler: 'DefaultCheckoutPlacementPipelineService.handleSucessEnd'
+            },
+            handleError: {
+                type: 'function',
+                handler: 'DefaultCheckoutPlacementPipelineService.handleErrorEnd'
+            }
+        }
+    },
     createOrderPipeline: {
         startNode: "validateRequest",
         hardStop: true,

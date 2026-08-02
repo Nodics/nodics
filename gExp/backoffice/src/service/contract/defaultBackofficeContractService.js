@@ -123,8 +123,7 @@ module.exports = {
         typeof panel.relation === "object" &&
         !Array.isArray(panel.relation) &&
         !Object.keys(panel.relation).some(
-          (key) =>
-            !["sourceField", "targetField", "cardinality"].includes(key),
+          (key) => !["sourceField", "targetField", "cardinality"].includes(key),
         ) &&
         this.isString(panel.relation.sourceField, 128) &&
         this.isString(panel.relation.targetField, 128) &&
@@ -132,6 +131,106 @@ module.exports = {
           ["ONE", "MANY"].includes(panel.relation.cardinality))
       );
     });
+  },
+  /** Validates bounded schema-workbench presentation hints owned by backend modules. */
+  validateNavigationWorkbenchPresentation: function (presentation) {
+    if (
+      !presentation ||
+      typeof presentation !== "object" ||
+      Array.isArray(presentation)
+    )
+      return false;
+    if (
+      Object.keys(presentation).some(
+        (key) =>
+          !["defaultColumns", "quickFilters", "recoveryActions"].includes(key),
+      )
+    )
+      return false;
+    if (
+      presentation.defaultColumns !== undefined &&
+      !this.isStringList(presentation.defaultColumns, 32)
+    )
+      return false;
+    if (presentation.quickFilters !== undefined) {
+      if (
+        !Array.isArray(presentation.quickFilters) ||
+        presentation.quickFilters.length > 24
+      )
+        return false;
+      let ids = presentation.quickFilters.map((filter) => filter && filter.id);
+      if (
+        ids.some((id) => !this.isString(id, 128)) ||
+        new Set(ids).size !== ids.length
+      )
+        return false;
+      if (
+        !presentation.quickFilters.every(
+          (filter) =>
+            filter &&
+            typeof filter === "object" &&
+            !Array.isArray(filter) &&
+            !Object.keys(filter).some(
+              (key) =>
+                !["id", "label", "field", "value", "values", "order"].includes(
+                  key,
+                ),
+            ) &&
+            this.isString(filter.label, 128) &&
+            this.isString(filter.field, 128) &&
+            (filter.value === undefined || this.isString(filter.value, 128)) &&
+            (filter.values === undefined ||
+              this.isStringList(filter.values, 24)) &&
+            (filter.value !== undefined || filter.values !== undefined) &&
+            (filter.order === undefined || Number.isInteger(filter.order)),
+        )
+      )
+        return false;
+    }
+    if (presentation.recoveryActions !== undefined) {
+      if (
+        !Array.isArray(presentation.recoveryActions) ||
+        presentation.recoveryActions.length > 24
+      )
+        return false;
+      let ids = presentation.recoveryActions.map(
+        (action) => action && action.id,
+      );
+      if (
+        ids.some((id) => !this.isString(id, 128)) ||
+        new Set(ids).size !== ids.length
+      )
+        return false;
+      if (
+        !presentation.recoveryActions.every(
+          (action) =>
+            action &&
+            typeof action === "object" &&
+            !Array.isArray(action) &&
+            !Object.keys(action).some(
+              (key) =>
+                ![
+                  "id",
+                  "label",
+                  "ownerModule",
+                  "strategy",
+                  "handlerAction",
+                  "summary",
+                  "order",
+                ].includes(key),
+            ) &&
+            this.isString(action.label, 128) &&
+            this.isString(action.ownerModule, 128) &&
+            this.isString(action.strategy, 128) &&
+            this.isString(action.handlerAction, 128) &&
+            (action.summary === undefined ||
+              this.isString(action.summary, 320)) &&
+            (action.order === undefined || Number.isInteger(action.order)),
+        )
+      )
+        return false;
+    }
+    return true;
   },
   /** Validates bounded non-executable navigation help metadata for Axis workspaces. */
   validateNavigationHelp: function (help) {
@@ -193,6 +292,7 @@ module.exports = {
                 "badgeProvider",
                 "workbenchTarget",
                 "detailPanels",
+                "workbenchPresentation",
                 "help",
               ].includes(key),
           ) &&
@@ -226,6 +326,10 @@ module.exports = {
             this.validateNavigationWorkbenchTarget(item.workbenchTarget)) &&
           (item.detailPanels === undefined ||
             this.validateNavigationDetailPanels(item.detailPanels)) &&
+          (item.workbenchPresentation === undefined ||
+            this.validateNavigationWorkbenchPresentation(
+              item.workbenchPresentation,
+            )) &&
           (item.help === undefined || this.validateNavigationHelp(item.help)) &&
           (item.requiredPermissions === undefined ||
             this.isStringList(item.requiredPermissions)),
@@ -351,7 +455,9 @@ module.exports = {
       !Number.isInteger(coverage.score) ||
       coverage.score < 0 ||
       coverage.score > 100 ||
-      !["STRONG", "PARTIAL", "NEEDS_WORK", "REFERENCE"].includes(coverage.status)
+      !["STRONG", "PARTIAL", "NEEDS_WORK", "REFERENCE"].includes(
+        coverage.status,
+      )
     )
       return false;
     return ["signals", "gaps"].every(

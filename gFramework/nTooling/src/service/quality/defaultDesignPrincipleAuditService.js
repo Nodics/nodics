@@ -177,7 +177,7 @@ function auditPrincipleContracts(failures) {
         'Security, access control, validation, audit, rollback, diagnostics, and test'
     ]);
     requireClauses(failures, 'gSetup/llm/standards/module-standard.md', [
-        'Module `package.json` files must keep `dependencies` and `devDependencies`',
+        'Module `package.json` files must not declare `dependencies` or',
         '`nodics.dependencyGovernance.ownedDependencies` metadata'
     ]);
     requireClauses(failures, 'gSetup/llm/nodics-principles.md', [

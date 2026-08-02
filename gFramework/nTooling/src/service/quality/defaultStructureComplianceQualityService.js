@@ -223,7 +223,7 @@ function validateMetadata(report, moduleObject) {
         createFinding(report, 'error', moduleObject, 'misplaced-package-value',
             'Runtime BackOffice configuration belongs in properties and package description belongs at top level.');
     }
-    ['name', 'index', 'main', 'version', 'description', 'dependencies', 'nodics'].forEach(fieldName => {
+    ['name', 'index', 'main', 'version', 'description', 'nodics'].forEach(fieldName => {
         if (packageJson[fieldName] === undefined) {
             createFinding(report, 'error', moduleObject, 'missing-package-field',
                 'Missing package metadata field `' + fieldName + '`.');

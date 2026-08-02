@@ -149,6 +149,54 @@ module.exports = {
                 idempotencyKey: { enabled: true, name: 'idempotencyKey', options: { unique: true } },
                 correlationId: { enabled: true, name: 'correlationId' } } }
         },
+        inventoryPromise: {
+            super: 'base', model: true, service: { enabled: true }, router: { enabled: false }, event: { enabled: false },
+            definition: {
+                enterpriseCode: { type: 'string', required: true }, promiseCode: { type: 'string', required: true },
+                promiseType: { type: 'string', required: true, default: 'STOCK' },
+                itemType: { type: 'string', required: true }, itemCode: { type: 'string', required: true },
+                unitCode: { type: 'string', required: true }, scale: { type: 'int', required: true, default: 6 },
+                promisedQuantity: { type: 'string', required: true }, reservedQuantity: { type: 'string', required: true, default: '0.000000' },
+                overbookingAllowed: { type: 'bool', required: true, default: false },
+                overbookingQuantity: { type: 'string', required: true, default: '0.000000' },
+                overbookedQuantity: { type: 'string', required: true, default: '0.000000' },
+                overbookingPolicyCode: { type: 'string', required: false }, commercialPolicyCode: { type: 'string', required: false },
+                warehouseCode: { type: 'string', required: false }, stockCode: { type: 'string', required: false },
+                stockPoolCode: { type: 'string', required: false }, supplierCode: { type: 'string', required: false },
+                expectedAvailableAt: { type: 'date', required: false }, effectiveFrom: { type: 'date', required: false }, effectiveTo: { type: 'date', required: false },
+                state: { type: 'string', required: true, default: 'ACTIVE' }, revision: { type: 'int', required: true, default: 0 },
+                reasonCode: { type: 'string', required: false }, correlationId: { type: 'string', required: false }, failureCode: { type: 'string', required: false }
+            },
+            indexes: { common: { enterpriseCode: { enabled: true, name: 'enterpriseCode' }, itemType: { enabled: true, name: 'itemType' },
+                itemCode: { enabled: true, name: 'itemCode' }, promiseType: { enabled: true, name: 'promiseType' },
+                state: { enabled: true, name: 'state' } }, individual: {
+                promiseCode: { enabled: true, name: 'promiseCode', options: { unique: true } },
+                commercialPolicyCode: { enabled: true, name: 'commercialPolicyCode' }, correlationId: { enabled: true, name: 'correlationId' } } }
+        },
+        inventoryPromiseReservation: {
+            super: 'base', model: true, service: { enabled: true }, router: { enabled: false }, event: { enabled: false },
+            definition: {
+                enterpriseCode: { type: 'string', required: true }, promiseReservationCode: { type: 'string', required: true },
+                idempotencyKey: { type: 'string', required: true }, promiseCode: { type: 'string', required: true },
+                demandType: { type: 'string', required: true }, demandCode: { type: 'string', required: true },
+                demandLineCode: { type: 'string', required: true }, checkoutAllocationCode: { type: 'string', required: false },
+                entryCode: { type: 'string', required: false }, promiseBucket: { type: 'string', required: true, default: 'STANDARD' },
+                quantity: { type: 'string', required: true }, unitCode: { type: 'string', required: true }, scale: { type: 'int', required: true },
+                paymentRequirement: { type: 'string', required: true, default: 'NONE' }, commercialPolicyCode: { type: 'string', required: false },
+                state: { type: 'string', required: true, default: 'PENDING' }, expiresAt: { type: 'date', required: false },
+                reasonCode: { type: 'string', required: false }, correlationId: { type: 'string', required: false },
+                failureCode: { type: 'string', required: false }, terminalAt: { type: 'date', required: false }
+            },
+            refSchema: {
+                promiseCode: { schema: 'inventoryPromise', property: 'promiseCode', type: 'one', onDelete: 'restrict' }
+            },
+            indexes: { common: { enterpriseCode: { enabled: true, name: 'enterpriseCode' }, promiseCode: { enabled: true, name: 'promiseCode' },
+                demandCode: { enabled: true, name: 'demandCode' }, demandLineCode: { enabled: true, name: 'demandLineCode' },
+                state: { enabled: true, name: 'state' } }, individual: {
+                promiseReservationCode: { enabled: true, name: 'promiseReservationCode', options: { unique: true } },
+                idempotencyKey: { enabled: true, name: 'idempotencyKey', options: { unique: true } },
+                correlationId: { enabled: true, name: 'correlationId' } } }
+        },
         stockTransfer: {
             super: 'base', model: true, service: { enabled: true }, router: { enabled: false }, event: { enabled: false },
             definition: {

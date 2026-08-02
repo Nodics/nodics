@@ -1,0 +1,29 @@
+{
+    "name": "fulfillment",
+    "index": "40.9",
+    "description": "Enterprise-scoped fulfillment, consignment, shipment, carrier, and delivery-release evidence capability.",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "GPL-3.0-or-later",
+    "nodics": {
+        "kind": "capability",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "configuration",
+            "schema",
+            "service",
+            "interceptor",
+            "test",
+            "llm"
+        ],
+        "runtime": {
+            "router": false,
+            "publish": false,
+            "web": false
+        },
+        "displayName": "Fulfillment"
+    },
+    "scripts": {}
+}

@@ -7,15 +7,39 @@
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `cart` | `abstractCart` | yes | yes | yes | no | no | no |  | 0 |
+| `cartDeliveryAllocation` | `abstractCheckoutAllocation` | yes | yes | no | no | no | no |  | 2 |
+| `cartDeliveryGroup` | `abstractCheckoutDeliveryGroup` | yes | yes | no | no | no | no |  | 1 |
 | `cartEntry` | `abstractCartEntry` | yes | yes | no | no | no | no |  | 1 |
+| `cartPaymentAllocation` | `abstractCheckoutAllocation` | yes | yes | no | no | no | no |  | 4 |
+| `cartPaymentGroup` | `abstractCheckoutPaymentGroup` | yes | yes | no | no | no | no |  | 1 |
 
 ### `cart.cart`
 
 - No direct properties defined.
 
+### `cart.cartDeliveryAllocation`
+
+- `cartCode` `string` required: Parent cart code for this delivery allocation
+- `deliveryGroupCode` `string` required: Delivery group receiving this allocated entry quantity
+
+### `cart.cartDeliveryGroup`
+
+- `cartCode` `string` required: Parent cart code for this delivery group
+
 ### `cart.cartEntry`
 
 - `cartCode` `string` required: Parent cart code. Cart owns cart state while entries own line-level evidence.
+
+### `cart.cartPaymentAllocation`
+
+- `amount` `string` required: Exact non-negative decimal-string amount assigned to this payment allocation
+- `cartCode` `string` required: Parent cart code for this payment allocation
+- `currencyCode` `string` required: Currency code used for the allocated payment amount
+- `paymentGroupCode` `string` required: Payment group funding this allocated entry quantity
+
+### `cart.cartPaymentGroup`
+
+- `cartCode` `string` required: Parent cart code for this payment group
 
 ## `default` Schemas
 
@@ -23,6 +47,9 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `abstractCart` | `base` | no | no | no | no | no | no |  | 2 |
 | `abstractCartEntry` | `base` | no | no | no | no | no | no |  | 15 |
+| `abstractCheckoutAllocation` | `base` | no | no | no | no | no | no |  | 9 |
+| `abstractCheckoutDeliveryGroup` | `base` | no | no | no | no | no | no |  | 7 |
+| `abstractCheckoutPaymentGroup` | `base` | no | no | no | no | no | no |  | 10 |
 
 ### `default.abstractCart`
 
@@ -46,3 +73,38 @@
 - `totalPrice` `string` optional: Exact decimal-string line total snapshot captured by checkout or pricing evidence
 - `unitCode` `string` required: Units-owned unit of measure reference for the quantity
 - `unitPrice` `string` optional: Exact decimal-string unit price snapshot captured by checkout or pricing evidence
+
+### `default.abstractCheckoutAllocation`
+
+- `allocationCode` `string` required: Stable business identity for one quantity-level checkout allocation
+- `entCode` `string` required: Enterprise code that owns this checkout allocation
+- `entryCode` `string` required: Checkout entry business identity whose quantity is being allocated
+- `inventoryAllocationCode` `string` optional: Optional Inventory allocation evidence linked to this allocated quantity
+- `inventoryReservationCode` `string` optional: Optional Inventory reservation evidence linked to this allocated quantity
+- `quantity` `string` required: Exact positive decimal-string quantity allocated from the entry; allocation sums are validated by owner services
+- `serialNumbers` `array` optional: Optional unit, serial, batch, or asset identifiers when allocation reaches inventory-unit granularity
+- `status` `string` required: Allocation lifecycle state
+- `unitCode` `string` required: Units-owned unit of measure reference for the allocated quantity
+
+### `default.abstractCheckoutDeliveryGroup`
+
+- `addressCode` `string` optional: Optional Profile address reference used by address-based delivery groups
+- `carrierCode` `string` optional: Optional carrier or logistics reference captured as delivery evidence
+- `deliveryGroupCode` `string` required: Stable business identity for one delivery group within a cart or order
+- `deliveryModeCode` `string` optional: Optional delivery-mode reference. Fulfillment or shipping modules remain authoritative for mode rules.
+- `entCode` `string` required: Enterprise code that owns this checkout delivery group
+- `groupType` `string` required: Delivery group type such as ADDRESS, PICKUP, DIGITAL, or SERVICE
+- `status` `string` required: Delivery group lifecycle state
+
+### `default.abstractCheckoutPaymentGroup`
+
+- `authorizedAmount` `string` optional: Exact decimal-string amount authorized by the payment authority
+- `capturedAmount` `string` optional: Exact decimal-string amount captured by the payment authority
+- `currencyCode` `string` required: Currency code used for exact payment evidence
+- `entCode` `string` required: Enterprise code that owns this checkout payment group
+- `paymentEvidenceCode` `string` optional: Optional payment transaction, authorization, or gateway evidence code. Do not store secrets or raw card data.
+- `paymentGroupCode` `string` required: Stable business identity for one payment group within a cart or order
+- `paymentModeCode` `string` required: Payment-mode reference such as card, COD, wallet, gift card, or account credit
+- `plannedAmount` `string` optional: Exact decimal-string amount intended for this payment group
+- `refundedAmount` `string` optional: Exact decimal-string amount refunded by the payment authority
+- `status` `string` required: Payment group lifecycle state

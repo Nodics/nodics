@@ -65,4 +65,68 @@ module.exports = {
         index: -100,
         handler: 'DefaultCartEntryPolicyService.rejectHardDelete'
     },
+    cartDeliveryGroupPreSavePolicy: {
+        type: 'schema',
+        item: 'cartDeliveryGroup',
+        trigger: 'preSave',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultCartCheckoutAllocationPolicyService.prepareDeliveryGroup'
+    },
+    cartDeliveryAllocationPreSavePolicy: {
+        type: 'schema',
+        item: 'cartDeliveryAllocation',
+        trigger: 'preSave',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultCartCheckoutAllocationPolicyService.prepareDeliveryAllocation'
+    },
+    cartPaymentGroupPreSavePolicy: {
+        type: 'schema',
+        item: 'cartPaymentGroup',
+        trigger: 'preSave',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultCartCheckoutAllocationPolicyService.preparePaymentGroup'
+    },
+    cartPaymentAllocationPreSavePolicy: {
+        type: 'schema',
+        item: 'cartPaymentAllocation',
+        trigger: 'preSave',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultCartCheckoutAllocationPolicyService.preparePaymentAllocation'
+    },
+    cartDeliveryGroupPreRemovePolicy: {
+        type: 'schema',
+        item: 'cartDeliveryGroup',
+        trigger: 'preRemove',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultCartCheckoutAllocationPolicyService.rejectHardDelete'
+    },
+    cartDeliveryAllocationPreRemovePolicy: {
+        type: 'schema',
+        item: 'cartDeliveryAllocation',
+        trigger: 'preRemove',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultCartCheckoutAllocationPolicyService.rejectHardDelete'
+    },
+    cartPaymentGroupPreRemovePolicy: {
+        type: 'schema',
+        item: 'cartPaymentGroup',
+        trigger: 'preRemove',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultCartCheckoutAllocationPolicyService.rejectHardDelete'
+    },
+    cartPaymentAllocationPreRemovePolicy: {
+        type: 'schema',
+        item: 'cartPaymentAllocation',
+        trigger: 'preRemove',
+        active: 'true',
+        index: -100,
+        handler: 'DefaultCartCheckoutAllocationPolicyService.rejectHardDelete'
+    },
 };

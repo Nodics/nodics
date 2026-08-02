@@ -35,7 +35,77 @@ module.exports = {
                 enabled: false
             },
             definition: {
-
+                cartCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Source cart code converted into this order during checkout placement',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                sourceCartCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Original cart business code retained for order projection traceability',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                workflowCarrierCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Workflow carrier that created this order projection',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                placementCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Checkout placement run or idempotency code that produced this order',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                status: {
+                    type: 'string',
+                    required: false,
+                    default: 'PLACED',
+                    description: 'Order lifecycle status owned by Order workflow and history',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                currencyCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Order-level currency evidence copied from checkout context when available',
+                    searchOptions: {
+                        enabled: true
+                    }
+                }
+            },
+            indexes: {
+                common: {
+                    entCode: {
+                        name: 'entCode',
+                        enabled: true
+                    },
+                    status: {
+                        name: 'status',
+                        enabled: true
+                    },
+                    cartCode: {
+                        name: 'cartCode',
+                        enabled: true
+                    }
+                },
+                individual: {
+                    placementCode: {
+                        name: 'placementCode',
+                        enabled: true
+                    }
+                }
             }
         },
         orderEntry: {
@@ -258,6 +328,665 @@ module.exports = {
                     },
                     statusTo: {
                         name: 'statusTo',
+                        enabled: true
+                    }
+                }
+            }
+        },
+        orderDeliveryGroup: {
+            super: 'abstractCheckoutDeliveryGroup',
+            model: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: false
+            },
+            cache: {
+                enabled: false
+            },
+            search: {
+                enabled: false
+            },
+            refSchema: {
+                orderCode: {
+                    enabled: true,
+                    schemaName: "order",
+                    type: 'one',
+                    propertyName: 'code',
+                    onTargetDelete: 'RESTRICT'
+                }
+            },
+            definition: {
+                orderCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Parent order code for this delivery group',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                cartCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional source cart code retained as delivery-group conversion evidence',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                sourceDeliveryGroupCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional source cart delivery-group code retained when order conversion remaps delivery group identity',
+                    searchOptions: {
+                        enabled: true
+                    }
+                }
+            },
+            indexes: {
+                common: {
+                    entCode: {
+                        name: 'entCode',
+                        enabled: true
+                    },
+                    orderCode: {
+                        name: 'orderCode',
+                        enabled: true
+                    }
+                }
+            }
+        },
+        orderDeliveryAllocation: {
+            super: 'abstractCheckoutAllocation',
+            model: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: false
+            },
+            cache: {
+                enabled: false
+            },
+            search: {
+                enabled: false
+            },
+            refSchema: {
+                orderCode: {
+                    enabled: true,
+                    schemaName: "order",
+                    type: 'one',
+                    propertyName: 'code',
+                    onTargetDelete: 'RESTRICT'
+                },
+                entryCode: {
+                    enabled: true,
+                    schemaName: "orderEntry",
+                    type: 'one',
+                    propertyName: 'entryCode',
+                    onTargetDelete: 'RESTRICT'
+                },
+                deliveryGroupCode: {
+                    enabled: true,
+                    schemaName: "orderDeliveryGroup",
+                    type: 'one',
+                    propertyName: 'deliveryGroupCode',
+                    onTargetDelete: 'RESTRICT'
+                }
+            },
+            definition: {
+                orderCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Parent order code for this delivery allocation',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                cartCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional source cart code retained as delivery-allocation conversion evidence',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                deliveryGroupCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Delivery group receiving this allocated order-entry quantity',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                sourceDeliveryGroupCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional source cart delivery-group code retained when order conversion remaps delivery group identity',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                sourceAllocationCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional source cart allocation code retained when order conversion remaps allocation identity',
+                    searchOptions: {
+                        enabled: true
+                    }
+                }
+            },
+            indexes: {
+                common: {
+                    entCode: {
+                        name: 'entCode',
+                        enabled: true
+                    },
+                    orderCode: {
+                        name: 'orderCode',
+                        enabled: true
+                    },
+                    deliveryGroupCode: {
+                        name: 'deliveryGroupCode',
+                        enabled: true
+                    }
+                }
+            }
+        },
+        orderPaymentGroup: {
+            super: 'abstractCheckoutPaymentGroup',
+            model: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: false
+            },
+            cache: {
+                enabled: false
+            },
+            search: {
+                enabled: false
+            },
+            refSchema: {
+                orderCode: {
+                    enabled: true,
+                    schemaName: "order",
+                    type: 'one',
+                    propertyName: 'code',
+                    onTargetDelete: 'RESTRICT'
+                }
+            },
+            definition: {
+                orderCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Parent order code for this payment group',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                cartCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional source cart code retained as payment-group conversion evidence',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                sourcePaymentGroupCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional source cart payment-group code retained when order conversion remaps payment group identity',
+                    searchOptions: {
+                        enabled: true
+                    }
+                }
+            },
+            indexes: {
+                common: {
+                    entCode: {
+                        name: 'entCode',
+                        enabled: true
+                    },
+                    orderCode: {
+                        name: 'orderCode',
+                        enabled: true
+                    }
+                }
+            }
+        },
+        orderPaymentAllocation: {
+            super: 'abstractCheckoutAllocation',
+            model: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: false
+            },
+            cache: {
+                enabled: false
+            },
+            search: {
+                enabled: false
+            },
+            refSchema: {
+                orderCode: {
+                    enabled: true,
+                    schemaName: "order",
+                    type: 'one',
+                    propertyName: 'code',
+                    onTargetDelete: 'RESTRICT'
+                },
+                entryCode: {
+                    enabled: true,
+                    schemaName: "orderEntry",
+                    type: 'one',
+                    propertyName: 'entryCode',
+                    onTargetDelete: 'RESTRICT'
+                },
+                paymentGroupCode: {
+                    enabled: true,
+                    schemaName: "orderPaymentGroup",
+                    type: 'one',
+                    propertyName: 'paymentGroupCode',
+                    onTargetDelete: 'RESTRICT'
+                }
+            },
+            definition: {
+                orderCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Parent order code for this payment allocation',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                cartCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional source cart code retained as payment-allocation conversion evidence',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                paymentGroupCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Payment group funding this allocated order-entry quantity',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                sourcePaymentGroupCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional source cart payment-group code retained when order conversion remaps payment group identity',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                sourceAllocationCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Optional source cart allocation code retained when order conversion remaps allocation identity',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                amount: {
+                    type: 'string',
+                    required: true,
+                    description: 'Exact non-negative decimal-string amount assigned to this payment allocation'
+                },
+                currencyCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Currency code used for the allocated payment amount',
+                    searchOptions: {
+                        enabled: true
+                    }
+                }
+            },
+            indexes: {
+                common: {
+                    entCode: {
+                        name: 'entCode',
+                        enabled: true
+                    },
+                    orderCode: {
+                        name: 'orderCode',
+                        enabled: true
+                    },
+                    paymentGroupCode: {
+                        name: 'paymentGroupCode',
+                        enabled: true
+                    }
+                }
+            }
+        },
+        checkoutPlacementRun: {
+            super: 'base',
+            model: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
+            cache: {
+                enabled: false
+            },
+            search: {
+                enabled: false
+            },
+            refSchema: {
+                orderCode: {
+                    enabled: true,
+                    schemaName: "order",
+                    type: 'one',
+                    propertyName: 'code',
+                    onTargetDelete: 'RESTRICT'
+                }
+            },
+            definition: {
+                entCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Enterprise code that owns this checkout placement run',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                placementCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Stable business identity for one cart-to-order placement workflow run',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                cartCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Source cart code submitted for placement',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                orderCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Order code produced by the checkout placement workflow when order creation succeeds',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                workflowCarrierCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Durable Workflow carrier code that owns long-running placement lifecycle, retry, and recovery evidence',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                pipelineName: {
+                    type: 'string',
+                    required: true,
+                    description: 'Configured nPipeline definition used only for atomic checkout placement-run evidence steps',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                idempotencyKey: {
+                    type: 'string',
+                    required: true,
+                    description: 'Caller-provided or generated key used to prevent duplicate order placement for the same checkout attempt',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                state: {
+                    type: 'string',
+                    required: true,
+                    description: 'Current placement state such as INIT, VALIDATING, RESERVING, ORDERING, COPYING, FINALIZING, COMPLETED, FAILED, or COMPENSATING',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                currentStep: {
+                    type: 'string',
+                    required: false,
+                    description: 'Most recent workflow action or pipeline node reached by this placement run'
+                },
+                failureCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Safe failure code captured when placement cannot continue'
+                },
+                failureMessage: {
+                    type: 'string',
+                    required: false,
+                    description: 'Safe failure message for operators. Do not store secrets, payment credentials, or raw provider payloads.'
+                },
+                evidence: {
+                    type: 'object',
+                    required: false,
+                    description: 'Structured non-secret evidence such as created order entries, copied allocation counts, payment requirements, or inventory promise reservation codes'
+                }
+            },
+            indexes: {
+                common: {
+                    entCode: {
+                        name: 'entCode',
+                        enabled: true
+                    },
+                    cartCode: {
+                        name: 'cartCode',
+                        enabled: true
+                    },
+                    state: {
+                        name: 'state',
+                        enabled: true
+                    }
+                },
+                individual: {
+                    placementCode: {
+                        name: 'placementCode',
+                        enabled: true,
+                        options: {
+                            unique: true
+                        }
+                    },
+                    idempotencyKey: {
+                        name: 'idempotencyKey',
+                        enabled: true,
+                        options: {
+                            unique: true
+                        }
+                    },
+                    workflowCarrierCode: {
+                        name: 'workflowCarrierCode',
+                        enabled: true
+                    }
+                }
+            }
+        },
+        checkoutReverseRun: {
+            super: 'base',
+            model: true,
+            service: {
+                enabled: true
+            },
+            router: {
+                enabled: true
+            },
+            cache: {
+                enabled: false
+            },
+            search: {
+                enabled: false
+            },
+            refSchema: {
+                orderCode: {
+                    enabled: true,
+                    schemaName: "order",
+                    type: 'one',
+                    propertyName: 'code',
+                    onTargetDelete: 'RESTRICT'
+                }
+            },
+            definition: {
+                entCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Enterprise code that owns this checkout reverse workflow run',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                reverseCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Stable business identity for one order return or refund workflow run',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                orderCode: {
+                    type: 'string',
+                    required: true,
+                    description: 'Order code being processed by the reverse workflow',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                returnCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Fulfillment-owned return request code coordinated by this reverse workflow',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                refundTransactionCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Payment-owned refund transaction code coordinated by this reverse workflow',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                refundCalculationCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Payment-owned refund calculation evidence code coordinated before provider refund execution',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                workflowCarrierCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Durable Workflow carrier code that owns long-running reverse lifecycle, retry, and recovery evidence',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                idempotencyKey: {
+                    type: 'string',
+                    required: true,
+                    description: 'Caller-provided or generated key used to prevent duplicate reverse workflow runs for the same order return/refund attempt',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                state: {
+                    type: 'string',
+                    required: true,
+                    description: 'Current reverse workflow state such as INIT, RUNNING, RETURN_REQUESTED, RETURN_RECEIVED, RETURN_DISPOSED, INVENTORY_DISPOSITION_APPLIED, REFUND_CALCULATED, REFUNDED, COMPLETED, FAILED, or COMPENSATING',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                currentStep: {
+                    type: 'string',
+                    required: false,
+                    description: 'Most recent reverse workflow action reached by this run'
+                },
+                failureCode: {
+                    type: 'string',
+                    required: false,
+                    description: 'Safe failure code captured when reverse processing cannot continue'
+                },
+                failureMessage: {
+                    type: 'string',
+                    required: false,
+                    description: 'Safe failure message for operators. Do not store secrets, payment credentials, customer private data, or raw provider payloads.'
+                },
+                recoveryStrategy: {
+                    type: 'string',
+                    required: false,
+                    description: 'Owner-delegated recovery strategy selected when the reverse workflow enters compensation',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                recoveryOwner: {
+                    type: 'string',
+                    required: false,
+                    description: 'Primary owning module expected to act on the selected reverse recovery strategy',
+                    searchOptions: {
+                        enabled: true
+                    }
+                },
+                evidence: {
+                    type: 'object',
+                    required: false,
+                    description: 'Structured non-secret evidence such as return request code, received quantity, refund transaction code, or completion counts'
+                }
+            },
+            indexes: {
+                common: {
+                    entCode: {
+                        name: 'entCode',
+                        enabled: true
+                    },
+                    orderCode: {
+                        name: 'orderCode',
+                        enabled: true
+                    },
+                    state: {
+                        name: 'state',
+                        enabled: true
+                    },
+                    recoveryStrategy: {
+                        name: 'recoveryStrategy',
+                        enabled: true
+                    },
+                    recoveryOwner: {
+                        name: 'recoveryOwner',
+                        enabled: true
+                    }
+                },
+                individual: {
+                    reverseCode: {
+                        name: 'reverseCode',
+                        enabled: true,
+                        options: {
+                            unique: true
+                        }
+                    },
+                    idempotencyKey: {
+                        name: 'idempotencyKey',
+                        enabled: true,
+                        options: {
+                            unique: true
+                        }
+                    },
+                    workflowCarrierCode: {
+                        name: 'workflowCarrierCode',
                         enabled: true
                     }
                 }

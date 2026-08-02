@@ -323,8 +323,7 @@ module.exports = {
                 owns: options.owns,
                 runtime: Object.assign({}, runtimeFlags)
             },
-            scripts: {},
-            dependencies: {}
+            scripts: {}
         };
         if (options.kind === 'project') {
             packageJson.groupName = options.groupName;

@@ -6,6 +6,8 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
+| `inventoryPromise` | `base` | yes | yes | no | no | no | no |  | 26 |
+| `inventoryPromiseReservation` | `base` | yes | yes | no | no | no | no |  | 21 |
 | `stockAllocation` | `base` | yes | yes | no | no | no | no |  | 21 |
 | `stockBalance` | `base` | yes | yes | no | no | no | no |  | 16 |
 | `stockMovementCheckpoint` | `base` | yes | yes | no | no | no | no |  | 11 |
@@ -21,6 +23,59 @@
 | `stockTransfer` | `base` | yes | yes | no | no | no | no |  | 24 |
 | `warehouse` | `base` | yes | yes | no | no | no | no |  | 13 |
 | `warehouseLocation` | `base` | yes | yes | no | no | no | no |  | 11 |
+
+### `inventory.inventoryPromise`
+
+- `commercialPolicyCode` `string` optional
+- `correlationId` `string` optional
+- `effectiveFrom` `date` optional
+- `effectiveTo` `date` optional
+- `enterpriseCode` `string` required
+- `expectedAvailableAt` `date` optional
+- `failureCode` `string` optional
+- `itemCode` `string` required
+- `itemType` `string` required
+- `overbookedQuantity` `string` required
+- `overbookingAllowed` `bool` required
+- `overbookingPolicyCode` `string` optional
+- `overbookingQuantity` `string` required
+- `promiseCode` `string` required
+- `promiseType` `string` required
+- `promisedQuantity` `string` required
+- `reasonCode` `string` optional
+- `reservedQuantity` `string` required
+- `revision` `int` required
+- `scale` `int` required
+- `state` `string` required
+- `stockCode` `string` optional
+- `stockPoolCode` `string` optional
+- `supplierCode` `string` optional
+- `unitCode` `string` required
+- `warehouseCode` `string` optional
+
+### `inventory.inventoryPromiseReservation`
+
+- `checkoutAllocationCode` `string` optional
+- `commercialPolicyCode` `string` optional
+- `correlationId` `string` optional
+- `demandCode` `string` required
+- `demandLineCode` `string` required
+- `demandType` `string` required
+- `enterpriseCode` `string` required
+- `entryCode` `string` optional
+- `expiresAt` `date` optional
+- `failureCode` `string` optional
+- `idempotencyKey` `string` required
+- `paymentRequirement` `string` required
+- `promiseBucket` `string` required
+- `promiseCode` `string` required
+- `promiseReservationCode` `string` required
+- `quantity` `string` required
+- `reasonCode` `string` optional
+- `scale` `int` required
+- `state` `string` required
+- `terminalAt` `date` optional
+- `unitCode` `string` required
 
 ### `inventory.stockAllocation`
 

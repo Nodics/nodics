@@ -4,6 +4,7 @@
 
 ## Hand-Authored Tests
 
+- `gComm/cart/test/cartCheckoutAllocationFoundationContract.test.js`
 - `gComm/cart/test/cartEntryFoundationContract.test.js`
 - `gComm/cart/test/common/commonTest.js`
 - `gComm/cart/test/env-local/envTest.js`
@@ -13,6 +14,11 @@
 - `gComm/cart/test/gen/api/cartApiContract.test.js`
 - `gComm/cart/test/gen/apiScenario/cartApiScenario.test.js`
 - `gComm/cart/test/gen/crud/cartCrudScenario.test.js`
+- `gComm/cart/test/gen/schema/cartDeliveryAllocationSchemaContract.test.js`
+- `gComm/cart/test/gen/schema/cartDeliveryGroupSchemaContract.test.js`
+- `gComm/cart/test/gen/schema/cartEntrySchemaContract.test.js`
+- `gComm/cart/test/gen/schema/cartPaymentAllocationSchemaContract.test.js`
+- `gComm/cart/test/gen/schema/cartPaymentGroupSchemaContract.test.js`
 - `gComm/cart/test/gen/schema/cartSchemaContract.test.js`
 
 ## Testing Rules

@@ -6,17 +6,75 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
-| `order` | `abstractCart` | yes | yes | yes | no | no | no |  | 0 |
+| `checkoutPlacementRun` | `base` | yes | yes | yes | no | no | no |  | 12 |
+| `checkoutReverseRun` | `base` | yes | yes | yes | no | no | no |  | 15 |
+| `order` | `abstractCart` | yes | yes | yes | no | no | no |  | 6 |
+| `orderDeliveryAllocation` | `abstractCheckoutAllocation` | yes | yes | no | no | no | no |  | 5 |
+| `orderDeliveryGroup` | `abstractCheckoutDeliveryGroup` | yes | yes | no | no | no | no |  | 3 |
 | `orderEntry` | `abstractCartEntry` | yes | yes | no | no | no | no |  | 4 |
 | `orderHistoryEntry` | `base` | yes | yes | no | no | no | no |  | 13 |
+| `orderPaymentAllocation` | `abstractCheckoutAllocation` | yes | yes | no | no | no | no |  | 7 |
+| `orderPaymentGroup` | `abstractCheckoutPaymentGroup` | yes | yes | no | no | no | no |  | 3 |
 | `orderstatus` | `base` | yes | yes | yes | no | no | no |  | 2 |
 | `paymentstatus` | `orderstatus` | no | no | no | no | no | no |  | 0 |
 | `reasons` | `super` | yes | yes | yes | no | no | no |  | 2 |
 | `shippingstatus` | `orderstatus` | no | no | no | no | no | no |  | 0 |
 
+### `order.checkoutPlacementRun`
+
+- `cartCode` `string` required: Source cart code submitted for placement
+- `currentStep` `string` optional: Most recent workflow action or pipeline node reached by this placement run
+- `entCode` `string` required: Enterprise code that owns this checkout placement run
+- `evidence` `object` optional: Structured non-secret evidence such as created order entries, copied allocation counts, payment requirements, or inventory promise reservation codes
+- `failureCode` `string` optional: Safe failure code captured when placement cannot continue
+- `failureMessage` `string` optional: Safe failure message for operators. Do not store secrets, payment credentials, or raw provider payloads.
+- `idempotencyKey` `string` required: Caller-provided or generated key used to prevent duplicate order placement for the same checkout attempt
+- `orderCode` `string` optional: Order code produced by the checkout placement workflow when order creation succeeds
+- `pipelineName` `string` required: Configured nPipeline definition used only for atomic checkout placement-run evidence steps
+- `placementCode` `string` required: Stable business identity for one cart-to-order placement workflow run
+- `state` `string` required: Current placement state such as INIT, VALIDATING, RESERVING, ORDERING, COPYING, FINALIZING, COMPLETED, FAILED, or COMPENSATING
+- `workflowCarrierCode` `string` optional: Durable Workflow carrier code that owns long-running placement lifecycle, retry, and recovery evidence
+
+### `order.checkoutReverseRun`
+
+- `currentStep` `string` optional: Most recent reverse workflow action reached by this run
+- `entCode` `string` required: Enterprise code that owns this checkout reverse workflow run
+- `evidence` `object` optional: Structured non-secret evidence such as return request code, received quantity, refund transaction code, or completion counts
+- `failureCode` `string` optional: Safe failure code captured when reverse processing cannot continue
+- `failureMessage` `string` optional: Safe failure message for operators. Do not store secrets, payment credentials, customer private data, or raw provider payloads.
+- `idempotencyKey` `string` required: Caller-provided or generated key used to prevent duplicate reverse workflow runs for the same order return/refund attempt
+- `orderCode` `string` required: Order code being processed by the reverse workflow
+- `recoveryOwner` `string` optional: Primary owning module expected to act on the selected reverse recovery strategy
+- `recoveryStrategy` `string` optional: Owner-delegated recovery strategy selected when the reverse workflow enters compensation
+- `refundCalculationCode` `string` optional: Payment-owned refund calculation evidence code coordinated before provider refund execution
+- `refundTransactionCode` `string` optional: Payment-owned refund transaction code coordinated by this reverse workflow
+- `returnCode` `string` optional: Fulfillment-owned return request code coordinated by this reverse workflow
+- `reverseCode` `string` required: Stable business identity for one order return or refund workflow run
+- `state` `string` required: Current reverse workflow state such as INIT, RUNNING, RETURN_REQUESTED, RETURN_RECEIVED, RETURN_DISPOSED, INVENTORY_DISPOSITION_APPLIED, REFUND_CALCULATED, REFUNDED, COMPLETED, FAILED, or COMPENSATING
+- `workflowCarrierCode` `string` optional: Durable Workflow carrier code that owns long-running reverse lifecycle, retry, and recovery evidence
+
 ### `order.order`
 
-- No direct properties defined.
+- `cartCode` `string` optional: Source cart code converted into this order during checkout placement
+- `currencyCode` `string` optional: Order-level currency evidence copied from checkout context when available
+- `placementCode` `string` optional: Checkout placement run or idempotency code that produced this order
+- `sourceCartCode` `string` optional: Original cart business code retained for order projection traceability
+- `status` `string` optional: Order lifecycle status owned by Order workflow and history
+- `workflowCarrierCode` `string` optional: Workflow carrier that created this order projection
+
+### `order.orderDeliveryAllocation`
+
+- `cartCode` `string` optional: Optional source cart code retained as delivery-allocation conversion evidence
+- `deliveryGroupCode` `string` required: Delivery group receiving this allocated order-entry quantity
+- `orderCode` `string` required: Parent order code for this delivery allocation
+- `sourceAllocationCode` `string` optional: Optional source cart allocation code retained when order conversion remaps allocation identity
+- `sourceDeliveryGroupCode` `string` optional: Optional source cart delivery-group code retained when order conversion remaps delivery group identity
+
+### `order.orderDeliveryGroup`
+
+- `cartCode` `string` optional: Optional source cart code retained as delivery-group conversion evidence
+- `orderCode` `string` required: Parent order code for this delivery group
+- `sourceDeliveryGroupCode` `string` optional: Optional source cart delivery-group code retained when order conversion remaps delivery group identity
 
 ### `order.orderEntry`
 
@@ -40,6 +98,22 @@
 - `sourceOperation` `string` optional: Operation, workflow step, pipeline node, or API that produced the event
 - `statusFrom` `string` optional: Previous order status when the event represents a status transition
 - `statusTo` `string` optional: New order status when the event represents a status transition
+
+### `order.orderPaymentAllocation`
+
+- `amount` `string` required: Exact non-negative decimal-string amount assigned to this payment allocation
+- `cartCode` `string` optional: Optional source cart code retained as payment-allocation conversion evidence
+- `currencyCode` `string` required: Currency code used for the allocated payment amount
+- `orderCode` `string` required: Parent order code for this payment allocation
+- `paymentGroupCode` `string` required: Payment group funding this allocated order-entry quantity
+- `sourceAllocationCode` `string` optional: Optional source cart allocation code retained when order conversion remaps allocation identity
+- `sourcePaymentGroupCode` `string` optional: Optional source cart payment-group code retained when order conversion remaps payment group identity
+
+### `order.orderPaymentGroup`
+
+- `cartCode` `string` optional: Optional source cart code retained as payment-group conversion evidence
+- `orderCode` `string` required: Parent order code for this payment group
+- `sourcePaymentGroupCode` `string` optional: Optional source cart payment-group code retained when order conversion remaps payment group identity
 
 ### `order.orderstatus`
 

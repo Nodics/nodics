@@ -133,3 +133,9 @@ paths must be application-relative, and optional permissions are filtered
 before bootstrap. A CMS source uses a dedicated Site/catalog pair and a
 configured nImport pack; an OpenAPI source references the live System contract.
 Do not copy API contracts into CMS or add an Axis-owned source list.
+
+Backend modules may also contribute bounded, non-executable
+`workbenchPresentation` hints on navigation entries. These hints can describe
+default columns, quick filters, and owner-action labels for reusable Axis schema
+workspaces. They do not grant permissions, execute operations, or transfer
+business authority away from the target module.

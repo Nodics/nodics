@@ -6,6 +6,11 @@ Use this module for cart-specific behavior such as basket state, item operations
 
 Cart rules should be configurable and tenant-aware. Do not hardcode customer-specific pricing, promotion, or checkout assumptions into this module.
 
+Read the group-level
+[Commerce Checkout Foundation](../llm/contracts/commerce-checkout-foundation-contract.md)
+for the beginner model, schema relationships, lifecycle, and customer-module
+customization pattern before changing Cart checkout behavior.
+
 ## Cart entries
 
 `cartEntry` is the cart-owned line-entry model. It references its parent through
@@ -29,3 +34,34 @@ lifecycle transitions. Projects customize these rules through layered
 `cart.checkoutEntry.policy` configuration or by replacing the service, while Product,
 Pricing, Units, Tax, Promotion, Inventory, Payment, and Fulfillment remain
 authoritative for their own rules.
+
+## Checkout delivery and payment allocations
+
+Cart checkout uses allocation-first modeling for distributed delivery and
+distributed payment. A `cartEntry` states what the user wants to buy; delivery
+and payment allocation records state how parts of that entry quantity are
+delivered, paid, reserved, or later fulfilled.
+
+The cart-owned models are:
+
+- `cartDeliveryGroup` for one delivery destination or delivery context such as
+  address, pickup, digital, or service delivery.
+- `cartDeliveryAllocation` for the exact entry quantity assigned to one
+  delivery group.
+- `cartPaymentGroup` for one payment mode or payment authority context.
+- `cartPaymentAllocation` for the exact entry quantity and amount assigned to
+  one payment group.
+
+This supports enterprise checkout cases such as one cart entry with quantity
+`3` where quantity `2` ships to one address, quantity `1` ships to another
+address, and each quantity portion is funded by a different payment group.
+Allocations also carry optional `serialNumbers`, `inventoryReservationCode`,
+and `inventoryAllocationCode` so later inventory work can move from quantity
+allocation to unit, serial, or batch-level evidence without redesigning cart.
+
+Cart does not calculate shipping, payment authorization, stock reservation,
+tax, promotion, or final fulfillment. Those authorities belong to their
+owning modules. Cart records the checkout allocation state and evidence codes
+that those authorities can consume or enrich. Projects customize validation
+through layered `cart.checkoutAllocation.policy` configuration or by replacing
+`DefaultCartCheckoutAllocationPolicyService`.

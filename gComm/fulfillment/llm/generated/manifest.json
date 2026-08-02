@@ -1,0 +1,39 @@
+{
+  "contextVersion": 3,
+  "moduleName": "fulfillment",
+  "path": "gComm/fulfillment",
+  "kind": "capability",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "40.9",
+    "version": "0.0.1",
+    "description": "Enterprise-scoped fulfillment, consignment, shipment, carrier, and delivery-release evidence capability."
+  },
+  "sourceFiles": 10,
+  "testFiles": 13,
+  "dataFiles": 0,
+  "ownedFiles": 25,
+  "sourceFingerprint": "8a90acc01f4fd96da948868b75f2cd99aaa1f3f65533faae50529627875d5626",
+  "documentation": {
+    "documented": 15,
+    "partially-documented": 6,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {
+    "fulfillment": [
+      "fulfillmentCarrierProvider",
+      "fulfillmentConsignment",
+      "fulfillmentReturnRequest",
+      "fulfillmentShipment",
+      "fulfillmentTrackingEvent",
+      "fulfillmentWarehouseTask"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

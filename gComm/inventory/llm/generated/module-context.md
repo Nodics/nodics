@@ -34,11 +34,11 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 58 |
-| Test files | 35 |
+| Source files | 61 |
+| Test files | 39 |
 | Data files | 7 |
-| All module-owned files | 93 |
-| Local schema definitions | 15 |
+| All module-owned files | 98 |
+| Local schema definitions | 17 |
 
 ## Ownership And Dependencies
 
@@ -71,9 +71,9 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 35 |
-| Partially documented | 40 |
-| Undocumented | 13 |
+| Documented | 37 |
+| Partially documented | 42 |
+| Undocumented | 14 |
 | Inventory only | 5 |
 
 ## Important Files
@@ -145,6 +145,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/inventory/src/service/operations/defaultInventoryOperationsService.js` | `src` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/src/service/pool/defaultStockPoolFoundationService.js` | `src` | `documented` | 7/7 | Governs enterprise-scoped Stock Pool identity, classification, lifecycle, effective dates, and retirement dependencies. |  |
 | `gComm/inventory/src/service/pool/defaultStockPoolMemberFoundationService.js` | `src` | `documented` | 7/7 | Governs ordered Warehouse membership in Stock Pools without copying Warehouse state or Stock quantities. |  |
+| `gComm/inventory/src/service/promise/defaultInventoryPromisePolicyService.js` | `src` | `partially-documented` | 13/13 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/inventory/src/service/promise/defaultInventoryPromiseReservationOrchestrationService.js` | `src` | `partially-documented` | 6/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/src/service/provider/defaultInventoryExternalProviderService.js` | `src` | `partially-documented` | 1/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/src/service/reconciliation/defaultStockMovementCheckpointOrchestrationService.js` | `src` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/src/service/reconciliation/defaultStockReconciliationInternalClientService.js` | `src` | `partially-documented` | 1/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
@@ -155,6 +157,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/inventory/src/service/reservation/defaultStockReservationIntentService.js` | `src` | `partially-documented` | 1/1 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/src/service/reservation/defaultStockReservationOrchestrationService.js` | `src` | `documented` | 8/8 | Owns exact idempotent Stock Reservation creation, release, cancellation, consumption marking, and expiry. |  |
 | `gComm/inventory/src/service/reservation/defaultStockReservationRepositoryService.js` | `src` | `documented` | 6/6 | Persists reservation evidence and applies optimistic reserved-quantity changes to the authoritative Stock Balance. |  |
+| `gComm/inventory/src/service/return/defaultReturnDispositionMovementService.js` | `src` | `documented` | 14/14 | Executes Fulfillment return disposition intent through Inventory-owned Stock Movement evidence. |  |
 | `gComm/inventory/src/service/sourcing/defaultStockSourcingCacheService.js` | `src` | `documented` | 6/6 | Caches sourcing evaluation results through provider-neutral nCache and performs governed cross-node invalidation. |  |
 | `gComm/inventory/src/service/sourcing/defaultStockSourcingEvaluationService.js` | `src` | `documented` | 4/4 | Evaluates active declarative sourcing Policies and Rules into ordered eligible Pool references without reading Stock quantities. |  |
 | `gComm/inventory/src/service/sourcing/defaultStockSourcingIntentService.js` | `src` | `documented` | 3/3 | Secures and bounds the module-to-module Stock Sourcing evaluation contract without exposing persistence or availability. |  |
@@ -169,11 +172,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/inventory/src/utils/utils.js` | `src` | `documented` | 0/0 | Utility function registry for this boundary. |  |
 | `gComm/inventory/test/inventoryExternalProviderContract.test.js` | `test` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/test/inventoryOperationsContract.test.js` | `test` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/inventory/test/inventoryPromiseFoundation.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gComm/inventory/test/inventoryStorefrontAvailabilityContract.test.js` | `test` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gComm/inventory/test/inventoryUnitsReferenceProvider.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gComm/inventory/test/inventoryWarehouseFoundationService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gComm/inventory/test/inventoryWarehouseReferenceContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gComm/inventory/test/inventoryWarehouseSchemaContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gComm/inventory/test/returnDispositionMovementContract.test.js` | `test` | `documented` | 0/0 | Protects Inventory-owned execution of Fulfillment return disposition intent through Stock Movement evidence. |  |
 | `gComm/inventory/test/stockAllocationFoundation.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gComm/inventory/test/stockAvailabilityCacheContract.test.js` | `test` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/inventory/test/stockAvailabilityFoundation.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |

@@ -31,11 +31,11 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 20 |
-| Test files | 7 |
+| Source files | 22 |
+| Test files | 13 |
 | Data files | 0 |
-| All module-owned files | 31 |
-| Local schema definitions | 4 |
+| All module-owned files | 34 |
+| Local schema definitions | 11 |
 
 ## Ownership And Dependencies
 
@@ -65,7 +65,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 25 |
+| Documented | 28 |
 | Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -103,6 +103,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/cart/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved cart router application configuration contribution. |  |
 | `gComm/cart/src/router/routers.js` | `src` | `documented` | 0/0 | Secured HTTP route definitions for cart creation and cart lookup by reference code, generated code, or token. |  |
 | `gComm/cart/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Cart schema contribution defining abstract cart ownership fields and the concrete persisted cart model. |  |
+| `gComm/cart/src/service/allocation/defaultCartCheckoutAllocationPolicyService.js` | `src` | `documented` | 9/9 | Validates cart checkout delivery/payment groups and quantity-level allocations without owning fulfillment, payment gateway, pricing, or inventory calculation rules. |  |
 | `gComm/cart/src/service/cart/DefaultCartService.js` | `src` | `documented` | 4/4 | Cart service implementation that prepares cart persistence context, starts the create-cart pipeline, and wraps cart read errors. |  |
 | `gComm/cart/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements cart default sample service business behavior and extension logic. |  |
 | `gComm/cart/src/service/entry/defaultCartEntryPolicyService.js` | `src` | `documented` | 11/11 | Validates Cart Entry identity, exact quantity and money evidence, parent ownership, and update lifecycle without owning Product, Pricing, Inventory, Tax, Payment, or Fulfillment rules. |  |
@@ -112,10 +113,12 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/cart/src/service/interceptor/defaultCartTokenDetailInterceptorService.js` | `src` | `documented` | 3/3 | Cart post-load interceptor that expands a stored token value into token reference details and expiry state. |  |
 | `gComm/cart/src/service/pipeline/defaultCreateCartPipelineService.js` | `src` | `documented` | 7/7 | Pipeline node service for create-cart orchestration, including request validation, nested cart validation, persistence, and terminal handling. |  |
 | `gComm/cart/src/service/pipeline/defaultValidateCartPipelineService.js` | `src` | `documented` | 9/9 | Pipeline node service for validating cart payload structure, generated token readiness, related items, consignments, payments, and final cart state. |  |
+| `gComm/cart/src/utils/checkoutAllocationPolicy.js` | `src` | `documented` | 0/0 | Shared checkout group and quantity-allocation policy helpers owned by Cart because Cart contributes the abstract checkout allocation schemas reused by Order. |  |
 | `gComm/cart/src/utils/checkoutEntryPolicy.js` | `src` | `documented` | 0/0 | Shared checkout line-entry policy helpers owned by Cart because Cart contributes the abstractCartEntry schema used by Cart and Order entries. |  |
 | `gComm/cart/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared cart enum definition exports. |  |
 | `gComm/cart/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Cart status and error-code definitions used by services, pipelines, and API responses. |  |
 | `gComm/cart/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for cart-specific helper functions. |  |
+| `gComm/cart/test/cartCheckoutAllocationFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects cart delivery/payment group and quantity-level allocation schemas, exact decimal evidence, and serial-ready split fulfillment/payment contracts. |  |
 | `gComm/cart/test/cartEntryFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects the cart line-entry schema foundation, exact value storage, parent-code relationship, and later-layer extension boundary. |  |
 | `gComm/cart/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Reserved common cart test contribution showing the module-owned test-suite shape for shared cart behavior. | add JSDoc for 7 exported method(s) |
 | `gComm/cart/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Reserved local-environment cart test contribution showing how environment-specific test suites can be attached. | add JSDoc for 7 exported method(s) |

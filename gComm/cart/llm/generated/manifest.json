@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to cart"
   },
-  "sourceFiles": 20,
-  "testFiles": 7,
+  "sourceFiles": 22,
+  "testFiles": 13,
   "dataFiles": 0,
-  "ownedFiles": 31,
-  "sourceFingerprint": "dd7f713527560e3ecc815226133366b367c64da0bcb626db110b3aa540f54988",
+  "ownedFiles": 34,
+  "sourceFingerprint": "6f361c74a330debeb81bc2eae70c46b00af44fe3df36ff852ca86f2b05436870",
   "documentation": {
-    "documented": 25,
+    "documented": 28,
     "partially-documented": 2,
     "undocumented": 0,
     "inventory-only": 4
@@ -27,11 +27,18 @@
   "schemaGroups": {
     "cart": [
       "cart",
-      "cartEntry"
+      "cartDeliveryAllocation",
+      "cartDeliveryGroup",
+      "cartEntry",
+      "cartPaymentAllocation",
+      "cartPaymentGroup"
     ],
     "default": [
       "abstractCart",
-      "abstractCartEntry"
+      "abstractCartEntry",
+      "abstractCheckoutAllocation",
+      "abstractCheckoutDeliveryGroup",
+      "abstractCheckoutPaymentGroup"
     ]
   },
   "schemaLoadError": null,

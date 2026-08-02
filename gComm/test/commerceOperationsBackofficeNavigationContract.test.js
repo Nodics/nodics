@@ -22,6 +22,10 @@ const authProperties = require("../../gFramework/nAuth/config/properties");
 const userGroups = require("../../gCore/profile/data/init/data/groups/defaultBootstrapUserGroupsData");
 
 global.ENUMS = {
+  WorkflowActionType: {
+    AUTO: { key: "AUTO" },
+    MANUAL: { key: "MANUAL" },
+  },
   ReasonType: {
     ORDERSTATUS: { key: "ORDERSTATUS" },
     PAYMENT: { key: "PAYMENT" },
@@ -39,6 +43,7 @@ const cartCapability = require("../cart/config/properties")
   .backofficeCapabilities.cart;
 const orderCapability = require("../order/config/properties")
   .backofficeCapabilities.order;
+const reverseActions = require("../order/data/init/data/reverse/defaultCheckoutReverseWorkflowActionData");
 
 const knownSchemas = {
   pricing: require("../pricing/src/schemas/schemas").pricing,
@@ -46,6 +51,8 @@ const knownSchemas = {
   store: require("../store/src/schemas/schemas").store,
   cart: require("../cart/src/schemas/schemas").cart,
   order: require("../order/src/schemas/schemas").order,
+  fulfillment: require("../fulfillment/src/schemas/schemas").fulfillment,
+  payment: require("../payment/src/schemas/schemas").payment,
 };
 const capabilities = [
   pricingCapability,
@@ -79,8 +86,27 @@ const runtimeAdminGroup = Object.values(userGroups).find(
   (group) => group.code === "runtimeConfigAdminUserGroup",
 );
 const requiredDetailPanelIds = {
-  carts: ["cart-entries"],
-  orders: ["order-entries", "order-history"],
+  carts: [
+    "cart-entries",
+    "cart-delivery-groups",
+    "cart-delivery-allocations",
+    "cart-payment-groups",
+    "cart-payment-allocations",
+  ],
+  orders: [
+    "order-entries",
+    "order-delivery-groups",
+    "order-delivery-allocations",
+    "order-payment-groups",
+    "order-payment-allocations",
+    "order-history",
+  ],
+  "checkout-reverse-runs": [
+    "reverse-run-order",
+    "reverse-run-return",
+    "reverse-run-refund-transaction",
+    "reverse-run-history",
+  ],
   pricing: ["price-list-prices", "price-list-assignments"],
   "price-lists": ["price-list-prices", "price-list-assignments"],
   "price-groups": ["price-group-members"],
@@ -91,6 +117,7 @@ const requiredDetailPanelIds = {
     "warehouse-reservations",
     "warehouse-pool-members",
   ],
+  "inventory-promises": ["promise-reservations"],
   reconciliation: ["reconciliation-findings"],
   "sourcing-policies": ["sourcing-rules"],
   stores: ["store-warehouse-assignments"],
@@ -135,20 +162,107 @@ assert.strictEqual(byId.checkout.route, "/commerce/operations/checkout");
 assert.strictEqual(byId.carts.parentId, "checkout");
 assert.strictEqual(byId.carts.workbenchTarget.moduleName, "cart");
 assert.strictEqual(byId["cart-entries"].parentId, "checkout");
-assert.strictEqual(byId["cart-entries"].workbenchTarget.schemaName, "cartEntry");
+assert.strictEqual(
+  byId["cart-entries"].workbenchTarget.schemaName,
+  "cartEntry",
+);
+assert.strictEqual(
+  byId["cart-delivery-groups"].workbenchTarget.schemaName,
+  "cartDeliveryGroup",
+);
+assert.strictEqual(
+  byId["cart-delivery-allocations"].workbenchTarget.schemaName,
+  "cartDeliveryAllocation",
+);
+assert.strictEqual(
+  byId["cart-payment-groups"].workbenchTarget.schemaName,
+  "cartPaymentGroup",
+);
+assert.strictEqual(
+  byId["cart-payment-allocations"].workbenchTarget.schemaName,
+  "cartPaymentAllocation",
+);
 assert.strictEqual(byId.orders.workbenchTarget.schemaName, "order");
 assert.strictEqual(byId["order-entries"].parentId, "checkout");
-assert.strictEqual(byId["order-entries"].workbenchTarget.schemaName, "orderEntry");
+assert.strictEqual(
+  byId["order-entries"].workbenchTarget.schemaName,
+  "orderEntry",
+);
+assert.strictEqual(
+  byId["order-delivery-groups"].workbenchTarget.schemaName,
+  "orderDeliveryGroup",
+);
+assert.strictEqual(
+  byId["order-delivery-allocations"].workbenchTarget.schemaName,
+  "orderDeliveryAllocation",
+);
+assert.strictEqual(
+  byId["order-payment-groups"].workbenchTarget.schemaName,
+  "orderPaymentGroup",
+);
+assert.strictEqual(
+  byId["order-payment-allocations"].workbenchTarget.schemaName,
+  "orderPaymentAllocation",
+);
 assert.strictEqual(byId["order-history"].parentId, "checkout");
 assert.strictEqual(
   byId["order-history"].workbenchTarget.schemaName,
   "orderHistoryEntry",
+);
+assert.strictEqual(byId["checkout-reverse-runs"].parentId, "checkout");
+assert.strictEqual(
+  byId["checkout-reverse-runs"].workbenchTarget.schemaName,
+  "checkoutReverseRun",
+);
+assert.deepStrictEqual(
+  byId["checkout-reverse-runs"].workbenchPresentation.defaultColumns,
+  [
+    "reverseCode",
+    "orderCode",
+    "state",
+    "currentStep",
+    "recoveryStrategy",
+    "recoveryOwner",
+    "returnCode",
+    "refundTransactionCode",
+  ],
+);
+assert.deepStrictEqual(
+  byId["checkout-reverse-runs"].workbenchPresentation.quickFilters.map(
+    (filter) => filter.id,
+  ),
+  [
+    "active-recovery",
+    "fulfillment-review",
+    "inventory-review",
+    "payment-retry",
+    "history-retry",
+  ],
+);
+assert.deepStrictEqual(
+  byId["checkout-reverse-runs"].workbenchPresentation.recoveryActions.map(
+    (action) => action.handlerAction,
+  ),
+  [
+    "checkoutReverseRecoverFulfillmentAction",
+    "checkoutReverseRecoverInventoryAction",
+    "checkoutReverseRecoverPaymentAction",
+    "checkoutReverseRecoverHistoryAction",
+  ],
 );
 assert.strictEqual(byId["price-lists"].workbenchTarget.schemaName, "priceList");
 assert.strictEqual(byId.prices.workbenchTarget.schemaName, "price");
 assert.strictEqual(
   byId["stock-levels"].workbenchTarget.schemaName,
   "stockBalance",
+);
+assert.strictEqual(
+  byId["inventory-promises"].workbenchTarget.schemaName,
+  "inventoryPromise",
+);
+assert.strictEqual(
+  byId["promise-reservations"].workbenchTarget.schemaName,
+  "inventoryPromiseReservation",
 );
 assert.strictEqual(byId.warehouses.workbenchTarget.schemaName, "warehouse");
 assert.strictEqual(
@@ -263,12 +377,14 @@ navigation.forEach((item) => {
           item.workbenchTarget.schemaName
         ]
       : undefined;
-    const targetSchema = knownSchemas[panel.target.moduleName]?.[
-      panel.target.schemaName
-    ];
+    const targetSchema =
+      knownSchemas[panel.target.moduleName]?.[panel.target.schemaName];
     assert(
       targetSchema,
-      item.id + " detail panel " + panel.id + " must target an implemented schema",
+      item.id +
+        " detail panel " +
+        panel.id +
+        " must target an implemented schema",
     );
     if (panel.relation) {
       assert(
@@ -283,7 +399,7 @@ navigation.forEach((item) => {
           " must map from an existing source field",
       );
       assert(
-        targetSchema.definition[panel.relation.targetField],
+        schemaHasField(targetSchema, panel.relation.targetField),
         item.id +
           " detail panel " +
           panel.id +
@@ -291,6 +407,35 @@ navigation.forEach((item) => {
       );
     }
   });
+  if (item.workbenchPresentation && item.workbenchTarget) {
+    const sourceSchema =
+      knownSchemas[item.workbenchTarget.moduleName]?.[
+        item.workbenchTarget.schemaName
+      ];
+    (item.workbenchPresentation.defaultColumns || []).forEach((field) => {
+      assert(
+        schemaHasField(sourceSchema, field),
+        item.id + " default column " + field + " must map to schema field",
+      );
+    });
+    (item.workbenchPresentation.quickFilters || []).forEach((filter) => {
+      assert(
+        schemaHasField(sourceSchema, filter.field),
+        item.id + " quick filter " + filter.id + " must map to schema field",
+      );
+    });
+    (item.workbenchPresentation.recoveryActions || []).forEach((action) => {
+      assert(
+        Object.values(reverseActions).some(
+          (workflowAction) => workflowAction.code === action.handlerAction,
+        ),
+        item.id +
+          " recovery action " +
+          action.id +
+          " must reference seeded Workflow action",
+      );
+    });
+  }
 });
 
 console.log("Commerce Operations BackOffice navigation contract validated");

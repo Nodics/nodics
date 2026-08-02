@@ -15,3 +15,7 @@
 - Axis is an employee-only application. Public login and employee recovery
   composition must never include authenticated components, and dashboard
   composition is authenticated by default.
+- Module-owned navigation may include bounded `workbenchPresentation` metadata
+  for reusable Axis schema workspaces. Treat it as labels, default columns,
+  filters, and owner-action hints only; it is not executable authority and must
+  not bypass target-module permissions or services.

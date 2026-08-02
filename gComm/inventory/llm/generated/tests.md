@@ -6,11 +6,13 @@
 
 - `gComm/inventory/test/inventoryExternalProviderContract.test.js`
 - `gComm/inventory/test/inventoryOperationsContract.test.js`
+- `gComm/inventory/test/inventoryPromiseFoundation.test.js`
 - `gComm/inventory/test/inventoryStorefrontAvailabilityContract.test.js`
 - `gComm/inventory/test/inventoryUnitsReferenceProvider.test.js`
 - `gComm/inventory/test/inventoryWarehouseFoundationService.test.js`
 - `gComm/inventory/test/inventoryWarehouseReferenceContract.test.js`
 - `gComm/inventory/test/inventoryWarehouseSchemaContract.test.js`
+- `gComm/inventory/test/returnDispositionMovementContract.test.js`
 - `gComm/inventory/test/stockAllocationFoundation.test.js`
 - `gComm/inventory/test/stockAvailabilityCacheContract.test.js`
 - `gComm/inventory/test/stockAvailabilityFoundation.test.js`
@@ -27,6 +29,8 @@
 
 ## Generated Tests
 
+- `gComm/inventory/test/gen/schema/inventoryPromiseReservationSchemaContract.test.js`
+- `gComm/inventory/test/gen/schema/inventoryPromiseSchemaContract.test.js`
 - `gComm/inventory/test/gen/schema/stockAllocationSchemaContract.test.js`
 - `gComm/inventory/test/gen/schema/stockBalanceSchemaContract.test.js`
 - `gComm/inventory/test/gen/schema/stockMovementCheckpointSchemaContract.test.js`

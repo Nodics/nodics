@@ -35,6 +35,7 @@
 
 - `composition`
 - `configuration`
+- `test`
 - `llm`
 
 **Required modules**

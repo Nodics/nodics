@@ -30,11 +30,11 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 13 |
-| Test files | 18 |
-| Data files | 9 |
-| All module-owned files | 34 |
-| Local schema definitions | 7 |
+| Source files | 22 |
+| Test files | 43 |
+| Data files | 21 |
+| All module-owned files | 66 |
+| Local schema definitions | 13 |
 
 ## Ownership And Dependencies
 
@@ -63,8 +63,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 27 |
-| Partially documented | 2 |
+| Documented | 47 |
+| Partially documented | 14 |
 | Undocumented | 0 |
 | Inventory only | 5 |
 
@@ -95,29 +95,61 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/order/data/init/data/defaultOrderStatusResonData.js` | `data` | `documented` | 0/0 | Default reason records for order, payment, and shipment lifecycle status changes. |  |
 | `gComm/order/data/init/data/defaultPaymentStatusData.js` | `data` | `documented` | 0/0 | Default payment lifecycle status records loaded by the order initial-data importer. |  |
 | `gComm/order/data/init/data/defaultShippingStatusData.js` | `data` | `documented` | 0/0 | Default shipping lifecycle status records loaded by the order initial-data importer. |  |
+| `gComm/order/data/init/data/placement/defaultCheckoutPlacementWorkflowActionData.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/order/data/init/data/placement/defaultCheckoutPlacementWorkflowChannelData.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/order/data/init/data/placement/defaultCheckoutPlacementWorkflowHeadData.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/order/data/init/data/reverse/defaultCheckoutReverseWorkflowActionData.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/order/data/init/data/reverse/defaultCheckoutReverseWorkflowChannelData.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/order/data/init/data/reverse/defaultCheckoutReverseWorkflowHeadData.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/order/data/init/header/defaultOrderStatusHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default order status records. |  |
 | `gComm/order/data/init/header/defaultOrderStatusResonHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default order, payment, and shipment reason records. |  |
 | `gComm/order/data/init/header/defaultPaymentStatusHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default payment status records. |  |
 | `gComm/order/data/init/header/defaultShippingStatusHeader.js` | `data` | `documented` | 0/0 | Initial-data import header for default shipping status records. |  |
+| `gComm/order/data/init/header/placement/defaultCheckoutPlacementWorkflowActionHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/order/data/init/header/placement/defaultCheckoutPlacementWorkflowChannelHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/order/data/init/header/placement/defaultCheckoutPlacementWorkflowHeadHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/order/data/init/header/reverse/defaultCheckoutReverseWorkflowActionHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/order/data/init/header/reverse/defaultCheckoutReverseWorkflowChannelHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/order/data/init/header/reverse/defaultCheckoutReverseWorkflowHeadHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/order/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/order/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/order/nodics.js` | `module` | `documented` | 2/2 | Order module lifecycle entrypoint used by the Nodics module loader. |  |
 | `gComm/order/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/order/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Schema interceptor registrations for order save lifecycle hooks. |  |
-| `gComm/order/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Pipeline definition for order creation validation, persistence, and terminal handling. |  |
+| `gComm/order/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Pipeline definitions for atomic Order technical tasks. |  |
 | `gComm/order/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved order router application configuration contribution. |  |
 | `gComm/order/src/router/routers.js` | `src` | `documented` | 0/0 | Reserved order route contribution for custom order APIs beyond generated schema routes. |  |
 | `gComm/order/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Order schema contribution defining order, order status, payment status, shipping status, and reason models. |  |
+| `gComm/order/src/service/allocation/defaultOrderCheckoutAllocationPolicyService.js` | `src` | `documented` | 14/14 | Validates order checkout delivery/payment groups and immutable quantity-level allocation evidence copied from cart checkout state. |  |
 | `gComm/order/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements order default sample service business behavior and extension logic. |  |
 | `gComm/order/src/service/entry/defaultOrderEntryPolicyService.js` | `src` | `documented` | 12/12 | Validates Order Entry immutable evidence and builds Order Entries from Cart Entries through the shared checkout entry policy. |  |
 | `gComm/order/src/service/interceptor/defaultOrderCodeGeneratorInterceptorService.js` | `src` | `documented` | 3/3 | Order pre-save interceptor service that derives missing enterprise ownership from the request context. |  |
 | `gComm/order/src/service/order/DefaultOrderService.js` | `src` | `documented` | 3/3 | Order service implementation that prepares tenant-aware order persistence context and starts the create-order pipeline. |  |
 | `gComm/order/src/service/pipeline/defaultCreateOrderPipelineService.js` | `src` | `documented` | 12/12 | Pipeline node service for order creation validation, associated data checks, persistence, and terminal handling. |  |
+| `gComm/order/src/service/placement/defaultCheckoutAllocationCopyService.js` | `src` | `documented` | 12/12 | Copies exact Cart checkout delivery/payment group and quantity-allocation evidence into Order-owned immutable models during checkout placement. |  |
+| `gComm/order/src/service/placement/defaultCheckoutInventoryReservationService.js` | `src` | `documented` | 12/12 | Converts checkout delivery allocation demand into Inventory-owned Promise Reservation requests during checkout placement. |  |
+| `gComm/order/src/service/placement/defaultCheckoutOrderProjectionService.js` | `src` | `documented` | 16/16 | Creates an Order header and Order Entries from validated Cart checkout evidence during checkout placement. |  |
+| `gComm/order/src/service/placement/defaultCheckoutPlacementCompensationService.js` | `src` | `documented` | 12/12 | Handles checkout placement failure compensation boundaries by delegating promise releases to Inventory and recording safe Order placement failure evidence. |  |
+| `gComm/order/src/service/placement/defaultCheckoutPlacementPipelineService.js` | `src` | `documented` | 11/11 | Pipeline node service for the atomic checkout placement-run evidence task. Workflow owns the business process; this pipeline only divides one technical unit into validation, run evidence initialization, and response finalization steps. |  |
+| `gComm/order/src/service/placement/defaultCheckoutPlacementWorkflowService.js` | `src` | `documented` | 21/21 | Bridges checkout placement commands into Workflow carriers and executes checkout placement as business-level Workflow actions. nPipeline is used only inside atomic technical actions such as placement-run evidence. |  |
+| `gComm/order/src/service/placement/defaultOrderCheckoutPlacementValidationService.js` | `src` | `documented` | 13/13 | Validates a cart checkout aggregate before the checkout placement Workflow advances to inventory reservation. |  |
+| `gComm/order/src/service/reverse/defaultCheckoutReverseWorkflowService.js` | `src` | `documented` | 38/38 | Coordinates return and refund business Workflow actions while keeping Fulfillment and Payment authoritative for their own evidence. |  |
 | `gComm/order/src/utils/enums.js` | `src` | `documented` | 0/0 | Order enum definitions, including reason categories for order, payment, and shipment lifecycle reasons. |  |
 | `gComm/order/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Reserved order status and error-code definitions used by services, pipelines, and API responses. |  |
 | `gComm/order/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for order-specific helper functions. |  |
+| `gComm/order/test/checkoutAllocationCopyServiceContract.test.js` | `test` | `documented` | 0/0 | Protects checkout placement allocation copy as an Order-owned Workflow action that preserves distributed delivery/payment evidence from Cart. |  |
+| `gComm/order/test/checkoutFulfillmentReleaseWorkflowContract.test.js` | `test` | `documented` | 0/0 | Protects checkout placement fulfillment release as an Order Workflow action that delegates fulfillment authority to the Fulfillment capability. |  |
+| `gComm/order/test/checkoutInventoryReservationBridgeContract.test.js` | `test` | `documented` | 0/0 | Protects the checkout placement reserveInventory Workflow action as an Order-to-Inventory bridge, not an Inventory counter implementation. |  |
+| `gComm/order/test/checkoutOrderProjectionServiceContract.test.js` | `test` | `documented` | 0/0 | Protects checkout order projection as an Order-owned Workflow action that creates traceable Order header and Entries from validated Cart evidence. |  |
+| `gComm/order/test/checkoutPaymentAuthorizationWorkflowContract.test.js` | `test` | `documented` | 0/0 | Protects checkout placement payment authorization as an Order Workflow action that delegates payment authority to the Payment capability. |  |
+| `gComm/order/test/checkoutPlacementCompensationContract.test.js` | `test` | `documented` | 0/0 | Protects checkout placement failure compensation as owner-delegated release and safe failure evidence, not hidden Order-owned rollback logic. |  |
+| `gComm/order/test/checkoutPlacementCompletionWorkflowContract.test.js` | `test` | `documented` | 0/0 | Protects checkout placement Workflow completion evidence across validation, reservation, order projection, allocation copy, order history, and final placement-run completion. |  |
+| `gComm/order/test/checkoutPlacementValidationServiceContract.test.js` | `test` | `documented` | 0/0 | Protects checkout placement validation as a Workflow action service that validates distributed delivery and payment allocation before inventory reservation. |  |
+| `gComm/order/test/checkoutPlacementWorkflowPipelineContract.test.js` | `test` | `documented` | 0/0 | Protects checkout placement as a Workflow-owned business process that uses nPipeline only for atomic technical tasks. |  |
+| `gComm/order/test/checkoutReverseWorkflowContract.test.js` | `test` | `documented` | 0/0 | Protects reverse checkout as an Order-coordinated Workflow that delegates return evidence to Fulfillment and refund evidence to Payment. |  |
 | `gComm/order/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Reserved common order test contribution showing the module-owned test-suite shape for shared order behavior. | add JSDoc for 7 exported method(s) |
 | `gComm/order/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Reserved local-environment order test contribution showing how environment-specific test suites can be attached. | add JSDoc for 7 exported method(s) |
+| `gComm/order/test/orderCheckoutAllocationFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects order delivery/payment group and quantity-level allocation schemas, immutable exact evidence, and cart-to-order allocation conversion boundaries. |  |
 | `gComm/order/test/orderEntryFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects the order line-entry schema foundation, immutable evidence fields, parent-code relationship, and later-layer extension boundary. |  |
 | `gComm/order/test/orderHistoryFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects the order-owned lifecycle history foundation, parent-code relationship, BackOffice navigation, and adjacent-authority boundary. |  |
 

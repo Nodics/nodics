@@ -75,5 +75,8 @@ module.exports = {
     ERR_INV_00049: { code: '409', message: 'Inventory reconciliation lifecycle conflict' },
     ERR_INV_00050: { code: '503', message: 'Inventory reconciliation boundary or repair failed' },
     ERR_INV_00051: { code: '403', message: 'Inventory reconciliation identity or permission is invalid' },
-    ERR_INV_00052: { code: '401', message: 'Active Storefront context is required' }
+    ERR_INV_00052: { code: '401', message: 'Active Storefront context is required' },
+    SUC_INV_00008: { code: '200', message: 'Return disposition movement operation completed' },
+    ERR_INV_00053: { code: '400', message: 'Return disposition movement request is invalid' },
+    ERR_INV_00054: { code: '403', message: 'Return disposition movement requires an internal service identity' }
 };

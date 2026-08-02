@@ -1,0 +1,35 @@
+{
+  "contextVersion": 3,
+  "moduleName": "payment",
+  "path": "gComm/payment",
+  "kind": "capability",
+  "runtime": {
+    "router": false,
+    "publish": false,
+    "web": false
+  },
+  "package": {
+    "index": "40.75",
+    "version": "0.0.1",
+    "description": "Enterprise-scoped payment provider, transaction, authorization, capture, and refund evidence capability."
+  },
+  "sourceFiles": 7,
+  "testFiles": 6,
+  "dataFiles": 0,
+  "ownedFiles": 19,
+  "sourceFingerprint": "bf8fc533b0c18158e749f7e934a36279c276fbdf5c04ba5e2ed954cc0d20dc03",
+  "documentation": {
+    "documented": 9,
+    "partially-documented": 6,
+    "undocumented": 0,
+    "inventory-only": 4
+  },
+  "schemaGroups": {
+    "payment": [
+      "paymentProvider",
+      "paymentTransaction"
+    ]
+  },
+  "schemaLoadError": null,
+  "generatedBy": "npm run llm:generate"
+}

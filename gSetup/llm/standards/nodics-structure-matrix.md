@@ -44,9 +44,10 @@ at runtime. It must not carry activation lists, server endpoint maps, secrets,
 or environment-specific values; those belong in layered `config/properties.js`.
 
 Every generated boundary must define `name`, `index`, `main`, `version`,
-`description`, `dependencies`, and `nodics`. The standard `main` value is
-`nodics.js`. `name` is the runtime module id, `index` is the deterministic load
-order value, and `dependencies` must be present even when empty.
+`description`, and `nodics`. The standard `main` value is `nodics.js`. `name`
+is the runtime module id and `index` is the deterministic load order value.
+Module manifests must not declare `dependencies` or `devDependencies`; the root
+package remains the only npm dependency installation authority.
 
 Every generated `package.json.nodics` block must define:
 
