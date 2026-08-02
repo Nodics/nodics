@@ -19,6 +19,10 @@ payment into direct fields on `cart` or `cartEntry`.
 - `cartPaymentGroup` and `cartPaymentAllocation` split entry quantities and
   amounts by payment mode or payment authority.
 - Quantity and money fields are exact decimal strings.
+- `cartEntry` stores accepted price/tax display evidence such as
+  `unitNetAmount`, `unitGrossAmount`, `lineNetAmount`, `lineGrossAmount`,
+  `taxTotal`, `taxInclusionMode`, `taxIncluded`, `taxQuoteCode`, and
+  `taxQuoteLineCode`. Cart stores the evidence; Pricing and Tax produce it.
 - Optional `serialNumbers`, `inventoryReservationCode`, and
   `inventoryAllocationCode` are evidence fields for later Inventory authority;
   Cart does not own stock calculations.
@@ -26,3 +30,8 @@ payment into direct fields on `cart` or `cartEntry`.
 Project modules customize validation through `cart.checkoutAllocation.policy`
 or a replacement allocation policy service. Do not fork the OOTB schema or
 introduce parallel cart allocation models for customer-specific checkout flows.
+
+Projects may customize cart entry validation and Axis presentation through
+`cart.checkoutEntry.policy` and module-owned BackOffice
+`workbenchPresentation` metadata. Do not calculate tax in Cart or Axis; attach
+Tax quote evidence instead.

@@ -162,6 +162,53 @@ module.exports = {
           featureState: "PREVIEW",
           requiredPermissions: ["tax.backoffice.read"],
           workbenchTarget: { moduleName: "tax", schemaName: "taxQuote" },
+          workbenchPresentation: {
+            defaultColumns: [
+              "quoteCode",
+              "providerCode",
+              "jurisdictionCode",
+              "currencyCode",
+              "subtotalAmount",
+              "taxTotal",
+              "taxInclusionMode",
+              "status",
+            ],
+            readonlyFields: [
+              "subtotalAmount",
+              "taxTotal",
+              "taxMode",
+              "taxInclusionMode",
+              "idempotencyKey",
+            ],
+            detailSections: [
+              {
+                id: "quote-identity",
+                label: "Quote identity",
+                fields: [
+                  "quoteCode",
+                  "cartCode",
+                  "orderCode",
+                  "providerCode",
+                  "jurisdictionCode",
+                  "status",
+                ],
+                order: 10,
+              },
+              {
+                id: "quote-tax-display",
+                label: "Tax display evidence",
+                fields: [
+                  "currencyCode",
+                  "subtotalAmount",
+                  "taxTotal",
+                  "taxMode",
+                  "taxInclusionMode",
+                  "idempotencyKey",
+                ],
+                order: 20,
+              },
+            ],
+          },
           detailPanels: [
             {
               id: "tax-quote-lines",
@@ -177,6 +224,7 @@ module.exports = {
             summary:
               "Review immutable tax quote header evidence produced for checkout, order, provider, or reconciliation flows.",
             documentationRoute: "/docs/capabilities/commerce/tax/quotes",
+            documentationFragment: "tax-inclusive-display-evidence",
           },
         },
         {
@@ -192,10 +240,63 @@ module.exports = {
           featureState: "PREVIEW",
           requiredPermissions: ["tax.backoffice.read"],
           workbenchTarget: { moduleName: "tax", schemaName: "taxQuoteLine" },
+          workbenchPresentation: {
+            defaultColumns: [
+              "lineCode",
+              "quoteCode",
+              "entryCode",
+              "taxCategoryCode",
+              "jurisdictionCode",
+              "rateCode",
+              "grossAmount",
+              "taxAmount",
+              "taxInclusionMode",
+            ],
+            readonlyFields: [
+              "taxableAmount",
+              "netAmount",
+              "grossAmount",
+              "taxAmount",
+              "taxInclusionMode",
+              "taxIncluded",
+              "exemptionCode",
+            ],
+            detailSections: [
+              {
+                id: "line-identity",
+                label: "Line identity",
+                fields: [
+                  "lineCode",
+                  "quoteCode",
+                  "entryCode",
+                  "taxCategoryCode",
+                  "jurisdictionCode",
+                  "rateCode",
+                  "exemptionCode",
+                ],
+                order: 10,
+              },
+              {
+                id: "line-tax-display",
+                label: "Tax display evidence",
+                fields: [
+                  "currencyCode",
+                  "taxableAmount",
+                  "netAmount",
+                  "grossAmount",
+                  "taxAmount",
+                  "taxInclusionMode",
+                  "taxIncluded",
+                ],
+                order: 20,
+              },
+            ],
+          },
           help: {
             summary:
-              "Inspect line-level taxable amount, rate, tax amount, jurisdiction, exemption, and provider evidence.",
+              "Inspect line-level taxable, net, gross, tax amount, inclusion mode, jurisdiction, exemption, and provider evidence.",
             documentationRoute: "/docs/capabilities/commerce/tax/quotes",
+            documentationFragment: "tax-inclusive-display-evidence",
           },
         },
       ],

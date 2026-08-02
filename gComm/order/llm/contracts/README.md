@@ -21,6 +21,10 @@ into direct mutable arrays on `order` or direct fields on `orderEntry`.
 - `orderPaymentGroup` and `orderPaymentAllocation` split order-entry quantities
   and amounts by payment mode or payment authority.
 - Quantity and money fields are exact decimal strings.
+- `orderEntry` freezes accepted price/tax display evidence copied from
+  `cartEntry`, including net/gross line amounts, `taxTotal`,
+  `taxInclusionMode`, `taxIncluded`, and Tax quote/rate references. Order does
+  not recalculate this evidence after placement.
 - Optional `serialNumbers`, `inventoryReservationCode`, and
   `inventoryAllocationCode` are evidence fields for Inventory and Fulfillment
   authorities; Order does not own stock or shipment calculations.
@@ -42,6 +46,10 @@ service that uses those builders and generated Order services to copy only
 missing source records, so Workflow retries remain idempotent. It must freeze
 cart split evidence; it must not recalculate quantities, amounts, stock, or
 payment decisions.
+Order entry Axis presentation is configured through module-owned BackOffice
+`workbenchPresentation` metadata. Projects may layer different columns or
+detail sections, but they must not move order-entry evidence rendering into a
+custom Axis-only data model.
 
 ## Checkout placement workflow contract
 

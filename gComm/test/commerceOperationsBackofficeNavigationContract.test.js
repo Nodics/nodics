@@ -19,6 +19,7 @@
 const assert = require("assert");
 const backofficeContractService = require("../../gExp/backoffice/src/service/contract/defaultBackofficeContractService");
 const authProperties = require("../../gFramework/nAuth/config/properties");
+const databaseSchemas = require("../../gFramework/nDatabase/database/src/schemas/schemas");
 const userGroups = require("../../gCore/profile/data/init/data/groups/defaultBootstrapUserGroupsData");
 
 global.ENUMS = {
@@ -33,6 +34,7 @@ global.ENUMS = {
   },
 };
 
+const cartSchemas = require("../cart/src/schemas/schemas");
 const pricingCapability = require("../pricing/config/properties")
   .backofficeCapabilities.pricing;
 const inventoryCapability = require("../inventory/config/properties")
@@ -55,11 +57,16 @@ const knownSchemas = {
   pricing: require("../pricing/src/schemas/schemas").pricing,
   inventory: require("../inventory/src/schemas/schemas").inventory,
   store: require("../store/src/schemas/schemas").store,
-  cart: require("../cart/src/schemas/schemas").cart,
+  cart: cartSchemas.cart,
   order: require("../order/src/schemas/schemas").order,
   fulfillment: require("../fulfillment/src/schemas/schemas").fulfillment,
   payment: require("../payment/src/schemas/schemas").payment,
   tax: require("../tax/src/schemas/schemas").tax,
+};
+const inheritedSchemas = {
+  abstractCartEntry: cartSchemas.default.abstractCartEntry,
+  base: databaseSchemas.default.base,
+  super: databaseSchemas.default.super,
 };
 const capabilities = [
   pricingCapability,
@@ -76,7 +83,12 @@ const navigation = capabilities.flatMap(
 );
 const byId = Object.fromEntries(navigation.map((item) => [item.id, item]));
 const schemaHasField = (schema, field) =>
-  field === "code" || Boolean(schema.definition[field]);
+  field === "code" ||
+  Boolean(schema.definition[field]) ||
+  Boolean(inheritedSchemas[schema.super]?.definition[field]) ||
+  Boolean(
+    inheritedSchemas[inheritedSchemas[schema.super]?.super]?.definition[field],
+  );
 const disabledIds = [
   "promotions",
   "coupons",
@@ -174,6 +186,27 @@ assert.strictEqual(
   byId["cart-entries"].workbenchTarget.schemaName,
   "cartEntry",
 );
+assert.deepStrictEqual(
+  byId["cart-entries"].workbenchPresentation.defaultColumns,
+  [
+    "entryCode",
+    "cartCode",
+    "itemCode",
+    "quantity",
+    "unitCode",
+    "currencyCode",
+    "lineGrossAmount",
+    "taxTotal",
+    "taxInclusionMode",
+    "status",
+  ],
+);
+assert.deepStrictEqual(
+  byId["cart-entries"].workbenchPresentation.detailSections.map(
+    (section) => section.id,
+  ),
+  ["entry-identity", "price-tax-display", "tax-authority-links"],
+);
 assert.strictEqual(
   byId["cart-delivery-groups"].workbenchTarget.schemaName,
   "cartDeliveryGroup",
@@ -195,6 +228,32 @@ assert.strictEqual(byId["order-entries"].parentId, "checkout");
 assert.strictEqual(
   byId["order-entries"].workbenchTarget.schemaName,
   "orderEntry",
+);
+assert.deepStrictEqual(
+  byId["order-entries"].workbenchPresentation.defaultColumns,
+  [
+    "entryCode",
+    "orderCode",
+    "itemCode",
+    "quantity",
+    "unitCode",
+    "currencyCode",
+    "lineGrossAmount",
+    "taxTotal",
+    "taxInclusionMode",
+    "status",
+  ],
+);
+assert.deepStrictEqual(
+  byId["order-entries"].workbenchPresentation.detailSections.map(
+    (section) => section.id,
+  ),
+  [
+    "entry-identity",
+    "frozen-price-tax-evidence",
+    "tax-authority-links",
+    "inventory-links",
+  ],
 );
 assert.strictEqual(
   byId["order-delivery-groups"].workbenchTarget.schemaName,
@@ -276,9 +335,36 @@ assert.strictEqual(
   "taxProvider",
 );
 assert.strictEqual(byId["tax-quotes"].workbenchTarget.schemaName, "taxQuote");
+assert.deepStrictEqual(
+  byId["tax-quotes"].workbenchPresentation.defaultColumns,
+  [
+    "quoteCode",
+    "providerCode",
+    "jurisdictionCode",
+    "currencyCode",
+    "subtotalAmount",
+    "taxTotal",
+    "taxInclusionMode",
+    "status",
+  ],
+);
 assert.strictEqual(
   byId["tax-quote-lines"].workbenchTarget.schemaName,
   "taxQuoteLine",
+);
+assert.deepStrictEqual(
+  byId["tax-quote-lines"].workbenchPresentation.defaultColumns,
+  [
+    "lineCode",
+    "quoteCode",
+    "entryCode",
+    "taxCategoryCode",
+    "jurisdictionCode",
+    "rateCode",
+    "grossAmount",
+    "taxAmount",
+    "taxInclusionMode",
+  ],
 );
 assert.strictEqual(
   byId["delivery-charge-quotes"].workbenchTarget.schemaName,
@@ -532,6 +618,34 @@ navigation.forEach((item) => {
         schemaHasField(sourceSchema, field),
         item.id + " default column " + field + " must map to schema field",
       );
+    });
+    ["hiddenFields", "editableFields", "readonlyFields"].forEach(
+      (collectionName) => {
+        (item.workbenchPresentation[collectionName] || []).forEach((field) => {
+          assert(
+            schemaHasField(sourceSchema, field),
+            item.id +
+              " " +
+              collectionName +
+              " field " +
+              field +
+              " must map to schema field",
+          );
+        });
+      },
+    );
+    (item.workbenchPresentation.detailSections || []).forEach((section) => {
+      section.fields.forEach((field) => {
+        assert(
+          schemaHasField(sourceSchema, field),
+          item.id +
+            " detail section " +
+            section.id +
+            " field " +
+            field +
+            " must map to schema field",
+        );
+      });
     });
     (item.workbenchPresentation.quickFilters || []).forEach((filter) => {
       assert(

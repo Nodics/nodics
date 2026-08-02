@@ -33,16 +33,16 @@ records explain how each part of that quantity will be handled.
 
 Each module owns one part of the truth.
 
-| Module | Owns | Does not own |
-| --- | --- | --- |
-| `cart` | Mutable checkout intent, cart entries, cart delivery groups, cart payment groups, cart quantity allocations | Product authority, final order history, physical stock, payment capture |
-| `order` | Durable order projection after placement, order entries, copied delivery/payment allocations, order history | Cart mutation, product authority, physical stock, payment capture |
-| `inventory` | Stock balances, stock reservations, stock allocations, stock movements, inventory promises, promise reservations | Cart/order lifecycle, money capture, payment gateway processing |
-| `payment` | Payment providers, transaction evidence, authorization/deferred payment boundaries, future capture/refund/void lifecycle | Cart/order lifecycle, product authority, physical stock, shipment fulfillment |
-| `fulfillment` | Consignments, shipment/tracking evidence, delivery release, future carrier and return-pickup lifecycle | Order demand authority, Inventory stock counters, Payment capture/refund |
-| `pricing` | Price lists, price records, price group resolution, online price publication evidence | Cart ownership or payment capture |
-| `product` | Product identity, classifications, variants, product media, product publication evidence | Cart/order ownership or stock quantities |
-| `store` | Store and warehouse assignment context | Stock balances or checkout allocation state |
+| Module        | Owns                                                                                                                     | Does not own                                                                  |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| `cart`        | Mutable checkout intent, cart entries, cart delivery groups, cart payment groups, cart quantity allocations              | Product authority, final order history, physical stock, payment capture       |
+| `order`       | Durable order projection after placement, order entries, copied delivery/payment allocations, order history              | Cart mutation, product authority, physical stock, payment capture             |
+| `inventory`   | Stock balances, stock reservations, stock allocations, stock movements, inventory promises, promise reservations         | Cart/order lifecycle, money capture, payment gateway processing               |
+| `payment`     | Payment providers, transaction evidence, authorization/deferred payment boundaries, future capture/refund/void lifecycle | Cart/order lifecycle, product authority, physical stock, shipment fulfillment |
+| `fulfillment` | Consignments, shipment/tracking evidence, delivery release, future carrier and return-pickup lifecycle                   | Order demand authority, Inventory stock counters, Payment capture/refund      |
+| `pricing`     | Price lists, price records, price group resolution, online price publication evidence                                    | Cart ownership or payment capture                                             |
+| `product`     | Product identity, classifications, variants, product media, product publication evidence                                 | Cart/order ownership or stock quantities                                      |
+| `store`       | Store and warehouse assignment context                                                                                   | Stock balances or checkout allocation state                                   |
 
 This boundary is important. Customer modules should extend the owning module or
 layer configuration over it. They should not create parallel cart, order,
@@ -71,6 +71,73 @@ payment, or another project-defined payment type.
 
 `cartPaymentAllocation` links part of a `cartEntry` quantity and amount to one
 `cartPaymentGroup`.
+
+### Pricing and tax evidence during checkout
+
+Checkout must be able to answer two business questions at the same time:
+
+1. What amount did the customer see and accept?
+2. What tax was applied inside or on top of that amount?
+
+Many businesses configure product prices as tax-exclusive. In that model, the
+displayed item price is the net amount and tax is added during checkout. Other
+businesses configure prices as tax-inclusive. In that model, the displayed
+item price already includes tax, but invoices, receipts, support screens,
+exports, and legal audit still need to show the applied tax portion.
+
+Nodics keeps these concepts separate:
+
+- Pricing resolves the commercial price and tax context. It may expose
+  `taxInclusionMode`, `taxCountryCode`, `taxJurisdictionCode`, and
+  `taxCategoryCode` as hints for Tax.
+- Tax calculates or records the tax quote evidence. It owns
+  `taxQuote` and `taxQuoteLine`.
+- Cart stores the accepted checkout-line display evidence on `cartEntry`.
+- Order copies and freezes the same evidence on `orderEntry` during placement.
+
+For a tax-inclusive item that is displayed as `100.00 AED`, Tax might split the
+line as:
+
+```json
+{
+  "taxableAmount": "95.24",
+  "netAmount": "95.24",
+  "grossAmount": "100.00",
+  "taxAmount": "4.76",
+  "taxInclusionMode": "TAX_INCLUSIVE",
+  "taxIncluded": true
+}
+```
+
+The customer-facing amount is still `100.00 AED`, but the applied tax is no
+longer hidden. Business users can see that `4.76 AED` was included in the
+displayed price and which jurisdiction/category/rate produced the evidence.
+
+Cart entries carry the accepted snapshot:
+
+```json
+{
+  "entryCode": "line1",
+  "currencyCode": "AED",
+  "unitPrice": "100.00",
+  "unitNetAmount": "95.24",
+  "unitGrossAmount": "100.00",
+  "lineNetAmount": "95.24",
+  "lineGrossAmount": "100.00",
+  "taxTotal": "4.76",
+  "taxInclusionMode": "TAX_INCLUSIVE",
+  "taxIncluded": true,
+  "taxQuoteCode": "quote-cart-1",
+  "taxQuoteLineCode": "quote-line1",
+  "taxJurisdictionCode": "UAE-DXB",
+  "taxCategoryCode": "STANDARD",
+  "taxRateCode": "standard-vat"
+}
+```
+
+Order entries copy those fields without recalculation. This matters because
+pricing, tax rates, exemptions, or provider behavior may change after checkout.
+The order must preserve what was accepted at the time of placement.
 
 ### Order side
 
@@ -353,6 +420,9 @@ Implemented now:
 - idempotent inventory promise reservation reserve/release orchestration with
   revision-guarded standard and overbooked counters;
 - BackOffice/Axis metadata for the current schema workspaces;
+- backend-driven Axis presentation metadata for cart entry, order entry,
+  tax quote, and tax quote line tax display evidence, including curated
+  default columns and reusable detail sections;
 - contract tests for quantity splits, conversion, promise bucket evaluation,
   and overbooking payment requirements.
 
@@ -394,6 +464,14 @@ Examples:
   policy;
 - change cart-to-order copied fields through
   `order.checkoutAllocation.policy.conversion`;
+- change cart-to-order entry tax evidence fields through
+  `order.checkoutEntry.policy.conversion.copiedFields` while preserving
+  immutable order-entry evidence;
+- configure tax inclusion modes through `tax.rate.taxInclusionModes` and
+  cart/order checkout entry policy `taxInclusionModes`;
+- configure Axis schema workspace presentation through module-owned
+  `backofficeCapabilities.<module>.navigation[].workbenchPresentation`
+  metadata, such as `defaultColumns`, `readonlyFields`, and `detailSections`;
 - enable, disable, or replace checkout allocation copy through
   `order.checkoutPlacement.allocationCopy` and
   `DefaultCheckoutAllocationCopyService`;
@@ -472,10 +550,14 @@ module.exports = {
   cart: {
     checkoutAllocation: {
       policy: {
-        deliveryGroupTypes: ["SHIP_TO_ADDRESS", "PICKUP_STORE", "INSTALLER_VISIT"]
-      }
-    }
-  }
+        deliveryGroupTypes: [
+          "SHIP_TO_ADDRESS",
+          "PICKUP_STORE",
+          "INSTALLER_VISIT",
+        ],
+      },
+    },
+  },
 };
 ```
 
@@ -495,10 +577,10 @@ module.exports = {
         "DROP_SHIP",
         "MADE_TO_ORDER",
         "DIGITAL",
-        "SUBSCRIPTION_ACCESS"
-      ]
-    }
-  }
+        "SUBSCRIPTION_ACCESS",
+      ],
+    },
+  },
 };
 ```
 
@@ -539,7 +621,123 @@ customer module. For example:
 - Promise capacity validation belongs behind Inventory promise policy or
   orchestration service.
 
-## 9. Anti-patterns
+### Customize tax-inclusive display without forking framework source
+
+Suppose a customer operates in a market where product prices are normally
+displayed tax-inclusive, but the invoice must still show tax. The smallest safe
+customization is layered configuration plus, when required, a customer-owned Tax
+adapter:
+
+```js
+module.exports = {
+  pricing: {
+    price: {
+      defaultTaxInclusionMode: "TAX_INCLUSIVE",
+    },
+  },
+  tax: {
+    rate: {
+      taxInclusionModes: ["TAX_EXCLUSIVE", "TAX_INCLUSIVE"],
+    },
+  },
+  cart: {
+    checkoutEntry: {
+      policy: {
+        taxInclusionModes: ["TAX_EXCLUSIVE", "TAX_INCLUSIVE"],
+      },
+    },
+  },
+  order: {
+    checkoutEntry: {
+      policy: {
+        taxInclusionModes: ["TAX_EXCLUSIVE", "TAX_INCLUSIVE"],
+      },
+    },
+  },
+};
+```
+
+If the customer needs a different tax provider, replace or add the Tax provider
+adapter service in the customer module. The adapter should return normalized
+`taxQuote` and `taxQuoteLine` evidence with exact decimal strings. It should
+not change Cart or Order source code, and it should not ask Axis to calculate
+tax in the browser.
+
+If the customer wants different Axis columns or detail grouping, layer
+BackOffice navigation metadata in the owning module contribution:
+
+```js
+module.exports = {
+  backofficeCapabilities: {
+    order: {
+      navigation: [
+        {
+          id: "order-entries",
+          workbenchPresentation: {
+            defaultColumns: [
+              "entryCode",
+              "itemCode",
+              "lineGrossAmount",
+              "taxTotal",
+              "taxInclusionMode",
+            ],
+            detailSections: [
+              {
+                id: "customer-tax-display",
+                label: "Customer tax display",
+                fields: [
+                  "lineNetAmount",
+                  "lineGrossAmount",
+                  "taxTotal",
+                  "taxQuoteLineCode",
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    },
+  },
+};
+```
+
+The layered contribution changes presentation metadata. It does not create a
+new renderer, duplicate the schema, or move tax rules into Axis.
+
+## 9. Axis and business-user presentation
+
+Axis should render checkout evidence from backend metadata and schema
+definitions:
+
+- list and table columns come from schema fields plus
+  `workbenchPresentation.defaultColumns`;
+- record detail panels use reusable schema detail renderers and
+  `workbenchPresentation.detailSections`;
+- help icons use module-owned `help.summary`;
+- documentation icons use module-owned `help.documentationRoute` and optional
+  `help.documentationFragment`;
+- readonly evidence fields such as order-entry tax evidence should be shown as
+  read-only even when a future edit workflow exists.
+
+For tax-inclusive display, Axis should show:
+
+- the customer-facing gross amount (`unitGrossAmount` or `lineGrossAmount`);
+- the net amount when available;
+- `taxTotal`;
+- `taxInclusionMode`;
+- whether tax is included (`taxIncluded`);
+- links or related-detail panels to `taxQuote` and `taxQuoteLine` where the
+  backend exposes those references.
+
+Axis must not:
+
+- calculate net/gross/tax splits in the browser;
+- hide tax evidence just because the price is tax-inclusive;
+- treat Cart and Order fields as separate UI-only models;
+- hardcode columns that contradict backend schema or module presentation
+  metadata.
+
+## 10. Anti-patterns
 
 Do not:
 
@@ -555,8 +753,12 @@ Do not:
 - duplicate cart/order/inventory models under customer modules just to add one
   field;
 - hide business decisions in properties files as executable logic.
+- hide applied tax when tax is included in price; store and display the split
+  evidence instead.
+- make Axis compute tax, recalculate historical order evidence, or bypass Tax
+  quote evidence.
 
-## 10. Verification commands
+## 11. Verification commands
 
 Use focused tests while developing:
 
@@ -565,6 +767,8 @@ node gComm/cart/test/cartCheckoutAllocationFoundationContract.test.js
 node gComm/order/test/orderCheckoutAllocationFoundationContract.test.js
 node gComm/order/test/checkoutPlacementWorkflowPipelineContract.test.js
 node gComm/order/test/checkoutReverseWorkflowContract.test.js
+node gComm/order/test/orderEntryFoundationContract.test.js
+node gComm/tax/test/taxFoundationContract.test.js
 node gComm/inventory/test/inventoryPromiseFoundation.test.js
 node gComm/fulfillment/test/fulfillmentShipmentLifecycleContract.test.js
 node gComm/test/commerceOperationsBackofficeNavigationContract.test.js
@@ -579,7 +783,7 @@ npm run llm:validate
 npm run test:generated-schema
 ```
 
-## 11. Mental model
+## 12. Mental model
 
 Think of checkout as a set of linked decisions:
 
