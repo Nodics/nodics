@@ -18,6 +18,50 @@
  */
 module.exports = {
   cart: {
+    calculation: {
+      enabled: true,
+      validationPipeline: {
+        name: "cartValidationPipeline",
+        steps: [
+          "validateCartContext",
+          "validateEntries",
+          "validateAllocations",
+          "validateInventoryReadiness",
+          "validateMoneyEvidence",
+        ],
+      },
+      entryPipeline: {
+        name: "cartEntryCalculationPipeline",
+        steps: [
+          "resolveProductContext",
+          "resolveBasePrice",
+          "evaluateEntryPromotions",
+          "calculateEntryTax",
+          "verifyInventoryPromise",
+          "prepareEntryTotals",
+        ],
+      },
+      cartPipeline: {
+        name: "cartCalculationPipeline",
+        steps: [
+          "validateCart",
+          "calculateEntries",
+          "calculateDeliveryCharges",
+          "evaluateCartPromotions",
+          "calculateCartTax",
+          "calculatePaymentPlan",
+          "prepareCartTotals",
+        ],
+      },
+      authority: {
+        pricing: "pricing",
+        promotion: "promotion",
+        tax: "tax",
+        inventory: "inventory",
+        payment: "payment",
+        fulfillment: "fulfillment",
+      },
+    },
     checkoutEntry: {
       policy: {
         requiredFields: [

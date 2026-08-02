@@ -140,6 +140,49 @@ Order entries copy those fields without recalculation. This matters because
 pricing, tax rates, exemptions, or provider behavior may change after checkout.
 The order must preserve what was accepted at the time of placement.
 
+### Calculation pipeline contract
+
+Checkout calculation has two levels:
+
+1. entry-level calculation;
+2. aggregate cart/order calculation.
+
+Entry-level calculation answers: "What is the price, discount, tax, inventory
+promise, and line total for this one requested item quantity?" Aggregate
+calculation answers: "After all entries are calculated, what are the delivery
+charges, cart/order-level discounts, taxes, payment plan, and final totals for
+the whole cart or order?"
+
+Nodics must not hide both levels inside one large service. Calculation is a
+set of replaceable nPipeline contracts:
+
+- `cartValidationPipeline` validates cart context, entries, allocations,
+  inventory readiness, and money evidence.
+- `cartEntryCalculationPipeline` calculates one cart entry by delegating to
+  Product, Pricing, Promotion, Tax, and Inventory authority.
+- `cartCalculationPipeline` validates the cart, runs entry calculation, then
+  rolls up delivery, promotion, tax, payment, and cart totals.
+- `orderValidationPipeline` validates order context, entries, allocations,
+  payment evidence, and historical checkout evidence.
+- `orderEntryCalculationPipeline` recalculates or reconciles one order entry
+  only when an explicit order lifecycle operation requires it.
+- `orderCalculationPipeline` validates the order, runs order-entry
+  calculation, then reconciles delivery, promotion, tax, payment, and order
+  totals.
+
+This gives projects precise customization points. For example, a customer
+module can insert a loyalty-discount node after `evaluateEntryPromotions`,
+replace `calculateEntryTax` with a country-specific Tax adapter, or add a
+payment-deposit validation node before `calculatePaymentPlan`. The customer
+does not need to fork the whole Cart or Order calculation flow.
+
+The same distinction applies to process orchestration. nPipeline divides one
+technical task into small deterministic nodes. Workflow coordinates business
+processes such as checkout placement, approval, return/refund, third-party
+handoff, and recovery. A checkout placement workflow may call a calculation
+pipeline, but the pipeline must not become the whole workflow and the workflow
+must not hide entry-level money calculation inside one action handler.
+
 ### Order side
 
 `order` is the durable result after checkout placement.
@@ -486,6 +529,8 @@ Implemented now:
 - inventory promises and promise reservations;
 - idempotent inventory promise reservation reserve/release orchestration with
   revision-guarded standard and overbooked counters;
+- cart and order calculation pipeline foundations, including validation,
+  entry-level calculation, and aggregate cart/order calculation contracts;
 - BackOffice/Axis metadata for the current schema workspaces;
 - backend-driven Axis presentation metadata for cart entry, order entry,
   tax quote, and tax quote line tax display evidence, including curated
@@ -525,6 +570,12 @@ Examples:
   `order.checkoutPlacement.workflow`;
 - replace or reorder checkout placement pipeline nodes through
   `order.checkoutPlacement.pipeline` and `src/pipelines/pipelines.js`;
+- replace or reorder cart calculation nodes through `cart.calculation` and
+  `cartValidationPipeline`, `cartEntryCalculationPipeline`, or
+  `cartCalculationPipeline`;
+- replace or reorder order calculation nodes through `order.calculation` and
+  `orderValidationPipeline`, `orderEntryCalculationPipeline`, or
+  `orderCalculationPipeline`;
 - add new delivery group types through `cart.checkoutAllocation.policy`;
 - add new payment group types through `cart.checkoutAllocation.policy`;
 - tune allowed allocation statuses through cart/order checkout allocation

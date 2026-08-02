@@ -16,6 +16,7 @@
 - `gComm/order/test/checkoutReverseWorkflowContract.test.js`
 - `gComm/order/test/common/commonTest.js`
 - `gComm/order/test/env-local/envTest.js`
+- `gComm/order/test/orderCalculationPipelineContract.test.js`
 - `gComm/order/test/orderCheckoutAllocationFoundationContract.test.js`
 - `gComm/order/test/orderEntryFoundationContract.test.js`
 - `gComm/order/test/orderHistoryFoundationContract.test.js`

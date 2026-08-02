@@ -30,10 +30,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 23 |
-| Test files | 43 |
+| Source files | 25 |
+| Test files | 44 |
 | Data files | 21 |
-| All module-owned files | 67 |
+| All module-owned files | 70 |
 | Local schema definitions | 13 |
 
 ## Ownership And Dependencies
@@ -63,8 +63,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 47 |
-| Partially documented | 15 |
+| Documented | 48 |
+| Partially documented | 17 |
 | Undocumented | 0 |
 | Inventory only | 5 |
 
@@ -126,6 +126,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/order/src/service/interceptor/defaultOrderCodeGeneratorInterceptorService.js` | `src` | `documented` | 3/3 | Order pre-save interceptor service that derives missing enterprise ownership from the request context. |  |
 | `gComm/order/src/service/order/DefaultOrderService.js` | `src` | `documented` | 3/3 | Order service implementation that prepares tenant-aware order persistence context and starts the create-order pipeline. |  |
 | `gComm/order/src/service/pipeline/defaultCreateOrderPipelineService.js` | `src` | `documented` | 12/12 | Pipeline node service for order creation validation, associated data checks, persistence, and terminal handling. |  |
+| `gComm/order/src/service/pipeline/defaultOrderCalculationPipelineService.js` | `src` | `partially-documented` | 0/17 | Pipeline node service for order validation and aggregate order calculation or reconciliation. It preserves historical checkout evidence and provides extension points for explicit lifecycle recalculation operations. | add JSDoc for 17 exported method(s) |
+| `gComm/order/src/service/pipeline/defaultOrderEntryCalculationPipelineService.js` | `src` | `partially-documented` | 0/12 | Pipeline node service for one order-entry calculation or evidence reconciliation task. Order entry calculation is separate from aggregate order calculation and must not hide Payment, Inventory, Fulfillment, Promotion, Pricing, or Tax authority inside Order. | add JSDoc for 12 exported method(s) |
 | `gComm/order/src/service/placement/defaultCheckoutAllocationCopyService.js` | `src` | `documented` | 12/12 | Copies exact Cart checkout delivery/payment group and quantity-allocation evidence into Order-owned immutable models during checkout placement. |  |
 | `gComm/order/src/service/placement/defaultCheckoutInventoryReservationService.js` | `src` | `documented` | 12/12 | Converts checkout delivery allocation demand into Inventory-owned Promise Reservation requests during checkout placement. |  |
 | `gComm/order/src/service/placement/defaultCheckoutOrderProjectionService.js` | `src` | `documented` | 16/16 | Creates an Order header and Order Entries from validated Cart checkout evidence during checkout placement. |  |
@@ -150,6 +152,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/order/test/checkoutReverseWorkflowContract.test.js` | `test` | `documented` | 0/0 | Protects reverse checkout as an Order-coordinated Workflow that delegates return evidence to Fulfillment and refund evidence to Payment. |  |
 | `gComm/order/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Reserved common order test contribution showing the module-owned test-suite shape for shared order behavior. | add JSDoc for 7 exported method(s) |
 | `gComm/order/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Reserved local-environment order test contribution showing how environment-specific test suites can be attached. | add JSDoc for 7 exported method(s) |
+| `gComm/order/test/orderCalculationPipelineContract.test.js` | `test` | `documented` | 0/0 | Protects Order calculation as validation, entry-level calculation, and aggregate calculation pipelines while keeping Workflow authority for checkout placement and reverse business processes. |  |
 | `gComm/order/test/orderCheckoutAllocationFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects order delivery/payment group and quantity-level allocation schemas, immutable exact evidence, and cart-to-order allocation conversion boundaries. |  |
 | `gComm/order/test/orderEntryFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects the order line-entry schema foundation, immutable evidence fields, parent-code relationship, and later-layer extension boundary. |  |
 | `gComm/order/test/orderHistoryFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects the order-owned lifecycle history foundation, parent-code relationship, BackOffice navigation, and adjacent-authority boundary. |  |

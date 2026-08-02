@@ -18,6 +18,54 @@
  */
 module.exports = {
   order: {
+    calculation: {
+      enabled: true,
+      validationPipeline: {
+        name: "orderValidationPipeline",
+        steps: [
+          "validateOrderContext",
+          "validateEntries",
+          "validateAllocations",
+          "validatePaymentEvidence",
+          "validateHistoricalEvidence",
+        ],
+      },
+      entryPipeline: {
+        name: "orderEntryCalculationPipeline",
+        steps: [
+          "resolveOrderEntryContext",
+          "reconcileEntryPriceEvidence",
+          "reconcileEntryPromotions",
+          "reconcileEntryTax",
+          "reconcileInventoryEvidence",
+          "prepareOrderEntryTotals",
+        ],
+      },
+      orderPipeline: {
+        name: "orderCalculationPipeline",
+        steps: [
+          "validateOrder",
+          "calculateEntries",
+          "reconcileDeliveryCharges",
+          "reconcileOrderPromotions",
+          "reconcileOrderTax",
+          "reconcilePaymentEvidence",
+          "prepareOrderTotals",
+        ],
+      },
+      authority: {
+        pricing: "pricing",
+        promotion: "promotion",
+        tax: "tax",
+        inventory: "inventory",
+        payment: "payment",
+        fulfillment: "fulfillment",
+      },
+      historicalEvidencePolicy: {
+        preserveCheckoutEvidence: true,
+        recalculationRequiresLifecycleOperation: true,
+      },
+    },
     checkoutEntry: {
       policy: {
         statuses: ["ORDERED", "ALLOCATED", "CANCELLED", "RETURNED"],

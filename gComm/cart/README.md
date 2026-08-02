@@ -11,6 +11,25 @@ Read the group-level
 for the beginner model, schema relationships, lifecycle, and customer-module
 customization pattern before changing Cart checkout behavior.
 
+## Cart calculation pipelines
+
+Cart calculation is a pipeline contract, not one large Cart service. The module
+contributes three related pipelines:
+
+- `cartValidationPipeline` validates the cart header, entries, allocations,
+  inventory readiness, and money evidence in small replaceable nodes.
+- `cartEntryCalculationPipeline` calculates one cart entry by delegating product
+  context, base price, promotion, tax, and inventory promise decisions to the
+  owning modules.
+- `cartCalculationPipeline` orchestrates the aggregate task. It runs cart
+  validation, triggers entry calculation, then prepares delivery-charge,
+  cart-promotion, cart-tax, payment-plan, and final-total evidence.
+
+This shape is mandatory. Customer modules may add, replace, or reorder nodes,
+but they should not collapse calculation into a monolithic service or duplicate
+Pricing, Promotion, Tax, Inventory, Payment, or Fulfillment authority inside
+Cart.
+
 ## Cart entries
 
 `cartEntry` is the cart-owned line-entry model. It references its parent through

@@ -31,10 +31,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 22 |
-| Test files | 13 |
+| Source files | 24 |
+| Test files | 14 |
 | Data files | 0 |
-| All module-owned files | 34 |
+| All module-owned files | 37 |
 | Local schema definitions | 11 |
 
 ## Ownership And Dependencies
@@ -65,8 +65,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 28 |
-| Partially documented | 2 |
+| Documented | 29 |
+| Partially documented | 4 |
 | Undocumented | 0 |
 | Inventory only | 4 |
 
@@ -111,6 +111,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/cart/src/service/interceptor/defaultCartCodeGeneratorInterceptorService.js` | `src` | `documented` | 3/3 | Cart pre-save interceptor service that creates the persisted cart code when callers provide only an enterprise and reference code. |  |
 | `gComm/cart/src/service/interceptor/defaultCartSchemaInterceptorService.js` | `src` | `documented` | 3/3 | Cart pre-save interceptor service that derives missing enterprise ownership from authenticated request metadata. |  |
 | `gComm/cart/src/service/interceptor/defaultCartTokenDetailInterceptorService.js` | `src` | `documented` | 3/3 | Cart post-load interceptor that expands a stored token value into token reference details and expiry state. |  |
+| `gComm/cart/src/service/pipeline/defaultCartCalculationPipelineService.js` | `src` | `partially-documented` | 0/18 | Pipeline node service for cart validation and aggregate cart calculation orchestration. It establishes the extension contract; owning modules perform price, promotion, tax, inventory, payment, and fulfillment authority work through replaceable node handlers. | add JSDoc for 18 exported method(s) |
+| `gComm/cart/src/service/pipeline/defaultCartEntryCalculationPipelineService.js` | `src` | `partially-documented` | 0/12 | Pipeline node service for one cart-entry calculation task. Entry calculation remains separate from aggregate cart calculation so customer modules can customize product, pricing, promotion, tax, inventory, and rounding behavior at the correct layer. | add JSDoc for 12 exported method(s) |
 | `gComm/cart/src/service/pipeline/defaultCreateCartPipelineService.js` | `src` | `documented` | 7/7 | Pipeline node service for create-cart orchestration, including request validation, nested cart validation, persistence, and terminal handling. |  |
 | `gComm/cart/src/service/pipeline/defaultValidateCartPipelineService.js` | `src` | `documented` | 9/9 | Pipeline node service for validating cart payload structure, generated token readiness, related items, consignments, payments, and final cart state. |  |
 | `gComm/cart/src/utils/checkoutAllocationPolicy.js` | `src` | `documented` | 0/0 | Shared checkout group and quantity-allocation policy helpers owned by Cart because Cart contributes the abstract checkout allocation schemas reused by Order. |  |
@@ -118,6 +120,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/cart/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared cart enum definition exports. |  |
 | `gComm/cart/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Cart status and error-code definitions used by services, pipelines, and API responses. |  |
 | `gComm/cart/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for cart-specific helper functions. |  |
+| `gComm/cart/test/cartCalculationPipelineContract.test.js` | `test` | `documented` | 0/0 | Protects Cart calculation as validation, entry-level calculation, and aggregate calculation pipelines instead of one monolithic service. |  |
 | `gComm/cart/test/cartCheckoutAllocationFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects cart delivery/payment group and quantity-level allocation schemas, exact decimal evidence, and serial-ready split fulfillment/payment contracts. |  |
 | `gComm/cart/test/cartEntryFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects the cart line-entry schema foundation, exact value storage, parent-code relationship, and later-layer extension boundary. |  |
 | `gComm/cart/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Reserved common cart test contribution showing the module-owned test-suite shape for shared cart behavior. | add JSDoc for 7 exported method(s) |

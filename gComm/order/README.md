@@ -11,6 +11,25 @@ Read the group-level
 for the beginner model, schema relationships, cart-to-order lifecycle, and
 customer-module customization pattern before changing Order checkout behavior.
 
+## Order calculation pipelines
+
+Order calculation is a pipeline contract and a historical-evidence operation.
+The module contributes three related pipelines:
+
+- `orderValidationPipeline` validates the order header, entries, allocations,
+  payment evidence, and historical checkout evidence in small replaceable
+  nodes.
+- `orderEntryCalculationPipeline` recalculates or reconciles one order entry
+  only when an explicit order lifecycle operation requires it.
+- `orderCalculationPipeline` orchestrates the aggregate task. It runs order
+  validation, triggers order-entry calculation, then reconciles delivery,
+  promotion, tax, payment, and final order totals from accepted evidence.
+
+Checkout placement and reverse processing remain Workflow-owned business
+processes. Order calculation pipelines divide one technical calculation or
+reconciliation task; they must not replace Workflow or hide Payment, Inventory,
+Fulfillment, Promotion, Pricing, or Tax side effects inside Order.
+
 ## Order entries
 
 `orderEntry` is the order-owned line-entry model. It references its parent

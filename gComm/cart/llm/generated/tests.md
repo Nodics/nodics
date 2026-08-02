@@ -4,6 +4,7 @@
 
 ## Hand-Authored Tests
 
+- `gComm/cart/test/cartCalculationPipelineContract.test.js`
 - `gComm/cart/test/cartCheckoutAllocationFoundationContract.test.js`
 - `gComm/cart/test/cartEntryFoundationContract.test.js`
 - `gComm/cart/test/common/commonTest.js`
