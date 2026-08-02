@@ -60,12 +60,17 @@ let list = {
     currencies: ["AED"],
     priority: 100,
     taxMode: "GROSS",
+    taxInclusionMode: "TAX_INCLUSIVE",
+    taxCountryCode: "AE",
+    taxJurisdictionCode: "UAE-DXB",
+    defaultTaxCategoryCode: "STANDARD",
     stackingMode: "EXCLUSIVE",
   },
 };
 validation.preparePriceList(list);
 assert.strictEqual(list.model.enterpriseCode, "entA");
 assert.strictEqual(list.model.code, "entA::priceList::retail");
+assert.strictEqual(list.model.taxInclusionMode, "TAX_INCLUSIVE");
 let price = {
   authData,
   model: {
@@ -78,10 +83,16 @@ let price = {
     unitCode: "piece",
     unitFactor: 1,
     minimumQuantity: "1",
+    taxMode: "NET",
+    taxInclusionMode: "TAX_EXCLUSIVE",
+    taxCountryCode: "AE",
+    taxJurisdictionCode: "UAE-DXB",
+    taxCategoryCode: "STANDARD",
   },
 };
 validation.preparePrice(price);
 assert.strictEqual(price.model.code, "entA::price::iphone-retail");
+assert.strictEqual(price.model.taxInclusionMode, "TAX_EXCLUSIVE");
 let deliveryCharge = {
   authData,
   model: {
@@ -126,6 +137,31 @@ assert.throws(
       }),
     }),
   (error) => error.code === "ERR_PRICE_00016",
+);
+assert.throws(
+  () =>
+    validation.preparePrice({
+      authData,
+      model: Object.assign({}, price.model, {
+        code: undefined,
+        priceCode: "bad-tax-mode",
+        taxMode: "GROSS",
+        taxInclusionMode: "TAX_EXCLUSIVE",
+      }),
+    }),
+  (error) => error.code === "ERR_PRICE_00036",
+);
+assert.throws(
+  () =>
+    validation.preparePriceList({
+      authData,
+      model: Object.assign({}, list.model, {
+        code: undefined,
+        priceListCode: "bad-tax-country",
+        taxCountryCode: "uae",
+      }),
+    }),
+  (error) => error.code === "ERR_PRICE_00037",
 );
 assert.throws(
   () =>

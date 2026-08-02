@@ -339,6 +339,11 @@ module.exports = {
       minimumPriority: 0,
       maximumPriority: 999999,
       taxModes: ["NET", "GROSS"],
+      taxInclusionModes: ["TAX_EXCLUSIVE", "TAX_INCLUSIVE"],
+      legacyTaxModeMap: {
+        NET: "TAX_EXCLUSIVE",
+        GROSS: "TAX_INCLUSIVE",
+      },
       stackingModes: ["EXCLUSIVE", "COMBINABLE"],
     },
     assignment: {
@@ -371,6 +376,12 @@ module.exports = {
       maximumScale: 18,
       maximumDigits: 38,
       maximumUnitFactor: 1000000000,
+      taxModes: ["NET", "GROSS"],
+      taxInclusionModes: ["TAX_EXCLUSIVE", "TAX_INCLUSIVE"],
+      legacyTaxModeMap: {
+        NET: "TAX_EXCLUSIVE",
+        GROSS: "TAX_INCLUSIVE",
+      },
     },
     deliveryCharge: {
       taxModes: ["NET", "GROSS"],
@@ -388,6 +399,8 @@ module.exports = {
         "siteCode",
         "storeCode",
         "channelCode",
+        "taxJurisdictionCode",
+        "taxCategoryCode",
         "customerCode",
         "customerSegmentCodes",
         "customerGroupCodes",

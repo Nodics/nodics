@@ -89,6 +89,60 @@ module.exports = {
     this.assertDateRange(request.model);
     return request.model;
   },
+  normalizeTaxInclusion: function (model, policy) {
+    policy = policy || {};
+    let taxMode = model.taxMode,
+      inclusionMode = model.taxInclusionMode,
+      legacyMap = policy.legacyTaxModeMap || {
+        NET: "TAX_EXCLUSIVE",
+        GROSS: "TAX_INCLUSIVE",
+      },
+      allowedTaxModes = policy.taxModes || ["NET", "GROSS"],
+      allowedInclusionModes = policy.taxInclusionModes || [
+        "TAX_EXCLUSIVE",
+        "TAX_INCLUSIVE",
+      ];
+    if (taxMode && allowedTaxModes.indexOf(taxMode) < 0)
+      throw this.error("ERR_PRICE_00036", "Pricing tax mode is invalid");
+    if (inclusionMode && allowedInclusionModes.indexOf(inclusionMode) < 0)
+      throw this.error(
+        "ERR_PRICE_00036",
+        "Pricing tax inclusion mode is invalid",
+      );
+    if (taxMode && inclusionMode && legacyMap[taxMode] !== inclusionMode)
+      throw this.error(
+        "ERR_PRICE_00036",
+        "Pricing tax mode conflicts with tax inclusion mode",
+      );
+    if (!inclusionMode && taxMode) model.taxInclusionMode = legacyMap[taxMode];
+    if (!taxMode && inclusionMode)
+      model.taxMode = inclusionMode === "TAX_INCLUSIVE" ? "GROSS" : "NET";
+  },
+  validateTaxContext: function (model, options) {
+    options = options || {};
+    if (model.taxCountryCode && !/^[A-Z]{2}$/.test(model.taxCountryCode))
+      throw this.error(
+        "ERR_PRICE_00037",
+        "Pricing tax country code is invalid",
+      );
+    ["taxJurisdictionCode", "taxCategoryCode", "defaultTaxCategoryCode"]
+      .filter((field) => model[field] !== undefined)
+      .forEach((field) => {
+        SERVICE.DefaultPricingEnterpriseScopeService.validateBusinessCode(
+          model[field],
+          field,
+        );
+      });
+    if (
+      options.requireCountryForJurisdiction &&
+      model.taxJurisdictionCode &&
+      !model.taxCountryCode
+    )
+      throw this.error(
+        "ERR_PRICE_00037",
+        "Pricing tax jurisdiction requires sales country context",
+      );
+  },
   /** Executes the preparePriceList Pricing contract. */
   preparePriceList: function (request) {
     let model = this.prepare(request, "priceList", ["priceListCode"]),
@@ -106,10 +160,9 @@ module.exports = {
         "ERR_PRICE_00013",
         "Price list currencies must contain ISO-style three-letter codes",
       );
-    if (
-      !policy.taxModes.includes(model.taxMode || "NET") ||
-      !policy.stackingModes.includes(model.stackingMode || "EXCLUSIVE")
-    )
+    this.normalizeTaxInclusion(model, policy);
+    this.validateTaxContext(model);
+    if (!policy.stackingModes.includes(model.stackingMode || "EXCLUSIVE"))
       throw this.error("ERR_PRICE_00013", "Price list policy is invalid");
     return true;
   },
@@ -162,6 +215,8 @@ module.exports = {
       "Minimum quantity",
       false,
     );
+    this.normalizeTaxInclusion(model, policy);
+    this.validateTaxContext(model);
     if (
       !/^[A-Z]{3}$/.test(model.currencyCode || "") ||
       !Number.isInteger(Number(model.unitFactor)) ||

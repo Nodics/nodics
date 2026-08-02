@@ -53,6 +53,30 @@ module.exports = {
         priority: { type: "int", required: true, default: 100 },
         currencies: { type: "array", required: true },
         taxMode: { type: "string", required: true, default: "NET" },
+        taxInclusionMode: {
+          type: "string",
+          required: false,
+          description:
+            "Normalized business tax inclusion declaration such as TAX_EXCLUSIVE or TAX_INCLUSIVE",
+        },
+        taxCountryCode: {
+          type: "string",
+          required: false,
+          description:
+            "Optional default sales country used as tax context for this price list",
+        },
+        taxJurisdictionCode: {
+          type: "string",
+          required: false,
+          description:
+            "Optional default Tax-owned jurisdiction code for prices in this list",
+        },
+        defaultTaxCategoryCode: {
+          type: "string",
+          required: false,
+          description:
+            "Optional default Tax-owned category reference for prices in this list",
+        },
         stackingMode: { type: "string", required: true, default: "EXCLUSIVE" },
       }),
       {
@@ -159,6 +183,33 @@ module.exports = {
         unitFactor: { type: "int", required: true, default: 1 },
         minimumQuantity: { type: "string", required: true, default: "1" },
         taxMode: { type: "string", required: false },
+        taxInclusionMode: {
+          type: "string",
+          required: false,
+          description:
+            "Optional price-level tax inclusion override such as TAX_EXCLUSIVE or TAX_INCLUSIVE",
+        },
+        taxCountryCode: {
+          type: "string",
+          required: false,
+          description:
+            "Optional sales country qualifier for country-specific price evidence",
+          searchOptions: { enabled: true },
+        },
+        taxJurisdictionCode: {
+          type: "string",
+          required: false,
+          description:
+            "Optional Tax-owned jurisdiction qualifier for jurisdiction-specific price evidence",
+          searchOptions: { enabled: true },
+        },
+        taxCategoryCode: {
+          type: "string",
+          required: false,
+          description:
+            "Optional Tax-owned product/service category reference for this price",
+          searchOptions: { enabled: true },
+        },
         channelCode: { type: "string", required: false },
       }),
       {
@@ -175,6 +226,8 @@ module.exports = {
           priceListCode: { enabled: true, name: "priceListCode" },
           itemCode: { enabled: true, name: "itemCode" },
           currencyCode: { enabled: true, name: "currencyCode" },
+          taxCountryCode: { enabled: true, name: "taxCountryCode" },
+          taxJurisdictionCode: { enabled: true, name: "taxJurisdictionCode" },
           status: { enabled: true, name: "status" },
         },
       },

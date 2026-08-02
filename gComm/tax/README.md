@@ -3,10 +3,11 @@
 Tax is the Commerce authority for jurisdiction rules, provider metadata, tax
 rates, exemptions, tax quote headers, and tax quote line evidence.
 
-Pricing may expose `taxMode` hints and customer-facing prices, but Tax owns tax
-calculation evidence. Cart and Order may later reference accepted tax quote
-evidence, but they must not calculate tax, own jurisdiction rules, store
-provider credentials, or mutate Tax lifecycle directly.
+Pricing may expose customer-facing prices, `taxMode` compatibility hints, and
+normalized `taxInclusionMode` declarations, but Tax owns tax calculation
+evidence. Cart and Order may later reference accepted tax quote evidence, but
+they must not calculate tax, own jurisdiction rules, store provider
+credentials, or mutate Tax lifecycle directly.
 
 This first foundation slice provides:
 
@@ -39,6 +40,15 @@ Tax owns:
 - tax quote and quote line evidence;
 - tax provider metadata and safe adapter selection;
 - tax calculation/reconciliation contracts once introduced.
+
+Tax consumes, but does not own, Pricing evidence:
+
+- `TAX_EXCLUSIVE` means the item price is before tax and Tax may add tax during
+  checkout;
+- `TAX_INCLUSIVE` means the item price already includes tax and Tax must split
+  or audit the tax portion according to jurisdiction policy;
+- `taxCountryCode`, `taxJurisdictionCode`, and `taxCategoryCode` tell Tax which
+  sales context and tax category Pricing resolved for that item price.
 
 Tax does not own:
 

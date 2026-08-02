@@ -7,10 +7,10 @@
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `deliveryChargeQuote` | `base` | yes | yes | no | no | no | no |  | 18 |
-| `price` | `base` | yes | yes | no | no | no | no |  | 18 |
+| `price` | `base` | yes | yes | no | no | no | no |  | 22 |
 | `priceGroup` | `base` | yes | yes | no | no | no | no |  | 7 |
 | `priceGroupMember` | `base` | yes | yes | no | no | no | no |  | 8 |
-| `priceList` | `base` | yes | yes | no | no | no | no |  | 11 |
+| `priceList` | `base` | yes | yes | no | no | no | no |  | 15 |
 | `priceListAssignment` | `base` | yes | yes | no | no | no | no |  | 10 |
 | `priceOnlinePointer` | `base` | yes | yes | no | no | no | no |  | 6 |
 | `pricePublicationManifest` | `base` | yes | yes | no | no | no | no |  | 7 |
@@ -54,6 +54,10 @@
 - `priceCode` `string` required
 - `priceListCode` `string` required
 - `status` `string` required: Governed lifecycle state
+- `taxCategoryCode` `string` optional: Optional Tax-owned product/service category reference for this price
+- `taxCountryCode` `string` optional: Optional sales country qualifier for country-specific price evidence
+- `taxInclusionMode` `string` optional: Optional price-level tax inclusion override such as TAX_EXCLUSIVE or TAX_INCLUSIVE
+- `taxJurisdictionCode` `string` optional: Optional Tax-owned jurisdiction qualifier for jurisdiction-specific price evidence
 - `taxMode` `string` optional
 - `unitCode` `string` required
 - `unitFactor` `int` required
@@ -82,6 +86,7 @@
 ### `pricing.priceList`
 
 - `currencies` `array` required
+- `defaultTaxCategoryCode` `string` optional: Optional default Tax-owned category reference for prices in this list
 - `description` `string` optional
 - `effectiveFrom` `date` optional
 - `effectiveTo` `date` optional
@@ -91,6 +96,9 @@
 - `priority` `int` required
 - `stackingMode` `string` required
 - `status` `string` required: Governed lifecycle state
+- `taxCountryCode` `string` optional: Optional default sales country used as tax context for this price list
+- `taxInclusionMode` `string` optional: Normalized business tax inclusion declaration such as TAX_EXCLUSIVE or TAX_INCLUSIVE
+- `taxJurisdictionCode` `string` optional: Optional default Tax-owned jurisdiction code for prices in this list
 - `taxMode` `string` required
 
 ### `pricing.priceListAssignment`
