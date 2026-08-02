@@ -13,13 +13,13 @@
     "version": "0.0.1",
     "description": "Enterprise-scoped fulfillment, consignment, shipment, carrier, and delivery-release evidence capability."
   },
-  "sourceFiles": 21,
+  "sourceFiles": 22,
   "testFiles": 14,
   "dataFiles": 0,
-  "ownedFiles": 36,
-  "sourceFingerprint": "fc5f84d1a9ec973606531bbe1738bdd4007e967389449b6902593e4abc69c06f",
+  "ownedFiles": 37,
+  "sourceFingerprint": "bea0c7e82ea5290d033d5027e0b709d95364aae5322fdf07d9d417711a49a987",
   "documentation": {
-    "documented": 25,
+    "documented": 26,
     "partially-documented": 7,
     "undocumented": 0,
     "inventory-only": 4

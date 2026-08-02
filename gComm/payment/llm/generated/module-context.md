@@ -31,10 +31,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 22 |
+| Source files | 23 |
 | Test files | 7 |
 | Data files | 5 |
-| All module-owned files | 39 |
+| All module-owned files | 40 |
 | Local schema definitions | 4 |
 
 ## Ownership And Dependencies
@@ -65,7 +65,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 27 |
+| Documented | 28 |
 | Partially documented | 7 |
 | Undocumented | 0 |
 | Inventory only | 5 |
@@ -104,6 +104,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/payment/src/controller/provider/defaultPaymentProviderLifecycleController.js` | `src` | `documented` | 4/4 | Maps secured Payment provider lifecycle HTTP operations to the Payment facade. |  |
 | `gComm/payment/src/facade/provider/defaultPaymentProviderLifecycleFacade.js` | `src` | `documented` | 3/3 | Delegates safe provider lifecycle execution to the Payment-owned lifecycle service. |  |
 | `gComm/payment/src/interceptors/interceptors.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/payment/src/router/appConfig.js` | `src` | `documented` | 0/0 | Router application configuration registry for this boundary. |  |
 | `gComm/payment/src/router/routers.js` | `src` | `documented` | 0/0 | Declares secured Payment-owned operational APIs for BackOffice clients. |  |
 | `gComm/payment/src/schemas/schemas.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/payment/src/service/checkout/defaultPaymentCheckoutAuthorizationService.js` | `src` | `documented` | 10/10 | Authorizes checkout/order payment groups through Payment-owned provider and transaction evidence services. |  |

@@ -11,7 +11,7 @@
 
 /**
  * @module commerce/test/commerceOperationsBackofficeNavigationContract
- * @description Protects the backend-driven Axis Commerce Operations navigation model across pricing, inventory, store, cart, and order.
+ * @description Protects the backend-driven Axis Commerce Operations navigation model across pricing, inventory, store, cart, order, tax, payment, and fulfillment.
  * @layer test
  * @owner commerce
  * @override Projects may add customer operations navigation in later layers while preserving owning-schema authority and disabled placeholders for missing models.
@@ -45,6 +45,8 @@ const orderCapability = require("../order/config/properties")
   .backofficeCapabilities.order;
 const paymentCapability = require("../payment/config/properties")
   .backofficeCapabilities.payment;
+const taxCapability = require("../tax/config/properties").backofficeCapabilities
+  .tax;
 const fulfillmentCapability = require("../fulfillment/config/properties")
   .backofficeCapabilities.fulfillment;
 const reverseActions = require("../order/data/init/data/reverse/defaultCheckoutReverseWorkflowActionData");
@@ -57,6 +59,7 @@ const knownSchemas = {
   order: require("../order/src/schemas/schemas").order,
   fulfillment: require("../fulfillment/src/schemas/schemas").fulfillment,
   payment: require("../payment/src/schemas/schemas").payment,
+  tax: require("../tax/src/schemas/schemas").tax,
 };
 const capabilities = [
   pricingCapability,
@@ -64,6 +67,7 @@ const capabilities = [
   storeCapability,
   cartCapability,
   orderCapability,
+  taxCapability,
   paymentCapability,
   fulfillmentCapability,
 ];
@@ -121,6 +125,8 @@ const requiredDetailPanelIds = {
   reconciliation: ["reconciliation-findings"],
   "sourcing-policies": ["sourcing-rules"],
   stores: ["store-warehouse-assignments"],
+  tax: ["jurisdiction-rates", "jurisdiction-exemptions"],
+  "tax-quotes": ["tax-quote-lines"],
 };
 
 capabilities.forEach((capability) => {
@@ -152,7 +158,8 @@ assert.strictEqual(byId.pricing.route, "/commerce/operations/pricing");
 assert.strictEqual(byId["stock-inventory"].route, "/commerce/operations/stock");
 assert.strictEqual(byId.stores.route, "/commerce/operations/stores");
 assert.strictEqual(byId.checkout.route, "/commerce/operations/checkout");
-["pricing", "stock-inventory", "stores", "checkout"].forEach((id) => {
+assert.strictEqual(byId.tax.route, "/commerce/operations/tax");
+["pricing", "stock-inventory", "stores", "checkout", "tax"].forEach((id) => {
   assert.strictEqual(byId[id].parentId, "commerce-operations");
   if (id === "pricing") {
     assert.strictEqual(byId[id].parentModuleName, undefined);
@@ -253,6 +260,26 @@ assert.deepStrictEqual(
 );
 assert.strictEqual(byId["price-lists"].workbenchTarget.schemaName, "priceList");
 assert.strictEqual(byId.prices.workbenchTarget.schemaName, "price");
+assert.strictEqual(byId.tax.workbenchTarget.moduleName, "tax");
+assert.strictEqual(byId.tax.workbenchTarget.schemaName, "taxJurisdiction");
+assert.strictEqual(
+  byId["tax-jurisdictions"].workbenchTarget.schemaName,
+  "taxJurisdiction",
+);
+assert.strictEqual(byId["tax-rates"].workbenchTarget.schemaName, "taxRate");
+assert.strictEqual(
+  byId["tax-exemptions"].workbenchTarget.schemaName,
+  "taxExemption",
+);
+assert.strictEqual(
+  byId["tax-providers"].workbenchTarget.schemaName,
+  "taxProvider",
+);
+assert.strictEqual(byId["tax-quotes"].workbenchTarget.schemaName, "taxQuote");
+assert.strictEqual(
+  byId["tax-quote-lines"].workbenchTarget.schemaName,
+  "taxQuoteLine",
+);
 assert.strictEqual(
   byId["delivery-charge-quotes"].workbenchTarget.schemaName,
   "deliveryChargeQuote",
@@ -351,6 +378,8 @@ assert(runtimeAdminGroup, "Runtime admin group must be seeded");
   "store.backoffice.read",
   "cart.backoffice.read",
   "order.backoffice.read",
+  "tax.backoffice.read",
+  "tax.backoffice.manage",
   "payment.backoffice.read",
   "payment.backoffice.manage",
   "fulfillment.backoffice.read",
@@ -408,6 +437,15 @@ navigation.forEach((item) => {
         item.id + " must not reference a missing parent",
       );
     }
+  }
+  if (
+    item.route === "/commerce/operations/tax" ||
+    item.route.startsWith("/commerce/operations/tax/")
+  ) {
+    assert(
+      item.requiredPermissions.includes("tax.backoffice.read"),
+      item.id + " must be visibility-gated by Tax BackOffice read permission",
+    );
   }
   if (
     item.route === "/commerce/payments" ||

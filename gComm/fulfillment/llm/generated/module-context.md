@@ -30,10 +30,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 21 |
+| Source files | 22 |
 | Test files | 14 |
 | Data files | 0 |
-| All module-owned files | 36 |
+| All module-owned files | 37 |
 | Local schema definitions | 7 |
 
 ## Ownership And Dependencies
@@ -63,7 +63,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 25 |
+| Documented | 26 |
 | Partially documented | 7 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -97,6 +97,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/fulfillment/src/controller/operations/defaultFulfillmentOperationsLifecycleController.js` | `src` | `documented` | 4/4 | Maps secured Fulfillment lifecycle HTTP operations to the Fulfillment facade. |  |
 | `gComm/fulfillment/src/facade/operations/defaultFulfillmentOperationsLifecycleFacade.js` | `src` | `documented` | 3/3 | Delegates safe shipping lifecycle execution to the Fulfillment-owned lifecycle service. |  |
 | `gComm/fulfillment/src/interceptors/interceptors.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/fulfillment/src/router/appConfig.js` | `src` | `documented` | 0/0 | Router application configuration registry for this boundary. |  |
 | `gComm/fulfillment/src/router/routers.js` | `src` | `documented` | 0/0 | Declares secured Fulfillment-owned operational APIs for BackOffice clients. |  |
 | `gComm/fulfillment/src/schemas/schemas.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/fulfillment/src/service/carrier/defaultCarrierLabelGatewayService.js` | `src` | `documented` | 4/4 | Default safe carrier-label gateway that returns label references without storing provider payloads. |  |

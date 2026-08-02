@@ -79,7 +79,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/nodics.js` | `module` | `documented` | 2/2 | Registers the gComm module lifecycle hooks and module-level startup behavior. |  |
 | `gComm/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/test/commerceOperationsBackofficeNavigationContract.test.js` | `test` | `documented` | 0/0 | Protects the backend-driven Axis Commerce Operations navigation model across pricing, inventory, store, cart, and order. |  |
+| `gComm/test/commerceOperationsBackofficeNavigationContract.test.js` | `test` | `documented` | 0/0 | Protects the backend-driven Axis Commerce Operations navigation model across pricing, inventory, store, cart, order, tax, payment, and fulfillment. |  |
 
 ## Extension Contract
 
