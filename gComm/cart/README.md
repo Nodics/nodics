@@ -23,6 +23,16 @@ Catalog, Units, Pricing, Tax, Promotion, Inventory, and Media remain
 authoritative for their own business rules; cart entries only keep the cart line
 state and evidence required by checkout.
 
+Cart entries also keep the customer-facing tax display evidence that was
+accepted during checkout. For tax-exclusive prices, `lineNetAmount` usually
+matches the pre-tax line amount and `lineGrossAmount` includes added tax. For
+tax-inclusive prices, `lineGrossAmount` is the amount shown to the shopper while
+`lineNetAmount`, `taxTotal`, `taxInclusionMode`, `taxIncluded`,
+`taxQuoteCode`, and `taxQuoteLineCode` explain exactly how much tax was inside
+that displayed price. Cart does not calculate this split; Pricing and Tax
+produce the evidence and Cart persists it so business users, customers, and
+later order conversion can see what was applied.
+
 Customer projects should extend `cartEntry` through later schema layers and
 additional validators/interceptors instead of modifying this framework source.
 

@@ -9,8 +9,8 @@
 | `taxExemption` | `base` | yes | yes | no | no | no | no |  | 11 |
 | `taxJurisdiction` | `base` | yes | yes | no | no | no | no |  | 11 |
 | `taxProvider` | `base` | yes | yes | no | no | no | no |  | 16 |
-| `taxQuote` | `base` | yes | yes | no | no | no | no |  | 15 |
-| `taxQuoteLine` | `base` | yes | yes | no | no | no | no |  | 14 |
+| `taxQuote` | `base` | yes | yes | no | no | no | no |  | 16 |
+| `taxQuoteLine` | `base` | yes | yes | no | no | no | no |  | 18 |
 | `taxRate` | `base` | yes | yes | no | no | no | no |  | 12 |
 
 ### `tax.taxExemption`
@@ -75,6 +75,7 @@
 - `sourceReferenceCode` `string` optional: Optional safe external provider quote reference
 - `status` `string` required: Governed lifecycle status
 - `subtotalAmount` `string` required: Exact decimal-string taxable subtotal used for quote
+- `taxInclusionMode` `string` optional: Normalized tax inclusion evidence such as TAX_EXCLUSIVE or TAX_INCLUSIVE
 - `taxMode` `string` required: Tax mode used for quote evidence
 - `taxTotal` `string` required: Exact decimal-string tax total for this quote
 
@@ -86,13 +87,17 @@
 - `enterpriseCode` `string` required: Authenticated enterprise owner of the Tax record
 - `entryCode` `string` optional: Optional cart/order entry reference
 - `exemptionCode` `string` optional: Optional exemption applied to this line
+- `grossAmount` `string` optional: Exact decimal-string line gross customer-facing amount after tax. For inclusive pricing this may equal the displayed line price.
 - `jurisdictionCode` `string` required: Jurisdiction applied to this line
 - `lineCode` `string` required: Stable tax quote line identity
+- `netAmount` `string` optional: Exact decimal-string line net amount before tax. For inclusive pricing this is split out from gross evidence.
 - `quoteCode` `string` required: Parent tax quote
 - `rateCode` `string` optional: Rate record used for this line
 - `status` `string` required: Governed lifecycle status
 - `taxAmount` `string` required: Exact decimal-string tax amount
 - `taxCategoryCode` `string` required: Tax category used for this line
+- `taxIncluded` `bool` optional: Display helper showing whether tax amount was included in the source price
+- `taxInclusionMode` `string` required: Whether the source price was tax-exclusive or tax-inclusive
 - `taxableAmount` `string` required: Exact decimal-string taxable amount
 
 ### `tax.taxRate`

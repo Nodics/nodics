@@ -63,11 +63,19 @@ global.SERVICE = {
 assert.strictEqual(schemas.taxRate.definition.rate.type, "string");
 assert.strictEqual(schemas.taxQuote.definition.subtotalAmount.type, "string");
 assert.strictEqual(schemas.taxQuote.definition.taxTotal.type, "string");
+assert.strictEqual(schemas.taxQuote.definition.taxInclusionMode.type, "string");
 assert.strictEqual(
   schemas.taxQuoteLine.definition.taxableAmount.type,
   "string",
 );
+assert.strictEqual(schemas.taxQuoteLine.definition.netAmount.type, "string");
+assert.strictEqual(schemas.taxQuoteLine.definition.grossAmount.type, "string");
 assert.strictEqual(schemas.taxQuoteLine.definition.taxAmount.type, "string");
+assert.strictEqual(
+  schemas.taxQuoteLine.definition.taxInclusionMode.type,
+  "string",
+);
+assert.strictEqual(schemas.taxQuoteLine.definition.taxIncluded.type, "bool");
 assert.strictEqual(
   interceptors.taxQuotePreRemove.handler,
   "DefaultTaxValidationService.rejectHardDelete",
@@ -153,11 +161,13 @@ const quote = {
     subtotalAmount: "100.00",
     taxTotal: "5.00",
     taxMode: "NET",
+    taxInclusionMode: "TAX_EXCLUSIVE",
     idempotencyKey: "tax-quote-1",
   },
 };
 validation.prepareQuote(quote);
 assert.strictEqual(quote.model.code, "entA::taxQuote::cart-tax-quote-1");
+assert.strictEqual(quote.model.taxIncluded, false);
 
 const quoteLine = {
   authData,
@@ -169,12 +179,42 @@ const quoteLine = {
     jurisdictionCode: "UAE-DXB",
     rateCode: "standard-vat",
     taxableAmount: "100.00",
+    netAmount: "100.00",
+    grossAmount: "105.00",
     taxAmount: "5.00",
     currencyCode: "AED",
+    taxMode: "NET",
+    taxInclusionMode: "TAX_EXCLUSIVE",
   },
 };
 validation.prepareQuoteLine(quoteLine);
 assert.strictEqual(quoteLine.model.code, "entA::taxQuoteLine::cart-tax-line-1");
+assert.strictEqual(quoteLine.model.taxIncluded, false);
+
+const inclusiveQuoteLine = {
+  authData,
+  model: {
+    lineCode: "inclusive-line",
+    quoteCode: "cart-tax-quote-1",
+    entryCode: "entry-2",
+    taxCategoryCode: "STANDARD",
+    jurisdictionCode: "UAE-DXB",
+    rateCode: "standard-vat",
+    taxableAmount: "95.24",
+    netAmount: "95.24",
+    grossAmount: "100.00",
+    taxAmount: "4.76",
+    currencyCode: "AED",
+    taxMode: "GROSS",
+    taxInclusionMode: "TAX_INCLUSIVE",
+  },
+};
+validation.prepareQuoteLine(inclusiveQuoteLine);
+assert.strictEqual(
+  inclusiveQuoteLine.model.code,
+  "entA::taxQuoteLine::inclusive-line",
+);
+assert.strictEqual(inclusiveQuoteLine.model.taxIncluded, true);
 
 assert.throws(
   () =>
@@ -199,6 +239,19 @@ assert.throws(
       }),
     }),
   (error) => error.code === "ERR_TAX_00012",
+);
+assert.throws(
+  () =>
+    validation.prepareQuoteLine({
+      authData,
+      model: Object.assign({}, quoteLine.model, {
+        code: undefined,
+        lineCode: "conflicting-tax-mode",
+        taxMode: "NET",
+        taxInclusionMode: "TAX_INCLUSIVE",
+      }),
+    }),
+  (error) => error.code === "ERR_TAX_00027",
 );
 assert.throws(
   () =>

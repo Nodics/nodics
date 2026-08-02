@@ -185,16 +185,62 @@ module.exports = {
     if (!(policy.taxModes || []).includes(model.taxMode || "NET")) {
       throw this.error("ERR_TAX_00020", "Tax mode is invalid");
     }
+    this.normalizeTaxInclusion(model, policy);
     return true;
+  },
+  normalizeTaxInclusion: function (model, policy) {
+    policy = policy || {};
+    const legacyMap = policy.legacyTaxModeMap || {
+      NET: "TAX_EXCLUSIVE",
+      GROSS: "TAX_INCLUSIVE",
+    };
+    const allowed = policy.taxInclusionModes || [
+      "TAX_EXCLUSIVE",
+      "TAX_INCLUSIVE",
+    ];
+    if (model.taxInclusionMode && !allowed.includes(model.taxInclusionMode)) {
+      throw this.error("ERR_TAX_00027", "Tax inclusion mode is invalid");
+    }
+    if (
+      model.taxMode &&
+      model.taxInclusionMode &&
+      legacyMap[model.taxMode] &&
+      legacyMap[model.taxMode] !== model.taxInclusionMode
+    ) {
+      throw this.error(
+        "ERR_TAX_00027",
+        "Tax mode conflicts with tax inclusion mode",
+      );
+    }
+    if (!model.taxInclusionMode && model.taxMode) {
+      model.taxInclusionMode = legacyMap[model.taxMode];
+    }
+    model.taxIncluded = model.taxInclusionMode === "TAX_INCLUSIVE";
   },
   prepareQuoteLine: function (request) {
     const model = this.prepare(request, "taxQuoteLine", ["lineCode"]);
     this.assertCurrency(model.currencyCode, true);
+    const policy = (this.config() || {}).rate || {};
+    this.normalizeTaxInclusion(model, policy);
     model.taxableAmount = this.assertDecimal(
       model.taxableAmount,
       "Taxable amount",
       true,
     );
+    if (model.netAmount !== undefined) {
+      model.netAmount = this.assertDecimal(
+        model.netAmount,
+        "Tax net amount",
+        true,
+      );
+    }
+    if (model.grossAmount !== undefined) {
+      model.grossAmount = this.assertDecimal(
+        model.grossAmount,
+        "Tax gross amount",
+        true,
+      );
+    }
     model.taxAmount = this.assertDecimal(model.taxAmount, "Tax amount", true);
     return true;
   },

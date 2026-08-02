@@ -111,7 +111,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/tax/src/search/indexes.js` | `src` | `documented` | 0/0 | Search index definition registry for this boundary. |  |
 | `gComm/tax/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Empty module-creation placeholder that demonstrates the service lifecycle shape until concrete services are added. |  |
 | `gComm/tax/src/service/foundation/defaultTaxEnterpriseScopeService.js` | `src` | `partially-documented` | 0/9 | Applies authenticated enterprise scope and deterministic identity to Tax records. | add JSDoc for 9 exported method(s) |
-| `gComm/tax/src/service/foundation/defaultTaxValidationService.js` | `src` | `partially-documented` | 0/23 | Validates governed Tax records, exact decimal values, lifecycle state, provider metadata, and immutable tax evidence boundaries. | add JSDoc for 23 exported method(s) |
+| `gComm/tax/src/service/foundation/defaultTaxValidationService.js` | `src` | `partially-documented` | 0/24 | Validates governed Tax records, exact decimal values, lifecycle state, provider metadata, and immutable tax evidence boundaries. | add JSDoc for 24 exported method(s) |
 | `gComm/tax/src/service/provider/defaultTaxProviderPolicyService.js` | `src` | `partially-documented` | 0/6 | Resolves provider-policy defaults for Tax integrations without owning provider credentials or customer-specific adapter code. | add JSDoc for 6 exported method(s) |
 | `gComm/tax/src/utils/enums.js` | `src` | `documented` | 0/0 | Enum definition registry for this boundary. |  |
 | `gComm/tax/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Status and error definition registry for this boundary. |  |

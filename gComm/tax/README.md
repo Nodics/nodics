@@ -67,11 +67,22 @@ Tax does not own:
 Tax uses exact decimal strings for monetary amounts and rates. Examples:
 
 - `taxableAmount: "100.00"`
+- `netAmount: "95.24"`
+- `grossAmount: "100.00"`
 - `taxAmount: "5.00"`
 - `rate: "0.05"`
 
 Do not pass JavaScript numbers such as `0.1 + 0.2`. Validation rejects
 non-string decimal inputs so tax evidence remains deterministic and auditable.
+
+Inclusive tax is still visible tax. When Pricing resolves a tax-inclusive
+customer price, Tax quote lines can store the split as `netAmount`,
+`grossAmount`, `taxAmount`, `taxInclusionMode: "TAX_INCLUSIVE"`, and
+`taxIncluded: true`. Cart then stores the accepted line evidence and Order
+freezes it after placement. This supports common enterprise requirements where
+the displayed product price includes tax but invoices, receipts, BackOffice
+detail panels, exports, and customer communications must still show the
+applied tax amount and rate evidence.
 
 ## Provider customization
 

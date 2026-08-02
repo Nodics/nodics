@@ -239,6 +239,11 @@ module.exports = {
     rate: {
       rateTypes: ["PERCENTAGE", "FIXED"],
       taxModes: ["NET", "GROSS"],
+      taxInclusionModes: ["TAX_EXCLUSIVE", "TAX_INCLUSIVE"],
+      legacyTaxModeMap: {
+        NET: "TAX_EXCLUSIVE",
+        GROSS: "TAX_INCLUSIVE",
+      },
       maximumRate: "1",
     },
     provider: {

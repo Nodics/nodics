@@ -145,17 +145,99 @@ module.exports = {
           description:
             "Exact decimal-string unit price snapshot captured by checkout or pricing evidence",
         },
+        unitNetAmount: {
+          type: "string",
+          required: false,
+          description:
+            "Exact decimal-string unit net amount before tax. For tax-inclusive pricing this is split from unit gross evidence",
+        },
+        unitGrossAmount: {
+          type: "string",
+          required: false,
+          description:
+            "Exact decimal-string unit gross customer-facing amount after tax. For tax-inclusive pricing this may equal the displayed unit price",
+        },
         totalPrice: {
           type: "string",
           required: false,
           description:
             "Exact decimal-string line total snapshot captured by checkout or pricing evidence",
         },
+        lineNetAmount: {
+          type: "string",
+          required: false,
+          description: "Exact decimal-string line net amount before tax",
+        },
+        lineGrossAmount: {
+          type: "string",
+          required: false,
+          description:
+            "Exact decimal-string line gross customer-facing amount after tax",
+        },
         taxTotal: {
           type: "string",
           required: false,
           description:
             "Exact decimal-string tax total snapshot; Tax remains authoritative for calculation rules",
+        },
+        taxInclusionMode: {
+          type: "string",
+          required: false,
+          description:
+            "Resolved pricing/tax inclusion mode such as TAX_EXCLUSIVE or TAX_INCLUSIVE",
+          searchOptions: {
+            enabled: true,
+          },
+        },
+        taxIncluded: {
+          type: "bool",
+          required: false,
+          default: false,
+          description:
+            "Whether the line tax amount is included in the customer-facing line amount",
+          searchOptions: {
+            enabled: true,
+          },
+        },
+        taxQuoteCode: {
+          type: "string",
+          required: false,
+          description: "Tax quote evidence code used for this line",
+          searchOptions: {
+            enabled: true,
+          },
+        },
+        taxQuoteLineCode: {
+          type: "string",
+          required: false,
+          description: "Tax quote line evidence code used for this line",
+          searchOptions: {
+            enabled: true,
+          },
+        },
+        taxJurisdictionCode: {
+          type: "string",
+          required: false,
+          description: "Tax jurisdiction applied to this line",
+          searchOptions: {
+            enabled: true,
+          },
+        },
+        taxCategoryCode: {
+          type: "string",
+          required: false,
+          description: "Tax category applied to this line",
+          searchOptions: {
+            enabled: true,
+          },
+        },
+        taxRateCode: {
+          type: "string",
+          required: false,
+          description: "Tax rate evidence applied to this line",
+          searchOptions: {
+            enabled: true,
+          },
         },
         discountTotal: {
           type: "string",
@@ -195,6 +277,14 @@ module.exports = {
           },
           status: {
             name: "status",
+            enabled: true,
+          },
+          taxQuoteCode: {
+            name: "taxQuoteCode",
+            enabled: true,
+          },
+          taxJurisdictionCode: {
+            name: "taxJurisdictionCode",
             enabled: true,
           },
         },

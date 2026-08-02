@@ -373,6 +373,13 @@ module.exports = {
           description: "Tax mode used for quote evidence",
           searchOptions: { enabled: true },
         },
+        taxInclusionMode: {
+          type: "string",
+          required: false,
+          description:
+            "Normalized tax inclusion evidence such as TAX_EXCLUSIVE or TAX_INCLUSIVE",
+          searchOptions: { enabled: true },
+        },
         idempotencyKey: {
           type: "string",
           required: true,
@@ -449,10 +456,38 @@ module.exports = {
           required: true,
           description: "Exact decimal-string taxable amount",
         },
+        netAmount: {
+          type: "string",
+          required: false,
+          description:
+            "Exact decimal-string line net amount before tax. For inclusive pricing this is split out from gross evidence.",
+        },
+        grossAmount: {
+          type: "string",
+          required: false,
+          description:
+            "Exact decimal-string line gross customer-facing amount after tax. For inclusive pricing this may equal the displayed line price.",
+        },
         taxAmount: {
           type: "string",
           required: true,
           description: "Exact decimal-string tax amount",
+        },
+        taxInclusionMode: {
+          type: "string",
+          required: true,
+          default: "TAX_EXCLUSIVE",
+          description:
+            "Whether the source price was tax-exclusive or tax-inclusive",
+          searchOptions: { enabled: true },
+        },
+        taxIncluded: {
+          type: "bool",
+          required: false,
+          default: false,
+          description:
+            "Display helper showing whether tax amount was included in the source price",
+          searchOptions: { enabled: true },
         },
         currencyCode: {
           type: "string",

@@ -46,7 +46,7 @@
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `abstractCart` | `base` | no | no | no | no | no | no |  | 2 |
-| `abstractCartEntry` | `base` | no | no | no | no | no | no |  | 15 |
+| `abstractCartEntry` | `base` | no | no | no | no | no | no |  | 26 |
 | `abstractCheckoutAllocation` | `base` | no | no | no | no | no | no |  | 9 |
 | `abstractCheckoutDeliveryGroup` | `base` | no | no | no | no | no | no |  | 11 |
 | `abstractCheckoutPaymentGroup` | `base` | no | no | no | no | no | no |  | 10 |
@@ -65,13 +65,24 @@
 - `entryCode` `string` required: Stable business identity for one cart or order line entry
 - `itemCode` `string` required: Product item code captured for the checkout line
 - `itemType` `string` required: Product item type captured for the checkout line
+- `lineGrossAmount` `string` optional: Exact decimal-string line gross customer-facing amount after tax
+- `lineNetAmount` `string` optional: Exact decimal-string line net amount before tax
 - `lineNumber` `int` required: Human-readable line position inside the parent cart or order
 - `priceEvidenceCode` `string` optional: Optional pricing evidence or resolved price reference used to produce the line price
 - `quantity` `string` required: Exact positive decimal-string quantity; never use floating point for commerce quantities
 - `status` `string` required: Line lifecycle status within the parent checkout aggregate
+- `taxCategoryCode` `string` optional: Tax category applied to this line
+- `taxIncluded` `bool` optional: Whether the line tax amount is included in the customer-facing line amount
+- `taxInclusionMode` `string` optional: Resolved pricing/tax inclusion mode such as TAX_EXCLUSIVE or TAX_INCLUSIVE
+- `taxJurisdictionCode` `string` optional: Tax jurisdiction applied to this line
+- `taxQuoteCode` `string` optional: Tax quote evidence code used for this line
+- `taxQuoteLineCode` `string` optional: Tax quote line evidence code used for this line
+- `taxRateCode` `string` optional: Tax rate evidence applied to this line
 - `taxTotal` `string` optional: Exact decimal-string tax total snapshot; Tax remains authoritative for calculation rules
 - `totalPrice` `string` optional: Exact decimal-string line total snapshot captured by checkout or pricing evidence
 - `unitCode` `string` required: Units-owned unit of measure reference for the quantity
+- `unitGrossAmount` `string` optional: Exact decimal-string unit gross customer-facing amount after tax. For tax-inclusive pricing this may equal the displayed unit price
+- `unitNetAmount` `string` optional: Exact decimal-string unit net amount before tax. For tax-inclusive pricing this is split from unit gross evidence
 - `unitPrice` `string` optional: Exact decimal-string unit price snapshot captured by checkout or pricing evidence
 
 ### `default.abstractCheckoutAllocation`

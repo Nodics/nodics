@@ -19,6 +19,13 @@ parent. Order entries preserve checkout evidence after cart conversion: product
 identity, quantity, unit, currency, price, tax, discount, and optional inventory
 reservation/allocation references.
 
+The copied tax evidence is intentionally explicit. Even when the original price
+was tax-inclusive, Order stores `lineNetAmount`, `lineGrossAmount`, `taxTotal`,
+`taxInclusionMode`, `taxIncluded`, tax quote references, jurisdiction, category,
+and rate evidence. This lets invoices, support screens, emails, exports, and
+audits show the applied tax without recalculating historical prices or asking
+Pricing/Tax to guess what was shown to the customer at checkout time.
+
 Order entries do not calculate pricing, tax, promotion, stock, fulfillment, or
 payment state. Those authorities stay in their owning modules and may attach
 evidence codes to the entry. Customer projects can extend `orderEntry` through
