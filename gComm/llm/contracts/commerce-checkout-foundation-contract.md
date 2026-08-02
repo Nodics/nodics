@@ -204,6 +204,12 @@ Inventory whether the idempotent Stock Movement evidence for a disposition
 already exists or whether Inventory operators must review/adjust it, but Order
 must not mutate Stock Balance, Stock Allocation, or Stock Movement records.
 
+Inventory also owns serialized unit lifecycle. Cart and Order may preserve
+serial-number evidence for split quantity fulfillment, but the first-class
+serial or asset identity belongs to `serializedStockUnit`, which links the unit
+to Stock Balance, Reservation, Allocation, demand, and last Movement evidence
+without replacing aggregate Stock quantity authority.
+
 `DefaultPaymentRefundCalculationService` calculates eligible refund amounts from
 Order payment allocation evidence before a provider refund is created. This is
 the extension point for split payments, partial returns, tax/discount/shipping

@@ -8,6 +8,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
 | `inventoryPromise` | `base` | yes | yes | no | no | no | no |  | 26 |
 | `inventoryPromiseReservation` | `base` | yes | yes | no | no | no | no |  | 21 |
+| `serializedStockUnit` | `base` | yes | yes | no | no | no | no |  | 26 |
 | `stockAllocation` | `base` | yes | yes | no | no | no | no |  | 21 |
 | `stockBalance` | `base` | yes | yes | no | no | no | no |  | 16 |
 | `stockMovementCheckpoint` | `base` | yes | yes | no | no | no | no |  | 11 |
@@ -76,6 +77,35 @@
 - `state` `string` required
 - `terminalAt` `date` optional
 - `unitCode` `string` required
+
+### `inventory.serializedStockUnit`
+
+- `allocationCode` `string` optional: Optional Stock Allocation evidence currently assigning this unit to demand
+- `assetTag` `string` optional: Optional internal asset tag or scan identifier
+- `attributes` `object` optional: Non-secret customer or provider-specific serialized-unit metadata
+- `conditionCode` `string` optional: Current condition such as SELLABLE, DAMAGED, QUARANTINE, or REPAIR
+- `correlationId` `string` optional
+- `demandCode` `string` optional: Optional cart/order demand code when allocated
+- `demandLineCode` `string` optional: Optional line-level demand code when allocated
+- `demandType` `string` optional: Optional demand owner such as CART or ORDER when allocated
+- `enterpriseCode` `string` required: Authoritative enterprise owning this serialized unit
+- `externalReference` `string` optional: Optional WMS, ERP, supplier, or marketplace unit reference
+- `failureCode` `string` optional
+- `itemCode` `string` required: Tracked item authority code
+- `itemType` `string` required: Tracked item authority type such as SKU or product
+- `lastMovementCode` `string` optional: Last Stock Movement evidence related to this unit
+- `locationCode` `string` optional: Current warehouse-location evidence copied from the owning Stock Balance
+- `quantity` `string` required: Serialized unit quantity; defaults to one individual unit
+- `registeredAt` `date` optional
+- `reservationCode` `string` optional: Optional Stock Reservation evidence currently holding this unit
+- `scale` `int` required: Serialized unit quantity scale; zero by default for individual units
+- `serialNumber` `string` required: Manufacturer, supplier, or business-facing serial number
+- `serializedUnitCode` `string` required: Stable business identity for one trackable stock unit
+- `state` `string` required: Governed lifecycle state for this serialized unit
+- `stockCode` `string` required: Owning aggregate Stock Balance reference
+- `terminalAt` `date` optional
+- `unitCode` `string` required: Unit of measure for this individual serialized unit
+- `warehouseCode` `string` required: Current warehouse evidence copied from the owning Stock Balance
 
 ### `inventory.stockAllocation`
 

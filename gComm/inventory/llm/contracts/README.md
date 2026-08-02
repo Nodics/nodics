@@ -8,6 +8,7 @@ Implemented contracts:
 - [Stock ON_HAND Availability](stock-availability-foundation-contract.md)
 - [Stock Reservation Foundation](stock-reservation-foundation-contract.md)
 - [Stock Allocation Foundation](stock-allocation-foundation-contract.md)
+- [Serialized Inventory Foundation](serialized-inventory-foundation-contract.md)
 - [Inventory Promise Foundation](inventory-promise-foundation-contract.md)
 - [Stock Transfer Foundation](stock-transfer-foundation-contract.md)
 - [Stock Reconciliation Foundation](stock-reconciliation-foundation-contract.md)

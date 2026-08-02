@@ -127,6 +127,8 @@ const requiredDetailPanelIds = {
   "price-lists": ["price-list-prices", "price-list-assignments"],
   "price-groups": ["price-group-members"],
   "stock-pools": ["stock-pool-members"],
+  "stock-levels": ["serialized-units"],
+  allocations: ["serialized-units"],
   warehouses: [
     "warehouse-locations",
     "warehouse-stock",
@@ -388,6 +390,22 @@ assert.strictEqual(
 assert.strictEqual(
   byId["inventory-promises"].workbenchTarget.schemaName,
   "inventoryPromise",
+);
+assert.strictEqual(
+  byId["serialized-units"].workbenchTarget.schemaName,
+  "serializedStockUnit",
+);
+assert.deepStrictEqual(
+  byId["serialized-units"].workbenchPresentation.defaultColumns,
+  [
+    "serializedUnitCode",
+    "serialNumber",
+    "itemCode",
+    "warehouseCode",
+    "state",
+    "reservationCode",
+    "allocationCode",
+  ],
 );
 assert.strictEqual(
   byId["promise-reservations"].workbenchTarget.schemaName,

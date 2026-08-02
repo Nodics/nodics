@@ -13,21 +13,22 @@
     "version": "0.0.1",
     "description": "Enterprise-scoped warehouse and inventory-management capability for Nodics commerce applications."
   },
-  "sourceFiles": 61,
-  "testFiles": 39,
+  "sourceFiles": 62,
+  "testFiles": 40,
   "dataFiles": 7,
-  "ownedFiles": 98,
-  "sourceFingerprint": "6c539e720ba3a81fdb9523cd5d6699458dd29725b0c9795d02a9757e3b88e416",
+  "ownedFiles": 100,
+  "sourceFingerprint": "6bb87733df34434ad37a583e9b811a64fcf7559feb4f858c98fb712d06dfbf1b",
   "documentation": {
-    "documented": 37,
+    "documented": 38,
     "partially-documented": 42,
-    "undocumented": 14,
+    "undocumented": 15,
     "inventory-only": 5
   },
   "schemaGroups": {
     "inventory": [
       "inventoryPromise",
       "inventoryPromiseReservation",
+      "serializedStockUnit",
       "stockAllocation",
       "stockBalance",
       "stockMovementCheckpoint",

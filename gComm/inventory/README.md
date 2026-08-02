@@ -55,6 +55,16 @@ Promise reservations do not mutate physical Stock Balance; physical reservation,
 allocation, issue, and fulfillment evidence remain owned by the Stock
 Reservation and Stock Allocation services.
 
+Serialized Inventory adds an optional identity layer for businesses that must
+track individual units by serial number, asset tag, or external WMS/ERP unit
+reference. `serializedStockUnit` records link one trackable unit to the owning
+aggregate `stockBalance` and, when applicable, the current `stockReservation`,
+`stockAllocation`, demand line, and last Stock Movement evidence. This model is
+not the quantity authority: Stock Balance and Stock Movement still own on-hand,
+reserved, and issued quantity math. Customer modules can extend the serialized
+unit lifecycle or metadata through configuration and services without changing
+Cart, Order, or Fulfillment models.
+
 Return disposition movement execution is implemented through
 `DefaultReturnDispositionMovementService`. Fulfillment records safe return
 disposition intent, and reverse checkout Workflow calls Inventory to convert
@@ -91,6 +101,7 @@ node gComm/inventory/test/stockAvailabilityFoundation.test.js
 node gComm/inventory/test/inventoryStorefrontAvailabilityContract.test.js
 node gComm/inventory/test/stockReservationFoundation.test.js
 node gComm/inventory/test/stockAllocationFoundation.test.js
+node gComm/inventory/test/serializedStockUnitFoundation.test.js
 node gComm/inventory/test/returnDispositionMovementContract.test.js
 node gComm/inventory/test/inventoryPromiseFoundation.test.js
 node gComm/inventory/test/stockTransferFoundation.test.js
@@ -115,6 +126,8 @@ Read the Stock Availability foundation (canonical documentation: `capability.com
 Read the Stock Reservation foundation (canonical documentation: `capability.commerce.technical-reference`) before extending checkout holds, expiry, or fulfillment consumption.
 
 Read the Stock Allocation foundation (canonical documentation: `capability.commerce.technical-reference`) before integrating Order demand, split fulfillment, or backorders.
+
+Read the [Serialized Inventory foundation](llm/contracts/serialized-inventory-foundation-contract.md) (canonical documentation: `capability.commerce.technical-reference`) before binding cart/order serial-number evidence to Inventory-owned serial or asset records.
 
 Read the Inventory Promise foundation (canonical documentation: `capability.commerce.technical-reference`) before extending preorder, backorder, overbooking, commercial-payment requirements, checkout promise reservations, or promise counter orchestration.
 

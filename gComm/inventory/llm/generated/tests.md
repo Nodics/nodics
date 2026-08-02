@@ -13,6 +13,7 @@
 - `gComm/inventory/test/inventoryWarehouseReferenceContract.test.js`
 - `gComm/inventory/test/inventoryWarehouseSchemaContract.test.js`
 - `gComm/inventory/test/returnDispositionMovementContract.test.js`
+- `gComm/inventory/test/serializedStockUnitFoundation.test.js`
 - `gComm/inventory/test/stockAllocationFoundation.test.js`
 - `gComm/inventory/test/stockAvailabilityCacheContract.test.js`
 - `gComm/inventory/test/stockAvailabilityFoundation.test.js`

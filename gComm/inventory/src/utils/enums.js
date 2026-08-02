@@ -17,26 +17,58 @@
  * @override Later active modules may extend or replace this registry through Nodics layering.
  */
 module.exports = {
-    InventoryWarehouseStatus: {
-        definition: ['DRAFT', 'ACTIVE', 'SUSPENDED', 'RETIRED']
-    },
-    InventoryWarehouseType: {
-        definition: [
-            'PHYSICAL',
-            'VIRTUAL',
-            'STORE',
-            'DARK_STORE',
-            'DISTRIBUTION_CENTER',
-            'SUPPLIER',
-            'DROPSHIP',
-            'RETURNS',
-            'TRANSIT'
-        ]
-    },
-    StockReservationState: {
-        definition: ['PENDING', 'ACTIVE', 'RELEASE_PENDING', 'CONSUMED', 'RELEASED', 'EXPIRED', 'CANCELLED', 'REJECTED']
-    },
-    StockAllocationState: {
-        definition: ['PENDING', 'ALLOCATED', 'PARTIALLY_ALLOCATED', 'BACKORDERED', 'PARTIALLY_FULFILLED', 'FULFILLED', 'RELEASED', 'CANCELLED', 'FAILED']
-    }
+  InventoryWarehouseStatus: {
+    definition: ["DRAFT", "ACTIVE", "SUSPENDED", "RETIRED"],
+  },
+  InventoryWarehouseType: {
+    definition: [
+      "PHYSICAL",
+      "VIRTUAL",
+      "STORE",
+      "DARK_STORE",
+      "DISTRIBUTION_CENTER",
+      "SUPPLIER",
+      "DROPSHIP",
+      "RETURNS",
+      "TRANSIT",
+    ],
+  },
+  StockReservationState: {
+    definition: [
+      "PENDING",
+      "ACTIVE",
+      "RELEASE_PENDING",
+      "CONSUMED",
+      "RELEASED",
+      "EXPIRED",
+      "CANCELLED",
+      "REJECTED",
+    ],
+  },
+  StockAllocationState: {
+    definition: [
+      "PENDING",
+      "ALLOCATED",
+      "PARTIALLY_ALLOCATED",
+      "BACKORDERED",
+      "PARTIALLY_FULFILLED",
+      "FULFILLED",
+      "RELEASED",
+      "CANCELLED",
+      "FAILED",
+    ],
+  },
+  SerializedStockUnitState: {
+    definition: [
+      "REGISTERED",
+      "AVAILABLE",
+      "RESERVED",
+      "ALLOCATED",
+      "IN_TRANSIT",
+      "FULFILLED",
+      "RETURNED",
+      "QUARANTINED",
+      "RETIRED",
+    ],
+  },
 };
