@@ -38,7 +38,7 @@
 | Test files | 15 |
 | Data files | 7 |
 | All module-owned files | 52 |
-| Local schema definitions | 8 |
+| Local schema definitions | 9 |
 
 ## Ownership And Dependencies
 
@@ -123,7 +123,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/pricing/src/service/cache/defaultPriceResolutionCacheService.js` | `src` | `partially-documented` | 8/8 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/src/service/defaultSampleService.js` | `src` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/src/service/foundation/defaultPricingEnterpriseScopeService.js` | `src` | `partially-documented` | 10/10 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
-| `gComm/pricing/src/service/foundation/defaultPricingValidationService.js` | `src` | `partially-documented` | 23/23 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/pricing/src/service/foundation/defaultPricingValidationService.js` | `src` | `partially-documented` | 25/25 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/src/service/management/defaultPricingManagementService.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/src/service/publication/defaultPricingPublicationAdapterService.js` | `src` | `partially-documented` | 10/10 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/pricing/src/service/publication/defaultPricingPublicationManifestService.js` | `src` | `partially-documented` | 9/9 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |

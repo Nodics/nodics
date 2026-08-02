@@ -35,6 +35,13 @@ Fulfillment does not own stock counters or payment capture. It stores safe
 release evidence and delegates stock movement/reconciliation to Inventory and
 payment lifecycle to Payment.
 
+Fulfillment also does not own the customer-facing delivery charge. Pricing owns
+delivery charge quotes, and Order preserves the accepted quote evidence on
+order delivery groups. Fulfillment may introduce carrier actual-cost,
+shipment-invoice, surcharge, or reconciliation evidence later, but those
+operational costs must be modeled separately from the commercial charge the
+customer accepted during checkout.
+
 ## Checkout placement integration
 
 Order checkout placement calls Fulfillment through a Workflow action after

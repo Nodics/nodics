@@ -48,7 +48,7 @@
 | `abstractCart` | `base` | no | no | no | no | no | no |  | 2 |
 | `abstractCartEntry` | `base` | no | no | no | no | no | no |  | 15 |
 | `abstractCheckoutAllocation` | `base` | no | no | no | no | no | no |  | 9 |
-| `abstractCheckoutDeliveryGroup` | `base` | no | no | no | no | no | no |  | 7 |
+| `abstractCheckoutDeliveryGroup` | `base` | no | no | no | no | no | no |  | 11 |
 | `abstractCheckoutPaymentGroup` | `base` | no | no | no | no | no | no |  | 10 |
 
 ### `default.abstractCart`
@@ -90,6 +90,10 @@
 
 - `addressCode` `string` optional: Optional Profile address reference used by address-based delivery groups
 - `carrierCode` `string` optional: Optional carrier or logistics reference captured as delivery evidence
+- `deliveryChargeAmount` `string` optional: Exact decimal-string customer-facing delivery charge accepted for this group
+- `deliveryChargeCurrencyCode` `string` optional: Currency code for the accepted delivery charge evidence
+- `deliveryChargeQuoteCode` `string` optional: Optional Pricing-owned delivery charge quote accepted for this checkout delivery group
+- `deliveryChargeTaxMode` `string` optional: Tax mode used when the delivery charge quote was accepted, such as NET or GROSS
 - `deliveryGroupCode` `string` required: Stable business identity for one delivery group within a cart or order
 - `deliveryModeCode` `string` optional: Optional delivery-mode reference. Fulfillment or shipping modules remain authoritative for mode rules.
 - `entCode` `string` required: Enterprise code that owns this checkout delivery group

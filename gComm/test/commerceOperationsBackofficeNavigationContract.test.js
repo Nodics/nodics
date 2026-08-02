@@ -254,6 +254,21 @@ assert.deepStrictEqual(
 assert.strictEqual(byId["price-lists"].workbenchTarget.schemaName, "priceList");
 assert.strictEqual(byId.prices.workbenchTarget.schemaName, "price");
 assert.strictEqual(
+  byId["delivery-charge-quotes"].workbenchTarget.schemaName,
+  "deliveryChargeQuote",
+);
+assert.deepStrictEqual(
+  byId["delivery-charge-quotes"].workbenchPresentation.defaultColumns,
+  [
+    "quoteCode",
+    "deliveryModeCode",
+    "amount",
+    "currencyCode",
+    "status",
+    "validUntil",
+  ],
+);
+assert.strictEqual(
   byId["stock-levels"].workbenchTarget.schemaName,
   "stockBalance",
 );

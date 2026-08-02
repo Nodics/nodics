@@ -111,6 +111,10 @@ module.exports = {
             "addressCode",
             "deliveryModeCode",
             "carrierCode",
+            "deliveryChargeQuoteCode",
+            "deliveryChargeAmount",
+            "deliveryChargeCurrencyCode",
+            "deliveryChargeTaxMode",
           ],
           paymentGroupCopiedFields: [
             "entCode",

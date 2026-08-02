@@ -112,6 +112,15 @@ not recalculate quantities, amounts, or inventory evidence; it freezes the
 checkout split evidence and retains source cart group/allocation codes for
 audit and support.
 
+Accepted delivery charges follow the same evidence rule. Pricing owns the
+`deliveryChargeQuote`; Cart delivery groups carry the accepted quote code,
+exact delivery charge amount, currency, and tax mode as checkout state; Order
+copies those fields onto `orderDeliveryGroup` during placement so the
+customer-facing delivery charge is immutable order evidence. Fulfillment and
+carrier adapters may later record operational shipping cost or invoice
+reconciliation, but that does not change the commercial delivery charge that
+was accepted at checkout.
+
 `DefaultCheckoutPlacementWorkflowService.authorizePayment` backs the
 `checkoutPlacementAuthorizePaymentAction`. It does not authorize payment
 itself. It resolves the produced order and copied payment groups, then

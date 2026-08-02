@@ -6,6 +6,7 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
+| `deliveryChargeQuote` | `base` | yes | yes | no | no | no | no |  | 18 |
 | `price` | `base` | yes | yes | no | no | no | no |  | 18 |
 | `priceGroup` | `base` | yes | yes | no | no | no | no |  | 7 |
 | `priceGroupMember` | `base` | yes | yes | no | no | no | no |  | 8 |
@@ -14,6 +15,27 @@
 | `priceOnlinePointer` | `base` | yes | yes | no | no | no | no |  | 6 |
 | `pricePublicationManifest` | `base` | yes | yes | no | no | no | no |  | 7 |
 | `pricePublicationReceipt` | `base` | yes | yes | no | no | no | no |  | 6 |
+
+### `pricing.deliveryChargeQuote`
+
+- `addressCode` `string` optional: Optional destination address reference used for quote scoping
+- `amount` `string` required: Exact non-negative decimal-string customer-facing delivery charge
+- `calculationStrategy` `string` required: Configurable strategy or adapter used to calculate the quote
+- `carrierCode` `string` optional: Optional carrier candidate used for this quote
+- `cartCode` `string` optional: Optional cart that requested this delivery charge quote
+- `currencyCode` `string` required: Currency for this delivery charge quote
+- `deliveryGroupCode` `string` optional: Optional checkout delivery group that accepted this quote
+- `deliveryModeCode` `string` required: Delivery mode used for this customer-facing quote
+- `effectiveFrom` `date` optional
+- `effectiveTo` `date` optional
+- `enterpriseCode` `string` required: Authenticated enterprise owner
+- `idempotencyKey` `string` required: Stable idempotency key for repeated delivery quote requests
+- `quoteCode` `string` required: Stable business identity for a delivery charge quote
+- `sourceReferenceCode` `string` optional: Optional external or provider quote reference
+- `sourceType` `string` required: Source category such as estimate, rate card, or carrier quote
+- `status` `string` required: Governed lifecycle state
+- `taxMode` `string` required: Tax mode used for the customer-facing delivery charge
+- `validUntil` `date` optional: Optional expiry time for quote acceptance
 
 ### `pricing.price`
 

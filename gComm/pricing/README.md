@@ -6,6 +6,16 @@ A Price List can be assigned to an enterprise, country, site, store, channel, cu
 
 Pricing does not own Stores, customers, products/items, Units, tax calculation, promotions, exchange rates, workflow, publishing, or cache providers. It composes those authorities through stable references and configured providers. `STORE` assignments now use the Store-owned reference provider locally when co-hosted or through Store's service-token reference intent when separately deployed.
 
+Pricing also owns customer-facing delivery charge quote evidence. A
+`deliveryChargeQuote` captures the enterprise, delivery mode, optional carrier,
+optional cart/delivery group context, exact amount, currency, tax mode,
+calculation strategy, source reference, idempotency key, lifecycle state, and
+optional expiry. Cart and Order may copy the accepted quote reference and
+amount into delivery groups, but they do not calculate the charge. Fulfillment
+later owns operational carrier/shipment evidence and may reconcile actual
+carrier cost separately; it must not rewrite the accepted customer-facing
+delivery charge stored on the order.
+
 Business changes are created in a versioned Staged runtime and released through Workflow and `nPublish` to a separate non-versioned Online runtime. A separate BackOffice client discovers Pricing through the BackOffice module registry and calls Pricing's human-only management and preview intent APIs directly. Modules use the service-token-only `POST /references/prices/resolve` intent. Customer applications use `POST /delivery/storefront/prices/resolve` with an opaque Storefront context handle; Pricing derives tenant, enterprise, Site, Store, currency, and channel from protected introspection before invoking the same resolver and cache. Generated persistence routers are disabled.
 
 The management API submits a Price List release through `POST /management/publications/submit`. `pricing.workflow.defaultMode` selects the OOTB manual-review or automatic-approval path; both paths converge on `DefaultPublicationLifecycleService.publishApproved` and therefore preserve nPublish validation, deployment, retry, audit, and rollback authority.

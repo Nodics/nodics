@@ -17,7 +17,7 @@
   "testFiles": 15,
   "dataFiles": 7,
   "ownedFiles": 52,
-  "sourceFingerprint": "1db2ecef0a1fe9ffefa65dd1597d745cbb139e7892b80ab591553f65ec4a875c",
+  "sourceFingerprint": "45a24ca218a43738ec29ccd93374a2849a03b62760d4b899c17aac28f2f2df9c",
   "documentation": {
     "documented": 5,
     "partially-documented": 39,
@@ -26,6 +26,7 @@
   },
   "schemaGroups": {
     "pricing": [
+      "deliveryChargeQuote",
       "price",
       "priceGroup",
       "priceGroupMember",
