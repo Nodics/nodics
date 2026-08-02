@@ -19,3 +19,18 @@
   for reusable Axis schema workspaces. Treat it as labels, default columns,
   filters, and owner-action hints only; it is not executable authority and must
   not bypass target-module permissions or services.
+- Axis reusable component metadata must stay backend-driven and data-only.
+  Schema-backed business pages declare `workbenchTarget`, bounded
+  `workbenchPresentation`, lifecycle-action hints, reusable detail panels, and
+  framework documentation links through the owning module's
+  `backofficeCapabilities` contribution. BackOffice validates and filters this
+  metadata, but never stores frontend renderers, component names, executable
+  render functions, or duplicated page-specific CRUD behavior.
+- Framework capability help must link to framework documentation routes. Use
+  Axis-only documentation only for concepts that are truly Axis-client specific.
+
+Validation:
+
+```bash
+node gExp/backoffice/test/backofficeAxisReusableComponentGovernanceContract.test.js
+```

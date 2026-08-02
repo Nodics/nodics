@@ -40,10 +40,10 @@ const ownedReferenceCoverage = [{
     modulePath: path.join(rootPath, 'gMrkty', 'cres'),
     expectedKind: 'capability',
     generatedTests: [
-        'test/gen/api/reviewTestApiContract.test.js',
-        'test/gen/apiScenario/reviewTestApiScenario.test.js',
-        'test/gen/crud/reviewTestCrudScenario.test.js',
-        'test/gen/schema/reviewTestSchemaContract.test.js'
+        'test/gen/api/customerReviewApiContract.test.js',
+        'test/gen/apiScenario/customerReviewApiScenario.test.js',
+        'test/gen/crud/customerReviewCrudScenario.test.js',
+        'test/gen/schema/customerReviewSchemaContract.test.js'
     ]
 }];
 

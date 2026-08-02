@@ -135,6 +135,18 @@ module.exports = {
       policy.campaignTypes || ["MERCHANDISING"],
       "Promotion campaign type",
     );
+    model.budgetLimitAmount = this.assertDecimal(
+      model.budgetLimitAmount,
+      "Promotion budget limit",
+      true,
+      true,
+    );
+    model.budgetConsumedAmount = this.assertDecimal(
+      model.budgetConsumedAmount,
+      "Promotion consumed budget",
+      true,
+      true,
+    );
     return true;
   },
   prepareRule: function (request) {

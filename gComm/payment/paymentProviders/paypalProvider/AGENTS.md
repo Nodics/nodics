@@ -3,6 +3,8 @@
 - Follow the provider-family contract: `../AGENTS.md`.
 - Follow the payment-family contract: `../../AGENTS.md`.
 - Follow the commerce group contract: `../../../AGENTS.md`.
+- Follow the root Nodics AI contract: `../../../../AGENTS.md`.
+- Follow global AI-tool guidance: `../../../../gSetup/llm/README.md`.
 - Own only PayPal REST protocol translation and safe adapter registration.
 - Do not store PayPal credentials, webhook secrets, raw order/capture payloads,
   PAN, or CVV in configuration, schemas, logs, or returned evidence.

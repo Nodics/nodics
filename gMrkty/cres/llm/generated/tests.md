@@ -5,14 +5,24 @@
 ## Hand-Authored Tests
 
 - `gMrkty/cres/test/common/commonTest.js`
+- `gMrkty/cres/test/customerReviewFoundationContract.test.js`
 - `gMrkty/cres/test/env-local/envTest.js`
 
 ## Generated Tests
 
-- `gMrkty/cres/test/gen/api/reviewTestApiContract.test.js`
-- `gMrkty/cres/test/gen/apiScenario/reviewTestApiScenario.test.js`
-- `gMrkty/cres/test/gen/crud/reviewTestCrudScenario.test.js`
-- `gMrkty/cres/test/gen/schema/reviewTestSchemaContract.test.js`
+- `gMrkty/cres/test/gen/api/customerReviewAbuseReportApiContract.test.js`
+- `gMrkty/cres/test/gen/api/customerReviewAggregateApiContract.test.js`
+- `gMrkty/cres/test/gen/api/customerReviewApiContract.test.js`
+- `gMrkty/cres/test/gen/apiScenario/customerReviewAbuseReportApiScenario.test.js`
+- `gMrkty/cres/test/gen/apiScenario/customerReviewAggregateApiScenario.test.js`
+- `gMrkty/cres/test/gen/apiScenario/customerReviewApiScenario.test.js`
+- `gMrkty/cres/test/gen/crud/customerReviewAbuseReportCrudScenario.test.js`
+- `gMrkty/cres/test/gen/crud/customerReviewAggregateCrudScenario.test.js`
+- `gMrkty/cres/test/gen/crud/customerReviewCrudScenario.test.js`
+- `gMrkty/cres/test/gen/schema/customerReviewAbuseReportSchemaContract.test.js`
+- `gMrkty/cres/test/gen/schema/customerReviewAggregateSchemaContract.test.js`
+- `gMrkty/cres/test/gen/schema/customerReviewModerationEventSchemaContract.test.js`
+- `gMrkty/cres/test/gen/schema/customerReviewSchemaContract.test.js`
 
 ## Testing Rules
 

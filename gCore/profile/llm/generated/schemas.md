@@ -13,6 +13,7 @@
 | `enterprise` | `base` | yes | yes | yes | yes | no | no | `default` | 6 |
 | `identityMigrationAudit` | `base` | yes | yes | no | no | no | no |  | 8 |
 | `password` | `super` | yes | yes | no | no | no | no |  | 2 |
+| `principalScopeAssignment` | `base` | yes | yes | yes | yes | no | no |  | 15 |
 | `tenant` | `super` | yes | yes | yes | yes | no | no | `default` | 1 |
 | `user` | `base` | no | no | no | no | no | no |  | 13 |
 | `userGroup` | `base` | yes | yes | yes | no | no | no |  | 3 |
@@ -78,6 +79,24 @@
 
 - `loginId` `string` required: Required unique login id
 - `password` `string` required: Required password for the login
+
+### `profile.principalScopeAssignment`
+
+- `capabilityCode` `string` optional: Optional BackOffice or business capability narrowed by this scope assignment
+- `effect` `string` required: ALLOW or DENY effect for the assignment
+- `effectiveFrom` `date` optional: Optional start time for this assignment
+- `effectiveTo` `date` optional: Optional end time for this assignment
+- `enterpriseCode` `string` optional: Enterprise context for scoped authorization
+- `groupCode` `string` optional: User group code when the scope is granted through group membership
+- `inheritanceMode` `string` required: How the scope assignment applies: DIRECT, GROUP, or GROUP_AND_DESCENDANTS
+- `permissionCode` `string` optional: Optional permission narrowed by this scope assignment
+- `principalCode` `string` optional: Login id or stable code of the direct principal receiving the scope
+- `principalType` `string` required: Principal category receiving the scope, such as human, service, customer, or group
+- `reasonCode` `string` optional: Operator-facing reason for the scope assignment
+- `scopeCode` `string` required: Stable code for the scoped object
+- `scopeType` `string` required: Business scope type such as GLOBAL, TENANT, ENTERPRISE, CATALOG, CHANNEL, STORE, REGION, or BUSINESS_UNIT
+- `status` `string` required: Lifecycle status for the assignment
+- `tenantCode` `string` optional: Tenant context for scoped authorization
 
 ### `profile.tenant`
 

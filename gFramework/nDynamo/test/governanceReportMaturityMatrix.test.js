@@ -37,15 +37,15 @@ const modules = [
         path: path.join(repositoryRoot, 'gFramework/nEms/activemq')
     },
     {
-        name: 'payment',
-        path: path.join(repositoryRoot, 'gComm/payment')
+        name: 'paymentCore',
+        path: path.join(repositoryRoot, 'gComm/payment/paymentCore')
     }
 ];
 
 const matrix = generator.collectProviderCapabilityMaturitySummary(modules, ownedDependencies);
 const elastic = matrix.find(entry => entry.modulePath === 'gFramework/nSearch/elastic');
 const activemq = matrix.find(entry => entry.modulePath === 'gFramework/nEms/activemq');
-const payment = matrix.find(entry => entry.modulePath === 'gComm/payment');
+const payment = matrix.find(entry => entry.modulePath === 'gComm/payment/paymentCore');
 
 assert(elastic, 'Elasticsearch provider module must be present in the maturity matrix');
 assert.strictEqual(elastic.displayName, 'Elasticsearch');
@@ -65,7 +65,7 @@ assert(String(activemq.maturity).toLowerCase().includes('placeholder'),
     'Placeholder provider maturity must not be promoted by scaffold ownership alone');
 
 assert(payment, 'Payment capability module must be present in the maturity matrix');
-assert.strictEqual(payment.displayName, 'Payment');
+assert.strictEqual(payment.displayName, 'Payment Core');
 assert(payment.owns.includes('schema') && payment.owns.includes('service'),
     'Capability maturity evidence must include package ownership metadata');
 assert(payment.evidence.sourceFiles > 0, 'Capability maturity evidence must include source file count');

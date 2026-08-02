@@ -3,6 +3,8 @@
 - Follow the provider-family contract: `../AGENTS.md`.
 - Follow the payment-family contract: `../../AGENTS.md`.
 - Follow the commerce group contract: `../../../AGENTS.md`.
+- Follow the root Nodics AI contract: `../../../../AGENTS.md`.
+- Follow global AI-tool guidance: `../../../../gSetup/llm/README.md`.
 - Own only Visa product/network adapter translation and safe adapter
   registration.
 - Do not present Visa as a generic PSP for every project; Visa integrations are

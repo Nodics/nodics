@@ -3,6 +3,8 @@
 Follow the method-family contract: `../AGENTS.md`.
 Follow the payment-family contract: `../../AGENTS.md`.
 Follow the commerce group contract: `../../../AGENTS.md`.
+Follow the root Nodics AI contract: `../../../../AGENTS.md`.
+Follow global AI-tool guidance: `../../../../gSetup/llm/README.md`.
 
 - Own only Bank Transfer method configuration, documentation, and extension
   boundaries.

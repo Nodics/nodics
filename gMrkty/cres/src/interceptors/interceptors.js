@@ -17,5 +17,37 @@
  * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
  */
 module.exports = {
-
+  validateCustomerReviewSave: {
+    type: "schema",
+    item: "customerReview",
+    trigger: "preSave",
+    active: "true",
+    index: -20,
+    handler: "DefaultCustomerReviewGovernanceService.validateReviewSave",
+  },
+  validateCustomerReviewUpdate: {
+    type: "schema",
+    item: "customerReview",
+    trigger: "preUpdate",
+    active: "true",
+    index: -20,
+    handler: "DefaultCustomerReviewGovernanceService.validateReviewUpdate",
+  },
+  validateCustomerReviewModerationEventSave: {
+    type: "schema",
+    item: "customerReviewModerationEvent",
+    trigger: "preSave",
+    active: "true",
+    index: -20,
+    handler:
+      "DefaultCustomerReviewGovernanceService.validateModerationEventSave",
+  },
+  validateCustomerReviewAbuseReportSave: {
+    type: "schema",
+    item: "customerReviewAbuseReport",
+    trigger: "preSave",
+    active: "true",
+    index: -20,
+    handler: "DefaultCustomerReviewGovernanceService.validateAbuseReportSave",
+  },
 };

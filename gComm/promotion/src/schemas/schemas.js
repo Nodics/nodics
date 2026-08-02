@@ -102,6 +102,18 @@ module.exports = {
           description: "Optional promotion budget or finance reference",
           searchOptions: { enabled: true },
         },
+        budgetLimitAmount: {
+          type: "string",
+          required: false,
+          description:
+            "Optional exact decimal-string promotion budget limit used by runtime reservation policy",
+        },
+        budgetConsumedAmount: {
+          type: "string",
+          required: false,
+          description:
+            "Optional exact decimal-string consumed budget evidence used by runtime reservation policy",
+        },
       }),
       {
         common: {

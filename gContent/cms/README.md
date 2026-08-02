@@ -54,6 +54,15 @@ The existing `cmsTypeCode` model remains the single page/component type
 authority and carries the declarative type contract; CMS does not introduce a
 parallel component-type registry.
 
+`cmsComponentDetail` is the current generic component-placement relation. It
+connects a page or component source to a component target, records ordering, and
+names the logical template or page slot. Do not add a parallel
+`cmsComponentPlacement` schema unless a later migration formally renames the
+existing contract. Likewise, `cmsSlotDefinition` remains the template slot
+authority for required/optional slots, cardinality, allowed component types,
+and component type groups until CMS deliberately introduces a separate
+template-slot relation model.
+
 WCMS-style BackOffice authoring uses the same backend-owned CMS authority. CMS
 provides `cmsComponentTypeGroup` for authoring groupings of existing
 `cmsTypeCode` component types, `cmsNavigationNode` for site-scoped navigation

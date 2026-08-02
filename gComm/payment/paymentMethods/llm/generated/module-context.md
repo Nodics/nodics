@@ -10,7 +10,7 @@
 | Path | `gComm/payment/paymentMethods` |
 | Kind | `group` |
 | Runtime | `none` |
-| Index | `40.72` |
+| Index | `40.724.1` |
 | Version | `0.0.1` |
 | Description | Payment method family group for card, cash on delivery, wallet, bank transfer, and customer methods. |
 

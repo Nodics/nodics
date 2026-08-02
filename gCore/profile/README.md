@@ -7,13 +7,13 @@ and whether their credentials and sessions remain valid.
 
 ## Who Uses Profile
 
-| Persona or caller | Typical workflow | Security boundary |
-| --- | --- | --- |
-| Customer | Register, sign in, maintain owned profile/contact/address data | Pre-authentication login followed by tenant-scoped bearer access and record ownership |
-| Employee or administrator | Sign in and manage permitted enterprise data | Pre-authentication login followed by group and permission checks on every target route |
-| Module or scheduled job | Obtain or use governed internal credentials | Secured service-token/API-key flow; never the human username/password route |
-| Identity operator | Bootstrap, migrate, rotate, audit, or recover identity state | Explicit administrative permissions, versioned audit, redaction, and fail-closed recovery |
-| BackOffice client | Discover allowed Profile operations and invoke Profile APIs | Profile stays authoritative; BackOffice receives no credential or authorization ownership |
+| Persona or caller         | Typical workflow                                               | Security boundary                                                                         |
+| ------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Customer                  | Register, sign in, maintain owned profile/contact/address data | Pre-authentication login followed by tenant-scoped bearer access and record ownership     |
+| Employee or administrator | Sign in and manage permitted enterprise data                   | Pre-authentication login followed by group and permission checks on every target route    |
+| Module or scheduled job   | Obtain or use governed internal credentials                    | Secured service-token/API-key flow; never the human username/password route               |
+| Identity operator         | Bootstrap, migrate, rotate, audit, or recover identity state   | Explicit administrative permissions, versioned audit, redaction, and fail-closed recovery |
+| BackOffice client         | Discover allowed Profile operations and invoke Profile APIs    | Profile stays authoritative; BackOffice receives no credential or authorization ownership |
 
 **Maturity: Production-ready capability.** Production deployment still
 requires governed bootstrap secrets, tenant-specific identity planning, and a
@@ -57,6 +57,41 @@ every business operation centrally: each target module remains responsible for
 its route permissions, schema access policy, tenant rules, and business data.
 `nAuth`, `nToken`, `nCache`, and `nService` retain their framework security,
 token, cache, and communication responsibilities.
+
+### Principal authorization scopes
+
+Profile also owns the reusable `principalScopeAssignment` model. It records
+which principal or user group may operate a business scope such as tenant,
+enterprise, catalog, channel, store, region, or business unit. This is the
+foundation for Axis use cases where an administrator, content creator,
+operator, or service principal can work across one enterprise or many
+enterprises without hardcoding a special "super admin" role in the UI.
+
+Scope assignment is deliberately separate from the `enterprise` and `tenant`
+schemas. Multiple enterprises may reference the same tenant, and the
+authorization question is a separate Profile-owned relationship: "which
+principal can operate which scope for which permission or capability?"
+
+Each assignment carries:
+
+- `principalType` plus either `principalCode` or `groupCode`.
+- `scopeType` and `scopeCode`, with optional `tenantCode` and `enterpriseCode`
+  to make the business context explicit.
+- Optional `permissionCode` or `capabilityCode` narrowing.
+- `effect`, `status`, `inheritanceMode`, and optional effective dates.
+
+`DefaultPrincipalScopeGovernanceService` validates the model and can resolve
+direct and group assignments into an effective scope view. `DENY` wins over
+matching `ALLOW`, inactive or expired assignments are ignored, and group
+assignments use the principal's known group codes. Target modules still remain
+authoritative for route permission, schema access, tenant rules, and business
+operation validation; the scope model is reusable authorization evidence, not
+a universal bypass.
+
+Projects customize scope behavior through layered
+`principalAuthorizationScopes` configuration or a later-layer replacement of
+`DefaultPrincipalScopeGovernanceService`. Do not copy Profile schemas or
+implement a parallel Axis-only scope registry.
 
 Internal authentication token retrieval is a secured service capability. The
 route permission is resolved from `authSecurity.internalToken.routePermission`,
@@ -211,6 +246,15 @@ Projects can replace the service list, override the reconciler in a later module
 layer, extend `identityGovernance.migration.groupTargets`, or disable automatic
 group reconciliation. Missing service principals or credentials are not
 silently recreated; those remain fail-closed governed recovery operations.
+
+## Verification
+
+Focused Profile identity and authorization contracts include:
+
+```bash
+node gCore/profile/test/identityGovernanceContract.test.js
+node gCore/profile/test/principalAuthorizationScopeContract.test.js
+```
 
 ## Tenant Local File Import Examples
 

@@ -1,6 +1,6 @@
 {
     "name": "payment",
-    "index": "40.70",
+    "index": "40.764.2",
     "requiredModules": [
         "paymentCore",
         "paymentMethods",
@@ -22,6 +22,7 @@
         "owns": [
             "composition",
             "configuration",
+            "test",
             "llm"
         ],
         "runtime": {

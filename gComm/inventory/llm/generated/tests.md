@@ -32,6 +32,7 @@
 
 - `gComm/inventory/test/gen/schema/inventoryPromiseReservationSchemaContract.test.js`
 - `gComm/inventory/test/gen/schema/inventoryPromiseSchemaContract.test.js`
+- `gComm/inventory/test/gen/schema/serializedStockUnitSchemaContract.test.js`
 - `gComm/inventory/test/gen/schema/stockAllocationSchemaContract.test.js`
 - `gComm/inventory/test/gen/schema/stockBalanceSchemaContract.test.js`
 - `gComm/inventory/test/gen/schema/stockMovementCheckpointSchemaContract.test.js`

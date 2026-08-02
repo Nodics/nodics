@@ -13,6 +13,7 @@
 - `gCore/profile/test/identityGovernanceMigrationIntegration.test.js`
 - `gCore/profile/test/initRequiredFlag.test.js`
 - `gCore/profile/test/mandatoryIdentityBootstrapService.test.js`
+- `gCore/profile/test/principalAuthorizationScopeContract.test.js`
 - `gCore/profile/test/principalRecursiveInterceptorContract.test.js`
 - `gCore/profile/test/profileAuthenticationRouteSecurity.test.js`
 - `gCore/profile/test/profileAuthenticationServiceContract.test.js`
@@ -30,6 +31,7 @@
 - `gCore/profile/test/gen/api/customerApiContract.test.js`
 - `gCore/profile/test/gen/api/employeeApiContract.test.js`
 - `gCore/profile/test/gen/api/enterpriseApiContract.test.js`
+- `gCore/profile/test/gen/api/principalScopeAssignmentApiContract.test.js`
 - `gCore/profile/test/gen/api/tenantApiContract.test.js`
 - `gCore/profile/test/gen/api/userGroupApiContract.test.js`
 - `gCore/profile/test/gen/apiScenario/addressApiScenario.test.js`
@@ -37,6 +39,7 @@
 - `gCore/profile/test/gen/apiScenario/customerApiScenario.test.js`
 - `gCore/profile/test/gen/apiScenario/employeeApiScenario.test.js`
 - `gCore/profile/test/gen/apiScenario/enterpriseApiScenario.test.js`
+- `gCore/profile/test/gen/apiScenario/principalScopeAssignmentApiScenario.test.js`
 - `gCore/profile/test/gen/apiScenario/tenantApiScenario.test.js`
 - `gCore/profile/test/gen/apiScenario/userGroupApiScenario.test.js`
 - `gCore/profile/test/gen/crud/addressCrudScenario.test.js`
@@ -44,6 +47,7 @@
 - `gCore/profile/test/gen/crud/customerCrudScenario.test.js`
 - `gCore/profile/test/gen/crud/employeeCrudScenario.test.js`
 - `gCore/profile/test/gen/crud/enterpriseCrudScenario.test.js`
+- `gCore/profile/test/gen/crud/principalScopeAssignmentCrudScenario.test.js`
 - `gCore/profile/test/gen/crud/tenantCrudScenario.test.js`
 - `gCore/profile/test/gen/crud/userGroupCrudScenario.test.js`
 - `gCore/profile/test/gen/schema/addressSchemaContract.test.js`
@@ -53,6 +57,7 @@
 - `gCore/profile/test/gen/schema/enterpriseSchemaContract.test.js`
 - `gCore/profile/test/gen/schema/identityMigrationAuditSchemaContract.test.js`
 - `gCore/profile/test/gen/schema/passwordSchemaContract.test.js`
+- `gCore/profile/test/gen/schema/principalScopeAssignmentSchemaContract.test.js`
 - `gCore/profile/test/gen/schema/tenantSchemaContract.test.js`
 - `gCore/profile/test/gen/schema/userGroupSchemaContract.test.js`
 - `gCore/profile/test/gen/schema/userSchemaContract.test.js`

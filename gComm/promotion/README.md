@@ -46,6 +46,11 @@ That is why Nodics separates authoring records from applied evidence.
   Order, Quote, or Preview.
 - `appliedPromotion` records the actual applied discount evidence that Cart,
   Order, Tax, Payment, Refund, and reporting can trace.
+- `DefaultPromotionEvaluationService` provides the first deterministic
+  evaluator slice for declarative conditions, configured actions,
+  priority/stacking/exclusive arbitration, coupon hold/consume/release planning,
+  budget reservation/exhaustion planning, rollback evidence, and exact
+  decimal-string discount totals.
 
 All records are enterprise-scoped, generated-service backed, and not exposed
 through public generated CRUD routes by default.
@@ -145,6 +150,24 @@ And line-level applied evidence:
 Cart can then copy the accepted total into `cartEntry.discountTotal`. Order can
 later freeze the same commercial evidence during checkout placement.
 
+## Runtime evaluator slice
+
+`DefaultPromotionEvaluationService.evaluate` accepts an already-authorized
+evaluation context and the Promotion-owned records to consider. It does not
+query Cart or Order directly and does not mutate coupon counters or budget
+counters by itself. That is deliberate:
+
+1. Cart, Order, Quote, or Preview provide the source snapshot and idempotency
+   key.
+2. Promotion evaluates safe metadata, calculates exact decimal-string discount
+   evidence, and returns an evaluation run plus applied promotion records.
+3. Checkout or Workflow persists accepted evidence and calls later Promotion
+   operations to consume or release coupon/budget reservations.
+
+This keeps promotion evaluation deterministic and testable while leaving
+long-running reservation, rollback, approval, and retry behavior to Workflow and
+owning services.
+
 ## Tax and payment relationship
 
 Promotion records discount evidence. Tax decides whether tax is calculated
@@ -202,9 +225,22 @@ Do not fork Cart, Order, Pricing, or Tax to add a promotion rule. Add or replace
 Promotion-owned policy/evaluation services and keep the applied result as
 Promotion-owned evidence.
 
+For deeper behavior, replace or layer
+`DefaultPromotionEvaluationService` in a customer module. Preserve these
+contracts:
+
+- exact decimal-string arithmetic;
+- no executable rule payloads;
+- coupon hold/consume/release evidence;
+- budget reserve/consume/release evidence;
+- immutable applied-discount evidence once Cart or Order accepts it;
+- no hidden Cart, Order, Tax, Payment, Inventory, or Fulfillment mutations from
+  the evaluator.
+
 ## Verification
 
 ```bash
 node gComm/promotion/test/promotionFoundationContract.test.js
+node gComm/promotion/test/promotionEvaluationContract.test.js
 node gComm/test/commerceOperationsBackofficeNavigationContract.test.js
 ```

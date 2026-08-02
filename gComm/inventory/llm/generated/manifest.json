@@ -14,7 +14,7 @@
     "description": "Enterprise-scoped warehouse and inventory-management capability for Nodics commerce applications."
   },
   "sourceFiles": 62,
-  "testFiles": 40,
+  "testFiles": 41,
   "dataFiles": 7,
   "ownedFiles": 100,
   "sourceFingerprint": "bfb9002529628ba7a8875cc7f8bb8bb75eabe79b7dc234c6159938769d3ec731",

@@ -10,20 +10,21 @@
 | Path | `gComm/payment` |
 | Kind | `group` |
 | Runtime | `none` |
-| Index | `40.70` |
+| Index | `40.764.2` |
 | Version | `0.0.1` |
 | Description | Payment family group for payment core, payment methods, and payment providers. |
 
 ## Module-Owned Folders
 
 - `config`
+- `test`
 
 ## Source Summary
 
 | Area | Count |
 | --- | ---: |
 | Source files | 0 |
-| Test files | 0 |
+| Test files | 4 |
 | Data files | 0 |
 | All module-owned files | 8 |
 | Local schema definitions | 0 |
@@ -34,6 +35,7 @@
 
 - `composition`
 - `configuration`
+- `test`
 - `llm`
 
 **Required modules**

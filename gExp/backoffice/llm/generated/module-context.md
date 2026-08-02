@@ -35,9 +35,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 29 |
-| Test files | 21 |
+| Test files | 22 |
 | Data files | 11 |
-| All module-owned files | 66 |
+| All module-owned files | 67 |
 | Local schema definitions | 3 |
 
 ## Ownership And Dependencies
@@ -72,7 +72,7 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 36 |
-| Partially documented | 21 |
+| Partially documented | 22 |
 | Undocumented | 4 |
 | Inventory only | 5 |
 
@@ -148,6 +148,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gExp/backoffice/test/backofficeAuditService.test.js` | `test` | `partially-documented` | 0/0 | Validates BackOffice audit field allowlisting, secret redaction, publisher delegation, and disabled behavior. | add @override |
 | `gExp/backoffice/test/backofficeAvailabilityService.test.js` | `test` | `partially-documented` | 0/0 | Validates bounded readiness observation, freshness, failure isolation, deduplication, and multi-instance aggregation. | add @override |
 | `gExp/backoffice/test/backofficeAxisPolicyService.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
+| `gExp/backoffice/test/backofficeAxisReusableComponentGovernanceContract.test.js` | `test` | `partially-documented` | 0/0 | Protects backend-driven Axis navigation, reusable schema workspace metadata, and documentation/help contracts. | add @override |
 | `gExp/backoffice/test/backofficeContractLifecycleService.test.js` | `test` | `partially-documented` | 0/0 | Validates safe projections, comparisons, bounded decisions, optimistic revision forwarding, and sanitized decision audit. | add @override |
 | `gExp/backoffice/test/backofficeContractRepositoryService.test.js` | `test` | `partially-documented` | 0/0 | Validates durable history, automatic activation, pending decisions, replica CAS conflicts, rollback, retention, and restart recovery. | add @override |
 | `gExp/backoffice/test/backofficeDiscoveryService.test.js` | `test` | `partially-documented` | 0/0 | Validates bounded OpenAPI normalization, authority filtering, hashing, change classification, and safe snapshot preservation. | add @override |

@@ -35,7 +35,7 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 62 |
-| Test files | 40 |
+| Test files | 41 |
 | Data files | 7 |
 | All module-owned files | 100 |
 | Local schema definitions | 18 |

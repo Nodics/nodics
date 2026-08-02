@@ -10,7 +10,7 @@
 | Path | `gComm/tax` |
 | Kind | `capability` |
 | Runtime | `none` |
-| Index | `40.72` |
+| Index | `40.73` |
 | Version | `0.0.1` |
 | Description | Enterprise-scoped tax jurisdiction, provider, quote, line, exemption, and calculation evidence for Nodics commerce. |
 
@@ -34,7 +34,7 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 16 |
-| Test files | 1 |
+| Test files | 7 |
 | Data files | 0 |
 | All module-owned files | 25 |
 | Local schema definitions | 6 |

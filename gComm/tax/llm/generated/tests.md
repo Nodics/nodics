@@ -8,7 +8,12 @@
 
 ## Generated Tests
 
-- No generated tests were found. Run `npm run build` when schema/router generation is expected.
+- `gComm/tax/test/gen/schema/taxExemptionSchemaContract.test.js`
+- `gComm/tax/test/gen/schema/taxJurisdictionSchemaContract.test.js`
+- `gComm/tax/test/gen/schema/taxProviderSchemaContract.test.js`
+- `gComm/tax/test/gen/schema/taxQuoteLineSchemaContract.test.js`
+- `gComm/tax/test/gen/schema/taxQuoteSchemaContract.test.js`
+- `gComm/tax/test/gen/schema/taxRateSchemaContract.test.js`
 
 ## Testing Rules
 

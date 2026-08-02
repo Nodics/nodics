@@ -40,3 +40,25 @@ Use these files for rules that are more specific than root `AGENTS.md` and the m
 - Assistant policy may reference this operation by logical identity, but must
   rediscover its current method, path, and permission through BackOffice before
   every call and forward the employee bearer to Profile.
+
+## Principal authorization scopes
+
+- Profile owns the `principalScopeAssignment` schema and
+  `DefaultPrincipalScopeGovernanceService`.
+- Scope assignments model which principal or group can operate a tenant,
+  enterprise, catalog, channel, store, region, business unit, or global scope.
+- Do not put this relationship directly into tenant or enterprise schemas.
+  Enterprise keeps its tenant reference, and Profile-owned scope assignments
+  answer "who can operate what".
+- Scope assignment can optionally narrow by `permissionCode` or
+  `capabilityCode`; target modules still enforce their own route permission,
+  schema policy, tenant rules, and business validation.
+- `DENY` overrides matching `ALLOW`, inactive or expired assignments do not
+  apply, and group assignments are resolved from the principal's known direct
+  and expanded group codes.
+- Project modules may add scope types, effects, statuses, and inheritance modes
+  through layered `principalAuthorizationScopes` configuration or replace the
+  service in a later module. Do not create an Axis-only or capability-local
+  parallel registry.
+- Validate changes with
+  `node gCore/profile/test/principalAuthorizationScopeContract.test.js`.

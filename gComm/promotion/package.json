@@ -16,6 +16,7 @@
             "schema",
             "service",
             "interceptor",
+            "utility",
             "test",
             "llm"
         ],

@@ -1,6 +1,6 @@
 {
     "name": "paymentMethods",
-    "index": "40.72",
+    "index": "40.724.1",
     "requiredModules": [
         "cardPayment",
         "cashOnDeliveryPayment",

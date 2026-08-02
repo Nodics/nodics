@@ -30,11 +30,11 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 9 |
-| Test files | 6 |
+| Source files | 10 |
+| Test files | 16 |
 | Data files | 9 |
-| All module-owned files | 28 |
-| Local schema definitions | 1 |
+| All module-owned files | 30 |
+| Local schema definitions | 4 |
 
 ## Ownership And Dependencies
 
@@ -63,8 +63,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 21 |
-| Partially documented | 2 |
+| Documented | 22 |
+| Partially documented | 3 |
 | Undocumented | 0 |
 | Inventory only | 5 |
 
@@ -108,11 +108,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gMrkty/cres/src/router/appConfig.js` | `src` | `documented` | 0/0 | Defines cres route registration and HTTP exposure metadata. |  |
 | `gMrkty/cres/src/router/routers.js` | `src` | `documented` | 0/0 | Defines cres route registration and HTTP exposure metadata. |  |
 | `gMrkty/cres/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Defines cres schema metadata, model contracts, and generated capability settings. |  |
+| `gMrkty/cres/src/service/defaultCustomerReviewGovernanceService.js` | `src` | `partially-documented` | 0/13 | Validates customer review lifecycle data and calculates provider-neutral review aggregates. | add JSDoc for 13 exported method(s) |
 | `gMrkty/cres/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Implements cres default sample service business behavior and extension logic. |  |
 | `gMrkty/cres/src/utils/enums.js` | `src` | `documented` | 0/0 | Provides shared cres enum definition exports. |  |
 | `gMrkty/cres/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Provides shared cres status and error definition exports. |  |
 | `gMrkty/cres/src/utils/utils.js` | `src` | `documented` | 0/0 | Provides shared cres utility exports for utils. |  |
 | `gMrkty/cres/test/common/commonTest.js` | `test` | `partially-documented` | 0/7 | Defines cres test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
+| `gMrkty/cres/test/customerReviewFoundationContract.test.js` | `test` | `documented` | 0/0 | Validates the CRES customer review and rating foundation model, governance service, and Axis metadata. |  |
 | `gMrkty/cres/test/env-local/envTest.js` | `test` | `partially-documented` | 0/7 | Defines cres test fixtures or suites for module behavior validation. | add JSDoc for 7 exported method(s) |
 
 ## Extension Contract

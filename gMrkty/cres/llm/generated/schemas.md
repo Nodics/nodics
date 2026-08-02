@@ -6,11 +6,55 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
-| `reviewTest` | `base` | yes | yes | yes | no | no | no |  | 4 |
+| `customerReview` | `base` | yes | yes | yes | no | no | no |  | 13 |
+| `customerReviewAbuseReport` | `base` | yes | yes | yes | no | no | no |  | 7 |
+| `customerReviewAggregate` | `base` | yes | yes | yes | yes | no | no |  | 8 |
+| `customerReviewModerationEvent` | `base` | yes | yes | no | no | no | no |  | 8 |
 
-### `cres.reviewTest`
+### `cres.customerReview`
 
-- `address` `object` required
-- `address.city` `string` required
-- `address.state` `string` required
-- `name` `string` required
+- `channelCode` `string` optional: Optional channel where the review was submitted
+- `comment` `string` optional: Customer review body
+- `customerCode` `string` required: Customer principal or profile code that submitted the review
+- `localeCode` `string` optional: Optional locale of the review
+- `mediaCodes` `array` optional: Optional nMedia-owned media codes attached as review evidence
+- `moderationReason` `string` optional: Latest bounded moderation reason visible to operators
+- `orderCode` `string` optional: Optional purchase evidence order code
+- `orderEntryCode` `string` optional: Optional purchase evidence order-entry code
+- `rating` `int` required: Rating value bounded by CRES rating policy
+- `status` `string` required: Review lifecycle status
+- `targetCode` `string` required: Reviewed business target code owned by the target module
+- `targetType` `string` required: Reviewed business target type such as PRODUCT, CATEGORY, ORDER, STORE, CONTENT, or CUSTOM
+- `title` `string` optional: Short customer-facing review title
+
+### `cres.customerReviewAbuseReport`
+
+- `comment` `string` optional: Optional bounded report comment
+- `moderationEventCode` `string` optional
+- `reasonCode` `string` required: Configured abuse-report reason code
+- `reporterCode` `string` required: Customer or employee that reported the review
+- `resolutionCode` `string` optional
+- `reviewCode` `string` required: Reported review code
+- `status` `string` required: Abuse report lifecycle status
+
+### `cres.customerReviewAggregate`
+
+- `approvedReviewCount` `int` required: Approved review count
+- `averageRating` `string` required: Exact decimal average rating
+- `lastCalculatedAt` `date` optional
+- `lastReviewCode` `string` optional
+- `ratingTotal` `string` required: Exact decimal rating total used for averages
+- `reviewCount` `int` required: All review count
+- `targetCode` `string` required: Aggregated target code
+- `targetType` `string` required: Aggregated target type
+
+### `cres.customerReviewModerationEvent`
+
+- `actorCode` `string` optional: Customer, employee, service, or workflow actor code
+- `correlationId` `string` optional
+- `eventType` `string` required: Moderation lifecycle event
+- `evidence` `object` optional: Safe moderation evidence without raw secrets or abusive payload expansion
+- `fromStatus` `string` optional
+- `reasonCode` `string` optional
+- `reviewCode` `string` required
+- `toStatus` `string` optional

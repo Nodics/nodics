@@ -13,20 +13,23 @@
     "version": "0.0.1",
     "description": "Nodics applicaion module. This module hold all configuration and business logic related to customer review system"
   },
-  "sourceFiles": 9,
-  "testFiles": 6,
+  "sourceFiles": 10,
+  "testFiles": 16,
   "dataFiles": 9,
-  "ownedFiles": 28,
-  "sourceFingerprint": "aa8e19bf3cd464a5e3d20c3f4a88ef5206379742f6b090d6fb0a4579087d2822",
+  "ownedFiles": 30,
+  "sourceFingerprint": "a29e831d7c24b780ac7a51e3006c888196e858daf7d21172dddaafc6b622631a",
   "documentation": {
-    "documented": 21,
-    "partially-documented": 2,
+    "documented": 22,
+    "partially-documented": 3,
     "undocumented": 0,
     "inventory-only": 5
   },
   "schemaGroups": {
     "cres": [
-      "reviewTest"
+      "customerReview",
+      "customerReviewAbuseReport",
+      "customerReviewAggregate",
+      "customerReviewModerationEvent"
     ]
   },
   "schemaLoadError": null,

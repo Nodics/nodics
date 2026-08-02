@@ -4,11 +4,19 @@
 
 ## Hand-Authored Tests
 
+- `gComm/promotion/test/promotionEvaluationContract.test.js`
 - `gComm/promotion/test/promotionFoundationContract.test.js`
 
 ## Generated Tests
 
-- No generated tests were found. Run `npm run build` when schema/router generation is expected.
+- `gComm/promotion/test/gen/schema/appliedPromotionSchemaContract.test.js`
+- `gComm/promotion/test/gen/schema/couponCampaignSchemaContract.test.js`
+- `gComm/promotion/test/gen/schema/couponCodeSchemaContract.test.js`
+- `gComm/promotion/test/gen/schema/promotionActionSchemaContract.test.js`
+- `gComm/promotion/test/gen/schema/promotionCampaignSchemaContract.test.js`
+- `gComm/promotion/test/gen/schema/promotionConditionSchemaContract.test.js`
+- `gComm/promotion/test/gen/schema/promotionEvaluationRunSchemaContract.test.js`
+- `gComm/promotion/test/gen/schema/promotionRuleSchemaContract.test.js`
 
 ## Testing Rules
 

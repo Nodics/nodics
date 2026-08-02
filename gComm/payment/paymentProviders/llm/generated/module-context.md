@@ -10,7 +10,7 @@
 | Path | `gComm/payment/paymentProviders` |
 | Kind | `group` |
 | Runtime | `none` |
-| Index | `40.76` |
+| Index | `40.764.1` |
 | Version | `0.0.1` |
 | Description | Provider-family boundary for payment provider adapters registered with the Payment authority. |
 

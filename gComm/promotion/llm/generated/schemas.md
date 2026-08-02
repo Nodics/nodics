@@ -10,7 +10,7 @@
 | `couponCampaign` | `base` | yes | yes | no | no | no | no |  | 11 |
 | `couponCode` | `base` | yes | yes | no | no | no | no |  | 9 |
 | `promotionAction` | `base` | yes | yes | no | no | no | no |  | 13 |
-| `promotionCampaign` | `base` | yes | yes | no | no | no | no |  | 10 |
+| `promotionCampaign` | `base` | yes | yes | no | no | no | no |  | 12 |
 | `promotionCondition` | `base` | yes | yes | no | no | no | no |  | 11 |
 | `promotionEvaluationRun` | `base` | yes | yes | no | no | no | no |  | 15 |
 | `promotionRule` | `base` | yes | yes | no | no | no | no |  | 15 |
@@ -85,6 +85,8 @@
 ### `promotion.promotionCampaign`
 
 - `budgetCode` `string` optional: Optional promotion budget or finance reference
+- `budgetConsumedAmount` `string` optional: Optional exact decimal-string consumed budget evidence used by runtime reservation policy
+- `budgetLimitAmount` `string` optional: Optional exact decimal-string promotion budget limit used by runtime reservation policy
 - `campaignCode` `string` required: Stable promotion campaign identity
 - `campaignType` `string` required: Campaign type such as MERCHANDISING, COUPON, LOYALTY, CLEARANCE, or PROJECT
 - `description` `string` optional

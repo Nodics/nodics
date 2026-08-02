@@ -1,6 +1,6 @@
 {
     "name": "paymentProviders",
-    "index": "40.76",
+    "index": "40.764.1",
     "description": "Provider-family boundary for payment provider adapters registered with the Payment authority.",
     "main": "nodics.js",
     "version": "0.0.1",

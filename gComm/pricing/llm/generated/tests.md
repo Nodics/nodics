@@ -14,6 +14,7 @@
 
 ## Generated Tests
 
+- `gComm/pricing/test/gen/schema/deliveryChargeQuoteSchemaContract.test.js`
 - `gComm/pricing/test/gen/schema/priceGroupMemberSchemaContract.test.js`
 - `gComm/pricing/test/gen/schema/priceGroupSchemaContract.test.js`
 - `gComm/pricing/test/gen/schema/priceListAssignmentSchemaContract.test.js`

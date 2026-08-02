@@ -256,6 +256,8 @@ module.exports = {
           parentGroups: ["userGroup"],
           permissions: [
             "backoffice.registry.view",
+            "backoffice.registry.admin.view",
+            "backoffice.registry.refresh",
             "backoffice.bootstrap.view",
             "backoffice.contract.view",
             "backoffice.axis.policy.view",

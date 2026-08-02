@@ -8,7 +8,10 @@
 
 ## Generated Tests
 
-- No generated tests were found. Run `npm run build` when schema/router generation is expected.
+- `gComm/payment/test/gen/schema/paymentMethodSchemaContract.test.js`
+- `gComm/payment/test/gen/schema/paymentProviderExecutionPolicySchemaContract.test.js`
+- `gComm/payment/test/gen/schema/paymentProviderSchemaContract.test.js`
+- `gComm/payment/test/gen/schema/paymentTransactionSchemaContract.test.js`
 
 ## Testing Rules
 

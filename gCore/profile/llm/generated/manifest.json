@@ -13,15 +13,15 @@
     "version": "0.0.1",
     "description": "Identity and profile module for enterprises, tenants, users, customers, employees, user groups, permissions, authentication boundaries, API keys, and mandatory identity bootstrap."
   },
-  "sourceFiles": 53,
-  "testFiles": 50,
+  "sourceFiles": 54,
+  "testFiles": 55,
   "dataFiles": 24,
-  "ownedFiles": 103,
-  "sourceFingerprint": "df2a8a2d68056d960affc80a58fdc8bfb1d0c7e3f45e3f4a070159e8a5761968",
+  "ownedFiles": 105,
+  "sourceFingerprint": "024e12e88f419cb4a6d660c5a87949b1591666c9611a9d0c911b5adc226a5aa4",
   "documentation": {
     "documented": 80,
-    "partially-documented": 4,
-    "undocumented": 9,
+    "partially-documented": 5,
+    "undocumented": 10,
     "inventory-only": 10
   },
   "schemaGroups": {
@@ -33,6 +33,7 @@
       "enterprise",
       "identityMigrationAudit",
       "password",
+      "principalScopeAssignment",
       "tenant",
       "user",
       "userGroup",

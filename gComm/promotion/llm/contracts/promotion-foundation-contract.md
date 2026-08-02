@@ -3,9 +3,12 @@
 Promotion is the Commerce authority for promotion authoring metadata, coupon
 metadata, evaluation-run evidence, and applied-discount evidence.
 
-This contract is intentionally a foundation. It does not implement a complete
-promotion rule engine yet. It creates the scalable model that a rule engine,
-Workflow, external provider, or project-specific evaluator can consume later.
+This contract is intentionally a foundation plus the first deterministic
+evaluator slice. It does not yet implement persisted reservation mutation,
+Workflow checkout integration, external providers, or customer-specific rule
+engines. It does provide safe declarative condition/action interpretation,
+stacking arbitration, coupon/budget planning, rollback evidence, and exact
+decimal-string applied-discount totals.
 
 ## SAP Commerce / Hybris reference pattern
 
@@ -91,6 +94,28 @@ Tax, Payment, Refund, reporting, and audit can trace.
 8. Order freezes the accepted result during checkout placement.
 9. Tax and Payment use the accepted totals through their own authorities.
 
+## Implemented evaluator behavior
+
+`DefaultPromotionEvaluationService` evaluates Promotion-owned records against an
+input snapshot supplied by Cart, Order, Quote, or Preview. It supports:
+
+- active/effective-date filtering;
+- `ALL` and `ANY` condition modes;
+- safe operators such as equality, inclusion, existence, and exact decimal
+  greater-than/less-than comparisons;
+- fixed and percentage discounts with optional maximum discount caps;
+- priority sorting;
+- stackability groups;
+- exclusive promotion behavior;
+- coupon requirement checks;
+- coupon hold/consume/release plans;
+- promotion budget reserve/consume/release plans;
+- rollback plans for checkout failure or workflow compensation.
+
+The evaluator returns evidence. It does not directly mutate coupon counters,
+budget counters, cart totals, order totals, tax totals, payment transactions, or
+fulfillment state.
+
 ## Extension rules
 
 - Add new condition/action types through layered configuration first.
@@ -103,10 +128,12 @@ Tax, Payment, Refund, reporting, and audit can trace.
 
 ## Current limitations
 
-- The first slice defines the model and validation contract.
-- A full promotion evaluator, stacking arbitration engine, budget exhaustion,
-  coupon redemption reservation, customer eligibility, and rollback workflow are
-  future implementation slices.
+- The first evaluator slice is deterministic and in-process; persisted consume
+  and release operations still need Promotion-owned APIs and Workflow
+  integration.
+- Customer eligibility, audience/segment providers, product/category hierarchy
+  expansion, promotion provider adapters, and high-scale search/index
+  optimization remain future slices.
 - External promotion providers are not production-ready until adapter,
   credential, live-provider, failure, retry, reconciliation, and audit evidence
   are implemented.
@@ -115,4 +142,5 @@ Tax, Payment, Refund, reporting, and audit can trace.
 
 ```bash
 node gComm/promotion/test/promotionFoundationContract.test.js
+node gComm/promotion/test/promotionEvaluationContract.test.js
 ```

@@ -34,11 +34,11 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 53 |
-| Test files | 50 |
+| Source files | 54 |
+| Test files | 55 |
 | Data files | 24 |
-| All module-owned files | 103 |
-| Local schema definitions | 11 |
+| All module-owned files | 105 |
+| Local schema definitions | 12 |
 
 ## Ownership And Dependencies
 
@@ -72,8 +72,8 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 80 |
-| Partially documented | 4 |
-| Undocumented | 9 |
+| Partially documented | 5 |
+| Undocumented | 10 |
 | Inventory only | 10 |
 
 ## Important Files
@@ -160,6 +160,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/src/service/identity/defaultIdentityGovernanceMigrationService.js` | `src` | `documented` | 18/18 | Provides tenant-scoped preview, apply, audit, rollback, ownership backfill, and recoverable service-key rotation for identity governance upgrades. |  |
 | `gCore/profile/src/service/identity/defaultMandatoryIdentityBootstrapService.js` | `src` | `documented` | 10/10 | Reconciles missing, non-secret identity-governance groups and configured service-principal metadata after init data is available. Credential values are never generated, rotated, or overwritten automatically, preserving project and tenant secrets while allowing safe framework upgrades. |  |
 | `gCore/profile/src/service/identity/defaultPrincipalGovernanceService.js` | `src` | `documented` | 8/8 | Enforces principal categories, active group assignment, and service-only API-key ownership before identity persistence. |  |
+| `gCore/profile/src/service/identity/defaultPrincipalScopeGovernanceService.js` | `src` | `partially-documented` | 0/18 | Validates and resolves tenant, enterprise, catalog, and operational scope assignments for Profile-owned principals. | add JSDoc for 18 exported method(s) |
 | `gCore/profile/src/service/identity/defaultPrincipalSecurityStampGovernanceService.js` | `src` | `documented` | 8/8 | Advances principal security stamps for direct principal, password, and group-membership changes. |  |
 | `gCore/profile/src/service/interceptors/defaultAPIKeyInterceptorService.js` | `src` | `documented` | 1/1 | Implements profile default apikey interceptor service business behavior and extension logic. |  |
 | `gCore/profile/src/service/interceptors/defaultCustomerGetInterceptorService.js` | `src` | `documented` | 2/2 | Implements profile default customer get interceptor service business behavior and extension logic. |  |
@@ -188,6 +189,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/test/identityGovernanceMigrationIntegration.test.js` | `test` | `documented` | 0/0 | Exercises preview, persisted apply, idempotent repeat, service credential rotation, failure audit, and rollback using an isolated durable test repository. |  |
 | `gCore/profile/test/initRequiredFlag.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/mandatoryIdentityBootstrapService.test.js` | `test` | `documented` | 0/0 | Verifies idempotent, audited creation of missing configured identity groups and non-secret reconciliation of configured service principals without overwriting tenant secrets. |  |
+| `gCore/profile/test/principalAuthorizationScopeContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/principalRecursiveInterceptorContract.test.js` | `test` | `undocumented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @module; add @description; add @layer; add @owner; add @override |
 | `gCore/profile/test/profileAuthenticationRouteSecurity.test.js` | `test` | `documented` | 0/0 | Verifies username/password login uses the pre-authentication enterprise-resolution pipeline while module-to-module internal token retrieval remains a secured service capability. |  |
 | `gCore/profile/test/profileAuthenticationServiceContract.test.js` | `test` | `documented` | 0/0 | Verifies profile password authentication, failed-login state updates, customer/employee lookup boundaries, refresh-token creation, security-stamp registration, audit events, and API-key authentication. |  |

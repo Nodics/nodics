@@ -3,6 +3,8 @@
 - Follow the provider-family contract: `../AGENTS.md`.
 - Follow the payment-family contract: `../../AGENTS.md`.
 - Follow the commerce group contract: `../../../AGENTS.md`.
+- Follow the root Nodics AI contract: `../../../../AGENTS.md`.
+- Follow global AI-tool guidance: `../../../../gSetup/llm/README.md`.
 - Own only CyberSource protocol translation and safe adapter registration.
 - Do not store CyberSource keys, merchant secrets, raw payment payloads, PAN,
   or CVV in configuration, schemas, logs, or returned evidence.

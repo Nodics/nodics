@@ -14,10 +14,10 @@
     "description": "Enterprise-scoped price-list, price-group, exact-price, and deterministic price-resolution capability."
   },
   "sourceFiles": 30,
-  "testFiles": 15,
+  "testFiles": 16,
   "dataFiles": 7,
   "ownedFiles": 52,
-  "sourceFingerprint": "2fbd760ea08cd2dc36c29803cfb501ce450008f131f4992db36a15c4271dedf1",
+  "sourceFingerprint": "3da97b3bcb6639bb61f4a58e8b7389ea2a971d1a173e43789deac62c7f82a401",
   "documentation": {
     "documented": 5,
     "partially-documented": 39,

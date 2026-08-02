@@ -1,6 +1,6 @@
 {
     "name": "tax",
-    "index": "40.72",
+    "index": "40.73",
     "description": "Enterprise-scoped tax jurisdiction, provider, quote, line, exemption, and calculation evidence for Nodics commerce.",
     "main": "nodics.js",
     "version": "0.0.1",

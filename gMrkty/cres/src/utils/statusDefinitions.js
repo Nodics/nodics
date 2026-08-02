@@ -17,5 +17,17 @@
  * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
  */
 module.exports = {
-
+  ERR_CRES_00001: {
+    code: "500",
+    message: "CRES governance policy is incomplete",
+  },
+  ERR_CRES_00002: { code: "400", message: "Customer review is invalid" },
+  ERR_CRES_00003: {
+    code: "400",
+    message: "Customer review moderation event is invalid",
+  },
+  ERR_CRES_00004: {
+    code: "400",
+    message: "Customer review abuse report is invalid",
+  },
 };
