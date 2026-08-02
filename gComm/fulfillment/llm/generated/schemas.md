@@ -6,19 +6,23 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
-| `fulfillmentCarrierProvider` | `base` | yes | yes | no | no | no | no |  | 11 |
+| `fulfillmentCarrierProvider` | `base` | yes | yes | no | no | no | no |  | 14 |
 | `fulfillmentConsignment` | `base` | yes | yes | no | no | no | no |  | 15 |
+| `fulfillmentMode` | `base` | yes | yes | no | no | no | no |  | 8 |
 | `fulfillmentReturnRequest` | `base` | yes | yes | no | no | no | no |  | 24 |
-| `fulfillmentShipment` | `base` | yes | yes | no | no | no | no |  | 15 |
+| `fulfillmentShipment` | `base` | yes | yes | no | no | no | no |  | 16 |
 | `fulfillmentTrackingEvent` | `base` | yes | yes | no | no | no | no |  | 18 |
 | `fulfillmentWarehouseTask` | `base` | yes | yes | no | no | no | no |  | 17 |
 
 ### `fulfillment.fulfillmentCarrierProvider`
 
+- `adapterService` `string` optional: Fulfillment-owned adapter service for carrier labels, tracking, or provider execution
 - `carrierCode` `string` required: Safe carrier or provider identity used by Fulfillment
 - `configurationRef` `string` optional: Safe reference to governed provider configuration. Never store credentials or raw payloads here.
 - `enterpriseCode` `string` required: Authenticated enterprise owner of this fulfillment record
+- `modeCodes` `array` optional: Shipping mode codes this provider can serve
 - `name` `string` required: Business-facing carrier provider name
+- `policyService` `string` optional: Carrier policy service for routing, failover, and enterprise-specific behavior
 - `providerType` `string` required: Provider type such as carrier, aggregator, pickup network, or local delivery
 - `serviceAdapter` `string` optional: Fulfillment-owned service name used to integrate this provider in a customer module
 - `status` `string` required: Fulfillment lifecycle status
@@ -44,6 +48,17 @@
 - `shipmentCode` `string` optional: Primary shipment evidence code when shipment is created
 - `status` `string` required: Fulfillment lifecycle status
 - `warehouseCode` `string` optional: Warehouse selected for fulfillment when known
+
+### `fulfillment.fulfillmentMode`
+
+- `allowedProviderTypes` `array` optional: Carrier provider types allowed for this shipping mode
+- `carrierRequired` `bool` required: Whether this mode requires a carrier provider
+- `defaultCarrierCode` `string` optional: Default carrier provider code for this shipping mode
+- `displayName` `string` required: Business-facing shipping mode name
+- `enterpriseCode` `string` required: Authenticated enterprise owner of this fulfillment record
+- `labelRequired` `bool` required: Whether this mode normally requires carrier label generation
+- `modeCode` `string` required: Business shipping mode such as STANDARD, EXPRESS, PICKUP, LOCAL_DELIVERY, or project-specific mode
+- `status` `string` required: Fulfillment lifecycle status
 
 ### `fulfillment.fulfillmentReturnRequest`
 
@@ -77,6 +92,7 @@
 - `carrierCode` `string` optional: Safe carrier identity
 - `consignmentCode` `string` required: Owning consignment code
 - `deliveredAt` `date` optional
+- `deliveryModeCode` `string` optional: Shipping mode copied from the consignment or request
 - `enterpriseCode` `string` required: Authenticated enterprise owner of this fulfillment record
 - `failureCode` `string` optional: Safe shipment failure code
 - `failureMessage` `string` optional: Safe shipment failure message without raw carrier payloads

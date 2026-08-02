@@ -20,17 +20,18 @@
 - `src/schemas`
 - `src/service`
 - `src/interceptors`
+- `src/utils`
 - `test`
 
 ## Source Summary
 
 | Area | Count |
 | --- | ---: |
-| Source files | 10 |
-| Test files | 13 |
+| Source files | 17 |
+| Test files | 14 |
 | Data files | 0 |
-| All module-owned files | 25 |
-| Local schema definitions | 6 |
+| All module-owned files | 32 |
+| Local schema definitions | 7 |
 
 ## Ownership And Dependencies
 
@@ -40,6 +41,7 @@
 - `schema`
 - `service`
 - `interceptor`
+- `utility`
 - `test`
 - `llm`
 
@@ -55,8 +57,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 15 |
-| Partially documented | 6 |
+| Documented | 21 |
+| Partially documented | 7 |
 | Undocumented | 0 |
 | Inventory only | 4 |
 
@@ -88,13 +90,20 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/fulfillment/src/interceptors/interceptors.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/fulfillment/src/schemas/schemas.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/fulfillment/src/service/carrier/defaultCarrierLabelGatewayService.js` | `src` | `documented` | 4/4 | Default safe carrier-label gateway that returns label references without storing provider payloads. |  |
+| `gComm/fulfillment/src/service/carrier/defaultFulfillmentCarrierPolicyService.js` | `src` | `documented` | 4/4 | Builds effective carrier execution policy from shipping mode, carrier provider, shipment, and request context. |  |
+| `gComm/fulfillment/src/service/carrier/defaultFulfillmentCarrierRegistryService.js` | `src` | `documented` | 8/8 | Resolves carrier provider metadata separately from shipping modes and provider adapters. |  |
+| `gComm/fulfillment/src/service/carrier/defaultFulfillmentModePolicyService.js` | `src` | `documented` | 6/6 | Resolves shipping mode policy independently from carrier provider implementation. |  |
 | `gComm/fulfillment/src/service/carrier/defaultShipmentLabelService.js` | `src` | `documented` | 10/10 | Requests carrier label references through configurable Fulfillment provider adapters and updates shipment lifecycle evidence. |  |
-| `gComm/fulfillment/src/service/policy/defaultFulfillmentPolicyService.js` | `src` | `documented` | 24/24 | Validates safe fulfillment consignment and shipment evidence and builds release drafts from Order delivery evidence. |  |
+| `gComm/fulfillment/src/service/policy/defaultFulfillmentPolicyService.js` | `src` | `documented` | 25/25 | Validates safe fulfillment consignment and shipment evidence and builds release drafts from Order delivery evidence. |  |
 | `gComm/fulfillment/src/service/release/defaultFulfillmentReleaseService.js` | `src` | `documented` | 12/12 | Creates idempotent Fulfillment-owned consignments from Order-owned delivery groups and allocations. |  |
 | `gComm/fulfillment/src/service/return/defaultReturnRequestService.js` | `src` | `documented` | 16/16 | Creates and transitions Fulfillment-owned return request, pickup, and received evidence. |  |
 | `gComm/fulfillment/src/service/shipment/defaultFulfillmentShipmentLifecycleService.js` | `src` | `documented` | 18/18 | Owns shipment lifecycle evidence while delegating stock reconciliation to Inventory. |  |
 | `gComm/fulfillment/src/service/tracking/defaultTrackingEventService.js` | `src` | `documented` | 11/11 | Ingests safe normalized carrier tracking events and projects them onto Fulfillment shipment lifecycle. |  |
 | `gComm/fulfillment/src/service/warehouse/defaultWarehouseTaskService.js` | `src` | `documented` | 16/16 | Creates and transitions Fulfillment-owned warehouse pick, pack, and handoff task evidence. |  |
+| `gComm/fulfillment/src/utils/defaultFulfillmentProperties.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/fulfillment/src/utils/enums.js` | `src` | `documented` | 0/0 | Reserved Fulfillment enum registry. |  |
+| `gComm/fulfillment/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Reserved Fulfillment status-definition registry. |  |
+| `gComm/fulfillment/src/utils/utils.js` | `src` | `documented` | 0/0 | Utility registry for Fulfillment-owned static defaults. |  |
 | `gComm/fulfillment/test/fulfillmentFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects Fulfillment as the owner of consignment and shipment evidence, separate from Order, Inventory, and Payment. |  |
 | `gComm/fulfillment/test/fulfillmentReleaseContract.test.js` | `test` | `documented` | 0/0 | Protects idempotent Fulfillment-owned consignment release from Order delivery groups and allocations. |  |
 | `gComm/fulfillment/test/fulfillmentReturnRequestContract.test.js` | `test` | `documented` | 0/0 | Protects Fulfillment-owned return request, pickup, received, and closure evidence. |  |

@@ -3,9 +3,9 @@
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
 
@@ -52,7 +52,14 @@ module.exports = {
     loadProvider: async function (request, shipment) {
         if (request.provider) return request.provider;
         let carrierCode = request.carrierCode || shipment.carrierCode;
+        if (!carrierCode && SERVICE.DefaultFulfillmentCarrierRegistryService && typeof SERVICE.DefaultFulfillmentCarrierRegistryService.defaultCarrierCode === 'function') {
+            carrierCode = SERVICE.DefaultFulfillmentCarrierRegistryService.defaultCarrierCode(request.deliveryModeCode || shipment.deliveryModeCode);
+        }
         if (!carrierCode) throw this.error('Shipment label request requires carrierCode');
+        if (SERVICE.DefaultFulfillmentCarrierRegistryService && typeof SERVICE.DefaultFulfillmentCarrierRegistryService.provider === 'function') {
+            let configured = SERVICE.DefaultFulfillmentCarrierRegistryService.provider(carrierCode);
+            if (configured) return configured;
+        }
         if (!SERVICE.DefaultFulfillmentCarrierProviderService || typeof SERVICE.DefaultFulfillmentCarrierProviderService.get !== 'function') {
             throw this.error('Fulfillment carrier provider generated service is unavailable');
         }
@@ -69,8 +76,14 @@ module.exports = {
     },
     /** Resolves a configured provider adapter service. */
     resolveGateway: function (provider) {
+        if (SERVICE.DefaultFulfillmentCarrierPolicyService && typeof SERVICE.DefaultFulfillmentCarrierPolicyService.resolve === 'function') {
+            let policy = SERVICE.DefaultFulfillmentCarrierPolicyService.resolve({ provider: provider });
+            let gateway = SERVICE[policy.adapterService];
+            if (!gateway || typeof gateway.createLabel !== 'function') throw this.error('Carrier label gateway service is unavailable: ' + policy.adapterService);
+            return gateway;
+        }
         let labelPolicy = this.config().labelPolicy || {};
-        let serviceName = provider.serviceAdapter || labelPolicy.defaultLabelGatewayService || 'DefaultCarrierLabelGatewayService';
+        let serviceName = provider.adapterService || provider.serviceAdapter || labelPolicy.defaultLabelGatewayService || 'DefaultCarrierLabelGatewayService';
         let gateway = SERVICE[serviceName];
         if (!gateway || typeof gateway.createLabel !== 'function') throw this.error('Carrier label gateway service is unavailable: ' + serviceName);
         return gateway;

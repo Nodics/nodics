@@ -3,9 +3,9 @@
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
 
@@ -1057,7 +1057,7 @@ module.exports = {
                     }
                 },
                 type: {
-                    enum: [ENUMS.ReasonType.ORDERSTATUS.key, ENUMS.ReasonType.PAYMENT.key, ENUMS.ReasonType.SHIPMENT.key],
+                    enum: ['ORDERSTATUS', 'PAYMENT', 'SHIPMENT'],
                     required: true,
                     description: 'Required value could be only in [ORDERSTATUS, PAYMENT, SHIPMENT]'
                 }

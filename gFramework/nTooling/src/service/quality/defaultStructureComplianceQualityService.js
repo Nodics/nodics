@@ -3,9 +3,9 @@
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
 
@@ -357,6 +357,39 @@ function validateActivationPlacement(report, moduleObject) {
     }
 }
 
+function stripJavaScriptComments(source) {
+    return source
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        .replace(/(^|[^:])\/\/.*$/gm, '$1');
+}
+
+function validatePropertiesPurity(report, moduleObject) {
+    const propertiesPath = path.join(moduleObject.path, 'config/properties.js');
+    if (!fs.existsSync(propertiesPath)) {
+        return;
+    }
+    const activeSource = stripJavaScriptComments(fs.readFileSync(propertiesPath, 'utf8'));
+    const allowedThinDefaultRequire = /^\s*module\.exports\s*=\s*require\(["']\.\.\/src\/utils\/default[A-Za-z0-9_]+Properties["']\)\s*;?\s*$/;
+    const normalizedSource = activeSource.trim();
+    if (allowedThinDefaultRequire.test(normalizedSource)) {
+        return;
+    }
+    const executablePatterns = [
+        { pattern: /\bfunction\b/, label: 'function declarations' },
+        { pattern: /=>/, label: 'arrow functions' },
+        { pattern: /\bnew\s+(Map|Set|Date|Promise)\b/, label: 'runtime constructors' },
+        { pattern: /\.(map|reduce|filter|forEach|sort|flatMap)\s*\(/, label: 'collection transformation logic' },
+        { pattern: /\brequire\s*\(/, label: 'runtime imports' },
+        { pattern: /\bimport\s*\(/, label: 'dynamic imports' }
+    ];
+    const match = executablePatterns.find(entry => entry.pattern.test(activeSource));
+    if (match) {
+        createFinding(report, 'warning', moduleObject, 'properties-executable-logic',
+            '`config/properties.js` must remain a thin configuration contribution. Move ' +
+            match.label + ' to module-owned source utilities or services.');
+    }
+}
+
 function collectReport(options) {
     const modules = scanModules(options.rootDir, options.rootDir, [], options.includeRoot === true);
     const report = {
@@ -371,6 +404,7 @@ function collectReport(options) {
         validateOwnershipAlignment(report, moduleObject);
         validateBoundaryFolders(report, moduleObject);
         validateActivationPlacement(report, moduleObject);
+        validatePropertiesPurity(report, moduleObject);
     });
     report.errorCount = report.findings.filter(finding => finding.severity === 'error').length;
     report.warningCount = report.findings.filter(finding => finding.severity === 'warning').length;

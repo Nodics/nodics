@@ -11,6 +11,7 @@
 
 ## Generated Tests
 
+- `gComm/payment/test/gen/schema/paymentMethodSchemaContract.test.js`
 - `gComm/payment/test/gen/schema/paymentProviderSchemaContract.test.js`
 - `gComm/payment/test/gen/schema/paymentTransactionSchemaContract.test.js`
 

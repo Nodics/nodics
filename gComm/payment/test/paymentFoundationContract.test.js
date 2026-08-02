@@ -3,9 +3,9 @@
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
 
@@ -22,6 +22,9 @@ const properties = require('../config/properties');
 const schemas = require('../src/schemas/schemas');
 const interceptors = require('../src/interceptors/interceptors');
 const policyService = require('../src/service/policy/defaultPaymentPolicyService');
+const methodPolicyService = require('../src/service/provider/defaultPaymentMethodPolicyService');
+const providerRegistryService = require('../src/service/provider/defaultPaymentProviderRegistryService');
+const providerPolicyService = require('../src/service/provider/defaultPaymentProviderPolicyService');
 
 global.CONFIG = {
     get: (key) => key === 'payment' ? properties.payment : undefined,
@@ -35,23 +38,43 @@ global.CLASSES = {
         }
     },
 };
+global.SERVICE = {
+    DefaultPaymentPolicyService: policyService,
+    DefaultPaymentMethodPolicyService: methodPolicyService,
+    DefaultPaymentProviderRegistryService: providerRegistryService,
+    DefaultPaymentProviderPolicyService: providerPolicyService,
+};
 
 assert.strictEqual(properties.payment.paymentPolicy.operations.includes('AUTHORIZE'), true);
 assert.strictEqual(properties.payment.paymentPolicy.deferredPaymentModes.includes('COD'), true);
+assert.strictEqual(properties.payment.paymentPolicy.methods.CARD.defaultProviderCode, 'defaultCardProvider');
+assert.strictEqual(properties.payment.paymentPolicy.providers.defaultCardProvider.adapterService, 'DefaultCardPaymentProviderAdapterService');
 assert.strictEqual(properties.payment.paymentPolicy.refundCalculation.defaultStrategy, 'SUM_PAYMENT_ALLOCATIONS');
 assert.strictEqual(properties.payment.paymentPolicy.refundCalculation.explicitAmountMustNotExceedEligible, true);
 assert.strictEqual(properties.backofficeCapabilities.payment.navigation[0].workbenchTarget.schemaName, 'paymentTransaction');
+assert.strictEqual(properties.backofficeCapabilities.payment.navigation.find((item) => item.id === 'payment-transactions').lifecycleActions.some((action) => action.intent === 'RETRY'), true);
+assert.strictEqual(properties.backofficeCapabilities.payment.navigation.find((item) => item.id === 'payment-providers').lifecycleActions.some((action) => action.id === 'create-payment-provider'), true);
 
+assert.strictEqual(schemas.payment.paymentMethod.router.enabled, false);
+assert.strictEqual(schemas.payment.paymentMethod.service.enabled, true);
 assert.strictEqual(schemas.payment.paymentProvider.router.enabled, false);
 assert.strictEqual(schemas.payment.paymentTransaction.router.enabled, false);
 assert.strictEqual(schemas.payment.paymentProvider.service.enabled, true);
 assert.strictEqual(schemas.payment.paymentTransaction.service.enabled, true);
+assert.strictEqual(schemas.payment.paymentMethod.indexes.common.enterpriseCode.enabled, true);
+assert.strictEqual(schemas.payment.paymentMethod.indexes.common.methodCode.enabled, true);
+assert.notStrictEqual(schemas.payment.paymentMethod.indexes.individual.methodCode.options && schemas.payment.paymentMethod.indexes.individual.methodCode.options.unique, true);
+assert.strictEqual(schemas.payment.paymentProvider.indexes.common.enterpriseCode.enabled, true);
+assert.strictEqual(schemas.payment.paymentProvider.indexes.common.providerCode.enabled, true);
+assert.notStrictEqual(schemas.payment.paymentProvider.indexes.individual.providerCode.options && schemas.payment.paymentProvider.indexes.individual.providerCode.options.unique, true);
 assert.strictEqual(schemas.payment.paymentTransaction.definition.amount.type, 'string');
 assert.strictEqual(schemas.payment.paymentTransaction.definition.providerTransactionRef.required, false);
 assert.strictEqual(schemas.payment.paymentTransaction.definition.rawGatewayPayload, undefined);
 assert.strictEqual(schemas.payment.paymentTransaction.definition.cardNumber, undefined);
 assert.strictEqual(schemas.payment.paymentProvider.definition.secret, undefined);
+assert.strictEqual(schemas.payment.paymentProvider.definition.adapterService.required, true);
 
+assert.strictEqual(interceptors.paymentMethodPreSavePolicy.handler, 'DefaultPaymentPolicyService.prepareMethod');
 assert.strictEqual(interceptors.paymentProviderPreSavePolicy.handler, 'DefaultPaymentPolicyService.prepareProvider');
 assert.strictEqual(interceptors.paymentTransactionPreSavePolicy.handler, 'DefaultPaymentPolicyService.prepareTransaction');
 assert.strictEqual(interceptors.paymentTransactionPreRemovePolicy.handler, 'DefaultPaymentPolicyService.rejectHardDelete');
@@ -64,6 +87,23 @@ assert.strictEqual(policyService.providerCode('CARD'), 'defaultCardProvider');
 assert.strictEqual(policyService.operation('COD'), 'DEFER');
 assert.strictEqual(policyService.successStatus('DEFER'), 'DEFERRED');
 assert.strictEqual(policyService.successStatus('REFUND'), 'REFUNDED');
+assert.strictEqual(methodPolicyService.method('CARD').gatewayRequired, true);
+assert.strictEqual(providerRegistryService.provider('defaultCardProvider').methodCodes.includes('CARD'), true);
+assert.strictEqual(providerPolicyService.resolve({ transaction: { paymentModeCode: 'CARD', operation: 'AUTHORIZE' } }).adapterService, 'DefaultCardPaymentProviderAdapterService');
+
+const method = policyService.prepareMethod({
+    model: {
+        enterpriseCode: 'enterpriseA',
+        methodCode: 'PAYPAL',
+        displayName: 'PayPal',
+        defaultOperation: 'AUTHORIZE',
+        providerRequired: true,
+        gatewayRequired: true,
+        defaultProviderCode: 'paypalProvider',
+        allowedProviderTypes: ['WALLET', 'PROJECT_PROVIDER'],
+    },
+});
+assert.strictEqual(method.status, 'ACTIVE');
 
 const provider = policyService.prepareProvider({
     model: {
@@ -71,11 +111,13 @@ const provider = policyService.prepareProvider({
         providerCode: 'defaultCardProvider',
         providerType: 'CARD_GATEWAY',
         displayName: 'Default Card Provider',
-        paymentModes: ['CARD'],
+        methodCodes: ['CARD'],
         operations: ['AUTHORIZE'],
+        adapterService: 'DefaultCardPaymentProviderAdapterService',
     },
 });
 assert.strictEqual(provider.status, 'ACTIVE');
+assert.strictEqual(provider.paymentModes[0], 'CARD');
 
 assert.throws(
     () => policyService.prepareProvider({
@@ -84,8 +126,9 @@ assert.throws(
             providerCode: 'badProvider',
             providerType: 'CARD_GATEWAY',
             displayName: 'Bad',
-            paymentModes: ['CARD'],
+            methodCodes: ['CARD'],
             operations: ['AUTHORIZE'],
+            adapterService: 'DefaultCardPaymentProviderAdapterService',
             secret: 'never-store-this',
         },
     }),

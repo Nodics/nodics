@@ -1,0 +1,343 @@
+/*
+    Nodics - Enterprice Micro-Services Management Framework
+
+    Copyright (c) 2026 Nodics All rights reserved.
+
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
+
+ */
+
+/** @module payment/config/properties @description Layered payment policy and BackOffice metadata. @layer configuration @owner payment */
+module.exports = {
+  payment: {
+    paymentPolicy: {
+      operations: ["AUTHORIZE", "CAPTURE", "REFUND", "VOID", "DEFER"],
+      transactionStatuses: ["REQUESTED", "AUTHORIZED", "CAPTURED", "REFUNDED", "VOIDED", "DEFERRED", "FAILED"],
+      methods: {
+        CARD: {
+          methodCode: "CARD",
+          displayName: "Card payment",
+          defaultOperation: "AUTHORIZE",
+          providerRequired: true,
+          gatewayRequired: true,
+          defaultProviderCode: "defaultCardProvider",
+          allowedProviderTypes: ["CARD_GATEWAY"],
+        },
+        WALLET: {
+          methodCode: "WALLET",
+          displayName: "Wallet payment",
+          defaultOperation: "AUTHORIZE",
+          providerRequired: true,
+          gatewayRequired: true,
+          defaultProviderCode: "defaultWalletProvider",
+          allowedProviderTypes: ["WALLET"],
+        },
+        ADVANCE: {
+          methodCode: "ADVANCE",
+          displayName: "Advance payment",
+          defaultOperation: "AUTHORIZE",
+          providerRequired: true,
+          gatewayRequired: true,
+          defaultProviderCode: "defaultAdvanceProvider",
+          allowedProviderTypes: ["CARD_GATEWAY", "WALLET", "MANUAL"],
+        },
+        COD: {
+          methodCode: "COD",
+          displayName: "Cash on delivery",
+          defaultOperation: "DEFER",
+          providerRequired: true,
+          gatewayRequired: false,
+          defaultProviderCode: "deferredPaymentProvider",
+          allowedProviderTypes: ["DEFERRED"],
+        },
+        BANK_TRANSFER: {
+          methodCode: "BANK_TRANSFER",
+          displayName: "Bank transfer",
+          defaultOperation: "DEFER",
+          providerRequired: true,
+          gatewayRequired: false,
+          defaultProviderCode: "deferredPaymentProvider",
+          allowedProviderTypes: ["DEFERRED", "MANUAL"],
+        },
+        ACCOUNT_CREDIT: {
+          methodCode: "ACCOUNT_CREDIT",
+          displayName: "Account credit",
+          defaultOperation: "AUTHORIZE",
+          providerRequired: true,
+          gatewayRequired: false,
+          defaultProviderCode: "manualPaymentProvider",
+          allowedProviderTypes: ["MANUAL"],
+        },
+        OFFLINE: {
+          methodCode: "OFFLINE",
+          displayName: "Offline payment",
+          defaultOperation: "AUTHORIZE",
+          providerRequired: true,
+          gatewayRequired: false,
+          defaultProviderCode: "manualPaymentProvider",
+          allowedProviderTypes: ["MANUAL"],
+        },
+      },
+      providers: {
+        defaultCardProvider: {
+          providerCode: "defaultCardProvider",
+          providerType: "CARD_GATEWAY",
+          displayName: "Default card provider",
+          methodCodes: ["CARD", "ADVANCE"],
+          operations: ["AUTHORIZE", "CAPTURE", "REFUND", "VOID"],
+          adapterService: "DefaultCardPaymentProviderAdapterService",
+          policyService: "DefaultPaymentProviderPolicyService",
+          status: "ACTIVE",
+        },
+        defaultWalletProvider: {
+          providerCode: "defaultWalletProvider",
+          providerType: "WALLET",
+          displayName: "Default wallet provider",
+          methodCodes: ["WALLET"],
+          operations: ["AUTHORIZE", "CAPTURE", "REFUND", "VOID"],
+          adapterService: "DefaultCardPaymentProviderAdapterService",
+          policyService: "DefaultPaymentProviderPolicyService",
+          status: "ACTIVE",
+        },
+        defaultAdvanceProvider: {
+          providerCode: "defaultAdvanceProvider",
+          providerType: "CARD_GATEWAY",
+          displayName: "Default advance payment provider",
+          methodCodes: ["ADVANCE"],
+          operations: ["AUTHORIZE", "CAPTURE", "REFUND", "VOID"],
+          adapterService: "DefaultCardPaymentProviderAdapterService",
+          policyService: "DefaultPaymentProviderPolicyService",
+          status: "ACTIVE",
+        },
+        deferredPaymentProvider: {
+          providerCode: "deferredPaymentProvider",
+          providerType: "DEFERRED",
+          displayName: "Deferred payment provider",
+          methodCodes: ["COD", "BANK_TRANSFER"],
+          operations: ["DEFER", "REFUND", "VOID"],
+          adapterService: "DefaultDeferredPaymentProviderAdapterService",
+          policyService: "DefaultPaymentProviderPolicyService",
+          status: "ACTIVE",
+        },
+        manualPaymentProvider: {
+          providerCode: "manualPaymentProvider",
+          providerType: "MANUAL",
+          displayName: "Manual payment provider",
+          methodCodes: ["ACCOUNT_CREDIT", "OFFLINE", "ADVANCE"],
+          operations: ["AUTHORIZE", "CAPTURE", "REFUND", "VOID"],
+          adapterService: "DefaultManualPaymentProviderAdapterService",
+          policyService: "DefaultPaymentProviderPolicyService",
+          status: "ACTIVE",
+        },
+      },
+      deferredPaymentModes: ["COD", "BANK_TRANSFER"],
+      manualPaymentModes: ["ACCOUNT_CREDIT", "OFFLINE"],
+      defaultProviderByPaymentMode: {
+        CARD: "defaultCardProvider",
+        WALLET: "defaultWalletProvider",
+        ADVANCE: "defaultAdvanceProvider",
+        COD: "deferredPaymentProvider",
+        BANK_TRANSFER: "deferredPaymentProvider",
+        ACCOUNT_CREDIT: "manualPaymentProvider",
+        OFFLINE: "manualPaymentProvider",
+      },
+      gatewayRequiredModes: ["CARD", "WALLET", "ADVANCE"],
+      refundCalculation: {
+        defaultStrategy: "SUM_PAYMENT_ALLOCATIONS",
+        allowExplicitAmount: true,
+        explicitAmountMustNotExceedEligible: true,
+        includeShipping: false,
+        includeTax: true,
+        includeDiscount: true,
+        maximumAggregateRecords: 1000,
+      },
+      refundRecovery: {
+        enabled: true,
+        retryStatuses: ["REQUESTED", "FAILED"],
+        terminalSuccessStatuses: ["REFUNDED"],
+        maximumRetries: 3,
+        failureMessageLimit: 240,
+      },
+      defaultCurrencyScale: 2,
+      moneyPattern: "^(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+      maximumDigits: 38,
+      maximumScale: 18,
+      failureMessageLimit: 240,
+      maximumAggregateRecords: 1000,
+    },
+  },
+  backofficeCapabilities: {
+    payment: {
+      enabled: true,
+      capabilityId: "payment-management",
+      displayName: "Payment",
+      category: "commerce",
+      icon: "payment",
+      contractVersion: 1,
+      minimumClientContractVersion: 1,
+      roles: ["FUNCTIONAL_CAPABILITY_PROVIDER"],
+      discovery: {
+        openApiPath: "/nodics/system/v0/contract/openapi/internal",
+        contractVersion: 1,
+      },
+      requiredPermissions: ["payment.backoffice.read"],
+      navigation: [
+        {
+          id: "payments",
+          parentId: "commerce-operations",
+          parentModuleName: "pricing",
+          label: "Payments",
+          route: "/commerce/operations/payments",
+          icon: "payment",
+          order: 610,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["payment.backoffice.read"],
+          workbenchTarget: { moduleName: "payment", schemaName: "paymentTransaction" },
+          lifecycleActions: [
+            {
+              id: "review-failed-payments",
+              label: "Review failed payments",
+              intent: "RECONCILE",
+              permission: "payment.backoffice.manage",
+              summary:
+                "Open the Payment-owned exception workflow for failed or recoverable payment evidence.",
+              targetStatuses: ["FAILED", "REQUESTED"],
+              featureState: "PREVIEW",
+            },
+          ],
+          help: {
+            summary:
+              "Review payment providers and payment transaction evidence through the Payment capability.",
+            documentationRoute: "/docs/capabilities/commerce/end-to-end",
+          },
+        },
+        {
+          id: "payment-methods",
+          parentId: "payments",
+          label: "Payment Methods",
+          route: "/commerce/operations/payments/methods",
+          icon: "payment",
+          order: 611,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["payment.backoffice.read"],
+          workbenchTarget: { moduleName: "payment", schemaName: "paymentMethod" },
+          lifecycleActions: [
+            {
+              id: "create-payment-method",
+              label: "Create method",
+              intent: "CREATE",
+              permission: "payment.backoffice.manage",
+              summary:
+                "Create an enterprise-scoped payment method through the Payment authority.",
+              featureState: "PREVIEW",
+            },
+            {
+              id: "retire-payment-method",
+              label: "Retire method",
+              intent: "UPDATE",
+              permission: "payment.backoffice.manage",
+              summary:
+                "Retire a method after dependency and active-checkout validation.",
+              targetStatuses: ["ACTIVE"],
+              featureState: "PREVIEW",
+            },
+          ],
+          help: {
+            summary:
+              "Review business-facing payment methods such as Card, COD, Wallet, Advance, or customer-specific methods.",
+            documentationRoute: "/docs/capabilities/commerce/end-to-end",
+          },
+        },
+        {
+          id: "payment-transactions",
+          parentId: "payments",
+          label: "Payment Transactions",
+          route: "/commerce/operations/payments/transactions",
+          icon: "payment",
+          order: 612,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["payment.backoffice.read"],
+          workbenchTarget: { moduleName: "payment", schemaName: "paymentTransaction" },
+          lifecycleActions: [
+            {
+              id: "retry-payment",
+              label: "Retry payment",
+              intent: "RETRY",
+              permission: "payment.backoffice.manage",
+              summary:
+                "Retry a recoverable provider operation through Payment-owned retry policy.",
+              targetStatuses: ["FAILED", "REQUESTED"],
+              featureState: "PREVIEW",
+            },
+            {
+              id: "reconcile-payment",
+              label: "Reconcile payment",
+              intent: "RECONCILE",
+              permission: "payment.backoffice.manage",
+              summary:
+                "Compare safe Payment evidence with provider reconciliation output.",
+              targetStatuses: ["FAILED", "REQUESTED", "AUTHORIZED", "CAPTURED"],
+              featureState: "PREVIEW",
+            },
+          ],
+          help: {
+            summary:
+              "Review authorization, capture, refund, void, deferred, and failed payment evidence.",
+            documentationRoute: "/docs/capabilities/commerce/end-to-end",
+          },
+        },
+        {
+          id: "payment-providers",
+          parentId: "payments",
+          label: "Payment Providers",
+          route: "/commerce/operations/payments/providers",
+          icon: "payment",
+          order: 613,
+          group: { id: "commerce", label: "Commerce", order: 300 },
+          perspectives: ["operations", "commerce"],
+          contexts: ["environment", "tenant", "enterprise"],
+          featureState: "PREVIEW",
+          requiredPermissions: ["payment.backoffice.read"],
+          workbenchTarget: { moduleName: "payment", schemaName: "paymentProvider" },
+          lifecycleActions: [
+            {
+              id: "create-payment-provider",
+              label: "Create provider",
+              intent: "CREATE",
+              permission: "payment.backoffice.manage",
+              summary:
+                "Register a safe provider identity and adapter reference. Secrets remain in the configured secret authority.",
+              featureState: "PREVIEW",
+            },
+            {
+              id: "suspend-payment-provider",
+              label: "Suspend provider",
+              intent: "UPDATE",
+              permission: "payment.backoffice.manage",
+              summary:
+                "Suspend an enterprise provider through Payment governance and checkout dependency checks.",
+              targetStatuses: ["ACTIVE"],
+              featureState: "PREVIEW",
+            },
+          ],
+          help: {
+            summary:
+              "Review safe provider identities, supported operations, and lifecycle status. Provider secrets are never stored here.",
+            documentationRoute: "/docs/capabilities/commerce/end-to-end",
+          },
+        },
+      ],
+    },
+  },
+};

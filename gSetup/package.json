@@ -13,7 +13,7 @@
     "main": "nodics.js",
     "version": "0.0.1",
     "private": true,
-    "license": "GPL-3.0-or-later",
+    "license": "SEE LICENSE IN LICENSE",
     "nodics": {
         "runtimeModule": false,
         "loadableByNodicsModuleLoader": false,

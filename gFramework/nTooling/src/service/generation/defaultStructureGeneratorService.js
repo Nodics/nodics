@@ -3,9 +3,9 @@
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
 
@@ -25,9 +25,9 @@ const copyrightHeader = `/*
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
 `;
@@ -311,7 +311,7 @@ module.exports = {
             main: 'nodics.js',
             version: '0.0.1',
             private: true,
-            license: 'GPL-3.0-or-later',
+            license: 'SEE LICENSE IN LICENSE',
             nodics: {
                 kind: nodicsKindByGenerationKind[options.kind],
                 displayName: options.displayName || options.name

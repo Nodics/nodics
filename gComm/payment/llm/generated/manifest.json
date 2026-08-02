@@ -13,19 +13,20 @@
     "version": "0.0.1",
     "description": "Enterprise-scoped payment provider, transaction, authorization, capture, and refund evidence capability."
   },
-  "sourceFiles": 7,
-  "testFiles": 6,
+  "sourceFiles": 17,
+  "testFiles": 7,
   "dataFiles": 0,
-  "ownedFiles": 19,
-  "sourceFingerprint": "bf8fc533b0c18158e749f7e934a36279c276fbdf5c04ba5e2ed954cc0d20dc03",
+  "ownedFiles": 29,
+  "sourceFingerprint": "49e94012af4b0eed8d3bba49a4044e70b57a16d98a38fed248f586081d4182f5",
   "documentation": {
-    "documented": 9,
-    "partially-documented": 6,
+    "documented": 18,
+    "partially-documented": 7,
     "undocumented": 0,
     "inventory-only": 4
   },
   "schemaGroups": {
     "payment": [
+      "paymentMethod",
       "paymentProvider",
       "paymentTransaction"
     ]

@@ -3,9 +3,9 @@
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
 
@@ -45,24 +45,46 @@ const common = function (defaultStatus) {
 
 module.exports = {
     fulfillment: {
+        fulfillmentMode: governed(Object.assign(common('ACTIVE'), {
+            modeCode: { type: 'string', required: true, description: 'Business shipping mode such as STANDARD, EXPRESS, PICKUP, LOCAL_DELIVERY, or project-specific mode', searchOptions: { enabled: true } },
+            displayName: { type: 'string', required: true, description: 'Business-facing shipping mode name', searchOptions: { enabled: true } },
+            defaultCarrierCode: { type: 'string', required: false, description: 'Default carrier provider code for this shipping mode', searchOptions: { enabled: true } },
+            carrierRequired: { type: 'bool', required: true, default: true, description: 'Whether this mode requires a carrier provider' },
+            labelRequired: { type: 'bool', required: true, default: false, description: 'Whether this mode normally requires carrier label generation' },
+            allowedProviderTypes: { type: 'array', required: false, description: 'Carrier provider types allowed for this shipping mode' },
+        }), {
+            common: {
+                enterpriseCode: { enabled: true, name: 'enterpriseCode' },
+                modeCode: { enabled: true, name: 'modeCode' },
+                status: { enabled: true, name: 'status' },
+            },
+            individual: {
+                modeCode: { enabled: true, name: 'modeCode' },
+                defaultCarrierCode: { enabled: true, name: 'defaultCarrierCode' },
+            },
+        }),
         fulfillmentCarrierProvider: governed(Object.assign(common('ACTIVE'), {
             carrierCode: { type: 'string', required: true, description: 'Safe carrier or provider identity used by Fulfillment', searchOptions: { enabled: true } },
             name: { type: 'string', required: true, description: 'Business-facing carrier provider name', searchOptions: { enabled: true } },
             providerType: { type: 'string', required: true, default: 'CARRIER', description: 'Provider type such as carrier, aggregator, pickup network, or local delivery', searchOptions: { enabled: true } },
+            modeCodes: { type: 'array', required: false, description: 'Shipping mode codes this provider can serve' },
             supportedDeliveryModes: { type: 'array', required: false, description: 'Delivery mode codes this provider can serve' },
             supportedCountries: { type: 'array', required: false, description: 'Country codes this provider can serve' },
             supportsLabels: { type: 'bool', required: true, default: false, description: 'Whether this provider can produce label references' },
             supportsTracking: { type: 'bool', required: true, default: false, description: 'Whether this provider can produce or accept tracking references' },
+            adapterService: { type: 'string', required: false, description: 'Fulfillment-owned adapter service for carrier labels, tracking, or provider execution' },
+            policyService: { type: 'string', required: false, description: 'Carrier policy service for routing, failover, and enterprise-specific behavior' },
             serviceAdapter: { type: 'string', required: false, description: 'Fulfillment-owned service name used to integrate this provider in a customer module' },
             configurationRef: { type: 'string', required: false, description: 'Safe reference to governed provider configuration. Never store credentials or raw payloads here.' },
         }), {
             common: {
                 enterpriseCode: { enabled: true, name: 'enterpriseCode' },
+                carrierCode: { enabled: true, name: 'carrierCode' },
                 providerType: { enabled: true, name: 'providerType' },
                 status: { enabled: true, name: 'status' },
             },
             individual: {
-                carrierCode: { enabled: true, name: 'carrierCode', options: { unique: true } },
+                carrierCode: { enabled: true, name: 'carrierCode' },
             },
         }),
         fulfillmentConsignment: governed(Object.assign(common('RELEASED'), {
@@ -279,6 +301,7 @@ module.exports = {
             idempotencyKey: { type: 'string', required: true, description: 'Idempotency key preventing duplicate shipment evidence', searchOptions: { enabled: true } },
             consignmentCode: { type: 'string', required: true, description: 'Owning consignment code', searchOptions: { enabled: true } },
             orderCode: { type: 'string', required: true, description: 'Order associated with this shipment', searchOptions: { enabled: true } },
+            deliveryModeCode: { type: 'string', required: false, description: 'Shipping mode copied from the consignment or request', searchOptions: { enabled: true } },
             carrierCode: { type: 'string', required: false, description: 'Safe carrier identity', searchOptions: { enabled: true } },
             trackingNumber: { type: 'string', required: false, description: 'Carrier tracking number when available', searchOptions: { enabled: true } },
             trackingUrl: { type: 'string', required: false, description: 'Safe public tracking URL when available' },

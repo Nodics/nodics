@@ -3,9 +3,9 @@
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
 
@@ -124,6 +124,18 @@ try {
         'Audit must report activeModules outside server configuration');
     assert(codes.includes('retired-router-file'),
         'Audit must report retired router.js files');
+    createModule(projectHome, 'logicConfig', 'logicConfig', 'capability', ['configuration', 'llm'], {}, [
+        'module.exports = {',
+        '  sample: { values: [1, 2, 3].map(value => value * 2) }',
+        '};',
+        ''
+    ].join('\n'));
+    const logicGapReport = structureComplianceQualityService.collectReport({
+        rootDir: projectHome,
+        includeInfo: false
+    });
+    assert(findingCodes(logicGapReport).includes('properties-executable-logic'),
+        'Audit must report executable logic inside properties.js');
     write(path.join(badModule, 'docs/README.md'), '# Duplicate documentation entry\n');
     const docsGapReport = structureComplianceQualityService.collectReport({
         rootDir: projectHome,

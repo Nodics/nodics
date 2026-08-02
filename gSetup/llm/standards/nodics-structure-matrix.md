@@ -90,6 +90,13 @@ defaults, discovery rules, tooling commands, governance data, activation lists,
 and runtime coordinates. Do not create sibling configuration files or place
 runtime activation inside `package.json`.
 
+The file should remain a thin layered contribution, not a bulky implementation
+or catalog-construction script. Executable derivation, reusable OOTB default
+payloads, enums shared by services, and lifecycle helpers belong in
+module-owned source (`src/utils`, `src/service`, or another documented owner)
+and may be referenced by a thin `properties.js` export. Later layers should
+override only the values they intentionally own.
+
 Configuration is layered from framework defaults through project, environment,
 server, node, tenant, and customer layers. A lower layer may provide defaults,
 but a later active layer owns the effective override. When adding or moving a

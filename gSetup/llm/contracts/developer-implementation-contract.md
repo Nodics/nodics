@@ -280,6 +280,12 @@ project needs stricter gates.
 
 ## Licensing And Header Contract
 
+Nodics is source-available commercial software governed by the root `LICENSE`.
+It is not GPL and must not be described as OSI-approved open-source software.
+Package metadata for Nodics-owned root, group, module, environment, server, and
+node packages must use `SEE LICENSE IN LICENSE` unless a separately approved
+legal review introduces a precise SPDX or `LicenseRef-...` expression.
+
 Every Nodics-owned JavaScript source file, generated JavaScript file, template
 JavaScript file, and generated customer project skeleton file must use the
 canonical 2026 Nodics source header. Do not hand-edit one file to use different

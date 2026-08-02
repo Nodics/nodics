@@ -3,9 +3,9 @@
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
 
@@ -21,6 +21,12 @@ const assert = require('assert');
 const properties = require('../config/properties');
 const policyService = require('../src/service/policy/defaultPaymentPolicyService');
 const gatewayService = require('../src/service/provider/defaultPaymentProviderGatewayService');
+const methodPolicyService = require('../src/service/provider/defaultPaymentMethodPolicyService');
+const providerRegistryService = require('../src/service/provider/defaultPaymentProviderRegistryService');
+const providerPolicyService = require('../src/service/provider/defaultPaymentProviderPolicyService');
+const manualProviderAdapterService = require('../src/service/provider/defaultManualPaymentProviderAdapterService');
+const cardProviderAdapterService = require('../src/service/provider/defaultCardPaymentProviderAdapterService');
+const deferredProviderAdapterService = require('../src/service/provider/defaultDeferredPaymentProviderAdapterService');
 const authorizationService = require('../src/service/checkout/defaultPaymentCheckoutAuthorizationService');
 
 global.CONFIG = {
@@ -41,7 +47,13 @@ let savedTransactions = [];
 
 global.SERVICE = {
     DefaultPaymentPolicyService: policyService,
+    DefaultPaymentMethodPolicyService: methodPolicyService,
+    DefaultPaymentProviderRegistryService: providerRegistryService,
+    DefaultPaymentProviderPolicyService: providerPolicyService,
     DefaultPaymentProviderGatewayService: gatewayService,
+    DefaultManualPaymentProviderAdapterService: manualProviderAdapterService,
+    DefaultCardPaymentProviderAdapterService: cardProviderAdapterService,
+    DefaultDeferredPaymentProviderAdapterService: deferredProviderAdapterService,
     DefaultPaymentTransactionService: {
         get: async (request) => ({ result: savedTransactions.filter((item) => item.idempotencyKey === request.query.idempotencyKey) }),
         save: async (request) => {

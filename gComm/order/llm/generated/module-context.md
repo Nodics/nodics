@@ -30,10 +30,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 22 |
+| Source files | 23 |
 | Test files | 43 |
 | Data files | 21 |
-| All module-owned files | 66 |
+| All module-owned files | 67 |
 | Local schema definitions | 13 |
 
 ## Ownership And Dependencies
@@ -64,7 +64,7 @@
 | Status | Files |
 | --- | ---: |
 | Documented | 47 |
-| Partially documented | 14 |
+| Partially documented | 15 |
 | Undocumented | 0 |
 | Inventory only | 5 |
 
@@ -90,7 +90,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/order/README.md` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/order/config/postscripts.js` | `config` | `documented` | 0/0 | Reserved post-start script contribution for order module initialization work after core artifacts are available. |  |
 | `gComm/order/config/prescripts.js` | `config` | `documented` | 0/0 | Reserved pre-start script contribution for order module initialization work. |  |
-| `gComm/order/config/properties.js` | `config` | `documented` | 0/0 | Reserved order property contribution for module-level configuration defaults. |  |
+| `gComm/order/config/properties.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/order/data/init/data/defaultOrderStatusData.js` | `data` | `documented` | 0/0 | Default order lifecycle status records loaded by the order initial-data importer. |  |
 | `gComm/order/data/init/data/defaultOrderStatusResonData.js` | `data` | `documented` | 0/0 | Default reason records for order, payment, and shipment lifecycle status changes. |  |
 | `gComm/order/data/init/data/defaultPaymentStatusData.js` | `data` | `documented` | 0/0 | Default payment lifecycle status records loaded by the order initial-data importer. |  |
@@ -134,6 +134,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/order/src/service/placement/defaultCheckoutPlacementWorkflowService.js` | `src` | `documented` | 21/21 | Bridges checkout placement commands into Workflow carriers and executes checkout placement as business-level Workflow actions. nPipeline is used only inside atomic technical actions such as placement-run evidence. |  |
 | `gComm/order/src/service/placement/defaultOrderCheckoutPlacementValidationService.js` | `src` | `documented` | 13/13 | Validates a cart checkout aggregate before the checkout placement Workflow advances to inventory reservation. |  |
 | `gComm/order/src/service/reverse/defaultCheckoutReverseWorkflowService.js` | `src` | `documented` | 38/38 | Coordinates return and refund business Workflow actions while keeping Fulfillment and Payment authoritative for their own evidence. |  |
+| `gComm/order/src/utils/defaultOrderProperties.js` | `src` | `documented` | 0/0 | Reserved order property contribution for module-level configuration defaults. |  |
 | `gComm/order/src/utils/enums.js` | `src` | `documented` | 0/0 | Order enum definitions, including reason categories for order, payment, and shipment lifecycle reasons. |  |
 | `gComm/order/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Reserved order status and error-code definitions used by services, pipelines, and API responses. |  |
 | `gComm/order/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility extension point for order-specific helper functions. |  |

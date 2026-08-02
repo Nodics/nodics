@@ -16,6 +16,7 @@
 
 - `gComm/fulfillment/test/gen/schema/fulfillmentCarrierProviderSchemaContract.test.js`
 - `gComm/fulfillment/test/gen/schema/fulfillmentConsignmentSchemaContract.test.js`
+- `gComm/fulfillment/test/gen/schema/fulfillmentModeSchemaContract.test.js`
 - `gComm/fulfillment/test/gen/schema/fulfillmentReturnRequestSchemaContract.test.js`
 - `gComm/fulfillment/test/gen/schema/fulfillmentShipmentSchemaContract.test.js`
 - `gComm/fulfillment/test/gen/schema/fulfillmentTrackingEventSchemaContract.test.js`

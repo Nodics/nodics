@@ -171,6 +171,14 @@ similar data when a namespaced property subtree can own it. Examples include
 `tooling.commands`, `tooling.discovery`, and
 `tooling.documentationGovernance`.
 
+Keep `config/properties.js` thin. It must not contain executable business logic,
+builders, collection transformations, lifecycle calculators, provider calls, or
+large hand-built runtime catalogs. When an out-of-the-box module owns bulky
+reusable defaults, place the static default payload in module-owned source such
+as `src/utils/default<Capability>Properties.js` and let `properties.js` export
+that default as the layered override contribution. Customer and project layers
+should override only the property subtrees they intentionally change.
+
 A separate config artifact is allowed only when it has a distinct loader,
 schema, generator, or external-source contract that cannot be represented as
 properties. The owning module must document the exception and provide tests that

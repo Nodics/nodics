@@ -6,17 +6,33 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
-| `paymentProvider` | `base` | yes | yes | no | no | no | no |  | 9 |
+| `paymentMethod` | `base` | yes | yes | no | no | no | no |  | 9 |
+| `paymentProvider` | `base` | yes | yes | no | no | no | no |  | 12 |
 | `paymentTransaction` | `base` | yes | yes | no | no | no | no |  | 21 |
+
+### `payment.paymentMethod`
+
+- `allowedProviderTypes` `array` optional: Provider types allowed for this method
+- `defaultOperation` `string` required: Default operation such as AUTHORIZE or DEFER
+- `defaultProviderCode` `string` optional: Default provider code for this method
+- `displayName` `string` required
+- `enterpriseCode` `string` required: Authenticated enterprise owner of the payment record
+- `gatewayRequired` `boolean` required: Whether this method normally calls an external provider adapter
+- `methodCode` `string` required: Business payment method such as CARD, COD, WALLET, ADVANCE, or project-specific method
+- `providerRequired` `boolean` required: Whether this method requires a provider selection
+- `status` `string` required: Governed lifecycle status
 
 ### `payment.paymentProvider`
 
+- `adapterService` `string` required: Provider adapter service such as a CyberSource, Stripe, PayPal, deferred, or manual adapter
 - `configRef` `string` optional: Safe configuration reference, not raw credentials
 - `connectorCode` `string` optional: Safe configured connector identity. Credentials remain in secret stores.
 - `displayName` `string` required
 - `enterpriseCode` `string` required: Authenticated enterprise owner of the payment record
+- `methodCodes` `array` required: Payment methods supported by this provider
 - `operations` `array` required: Operations supported by this provider such as AUTHORIZE, CAPTURE, REFUND, VOID, or DEFER
-- `paymentModes` `array` required: Payment modes supported by this provider
+- `paymentModes` `array` optional: Legacy alias for methodCodes
+- `policyService` `string` optional: Provider policy service for routing, retries, failover, and enterprise-specific behavior
 - `providerCode` `string` required: Safe provider identity. Never store secrets here.
 - `providerType` `string` required: Provider type such as CARD_GATEWAY, WALLET, MANUAL, DEFERRED, or PROJECT_PROVIDER
 - `status` `string` required: Governed lifecycle status

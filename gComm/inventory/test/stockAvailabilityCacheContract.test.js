@@ -3,11 +3,12 @@
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
+
 /** @module inventory/test/stockAvailabilityCacheContract @description Validates cache isolation, evidence revision guards, invalidation, provider fallback, and provider-neutral configuration. @layer test @owner inventory */
 const assert = require('assert'); const properties = require('../config/properties'); const inventory = properties.inventory;
 class NodicsError extends Error { constructor(code, message) { super(message || code); this.code = code; } } global.CLASSES = { NodicsError }; global.CONFIG = { get: key => key === 'inventory' ? inventory : key === 'cache' ? properties.cache : undefined }; global.SERVICE = {};

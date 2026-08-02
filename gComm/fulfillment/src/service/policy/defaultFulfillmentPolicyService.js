@@ -3,9 +3,9 @@
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
 
@@ -38,6 +38,22 @@ module.exports = {
             throw this.error('Fulfillment evidence must not store provider secrets, raw labels, or raw provider payloads');
         }
     },
+    /** Validates safe shipping mode metadata before persistence. */
+    prepareMode: function (request) {
+        let model = Object.assign({}, (request || {}).model || {});
+        ['enterpriseCode', 'modeCode', 'displayName'].forEach((field) => {
+            if (!model[field]) throw this.error('Fulfillment Mode ' + field + ' is required');
+        });
+        if (!(this.policy().carrierProviderStatuses || []).includes(model.status || 'ACTIVE')) {
+            throw this.error('Fulfillment Mode status is unsupported');
+        }
+        this.assertSafe(model);
+        model.status = model.status || 'ACTIVE';
+        model.carrierRequired = model.carrierRequired !== false;
+        model.labelRequired = model.labelRequired === true;
+        request.model = model;
+        return model;
+    },
     /** Validates safe carrier provider metadata before persistence. */
     prepareCarrierProvider: function (request) {
         let model = Object.assign({}, (request || {}).model || {});
@@ -53,6 +69,11 @@ module.exports = {
         this.assertSafe(model);
         model.status = model.status || 'ACTIVE';
         model.providerType = model.providerType || 'CARRIER';
+        model.modeCodes = model.modeCodes || model.supportedDeliveryModes || [];
+        model.supportedDeliveryModes = model.supportedDeliveryModes || model.modeCodes.slice();
+        model.adapterService = model.adapterService || model.serviceAdapter || 'DefaultCarrierLabelGatewayService';
+        model.policyService = model.policyService || 'DefaultFulfillmentCarrierPolicyService';
+        model.serviceAdapter = model.serviceAdapter || model.adapterService;
         model.supportsLabels = model.supportsLabels === true;
         model.supportsTracking = model.supportsTracking === true;
         request.model = model;
@@ -201,6 +222,7 @@ module.exports = {
                 idempotencyKey: request.idempotencyKey,
                 consignmentCode: consignment.consignmentCode,
                 orderCode: request.orderCode || consignment.orderCode,
+                deliveryModeCode: request.deliveryModeCode || consignment.deliveryModeCode,
                 carrierCode: request.carrierCode || consignment.carrierCode,
                 trackingNumber: request.trackingNumber,
                 trackingUrl: request.trackingUrl,

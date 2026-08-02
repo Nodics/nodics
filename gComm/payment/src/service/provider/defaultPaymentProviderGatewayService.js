@@ -3,9 +3,9 @@
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
 
@@ -30,7 +30,7 @@ module.exports = {
     },
     /** Resolves successful transaction status for the requested operation. */
     successStatus: function (operation) {
-        if (SERVICE.DefaultPaymentPolicyService && typeof SERVICE.DefaultPaymentPolicyService.successStatus === 'function') {
+        if (typeof SERVICE !== 'undefined' && SERVICE.DefaultPaymentPolicyService && typeof SERVICE.DefaultPaymentPolicyService.successStatus === 'function') {
             return SERVICE.DefaultPaymentPolicyService.successStatus(operation);
         }
         if (operation === 'DEFER') return 'DEFERRED';
@@ -45,16 +45,9 @@ module.exports = {
         if (!transaction.transactionCode || !transaction.operation) {
             throw this.error('Payment provider gateway requires transactionCode and operation');
         }
-        let status = this.successStatus(transaction.operation);
-        return {
-            transactionCode: transaction.transactionCode,
-            idempotencyKey: transaction.idempotencyKey,
-            providerCode: transaction.providerCode,
-            operation: transaction.operation,
-            status: status,
-            providerTransactionRef: [String(status).toLowerCase(), transaction.transactionCode].join('::'),
-            completedAt: new Date(),
-        };
+        let executionPolicy = this.executionPolicy(request);
+        let adapter = this.adapter(executionPolicy.adapterService);
+        return adapter.authorize(Object.assign({}, request, { providerPolicy: executionPolicy, providerGatewayService: this }));
     },
     /** Refunds one safe payment transaction without exposing raw provider payloads. */
     refund: async function (request) {
@@ -62,6 +55,37 @@ module.exports = {
         if (!transaction.transactionCode || transaction.operation !== 'REFUND') {
             throw this.error('Payment provider gateway requires REFUND transaction evidence');
         }
+        let executionPolicy = this.executionPolicy(request);
+        let adapter = this.adapter(executionPolicy.adapterService);
+        return adapter.refund(Object.assign({}, request, { providerPolicy: executionPolicy, providerGatewayService: this }));
+    },
+    /** Resolves effective provider execution policy. */
+    executionPolicy: function (request) {
+        if (typeof SERVICE !== 'undefined'
+            && SERVICE.DefaultPaymentProviderPolicyService
+            && typeof SERVICE.DefaultPaymentProviderPolicyService.resolve === 'function') {
+            return SERVICE.DefaultPaymentProviderPolicyService.resolve(request);
+        }
+        let transaction = (request || {}).transaction || {};
+        return {
+            providerCode: transaction.providerCode,
+            operation: transaction.operation,
+            adapterService: 'DefaultManualPaymentProviderAdapterService',
+            gatewayRequired: true,
+        };
+    },
+    /** Resolves configured provider adapter service with a safe fallback. */
+    adapter: function (adapterService) {
+        if (typeof SERVICE !== 'undefined' && adapterService && SERVICE[adapterService]) return SERVICE[adapterService];
+        if (typeof SERVICE !== 'undefined' && SERVICE.DefaultManualPaymentProviderAdapterService) return SERVICE.DefaultManualPaymentProviderAdapterService;
+        return {
+            authorize: async (request) => this.localResult(request),
+            refund: async (request) => this.localResult(request),
+        };
+    },
+    /** Builds safe local evidence when no adapter is available in standalone tests. */
+    localResult: function (request) {
+        let transaction = (request || {}).transaction || {};
         let status = this.successStatus(transaction.operation);
         return {
             transactionCode: transaction.transactionCode,

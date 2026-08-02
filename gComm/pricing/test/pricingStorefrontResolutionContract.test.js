@@ -3,11 +3,12 @@
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
+
 /** @module pricing/test/pricingStorefrontResolutionContract @description Validates Pricing audience binding, exact inputs, trusted Storefront scope, modular transport, and fail-closed delivery. @layer test @owner pricing */
 const assert = require('assert');
 const provider = require('../src/service/resolution/defaultPricingStorefrontContextProviderService');

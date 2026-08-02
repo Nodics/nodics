@@ -3,9 +3,9 @@
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
 
@@ -15,16 +15,6 @@
  * @layer config
  * @owner nAuth
  * @override Project, environment, server, and node modules may merge stricter identity policies and additional governed permissions without weakening framework security contracts.
- */
-/*
-    Nodics - Enterprice Micro-Services Management Framework
-
-    Copyright (c) 2026 Nodics All rights reserved.
-
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the 
-    terms of the license agreement you entered into with Nodics.
-
  */
 
 module.exports = {

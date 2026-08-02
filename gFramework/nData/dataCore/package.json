@@ -10,7 +10,7 @@
     "main": "nodics.js",
     "version": "0.0.1",
     "private": true,
-    "license": "GPL License",
+    "license": "SEE LICENSE IN LICENSE",
     "repository": {
         "type": "git",
         "url": "https://github.com/Nodics/nodics"

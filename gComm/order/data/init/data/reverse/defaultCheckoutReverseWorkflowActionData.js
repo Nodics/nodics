@@ -3,11 +3,12 @@
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
+
 /** @module order/data/reverse/defaultCheckoutReverseWorkflowActionData @description Seeds business-level checkout reverse workflow actions. @layer data @owner order */
 module.exports = {
     manualReview: { code: 'checkoutReverseManualReviewAction', name: 'Review Checkout Reverse Request', active: true, type: ENUMS.WorkflowActionType.MANUAL.key, accessGroups: ['workflowUserGroup'], allowedDecisions: ['SUCCESS', 'REJECT', 'ERROR'], channels: ['checkoutReverseApprovedStartChannel', 'defaultRejectChannel', 'defaultErrorChannel'] },

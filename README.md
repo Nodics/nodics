@@ -12,6 +12,21 @@ It helps teams build fast like an MVP, but with the architecture discipline of a
 
 Each capability has a clear owner, a clear extension path, and a clear verification contract.
 
+## License
+
+Nodics is distributed under the Nodics Source-Available Commercial License. See
+[`LICENSE`](LICENSE) for the full terms.
+
+The short version is: Nodics may be used to build internal or
+customer-specific business applications under the license terms, but resale,
+white-labeling, multi-customer productization, hosted/managed service
+offerings, or commercial products built on Nodics require a separate Nodics
+commercial/support agreement.
+
+Nodics is source-available commercial software, not OSI-approved open-source
+software. Do not treat source access as permission to resell, host, repackage,
+or productize Nodics without the required written agreement.
+
 Nodics is designed for the new way software is built: human developers and AI tools working together. A developer can use a CLI-based AI assistant, an IDE assistant, or a conversational coding tool to ask for new functionality in natural language, while Nodics guides that implementation into the right module, configuration layer, service, route, schema, test, and documentation area.
 
 In short:

@@ -3,9 +3,9 @@
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
 
@@ -44,12 +44,34 @@ const common = function () {
 
 module.exports = {
     payment: {
+        paymentMethod: governed(Object.assign(common(), {
+            methodCode: { type: 'string', required: true, description: 'Business payment method such as CARD, COD, WALLET, ADVANCE, or project-specific method', searchOptions: { enabled: true } },
+            displayName: { type: 'string', required: true },
+            defaultOperation: { type: 'string', required: true, description: 'Default operation such as AUTHORIZE or DEFER', searchOptions: { enabled: true } },
+            providerRequired: { type: 'boolean', required: true, default: true, description: 'Whether this method requires a provider selection' },
+            gatewayRequired: { type: 'boolean', required: true, default: false, description: 'Whether this method normally calls an external provider adapter' },
+            defaultProviderCode: { type: 'string', required: false, description: 'Default provider code for this method', searchOptions: { enabled: true } },
+            allowedProviderTypes: { type: 'array', required: false, description: 'Provider types allowed for this method' },
+        }), {
+            common: {
+                enterpriseCode: { enabled: true, name: 'enterpriseCode' },
+                methodCode: { enabled: true, name: 'methodCode' },
+            },
+            individual: {
+                methodCode: { enabled: true, name: 'methodCode' },
+                defaultOperation: { enabled: true, name: 'defaultOperation' },
+                status: { enabled: true, name: 'status' },
+            },
+        }),
         paymentProvider: governed(Object.assign(common(), {
             providerCode: { type: 'string', required: true, description: 'Safe provider identity. Never store secrets here.', searchOptions: { enabled: true } },
             providerType: { type: 'string', required: true, description: 'Provider type such as CARD_GATEWAY, WALLET, MANUAL, DEFERRED, or PROJECT_PROVIDER', searchOptions: { enabled: true } },
             displayName: { type: 'string', required: true },
-            paymentModes: { type: 'array', required: true, description: 'Payment modes supported by this provider' },
+            methodCodes: { type: 'array', required: true, description: 'Payment methods supported by this provider' },
+            paymentModes: { type: 'array', required: false, description: 'Legacy alias for methodCodes' },
             operations: { type: 'array', required: true, description: 'Operations supported by this provider such as AUTHORIZE, CAPTURE, REFUND, VOID, or DEFER' },
+            adapterService: { type: 'string', required: true, description: 'Provider adapter service such as a CyberSource, Stripe, PayPal, deferred, or manual adapter', searchOptions: { enabled: true } },
+            policyService: { type: 'string', required: false, description: 'Provider policy service for routing, retries, failover, and enterprise-specific behavior', searchOptions: { enabled: true } },
             connectorCode: { type: 'string', required: false, description: 'Safe configured connector identity. Credentials remain in secret stores.' },
             configRef: { type: 'string', required: false, description: 'Safe configuration reference, not raw credentials' },
         }), {
@@ -58,7 +80,7 @@ module.exports = {
                 providerCode: { enabled: true, name: 'providerCode' },
             },
             individual: {
-                providerCode: { enabled: true, name: 'providerCode', options: { unique: true } },
+                providerCode: { enabled: true, name: 'providerCode' },
                 providerType: { enabled: true, name: 'providerType' },
                 status: { enabled: true, name: 'status' },
             },

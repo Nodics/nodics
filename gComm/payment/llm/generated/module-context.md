@@ -20,17 +20,18 @@
 - `src/schemas`
 - `src/service`
 - `src/interceptors`
+- `src/utils`
 - `test`
 
 ## Source Summary
 
 | Area | Count |
 | --- | ---: |
-| Source files | 7 |
-| Test files | 6 |
+| Source files | 17 |
+| Test files | 7 |
 | Data files | 0 |
-| All module-owned files | 19 |
-| Local schema definitions | 2 |
+| All module-owned files | 29 |
+| Local schema definitions | 3 |
 
 ## Ownership And Dependencies
 
@@ -40,6 +41,7 @@
 - `schema`
 - `service`
 - `interceptor`
+- `utility`
 - `test`
 - `llm`
 
@@ -55,8 +57,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 9 |
-| Partially documented | 6 |
+| Documented | 18 |
+| Partially documented | 7 |
 | Undocumented | 0 |
 | Inventory only | 4 |
 
@@ -88,10 +90,20 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/payment/src/interceptors/interceptors.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/payment/src/schemas/schemas.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/payment/src/service/checkout/defaultPaymentCheckoutAuthorizationService.js` | `src` | `documented` | 10/10 | Authorizes checkout/order payment groups through Payment-owned provider and transaction evidence services. |  |
-| `gComm/payment/src/service/policy/defaultPaymentPolicyService.js` | `src` | `documented` | 13/13 | Validates safe payment provider and transaction evidence and builds checkout authorization transaction drafts. |  |
-| `gComm/payment/src/service/provider/defaultPaymentProviderGatewayService.js` | `src` | `documented` | 6/6 | Safe replaceable payment-provider boundary used by checkout authorization before real gateway connectors are introduced. |  |
+| `gComm/payment/src/service/policy/defaultPaymentPolicyService.js` | `src` | `documented` | 14/14 | Validates safe payment provider and transaction evidence and builds checkout authorization transaction drafts. |  |
+| `gComm/payment/src/service/provider/defaultCardPaymentProviderAdapterService.js` | `src` | `documented` | 5/5 | Safe default adapter for card-like providers; customer modules replace or extend this for CyberSource, Stripe, PayPal card, or acquirer integrations. |  |
+| `gComm/payment/src/service/provider/defaultDeferredPaymentProviderAdapterService.js` | `src` | `documented` | 5/5 | Safe adapter for deferred payment methods such as cash on delivery or bank transfer. |  |
+| `gComm/payment/src/service/provider/defaultManualPaymentProviderAdapterService.js` | `src` | `documented` | 5/5 | Safe local adapter that produces governed transaction evidence without calling a real provider. |  |
+| `gComm/payment/src/service/provider/defaultPaymentMethodPolicyService.js` | `src` | `documented` | 9/9 | Resolves payment method policy independently from provider implementation so customers can add methods without changing checkout or provider code. |  |
+| `gComm/payment/src/service/provider/defaultPaymentProviderGatewayService.js` | `src` | `documented` | 9/9 | Safe replaceable payment-provider boundary used by checkout authorization before real gateway connectors are introduced. |  |
+| `gComm/payment/src/service/provider/defaultPaymentProviderPolicyService.js` | `src` | `documented` | 4/4 | Builds effective payment provider execution policy from method, provider, operation, and request context. |  |
+| `gComm/payment/src/service/provider/defaultPaymentProviderRegistryService.js` | `src` | `documented` | 9/9 | Resolves payment provider definitions separately from payment methods and gateway adapters. |  |
 | `gComm/payment/src/service/refund/defaultPaymentRefundCalculationService.js` | `src` | `documented` | 13/13 | Calculates safe refundable amounts from Order-provided payment allocation evidence before Payment creates refund transaction evidence. |  |
 | `gComm/payment/src/service/refund/defaultPaymentRefundService.js` | `src` | `documented` | 13/13 | Creates Payment-owned refund transaction evidence for returns or order adjustments. |  |
+| `gComm/payment/src/utils/defaultPaymentProperties.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/payment/src/utils/enums.js` | `src` | `documented` | 0/0 | Reserved Payment enum registry. |  |
+| `gComm/payment/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Reserved Payment status-definition registry. |  |
+| `gComm/payment/src/utils/utils.js` | `src` | `documented` | 0/0 | Utility registry for Payment-owned static defaults. |  |
 | `gComm/payment/test/paymentCheckoutAuthorizationContract.test.js` | `test` | `documented` | 0/0 | Protects checkout payment authorization as Payment-owned orchestration over order payment groups, provider boundaries, and transaction evidence. |  |
 | `gComm/payment/test/paymentFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects Payment as the owner of provider metadata, transaction evidence, exact money policy, and safe payment lifecycle boundaries. |  |
 | `gComm/payment/test/paymentRefundCalculationContract.test.js` | `test` | `documented` | 0/0 | Protects Payment-owned refund calculation from Order payment allocation evidence before provider refund execution. |  |

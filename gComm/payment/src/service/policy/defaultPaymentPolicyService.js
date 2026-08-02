@@ -3,9 +3,9 @@
 
     Copyright (c) 2026 Nodics All rights reserved.
 
-    This software is the confidential and proprietary information of Nodics ("Confidential Information").
-    You shall not disclose such Confidential Information and shall use it only in accordance with the
-    terms of the license agreement you entered into with Nodics.
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
 
  */
 
@@ -43,11 +43,21 @@ module.exports = {
     },
     /** Resolves provider code for a payment mode. */
     providerCode: function (paymentModeCode) {
+        if (typeof SERVICE !== 'undefined'
+            && SERVICE.DefaultPaymentProviderRegistryService
+            && typeof SERVICE.DefaultPaymentProviderRegistryService.defaultProviderCode === 'function') {
+            return SERVICE.DefaultPaymentProviderRegistryService.defaultProviderCode(paymentModeCode);
+        }
         let map = this.policy().defaultProviderByPaymentMode || {};
         return map[paymentModeCode] || map.DEFAULT || 'manualPaymentProvider';
     },
     /** Resolves payment operation for a payment mode. */
     operation: function (paymentModeCode) {
+        if (typeof SERVICE !== 'undefined'
+            && SERVICE.DefaultPaymentMethodPolicyService
+            && typeof SERVICE.DefaultPaymentMethodPolicyService.operation === 'function') {
+            return SERVICE.DefaultPaymentMethodPolicyService.operation(paymentModeCode);
+        }
         let policy = this.policy();
         if ((policy.deferredPaymentModes || []).includes(paymentModeCode)) return 'DEFER';
         return 'AUTHORIZE';
@@ -66,9 +76,31 @@ module.exports = {
         ['enterpriseCode', 'providerCode', 'providerType', 'displayName'].forEach((field) => {
             if (!model[field]) throw this.error('Payment Provider ' + field + ' is required');
         });
-        if (!Array.isArray(model.paymentModes) || !model.paymentModes.length) throw this.error('Payment Provider paymentModes are required');
+        if (!Array.isArray(model.methodCodes) || !model.methodCodes.length) {
+            if (Array.isArray(model.paymentModes) && model.paymentModes.length) model.methodCodes = model.paymentModes.slice();
+            else throw this.error('Payment Provider methodCodes are required');
+        }
+        model.paymentModes = model.paymentModes || model.methodCodes.slice();
         if (!Array.isArray(model.operations) || !model.operations.length) throw this.error('Payment Provider operations are required');
+        model.adapterService = model.adapterService || 'DefaultManualPaymentProviderAdapterService';
+        model.policyService = model.policyService || 'DefaultPaymentProviderPolicyService';
         if (JSON.stringify(model).match(/cvv|cardNumber|pan|secret|password/i)) throw this.error('Payment Provider must not store raw credentials or card data');
+        model.status = model.status || 'ACTIVE';
+        request.model = model;
+        return model;
+    },
+    /** Validates safe payment method configuration metadata. */
+    prepareMethod: function (request) {
+        let model = Object.assign({}, (request || {}).model || {});
+        ['enterpriseCode', 'methodCode', 'displayName', 'defaultOperation'].forEach((field) => {
+            if (!model[field]) throw this.error('Payment Method ' + field + ' is required');
+        });
+        if (!(this.policy().operations || []).includes(model.defaultOperation)) throw this.error('Payment Method defaultOperation is unsupported');
+        if (JSON.stringify(model).match(/cvv|cardNumber|pan|secret|password|rawGateway|gatewayPayload|providerPayload/i)) {
+            throw this.error('Payment Method must not store raw credentials, raw provider payloads, or card data');
+        }
+        model.providerRequired = model.providerRequired !== false;
+        model.gatewayRequired = model.gatewayRequired === true;
         model.status = model.status || 'ACTIVE';
         request.model = model;
         return model;
@@ -93,6 +125,7 @@ module.exports = {
     /** Builds one authorization/deferred transaction from an order payment group. */
     buildAuthorizationDraft: function (request, paymentGroup) {
         let operation = this.operation(paymentGroup.paymentModeCode);
+        let providerCode = this.providerCode(paymentGroup.paymentModeCode);
         let idempotencyKey = [
             request.idempotencyKey || request.workflowCarrier && request.workflowCarrier.code || request.orderCode,
             request.orderCode || paymentGroup.orderCode,
@@ -104,7 +137,7 @@ module.exports = {
                 enterpriseCode: request.entCode || request.enterpriseCode || paymentGroup.entCode || paymentGroup.enterpriseCode,
                 transactionCode: 'payment::' + idempotencyKey,
                 idempotencyKey: idempotencyKey,
-                providerCode: this.providerCode(paymentGroup.paymentModeCode),
+                providerCode: providerCode,
                 paymentModeCode: paymentGroup.paymentModeCode,
                 paymentGroupCode: paymentGroup.paymentGroupCode,
                 cartCode: request.cartCode || paymentGroup.cartCode,
