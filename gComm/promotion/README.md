@@ -9,6 +9,26 @@ lifecycle, payment capture, inventory, fulfillment, or customer identity. Those
 capabilities stay in their own modules. Promotion produces or records discount
 evidence that Cart and Order may accept as frozen commercial snapshot values.
 
+## Discount ownership decision
+
+Discounts are Promotion-owned evidence, not Pricing, Cart, Order, Tax, Payment,
+or a separate discount module.
+
+| Concern                 | Owner                    | What is stored                                                                                                   |
+| ----------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| Base item or list price | Pricing                  | price lists, resolved price evidence, tax-inclusion declaration                                                  |
+| Discount authoring      | Promotion                | campaigns, rules, conditions, actions, coupons                                                                   |
+| Discount evaluation     | Promotion                | `promotionEvaluationRun` with idempotency, source, subtotal, and total discount evidence                         |
+| Applied discount line   | Promotion                | `appliedPromotion` records with campaign/rule/action/coupon, source, target, amount, currency, and tax treatment |
+| Cart snapshot           | Cart                     | accepted `discountTotal` and related commercial evidence used during mutable checkout                            |
+| Order snapshot          | Order                    | frozen `discountTotal` copied from checkout so historical order evidence does not change                         |
+| Tax interpretation      | Tax                      | tax quote and quote-line evidence; Promotion only records the declared discount tax treatment                    |
+| Payment/refund impact   | Payment and Refund flows | money movement based on accepted Cart/Order totals, not promotion rule execution                                 |
+
+This means Promotion can be repaired, retried, reconciled, audited, and evolved
+without rewriting historical Cart or Order records. Cart and Order keep the
+business result they accepted; Promotion keeps the reason and trace.
+
 ## Beginner explanation
 
 A promotion is a business offer, such as:

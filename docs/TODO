@@ -380,9 +380,13 @@ P2/P3 — Promotions, discounts, variants, point of service, quotes, fraud:
   ✔ Keep full promotion strategy deferred until checkout, price, payment, delivery, tax, and order evidence are stable. @done(2026-08-02) @p2 @commerce
     Evidence 2026-08-02:
       Pricing, Cart, Order, and the commerce checkout foundation docs all preserve Promotion as an adjacent authority and do not merge promotion evaluation into pricing, cart, or order evidence. Commerce navigation exposes Promotions only as a planned workspace.
-  ☐ Define discount ownership and whether discounts are price evidence, promotion evidence, order evidence, or a separate module. @p2 @commerce
-    Current evidence 2026-08-02:
-      Cart and Order entries preserve `discountTotal` as exact decimal-string snapshot evidence, but discount calculation authority is not implemented. This should be decided with Promotion/Tax/Pricing strategy.
+  ✔ Define discount ownership and whether discounts are price evidence, promotion evidence, order evidence, or a separate module. @done(2026-08-03) @p2 @commerce
+    Evidence 2026-08-03:
+      Discounts are Promotion-owned evidence, not Pricing, Cart, Order, Tax, Payment, or a separate discount module.
+      Promotion owns campaign/rule/action/coupon authoring, `promotionEvaluationRun` evaluation evidence, and `appliedPromotion` applied-discount evidence with source, target, currency, amount, and tax-treatment trace.
+      Cart and Order preserve accepted `discountTotal` as exact decimal-string snapshots; Order reuses Cart's `abstractCartEntry` contract and freezes checkout evidence after placement.
+      Pricing owns base-price evidence and tax-inclusion declaration; Tax owns quote/quote-line calculation; Payment/Refund flows consume accepted Cart/Order totals without evaluating Promotion rules.
+      Validation run: `node gComm/promotion/test/promotionFoundationContract.test.js`.
   ✔ Create first-class Promotion module foundation for scalable promotion, coupon, and applied-discount ownership. @done(2026-08-03) @p2 @commerce
     Evidence 2026-08-03:
       Added `gComm/promotion` as the Promotion authority instead of putting promotion logic into Pricing, Cart, Order, Tax, or Payment.

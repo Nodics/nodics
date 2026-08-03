@@ -27,6 +27,28 @@ Nodics follows the same architectural shape in a Nodics-native way:
 - Cart and Order own accepted commercial snapshots.
 - Payment owns authorization/capture/refund money movement.
 
+## Discount ownership decision
+
+Discounts are Promotion evidence. They are not base-price records, mutable cart
+logic, mutable order logic, tax rules, payment records, or a separate
+framework-level discount module.
+
+- Pricing may say whether the original price is tax-inclusive or
+  tax-exclusive, but it does not decide promotion eligibility.
+- Promotion decides which campaign/rule/action/coupon applies and records
+  `promotionEvaluationRun` plus `appliedPromotion` evidence.
+- Cart stores the accepted mutable checkout snapshot such as `discountTotal`.
+- Order stores the frozen post-placement snapshot copied from checkout.
+- Tax uses the accepted commercial totals and tax-treatment evidence to create
+  Tax-owned quote records.
+- Payment and refund flows use accepted Cart/Order totals; they do not evaluate
+  promotion rules.
+
+Customer modules may add new Promotion evaluators, action types, condition
+types, coupon strategies, stacking policies, or provider adapters, but they must
+not move discount calculation authority into Pricing, Cart, Order, Tax, or
+Payment.
+
 ## Implemented schemas
 
 ### `promotionCampaign`

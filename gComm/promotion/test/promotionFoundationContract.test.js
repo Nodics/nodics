@@ -22,6 +22,8 @@ const properties = require("../config/properties").promotion;
 const backoffice = require("../config/properties").backofficeCapabilities
   .promotion;
 const schemas = require("../src/schemas/schemas").promotion;
+const cartBaseSchemas = require("../../cart/src/schemas/schemas").default;
+const orderSchemas = require("../../order/src/schemas/schemas").order;
 const interceptors = require("../src/interceptors/interceptors");
 const scopeService = require("../src/service/foundation/defaultPromotionEnterpriseScopeService");
 const validation = require("../src/service/foundation/defaultPromotionValidationService");
@@ -102,6 +104,31 @@ assert.strictEqual(
   ),
   true,
 );
+assert.strictEqual(
+  schemas.appliedPromotion.definition.discountAmount.description.includes(
+    "Exact decimal-string",
+  ),
+  true,
+);
+assert.strictEqual(
+  schemas.appliedPromotion.definition.sourceType.required,
+  true,
+);
+assert.strictEqual(
+  schemas.appliedPromotion.definition.targetType.required,
+  true,
+);
+assert.strictEqual(
+  schemas.appliedPromotion.definition.taxTreatment.required,
+  true,
+);
+assert.strictEqual(
+  cartBaseSchemas.abstractCartEntry.definition.discountTotal.description.includes(
+    "Promotion/Discount remains authoritative",
+  ),
+  true,
+);
+assert.strictEqual(orderSchemas.orderEntry.super, "abstractCartEntry");
 const evaluationNavigation = backoffice.navigation.find(
   (item) => item.id === "promotion-evaluations",
 );
