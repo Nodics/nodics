@@ -11,19 +11,18 @@
 
 /**
  * @module checkout
- * @description Lifecycle entrypoint for shared commerce checkout contracts.
+ * @description Checkout family entrypoint for Cart, Checkout Core, and Order.
  * @layer module
  * @owner checkout
- * @override Later active modules may override lifecycle behavior without moving
- * owner-specific checkout rules out of Cart, Order, Pricing, Tax, Promotion,
- * Inventory, Payment, or Fulfillment.
+ * @override Later active modules may extend checkout-family composition while
+ * keeping cart, order, and shared checkout-core authority in their child
+ * modules.
  */
 module.exports = {
   /**
    * Executes the init contract for this module surface.
    *
-   * @param {...*} args Governed Nodics runtime arguments for this operation.
-   * @returns {*} Operation result, promise, or delegated service response.
+   * @returns {Promise<boolean>} Resolved readiness marker for group modules.
    */
   init: function () {
     return Promise.resolve(true);
@@ -31,8 +30,7 @@ module.exports = {
   /**
    * Executes the post init contract for this module surface.
    *
-   * @param {...*} args Governed Nodics runtime arguments for this operation.
-   * @returns {*} Operation result, promise, or delegated service response.
+   * @returns {Promise<boolean>} Resolved readiness marker for group modules.
    */
   postInit: function () {
     return Promise.resolve(true);

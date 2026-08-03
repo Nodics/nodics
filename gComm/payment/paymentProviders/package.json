@@ -1,6 +1,13 @@
 {
     "name": "paymentProviders",
     "index": "40.764.1",
+    "requiredModules": [
+        "paymentProviderCore",
+        "stripeProvider",
+        "paypalProvider",
+        "cyberSourceProvider",
+        "visaProvider"
+    ],
     "description": "Provider-family boundary for payment provider adapters registered with the Payment authority.",
     "main": "nodics.js",
     "version": "0.0.1",
@@ -13,8 +20,6 @@
         "owns": [
             "composition",
             "configuration",
-            "service",
-            "test",
             "llm"
         ],
         "runtime": {

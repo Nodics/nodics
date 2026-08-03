@@ -9,5 +9,4 @@
 
  */
 
-/** @module paymentProviders/config/prescripts @description Startup extension declarations. @layer configuration @owner paymentProviders */
 module.exports = {};

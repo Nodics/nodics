@@ -16,7 +16,7 @@
  * @owner stripeProvider
  * @override Customer modules may replace transport while preserving Payment-owned normalized evidence.
  */
-const evidence = require("../../../src/service/adapter/defaultPaymentProviderSafeEvidenceService");
+const evidence = require("../../../paymentProviderCore/src/service/adapter/defaultPaymentProviderSafeEvidenceService");
 
 module.exports = {
   providerCode: "stripeProvider",

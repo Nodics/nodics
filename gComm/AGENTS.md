@@ -17,6 +17,23 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
 - Update the concise `README.md`, canonical documentation content, `llm/` guidance, generated context, and tests whenever behavior or extension contracts change.
 - Generated files must be recreated from source definitions; do not hand-maintain generated artifacts as source of truth.
 
+## Commerce Grouping Contract
+
+- `gComm` is the top-level Commerce group. It must stay a composition and
+  shared-guidance layer, not a runtime business-logic module.
+- `gComm/baseCommerce` groups reusable commerce foundations: Product, Store,
+  Pricing, Promotion, Tax, and Inventory.
+- `gComm/checkout` groups Cart, Checkout Core, and Order because they own the
+  transactional checkout lifecycle and cart-to-order orchestration.
+- Payment stays as its own family group because payment methods, payment core,
+  and payment providers require their own extension and security boundaries.
+- Fulfillment stays as its own operational capability because consignment,
+  shipment, carrier, tracking, and return-pickup evidence are provider-heavy
+  execution concerns.
+- Cancellation, return, refund, exchange, and other reverse-order lifecycle
+  capabilities must reuse `baseCommerce`, Payment, Fulfillment, Workflow, and
+  Order authorities instead of copying them into a new parallel module.
+
 ## Commerce Calculation Pipeline Contract
 
 - Do not implement product, cart, order, tax, discount, delivery-charge, or payment-total calculation as one monolithic service.

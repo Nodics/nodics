@@ -1,18 +1,26 @@
-# checkout Agent Contract
+# Checkout Agent Contract
 
-This file gives AI coding agents mandatory guidance for this Nodics module or package boundary.
+Follow the root Nodics contract: `../../AGENTS.md`.
+Follow the commerce group contract: `../AGENTS.md`.
+Follow global AI/development guidance: `../../gSetup/llm/README.md`.
 
-## Inheritance
+## Ownership
 
-- Follow the root Nodics AI contract: `../../AGENTS.md`.
-- Follow the Commerce group contract: `../AGENTS.md`.
-- Follow global AI/development guidance: `../../gSetup/llm/README.md`.
+- `checkout` is a Commerce family group. It owns composition and shared guidance
+  for the checkout journey.
+- `cart` owns mutable checkout intent and cart-side allocation evidence.
+- `checkoutCore` owns shared checkout orchestration helpers and reusable
+  contracts.
+- `order` owns durable order projection, checkout placement, historical order
+  evidence, and reverse checkout workflow entry points.
 
-## Module Work Rules
+## Rules
 
-- Treat this directory as the shared Checkout capability boundary for commerce checkout orchestration contracts.
-- Keep checkout as an orchestration and integration seam. Product, Cart, Order, Pricing, Promotion, Tax, Inventory, Payment, and Fulfillment remain authoritative for their own business rules.
-- Do not place cart-owned basket state, order-owned historical evidence, pricing algorithms, tax rules, payment-provider logic, inventory counters, or fulfillment lifecycle logic in this module.
-- Put configurable behavior in layered configuration, utility contracts, tests, and documentation until a concrete checkout runtime service/schema/API is intentionally introduced.
-- Customer modules may replace checkout delegate configuration or specific pipeline nodes, but must not fork the whole checkout journey or bypass owner modules.
-- Update README, LLM guidance, generated context, and focused tests whenever shared checkout contracts change.
+- Do not put schemas, routers, controllers, facades, services, pipelines, or
+  business logic directly in the `checkout` group.
+- Keep checkout orchestration configuration-first and replaceable through child
+  modules.
+- Cart-to-order placement must use Workflow for the business lifecycle and
+  nPipeline for deterministic single-task steps.
+- Customer modules should extend the smallest child boundary that owns the
+  variation, not fork the whole checkout family.

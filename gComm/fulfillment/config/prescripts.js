@@ -9,5 +9,4 @@
 
  */
 
-/** @module fulfillment/config/prescripts @description Reserved Fulfillment pre-start contribution point. @layer configuration @owner fulfillment */
 module.exports = {};

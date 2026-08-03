@@ -11,5 +11,5 @@ Rules for AI tools:
 - never add dependencies to module `package.json` files;
 - never store or log secrets, PAN, CVV, webhook secrets, or raw provider
   payloads;
-- run `gComm/payment/paymentProviders/test/paymentProviderAdapterConformanceContract.test.js`
+- run `gComm/payment/paymentProviders/paymentProviderCore/test/paymentProviderAdapterConformanceContract.test.js`
   and Payment foundation tests after changing provider adapters.

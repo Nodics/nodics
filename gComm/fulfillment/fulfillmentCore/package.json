@@ -1,0 +1,33 @@
+{
+    "name": "fulfillmentCore",
+    "index": "40.9",
+    "description": "Enterprise-scoped fulfillment core, consignment, shipment, carrier, and delivery-release evidence capability.",
+    "main": "nodics.js",
+    "version": "0.0.1",
+    "private": true,
+    "license": "SEE LICENSE IN LICENSE",
+    "nodics": {
+        "kind": "capability",
+        "runtimeModule": true,
+        "loadableByNodicsModuleLoader": true,
+        "owns": [
+            "configuration",
+            "schema",
+            "router",
+            "controller",
+            "facade",
+            "service",
+            "interceptor",
+            "utility",
+            "test",
+            "llm"
+        ],
+        "runtime": {
+            "router": true,
+            "publish": false,
+            "web": false
+        },
+        "displayName": "Fulfillment Core"
+    },
+    "scripts": {}
+}

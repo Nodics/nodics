@@ -10,7 +10,7 @@
  */
 
 /** @module cyberSourceProvider/service/DefaultCyberSourcePaymentProviderAdapterService @description Mocked CyberSource payment adapter returning safe Payment evidence. @layer service @owner cyberSourceProvider */
-const evidence = require("../../../src/service/adapter/defaultPaymentProviderSafeEvidenceService");
+const evidence = require("../../../paymentProviderCore/src/service/adapter/defaultPaymentProviderSafeEvidenceService");
 
 module.exports = {
   providerCode: "cyberSourceProvider",

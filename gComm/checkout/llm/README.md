@@ -1,9 +1,12 @@
-# Checkout LLM Context
+# Checkout LLM Guidance
 
-This folder describes the shared Checkout capability boundary for AI tools and
-developers.
+AI tools must treat `checkout` as a family group. Runtime checkout behavior
+belongs in `cart`, `checkoutCore`, or `order`.
 
-Checkout owns only shared orchestration contracts and reusable helpers. Cart,
-Order, Product, Pricing, Promotion, Tax, Inventory, Payment, and Fulfillment
-remain authoritative for their own schemas, services, pipelines, and business
-rules.
+Before changing checkout behavior, read:
+
+- `../AGENTS.md`
+- `cart/AGENTS.md`
+- `checkoutCore/AGENTS.md`
+- `order/AGENTS.md`
+- `../../llm/contracts/commerce-checkout-foundation-contract.md`

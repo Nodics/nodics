@@ -9,5 +9,17 @@
 
  */
 
-/** @module fulfillment/config/properties @description Thin fulfillment property contribution. @layer configuration @owner fulfillment */
-module.exports = require("../src/utils/defaultFulfillmentProperties");
+/**
+ * @module fulfillment/config/properties
+ * @description Fulfillment family group configuration. Keep this file light: composition-level configuration only.
+ * @layer configuration
+ * @owner fulfillment
+ * @override Project modules may layer fulfillment-family composition metadata without copying child capability defaults.
+ */
+module.exports = {
+    fulfillment: {
+        journeyModules: [
+            'fulfillmentCore',
+        ],
+    },
+};

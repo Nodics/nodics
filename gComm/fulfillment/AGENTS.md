@@ -6,15 +6,19 @@ Follow global AI/development guidance: `../../gSetup/llm/README.md`.
 
 ## Ownership
 
-- Fulfillment owns consignment, shipment, carrier, delivery-release, and future return-pickup evidence.
-- Order owns order header, entries, delivery groups, payment groups, and order history.
-- Inventory owns stock, reservations, allocations, movements, warehouse counters, and fulfillment reconciliation.
-- Payment owns payment authorization, capture, refund, void, and transaction evidence.
+- `fulfillment` is a Commerce family group. It owns composition and shared
+  guidance for shipment, delivery, carrier, and future fulfillment operations.
+- `fulfillmentCore` owns the currently implemented consignment, shipment,
+  carrier, warehouse task, tracking, return-pickup, and delivery-release
+  capability.
+- Future `shipping`, `delivery`, and `carrier` child modules may be added only
+  when their ownership is broader than the existing core fulfillment capability.
 
 ## Rules
 
-- Do not put shipment/consignment lifecycle into Order services.
-- Do not mutate Inventory counters directly. Fulfillment must call Inventory-owned intents/services when stock movement or allocation reconciliation is required.
-- Do not store carrier credentials, labels, raw provider payloads, internal warehouse paths, or customer secrets in Fulfillment schemas.
-- Keep fulfillment behavior configuration-first through `fulfillment.fulfillmentPolicy` and replaceable services.
-- Customer modules must be able to replace grouping, carrier selection, release, shipment confirmation, and return-pickup behavior without modifying OOTB framework code.
+- Do not put schemas, routers, controllers, facades, services, pipelines, or
+  business logic directly in the `fulfillment` group.
+- Keep fulfillment behavior configuration-first and replaceable through child
+  modules.
+- Customer modules should extend the smallest child boundary that owns the
+  variation, not fork the whole fulfillment family.

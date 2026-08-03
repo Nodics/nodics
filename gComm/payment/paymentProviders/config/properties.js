@@ -11,31 +11,19 @@
 
 /**
  * @module paymentProviders/config/properties
- * @description Configures provider-family defaults without selecting a payment provider.
+ * @description Payment Providers family group configuration. Keep this file composition-only.
  * @layer configuration
  * @owner paymentProviders
- * @override Project modules may layer resilience defaults and provider-specific policy while preserving Payment as the authority.
+ * @override Project modules may add provider-family composition metadata without copying core provider defaults.
  */
 module.exports = {
-  paymentProviders: {
-    contractVersion: 1,
-    enabled: true,
-    liveProviderCallsEnabled: false,
-    resilience: {
-      timeoutMs: 30000,
-      maximumAttempts: 1,
-      retryStrategy: "NONE",
-      failoverEnabled: false,
-      retryableFailureCodes: ["TIMEOUT", "RATE_LIMIT", "TEMPORARY_UNAVAILABLE"],
+    paymentProviders: {
+        providerModules: [
+            'paymentProviderCore',
+            'stripeProvider',
+            'paypalProvider',
+            'cyberSourceProvider',
+            'visaProvider',
+        ],
     },
-    reconciliation: {
-      enabled: false,
-      schedulerCode: "payment-provider-reconciliation",
-      delayMinutes: 15,
-    },
-    evidence: {
-      redactRawPayloads: true,
-      maximumSafeMessageLength: 240,
-    },
-  },
 };

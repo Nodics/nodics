@@ -11,10 +11,17 @@
 
 /**
  * @module checkout/config/properties
- * @description Reserved shared Checkout configuration contribution point.
- * @layer config
+ * @description Checkout family group configuration. Keep this file light: composition-level configuration only, no business logic.
+ * @layer configuration
  * @owner checkout
- * @override Project, environment, server, node, tenant, or customer layers may
- * add shared checkout configuration without copying Cart or Order policy.
+ * @override Project modules may layer checkout-family composition metadata without copying child capability defaults.
  */
-module.exports = {};
+module.exports = {
+    checkout: {
+        journeyModules: [
+            'cart',
+            'checkoutCore',
+            'order',
+        ],
+    },
+};

@@ -95,8 +95,8 @@ assert.strictEqual(mono.search.default.options.engine, 'elastic');
 
 const publicationDefaults = merge({},
     load('gContent/cms/config/properties.js'),
-    load('gComm/pricing/config/properties.js'),
-    load('gComm/product/config/properties.js'));
+    load('gComm/baseCommerce/pricing/config/properties.js'),
+    load('gComm/baseCommerce/product/config/properties.js'));
 const staged = merge({}, publicationDefaults,
     load('startio/envs/startioLocal/cmsStagedServer/config/properties.js'));
 ['cms', 'pricing', 'product'].forEach(moduleName => {

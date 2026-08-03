@@ -177,7 +177,7 @@ payment-deposit validation node before `calculatePaymentPlan`. The customer
 does not need to fork the whole Cart or Order calculation flow.
 
 Default entry pipeline nodes are adapter-driven. Cart and Order both use the
-shared `gComm/checkout/src/utils/commerceCalculationDelegateUtils` helper,
+shared `gComm/checkout/checkoutCore/src/utils/commerceCalculationDelegateUtils` helper,
 which reads `cart.calculation.delegates` or `order.calculation.delegates`, looks
 for the configured owning service and operation, and records either:
 
@@ -929,14 +929,14 @@ Do not:
 Use focused tests while developing:
 
 ```bash
-node gComm/cart/test/cartCheckoutAllocationFoundationContract.test.js
-node gComm/order/test/orderCheckoutAllocationFoundationContract.test.js
-node gComm/order/test/checkoutPlacementWorkflowPipelineContract.test.js
-node gComm/order/test/checkoutReverseWorkflowContract.test.js
-node gComm/order/test/orderEntryFoundationContract.test.js
-node gComm/tax/test/taxFoundationContract.test.js
-node gComm/inventory/test/inventoryPromiseFoundation.test.js
-node gComm/fulfillment/test/fulfillmentShipmentLifecycleContract.test.js
+node gComm/checkout/cart/test/cartCheckoutAllocationFoundationContract.test.js
+node gComm/checkout/order/test/orderCheckoutAllocationFoundationContract.test.js
+node gComm/checkout/order/test/checkoutPlacementWorkflowPipelineContract.test.js
+node gComm/checkout/order/test/checkoutReverseWorkflowContract.test.js
+node gComm/checkout/order/test/orderEntryFoundationContract.test.js
+node gComm/baseCommerce/tax/test/taxFoundationContract.test.js
+node gComm/baseCommerce/inventory/test/inventoryPromiseFoundation.test.js
+node gComm/fulfillment/fulfillmentCore/test/fulfillmentShipmentLifecycleContract.test.js
 node gComm/test/commerceOperationsBackofficeNavigationContract.test.js
 ```
 

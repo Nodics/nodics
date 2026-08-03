@@ -34,37 +34,37 @@ global.ENUMS = {
   },
 };
 
-const cartSchemas = require("../cart/src/schemas/schemas");
-const pricingCapability = require("../pricing/config/properties")
+const cartSchemas = require("../checkout/cart/src/schemas/schemas");
+const pricingCapability = require("../baseCommerce/pricing/config/properties")
   .backofficeCapabilities.pricing;
-const inventoryCapability = require("../inventory/config/properties")
+const inventoryCapability = require("../baseCommerce/inventory/config/properties")
   .backofficeCapabilities.inventory;
-const storeCapability = require("../store/config/properties")
+const storeCapability = require("../baseCommerce/store/config/properties")
   .backofficeCapabilities.store;
-const cartCapability = require("../cart/config/properties")
+const cartCapability = require("../checkout/cart/config/properties")
   .backofficeCapabilities.cart;
-const orderCapability = require("../order/config/properties")
+const orderCapability = require("../checkout/order/config/properties")
   .backofficeCapabilities.order;
 const paymentCapability = require("../payment/paymentCore/config/properties")
   .backofficeCapabilities.payment;
-const taxCapability = require("../tax/config/properties").backofficeCapabilities
+const taxCapability = require("../baseCommerce/tax/config/properties").backofficeCapabilities
   .tax;
-const promotionCapability = require("../promotion/config/properties")
+const promotionCapability = require("../baseCommerce/promotion/config/properties")
   .backofficeCapabilities.promotion;
-const fulfillmentCapability = require("../fulfillment/config/properties")
+const fulfillmentCapability = require("../fulfillment/fulfillmentCore/config/properties")
   .backofficeCapabilities.fulfillment;
-const reverseActions = require("../order/data/init/data/reverse/defaultCheckoutReverseWorkflowActionData");
+const reverseActions = require("../checkout/order/data/init/data/reverse/defaultCheckoutReverseWorkflowActionData");
 
 const knownSchemas = {
-  pricing: require("../pricing/src/schemas/schemas").pricing,
-  inventory: require("../inventory/src/schemas/schemas").inventory,
-  store: require("../store/src/schemas/schemas").store,
+  pricing: require("../baseCommerce/pricing/src/schemas/schemas").pricing,
+  inventory: require("../baseCommerce/inventory/src/schemas/schemas").inventory,
+  store: require("../baseCommerce/store/src/schemas/schemas").store,
   cart: cartSchemas.cart,
-  order: require("../order/src/schemas/schemas").order,
-  fulfillment: require("../fulfillment/src/schemas/schemas").fulfillment,
+  order: require("../checkout/order/src/schemas/schemas").order,
+  fulfillment: require("../fulfillment/fulfillmentCore/src/schemas/schemas").fulfillment,
   payment: require("../payment/paymentCore/src/schemas/schemas").payment,
-  promotion: require("../promotion/src/schemas/schemas").promotion,
-  tax: require("../tax/src/schemas/schemas").tax,
+  promotion: require("../baseCommerce/promotion/src/schemas/schemas").promotion,
+  tax: require("../baseCommerce/tax/src/schemas/schemas").tax,
 };
 const inheritedSchemas = {
   abstractCartEntry: cartSchemas.default.abstractCartEntry,

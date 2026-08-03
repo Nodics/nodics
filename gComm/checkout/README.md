@@ -1,28 +1,35 @@
-# checkout Module
+# Checkout
 
-`checkout` is the shared commerce checkout capability boundary. It owns reusable
-checkout orchestration helpers and contracts that are broader than Cart or
-Order, but it does not own the business rules of Product, Pricing, Promotion,
-Tax, Inventory, Payment, or Fulfillment.
+Checkout groups the mutable cart journey, shared checkout orchestration
+contracts, and durable order projection.
 
-Use this module when a helper or contract is genuinely shared by Cart and Order
-checkout calculation or placement. If a behavior belongs to only one capability,
-keep it in that owning module instead.
+It is intentionally a group module. Runtime authority stays inside child
+capabilities:
 
-## Calculation delegates
+- `cart`
+- `checkoutCore`
+- `order`
 
-`src/utils/commerceCalculationDelegateUtils.js` is a small adapter helper used
-by Cart and Order entry calculation pipelines. It reads delegate configuration
-from `cart.calculation.delegates` or `order.calculation.delegates`, calls the
-configured owner service if it exists, and records safe evidence:
+## Boundary
 
-- `DELEGATED` means the configured owner service ran successfully.
-- `DEFERRED` means the current runtime does not have the configured owner
-  adapter yet.
-- a thrown error means an installed owner adapter rejected the request, so the
-  pipeline must fail instead of hiding an uncertain calculation result.
+Use this group for composition and shared guidance only. Do not place checkout
+schemas, routers, provider execution, calculation logic, or lifecycle state
+machines directly in `checkout`.
 
-This utility deliberately does not calculate prices, discounts, taxes,
-inventory availability, payments, or fulfillment decisions. It only preserves a
-configuration-first, module-owned delegation pattern that customer modules can
-extend without modifying framework source.
+Cart owns mutable checkout intent. Checkout Core owns shared orchestration
+helpers. Order owns durable order creation, placement workflow, reverse
+checkout workflow entry points, and historical evidence.
+
+## Customization
+
+Customer projects customize checkout behavior by layering the relevant child
+capability:
+
+- extend cart validation or allocation policy in `cart`;
+- replace shared delegate helpers or orchestration contracts in `checkoutCore`;
+- extend order placement, projection, history, and reverse-flow policy in
+  `order`.
+
+Do not copy the full checkout journey into a project module just to adjust one
+policy. Replace the smallest configuration block, service, pipeline node, or
+workflow action that owns the variation.

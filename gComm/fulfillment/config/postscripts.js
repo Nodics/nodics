@@ -9,5 +9,4 @@
 
  */
 
-/** @module fulfillment/config/postscripts @description Reserved Fulfillment post-start contribution point. @layer configuration @owner fulfillment */
 module.exports = {};

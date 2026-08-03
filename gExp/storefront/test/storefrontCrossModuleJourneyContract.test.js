@@ -20,9 +20,9 @@ const assert = require('assert');
 const storefrontContext = require('../src/service/defaultStorefrontContextService');
 const contextAccess = require('../src/service/defaultStorefrontContextAccessService');
 const cmsProvider = require('../../../gContent/cms/src/service/delivery/defaultCmsStorefrontContextProviderService');
-const productProvider = require('../../../gComm/product/src/service/delivery/defaultProductStorefrontContextProviderService');
-const pricingProvider = require('../../../gComm/pricing/src/service/resolution/defaultPricingStorefrontContextProviderService');
-const inventoryProvider = require('../../../gComm/inventory/src/service/availability/defaultInventoryStorefrontContextProviderService');
+const productProvider = require('../../../gComm/baseCommerce/product/src/service/delivery/defaultProductStorefrontContextProviderService');
+const pricingProvider = require('../../../gComm/baseCommerce/pricing/src/service/resolution/defaultPricingStorefrontContextProviderService');
+const inventoryProvider = require('../../../gComm/baseCommerce/inventory/src/service/availability/defaultInventoryStorefrontContextProviderService');
 const configurations = {
     storefront: { contextResolution: { defaultTenant: 'default' }, contextAccess: { enabled: true,
         headerName: 'x-nodics-storefront-context', moduleName: 'storefront', channelName: 'contextAccess',

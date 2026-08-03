@@ -38,9 +38,9 @@ assert.deepStrictEqual(handoff.inventory, { storeCode: 'store', countryCode: 'AE
 
 [
     ['gContent/cms/src/service/delivery/defaultCmsDeliveryService.js', 'DefaultCmsPageRouteService'],
-    ['gComm/product/src/service/delivery/defaultProductOnlineReadService.js', 'DefaultProductEnterpriseScopeService'],
-    ['gComm/pricing/src/service/resolution/defaultPriceResolutionService.js', 'DefaultPricingEnterpriseScopeService'],
-    ['gComm/inventory/src/service/sourcing/defaultStockSourcingIntentService.js', 'DefaultInventoryEnterpriseScopeService']
+    ['gComm/baseCommerce/product/src/service/delivery/defaultProductOnlineReadService.js', 'DefaultProductEnterpriseScopeService'],
+    ['gComm/baseCommerce/pricing/src/service/resolution/defaultPriceResolutionService.js', 'DefaultPricingEnterpriseScopeService'],
+    ['gComm/baseCommerce/inventory/src/service/sourcing/defaultStockSourcingIntentService.js', 'DefaultInventoryEnterpriseScopeService']
 ].forEach(([relativePath, authority]) => {
     let source = fs.readFileSync(path.join(repositoryRoot, relativePath), 'utf8');
     assert(source.includes(authority), relativePath + ' must retain target-owned authority through ' + authority);

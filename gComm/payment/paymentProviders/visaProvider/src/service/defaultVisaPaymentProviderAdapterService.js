@@ -10,7 +10,7 @@
  */
 
 /** @module visaProvider/service/DefaultVisaPaymentProviderAdapterService @description Mocked Visa product/network adapter returning safe Payment evidence. @layer service @owner visaProvider */
-const evidence = require("../../../src/service/adapter/defaultPaymentProviderSafeEvidenceService");
+const evidence = require("../../../paymentProviderCore/src/service/adapter/defaultPaymentProviderSafeEvidenceService");
 
 module.exports = {
   providerCode: "visaProvider",

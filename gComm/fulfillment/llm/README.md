@@ -1,9 +1,7 @@
-# Fulfillment LLM Notes
+# Fulfillment LLM Context
 
-Use these notes when extending the `gComm/fulfillment` capability.
+This folder belongs to the `fulfillment` family group. It should contain only
+family-level AI guidance and links to child capability contracts.
 
-- Fulfillment owns consignment and shipment evidence.
-- Order owns order delivery split evidence and delegates release.
-- Inventory owns stock counters and fulfillment reconciliation.
-- Keep provider credentials and raw carrier payloads out of schemas and config.
-- Prefer configuration and service overrides over framework edits.
+Runtime schemas, services, routers, and pipelines belong to child modules such
+as `fulfillmentCore`.

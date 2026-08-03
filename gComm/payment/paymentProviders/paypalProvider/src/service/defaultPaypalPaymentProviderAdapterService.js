@@ -10,7 +10,7 @@
  */
 
 /** @module paypalProvider/service/DefaultPaypalPaymentProviderAdapterService @description Mocked PayPal REST-style adapter returning safe Payment evidence. @layer service @owner paypalProvider */
-const evidence = require("../../../src/service/adapter/defaultPaymentProviderSafeEvidenceService");
+const evidence = require("../../../paymentProviderCore/src/service/adapter/defaultPaymentProviderSafeEvidenceService");
 
 module.exports = {
   providerCode: "paypalProvider",

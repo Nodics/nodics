@@ -241,9 +241,9 @@ module.exports = {
                 { node: 'gExp/storefront/test/storefrontPersistenceIntegration.test.js' },
                 { node: 'gExp/storefront/test/storefrontReferenceTransportContract.test.js' },
                 { node: 'gExp/storefront/test/storefrontTrafficResilienceContract.test.js' },
-                { node: 'gComm/pricing/test/pricingStorefrontResolutionContract.test.js' },
-                { node: 'gComm/inventory/test/inventoryStorefrontAvailabilityContract.test.js' },
-                { node: 'gComm/product/test/productStorefrontDeliveryContract.test.js' },
+                { node: 'gComm/baseCommerce/pricing/test/pricingStorefrontResolutionContract.test.js' },
+                { node: 'gComm/baseCommerce/inventory/test/inventoryStorefrontAvailabilityContract.test.js' },
+                { node: 'gComm/baseCommerce/product/test/productStorefrontDeliveryContract.test.js' },
                 { node: 'gContent/cms/test/cmsStorefrontDeliveryContract.test.js' }
             ],
             config: [

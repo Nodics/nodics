@@ -9,12 +9,5 @@
 
  */
 
-/**
- * @module checkout/config/postscripts
- * @description Reserved shared Checkout startup post-script contribution point.
- * @layer config
- * @owner checkout
- * @override Later layers may add startup behavior only when it belongs to the
- * shared Checkout boundary.
- */
+/** @module checkout/config/postscripts @description Reserved Checkout family group post-script contribution point. @layer config @owner checkout @override Later layers may add checkout-family startup hooks. */
 module.exports = {};

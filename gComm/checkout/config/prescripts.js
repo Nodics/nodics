@@ -9,12 +9,5 @@
 
  */
 
-/**
- * @module checkout/config/prescripts
- * @description Reserved shared Checkout startup pre-script contribution point.
- * @layer config
- * @owner checkout
- * @override Later layers may add startup behavior only when it belongs to the
- * shared Checkout boundary.
- */
+/** @module checkout/config/prescripts @description Reserved Checkout family group pre-script contribution point. @layer config @owner checkout @override Later layers may add checkout-family startup hooks. */
 module.exports = {};

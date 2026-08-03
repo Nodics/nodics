@@ -9,10 +9,11 @@
 
  */
 
-/** @module fulfillment @description Lifecycle entrypoint for the Fulfillment capability. @layer module @owner fulfillment */
-module.exports = {
-    /** Executes the init Fulfillment contract. */
-    init: function () { return Promise.resolve(true); },
-    /** Executes the postInit Fulfillment contract. */
-    postInit: function () { return Promise.resolve(true); },
-};
+/**
+ * @module fulfillment/nodics
+ * @description Fulfillment family group entry point. Runtime behavior belongs to child capability modules.
+ * @layer composition
+ * @owner fulfillment
+ * @override Project modules may add fulfillment-family child modules without placing schemas or services in this group.
+ */
+module.exports = {};
