@@ -14,7 +14,8 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
 - Keep capabilities stable and make implementations replaceable through the module hierarchy.
 - Do not hardcode project, environment, server, node, tenant, or customer behavior into reusable framework code.
 - Put configurable behavior in layered configuration, schemas, routers, services, pipelines, data, and runtime governance.
-- Update the concise `README.md`, canonical documentation content, `llm/` guidance, generated context, and tests whenever behavior or extension contracts change.
+- Update the concise `README.md`, canonical documentation content, `llm/` guidance, and tests whenever behavior or extension contracts change.
+- Regenerate and validate module `llm/generated` context when source, schema, documentation, or tests change, but keep generated LLM output out of source control.
 - Generated files must be recreated from source definitions; do not hand-maintain generated artifacts as source of truth.
 
 ## gSetup Rules

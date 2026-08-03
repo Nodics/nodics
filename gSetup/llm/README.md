@@ -191,7 +191,7 @@ without modifying out-of-the-box Nodics code.
   not to a new repository-wide framework audit, unless explicitly requested.
 - Do not hardcode sample, customer, or project-specific names in framework behavior.
 - Do not place generated files under `gSetup/llm`.
-- Keep source-derived module LLM files under each module's `llm/generated` folder.
+- Keep source-derived module LLM output under each module's `llm/generated` folder, but treat that folder as disposable generated output that is recreated by `npm run llm:generate` and excluded from source control.
 - Do not make AI guidance specific to one AI vendor.
 - Do not require vendor-specific commands, hidden instruction files, response formats, or proprietary agent features for the standard Nodics workflow.
 - Keep instructions in portable Markdown and source-derived JSON. Vendor adapters may reference this pack, but must not become its source of truth.

@@ -32,6 +32,7 @@ yarn-error.log*
 **/temp/**
 **/dist/**
 **/gen/**
+**/llm/generated/**
 **/web/lib/**
 **/tmp/**
 **/kickoff/custom/**
