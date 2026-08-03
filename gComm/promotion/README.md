@@ -200,6 +200,42 @@ stores audit evidence such as `approvedBy`, `approvedAt`,
 discount evidence remain immutable; repair and retry create governed workflow
 requests instead of rewriting old evidence.
 
+## Repair, retry, and reconciliation
+
+Promotion evaluation evidence is immutable. If an evaluation fails, is rejected,
+or needs reconciliation, Promotion does not edit the old
+`promotionEvaluationRun`. It creates a `promotionRepairRun` record that explains
+what operation was requested, which evaluation was targeted, how many retry
+attempts were used, and whether a new evaluation run was created.
+
+For a beginner, think of it like this:
+
+1. Cart asks Promotion to evaluate discounts.
+2. Promotion writes an evaluation receipt.
+3. If that receipt failed for a repairable reason, Workflow can ask Promotion to
+   repair it.
+4. Promotion creates a repair-run receipt.
+5. If enough safe source snapshot data exists, Promotion evaluates again and
+   links the new evaluation receipt from the repair run.
+
+Internal repair, retry, and reconcile routes are service-token-only operations.
+They are not employee CRUD screens and they are not public customer APIs. Human
+employees may review approval workflows, but automatic repair/reconciliation
+must run as a governed service identity so the audit trail clearly separates
+business decisions from operational recovery.
+
+Customer modules can customize repair behavior by layering:
+
+- repairable failure-code policy;
+- maximum retry counts;
+- source-snapshot reconstruction;
+- repair workflow heads/actions/channels;
+- reconciliation scheduling and event triggers.
+
+They must not mutate historical `promotionEvaluationRun` or
+`appliedPromotion` records. If the commercial answer changes, write new evidence
+and link it from the repair run.
+
 Customer modules can replace workflow heads, actions, channels, and repair
 services through layered modules. They must preserve:
 

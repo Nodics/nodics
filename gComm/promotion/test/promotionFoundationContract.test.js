@@ -51,6 +51,7 @@ global.SERVICE = {
   "couponCampaign",
   "couponCode",
   "promotionEvaluationRun",
+  "promotionRepairRun",
   "appliedPromotion",
 ].forEach((name) => {
   assert.strictEqual(schemas[name].model, true);
@@ -82,6 +83,14 @@ assert.strictEqual(
 assert.strictEqual(
   schemas.appliedPromotion.refSchema.evaluationCode.schema,
   "promotionEvaluationRun",
+);
+assert.strictEqual(
+  schemas.promotionRepairRun.refSchema.evaluationCode.schema,
+  "promotionEvaluationRun",
+);
+assert.strictEqual(
+  schemas.promotionRepairRun.indexes.individual.idempotencyKey.options.unique,
+  true,
 );
 assert.strictEqual(
   schemas.appliedPromotion.definition.discountAmount.type,

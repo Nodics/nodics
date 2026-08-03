@@ -70,6 +70,10 @@ module.exports = Object.assign(
     "DefaultPromotionValidationService.prepareReadonlyEvidenceUpdate",
   ),
   scoped(
+    "promotionRepairRun",
+    "DefaultPromotionValidationService.prepareRepairRun",
+  ),
+  scoped(
     "appliedPromotion",
     "DefaultPromotionValidationService.prepareAppliedPromotion",
     "DefaultPromotionValidationService.prepareReadonlyEvidenceUpdate",

@@ -13,6 +13,7 @@
 | `promotionCampaign` | `base` | yes | yes | no | no | no | no |  | 16 |
 | `promotionCondition` | `base` | yes | yes | no | no | no | no |  | 15 |
 | `promotionEvaluationRun` | `base` | yes | yes | no | no | no | no |  | 19 |
+| `promotionRepairRun` | `base` | yes | yes | no | no | no | no |  | 20 |
 | `promotionRule` | `base` | yes | yes | no | no | no | no |  | 19 |
 
 ### `promotion.appliedPromotion`
@@ -155,6 +156,29 @@
 - `status` `string` required: Governed lifecycle status
 - `subtotalAmount` `string` required: Exact decimal-string pre-discount subtotal evaluated
 - `taxInclusionMode` `string` optional: Tax inclusion context used when interpreting promotion totals
+- `workflowCarrierCode` `string` optional: Workflow carrier that governed the latest lifecycle decision
+
+### `promotion.promotionRepairRun`
+
+- `approvedAt` `date` optional: Timestamp when this promotion record was approved
+- `approvedBy` `string` optional: Human principal that approved this promotion record
+- `completedAt` `date` optional
+- `effectiveFrom` `date` optional: Optional lifecycle or validity start
+- `effectiveTo` `date` optional: Optional lifecycle or validity end
+- `enterpriseCode` `string` required: Authenticated enterprise owner of the Promotion record
+- `evaluationCode` `string` optional: Original immutable evaluation evidence being repaired
+- `failureCode` `string` optional: Safe failure code for repair/reconciliation
+- `failureMessage` `string` optional: Safe bounded diagnostic message. Do not store secrets or raw external payloads.
+- `idempotencyKey` `string` required: Idempotency key for retry-safe repair execution
+- `lastWorkflowDecision` `string` optional: Latest governed workflow decision
+- `newEvaluationCode` `string` optional: New evaluation evidence created by repair execution
+- `operationType` `string` required: Operation such as REPAIR_EVALUATION, RETRY_EVALUATION, or RECONCILE_EVIDENCE
+- `repairRunCode` `string` required: Stable Promotion repair or reconciliation run identity
+- `requestedAt` `date` optional
+- `retryCount` `number` optional: Bounded retry attempt count
+- `sourceCode` `string` optional: Business source code for the repair target
+- `sourceType` `string` optional: Source such as CART, ORDER, QUOTE, or PREVIEW
+- `status` `string` required: Governed lifecycle status
 - `workflowCarrierCode` `string` optional: Workflow carrier that governed the latest lifecycle decision
 
 ### `promotion.promotionRule`

@@ -356,6 +356,30 @@ module.exports = {
       );
     }
     const repairRequest = request.repairRequest || {};
+    if (
+      SERVICE.DefaultPromotionRepairService &&
+      typeof SERVICE.DefaultPromotionRepairService.repair === "function"
+    ) {
+      const repaired = await SERVICE.DefaultPromotionRepairService.repair({
+        tenant: request.tenant,
+        authData: request.authData,
+        enterpriseCode: repairRequest.enterpriseCode,
+        repairRequest: repairRequest,
+      });
+      return {
+        decision: "SUCCESS",
+        type: "SUCCESS",
+        feedback: {
+          status: repaired.status,
+          operationType: repaired.operationType || repairRequest.operationType,
+          carrierCode:
+            repaired.workflowCarrierCode || repairRequest.carrierCode,
+          evaluationCode:
+            repaired.evaluationCode || repairRequest.evaluationCode,
+          repairRunCode: repaired.repairRunCode,
+        },
+      };
+    }
     return {
       decision: "SUCCESS",
       type: "SUCCESS",

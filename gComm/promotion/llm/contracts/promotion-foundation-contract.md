@@ -171,9 +171,11 @@ old evaluation records.
 ## Current limitations
 
 - Runtime delegates, evidence persistence, coupon consume/release, budget
-  consume/release, and workflow lifecycle entry points exist as service-level
-  contracts. Public APIs, scheduler/event triggers, concrete repair executors,
-  bounded retry state, and Axis operation buttons remain future slices.
+  consume/release, workflow lifecycle entry points, internal repair/retry
+  routes, bounded retry policy, idempotent repair runs, and failed-evaluation
+  reconciliation entry points exist as service-level contracts.
+- Scheduler/event triggers for recurring reconciliation and Axis operation
+  buttons/workspace actions for failed evaluation review remain future slices.
 - Customer eligibility, audience/segment providers, product/category hierarchy
   expansion, promotion provider adapters, and high-scale search/index
   optimization remain future slices.

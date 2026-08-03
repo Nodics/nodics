@@ -408,9 +408,14 @@ P2/P3 — Promotions, discounts, variants, point of service, quotes, fraud:
       Added `DefaultPromotionLifecycleWorkflowService` and `DefaultPromotionLifecycleInternalClientService` to adapt Promotion subjects to Workflow carriers while preserving human-only manual decisions and service-token-only automatic repair/reconciliation.
       Added workflow audit fields to Promotion records without making `promotionEvaluationRun` mutable; repair/retry creates governed requests rather than rewriting immutable evidence.
       Validation run: `node gComm/promotion/test/promotionLifecycleWorkflowContract.test.js`, `node gComm/promotion/test/promotionFoundationContract.test.js`, `node gComm/promotion/test/promotionRuntimePipelineDelegateContract.test.js`, and promotion init manifest validation.
-  ☐ Complete Promotion operational repair/retry/reconciliation execution APIs and scheduler integration. @p2 @commerce @workflow
-    Current evidence 2026-08-03:
-      The workflow foundation now exists, but production repair still needs concrete repair executors, bounded retry state, scheduler/event triggers, Axis operation buttons, and operational evidence views before live promotion operations are considered complete.
+  ◐ Complete Promotion operational repair/retry/reconciliation execution APIs and scheduler integration. @started(2026-08-03) @p2 @commerce @workflow
+    Evidence 2026-08-03:
+      Promotion now exposes internal service-token-only repair, retry, and reconcile routes for failed evaluation evidence, backed by `DefaultPromotionRepairService`, `DefaultPromotionRepairController`, bounded retry policy, idempotency keys, and `promotionRepairRun` operational evidence.
+      Repair/retry never mutates old `promotionEvaluationRun` records; successful repair creates a new evaluation run and records the `newEvaluationCode` on the repair run.
+      Reconciliation scans failed/rejected evaluations, filters repairable failure codes, and starts Promotion lifecycle workflow repair operations with governed service identity.
+      Validation run: `node gComm/promotion/test/promotionRepairServiceContract.test.js`, `node gComm/promotion/test/promotionFoundationContract.test.js`, `node gComm/promotion/test/promotionLifecycleWorkflowContract.test.js`, `node gComm/promotion/test/promotionRuntimePipelineDelegateContract.test.js`, and `npm run structure:audit -- --fail`.
+    Remaining:
+      Add scheduler/event trigger integration for recurring promotion reconciliation and add Axis operation buttons/workspace actions for repair runs and failed evaluation review.
   ✔ Decide whether product variant types require a dedicated schema or remain variant-axis driven. @done(2026-08-02) @p2 @commerce
     Evidence 2026-08-02:
       Product variants are implemented as reusable `productVariantAxis` and `productVariantAssignment` models, backed by Product Attribute Definitions/Values rather than a hardcoded product-variant-type catalog. Customer modules can extend allowed variant item types and bounds through configuration.

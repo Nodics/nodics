@@ -549,6 +549,103 @@ module.exports = {
         },
       },
     ),
+    promotionRepairRun: governed(
+      Object.assign(common(), {
+        repairRunCode: {
+          type: "string",
+          required: true,
+          description: "Stable Promotion repair or reconciliation run identity",
+          searchOptions: { enabled: true },
+        },
+        idempotencyKey: {
+          type: "string",
+          required: true,
+          description: "Idempotency key for retry-safe repair execution",
+          searchOptions: { enabled: true },
+        },
+        operationType: {
+          type: "string",
+          required: true,
+          default: "REPAIR_EVALUATION",
+          description:
+            "Operation such as REPAIR_EVALUATION, RETRY_EVALUATION, or RECONCILE_EVIDENCE",
+          searchOptions: { enabled: true },
+        },
+        evaluationCode: {
+          type: "string",
+          required: false,
+          description: "Original immutable evaluation evidence being repaired",
+          searchOptions: { enabled: true },
+        },
+        sourceType: {
+          type: "string",
+          required: false,
+          description: "Source such as CART, ORDER, QUOTE, or PREVIEW",
+          searchOptions: { enabled: true },
+        },
+        sourceCode: {
+          type: "string",
+          required: false,
+          description: "Business source code for the repair target",
+          searchOptions: { enabled: true },
+        },
+        retryCount: {
+          type: "number",
+          required: false,
+          description: "Bounded retry attempt count",
+        },
+        newEvaluationCode: {
+          type: "string",
+          required: false,
+          description: "New evaluation evidence created by repair execution",
+          searchOptions: { enabled: true },
+        },
+        failureCode: {
+          type: "string",
+          required: false,
+          description: "Safe failure code for repair/reconciliation",
+          searchOptions: { enabled: true },
+        },
+        failureMessage: {
+          type: "string",
+          required: false,
+          description:
+            "Safe bounded diagnostic message. Do not store secrets or raw external payloads.",
+        },
+        requestedAt: { type: "date", required: false },
+        completedAt: { type: "date", required: false },
+      }),
+      {
+        common: {
+          enterpriseCode: { enabled: true, name: "enterpriseCode" },
+          operationType: { enabled: true, name: "operationType" },
+          status: { enabled: true, name: "status" },
+        },
+        individual: {
+          repairRunCode: {
+            enabled: true,
+            name: "repairRunCode",
+            options: { unique: true },
+          },
+          idempotencyKey: {
+            enabled: true,
+            name: "idempotencyKey",
+            options: { unique: true },
+          },
+          evaluationCode: { enabled: true, name: "evaluationCode" },
+          workflowCarrierCode: { enabled: true, name: "workflowCarrierCode" },
+        },
+      },
+      {
+        evaluationCode: {
+          type: "one",
+          module: "promotion",
+          schema: "promotionEvaluationRun",
+          property: "evaluationCode",
+          onDelete: "restrict",
+        },
+      },
+    ),
     appliedPromotion: governed(
       Object.assign(common(), moneyFields(), {
         appliedPromotionCode: {

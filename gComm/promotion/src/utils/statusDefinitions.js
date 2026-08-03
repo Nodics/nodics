@@ -72,6 +72,14 @@ module.exports = {
     code: "403",
     message: "Promotion workflow identity boundary violated",
   },
+  ERR_PROMOTION_00022: {
+    code: "400",
+    message: "Promotion repair run invalid",
+  },
+  ERR_PROMOTION_00023: {
+    code: "409",
+    message: "Promotion repair operation failed",
+  },
   ERR_PROMOTION_EVAL_0001: {
     code: "400",
     message: "Promotion evaluation input invalid",

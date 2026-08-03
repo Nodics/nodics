@@ -271,6 +271,41 @@ module.exports = {
     }
     return true;
   },
+  prepareRepairRun: function (request) {
+    const model = this.prepare(request, "promotionRepairRun", [
+      "repairRunCode",
+    ]);
+    const workflow = (this.config() || {}).workflow || {};
+    if (
+      model.operationType &&
+      !(workflow.repairOperations || []).includes(model.operationType)
+    ) {
+      throw this.error(
+        "ERR_PROMOTION_00022",
+        "Promotion repair operation type is invalid",
+      );
+    }
+    if (!model.idempotencyKey) {
+      throw this.error(
+        "ERR_PROMOTION_00022",
+        "Promotion repair idempotency key is required",
+      );
+    }
+    if (
+      model.failureMessage &&
+      String(model.failureMessage).length >
+        Number(
+          ((this.config() || {}).reconciliation || {}).failureMessageLimit ||
+            240,
+        )
+    ) {
+      throw this.error(
+        "ERR_PROMOTION_00022",
+        "Promotion repair failure message is too long",
+      );
+    }
+    return true;
+  },
   prepareAppliedPromotion: function (request) {
     const model = this.prepare(request, "appliedPromotion", [
       "appliedPromotionCode",
