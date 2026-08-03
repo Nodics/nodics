@@ -102,6 +102,39 @@ assert.strictEqual(
   ),
   true,
 );
+const evaluationNavigation = backoffice.navigation.find(
+  (item) => item.id === "promotion-evaluations",
+);
+assert(evaluationNavigation);
+assert(
+  evaluationNavigation.lifecycleActions.some(
+    (action) =>
+      action.id === "repair-promotion-evaluation" &&
+      action.ownerModule === "promotion" &&
+      action.handlerAction === "repair" &&
+      action.operationRoute === "/internal/promotions/repair",
+  ),
+);
+assert(
+  evaluationNavigation.lifecycleActions.some(
+    (action) =>
+      action.id === "reconcile-promotion-evaluations" &&
+      action.ownerModule === "promotion" &&
+      action.handlerAction === "reconcile" &&
+      action.operationRoute === "/internal/promotions/reconcile",
+  ),
+);
+const repairNavigation = backoffice.navigation.find(
+  (item) => item.id === "promotion-repair-runs",
+);
+assert(repairNavigation);
+assert(
+  repairNavigation.lifecycleActions.some(
+    (action) =>
+      action.id === "retry-promotion-repair-run" &&
+      action.targetStatuses.includes("FAILED"),
+  ),
+);
 
 const authData = { enterprise: { code: "enterpriseA" } };
 const campaignRequest = {

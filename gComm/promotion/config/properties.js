@@ -266,6 +266,47 @@ module.exports = {
             moduleName: "promotion",
             schemaName: "promotionEvaluationRun",
           },
+          lifecycleActions: [
+            {
+              id: "repair-promotion-evaluation",
+              label: "Repair evaluation",
+              intent: "REPAIR",
+              permission: "promotion.backoffice.manage",
+              summary:
+                "Start a governed Promotion repair workflow for repairable failed evaluation evidence.",
+              targetStatuses: ["FAILED", "REJECTED"],
+              ownerModule: "promotion",
+              handlerAction: "repair",
+              operationRoute: "/internal/promotions/repair",
+              featureState: "PREVIEW",
+            },
+            {
+              id: "retry-promotion-evaluation",
+              label: "Retry evaluation",
+              intent: "RETRY",
+              permission: "promotion.backoffice.manage",
+              summary:
+                "Retry repairable Promotion evaluation evidence through bounded retry policy.",
+              targetStatuses: ["FAILED", "REQUESTED", "PARTIAL"],
+              ownerModule: "promotion",
+              handlerAction: "retry",
+              operationRoute: "/internal/promotions/retry",
+              featureState: "PREVIEW",
+            },
+            {
+              id: "reconcile-promotion-evaluations",
+              label: "Reconcile evaluations",
+              intent: "RECONCILE",
+              permission: "promotion.backoffice.manage",
+              summary:
+                "Scan failed Promotion evaluation evidence and start repair workflows for repairable records.",
+              targetStatuses: ["FAILED", "REJECTED"],
+              ownerModule: "promotion",
+              handlerAction: "reconcile",
+              operationRoute: "/internal/promotions/reconcile",
+              featureState: "PREVIEW",
+            },
+          ],
           detailPanels: [
             {
               id: "applied-promotions",
@@ -366,6 +407,33 @@ module.exports = {
             moduleName: "promotion",
             schemaName: "promotionRepairRun",
           },
+          lifecycleActions: [
+            {
+              id: "retry-promotion-repair-run",
+              label: "Retry repair run",
+              intent: "RETRY",
+              permission: "promotion.backoffice.manage",
+              summary:
+                "Retry a Promotion repair run that is still in a retryable operational state.",
+              targetStatuses: ["REQUESTED", "FAILED", "PARTIAL"],
+              ownerModule: "promotion",
+              handlerAction: "retry",
+              operationRoute: "/internal/promotions/retry",
+              featureState: "PREVIEW",
+            },
+            {
+              id: "reconcile-promotion-repair-runs",
+              label: "Reconcile repairs",
+              intent: "RECONCILE",
+              permission: "promotion.backoffice.manage",
+              summary:
+                "Run Promotion reconciliation to find failed evaluation evidence that still needs repair workflow processing.",
+              ownerModule: "promotion",
+              handlerAction: "reconcile",
+              operationRoute: "/internal/promotions/reconcile",
+              featureState: "PREVIEW",
+            },
+          ],
           workbenchPresentation: {
             defaultColumns: [
               "repairRunCode",
@@ -451,6 +519,20 @@ module.exports = {
         "PROMOTION_EVIDENCE_INCOMPLETE",
         "PROMOTION_RULE_UNAVAILABLE",
       ],
+      scheduler: {
+        enabled: true,
+        jobCode: "promotionEvaluationReconciliationJob",
+        runOnNode: "node0",
+        activeByDefault: false,
+        triggerExpression: "0 */15 * * * *",
+        priority: 750,
+        logResult: true,
+        handler: "DefaultPromotionReconciliationSchedulerService.run",
+        executedEvent: true,
+        completedEvent: false,
+        eventTargetModule: "promotion",
+        eventType: "ASYNC",
+      },
     },
     identity: {
       codePattern: "^[A-Za-z0-9][A-Za-z0-9._-]*$",

@@ -236,6 +236,34 @@ They must not mutate historical `promotionEvaluationRun` or
 `appliedPromotion` records. If the commercial answer changes, write new evidence
 and link it from the repair run.
 
+Recurring reconciliation is integrated through the existing CronJob capability.
+Promotion contributes a disabled-by-default job seed named
+`promotionEvaluationReconciliationJob`. The job uses CronJob-owned timing and
+calls `DefaultPromotionReconciliationSchedulerService.run`, which then invokes
+Promotion-owned reconciliation with service identity. This is intentionally not
+a hidden Promotion scheduler.
+
+For example, a project can enable or replace the default job by layering CronJob
+data or Promotion scheduler configuration:
+
+```js
+promotion: {
+  reconciliation: {
+    scheduler: {
+      activeByDefault: true,
+      triggerExpression: "0 */5 * * * *",
+      runOnNode: "node-commerce-1",
+      enterpriseCode: "enterpriseA"
+    }
+  }
+}
+```
+
+Axis/BackOffice receives repair and reconciliation actions from backend
+capability metadata. The frontend should render those actions generically from
+`lifecycleActions`; it should not hardcode Promotion-specific buttons inside a
+page component.
+
 Customer modules can replace workflow heads, actions, channels, and repair
 services through layered modules. They must preserve:
 

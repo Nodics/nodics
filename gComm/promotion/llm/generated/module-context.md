@@ -30,10 +30,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 14 |
-| Test files | 13 |
-| Data files | 7 |
-| All module-owned files | 34 |
+| Source files | 15 |
+| Test files | 14 |
+| Data files | 9 |
+| All module-owned files | 38 |
 | Local schema definitions | 9 |
 
 ## Ownership And Dependencies
@@ -63,8 +63,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 6 |
-| Partially documented | 23 |
+| Documented | 9 |
+| Partially documented | 24 |
 | Undocumented | 0 |
 | Inventory only | 5 |
 
@@ -91,9 +91,11 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/promotion/config/postscripts.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/config/prescripts.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/config/properties.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/promotion/data/init/data/cronjob/defaultPromotionReconciliationCronJobData.js` | `data` | `documented` | 0/0 | Seeds the disabled default CronJob contract for Promotion evaluation reconciliation. |  |
 | `gComm/promotion/data/init/data/workflow/defaultPromotionLifecycleWorkflowActionData.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/data/init/data/workflow/defaultPromotionLifecycleWorkflowChannelData.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/data/init/data/workflow/defaultPromotionLifecycleWorkflowHeadData.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/promotion/data/init/headers/cronjob/defaultPromotionReconciliationCronJobHeader.js` | `data` | `documented` | 0/0 | Imports the Promotion reconciliation CronJob into CronJob-owned schemas. |  |
 | `gComm/promotion/data/init/headers/workflow/defaultPromotionLifecycleWorkflowActionHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/data/init/headers/workflow/defaultPromotionLifecycleWorkflowChannelHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/data/init/headers/workflow/defaultPromotionLifecycleWorkflowHeadHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
@@ -110,6 +112,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/promotion/src/service/foundation/defaultPromotionEvaluationService.js` | `src` | `partially-documented` | 0/37 | Evaluates safe declarative promotion rules into immutable discount evidence without owning Cart or Order lifecycle. | add JSDoc for 37 exported method(s) |
 | `gComm/promotion/src/service/foundation/defaultPromotionValidationService.js` | `src` | `partially-documented` | 0/21 | Validates governed Promotion campaigns, rules, coupon records, evaluation runs, and applied-discount evidence. | add JSDoc for 21 exported method(s) |
 | `gComm/promotion/src/service/repair/defaultPromotionRepairService.js` | `src` | `partially-documented` | 0/19 | Records bounded Promotion repair, retry, and reconciliation evidence without mutating immutable evaluation rows. | add JSDoc for 19 exported method(s) |
+| `gComm/promotion/src/service/scheduler/defaultPromotionReconciliationSchedulerService.js` | `src` | `partially-documented` | 0/6 | Builds and executes CronJob-owned Promotion reconciliation triggers without making Promotion a scheduler authority. | add JSDoc for 6 exported method(s) |
 | `gComm/promotion/src/service/workflow/defaultPromotionLifecycleInternalClientService.js` | `src` | `partially-documented` | 0/3 | Crosses from human Promotion workflow actions into service-token-only automatic repair commands. | add JSDoc for 3 exported method(s) |
 | `gComm/promotion/src/service/workflow/defaultPromotionLifecycleWorkflowService.js` | `src` | `partially-documented` | 0/24 | Adapts Promotion lifecycle approval, rejection, repair, and reconciliation requests to Nodics Workflow-owned processes. | add JSDoc for 24 exported method(s) |
 | `gComm/promotion/src/utils/enums.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
@@ -118,6 +121,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/promotion/test/promotionEvaluationContract.test.js` | `test` | `documented` | 0/0 | Protects deterministic Promotion evaluation, stacking, coupon reservation, budget reservation, and rollback evidence contracts. |  |
 | `gComm/promotion/test/promotionFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects Promotion-owned campaign, rule, condition, action, coupon, evaluation, and applied-discount foundation contracts. |  |
 | `gComm/promotion/test/promotionLifecycleWorkflowContract.test.js` | `test` | `documented` | 0/0 | Protects Promotion lifecycle approval and repair as Workflow-owned business processes. |  |
+| `gComm/promotion/test/promotionReconciliationSchedulerContract.test.js` | `test` | `documented` | 0/0 | Protects CronJob-owned Promotion reconciliation scheduling metadata and service-token execution handoff. |  |
 | `gComm/promotion/test/promotionRepairServiceContract.test.js` | `test` | `documented` | 0/0 | Protects service-token-only Promotion repair, retry, reconciliation, and route contracts. |  |
 | `gComm/promotion/test/promotionRuntimePipelineDelegateContract.test.js` | `test` | `documented` | 0/0 | Protects Promotion runtime delegates used by Cart and Order calculation pipelines, including optional evidence persistence and coupon/budget consume/release operations. |  |
 

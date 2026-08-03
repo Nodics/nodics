@@ -174,8 +174,12 @@ old evaluation records.
   consume/release, workflow lifecycle entry points, internal repair/retry
   routes, bounded retry policy, idempotent repair runs, and failed-evaluation
   reconciliation entry points exist as service-level contracts.
-- Scheduler/event triggers for recurring reconciliation and Axis operation
-  buttons/workspace actions for failed evaluation review remain future slices.
+- CronJob-owned recurring reconciliation integration exists as disabled default
+  init data plus `DefaultPromotionReconciliationSchedulerService.run`. Promotion
+  must not own a parallel scheduler.
+- Axis operation visibility exists through backend-owned `lifecycleActions`
+  metadata. Frontend clients should render these actions generically rather
+  than hardcoding Promotion-specific buttons.
 - Customer eligibility, audience/segment providers, product/category hierarchy
   expansion, promotion provider adapters, and high-scale search/index
   optimization remain future slices.

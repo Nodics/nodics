@@ -7,6 +7,7 @@
 - `gComm/promotion/test/promotionEvaluationContract.test.js`
 - `gComm/promotion/test/promotionFoundationContract.test.js`
 - `gComm/promotion/test/promotionLifecycleWorkflowContract.test.js`
+- `gComm/promotion/test/promotionReconciliationSchedulerContract.test.js`
 - `gComm/promotion/test/promotionRepairServiceContract.test.js`
 - `gComm/promotion/test/promotionRuntimePipelineDelegateContract.test.js`
 

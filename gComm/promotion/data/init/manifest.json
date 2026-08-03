@@ -5,9 +5,11 @@
   "version": "1.0.0",
   "description": "Promotion init data",
   "files": {
+    "data/cronjob/defaultPromotionReconciliationCronJobData.js": "ec0a572a4b761dd8d1e3f11d2973d5686768142b84c481437249b220f5460bb6",
     "data/workflow/defaultPromotionLifecycleWorkflowActionData.js": "e1d52ac7814600969fdce36d346e6b3a3ab7abfeb1784514627b48dfe2a89cdb",
     "data/workflow/defaultPromotionLifecycleWorkflowChannelData.js": "4299c27998c51ba3741d5daa937e7dfbfecaedd948c46fc4f3f44d41c8e5c1b1",
     "data/workflow/defaultPromotionLifecycleWorkflowHeadData.js": "a78abd6779d25086afc55441b421f353a8e4938543e25d43327d5e77534f623a",
+    "headers/cronjob/defaultPromotionReconciliationCronJobHeader.js": "8e01a02bcdac0f038fe0e2694585d139e89996f05e8ba47a130b3420fe1b5ebf",
     "headers/workflow/defaultPromotionLifecycleWorkflowActionHeader.js": "0cc10ffcee08d4ed19f8299e082d8714e4ccee2c019ddb6a90de4595bd4f8822",
     "headers/workflow/defaultPromotionLifecycleWorkflowChannelHeader.js": "4ee0279876ca5b377683644b9af9c720320252e178637f96df771f8293d49807",
     "headers/workflow/defaultPromotionLifecycleWorkflowHeadHeader.js": "0cc8f9a426c63809262d75a8879d53da087ddb25a89c27ea640718290f97222d"
