@@ -13,19 +13,20 @@
     "version": "0.0.1",
     "description": "Enterprise-scoped retail and digital store foundation for Nodics commerce applications."
   },
-  "sourceFiles": 20,
-  "testFiles": 6,
+  "sourceFiles": 21,
+  "testFiles": 7,
   "dataFiles": 0,
-  "ownedFiles": 32,
-  "sourceFingerprint": "7764bd7fe2ae4caf4eaba991a438c2078f636faa98c3ae03363096d927d98976",
+  "ownedFiles": 33,
+  "sourceFingerprint": "dd801d57a51443fae02cb6825efe380fec35771781275f989db48bd59ebee1d2",
   "documentation": {
-    "documented": 25,
+    "documented": 26,
     "partially-documented": 0,
     "undocumented": 3,
     "inventory-only": 4
   },
   "schemaGroups": {
     "store": [
+      "pointOfService",
       "store",
       "storeWarehouseAssignment"
     ]

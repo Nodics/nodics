@@ -49,8 +49,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 0 |
-| Partially documented | 5 |
+| Documented | 1 |
+| Partially documented | 4 |
 | Undocumented | 0 |
 | Inventory only | 4 |
 
@@ -76,9 +76,9 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/payment/paymentProviders/stripeProvider/config/prescripts.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/payment/paymentProviders/stripeProvider/config/properties.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/payment/paymentProviders/stripeProvider/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/payment/paymentProviders/stripeProvider/nodics.js` | `module` | `partially-documented` | 0/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override; add JSDoc for 3 exported method(s) |
+| `gComm/payment/paymentProviders/stripeProvider/nodics.js` | `module` | `partially-documented` | 3/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/payment/paymentProviders/stripeProvider/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/payment/paymentProviders/stripeProvider/src/service/defaultStripePaymentProviderAdapterService.js` | `src` | `partially-documented` | 0/5 | Mocked Stripe PaymentIntent-style adapter returning safe Payment evidence. | add JSDoc for 5 exported method(s) |
+| `gComm/payment/paymentProviders/stripeProvider/src/service/defaultStripePaymentProviderAdapterService.js` | `src` | `documented` | 5/5 | Mocked Stripe PaymentIntent-style adapter returning safe Payment evidence. |  |
 
 ## Extension Contract
 

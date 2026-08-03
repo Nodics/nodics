@@ -11,8 +11,12 @@
 
 /** @module paymentCore @description Lifecycle entrypoint for the Payment Core capability while preserving payment API contracts. @layer module @owner paymentCore */
 module.exports = {
-    /** Executes the init Payment contract. */
-    init: function () { return Promise.resolve(true); },
-    /** Executes the postInit Payment contract. */
-    postInit: function () { return Promise.resolve(true); }
+  /** Executes the init Payment contract. */
+  init: function () {
+    return Promise.resolve(true);
+  },
+  /** Executes the postInit Payment contract. */
+  postInit: function () {
+    return Promise.resolve(true);
+  },
 };

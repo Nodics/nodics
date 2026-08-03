@@ -71,8 +71,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 80 |
-| Partially documented | 5 |
+| Documented | 82 |
+| Partially documented | 3 |
 | Undocumented | 10 |
 | Inventory only | 10 |
 
@@ -107,7 +107,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/data/init/data/enterprise/defaultTenantsData.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
 | `gCore/profile/data/init/data/groups/defaultBootstrapUserGroupsData.js` | `data` | `documented` | 0/0 | Seeds the default user-group hierarchy and narrowly scoped administrative permissions required by profile and control-plane capabilities. |  |
 | `gCore/profile/data/init/data/user/defaultCutomerData.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
-| `gCore/profile/data/init/data/user/defaultEmployeeData.js` | `data` | `partially-documented` | 0/1 | Provides mandatory profile initializer employees using validated bootstrap identity credentials from layered configuration. | add JSDoc for 1 exported method(s) |
+| `gCore/profile/data/init/data/user/defaultEmployeeData.js` | `data` | `documented` | 1/1 | Provides mandatory profile initializer employees using validated bootstrap identity credentials from layered configuration. |  |
 | `gCore/profile/data/init/headers/address/defaultAddressesHeader.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
 | `gCore/profile/data/init/headers/address/defaultContactsHeader.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
 | `gCore/profile/data/init/headers/enterprise/defaultEnterpriseHeader.js` | `data` | `documented` | 0/0 | Provides profile initializer or sample data consumed by the import layer. |  |
@@ -160,7 +160,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gCore/profile/src/service/identity/defaultIdentityGovernanceMigrationService.js` | `src` | `documented` | 18/18 | Provides tenant-scoped preview, apply, audit, rollback, ownership backfill, and recoverable service-key rotation for identity governance upgrades. |  |
 | `gCore/profile/src/service/identity/defaultMandatoryIdentityBootstrapService.js` | `src` | `documented` | 10/10 | Reconciles missing, non-secret identity-governance groups and configured service-principal metadata after init data is available. Credential values are never generated, rotated, or overwritten automatically, preserving project and tenant secrets while allowing safe framework upgrades. |  |
 | `gCore/profile/src/service/identity/defaultPrincipalGovernanceService.js` | `src` | `documented` | 8/8 | Enforces principal categories, active group assignment, and service-only API-key ownership before identity persistence. |  |
-| `gCore/profile/src/service/identity/defaultPrincipalScopeGovernanceService.js` | `src` | `partially-documented` | 0/18 | Validates and resolves tenant, enterprise, catalog, and operational scope assignments for Profile-owned principals. | add JSDoc for 18 exported method(s) |
+| `gCore/profile/src/service/identity/defaultPrincipalScopeGovernanceService.js` | `src` | `documented` | 18/18 | Validates and resolves tenant, enterprise, catalog, and operational scope assignments for Profile-owned principals. |  |
 | `gCore/profile/src/service/identity/defaultPrincipalSecurityStampGovernanceService.js` | `src` | `documented` | 8/8 | Advances principal security stamps for direct principal, password, and group-membership changes. |  |
 | `gCore/profile/src/service/interceptors/defaultAPIKeyInterceptorService.js` | `src` | `documented` | 1/1 | Implements profile default apikey interceptor service business behavior and extension logic. |  |
 | `gCore/profile/src/service/interceptors/defaultCustomerGetInterceptorService.js` | `src` | `documented` | 2/2 | Implements profile default customer get interceptor service business behavior and extension logic. |  |

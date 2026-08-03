@@ -13,23 +13,74 @@
 const evidence = require("../../../src/service/adapter/defaultPaymentProviderSafeEvidenceService");
 
 module.exports = {
-    providerCode: "paypalProvider",
-    providerFamily: "PAYPAL",
-    operations: ["AUTHORIZE", "CAPTURE", "REFUND", "VOID", "RECONCILE"],
-    publicContractReference: "PayPal REST Payments API",
-    authorize: async function (request) {
-        return evidence.build(this, request, { operation: "AUTHORIZE", providerOperation: "v2.checkout.orders.authorize", providerStatus: "AUTHORIZED" });
-    },
-    capture: async function (request) {
-        return evidence.build(this, request, { operation: "CAPTURE", providerOperation: "v2.payments.authorizations.capture", providerStatus: "COMPLETED" });
-    },
-    void: async function (request) {
-        return evidence.build(this, request, { operation: "VOID", providerOperation: "v2.payments.authorizations.void", providerStatus: "VOIDED" });
-    },
-    refund: async function (request) {
-        return evidence.build(this, request, { operation: "REFUND", providerOperation: "v2.payments.captures.refund", providerStatus: "COMPLETED" });
-    },
-    reconcile: async function (request) {
-        return evidence.build(this, request, { operation: "RECONCILE", providerOperation: "v2.payments.captures.get", providerStatus: "matched", reconciliationCode: "PAYPAL_CAPTURE_MATCHED" });
-    },
+  providerCode: "paypalProvider",
+  providerFamily: "PAYPAL",
+  operations: ["AUTHORIZE", "CAPTURE", "REFUND", "VOID", "RECONCILE"],
+  publicContractReference: "PayPal REST Payments API",
+  /**
+   * Executes the authorize contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
+  authorize: async function (request) {
+    return evidence.build(this, request, {
+      operation: "AUTHORIZE",
+      providerOperation: "v2.checkout.orders.authorize",
+      providerStatus: "AUTHORIZED",
+    });
+  },
+  /**
+   * Executes the capture contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
+  capture: async function (request) {
+    return evidence.build(this, request, {
+      operation: "CAPTURE",
+      providerOperation: "v2.payments.authorizations.capture",
+      providerStatus: "COMPLETED",
+    });
+  },
+  /**
+   * Executes the void contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
+  void: async function (request) {
+    return evidence.build(this, request, {
+      operation: "VOID",
+      providerOperation: "v2.payments.authorizations.void",
+      providerStatus: "VOIDED",
+    });
+  },
+  /**
+   * Executes the refund contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
+  refund: async function (request) {
+    return evidence.build(this, request, {
+      operation: "REFUND",
+      providerOperation: "v2.payments.captures.refund",
+      providerStatus: "COMPLETED",
+    });
+  },
+  /**
+   * Executes the reconcile contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
+  reconcile: async function (request) {
+    return evidence.build(this, request, {
+      operation: "RECONCILE",
+      providerOperation: "v2.payments.captures.get",
+      providerStatus: "matched",
+      reconciliationCode: "PAYPAL_CAPTURE_MATCHED",
+    });
+  },
 };

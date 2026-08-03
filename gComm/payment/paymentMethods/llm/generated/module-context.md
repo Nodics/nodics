@@ -51,8 +51,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 3 |
-| Partially documented | 1 |
+| Documented | 4 |
+| Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
 
@@ -78,7 +78,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/payment/paymentMethods/config/prescripts.js` | `config` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gComm/payment/paymentMethods/config/properties.js` | `config` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gComm/payment/paymentMethods/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/payment/paymentMethods/nodics.js` | `module` | `partially-documented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add JSDoc for 2 exported method(s) |
+| `gComm/payment/paymentMethods/nodics.js` | `module` | `documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gComm/payment/paymentMethods/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 
 ## Extension Contract

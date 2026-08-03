@@ -33,11 +33,11 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 20 |
-| Test files | 6 |
+| Source files | 21 |
+| Test files | 7 |
 | Data files | 0 |
-| All module-owned files | 32 |
-| Local schema definitions | 2 |
+| All module-owned files | 33 |
+| Local schema definitions | 3 |
 
 ## Ownership And Dependencies
 
@@ -69,7 +69,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 25 |
+| Documented | 26 |
 | Partially documented | 0 |
 | Undocumented | 3 |
 | Inventory only | 4 |
@@ -111,6 +111,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/store/src/schemas/schemas.js` | `src` | `documented` | 0/0 | Schema definition registry for this boundary. |  |
 | `gComm/store/src/search/indexes.js` | `src` | `documented` | 0/0 | Search index definition registry for this boundary. |  |
 | `gComm/store/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Empty module-creation placeholder that demonstrates the service lifecycle shape until concrete services are added. |  |
+| `gComm/store/src/service/foundation/defaultPointOfServiceFoundationService.js` | `src` | `documented` | 13/13 | Validates Store-owned Point of Service identity, pickup capacity policy, geolocation metadata, and safe Store/Warehouse/Fulfillment references. |  |
 | `gComm/store/src/service/foundation/defaultStoreEnterpriseScopeService.js` | `src` | `documented` | 10/10 | Resolves authenticated enterprise ownership and scopes Store persistence identities and queries. |  |
 | `gComm/store/src/service/foundation/defaultStoreFoundationService.js` | `src` | `documented` | 11/11 | Enforces Store identity, configured classification, lifecycle, effective dates, and safe retirement. |  |
 | `gComm/store/src/service/foundation/defaultStoreWarehouseAssignmentFoundationService.js` | `src` | `documented` | 12/12 | Validates enterprise-safe Store-to-Inventory warehouse associations without owning warehouse state. |  |

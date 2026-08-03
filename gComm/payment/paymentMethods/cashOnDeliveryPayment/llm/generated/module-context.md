@@ -74,7 +74,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/payment/paymentMethods/cashOnDeliveryPayment/config/prescripts.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/payment/paymentMethods/cashOnDeliveryPayment/config/properties.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/payment/paymentMethods/cashOnDeliveryPayment/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/payment/paymentMethods/cashOnDeliveryPayment/nodics.js` | `module` | `partially-documented` | 0/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override; add JSDoc for 2 exported method(s) |
+| `gComm/payment/paymentMethods/cashOnDeliveryPayment/nodics.js` | `module` | `partially-documented` | 2/2 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/payment/paymentMethods/cashOnDeliveryPayment/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 
 ## Extension Contract

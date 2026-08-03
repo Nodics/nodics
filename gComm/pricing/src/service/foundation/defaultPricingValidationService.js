@@ -89,6 +89,12 @@ module.exports = {
     this.assertDateRange(request.model);
     return request.model;
   },
+  /**
+   * Executes the normalize tax inclusion contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   normalizeTaxInclusion: function (model, policy) {
     policy = policy || {};
     let taxMode = model.taxMode,
@@ -118,6 +124,12 @@ module.exports = {
     if (!taxMode && inclusionMode)
       model.taxMode = inclusionMode === "TAX_INCLUSIVE" ? "GROSS" : "NET";
   },
+  /**
+   * Executes the validate tax context contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   validateTaxContext: function (model, options) {
     options = options || {};
     if (model.taxCountryCode && !/^[A-Z]{2}$/.test(model.taxCountryCode))

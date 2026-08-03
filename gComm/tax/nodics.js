@@ -17,21 +17,21 @@
  * @override Later active modules may override lifecycle behavior without modifying this generated boundary.
  */
 module.exports = {
-    /**
-     * Initializes this module boundary.
-     * @param {Object} options Startup options.
-     * @returns {Promise<boolean>} Resolves when initialization completes.
-     */
-    init: function (options) {
-        return Promise.resolve(true);
-    },
+  /**
+   * Initializes this module boundary.
+   * @param {Object} options Startup options.
+   * @returns {Promise<boolean>} Resolves when initialization completes.
+   */
+  init: function (options) {
+    return Promise.resolve(true);
+  },
 
-    /**
-     * Finalizes this module boundary.
-     * @param {Object} options Startup options.
-     * @returns {Promise<boolean>} Resolves when post-initialization completes.
-     */
-    postInit: function (options) {
-        return Promise.resolve(true);
-    }
+  /**
+   * Finalizes this module boundary.
+   * @param {Object} options Startup options.
+   * @returns {Promise<boolean>} Resolves when post-initialization completes.
+   */
+  postInit: function (options) {
+    return Promise.resolve(true);
+  },
 };

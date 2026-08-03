@@ -11,6 +11,7 @@
 
 ## Generated Tests
 
+- `gComm/store/test/gen/schema/pointOfServiceSchemaContract.test.js`
 - `gComm/store/test/gen/schema/storeSchemaContract.test.js`
 - `gComm/store/test/gen/schema/storeWarehouseAssignmentSchemaContract.test.js`
 

@@ -11,12 +11,30 @@
 
 /** @module promotion/controller/DefaultPromotionRepairController @description Maps internal Promotion repair and reconciliation commands to Promotion-owned services. @layer controller @owner promotion */
 module.exports = {
+  /**
+   * Executes the init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   init: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the post init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   postInit: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the run contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   run: function (operation, request, callback) {
     const promise = SERVICE.DefaultPromotionRepairService[operation](
       Object.assign({}, request, { repairRequest: request.body || {} }),
@@ -32,12 +50,30 @@ module.exports = {
           data: value,
         }));
   },
+  /**
+   * Executes the repair contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   repair: function (request, callback) {
     return module.exports.run("repair", request, callback);
   },
+  /**
+   * Executes the retry contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   retry: function (request, callback) {
     return module.exports.run("retry", request, callback);
   },
+  /**
+   * Executes the reconcile contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   reconcile: function (request, callback) {
     return module.exports.run("reconcile", request, callback);
   },

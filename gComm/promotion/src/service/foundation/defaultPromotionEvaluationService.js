@@ -68,21 +68,51 @@ const asArray = function (value) {
 };
 
 module.exports = {
+  /**
+   * Executes the init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   init: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the post init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   postInit: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the now contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   now: function () {
     return new Date();
   },
+  /**
+   * Executes the error contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   error: function (code, message) {
     return new CLASSES.NodicsError(message, null, code);
   },
   decimal: normalizeDecimal,
   formatDecimal: formatDecimal,
   compareDecimal: compareDecimal,
+  /**
+   * Executes the config contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   config: function () {
     if (
       typeof CONFIG === "undefined" ||
@@ -93,6 +123,12 @@ module.exports = {
     }
     return CONFIG.get("promotion") || {};
   },
+  /**
+   * Executes the is active contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   isActive: function (record, at) {
     const status = record && record.status;
     if (status && !["ACTIVE", "EVALUATED"].includes(status)) return false;
@@ -108,9 +144,21 @@ module.exports = {
     }
     return true;
   },
+  /**
+   * Executes the runtime contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   runtime: function () {
     return (this.config() || {}).runtime || {};
   },
+  /**
+   * Executes the items contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   items: function (value) {
     if (!value) return [];
     if (Array.isArray(value)) return value;
@@ -120,11 +168,23 @@ module.exports = {
     if (Array.isArray(value.items)) return value.items;
     return [value];
   },
+  /**
+   * Executes the service contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   service: function (serviceName) {
     return typeof SERVICE === "undefined" || !SERVICE
       ? undefined
       : SERVICE[serviceName];
   },
+  /**
+   * Executes the resolve enterprise code contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   resolveEnterpriseCode: function (request) {
     if (
       this.service("DefaultPromotionEnterpriseScopeService") &&
@@ -145,9 +205,21 @@ module.exports = {
         request.authData.enterprise.code)
     );
   },
+  /**
+   * Executes the source from input contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   sourceFromInput: function (request) {
     return (request && request.calculationInput) || {};
   },
+  /**
+   * Executes the field contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   field: function (input, names) {
     for (const name of names) {
       if (input && input[name] !== undefined && input[name] !== null) {
@@ -156,6 +228,12 @@ module.exports = {
     }
     return undefined;
   },
+  /**
+   * Executes the sum contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   sum: function (items, paths) {
     return formatDecimal(
       (items || []).reduce((total, item) => {
@@ -164,6 +242,12 @@ module.exports = {
       }, 0n),
     );
   },
+  /**
+   * Executes the context for contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   contextFor: function (sourceType, targetType, request) {
     const input = this.sourceFromInput(request);
     const source = input.entry || input.cart || input.order || input;
@@ -229,6 +313,12 @@ module.exports = {
       at: (request && request.at) || this.now(),
     };
   },
+  /**
+   * Executes the records from request contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   recordsFromRequest: function (request, name) {
     const input = this.sourceFromInput(request);
     const grouped =
@@ -236,6 +326,12 @@ module.exports = {
     const records = grouped[name] || (request && request[name]) || input[name];
     return this.items(records);
   },
+  /**
+   * Executes the load schema records contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   loadSchemaRecords: async function (request, serviceName) {
     const service = this.service(serviceName);
     if (!service || typeof service.get !== "function") return [];
@@ -251,6 +347,12 @@ module.exports = {
     });
     return this.items(response);
   },
+  /**
+   * Executes the evaluation records contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   evaluationRecords: async function (request) {
     const direct = {
       campaigns: this.recordsFromRequest(request, "campaigns"),
@@ -297,6 +399,12 @@ module.exports = {
       ),
     };
   },
+  /**
+   * Executes the save one contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   saveOne: async function (serviceName, request, model) {
     const service = this.service(serviceName);
     if (!service || typeof service.save !== "function") return model;
@@ -317,6 +425,12 @@ module.exports = {
     });
     return this.items(response)[0] || response.result || model;
   },
+  /**
+   * Executes the persist evaluation contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   persistEvaluation: async function (request, result) {
     if (this.runtime().persistEvaluationEvidence === false) {
       return { persisted: false, reasonCode: "PERSISTENCE_DISABLED" };
@@ -341,6 +455,12 @@ module.exports = {
       appliedPromotions: savedApplied,
     };
   },
+  /**
+   * Executes the evaluate runtime contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   evaluateRuntime: async function (sourceType, targetType, request) {
     const records = await this.evaluationRecords(request || {});
     const context = this.contextFor(sourceType, targetType, request || {});
@@ -373,18 +493,48 @@ module.exports = {
     result.persistence = await this.persistEvaluation(request || {}, result);
     return result;
   },
+  /**
+   * Executes the evaluate entry contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   evaluateEntry: async function (request) {
     return this.evaluateRuntime("CART", "ENTRY", request);
   },
+  /**
+   * Executes the evaluate cart contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   evaluateCart: async function (request) {
     return this.evaluateRuntime("CART", "CART", request);
   },
+  /**
+   * Executes the reconcile entry contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   reconcileEntry: async function (request) {
     return this.evaluateRuntime("ORDER", "ENTRY", request);
   },
+  /**
+   * Executes the reconcile order contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   reconcileOrder: async function (request) {
     return this.evaluateRuntime("ORDER", "ORDER", request);
   },
+  /**
+   * Executes the mutate coupon contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   mutateCoupon: async function (couponCode, delta, request) {
     if (!couponCode || !this.service("DefaultCouponCodeService")) return false;
     const service = this.service("DefaultCouponCodeService");
@@ -416,6 +566,12 @@ module.exports = {
     });
     return true;
   },
+  /**
+   * Executes the mutate budget contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   mutateBudget: async function (campaignCode, amount, request) {
     if (!campaignCode || !this.service("DefaultPromotionCampaignService"))
       return false;
@@ -446,6 +602,12 @@ module.exports = {
     });
     return true;
   },
+  /**
+   * Executes the reservation plans contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   reservationPlans: function (request) {
     const input = this.sourceFromInput(request || {});
     const evidence =
@@ -462,6 +624,12 @@ module.exports = {
       ),
     ]);
   },
+  /**
+   * Executes the consume reservations contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   consumeReservations: async function (request) {
     const plans = this.reservationPlans(request);
     const consumed = [];
@@ -490,6 +658,12 @@ module.exports = {
     }
     return { status: "CONSUMED", consumed: consumed };
   },
+  /**
+   * Executes the release reservations contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   releaseReservations: async function (request) {
     const plans = this.reservationPlans(request);
     const released = [];
@@ -516,6 +690,12 @@ module.exports = {
     }
     return { status: "RELEASED", released: released };
   },
+  /**
+   * Executes the evaluate condition contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   evaluateCondition: function (condition, context) {
     if (!this.isActive(condition, context.at)) {
       return { matched: false, reasonCode: "CONDITION_INACTIVE" };
@@ -565,6 +745,12 @@ module.exports = {
       reasonCode: matched ? "MATCHED" : "NOT_MATCHED",
     };
   },
+  /**
+   * Executes the evaluate rule conditions contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   evaluateRuleConditions: function (rule, conditions, context) {
     const candidates = (conditions || []).filter(
       (item) => item.ruleCode === rule.ruleCode,
@@ -585,6 +771,12 @@ module.exports = {
         : conditionResults.every((item) => item.matched);
     return { matched: matched, conditionResults: conditionResults };
   },
+  /**
+   * Executes the coupon plan contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   couponPlan: function (rule, couponCampaigns, couponCodes, context) {
     if (!rule.couponRequired) return { required: false, action: "NONE" };
     const requested = context.couponCode;
@@ -646,6 +838,12 @@ module.exports = {
       releaseAction: "RELEASE_ON_CHECKOUT_ROLLBACK",
     };
   },
+  /**
+   * Executes the budget plan contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   budgetPlan: function (campaign, action, discountAmount) {
     if (!campaign || !campaign.budgetLimitAmount) {
       return { action: "NONE", status: "NOT_CONFIGURED" };
@@ -668,6 +866,12 @@ module.exports = {
       releaseAction: "RELEASE_ON_CHECKOUT_ROLLBACK",
     };
   },
+  /**
+   * Executes the discount for action contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   discountForAction: function (action, context) {
     const base = normalizeDecimal(
       action.targetType === "ENTRY"
@@ -705,11 +909,23 @@ module.exports = {
     }
     return formatDecimal(discount);
   },
+  /**
+   * Executes the actions for rule contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   actionsForRule: function (rule, actions) {
     return (actions || [])
       .filter((item) => item.ruleCode === rule.ruleCode && this.isActive(item))
       .sort((a, b) => Number(a.sequence || 100) - Number(b.sequence || 100));
   },
+  /**
+   * Executes the arbitrate contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   arbitrate: function (candidates) {
     const result = [];
     const usedGroups = {};
@@ -733,6 +949,12 @@ module.exports = {
     }
     return result;
   },
+  /**
+   * Executes the evaluate contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   evaluate: function (input) {
     const context = input.context || {};
     const campaigns = input.campaigns || [];

@@ -17,63 +17,82 @@
  * @override Replace this adapter or configure provider-specific adapter services without changing method policy, checkout, cart, or order code.
  */
 module.exports = {
-    /** Initializes the card provider adapter. */
-    init: function () { return Promise.resolve(true); },
-    /** Completes card provider adapter startup. */
-    postInit: function () { return Promise.resolve(true); },
-    /** Executes authorization-like operations with safe transaction evidence only. */
-    authorize: async function (request) {
-        if (typeof SERVICE === 'undefined' || !SERVICE.DefaultManualPaymentProviderAdapterService) {
-            return this.localResult(request);
-        }
-        return SERVICE.DefaultManualPaymentProviderAdapterService.authorize(request);
-    },
-    /** Executes refund operations with safe transaction evidence only. */
-    refund: async function (request) {
-        return this.delegate(request, 'refund');
-    },
-    /** Executes capture operations with safe transaction evidence only. */
-    capture: async function (request) {
-        return this.delegate(request, 'capture');
-    },
-    /** Executes void operations with safe transaction evidence only. */
-    void: async function (request) {
-        return this.delegate(request, 'void');
-    },
-    /** Executes reconciliation operations with safe transaction evidence only. */
-    reconcile: async function (request) {
-        return this.delegate(request, 'reconcile');
-    },
-    /** Delegates to the manual safe adapter when no real card provider is layered. */
-    delegate: async function (request, operation) {
-        if (typeof SERVICE === 'undefined' || !SERVICE.DefaultManualPaymentProviderAdapterService) {
-            return this.localResult(request);
-        }
-        let adapter = SERVICE.DefaultManualPaymentProviderAdapterService;
-        let handler = typeof adapter[operation] === 'function' ? adapter[operation] : adapter.authorize;
-        return handler.call(adapter, request);
-    },
-    /** Produces fallback safe transaction evidence for direct adapter tests. */
-    localResult: function (request) {
-        let gateway = request && request.providerGatewayService;
-        if (gateway && typeof gateway.localResult === 'function') return gateway.localResult(request);
-        let transaction = (request || {}).transaction || {};
-        let statusByOperation = {
-            CAPTURE: 'CAPTURED',
-            DEFER: 'DEFERRED',
-            REFUND: 'REFUNDED',
-            VOID: 'VOIDED',
-            RECONCILE: 'RECONCILED',
-        };
-        let status = statusByOperation[transaction.operation] || 'AUTHORIZED';
-        return {
-            transactionCode: transaction.transactionCode,
-            idempotencyKey: transaction.idempotencyKey,
-            providerCode: transaction.providerCode,
-            operation: transaction.operation,
-            status: status,
-            providerTransactionRef: [String(status).toLowerCase(), transaction.transactionCode].join('::'),
-            completedAt: new Date(),
-        };
-    },
+  /** Initializes the card provider adapter. */
+  init: function () {
+    return Promise.resolve(true);
+  },
+  /** Completes card provider adapter startup. */
+  postInit: function () {
+    return Promise.resolve(true);
+  },
+  /** Executes authorization-like operations with safe transaction evidence only. */
+  authorize: async function (request) {
+    if (
+      typeof SERVICE === "undefined" ||
+      !SERVICE.DefaultManualPaymentProviderAdapterService
+    ) {
+      return this.localResult(request);
+    }
+    return SERVICE.DefaultManualPaymentProviderAdapterService.authorize(
+      request,
+    );
+  },
+  /** Executes refund operations with safe transaction evidence only. */
+  refund: async function (request) {
+    return this.delegate(request, "refund");
+  },
+  /** Executes capture operations with safe transaction evidence only. */
+  capture: async function (request) {
+    return this.delegate(request, "capture");
+  },
+  /** Executes void operations with safe transaction evidence only. */
+  void: async function (request) {
+    return this.delegate(request, "void");
+  },
+  /** Executes reconciliation operations with safe transaction evidence only. */
+  reconcile: async function (request) {
+    return this.delegate(request, "reconcile");
+  },
+  /** Delegates to the manual safe adapter when no real card provider is layered. */
+  delegate: async function (request, operation) {
+    if (
+      typeof SERVICE === "undefined" ||
+      !SERVICE.DefaultManualPaymentProviderAdapterService
+    ) {
+      return this.localResult(request);
+    }
+    let adapter = SERVICE.DefaultManualPaymentProviderAdapterService;
+    let handler =
+      typeof adapter[operation] === "function"
+        ? adapter[operation]
+        : adapter.authorize;
+    return handler.call(adapter, request);
+  },
+  /** Produces fallback safe transaction evidence for direct adapter tests. */
+  localResult: function (request) {
+    let gateway = request && request.providerGatewayService;
+    if (gateway && typeof gateway.localResult === "function")
+      return gateway.localResult(request);
+    let transaction = (request || {}).transaction || {};
+    let statusByOperation = {
+      CAPTURE: "CAPTURED",
+      DEFER: "DEFERRED",
+      REFUND: "REFUNDED",
+      VOID: "VOIDED",
+      RECONCILE: "RECONCILED",
+    };
+    let status = statusByOperation[transaction.operation] || "AUTHORIZED";
+    return {
+      transactionCode: transaction.transactionCode,
+      idempotencyKey: transaction.idempotencyKey,
+      providerCode: transaction.providerCode,
+      operation: transaction.operation,
+      status: status,
+      providerTransactionRef: [
+        String(status).toLowerCase(),
+        transaction.transactionCode,
+      ].join("::"),
+      completedAt: new Date(),
+    };
+  },
 };

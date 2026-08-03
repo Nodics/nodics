@@ -31,7 +31,7 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 15 |
-| Test files | 14 |
+| Test files | 15 |
 | Data files | 9 |
 | All module-owned files | 38 |
 | Local schema definitions | 9 |
@@ -63,8 +63,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 9 |
-| Partially documented | 24 |
+| Documented | 17 |
+| Partially documented | 16 |
 | Undocumented | 0 |
 | Inventory only | 5 |
 
@@ -101,20 +101,20 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/promotion/data/init/headers/workflow/defaultPromotionLifecycleWorkflowHeadHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/promotion/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/promotion/nodics.js` | `module` | `partially-documented` | 0/2 | Nodics lifecycle entrypoint for the Promotion capability. | add JSDoc for 2 exported method(s) |
+| `gComm/promotion/nodics.js` | `module` | `documented` | 2/2 | Nodics lifecycle entrypoint for the Promotion capability. |  |
 | `gComm/promotion/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/promotion/src/controller/defaultPromotionRepairController.js` | `src` | `partially-documented` | 0/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override; add JSDoc for 6 exported method(s) |
+| `gComm/promotion/src/controller/defaultPromotionRepairController.js` | `src` | `partially-documented` | 6/6 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/src/interceptors/interceptors.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/src/router/appConfig.js` | `src` | `documented` | 0/0 | Router application configuration registry for this boundary. |  |
 | `gComm/promotion/src/router/routers.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/src/schemas/schemas.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
-| `gComm/promotion/src/service/foundation/defaultPromotionEnterpriseScopeService.js` | `src` | `partially-documented` | 0/9 | Applies authenticated enterprise scope and deterministic identity to Promotion records. | add JSDoc for 9 exported method(s) |
-| `gComm/promotion/src/service/foundation/defaultPromotionEvaluationService.js` | `src` | `partially-documented` | 0/37 | Evaluates safe declarative promotion rules into immutable discount evidence without owning Cart or Order lifecycle. | add JSDoc for 37 exported method(s) |
-| `gComm/promotion/src/service/foundation/defaultPromotionValidationService.js` | `src` | `partially-documented` | 0/21 | Validates governed Promotion campaigns, rules, coupon records, evaluation runs, and applied-discount evidence. | add JSDoc for 21 exported method(s) |
-| `gComm/promotion/src/service/repair/defaultPromotionRepairService.js` | `src` | `partially-documented` | 0/19 | Records bounded Promotion repair, retry, and reconciliation evidence without mutating immutable evaluation rows. | add JSDoc for 19 exported method(s) |
-| `gComm/promotion/src/service/scheduler/defaultPromotionReconciliationSchedulerService.js` | `src` | `partially-documented` | 0/6 | Builds and executes CronJob-owned Promotion reconciliation triggers without making Promotion a scheduler authority. | add JSDoc for 6 exported method(s) |
-| `gComm/promotion/src/service/workflow/defaultPromotionLifecycleInternalClientService.js` | `src` | `partially-documented` | 0/3 | Crosses from human Promotion workflow actions into service-token-only automatic repair commands. | add JSDoc for 3 exported method(s) |
-| `gComm/promotion/src/service/workflow/defaultPromotionLifecycleWorkflowService.js` | `src` | `partially-documented` | 0/24 | Adapts Promotion lifecycle approval, rejection, repair, and reconciliation requests to Nodics Workflow-owned processes. | add JSDoc for 24 exported method(s) |
+| `gComm/promotion/src/service/foundation/defaultPromotionEnterpriseScopeService.js` | `src` | `documented` | 9/9 | Applies authenticated enterprise scope and deterministic identity to Promotion records. |  |
+| `gComm/promotion/src/service/foundation/defaultPromotionEvaluationService.js` | `src` | `documented` | 37/37 | Evaluates safe declarative promotion rules into immutable discount evidence without owning Cart or Order lifecycle. |  |
+| `gComm/promotion/src/service/foundation/defaultPromotionValidationService.js` | `src` | `documented` | 21/21 | Validates governed Promotion campaigns, rules, coupon records, evaluation runs, and applied-discount evidence. |  |
+| `gComm/promotion/src/service/repair/defaultPromotionRepairService.js` | `src` | `documented` | 19/19 | Records bounded Promotion repair, retry, and reconciliation evidence without mutating immutable evaluation rows. |  |
+| `gComm/promotion/src/service/scheduler/defaultPromotionReconciliationSchedulerService.js` | `src` | `documented` | 6/6 | Builds and executes CronJob-owned Promotion reconciliation triggers without making Promotion a scheduler authority. |  |
+| `gComm/promotion/src/service/workflow/defaultPromotionLifecycleInternalClientService.js` | `src` | `documented` | 3/3 | Crosses from human Promotion workflow actions into service-token-only automatic repair commands. |  |
+| `gComm/promotion/src/service/workflow/defaultPromotionLifecycleWorkflowService.js` | `src` | `documented` | 24/24 | Adapts Promotion lifecycle approval, rejection, repair, and reconciliation requests to Nodics Workflow-owned processes. |  |
 | `gComm/promotion/src/utils/enums.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/src/utils/statusDefinitions.js` | `src` | `partially-documented` | 0/0 | Stable Promotion error-to-HTTP mappings. | add @override |
 | `gComm/promotion/src/utils/utils.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |

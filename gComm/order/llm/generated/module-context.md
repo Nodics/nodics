@@ -67,8 +67,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 48 |
-| Partially documented | 19 |
+| Documented | 52 |
+| Partially documented | 15 |
 | Undocumented | 0 |
 | Inventory only | 5 |
 
@@ -119,8 +119,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/order/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/order/nodics.js` | `module` | `documented` | 2/2 | Order module lifecycle entrypoint used by the Nodics module loader. |  |
 | `gComm/order/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/order/src/controller/defaultOrderController.js` | `src` | `partially-documented` | 1/3 | HTTP-facing Order controller for governed order lifecycle operations beyond generated Schema Workbench routes. | add JSDoc for 2 exported method(s) |
-| `gComm/order/src/facade/DefaultOrderFacade.js` | `src` | `partially-documented` | 0/4 | Facade boundary for Order operations, keeping controllers independent from Order service implementation details. | add JSDoc for 4 exported method(s) |
+| `gComm/order/src/controller/defaultOrderController.js` | `src` | `documented` | 3/3 | HTTP-facing Order controller for governed order lifecycle operations beyond generated Schema Workbench routes. |  |
+| `gComm/order/src/facade/DefaultOrderFacade.js` | `src` | `documented` | 4/4 | Facade boundary for Order operations, keeping controllers independent from Order service implementation details. |  |
 | `gComm/order/src/interceptors/interceptors.js` | `src` | `documented` | 0/0 | Schema interceptor registrations for order save lifecycle hooks. |  |
 | `gComm/order/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Pipeline definitions for atomic Order technical tasks. |  |
 | `gComm/order/src/router/appConfig.js` | `src` | `documented` | 0/0 | Reserved order router application configuration contribution. |  |
@@ -132,8 +132,8 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/order/src/service/interceptor/defaultOrderCodeGeneratorInterceptorService.js` | `src` | `documented` | 3/3 | Order pre-save interceptor service that derives missing enterprise ownership from the request context. |  |
 | `gComm/order/src/service/order/DefaultOrderService.js` | `src` | `documented` | 4/4 | Order service implementation that prepares tenant-aware order persistence context and starts create/calculation pipelines. |  |
 | `gComm/order/src/service/pipeline/defaultCreateOrderPipelineService.js` | `src` | `documented` | 12/12 | Pipeline node service for order creation validation, associated data checks, persistence, and terminal handling. |  |
-| `gComm/order/src/service/pipeline/defaultOrderCalculationPipelineService.js` | `src` | `partially-documented` | 0/21 | Pipeline node service for order validation and aggregate order calculation or reconciliation. It preserves historical checkout evidence and provides extension points for explicit lifecycle recalculation operations. | add JSDoc for 21 exported method(s) |
-| `gComm/order/src/service/pipeline/defaultOrderEntryCalculationPipelineService.js` | `src` | `partially-documented` | 0/15 | Pipeline node service for one order-entry calculation or evidence reconciliation task. Order entry calculation is separate from aggregate order calculation and must not hide Payment, Inventory, Fulfillment, Promotion, Pricing, or Tax authority inside Order. | add JSDoc for 15 exported method(s) |
+| `gComm/order/src/service/pipeline/defaultOrderCalculationPipelineService.js` | `src` | `documented` | 21/21 | Pipeline node service for order validation and aggregate order calculation or reconciliation. It preserves historical checkout evidence and provides extension points for explicit lifecycle recalculation operations. |  |
+| `gComm/order/src/service/pipeline/defaultOrderEntryCalculationPipelineService.js` | `src` | `documented` | 15/15 | Pipeline node service for one order-entry calculation or evidence reconciliation task. Order entry calculation is separate from aggregate order calculation and must not hide Payment, Inventory, Fulfillment, Promotion, Pricing, or Tax authority inside Order. |  |
 | `gComm/order/src/service/placement/defaultCheckoutAllocationCopyService.js` | `src` | `documented` | 12/12 | Copies exact Cart checkout delivery/payment group and quantity-allocation evidence into Order-owned immutable models during checkout placement. |  |
 | `gComm/order/src/service/placement/defaultCheckoutInventoryReservationService.js` | `src` | `documented` | 12/12 | Converts checkout delivery allocation demand into Inventory-owned Promise Reservation requests during checkout placement. |  |
 | `gComm/order/src/service/placement/defaultCheckoutOrderProjectionService.js` | `src` | `documented` | 16/16 | Creates an Order header and Order Entries from validated Cart checkout evidence during checkout placement. |  |

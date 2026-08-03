@@ -52,8 +52,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 3 |
-| Partially documented | 1 |
+| Documented | 4 |
+| Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
 
@@ -79,7 +79,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/payment/config/prescripts.js` | `config` | `documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. |  |
 | `gComm/payment/config/properties.js` | `config` | `documented` | 0/0 | Reserved Payment family configuration contribution point. |  |
 | `gComm/payment/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/payment/nodics.js` | `module` | `partially-documented` | 0/2 | Lifecycle entrypoint for the Payment family group. | add JSDoc for 2 exported method(s) |
+| `gComm/payment/nodics.js` | `module` | `documented` | 2/2 | Lifecycle entrypoint for the Payment family group. |  |
 | `gComm/payment/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 
 ## Extension Contract

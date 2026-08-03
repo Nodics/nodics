@@ -19,9 +19,19 @@
  * routes through later router contributions.
  */
 module.exports = {
+  /**
+   * Initializes the order controller.
+   *
+   * @returns {Promise<boolean>} Resolves when the controller is ready.
+   */
   init: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Completes post-start initialization for the order controller.
+   *
+   * @returns {Promise<boolean>} Resolves when post-initialization succeeds.
+   */
   postInit: function () {
     return Promise.resolve(true);
   },

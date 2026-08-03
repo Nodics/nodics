@@ -17,21 +17,57 @@
  * @override Customer modules may layer stricter approval policy, additional workflow operations, or project repair services while preserving immutable Promotion evidence and Workflow/nPipeline authority.
  */
 module.exports = {
+  /**
+   * Executes the init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   init: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the post init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   postInit: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the config contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   config: function () {
     return (CONFIG.get("promotion") || {}).workflow || {};
   },
+  /**
+   * Executes the reconciliation config contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   reconciliationConfig: function () {
     return (CONFIG.get("promotion") || {}).reconciliation || {};
   },
+  /**
+   * Executes the error contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   error: function (code, message) {
     return new CLASSES.NodicsError(message, null, code);
   },
+  /**
+   * Executes the items contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   items: function (value) {
     if (!value) return [];
     if (Array.isArray(value)) return value;
@@ -41,16 +77,34 @@ module.exports = {
     if (Array.isArray(value.items)) return value.items;
     return [value];
   },
+  /**
+   * Executes the is service identity contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   isServiceIdentity: function (request) {
     return Boolean(
       request && request.authData && request.authData.tokenType === "service",
     );
   },
+  /**
+   * Executes the is human identity contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   isHumanIdentity: function (request) {
     return Boolean(
       request && request.authData && request.authData.tokenType !== "service",
     );
   },
+  /**
+   * Executes the principal id contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   principalId: function (request) {
     return (
       (request && request.authData && request.authData.principalId) ||
@@ -59,6 +113,12 @@ module.exports = {
       "system"
     );
   },
+  /**
+   * Executes the operation type contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   operationType: function (subject) {
     return (
       (subject && subject.lifecycleOperation) ||
@@ -66,6 +126,12 @@ module.exports = {
       "APPROVE_CAMPAIGN"
     );
   },
+  /**
+   * Executes the policy contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   policy: function (subject) {
     const config = this.config();
     const operation = this.operationType(subject);
@@ -90,6 +156,12 @@ module.exports = {
           : config.manualWorkflowCode,
     };
   },
+  /**
+   * Executes the subject code contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   subjectCode: function (subject, operation) {
     return (
       subject.workflowSubjectCode ||
@@ -100,6 +172,12 @@ module.exports = {
       operation
     );
   },
+  /**
+   * Executes the start contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   start: async function (subject, request) {
     const policy = this.policy(subject || {});
     if (!policy.enabled || !SERVICE.DefaultWorkflowService) {
@@ -167,12 +245,24 @@ module.exports = {
       workflowCode: policy.workflowCode,
     });
   },
+  /**
+   * Executes the schema name for contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   schemaNameFor: function (operation) {
     if (operation === "APPROVE_RULE") return "promotionRule";
     if (operation === "REPAIR_EVALUATION" || operation === "RECONCILE_EVIDENCE")
       return "promotionEvaluationRun";
     return "promotionCampaign";
   },
+  /**
+   * Executes the context contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   context: function (request) {
     const carrier = (request && request.workflowCarrier) || {};
     const source = carrier.sourceDetail || {};
@@ -189,6 +279,12 @@ module.exports = {
     }
     return { carrier: carrier, source: source };
   },
+  /**
+   * Executes the service for contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   serviceFor: function (operation) {
     if (operation === "APPROVE_RULE")
       return SERVICE.DefaultPromotionRuleService;
@@ -196,12 +292,24 @@ module.exports = {
       return SERVICE.DefaultPromotionEvaluationRunService;
     return SERVICE.DefaultPromotionCampaignService;
   },
+  /**
+   * Executes the identity query for contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   identityQueryFor: function (operation, source) {
     if (operation === "APPROVE_RULE") return { ruleCode: source.ruleCode };
     if (operation === "REPAIR_EVALUATION" || operation === "RECONCILE_EVIDENCE")
       return { evaluationCode: source.evaluationCode };
     return { campaignCode: source.campaignCode };
   },
+  /**
+   * Executes the load subject contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   loadSubject: async function (operation, source, request) {
     const service = this.serviceFor(operation);
     if (!service || typeof service.get !== "function") return undefined;
@@ -215,6 +323,12 @@ module.exports = {
     );
     return records[0];
   },
+  /**
+   * Executes the update lifecycle contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   updateLifecycle: async function (operation, source, request, status) {
     const service = this.serviceFor(operation);
     if (!service || typeof service.update !== "function") {
@@ -246,6 +360,12 @@ module.exports = {
       model: model,
     });
   },
+  /**
+   * Executes the approve contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   approve: async function (request) {
     const context = this.context(request);
     if (!this.isHumanIdentity(request)) {
@@ -280,6 +400,12 @@ module.exports = {
       },
     };
   },
+  /**
+   * Executes the reject contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   reject: async function (request) {
     const context = this.context(request);
     if (!this.isHumanIdentity(request)) {
@@ -314,6 +440,12 @@ module.exports = {
       },
     };
   },
+  /**
+   * Executes the complete contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   complete: async function (request) {
     const context = this.context(request);
     if (context.source.approvalMode === "MANUAL") {
@@ -348,6 +480,12 @@ module.exports = {
       },
     });
   },
+  /**
+   * Executes the repair contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   repair: async function (request) {
     if (!this.isServiceIdentity(request)) {
       throw this.error(
@@ -391,6 +529,12 @@ module.exports = {
       },
     };
   },
+  /**
+   * Executes the reconcile contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   reconcile: async function (request) {
     if (!this.isServiceIdentity(request)) {
       throw this.error(

@@ -57,6 +57,15 @@ module.exports = {
               },
               relation: { sourceField: "storeCode", targetField: "storeCode" },
             },
+            {
+              id: "points-of-service",
+              label: "Points of Service",
+              target: {
+                moduleName: "store",
+                schemaName: "pointOfService",
+              },
+              relation: { sourceField: "storeCode", targetField: "storeCode" },
+            },
           ],
           help: {
             summary:
@@ -67,17 +76,33 @@ module.exports = {
         {
           id: "store-locations",
           parentId: "stores",
-          label: "Store Locations",
+          label: "Points of Service",
           route: "/commerce/operations/stores/locations",
           icon: "store",
           order: 561,
           group: { id: "commerce", label: "Commerce", order: 300 },
           perspectives: ["operations", "commerce"],
           contexts: ["environment", "tenant", "enterprise"],
-          featureState: "DISABLED",
+          featureState: "PREVIEW",
+          requiredPermissions: ["store.backoffice.read"],
+          workbenchTarget: {
+            moduleName: "store",
+            schemaName: "pointOfService",
+          },
+          detailPanels: [
+            {
+              id: "store-warehouse-assignment",
+              label: "Store Fulfillment Associations",
+              target: {
+                moduleName: "store",
+                schemaName: "storeWarehouseAssignment",
+              },
+              relation: { sourceField: "storeCode", targetField: "storeCode" },
+            },
+          ],
           help: {
             summary:
-              "Planned workspace for store-specific location records once the backend model is introduced.",
+              "Manage pickup counters, lockers, store-front service desks, and provider-managed pickup points without owning Inventory or Fulfillment state.",
             documentationRoute: "/docs/capabilities/commerce/stores-warehouses",
           },
         },
@@ -135,6 +160,34 @@ module.exports = {
         RETIRED: [],
       },
     },
+    pointOfService: {
+      statuses: ["DRAFT", "ACTIVE", "SUSPENDED", "RETIRED"],
+      types: [
+        "PICKUP_COUNTER",
+        "PICKUP_LOCKER",
+        "STORE_FRONT",
+        "SERVICE_DESK",
+        "DARK_STORE_COUNTER",
+        "THIRD_PARTY_PICKUP",
+      ],
+      pickupCapacityModes: [
+        "UNLIMITED",
+        "SLOT_COUNT",
+        "PROVIDER_MANAGED",
+        "DISABLED",
+      ],
+      fulfillmentModeCodes: ["PICKUP", "LOCAL_DELIVERY", "SCHEDULED"],
+      minimumSlotDurationMinutes: 5,
+      maximumSlotDurationMinutes: 1440,
+      minimumPickupOrdersPerSlot: 0,
+      maximumPickupOrdersPerSlot: 999999,
+      allowedTransitions: {
+        DRAFT: ["ACTIVE", "RETIRED"],
+        ACTIVE: ["SUSPENDED", "RETIRED"],
+        SUSPENDED: ["ACTIVE", "RETIRED"],
+        RETIRED: [],
+      },
+    },
     warehouseReference: {
       moduleName: "inventory",
       apiVersion: "v0",
@@ -146,7 +199,7 @@ module.exports = {
     management: {
       maximumResultCount: 500,
       maximumPayloadBytes: 262144,
-      allowedResources: ["stores", "warehouseAssignments"],
+      allowedResources: ["stores", "warehouseAssignments", "pointsOfService"],
     },
     referenceLookup: { requireServiceToken: true, maximumResultCount: 1 },
   },

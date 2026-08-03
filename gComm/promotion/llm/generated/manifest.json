@@ -14,13 +14,13 @@
     "description": "Enterprise-scoped promotion, coupon, rule, and applied-discount evidence capability for Nodics commerce."
   },
   "sourceFiles": 15,
-  "testFiles": 14,
+  "testFiles": 15,
   "dataFiles": 9,
   "ownedFiles": 38,
-  "sourceFingerprint": "c951b54c6829317e976ffdc911417380a89d39c063426c252133af238e8b04ba",
+  "sourceFingerprint": "482a318c0d49d82df0fb0ad97a76dc26892712ac7ac9974ff571896558a52c56",
   "documentation": {
-    "documented": 9,
-    "partially-documented": 24,
+    "documented": 17,
+    "partially-documented": 16,
     "undocumented": 0,
     "inventory-only": 5
   },

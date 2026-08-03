@@ -23,15 +23,36 @@
 const commerceCalculationDelegateUtils = require("../../../../checkout/src/utils/commerceCalculationDelegateUtils");
 
 module.exports = {
+  /**
+   * Initializes the aggregate order calculation node service.
+   *
+   * @returns {Promise<boolean>} Resolves when the service is ready.
+   */
   init: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Completes post-start initialization for order calculation nodes.
+   *
+   * @returns {Promise<boolean>} Resolves when post-initialization succeeds.
+   */
   postInit: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Reads order calculation configuration from the governed runtime registry.
+   *
+   * @returns {Object} Order calculation configuration.
+   */
   config: function () {
     return (CONFIG.get("order") || {}).calculation || {};
   },
+  /**
+   * Creates a governed order calculation error.
+   *
+   * @param {string} message Business-safe error message.
+   * @returns {Error} Nodics error when available, otherwise a standard error.
+   */
   error: function (message) {
     if (typeof CLASSES !== "undefined" && CLASSES.NodicsError) {
       return new CLASSES.NodicsError(message, null, "ERR_ORD_00000");
@@ -40,6 +61,12 @@ module.exports = {
     error.code = "ERR_ORD_00000";
     return error;
   },
+  /**
+   * Normalizes service responses and raw values into an array of order entries.
+   *
+   * @param {*} value Raw service result, result envelope, item list, or single item.
+   * @returns {Array} Normalized item array.
+   */
   items: function (value) {
     if (!value) return [];
     if (Array.isArray(value)) return value;
@@ -47,6 +74,13 @@ module.exports = {
     if (Array.isArray(value.items)) return value.items;
     return [value];
   },
+  /**
+   * Ensures the aggregate order calculation response has a stable success envelope.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @returns {Object} Mutable success envelope.
+   */
   envelope: function (request, response) {
     response.success = response.success || {
       orderCode: request && request.orderCode,
@@ -57,10 +91,25 @@ module.exports = {
     response.success.evidence = response.success.evidence || {};
     return response.success;
   },
+  /**
+   * Records a completed order-calculation node and advances the Pipeline executor.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @param {string} step Completed step code.
+   * @returns {void}
+   */
   next: function (request, response, process, step) {
     this.envelope(request, response).steps.push(step);
     process.nextSuccess(request, response);
   },
+  /**
+   * Loads order entries from request payload or the Order Entry schema service.
+   *
+   * @param {Object} request Pipeline request context.
+   * @returns {Promise<Array>} Order entries for aggregate calculation.
+   */
   loadEntries: async function (request) {
     if (request.orderEntries) return this.items(request.orderEntries);
     const modelEntries = request.model && request.model.orderEntries;
@@ -82,21 +131,69 @@ module.exports = {
     });
     return this.items(response);
   },
+  /**
+   * Validates order-level request context before reconciliation begins.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   validateOrderContext: function (request, response, process) {
     this.next(request, response, process, "validateOrderContext");
   },
+  /**
+   * Validates that order entries are eligible for calculation or reconciliation.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   validateEntries: function (request, response, process) {
     this.next(request, response, process, "validateEntries");
   },
+  /**
+   * Validates delivery and payment allocations attached to the order.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   validateAllocations: function (request, response, process) {
     this.next(request, response, process, "validateAllocations");
   },
+  /**
+   * Validates payment evidence before order total reconciliation.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   validatePaymentEvidence: function (request, response, process) {
     this.next(request, response, process, "validatePaymentEvidence");
   },
+  /**
+   * Validates preserved checkout evidence before order recalculation.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   validateHistoricalEvidence: function (request, response, process) {
     this.next(request, response, process, "validateHistoricalEvidence");
   },
+  /**
+   * Runs the configured order-entry calculation pipeline for each order entry.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {Promise<void>} Resolves after entry evidence is attached.
+   */
   calculateEntries: async function (request, response, process) {
     try {
       const entries = await this.loadEntries(request);
@@ -134,9 +231,25 @@ module.exports = {
       );
     }
   },
+  /**
+   * Reconciles delivery charge evidence owned by Fulfillment or carrier integrations.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   reconcileDeliveryCharges: function (request, response, process) {
     this.next(request, response, process, "reconcileDeliveryCharges");
   },
+  /**
+   * Delegates order-level promotion evidence reconciliation to the promotion authority.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {Promise<void>} Resolves after promotion evidence is attached.
+   */
   reconcileOrderPromotions: async function (request, response, process) {
     try {
       const envelope = this.envelope(request, response);
@@ -162,18 +275,58 @@ module.exports = {
       );
     }
   },
+  /**
+   * Reconciles aggregate order tax evidence.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   reconcileOrderTax: function (request, response, process) {
     this.next(request, response, process, "reconcileOrderTax");
   },
+  /**
+   * Reconciles payment captures, authorizations, refunds, or split-payment evidence.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   reconcilePaymentEvidence: function (request, response, process) {
     this.next(request, response, process, "reconcilePaymentEvidence");
   },
+  /**
+   * Prepares final order totals from preserved and recalculated evidence.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   prepareOrderTotals: function (request, response, process) {
     this.next(request, response, process, "prepareOrderTotals");
   },
+  /**
+   * Resolves the aggregate order calculation pipeline with the success envelope.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   handleSucessEnd: function (request, response, process) {
     process.resolve(response.success);
   },
+  /**
+   * Rejects the aggregate order calculation pipeline with the captured error.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   handleErrorEnd: function (request, response, process) {
     process.reject(response.error);
   },

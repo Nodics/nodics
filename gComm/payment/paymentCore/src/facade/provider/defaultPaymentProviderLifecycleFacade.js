@@ -17,15 +17,21 @@
  * @override Customer modules may decorate lifecycle orchestration while preserving safe Payment response envelopes.
  */
 module.exports = {
-    /** Initializes the facade. */
-    init: function () { return Promise.resolve(true); },
-    /** Completes facade initialization. */
-    postInit: function () { return Promise.resolve(true); },
-    /** Executes one lifecycle action and returns a client-safe envelope. */
-    execute: async function (request) {
-        return {
-            code: 'SUC_PAY_00001',
-            data: await SERVICE.DefaultPaymentProviderLifecycleService.execute(request)
-        };
-    }
+  /** Initializes the facade. */
+  init: function () {
+    return Promise.resolve(true);
+  },
+  /** Completes facade initialization. */
+  postInit: function () {
+    return Promise.resolve(true);
+  },
+  /** Executes one lifecycle action and returns a client-safe envelope. */
+  execute: async function (request) {
+    return {
+      code: "SUC_PAY_00001",
+      data: await SERVICE.DefaultPaymentProviderLifecycleService.execute(
+        request,
+      ),
+    };
+  },
 };

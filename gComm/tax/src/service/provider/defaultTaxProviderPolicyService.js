@@ -17,21 +17,57 @@
  * @override Customer modules may replace provider selection, jurisdiction routing, retry, failover, and reconciliation policy through this service.
  */
 module.exports = {
+  /**
+   * Executes the init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   init: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the post init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   postInit: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the config contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   config: function () {
     return (CONFIG.get("tax") || {}).provider || {};
   },
+  /**
+   * Executes the get allowed provider types contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   getAllowedProviderTypes: function () {
     return [].concat(this.config().providerTypes || []);
   },
+  /**
+   * Executes the get allowed operations contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   getAllowedOperations: function () {
     return [].concat(this.config().operations || []);
   },
+  /**
+   * Executes the resolve adapter contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   resolveAdapter: function (provider) {
     const record = provider || {};
     if (!record.adapterService) {

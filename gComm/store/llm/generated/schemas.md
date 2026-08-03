@@ -6,8 +6,33 @@
 
 | Schema | Super | Model | Service | Router | Cache | Search | Event | Tenants | Properties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: |
+| `pointOfService` | `base` | yes | yes | no | no | no | no |  | 21 |
 | `store` | `base` | yes | yes | no | no | no | no |  | 13 |
 | `storeWarehouseAssignment` | `base` | yes | yes | no | no | no | no |  | 8 |
+
+### `store.pointOfService`
+
+- `addressRef` `string` optional: Reference to an address owned by an approved address provider
+- `capacityProviderCode` `string` optional: Optional external capacity provider reference; credentials and provider state stay outside Store
+- `effectiveFrom` `date` optional
+- `effectiveTo` `date` optional
+- `enterpriseCode` `string` required: Enterprise owning this Point of Service
+- `externalReferences` `object` optional: Non-secret POS, ERP, facility, locker, or pickup-network identifiers
+- `fulfillmentModeCodes` `array` optional: Fulfillment-owned mode codes this Point of Service can support, such as PICKUP
+- `inventoryReservationPolicyCode` `string` optional: Optional Inventory-owned reservation policy reference for pickup promises
+- `latitude` `string` optional: Latitude as an exact string for map/display use; geography authority remains external
+- `longitude` `string` optional: Longitude as an exact string for map/display use; geography authority remains external
+- `maxPickupOrdersPerSlot` `int` optional: Optional configured pickup order capacity per slot when slot capacity is managed in Store
+- `name` `string` required: Business-facing Point of Service name
+- `openingHoursPolicy` `object` optional: Non-executable opening-hours policy owned by Store and extendable by customer modules
+- `pickupCapacityMode` `string` required: Configured pickup capacity mode such as unlimited, slot count, provider managed, or disabled
+- `pointOfServiceCode` `string` required: Stable business Point of Service code unique inside the Store
+- `slotDurationMinutes` `int` optional: Optional pickup slot duration used with Store-owned slot-capacity policy
+- `status` `string` required: Governed Point of Service lifecycle state
+- `storeCode` `string` required: Store this Point of Service belongs to
+- `timezone` `string` optional: IANA timezone used for opening hours and pickup promise display
+- `type` `string` required: Configured Point of Service type such as pickup counter, locker, store front, or service desk
+- `warehouseCode` `string` optional: Optional Inventory-owned warehouse used for pickup sourcing or stock visibility
 
 ### `store.store`
 

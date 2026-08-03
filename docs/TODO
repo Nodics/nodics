@@ -424,10 +424,13 @@ P2/P3 — Promotions, discounts, variants, point of service, quotes, fraud:
     Evidence 2026-08-02:
       Product variants are implemented as reusable `productVariantAxis` and `productVariantAssignment` models, backed by Product Attribute Definitions/Values rather than a hardcoded product-variant-type catalog. Customer modules can extend allowed variant item types and bounds through configuration.
       Validation run: `node gComm/product/test/productVariantContract.test.js`.
-  ☐ Decide Point of Service relation to store, warehouse, pickup capacity, address, geolocation, opening hours, inventory, and delivery mode. @p2 @commerce
-    Current evidence 2026-08-02:
-      `store` and `storeWarehouseAssignment` provide store, warehouse assignment, channels, capabilities, address reference, and external references. A dedicated Point of Service model with pickup capacity, geolocation/opening-hour contract, delivery-mode relation, and operational lifecycle is not yet defined.
-      Validation run for current foundation: `node gComm/store/test/storeFoundationService.test.js` and `node gComm/store/test/storeWarehouseReferenceProvider.test.js`.
+  ✔ Decide Point of Service relation to store, warehouse, pickup capacity, address, geolocation, opening hours, inventory, and delivery mode. @done(2026-08-03) @p2 @commerce
+    Evidence 2026-08-03:
+      Store now owns `pointOfService` as operational endpoint metadata for pickup counters, lockers, service desks, storefront handoff points, dark-store counters, and third-party pickup points.
+      `pointOfService` belongs to one Store, may reference an Inventory-owned Warehouse through `warehouseCode`, and may reference Fulfillment-owned modes through `fulfillmentModeCodes`; Store does not copy stock, reservation, sourcing, carrier, or delivery-execution state.
+      POS policy includes address reference, exact-string latitude/longitude, timezone, opening-hours metadata, configurable pickup-capacity mode, optional slot capacity, capacity-provider reference, external non-secret references, lifecycle, and immutable identity.
+      Axis/BackOffice metadata exposes Points of Service through backend-owned reusable Workbench metadata and related detail panels from Stores.
+      Validation run: `node gComm/store/test/storeFoundationSchemaContract.test.js`, `node gComm/store/test/storeFoundationService.test.js`, and `node gComm/store/test/storeManagementContract.test.js`.
   ☐ Add order cancellation configuration: cancellable states, line-level cancellation, payment void/refund, stock release, fulfillment cancellation, and customer notification. @p2 @commerce
     Current evidence 2026-08-02:
       Checkout compensation can cancel Fulfillment release and Inventory has reservation/allocation cancellation intents. A complete order-cancellation business capability, including line-level cancellation, Payment void/refund routing, stock release, Fulfillment cancellation, customer notification, and Order history, still needs dedicated design.

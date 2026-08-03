@@ -20,6 +20,7 @@
 - `gComm/promotion/test/gen/schema/promotionCampaignSchemaContract.test.js`
 - `gComm/promotion/test/gen/schema/promotionConditionSchemaContract.test.js`
 - `gComm/promotion/test/gen/schema/promotionEvaluationRunSchemaContract.test.js`
+- `gComm/promotion/test/gen/schema/promotionRepairRunSchemaContract.test.js`
 - `gComm/promotion/test/gen/schema/promotionRuleSchemaContract.test.js`
 
 ## Testing Rules

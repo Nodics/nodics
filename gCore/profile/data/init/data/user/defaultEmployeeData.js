@@ -15,6 +15,12 @@ const bootstrapConfig =
   typeof CONFIG !== "undefined"
     ? CONFIG
     : {
+        /**
+         * Executes the get contract for this module surface.
+         *
+         * @param {...*} args Governed Nodics runtime arguments for this operation.
+         * @returns {*} Operation result, promise, or delegated service response.
+         */
         get: function () {
           return undefined;
         },

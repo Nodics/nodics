@@ -17,53 +17,64 @@
  * @override Customer modules may add provider adapters for Stripe, PayPal, CyberSource, bank providers, wallets, or enterprise-specific payment processors.
  */
 module.exports = {
-    /** Initializes the manual provider adapter. */
-    init: function () { return Promise.resolve(true); },
-    /** Completes manual provider adapter startup. */
-    postInit: function () { return Promise.resolve(true); },
-    /** Resolves successful transaction status for the requested operation. */
-    successStatus: function (operation) {
-        if (typeof SERVICE !== 'undefined' && SERVICE.DefaultPaymentPolicyService && typeof SERVICE.DefaultPaymentPolicyService.successStatus === 'function') {
-            return SERVICE.DefaultPaymentPolicyService.successStatus(operation);
-        }
-        if (operation === 'DEFER') return 'DEFERRED';
-        if (operation === 'CAPTURE') return 'CAPTURED';
-        if (operation === 'REFUND') return 'REFUNDED';
-        if (operation === 'VOID') return 'VOIDED';
-        return 'AUTHORIZED';
-    },
-    /** Produces safe authorization evidence. */
-    authorize: async function (request) {
-        return this.localResult(request);
-    },
-    /** Produces safe capture evidence. */
-    capture: async function (request) {
-        return this.localResult(request);
-    },
-    /** Produces safe void evidence. */
-    void: async function (request) {
-        return this.localResult(request);
-    },
-    /** Produces safe refund evidence. */
-    refund: async function (request) {
-        return this.localResult(request);
-    },
-    /** Produces safe reconciliation evidence. */
-    reconcile: async function (request) {
-        return this.localResult(request);
-    },
-    /** Builds safe local transaction evidence for the requested operation. */
-    localResult: function (request) {
-        let transaction = (request || {}).transaction || {};
-        let status = this.successStatus(transaction.operation);
-        return {
-            transactionCode: transaction.transactionCode,
-            idempotencyKey: transaction.idempotencyKey,
-            providerCode: transaction.providerCode,
-            operation: transaction.operation,
-            status: status,
-            providerTransactionRef: [String(status).toLowerCase(), transaction.transactionCode].join('::'),
-            completedAt: new Date(),
-        };
-    },
+  /** Initializes the manual provider adapter. */
+  init: function () {
+    return Promise.resolve(true);
+  },
+  /** Completes manual provider adapter startup. */
+  postInit: function () {
+    return Promise.resolve(true);
+  },
+  /** Resolves successful transaction status for the requested operation. */
+  successStatus: function (operation) {
+    if (
+      typeof SERVICE !== "undefined" &&
+      SERVICE.DefaultPaymentPolicyService &&
+      typeof SERVICE.DefaultPaymentPolicyService.successStatus === "function"
+    ) {
+      return SERVICE.DefaultPaymentPolicyService.successStatus(operation);
+    }
+    if (operation === "DEFER") return "DEFERRED";
+    if (operation === "CAPTURE") return "CAPTURED";
+    if (operation === "REFUND") return "REFUNDED";
+    if (operation === "VOID") return "VOIDED";
+    return "AUTHORIZED";
+  },
+  /** Produces safe authorization evidence. */
+  authorize: async function (request) {
+    return this.localResult(request);
+  },
+  /** Produces safe capture evidence. */
+  capture: async function (request) {
+    return this.localResult(request);
+  },
+  /** Produces safe void evidence. */
+  void: async function (request) {
+    return this.localResult(request);
+  },
+  /** Produces safe refund evidence. */
+  refund: async function (request) {
+    return this.localResult(request);
+  },
+  /** Produces safe reconciliation evidence. */
+  reconcile: async function (request) {
+    return this.localResult(request);
+  },
+  /** Builds safe local transaction evidence for the requested operation. */
+  localResult: function (request) {
+    let transaction = (request || {}).transaction || {};
+    let status = this.successStatus(transaction.operation);
+    return {
+      transactionCode: transaction.transactionCode,
+      idempotencyKey: transaction.idempotencyKey,
+      providerCode: transaction.providerCode,
+      operation: transaction.operation,
+      status: status,
+      providerTransactionRef: [
+        String(status).toLowerCase(),
+        transaction.transactionCode,
+      ].join("::"),
+      completedAt: new Date(),
+    };
+  },
 };

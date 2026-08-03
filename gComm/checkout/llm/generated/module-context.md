@@ -49,8 +49,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 6 |
-| Partially documented | 2 |
+| Documented | 8 |
+| Partially documented | 0 |
 | Undocumented | 0 |
 | Inventory only | 4 |
 
@@ -76,9 +76,9 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/checkout/config/prescripts.js` | `config` | `documented` | 0/0 | Reserved shared Checkout startup pre-script contribution point. |  |
 | `gComm/checkout/config/properties.js` | `config` | `documented` | 0/0 | Reserved shared Checkout configuration contribution point. |  |
 | `gComm/checkout/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/checkout/nodics.js` | `module` | `partially-documented` | 0/2 | Lifecycle entrypoint for shared commerce checkout contracts. | add JSDoc for 2 exported method(s) |
+| `gComm/checkout/nodics.js` | `module` | `documented` | 2/2 | Lifecycle entrypoint for shared commerce checkout contracts. |  |
 | `gComm/checkout/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/checkout/src/utils/commerceCalculationDelegateUtils.js` | `src` | `partially-documented` | 0/6 | Shared helper for Cart and Order calculation pipeline nodes that delegate calculation authority to owning commerce modules without duplicating price, promotion, tax, inventory, payment, or fulfillment logic. | add JSDoc for 6 exported method(s) |
+| `gComm/checkout/src/utils/commerceCalculationDelegateUtils.js` | `src` | `documented` | 6/6 | Shared helper for Cart and Order calculation pipeline nodes that delegate calculation authority to owning commerce modules without duplicating price, promotion, tax, inventory, payment, or fulfillment logic. |  |
 | `gComm/checkout/src/utils/enums.js` | `src` | `documented` | 0/0 | Reserved enum registry for shared Checkout constants. |  |
 | `gComm/checkout/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Reserved status-definition registry for shared Checkout contracts. Capability modules own concrete operation codes. |  |
 | `gComm/checkout/src/utils/utils.js` | `src` | `documented` | 0/0 | Reserved utility registry for shared Checkout helpers. |  |

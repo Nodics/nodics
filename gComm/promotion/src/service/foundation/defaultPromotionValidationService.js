@@ -17,18 +17,48 @@
  * @override Project modules may layer stricter promotion validation while preserving exact money, enterprise scope, no executable rule payloads, and immutable applied-discount evidence.
  */
 module.exports = {
+  /**
+   * Executes the init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   init: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the post init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   postInit: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the config contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   config: function () {
     return CONFIG.get("promotion") || {};
   },
+  /**
+   * Executes the error contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   error: function (code, message) {
     return SERVICE.DefaultPromotionEnterpriseScopeService.error(code, message);
   },
+  /**
+   * Executes the assert date range contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   assertDateRange: function (model) {
     if (
       model.effectiveFrom &&
@@ -42,12 +72,24 @@ module.exports = {
       );
     }
   },
+  /**
+   * Executes the assert one of contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   assertOneOf: function (value, allowed, label) {
     if (!allowed.includes(value)) {
       throw this.error("ERR_PROMOTION_00011", label + " is invalid");
     }
     return value;
   },
+  /**
+   * Executes the assert decimal contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   assertDecimal: function (value, label, allowZero, optional) {
     if (value === undefined || value === null || value === "") {
       if (optional) return undefined;
@@ -81,6 +123,12 @@ module.exports = {
     }
     return text;
   },
+  /**
+   * Executes the assert currency contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   assertCurrency: function (value, required) {
     if (!value && !required) return true;
     if (!/^[A-Z]{3}$/.test(value || "")) {
@@ -91,6 +139,12 @@ module.exports = {
     }
     return true;
   },
+  /**
+   * Executes the assert safe object contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   assertSafeObject: function (value, label) {
     if (value === undefined) return true;
     if (!value || typeof value !== "object" || Array.isArray(value)) {
@@ -109,6 +163,12 @@ module.exports = {
     }
     return true;
   },
+  /**
+   * Executes the prepare contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepare: function (request, type, identityProperties) {
     SERVICE.DefaultPromotionEnterpriseScopeService.scopeNewModel(
       request,
@@ -127,6 +187,12 @@ module.exports = {
     }
     return model;
   },
+  /**
+   * Executes the prepare campaign contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareCampaign: function (request) {
     const model = this.prepare(request, "promotionCampaign", ["campaignCode"]);
     const policy = (this.config() || {}).rule || {};
@@ -149,6 +215,12 @@ module.exports = {
     );
     return true;
   },
+  /**
+   * Executes the prepare rule contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareRule: function (request) {
     const model = this.prepare(request, "promotionRule", ["ruleCode"]);
     const policy = (this.config() || {}).rule || {};
@@ -169,6 +241,12 @@ module.exports = {
     );
     return true;
   },
+  /**
+   * Executes the prepare condition contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareCondition: function (request) {
     const model = this.prepare(request, "promotionCondition", [
       "conditionCode",
@@ -187,6 +265,12 @@ module.exports = {
     this.assertSafeObject(model.value, "Promotion condition value");
     return true;
   },
+  /**
+   * Executes the prepare action contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareAction: function (request) {
     const model = this.prepare(request, "promotionAction", ["actionCode"]);
     const policy = (this.config() || {}).rule || {};
@@ -226,6 +310,12 @@ module.exports = {
     }
     return true;
   },
+  /**
+   * Executes the prepare coupon campaign contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareCouponCampaign: function (request) {
     const model = this.prepare(request, "couponCampaign", [
       "couponCampaignCode",
@@ -238,6 +328,12 @@ module.exports = {
     );
     return true;
   },
+  /**
+   * Executes the prepare coupon code contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareCouponCode: function (request) {
     const model = this.prepare(request, "couponCode", ["couponCode"]);
     if (Number(model.redemptionCount || 0) < 0) {
@@ -248,6 +344,12 @@ module.exports = {
     }
     return true;
   },
+  /**
+   * Executes the prepare evaluation run contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareEvaluationRun: function (request) {
     const model = this.prepare(request, "promotionEvaluationRun", [
       "evaluationCode",
@@ -271,6 +373,12 @@ module.exports = {
     }
     return true;
   },
+  /**
+   * Executes the prepare repair run contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareRepairRun: function (request) {
     const model = this.prepare(request, "promotionRepairRun", [
       "repairRunCode",
@@ -306,6 +414,12 @@ module.exports = {
     }
     return true;
   },
+  /**
+   * Executes the prepare applied promotion contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareAppliedPromotion: function (request) {
     const model = this.prepare(request, "appliedPromotion", [
       "appliedPromotionCode",
@@ -340,12 +454,24 @@ module.exports = {
     );
     return true;
   },
+  /**
+   * Executes the prepare readonly evidence update contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareReadonlyEvidenceUpdate: function () {
     throw this.error(
       "ERR_PROMOTION_00018",
       "Promotion evaluation and applied discount evidence is immutable",
     );
   },
+  /**
+   * Executes the reject hard delete contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   rejectHardDelete: function () {
     return Promise.reject(
       this.error(

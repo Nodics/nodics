@@ -17,6 +17,12 @@
  * @override Project modules may extend target types, moderation statuses, evidence requirements, and aggregation behavior through later layers.
  */
 module.exports = {
+  /**
+   * Executes the get review policy contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   getReviewPolicy: function () {
     let configuration = CONFIG.get("cres") || {};
     let policy = configuration.review || {};
@@ -31,6 +37,12 @@ module.exports = {
     }
     return policy;
   },
+  /**
+   * Executes the get moderation policy contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   getModerationPolicy: function () {
     let configuration = CONFIG.get("cres") || {};
     let policy = configuration.moderation || {};
@@ -45,12 +57,30 @@ module.exports = {
     }
     return policy;
   },
+  /**
+   * Executes the normalize models contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   normalizeModels: function (model) {
     return Array.isArray(model) ? model : [model || {}];
   },
+  /**
+   * Executes the trim contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   trim: function (value) {
     return typeof value === "string" ? value.trim() : value;
   },
+  /**
+   * Executes the apply update contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   applyUpdate: function (existing, update) {
     let effective = Object.assign({}, existing || {});
     Object.keys(update || {})
@@ -64,6 +94,12 @@ module.exports = {
     });
     return effective;
   },
+  /**
+   * Executes the validate review contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   validateReview: function (review) {
     let policy = this.getReviewPolicy();
     let normalized = Object.assign({}, review || {});
@@ -138,12 +174,24 @@ module.exports = {
     }
     return normalized;
   },
+  /**
+   * Executes the validate review save contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   validateReviewSave: function (request) {
     this.normalizeModels(request.model).forEach((model) =>
       this.validateReview(model),
     );
     return true;
   },
+  /**
+   * Executes the validate review update contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   validateReviewUpdate: function (request) {
     let updates = this.normalizeModels(request.model);
     if (!request.query || !SERVICE.DefaultCustomerReviewService) {
@@ -168,6 +216,12 @@ module.exports = {
       return true;
     });
   },
+  /**
+   * Executes the validate moderation event contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   validateModerationEvent: function (event) {
     let policy = this.getModerationPolicy();
     if (!event || !event.reviewCode)
@@ -182,6 +236,12 @@ module.exports = {
       );
     return true;
   },
+  /**
+   * Executes the validate abuse report contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   validateAbuseReport: function (report) {
     let policy = this.getModerationPolicy();
     let status =
@@ -204,18 +264,36 @@ module.exports = {
       );
     return true;
   },
+  /**
+   * Executes the validate moderation event save contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   validateModerationEventSave: function (request) {
     this.normalizeModels(request.model).forEach((model) =>
       this.validateModerationEvent(model),
     );
     return true;
   },
+  /**
+   * Executes the validate abuse report save contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   validateAbuseReportSave: function (request) {
     this.normalizeModels(request.model).forEach((model) =>
       this.validateAbuseReport(model),
     );
     return true;
   },
+  /**
+   * Executes the calculate aggregate contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   calculateAggregate: function (targetType, targetCode, reviews) {
     let approved = (reviews || []).filter(
       (review) =>

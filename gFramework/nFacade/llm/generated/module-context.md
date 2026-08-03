@@ -24,7 +24,7 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 205 |
+| Source files | 207 |
 | Test files | 0 |
 | Data files | 0 |
 | All module-owned files | 17 |

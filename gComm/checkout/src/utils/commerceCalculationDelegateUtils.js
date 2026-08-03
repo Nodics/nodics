@@ -20,9 +20,21 @@
  * individual pipeline nodes, not fork this helper to call CRUD services directly.
  */
 module.exports = {
+  /**
+   * Executes the list contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   list: function (value) {
     return Array.isArray(value) ? value : value ? [value] : [];
   },
+  /**
+   * Executes the config contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   config: function (moduleName) {
     if (
       typeof CONFIG === "undefined" ||
@@ -32,16 +44,40 @@ module.exports = {
       return {};
     return CONFIG.get(moduleName) || {};
   },
+  /**
+   * Executes the registry contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   registry: function () {
     return typeof SERVICE === "undefined" || !SERVICE ? {} : SERVICE;
   },
+  /**
+   * Executes the error message contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   errorMessage: function (error) {
     return error && error.message ? error.message : String(error);
   },
+  /**
+   * Executes the delegate configuration contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   delegateConfiguration: function (moduleName, delegateKey) {
     let calculation = this.config(moduleName).calculation || {};
     return (calculation.delegates || {})[delegateKey] || {};
   },
+  /**
+   * Executes the resolve delegate contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   resolveDelegate: async function (moduleName, delegateKey, request, input) {
     let delegate = this.delegateConfiguration(moduleName, delegateKey),
       serviceNames = this.list(delegate.serviceNames),

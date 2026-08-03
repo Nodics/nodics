@@ -52,8 +52,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 6 |
-| Partially documented | 3 |
+| Documented | 7 |
+| Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
 
@@ -79,7 +79,7 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/payment/paymentProviders/config/prescripts.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/payment/paymentProviders/config/properties.js` | `config` | `documented` | 0/0 | Configures provider-family defaults without selecting a payment provider. |  |
 | `gComm/payment/paymentProviders/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/payment/paymentProviders/nodics.js` | `module` | `partially-documented` | 0/2 | Payment provider-family lifecycle entrypoint. | add JSDoc for 2 exported method(s) |
+| `gComm/payment/paymentProviders/nodics.js` | `module` | `documented` | 2/2 | Payment provider-family lifecycle entrypoint. |  |
 | `gComm/payment/paymentProviders/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/payment/paymentProviders/src/service/adapter/defaultPaymentProviderAdapterContractService.js` | `src` | `documented` | 2/2 | Validates payment provider adapters against the Payment-owned normalized operation port. |  |
 | `gComm/payment/paymentProviders/src/service/adapter/defaultPaymentProviderExecutionGovernanceService.js` | `src` | `documented` | 14/14 | Builds safe retry, timeout, failover, and reconciliation scheduling plans for provider adapters without executing live PSP calls. |  |

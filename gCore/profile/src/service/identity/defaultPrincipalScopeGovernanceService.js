@@ -17,6 +17,12 @@
  * @override Project modules may extend scope types, effects, and resolver behavior through configuration and later-layer services.
  */
 module.exports = {
+  /**
+   * Executes the get policy contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   getPolicy: function () {
     let policy = CONFIG.get("principalAuthorizationScopes") || {};
     if (!policy.enabled)
@@ -40,9 +46,21 @@ module.exports = {
     });
     return policy;
   },
+  /**
+   * Executes the normalize models contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   normalizeModels: function (model) {
     return Array.isArray(model) ? model : [model || {}];
   },
+  /**
+   * Executes the apply update contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   applyUpdate: function (existing, update) {
     let effective = Object.assign({}, existing || {});
     Object.keys(update || {})
@@ -56,9 +74,21 @@ module.exports = {
     });
     return effective;
   },
+  /**
+   * Executes the normalize string contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   normalizeString: function (value) {
     return typeof value === "string" ? value.trim() : value;
   },
+  /**
+   * Executes the normalize assignment contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   normalizeAssignment: function (assignment) {
     let normalized = Object.assign({}, assignment || {});
     [
@@ -85,9 +115,21 @@ module.exports = {
       normalized.inheritanceMode || policy.defaultInheritanceMode;
     return normalized;
   },
+  /**
+   * Executes the is blank contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   isBlank: function (value) {
     return value === undefined || value === null || value === "";
   },
+  /**
+   * Executes the assert listed contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   assertListed: function (policy, key, value, label) {
     if (!policy[key].includes(value)) {
       throw new CLASSES.NodicsError(
@@ -96,6 +138,12 @@ module.exports = {
       );
     }
   },
+  /**
+   * Executes the assert date order contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   assertDateOrder: function (assignment) {
     if (!assignment.effectiveFrom || !assignment.effectiveTo) return;
     let from = new Date(assignment.effectiveFrom).getTime();
@@ -107,6 +155,12 @@ module.exports = {
       );
     }
   },
+  /**
+   * Executes the validate assignment contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   validateAssignment: function (assignment) {
     let policy = this.getPolicy();
     let normalized = this.normalizeAssignment(assignment);
@@ -174,12 +228,24 @@ module.exports = {
     this.assertDateOrder(normalized);
     return normalized;
   },
+  /**
+   * Executes the validate save contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   validateSave: function (request) {
     this.normalizeModels(request.model).forEach((model) =>
       this.validateAssignment(model),
     );
     return true;
   },
+  /**
+   * Executes the validate update contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   validateUpdate: function (request) {
     let updates = this.normalizeModels(request.model);
     if (!request.query || !SERVICE.DefaultPrincipalScopeAssignmentService) {
@@ -204,11 +270,23 @@ module.exports = {
       return true;
     });
   },
+  /**
+   * Executes the validate contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   validate: function (request) {
     return request && request.query
       ? this.validateUpdate(request)
       : this.validateSave(request);
   },
+  /**
+   * Executes the is effective contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   isEffective: function (assignment, now) {
     if (assignment.status !== "ACTIVE") return false;
     let time = now ? new Date(now).getTime() : Date.now();
@@ -222,6 +300,12 @@ module.exports = {
     if (Number.isFinite(to) && time > to) return false;
     return true;
   },
+  /**
+   * Executes the get principal group codes contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   getPrincipalGroupCodes: function (authData) {
     return Array.from(
       new Set(
@@ -234,6 +318,12 @@ module.exports = {
       ),
     );
   },
+  /**
+   * Executes the build scope key contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   buildScopeKey: function (assignment) {
     return [
       assignment.scopeType,
@@ -242,6 +332,12 @@ module.exports = {
       assignment.capabilityCode || "*",
     ].join("::");
   },
+  /**
+   * Executes the applies to principal contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   appliesToPrincipal: function (assignment, authData) {
     if (!assignment || !authData) return false;
     if (assignment.principalType === "group") {
@@ -256,6 +352,12 @@ module.exports = {
         assignment.principalCode === authData.principalCode)
     );
   },
+  /**
+   * Executes the resolve assignments contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   resolveAssignments: function (authData, assignments, options) {
     let resolved = {};
     let denied = {};
@@ -287,6 +389,12 @@ module.exports = {
         .map((key) => denied[key]),
     };
   },
+  /**
+   * Executes the get effective scopes contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   getEffectiveScopes: function (request) {
     let authData = request.authData || {};
     let query = {

@@ -24,15 +24,36 @@
 const commerceCalculationDelegateUtils = require("../../../../checkout/src/utils/commerceCalculationDelegateUtils");
 
 module.exports = {
+  /**
+   * Initializes the cart calculation pipeline node service.
+   *
+   * @returns {Promise<boolean>} Resolves when the node service is ready.
+   */
   init: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Completes post-start initialization for the cart calculation pipeline nodes.
+   *
+   * @returns {Promise<boolean>} Resolves when post-initialization succeeds.
+   */
   postInit: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Reads cart calculation configuration from the governed runtime registry.
+   *
+   * @returns {Object} Cart calculation configuration.
+   */
   config: function () {
     return (CONFIG.get("cart") || {}).calculation || {};
   },
+  /**
+   * Creates a governed cart calculation error.
+   *
+   * @param {string} message Business-safe error message.
+   * @returns {Error} Nodics error when available, otherwise a standard error.
+   */
   error: function (message) {
     if (typeof CLASSES !== "undefined" && CLASSES.NodicsError) {
       return new CLASSES.NodicsError(message, null, "ERR_ORD_00000");
@@ -41,6 +62,12 @@ module.exports = {
     error.code = "ERR_ORD_00000";
     return error;
   },
+  /**
+   * Normalizes service responses and raw values into an array of cart entries.
+   *
+   * @param {*} value Raw service result, result envelope, item list, or single item.
+   * @returns {Array} Normalized item array.
+   */
   items: function (value) {
     if (!value) return [];
     if (Array.isArray(value)) return value;
@@ -48,6 +75,13 @@ module.exports = {
     if (Array.isArray(value.items)) return value.items;
     return [value];
   },
+  /**
+   * Ensures the aggregate cart calculation response has a stable success envelope.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @returns {Object} Mutable success envelope.
+   */
   envelope: function (request, response) {
     response.success = response.success || {
       cartCode: request && request.cartCode,
@@ -58,13 +92,36 @@ module.exports = {
     response.success.evidence = response.success.evidence || {};
     return response.success;
   },
+  /**
+   * Records that a cart calculation node completed.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {string} step Completed step code.
+   * @returns {void}
+   */
   mark: function (request, response, step) {
     this.envelope(request, response).steps.push(step);
   },
+  /**
+   * Marks the current node and advances the governed Pipeline executor.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @param {string} step Completed step code.
+   * @returns {void}
+   */
   next: function (request, response, process, step) {
     this.mark(request, response, step);
     process.nextSuccess(request, response);
   },
+  /**
+   * Loads cart entries from request payload or the Cart Entry schema service.
+   *
+   * @param {Object} request Pipeline request context.
+   * @returns {Promise<Array>} Cart entries for aggregate calculation.
+   */
   loadEntries: async function (request) {
     if (request.cartEntries) return this.items(request.cartEntries);
     const modelEntries = request.model && request.model.cartEntries;
@@ -86,21 +143,69 @@ module.exports = {
     });
     return this.items(response);
   },
+  /**
+   * Validates cart-level request context before entry calculations begin.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   validateCartContext: function (request, response, process) {
     this.next(request, response, process, "validateCartContext");
   },
+  /**
+   * Validates that cart entries are eligible for calculation.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   validateEntries: function (request, response, process) {
     this.next(request, response, process, "validateEntries");
   },
+  /**
+   * Validates delivery and payment allocations before monetary calculation.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   validateAllocations: function (request, response, process) {
     this.next(request, response, process, "validateAllocations");
   },
+  /**
+   * Validates inventory readiness through the configured cart calculation node.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   validateInventoryReadiness: function (request, response, process) {
     this.next(request, response, process, "validateInventoryReadiness");
   },
+  /**
+   * Validates price, tax, promotion, and payment evidence availability.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   validateMoneyEvidence: function (request, response, process) {
     this.next(request, response, process, "validateMoneyEvidence");
   },
+  /**
+   * Runs the configured cart-entry calculation pipeline for each cart entry.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {Promise<void>} Resolves after entry evidence is attached.
+   */
   calculateEntries: async function (request, response, process) {
     try {
       const entries = await this.loadEntries(request);
@@ -138,9 +243,25 @@ module.exports = {
       );
     }
   },
+  /**
+   * Calculates or reconciles cart delivery charges.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   calculateDeliveryCharges: function (request, response, process) {
     this.next(request, response, process, "calculateDeliveryCharges");
   },
+  /**
+   * Delegates cart-level promotion evaluation to the configured promotion authority.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {Promise<void>} Resolves after promotion evidence is attached.
+   */
   evaluateCartPromotions: async function (request, response, process) {
     try {
       const envelope = this.envelope(request, response);
@@ -165,18 +286,58 @@ module.exports = {
       );
     }
   },
+  /**
+   * Calculates aggregate cart tax after entry and promotion evidence is available.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   calculateCartTax: function (request, response, process) {
     this.next(request, response, process, "calculateCartTax");
   },
+  /**
+   * Calculates or validates the cart payment plan.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   calculatePaymentPlan: function (request, response, process) {
     this.next(request, response, process, "calculatePaymentPlan");
   },
+  /**
+   * Prepares final cart totals from entry, delivery, promotion, tax, and payment evidence.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   prepareCartTotals: function (request, response, process) {
     this.next(request, response, process, "prepareCartTotals");
   },
+  /**
+   * Resolves the aggregate cart calculation pipeline with the success envelope.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   handleSucessEnd: function (request, response, process) {
     process.resolve(response.success);
   },
+  /**
+   * Rejects the aggregate cart calculation pipeline with the captured error.
+   *
+   * @param {Object} request Pipeline request context.
+   * @param {Object} response Pipeline response context.
+   * @param {Object} process Pipeline process controls.
+   * @returns {void}
+   */
   handleErrorEnd: function (request, response, process) {
     process.reject(response.error);
   },

@@ -93,12 +93,7 @@ const schemaHasField = (schema, field) =>
   Boolean(
     inheritedSchemas[inheritedSchemas[schema.super]?.super]?.definition[field],
   );
-const disabledIds = [
-  "store-locations",
-  "delivery-modes",
-  "tax-records",
-  "fraud-checks",
-];
+const disabledIds = ["delivery-modes", "tax-records", "fraud-checks"];
 const permissionCatalog = authProperties.identityGovernance.permissionCatalog;
 const runtimeAdminGroup = Object.values(userGroups).find(
   (group) => group.code === "runtimeConfigAdminUserGroup",
@@ -144,7 +139,7 @@ const requiredDetailPanelIds = {
   "inventory-promises": ["promise-reservations"],
   reconciliation: ["reconciliation-findings"],
   "sourcing-policies": ["sourcing-rules"],
-  stores: ["store-warehouse-assignments"],
+  stores: ["store-warehouse-assignments", "points-of-service"],
   tax: ["jurisdiction-rates", "jurisdiction-exemptions"],
   "tax-quotes": ["tax-quote-lines"],
 };
@@ -493,6 +488,12 @@ assert.strictEqual(
   byId["fulfillment-associations"].workbenchTarget.schemaName,
   "storeWarehouseAssignment",
 );
+assert.strictEqual(byId["store-locations"].parentId, "stores");
+assert.strictEqual(
+  byId["store-locations"].workbenchTarget.schemaName,
+  "pointOfService",
+);
+assert.strictEqual(byId["store-locations"].featureState, "PREVIEW");
 assert.strictEqual(byId["payment-methods"].parentId, "payment-operations");
 assert.strictEqual(
   byId["payment-methods"].workbenchTarget.schemaName,

@@ -17,21 +17,57 @@
  * @override Customer modules may replace concrete repair execution while preserving service-token-only access, idempotency, safe diagnostics, and immutable evaluation evidence.
  */
 module.exports = {
+  /**
+   * Executes the init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   init: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the post init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   postInit: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the config contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   config: function () {
     return (CONFIG.get("promotion") || {}).reconciliation || {};
   },
+  /**
+   * Executes the workflow config contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   workflowConfig: function () {
     return (CONFIG.get("promotion") || {}).workflow || {};
   },
+  /**
+   * Executes the error contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   error: function (code, message) {
     return new CLASSES.NodicsError(message, null, code);
   },
+  /**
+   * Executes the items contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   items: function (value) {
     if (!value) return [];
     if (Array.isArray(value)) return value;
@@ -42,6 +78,12 @@ module.exports = {
     if (Array.isArray(value.items)) return value.items;
     return [value];
   },
+  /**
+   * Executes the assert service identity contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   assertServiceIdentity: function (request) {
     if (
       !request ||
@@ -54,6 +96,12 @@ module.exports = {
       );
     }
   },
+  /**
+   * Executes the assert safe request contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   assertSafeRequest: function (request) {
     if (
       /cvv|cardNumber|pan|secret|password|rawGateway|gatewayPayload|providerPayload/i.test(
@@ -66,11 +114,23 @@ module.exports = {
       );
     }
   },
+  /**
+   * Executes the enterprise code contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   enterpriseCode: function (request) {
     return SERVICE.DefaultPromotionEnterpriseScopeService.resolveEnterpriseCode(
       request,
     );
   },
+  /**
+   * Executes the build code contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   buildCode: function (enterpriseCode, type, values) {
     return SERVICE.DefaultPromotionEnterpriseScopeService.buildCode(
       enterpriseCode,
@@ -78,6 +138,12 @@ module.exports = {
       values,
     );
   },
+  /**
+   * Executes the operation contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   operation: function (repairRequest) {
     return (
       repairRequest.operationType ||
@@ -85,6 +151,12 @@ module.exports = {
       "REPAIR_EVALUATION"
     );
   },
+  /**
+   * Executes the idempotency key contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   idempotencyKey: function (repairRequest) {
     return (
       repairRequest.idempotencyKey ||
@@ -100,6 +172,12 @@ module.exports = {
         .join("::")
     );
   },
+  /**
+   * Executes the existing run contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   existingRun: async function (request, idempotencyKey) {
     if (
       !SERVICE.DefaultPromotionRepairRunService ||
@@ -123,6 +201,12 @@ module.exports = {
     }
     return runs[0];
   },
+  /**
+   * Executes the persist run contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   persistRun: async function (request, run) {
     if (
       !SERVICE.DefaultPromotionRepairRunService ||
@@ -137,6 +221,12 @@ module.exports = {
     });
     return this.items(response)[0] || response.result || run;
   },
+  /**
+   * Executes the evaluation contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   evaluation: async function (request, evaluationCode) {
     if (
       !evaluationCode ||
@@ -154,6 +244,12 @@ module.exports = {
       }),
     )[0];
   },
+  /**
+   * Executes the execute evaluator contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   executeEvaluator: async function (request, repairRequest, retryCount) {
     if (
       !repairRequest.sourceSnapshot ||
@@ -200,6 +296,12 @@ module.exports = {
       completedAt: new Date(),
     };
   },
+  /**
+   * Executes the repair contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   repair: async function (request) {
     this.assertServiceIdentity(request);
     this.assertSafeRequest(request);
@@ -325,6 +427,12 @@ module.exports = {
       }),
     );
   },
+  /**
+   * Executes the retry contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   retry: async function (request) {
     return this.repair(
       Object.assign({}, request, {
@@ -336,6 +444,12 @@ module.exports = {
       }),
     );
   },
+  /**
+   * Executes the reconcile contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   reconcile: async function (request) {
     this.assertServiceIdentity(request);
     this.assertSafeRequest(request);

@@ -69,8 +69,8 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 14 |
-| Partially documented | 7 |
+| Documented | 19 |
+| Partially documented | 2 |
 | Undocumented | 0 |
 | Inventory only | 4 |
 
@@ -100,9 +100,9 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/tax/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/tax/nodics.js` | `module` | `documented` | 2/2 | Generated Nodics lifecycle entrypoint for tax. |  |
 | `gComm/tax/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/tax/src/controller/defaultTaxBackofficeController.js` | `src` | `partially-documented` | 0/2 | Placeholder for future Tax intent APIs. Generated CRUD routers remain disabled until a governed controller contract is introduced. | add JSDoc for 2 exported method(s) |
+| `gComm/tax/src/controller/defaultTaxBackofficeController.js` | `src` | `documented` | 2/2 | Placeholder for future Tax intent APIs. Generated CRUD routers remain disabled until a governed controller contract is introduced. |  |
 | `gComm/tax/src/event/listeners.js` | `src` | `documented` | 0/0 | Event listener registry for this boundary. |  |
-| `gComm/tax/src/facade/defaultTaxBackofficeFacade.js` | `src` | `partially-documented` | 0/2 | Placeholder for future Tax API facade contracts. Tax calculation remains service-owned until an explicit API facade is introduced. | add JSDoc for 2 exported method(s) |
+| `gComm/tax/src/facade/defaultTaxBackofficeFacade.js` | `src` | `documented` | 2/2 | Placeholder for future Tax API facade contracts. Tax calculation remains service-owned until an explicit API facade is introduced. |  |
 | `gComm/tax/src/interceptors/interceptors.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/tax/src/pipelines/pipelines.js` | `src` | `documented` | 0/0 | Pipeline definition registry for this boundary. |  |
 | `gComm/tax/src/router/appConfig.js` | `src` | `documented` | 0/0 | Router application configuration registry for this boundary. |  |
@@ -110,9 +110,9 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/tax/src/schemas/schemas.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/tax/src/search/indexes.js` | `src` | `documented` | 0/0 | Search index definition registry for this boundary. |  |
 | `gComm/tax/src/service/defaultSampleService.js` | `src` | `documented` | 2/2 | Empty module-creation placeholder that demonstrates the service lifecycle shape until concrete services are added. |  |
-| `gComm/tax/src/service/foundation/defaultTaxEnterpriseScopeService.js` | `src` | `partially-documented` | 0/9 | Applies authenticated enterprise scope and deterministic identity to Tax records. | add JSDoc for 9 exported method(s) |
-| `gComm/tax/src/service/foundation/defaultTaxValidationService.js` | `src` | `partially-documented` | 0/24 | Validates governed Tax records, exact decimal values, lifecycle state, provider metadata, and immutable tax evidence boundaries. | add JSDoc for 24 exported method(s) |
-| `gComm/tax/src/service/provider/defaultTaxProviderPolicyService.js` | `src` | `partially-documented` | 0/6 | Resolves provider-policy defaults for Tax integrations without owning provider credentials or customer-specific adapter code. | add JSDoc for 6 exported method(s) |
+| `gComm/tax/src/service/foundation/defaultTaxEnterpriseScopeService.js` | `src` | `documented` | 9/9 | Applies authenticated enterprise scope and deterministic identity to Tax records. |  |
+| `gComm/tax/src/service/foundation/defaultTaxValidationService.js` | `src` | `documented` | 24/24 | Validates governed Tax records, exact decimal values, lifecycle state, provider metadata, and immutable tax evidence boundaries. |  |
+| `gComm/tax/src/service/provider/defaultTaxProviderPolicyService.js` | `src` | `documented` | 6/6 | Resolves provider-policy defaults for Tax integrations without owning provider credentials or customer-specific adapter code. |  |
 | `gComm/tax/src/utils/enums.js` | `src` | `documented` | 0/0 | Enum definition registry for this boundary. |  |
 | `gComm/tax/src/utils/statusDefinitions.js` | `src` | `documented` | 0/0 | Status and error definition registry for this boundary. |  |
 | `gComm/tax/src/utils/utils.js` | `src` | `documented` | 0/0 | Utility function registry for this boundary. |  |

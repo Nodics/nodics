@@ -13,23 +13,74 @@
 const evidence = require("../../../src/service/adapter/defaultPaymentProviderSafeEvidenceService");
 
 module.exports = {
-    providerCode: "cyberSourceProvider",
-    providerFamily: "CYBERSOURCE",
-    operations: ["AUTHORIZE", "CAPTURE", "REFUND", "VOID", "RECONCILE"],
-    publicContractReference: "CyberSource Payments API",
-    authorize: async function (request) {
-        return evidence.build(this, request, { operation: "AUTHORIZE", providerOperation: "payments.authorize", providerStatus: "AUTHORIZED" });
-    },
-    capture: async function (request) {
-        return evidence.build(this, request, { operation: "CAPTURE", providerOperation: "payments.capture", providerStatus: "CAPTURED" });
-    },
-    void: async function (request) {
-        return evidence.build(this, request, { operation: "VOID", providerOperation: "payments.authorizationReversal", providerStatus: "REVERSED" });
-    },
-    refund: async function (request) {
-        return evidence.build(this, request, { operation: "REFUND", providerOperation: "refunds.create", providerStatus: "REFUNDED" });
-    },
-    reconcile: async function (request) {
-        return evidence.build(this, request, { operation: "RECONCILE", providerOperation: "transactionDetails.search", providerStatus: "matched", reconciliationCode: "CYBERSOURCE_TRANSACTION_MATCHED" });
-    },
+  providerCode: "cyberSourceProvider",
+  providerFamily: "CYBERSOURCE",
+  operations: ["AUTHORIZE", "CAPTURE", "REFUND", "VOID", "RECONCILE"],
+  publicContractReference: "CyberSource Payments API",
+  /**
+   * Executes the authorize contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
+  authorize: async function (request) {
+    return evidence.build(this, request, {
+      operation: "AUTHORIZE",
+      providerOperation: "payments.authorize",
+      providerStatus: "AUTHORIZED",
+    });
+  },
+  /**
+   * Executes the capture contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
+  capture: async function (request) {
+    return evidence.build(this, request, {
+      operation: "CAPTURE",
+      providerOperation: "payments.capture",
+      providerStatus: "CAPTURED",
+    });
+  },
+  /**
+   * Executes the void contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
+  void: async function (request) {
+    return evidence.build(this, request, {
+      operation: "VOID",
+      providerOperation: "payments.authorizationReversal",
+      providerStatus: "REVERSED",
+    });
+  },
+  /**
+   * Executes the refund contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
+  refund: async function (request) {
+    return evidence.build(this, request, {
+      operation: "REFUND",
+      providerOperation: "refunds.create",
+      providerStatus: "REFUNDED",
+    });
+  },
+  /**
+   * Executes the reconcile contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
+  reconcile: async function (request) {
+    return evidence.build(this, request, {
+      operation: "RECONCILE",
+      providerOperation: "transactionDetails.search",
+      providerStatus: "matched",
+      reconciliationCode: "CYBERSOURCE_TRANSACTION_MATCHED",
+    });
+  },
 };

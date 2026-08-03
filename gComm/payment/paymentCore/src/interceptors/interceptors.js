@@ -11,36 +11,36 @@
 
 /** @module payment/interceptors/interceptors @description Payment validation and lifecycle interceptors. @layer interceptor @owner payment */
 module.exports = {
-    paymentMethodPreSavePolicy: {
-        type: 'schema',
-        item: 'paymentMethod',
-        trigger: 'preSave',
-        active: 'true',
-        index: -100,
-        handler: 'DefaultPaymentPolicyService.prepareMethod',
-    },
-    paymentProviderPreSavePolicy: {
-        type: 'schema',
-        item: 'paymentProvider',
-        trigger: 'preSave',
-        active: 'true',
-        index: -100,
-        handler: 'DefaultPaymentPolicyService.prepareProvider',
-    },
-    paymentTransactionPreSavePolicy: {
-        type: 'schema',
-        item: 'paymentTransaction',
-        trigger: 'preSave',
-        active: 'true',
-        index: -100,
-        handler: 'DefaultPaymentPolicyService.prepareTransaction',
-    },
-    paymentTransactionPreRemovePolicy: {
-        type: 'schema',
-        item: 'paymentTransaction',
-        trigger: 'preRemove',
-        active: 'true',
-        index: -100,
-        handler: 'DefaultPaymentPolicyService.rejectHardDelete',
-    },
+  paymentMethodPreSavePolicy: {
+    type: "schema",
+    item: "paymentMethod",
+    trigger: "preSave",
+    active: "true",
+    index: -100,
+    handler: "DefaultPaymentPolicyService.prepareMethod",
+  },
+  paymentProviderPreSavePolicy: {
+    type: "schema",
+    item: "paymentProvider",
+    trigger: "preSave",
+    active: "true",
+    index: -100,
+    handler: "DefaultPaymentPolicyService.prepareProvider",
+  },
+  paymentTransactionPreSavePolicy: {
+    type: "schema",
+    item: "paymentTransaction",
+    trigger: "preSave",
+    active: "true",
+    index: -100,
+    handler: "DefaultPaymentPolicyService.prepareTransaction",
+  },
+  paymentTransactionPreRemovePolicy: {
+    type: "schema",
+    item: "paymentTransaction",
+    trigger: "preRemove",
+    active: "true",
+    index: -100,
+    handler: "DefaultPaymentPolicyService.rejectHardDelete",
+  },
 };

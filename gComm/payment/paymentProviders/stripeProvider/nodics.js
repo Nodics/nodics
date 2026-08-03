@@ -11,17 +11,47 @@
 
 /** @module stripeProvider @description Stripe provider adapter lifecycle. @layer module @owner stripeProvider */
 module.exports = {
-    init: function () { return Promise.resolve(true); },
-    postInit: function () {
-        if (typeof SERVICE !== "undefined" && SERVICE.DefaultPaymentProviderGatewayService && SERVICE.DefaultStripePaymentProviderAdapterService) {
-            SERVICE.DefaultPaymentProviderGatewayService.register("stripeProvider", SERVICE.DefaultStripePaymentProviderAdapterService);
-        }
-        return Promise.resolve(true);
-    },
-    deInit: function () {
-        if (typeof SERVICE !== "undefined" && SERVICE.DefaultPaymentProviderGatewayService) {
-            SERVICE.DefaultPaymentProviderGatewayService.unregister("stripeProvider");
-        }
-        return Promise.resolve(true);
-    },
+  /**
+   * Executes the init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
+  init: function () {
+    return Promise.resolve(true);
+  },
+  /**
+   * Executes the post init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
+  postInit: function () {
+    if (
+      typeof SERVICE !== "undefined" &&
+      SERVICE.DefaultPaymentProviderGatewayService &&
+      SERVICE.DefaultStripePaymentProviderAdapterService
+    ) {
+      SERVICE.DefaultPaymentProviderGatewayService.register(
+        "stripeProvider",
+        SERVICE.DefaultStripePaymentProviderAdapterService,
+      );
+    }
+    return Promise.resolve(true);
+  },
+  /**
+   * Executes the de init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
+  deInit: function () {
+    if (
+      typeof SERVICE !== "undefined" &&
+      SERVICE.DefaultPaymentProviderGatewayService
+    ) {
+      SERVICE.DefaultPaymentProviderGatewayService.unregister("stripeProvider");
+    }
+    return Promise.resolve(true);
+  },
 };

@@ -11,17 +11,47 @@
 
 /** @module visaProvider @description Visa provider adapter lifecycle. @layer module @owner visaProvider */
 module.exports = {
-    init: function () { return Promise.resolve(true); },
-    postInit: function () {
-        if (typeof SERVICE !== "undefined" && SERVICE.DefaultPaymentProviderGatewayService && SERVICE.DefaultVisaPaymentProviderAdapterService) {
-            SERVICE.DefaultPaymentProviderGatewayService.register("visaProvider", SERVICE.DefaultVisaPaymentProviderAdapterService);
-        }
-        return Promise.resolve(true);
-    },
-    deInit: function () {
-        if (typeof SERVICE !== "undefined" && SERVICE.DefaultPaymentProviderGatewayService) {
-            SERVICE.DefaultPaymentProviderGatewayService.unregister("visaProvider");
-        }
-        return Promise.resolve(true);
-    },
+  /**
+   * Executes the init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
+  init: function () {
+    return Promise.resolve(true);
+  },
+  /**
+   * Executes the post init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
+  postInit: function () {
+    if (
+      typeof SERVICE !== "undefined" &&
+      SERVICE.DefaultPaymentProviderGatewayService &&
+      SERVICE.DefaultVisaPaymentProviderAdapterService
+    ) {
+      SERVICE.DefaultPaymentProviderGatewayService.register(
+        "visaProvider",
+        SERVICE.DefaultVisaPaymentProviderAdapterService,
+      );
+    }
+    return Promise.resolve(true);
+  },
+  /**
+   * Executes the de init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
+  deInit: function () {
+    if (
+      typeof SERVICE !== "undefined" &&
+      SERVICE.DefaultPaymentProviderGatewayService
+    ) {
+      SERVICE.DefaultPaymentProviderGatewayService.unregister("visaProvider");
+    }
+    return Promise.resolve(true);
+  },
 };

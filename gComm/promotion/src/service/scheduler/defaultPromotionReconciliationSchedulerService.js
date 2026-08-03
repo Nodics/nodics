@@ -17,17 +17,41 @@
  * @override Customer modules may replace schedule creation, enterprise scoping, or trigger fan-out while preserving service identity and bounded reconciliation.
  */
 module.exports = {
+  /**
+   * Executes the init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   init: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the post init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   postInit: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the config contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   config: function () {
     return (
       ((CONFIG.get("promotion") || {}).reconciliation || {}).scheduler || {}
     );
   },
+  /**
+   * Executes the service auth data contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   serviceAuthData: function (enterpriseCode) {
     return {
       tokenType: "service",
@@ -36,6 +60,12 @@ module.exports = {
       enterprise: enterpriseCode ? { code: enterpriseCode } : undefined,
     };
   },
+  /**
+   * Executes the job definition contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   jobDefinition: function (overrides) {
     const scheduler = Object.assign({}, this.config(), overrides || {});
     return {
@@ -68,6 +98,12 @@ module.exports = {
       state: "NEW",
     };
   },
+  /**
+   * Executes the run contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   run: async function (request) {
     const definition = (request || {}).definition || {};
     const body = (definition.jobDetail || {}).body || {};

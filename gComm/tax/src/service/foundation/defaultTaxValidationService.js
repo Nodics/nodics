@@ -17,18 +17,48 @@
  * @override Project modules may replace or layer Tax validation while preserving enterprise scope, exact decimal values, and no-secret provider records.
  */
 module.exports = {
+  /**
+   * Executes the init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   init: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the post init contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   postInit: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the config contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   config: function () {
     return CONFIG.get("tax") || {};
   },
+  /**
+   * Executes the error contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   error: function (code, message) {
     return SERVICE.DefaultTaxEnterpriseScopeService.error(code, message);
   },
+  /**
+   * Executes the assert date range contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   assertDateRange: function (model) {
     if (
       model.effectiveFrom &&
@@ -39,6 +69,12 @@ module.exports = {
       throw this.error("ERR_TAX_00010", "Tax effective date range is invalid");
     }
   },
+  /**
+   * Executes the assert decimal contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   assertDecimal: function (value, label, allowZero) {
     const policy = (this.config() || {}).decimals || {};
     if (typeof value !== "string") {
@@ -71,6 +107,12 @@ module.exports = {
     }
     return text;
   },
+  /**
+   * Executes the assert currency contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   assertCurrency: function (value, required) {
     if (!value && !required) return true;
     if (!/^[A-Z]{3}$/.test(value || "")) {
@@ -78,12 +120,24 @@ module.exports = {
     }
     return true;
   },
+  /**
+   * Executes the assert country contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   assertCountry: function (value) {
     if (!/^[A-Z]{2}$/.test(value || "")) {
       throw this.error("ERR_TAX_00013", "Tax country code is invalid");
     }
     return true;
   },
+  /**
+   * Executes the prepare contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepare: function (request, type, identityProperties) {
     SERVICE.DefaultTaxEnterpriseScopeService.scopeNewModel(
       request,
@@ -93,6 +147,12 @@ module.exports = {
     this.assertDateRange(request.model);
     return request.model;
   },
+  /**
+   * Executes the prepare jurisdiction contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareJurisdiction: function (request) {
     const model = this.prepare(request, "taxJurisdiction", [
       "jurisdictionCode",
@@ -122,6 +182,12 @@ module.exports = {
     }
     return true;
   },
+  /**
+   * Executes the prepare provider contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareProvider: function (request) {
     const model = this.prepare(request, "taxProvider", ["providerCode"]);
     const policy = (this.config() || {}).provider || {};
@@ -139,6 +205,12 @@ module.exports = {
     }
     return true;
   },
+  /**
+   * Executes the prepare rate contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareRate: function (request) {
     const model = this.prepare(request, "taxRate", ["rateCode"]);
     const policy = (this.config() || {}).rate || {};
@@ -153,6 +225,12 @@ module.exports = {
       this.assertCurrency(model.currencyCode, true);
     return true;
   },
+  /**
+   * Executes the prepare exemption contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareExemption: function (request) {
     const model = this.prepare(request, "taxExemption", ["exemptionCode"]);
     if (
@@ -167,6 +245,12 @@ module.exports = {
     }
     return true;
   },
+  /**
+   * Executes the prepare quote contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareQuote: function (request) {
     const model = this.prepare(request, "taxQuote", ["quoteCode"]);
     const policy = (this.config() || {}).rate || {};
@@ -188,6 +272,12 @@ module.exports = {
     this.normalizeTaxInclusion(model, policy);
     return true;
   },
+  /**
+   * Executes the normalize tax inclusion contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   normalizeTaxInclusion: function (model, policy) {
     policy = policy || {};
     const legacyMap = policy.legacyTaxModeMap || {
@@ -217,6 +307,12 @@ module.exports = {
     }
     model.taxIncluded = model.taxInclusionMode === "TAX_INCLUSIVE";
   },
+  /**
+   * Executes the prepare quote line contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareQuoteLine: function (request) {
     const model = this.prepare(request, "taxQuoteLine", ["lineCode"]);
     this.assertCurrency(model.currencyCode, true);
@@ -244,6 +340,12 @@ module.exports = {
     model.taxAmount = this.assertDecimal(model.taxAmount, "Tax amount", true);
     return true;
   },
+  /**
+   * Executes the update contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   update: async function (
     request,
     serviceName,
@@ -296,6 +398,12 @@ module.exports = {
     request.model = patch;
     return true;
   },
+  /**
+   * Executes the prepare jurisdiction update contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareJurisdictionUpdate: function (request) {
     return this.update(
       request,
@@ -304,6 +412,12 @@ module.exports = {
       "prepareJurisdiction",
     );
   },
+  /**
+   * Executes the prepare provider update contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareProviderUpdate: function (request) {
     return this.update(
       request,
@@ -312,6 +426,12 @@ module.exports = {
       "prepareProvider",
     );
   },
+  /**
+   * Executes the prepare rate update contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareRateUpdate: function (request) {
     return this.update(
       request,
@@ -320,6 +440,12 @@ module.exports = {
       "prepareRate",
     );
   },
+  /**
+   * Executes the prepare exemption update contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareExemptionUpdate: function (request) {
     return this.update(
       request,
@@ -328,6 +454,12 @@ module.exports = {
       "prepareExemption",
     );
   },
+  /**
+   * Executes the prepare quote update contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareQuoteUpdate: function (request) {
     return this.update(
       request,
@@ -336,6 +468,12 @@ module.exports = {
       "prepareQuote",
     );
   },
+  /**
+   * Executes the prepare quote line update contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   prepareQuoteLineUpdate: function (request) {
     return this.update(
       request,
@@ -344,6 +482,12 @@ module.exports = {
       "prepareQuoteLine",
     );
   },
+  /**
+   * Executes the reject hard delete contract for this module surface.
+   *
+   * @param {...*} args Governed Nodics runtime arguments for this operation.
+   * @returns {*} Operation result, promise, or delegated service response.
+   */
   rejectHardDelete: function () {
     return Promise.reject(
       this.error(

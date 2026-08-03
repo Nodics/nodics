@@ -76,9 +76,9 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/payment/paymentProviders/visaProvider/config/prescripts.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/payment/paymentProviders/visaProvider/config/properties.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/payment/paymentProviders/visaProvider/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/payment/paymentProviders/visaProvider/nodics.js` | `module` | `partially-documented` | 0/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override; add JSDoc for 3 exported method(s) |
+| `gComm/payment/paymentProviders/visaProvider/nodics.js` | `module` | `partially-documented` | 3/3 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/payment/paymentProviders/visaProvider/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
-| `gComm/payment/paymentProviders/visaProvider/src/service/defaultVisaPaymentProviderAdapterService.js` | `src` | `partially-documented` | 0/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override; add JSDoc for 5 exported method(s) |
+| `gComm/payment/paymentProviders/visaProvider/src/service/defaultVisaPaymentProviderAdapterService.js` | `src` | `partially-documented` | 5/5 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 
 ## Extension Contract
 
