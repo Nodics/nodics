@@ -51,6 +51,9 @@ That is why Nodics separates authoring records from applied evidence.
   priority/stacking/exclusive arbitration, coupon hold/consume/release planning,
   budget reservation/exhaustion planning, rollback evidence, and exact
   decimal-string discount totals.
+- `DefaultPromotionLifecycleWorkflowService` adapts approval, rejection,
+  repair, and reconciliation requests to Workflow-owned carriers so long-running
+  business processes do not become hidden synchronous service logic.
 
 All records are enterprise-scoped, generated-service backed, and not exposed
 through public generated CRUD routes by default.
@@ -176,6 +179,36 @@ This keeps promotion evaluation deterministic and testable while giving
 Checkout/Workflow owned, explicit hooks for irreversible redemption, rollback,
 approval, repair, and retry behavior.
 
+## Workflow lifecycle
+
+Promotion lifecycle changes are business processes, not direct table edits.
+Nodics seeds two Workflow heads:
+
+- `promotionLifecycleManualFlow` for campaign/rule approval or rejection by a
+  human employee;
+- `promotionLifecycleAutomaticFlow` for service-token-only evaluation repair or
+  reconciliation requests.
+
+Manual workflow actions must run with a human identity. A service token cannot
+approve or reject a campaign or rule. Automatic repair/reconciliation actions
+must run with a service identity. A human session cannot invoke automatic repair
+as a hidden privileged operation.
+
+When a campaign or rule is approved, Promotion updates the lifecycle status and
+stores audit evidence such as `approvedBy`, `approvedAt`,
+`workflowCarrierCode`, and `lastWorkflowDecision`. Evaluation and applied
+discount evidence remain immutable; repair and retry create governed workflow
+requests instead of rewriting old evidence.
+
+Customer modules can replace workflow heads, actions, channels, and repair
+services through layered modules. They must preserve:
+
+- Workflow ownership of long-running approval/repair processes;
+- Promotion ownership of campaign/rule/evaluation evidence;
+- human-only manual decisions;
+- service-token-only automatic repair;
+- immutable `promotionEvaluationRun` and `appliedPromotion` evidence.
+
 ## Tax and payment relationship
 
 Promotion records discount evidence. Tax decides whether tax is calculated
@@ -252,5 +285,6 @@ contracts:
 node gComm/promotion/test/promotionFoundationContract.test.js
 node gComm/promotion/test/promotionEvaluationContract.test.js
 node gComm/promotion/test/promotionRuntimePipelineDelegateContract.test.js
+node gComm/promotion/test/promotionLifecycleWorkflowContract.test.js
 node gComm/test/commerceOperationsBackofficeNavigationContract.test.js
 ```

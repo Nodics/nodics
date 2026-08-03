@@ -13,6 +13,7 @@
         "loadableByNodicsModuleLoader": true,
         "owns": [
             "configuration",
+            "data",
             "schema",
             "service",
             "interceptor",

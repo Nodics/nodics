@@ -359,6 +359,30 @@ module.exports = {
       maximumEvaluationRecords: 1000,
       activeStatuses: ["ACTIVE", "EVALUATED"],
     },
+    workflow: {
+      enabled: true,
+      defaultMode: "MANUAL",
+      modes: ["MANUAL", "AUTOMATIC"],
+      manualWorkflowCode: "promotionLifecycleManualFlow",
+      automaticWorkflowCode: "promotionLifecycleAutomaticFlow",
+      operationModes: {
+        APPROVE_CAMPAIGN: "MANUAL",
+        APPROVE_RULE: "MANUAL",
+        REPAIR_EVALUATION: "AUTOMATIC",
+        RECONCILE_EVIDENCE: "AUTOMATIC",
+      },
+      approvalOperations: ["APPROVE_CAMPAIGN", "APPROVE_RULE"],
+      repairOperations: ["REPAIR_EVALUATION", "RECONCILE_EVIDENCE"],
+    },
+    reconciliation: {
+      enabled: true,
+      maximumAggregateRecords: 1000,
+      repairableFailureCodes: [
+        "PROMOTION_RUNTIME_FAILED",
+        "PROMOTION_EVIDENCE_INCOMPLETE",
+        "PROMOTION_RULE_UNAVAILABLE",
+      ],
+    },
     identity: {
       codePattern: "^[A-Za-z0-9][A-Za-z0-9._-]*$",
       separator: "::",

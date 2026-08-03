@@ -4,11 +4,12 @@ Promotion is the Commerce authority for promotion authoring metadata, coupon
 metadata, evaluation-run evidence, and applied-discount evidence.
 
 This contract is intentionally a foundation plus the first deterministic
-evaluator slice. It does not yet implement persisted reservation mutation,
-Workflow checkout integration, external providers, or customer-specific rule
-engines. It does provide safe declarative condition/action interpretation,
-stacking arbitration, coupon/budget planning, rollback evidence, and exact
-decimal-string applied-discount totals.
+evaluator and workflow lifecycle slices. It does not yet implement external
+promotion providers or customer-specific rule engines. It does provide safe
+declarative condition/action interpretation, stacking arbitration,
+coupon/budget planning, rollback evidence, exact decimal-string
+applied-discount totals, runtime persistence hooks, and Workflow-owned
+approval/repair/reconciliation entry points.
 
 ## SAP Commerce / Hybris reference pattern
 
@@ -128,6 +129,32 @@ irreversible coupon redemption, budget consumption, or rollback release in an
 explicit business-process step. It still does not mutate cart totals, order
 totals, tax totals, payment transactions, inventory, or fulfillment state.
 
+## Workflow lifecycle behavior
+
+Promotion lifecycle approval, rejection, repair, and reconciliation are
+Workflow-owned processes. The default seed package defines:
+
+- `promotionLifecycleManualFlow`;
+- `promotionLifecycleAutomaticFlow`;
+- manual review, manual completion, manual rejection, and automatic completion
+  actions;
+- channels that route approved, rejected, and automatic operations.
+
+`DefaultPromotionLifecycleWorkflowService` adapts promotion campaign/rule
+approval and evaluation repair requests into Workflow carriers. It enforces the
+identity boundary:
+
+- manual campaign/rule approval and rejection require human identity;
+- automatic repair and reconciliation require service identity;
+- service tokens cannot approve business records;
+- human sessions cannot invoke privileged automatic repair directly.
+
+Campaign and rule approvals update lifecycle status and audit fields such as
+`approvedBy`, `approvedAt`, `workflowCarrierCode`, and `lastWorkflowDecision`.
+`promotionEvaluationRun` and `appliedPromotion` remain immutable evidence.
+Repair and retry must create governed workflow operations rather than modifying
+old evaluation records.
+
 ## Extension rules
 
 - Add new condition/action types through layered configuration first.
@@ -137,13 +164,16 @@ totals, tax totals, payment transactions, inventory, or fulfillment state.
 - Do not move Promotion calculation into Pricing, Cart, Order, Tax, or Payment.
 - Do not let public generated CRUD mutate applied-discount evidence.
 - Keep applied evidence immutable once accepted by Cart/Order.
+- Keep long-running approval, retry, repair, and reconciliation in Workflow;
+  use nPipeline only for atomic technical steps inside those processes.
+- Keep human approval and service-token repair identities separate.
 
 ## Current limitations
 
-- Runtime delegates, evidence persistence, coupon consume/release, and budget
-  consume/release exist as service-level contracts. Public APIs and
-  Workflow-owned approval, retry, repair, and reconciliation processes remain
-  future slices.
+- Runtime delegates, evidence persistence, coupon consume/release, budget
+  consume/release, and workflow lifecycle entry points exist as service-level
+  contracts. Public APIs, scheduler/event triggers, concrete repair executors,
+  bounded retry state, and Axis operation buttons remain future slices.
 - Customer eligibility, audience/segment providers, product/category hierarchy
   expansion, promotion provider adapters, and high-scale search/index
   optimization remain future slices.
@@ -157,4 +187,5 @@ totals, tax totals, payment transactions, inventory, or fulfillment state.
 node gComm/promotion/test/promotionFoundationContract.test.js
 node gComm/promotion/test/promotionEvaluationContract.test.js
 node gComm/promotion/test/promotionRuntimePipelineDelegateContract.test.js
+node gComm/promotion/test/promotionLifecycleWorkflowContract.test.js
 ```

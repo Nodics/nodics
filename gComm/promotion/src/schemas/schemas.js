@@ -51,6 +51,30 @@ const common = function () {
       required: false,
       description: "Optional lifecycle or validity end",
     },
+    approvedBy: {
+      type: "string",
+      required: false,
+      description: "Human principal that approved this promotion record",
+      searchOptions: { enabled: true },
+    },
+    approvedAt: {
+      type: "date",
+      required: false,
+      description: "Timestamp when this promotion record was approved",
+    },
+    workflowCarrierCode: {
+      type: "string",
+      required: false,
+      description:
+        "Workflow carrier that governed the latest lifecycle decision",
+      searchOptions: { enabled: true },
+    },
+    lastWorkflowDecision: {
+      type: "string",
+      required: false,
+      description: "Latest governed workflow decision",
+      searchOptions: { enabled: true },
+    },
   };
 };
 

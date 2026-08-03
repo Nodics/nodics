@@ -64,6 +64,14 @@ module.exports = {
     code: "404",
     message: "Promotion update target not found uniquely",
   },
+  ERR_PROMOTION_00020: {
+    code: "400",
+    message: "Promotion workflow request invalid",
+  },
+  ERR_PROMOTION_00021: {
+    code: "403",
+    message: "Promotion workflow identity boundary violated",
+  },
   ERR_PROMOTION_EVAL_0001: {
     code: "400",
     message: "Promotion evaluation input invalid",

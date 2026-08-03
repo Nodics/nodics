@@ -401,9 +401,16 @@ P2/P3 — Promotions, discounts, variants, point of service, quotes, fraud:
       Cart and Order aggregate calculation pipelines now delegate aggregate promotion evaluation/reconciliation to `DefaultPromotionEvaluationService` through configurable `cartPromotions` and `orderPromotionEvidence` delegates.
       Promotion now exposes runtime delegate operations `evaluateEntry`, `evaluateCart`, `reconcileEntry`, and `reconcileOrder`, loads direct grouped records or generated schema services, persists `promotionEvaluationRun` and `appliedPromotion` evidence when services are available, and supports coupon/budget consume/release operations.
       Validation run: `node gComm/promotion/test/promotionRuntimePipelineDelegateContract.test.js`, `node gComm/promotion/test/promotionEvaluationContract.test.js`, `node gComm/cart/test/cartCalculationPipelineContract.test.js`, and `node gComm/order/test/orderCalculationPipelineContract.test.js`.
-  ☐ Add workflow-owned Promotion approval, repair, retry, and reconciliation processes. @p2 @commerce @workflow
+  ✔ Add workflow-owned Promotion approval, repair, retry, and reconciliation process foundation. @done(2026-08-03) @p2 @commerce @workflow
+    Evidence 2026-08-03:
+      Added Promotion lifecycle workflow configuration for manual campaign/rule approval and automatic evaluation repair/reconciliation operations.
+      Added Workflow-owned init data and import headers for `promotionLifecycleManualFlow`, `promotionLifecycleAutomaticFlow`, manual review/complete/reject actions, automatic repair completion, and lifecycle channels.
+      Added `DefaultPromotionLifecycleWorkflowService` and `DefaultPromotionLifecycleInternalClientService` to adapt Promotion subjects to Workflow carriers while preserving human-only manual decisions and service-token-only automatic repair/reconciliation.
+      Added workflow audit fields to Promotion records without making `promotionEvaluationRun` mutable; repair/retry creates governed requests rather than rewriting immutable evidence.
+      Validation run: `node gComm/promotion/test/promotionLifecycleWorkflowContract.test.js`, `node gComm/promotion/test/promotionFoundationContract.test.js`, `node gComm/promotion/test/promotionRuntimePipelineDelegateContract.test.js`, and promotion init manifest validation.
+  ☐ Complete Promotion operational repair/retry/reconciliation execution APIs and scheduler integration. @p2 @commerce @workflow
     Current evidence 2026-08-03:
-      Promotion runtime can evaluate, persist evidence, consume reservations, and release rollback holds, but long-running approval, operational repair, retry, and reconciliation workflows are intentionally still pending.
+      The workflow foundation now exists, but production repair still needs concrete repair executors, bounded retry state, scheduler/event triggers, Axis operation buttons, and operational evidence views before live promotion operations are considered complete.
   ✔ Decide whether product variant types require a dedicated schema or remain variant-axis driven. @done(2026-08-02) @p2 @commerce
     Evidence 2026-08-02:
       Product variants are implemented as reusable `productVariantAxis` and `productVariantAssignment` models, backed by Product Attribute Definitions/Values rather than a hardcoded product-variant-type catalog. Customer modules can extend allowed variant item types and bounds through configuration.

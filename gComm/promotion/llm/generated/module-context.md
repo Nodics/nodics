@@ -17,6 +17,7 @@
 ## Module-Owned Folders
 
 - `config`
+- `data`
 - `src/schemas`
 - `src/service`
 - `src/interceptors`
@@ -27,10 +28,10 @@
 
 | Area | Count |
 | --- | ---: |
-| Source files | 8 |
-| Test files | 11 |
-| Data files | 0 |
-| All module-owned files | 19 |
+| Source files | 10 |
+| Test files | 12 |
+| Data files | 7 |
+| All module-owned files | 29 |
 | Local schema definitions | 8 |
 
 ## Ownership And Dependencies
@@ -38,6 +39,7 @@
 **Owned extension areas**
 
 - `configuration`
+- `data`
 - `schema`
 - `service`
 - `interceptor`
@@ -57,10 +59,10 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 3 |
-| Partially documented | 12 |
+| Documented | 4 |
+| Partially documented | 20 |
 | Undocumented | 0 |
-| Inventory only | 4 |
+| Inventory only | 5 |
 
 ## Important Files
 
@@ -84,6 +86,13 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/promotion/config/postscripts.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/config/prescripts.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/config/properties.js` | `config` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/promotion/data/init/data/workflow/defaultPromotionLifecycleWorkflowActionData.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/promotion/data/init/data/workflow/defaultPromotionLifecycleWorkflowChannelData.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/promotion/data/init/data/workflow/defaultPromotionLifecycleWorkflowHeadData.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/promotion/data/init/headers/workflow/defaultPromotionLifecycleWorkflowActionHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/promotion/data/init/headers/workflow/defaultPromotionLifecycleWorkflowChannelHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/promotion/data/init/headers/workflow/defaultPromotionLifecycleWorkflowHeadHeader.js` | `data` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
+| `gComm/promotion/data/init/manifest.json` | `data` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/promotion/llm/README.md` | `llm` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
 | `gComm/promotion/nodics.js` | `module` | `partially-documented` | 0/2 | Nodics lifecycle entrypoint for the Promotion capability. | add JSDoc for 2 exported method(s) |
 | `gComm/promotion/package.json` | `metadata` | `inventory-only` | 0/0 | Tracked as module-owned context; source JSDoc is not required for this file type. |  |
@@ -92,11 +101,14 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/promotion/src/service/foundation/defaultPromotionEnterpriseScopeService.js` | `src` | `partially-documented` | 0/9 | Applies authenticated enterprise scope and deterministic identity to Promotion records. | add JSDoc for 9 exported method(s) |
 | `gComm/promotion/src/service/foundation/defaultPromotionEvaluationService.js` | `src` | `partially-documented` | 0/37 | Evaluates safe declarative promotion rules into immutable discount evidence without owning Cart or Order lifecycle. | add JSDoc for 37 exported method(s) |
 | `gComm/promotion/src/service/foundation/defaultPromotionValidationService.js` | `src` | `partially-documented` | 0/20 | Validates governed Promotion campaigns, rules, coupon records, evaluation runs, and applied-discount evidence. | add JSDoc for 20 exported method(s) |
+| `gComm/promotion/src/service/workflow/defaultPromotionLifecycleInternalClientService.js` | `src` | `partially-documented` | 0/3 | Crosses from human Promotion workflow actions into service-token-only automatic repair commands. | add JSDoc for 3 exported method(s) |
+| `gComm/promotion/src/service/workflow/defaultPromotionLifecycleWorkflowService.js` | `src` | `partially-documented` | 0/24 | Adapts Promotion lifecycle approval, rejection, repair, and reconciliation requests to Nodics Workflow-owned processes. | add JSDoc for 24 exported method(s) |
 | `gComm/promotion/src/utils/enums.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/src/utils/statusDefinitions.js` | `src` | `partially-documented` | 0/0 | Stable Promotion error-to-HTTP mappings. | add @override |
 | `gComm/promotion/src/utils/utils.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/test/promotionEvaluationContract.test.js` | `test` | `documented` | 0/0 | Protects deterministic Promotion evaluation, stacking, coupon reservation, budget reservation, and rollback evidence contracts. |  |
 | `gComm/promotion/test/promotionFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects Promotion-owned campaign, rule, condition, action, coupon, evaluation, and applied-discount foundation contracts. |  |
+| `gComm/promotion/test/promotionLifecycleWorkflowContract.test.js` | `test` | `documented` | 0/0 | Protects Promotion lifecycle approval and repair as Workflow-owned business processes. |  |
 | `gComm/promotion/test/promotionRuntimePipelineDelegateContract.test.js` | `test` | `documented` | 0/0 | Protects Promotion runtime delegates used by Cart and Order calculation pipelines, including optional evidence persistence and coupon/budget consume/release operations. |  |
 
 ## Extension Contract
