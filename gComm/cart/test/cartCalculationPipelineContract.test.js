@@ -82,6 +82,10 @@ assert.strictEqual(
   calculation.delegates.inventoryPromise.ownerModule,
   "inventory",
 );
+assert.strictEqual(
+  calculation.delegates.cartPromotions.operations[0],
+  "evaluateCart",
+);
 
 assert(pipelines.cartValidationPipeline);
 assert(pipelines.cartEntryCalculationPipeline);
@@ -264,6 +268,12 @@ const pipelineProcess = {
         };
       },
     },
+    DefaultPromotionEvaluationService: {
+      evaluateCart: async (request) => ({
+        sourceCode: request.calculationInput.cartCode,
+        discountTotal: "3.00",
+      }),
+    },
   };
 
   await cartCalculationService.calculateEntries(
@@ -276,6 +286,11 @@ const pipelineProcess = {
         { entryCode: "entry-2", cartCode: "cart-1" },
       ],
     },
+    response,
+    pipelineProcess,
+  );
+  await cartCalculationService.evaluateCartPromotions(
+    { cartCode: "cart-1", model: { code: "cart-1" } },
     response,
     pipelineProcess,
   );
@@ -293,6 +308,10 @@ const pipelineProcess = {
   assert.deepStrictEqual(
     response.success.evidence.calculatedEntries.map((entry) => entry.entryCode),
     ["entry-1", "entry-2"],
+  );
+  assert.strictEqual(
+    response.success.evidence.cartPromotions.result.discountTotal,
+    "3.00",
   );
 
   global.SERVICE.DefaultPipelineService.start = async (

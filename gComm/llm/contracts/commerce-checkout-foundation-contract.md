@@ -381,6 +381,13 @@ accept into their own frozen totals. Promotion can say "this rule produced a
 evidence becomes part of the checkout/order snapshot. Tax still decides tax
 calculation, and Payment still authorizes/captures the final payable amount.
 
+Cart and Order calculation pipelines must call Promotion through configured
+delegates. Cart uses `entryPromotions` and `cartPromotions`; Order uses
+`promotionEvidence` and `orderPromotionEvidence`. Promotion owns runtime
+evaluation, optional evidence persistence, coupon consume/release, and budget
+consume/release operations. Workflow owns long-running approval, retry, repair,
+and reconciliation processes around those operations.
+
 ## 4. Quantity split example
 
 Suppose the cart has one entry:

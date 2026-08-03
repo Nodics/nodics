@@ -21,6 +21,8 @@
  * pipeline definitions to add customer-specific validation, rounding, pricing,
  * promotion, tax, inventory, delivery-charge, or payment-plan behavior.
  */
+const commerceCalculationDelegateUtils = require("../../../../checkout/src/utils/commerceCalculationDelegateUtils");
+
 module.exports = {
   init: function () {
     return Promise.resolve(true);
@@ -139,8 +141,29 @@ module.exports = {
   calculateDeliveryCharges: function (request, response, process) {
     this.next(request, response, process, "calculateDeliveryCharges");
   },
-  evaluateCartPromotions: function (request, response, process) {
-    this.next(request, response, process, "evaluateCartPromotions");
+  evaluateCartPromotions: async function (request, response, process) {
+    try {
+      const envelope = this.envelope(request, response);
+      envelope.evidence.cartPromotions =
+        await commerceCalculationDelegateUtils.resolveDelegate(
+          "cart",
+          "cartPromotions",
+          request,
+          {
+            cartCode: request && request.cartCode,
+            cart: request && request.model,
+            entries: envelope.evidence.entries || [],
+            calculatedEntries: envelope.evidence.calculatedEntries || [],
+          },
+        );
+      this.next(request, response, process, "evaluateCartPromotions");
+    } catch (error) {
+      process.error(
+        request,
+        response,
+        error.code ? error : this.error((error && error.message) || error),
+      );
+    }
   },
   calculateCartTax: function (request, response, process) {
     this.next(request, response, process, "calculateCartTax");

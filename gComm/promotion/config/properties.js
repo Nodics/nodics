@@ -354,6 +354,11 @@ module.exports = {
     },
   },
   promotion: {
+    runtime: {
+      persistEvaluationEvidence: true,
+      maximumEvaluationRecords: 1000,
+      activeStatuses: ["ACTIVE", "EVALUATED"],
+    },
     identity: {
       codePattern: "^[A-Za-z0-9][A-Za-z0-9._-]*$",
       separator: "::",

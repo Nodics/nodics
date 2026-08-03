@@ -20,6 +20,8 @@
  * returns, refunds, adjustments, reconciliation, or customer-specific order
  * total policy while preserving owning-module authority boundaries.
  */
+const commerceCalculationDelegateUtils = require("../../../../checkout/src/utils/commerceCalculationDelegateUtils");
+
 module.exports = {
   init: function () {
     return Promise.resolve(true);
@@ -135,8 +137,30 @@ module.exports = {
   reconcileDeliveryCharges: function (request, response, process) {
     this.next(request, response, process, "reconcileDeliveryCharges");
   },
-  reconcileOrderPromotions: function (request, response, process) {
-    this.next(request, response, process, "reconcileOrderPromotions");
+  reconcileOrderPromotions: async function (request, response, process) {
+    try {
+      const envelope = this.envelope(request, response);
+      envelope.evidence.orderPromotionEvidence =
+        await commerceCalculationDelegateUtils.resolveDelegate(
+          "order",
+          "orderPromotionEvidence",
+          request,
+          {
+            orderCode: request && request.orderCode,
+            lifecycleOperation: request && request.lifecycleOperation,
+            order: request && request.model,
+            entries: envelope.evidence.entries || [],
+            calculatedEntries: envelope.evidence.calculatedEntries || [],
+          },
+        );
+      this.next(request, response, process, "reconcileOrderPromotions");
+    } catch (error) {
+      process.error(
+        request,
+        response,
+        error.code ? error : this.error((error && error.message) || error),
+      );
+    }
   },
   reconcileOrderTax: function (request, response, process) {
     this.next(request, response, process, "reconcileOrderTax");

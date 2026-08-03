@@ -82,6 +82,11 @@ module.exports = {
           serviceNames: ["DefaultPromotionEvaluationService"],
           operations: ["reconcileEntry"],
         },
+        orderPromotionEvidence: {
+          ownerModule: "promotion",
+          serviceNames: ["DefaultPromotionEvaluationService"],
+          operations: ["reconcileOrder"],
+        },
         taxEvidence: {
           ownerModule: "tax",
           serviceNames: ["DefaultTaxCalculationService"],

@@ -6,6 +6,7 @@
 
 - `gComm/promotion/test/promotionEvaluationContract.test.js`
 - `gComm/promotion/test/promotionFoundationContract.test.js`
+- `gComm/promotion/test/promotionRuntimePipelineDelegateContract.test.js`
 
 ## Generated Tests
 

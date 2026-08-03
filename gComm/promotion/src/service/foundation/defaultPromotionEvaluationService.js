@@ -83,6 +83,16 @@ module.exports = {
   decimal: normalizeDecimal,
   formatDecimal: formatDecimal,
   compareDecimal: compareDecimal,
+  config: function () {
+    if (
+      typeof CONFIG === "undefined" ||
+      !CONFIG ||
+      typeof CONFIG.get !== "function"
+    ) {
+      return {};
+    }
+    return CONFIG.get("promotion") || {};
+  },
   isActive: function (record, at) {
     const status = record && record.status;
     if (status && !["ACTIVE", "EVALUATED"].includes(status)) return false;
@@ -97,6 +107,414 @@ module.exports = {
       return false;
     }
     return true;
+  },
+  runtime: function () {
+    return (this.config() || {}).runtime || {};
+  },
+  items: function (value) {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    if (value.result !== undefined) {
+      return Array.isArray(value.result) ? value.result : [value.result];
+    }
+    if (Array.isArray(value.items)) return value.items;
+    return [value];
+  },
+  service: function (serviceName) {
+    return typeof SERVICE === "undefined" || !SERVICE
+      ? undefined
+      : SERVICE[serviceName];
+  },
+  resolveEnterpriseCode: function (request) {
+    if (
+      this.service("DefaultPromotionEnterpriseScopeService") &&
+      typeof SERVICE.DefaultPromotionEnterpriseScopeService
+        .resolveEnterpriseCode === "function"
+    ) {
+      return SERVICE.DefaultPromotionEnterpriseScopeService.resolveEnterpriseCode(
+        request,
+      );
+    }
+    return (
+      (request && request.enterpriseCode) ||
+      (request && request.entCode) ||
+      (request && request.authData && request.authData.enterpriseCode) ||
+      (request &&
+        request.authData &&
+        request.authData.enterprise &&
+        request.authData.enterprise.code)
+    );
+  },
+  sourceFromInput: function (request) {
+    return (request && request.calculationInput) || {};
+  },
+  field: function (input, names) {
+    for (const name of names) {
+      if (input && input[name] !== undefined && input[name] !== null) {
+        return input[name];
+      }
+    }
+    return undefined;
+  },
+  sum: function (items, paths) {
+    return formatDecimal(
+      (items || []).reduce((total, item) => {
+        const value = this.field(item || {}, paths);
+        return total + normalizeDecimal(value || "0");
+      }, 0n),
+    );
+  },
+  contextFor: function (sourceType, targetType, request) {
+    const input = this.sourceFromInput(request);
+    const source = input.entry || input.cart || input.order || input;
+    const code =
+      sourceType === "ORDER"
+        ? this.field(input, ["orderCode"]) ||
+          this.field(request || {}, ["orderCode"]) ||
+          this.field(source, ["orderCode", "code"])
+        : this.field(input, ["cartCode"]) ||
+          this.field(request || {}, ["cartCode"]) ||
+          this.field(source, ["cartCode", "code"]);
+    const entryCode =
+      targetType === "ENTRY"
+        ? this.field(input, ["entryCode"]) ||
+          this.field(request || {}, ["entryCode"]) ||
+          this.field(source, ["entryCode", "code"])
+        : undefined;
+    const calculatedEntries = this.items(input.calculatedEntries);
+    const entries = this.items(input.entries);
+    const subtotal =
+      this.field(source, [
+        "subtotalAmount",
+        "lineNetAmount",
+        "lineGrossAmount",
+        "totalPrice",
+        "totalAmount",
+      ]) ||
+      this.sum(calculatedEntries.length ? calculatedEntries : entries, [
+        "lineNetAmount",
+        "lineGrossAmount",
+        "totalPrice",
+        "totalAmount",
+      ]);
+    return {
+      enterpriseCode: this.resolveEnterpriseCode(request),
+      sourceType: sourceType,
+      sourceCode: code,
+      targetType: targetType,
+      targetCode: entryCode,
+      idempotencyKey:
+        (request && request.idempotencyKey) ||
+        [code || "source", targetType, entryCode || "aggregate", "promotion"]
+          .filter(Boolean)
+          .join("::"),
+      currencyCode:
+        this.field(source, ["currencyCode"]) ||
+        this.field(input, ["currencyCode"]) ||
+        "USD",
+      subtotalAmount: subtotal || "0.00",
+      entrySubtotalAmount: targetType === "ENTRY" ? subtotal || "0.00" : "0.00",
+      taxInclusionMode:
+        this.field(source, ["taxInclusionMode"]) ||
+        this.field(input, ["taxInclusionMode"]),
+      couponCode:
+        this.field(source, ["couponCode"]) ||
+        this.field(input, ["couponCode"]) ||
+        this.field(request || {}, ["couponCode"]),
+      customerCode:
+        this.field(source, ["customerCode"]) ||
+        this.field(input, ["customerCode"]) ||
+        this.field(request || {}, ["customerCode"]),
+      source: source,
+      at: (request && request.at) || this.now(),
+    };
+  },
+  recordsFromRequest: function (request, name) {
+    const input = this.sourceFromInput(request);
+    const grouped =
+      (request && request.promotionRecords) || input.promotionRecords || {};
+    const records = grouped[name] || (request && request[name]) || input[name];
+    return this.items(records);
+  },
+  loadSchemaRecords: async function (request, serviceName) {
+    const service = this.service(serviceName);
+    if (!service || typeof service.get !== "function") return [];
+    const enterpriseCode = this.resolveEnterpriseCode(request);
+    const query = enterpriseCode ? { enterpriseCode: enterpriseCode } : {};
+    const response = await service.get({
+      tenant: request && request.tenant,
+      authData: request && request.authData,
+      query: query,
+      searchOptions: {
+        limit: Number(this.runtime().maximumEvaluationRecords || 1000),
+      },
+    });
+    return this.items(response);
+  },
+  evaluationRecords: async function (request) {
+    const direct = {
+      campaigns: this.recordsFromRequest(request, "campaigns"),
+      rules: this.recordsFromRequest(request, "rules"),
+      conditions: this.recordsFromRequest(request, "conditions"),
+      actions: this.recordsFromRequest(request, "actions"),
+      couponCampaigns: this.recordsFromRequest(request, "couponCampaigns"),
+      couponCodes: this.recordsFromRequest(request, "couponCodes"),
+    };
+    if (
+      direct.campaigns.length ||
+      direct.rules.length ||
+      direct.conditions.length ||
+      direct.actions.length ||
+      direct.couponCampaigns.length ||
+      direct.couponCodes.length
+    ) {
+      return direct;
+    }
+    return {
+      campaigns: await this.loadSchemaRecords(
+        request,
+        "DefaultPromotionCampaignService",
+      ),
+      rules: await this.loadSchemaRecords(
+        request,
+        "DefaultPromotionRuleService",
+      ),
+      conditions: await this.loadSchemaRecords(
+        request,
+        "DefaultPromotionConditionService",
+      ),
+      actions: await this.loadSchemaRecords(
+        request,
+        "DefaultPromotionActionService",
+      ),
+      couponCampaigns: await this.loadSchemaRecords(
+        request,
+        "DefaultCouponCampaignService",
+      ),
+      couponCodes: await this.loadSchemaRecords(
+        request,
+        "DefaultCouponCodeService",
+      ),
+    };
+  },
+  saveOne: async function (serviceName, request, model) {
+    const service = this.service(serviceName);
+    if (!service || typeof service.save !== "function") return model;
+    const response = await service.save({
+      tenant: request && request.tenant,
+      authData: request && request.authData,
+      model: Object.assign(
+        {
+          code:
+            model.evaluationCode ||
+            model.appliedPromotionCode ||
+            model.couponCode ||
+            model.campaignCode,
+          active: model.active !== false,
+        },
+        model,
+      ),
+    });
+    return this.items(response)[0] || response.result || model;
+  },
+  persistEvaluation: async function (request, result) {
+    if (this.runtime().persistEvaluationEvidence === false) {
+      return { persisted: false, reasonCode: "PERSISTENCE_DISABLED" };
+    }
+    const savedRun = await this.saveOne(
+      "DefaultPromotionEvaluationRunService",
+      request,
+      result.evaluationRun,
+    );
+    const savedApplied = [];
+    for (const applied of result.appliedPromotions || []) {
+      savedApplied.push(
+        await this.saveOne("DefaultAppliedPromotionService", request, applied),
+      );
+    }
+    return {
+      persisted: Boolean(
+        this.service("DefaultPromotionEvaluationRunService") ||
+        this.service("DefaultAppliedPromotionService"),
+      ),
+      evaluationRun: savedRun,
+      appliedPromotions: savedApplied,
+    };
+  },
+  evaluateRuntime: async function (sourceType, targetType, request) {
+    const records = await this.evaluationRecords(request || {});
+    const context = this.contextFor(sourceType, targetType, request || {});
+    const result = this.evaluate({
+      evaluationCode:
+        (request && request.evaluationCode) ||
+        [
+          context.sourceCode || "source",
+          targetType,
+          "promotionEvaluation",
+        ].join("::"),
+      context: context,
+      campaigns: records.campaigns,
+      rules: records.rules.filter((rule) =>
+        targetType === "ENTRY"
+          ? ["ENTRY", "CART", sourceType].includes(rule.ruleType || sourceType)
+          : [sourceType, "CART", "ORDER"].includes(rule.ruleType || sourceType),
+      ),
+      conditions: records.conditions,
+      actions: records.actions.filter((action) =>
+        targetType === "ENTRY"
+          ? ["ENTRY"].includes(action.targetType || "ENTRY")
+          : [sourceType, "CART", "ORDER", "DELIVERY", "PAYMENT"].includes(
+              action.targetType || sourceType,
+            ),
+      ),
+      couponCampaigns: records.couponCampaigns,
+      couponCodes: records.couponCodes,
+    });
+    result.persistence = await this.persistEvaluation(request || {}, result);
+    return result;
+  },
+  evaluateEntry: async function (request) {
+    return this.evaluateRuntime("CART", "ENTRY", request);
+  },
+  evaluateCart: async function (request) {
+    return this.evaluateRuntime("CART", "CART", request);
+  },
+  reconcileEntry: async function (request) {
+    return this.evaluateRuntime("ORDER", "ENTRY", request);
+  },
+  reconcileOrder: async function (request) {
+    return this.evaluateRuntime("ORDER", "ORDER", request);
+  },
+  mutateCoupon: async function (couponCode, delta, request) {
+    if (!couponCode || !this.service("DefaultCouponCodeService")) return false;
+    const service = this.service("DefaultCouponCodeService");
+    if (
+      typeof service.get !== "function" ||
+      typeof service.update !== "function"
+    )
+      return false;
+    const items = this.items(
+      await service.get({
+        tenant: request && request.tenant,
+        authData: request && request.authData,
+        query: { couponCode: couponCode },
+        searchOptions: { limit: 1 },
+      }),
+    );
+    const coupon = items[0];
+    if (!coupon) return false;
+    await service.update({
+      tenant: request && request.tenant,
+      authData: request && request.authData,
+      query: { code: coupon.code || coupon.couponCode },
+      model: {
+        redemptionCount: Math.max(
+          0,
+          Number(coupon.redemptionCount || 0) + Number(delta || 0),
+        ),
+      },
+    });
+    return true;
+  },
+  mutateBudget: async function (campaignCode, amount, request) {
+    if (!campaignCode || !this.service("DefaultPromotionCampaignService"))
+      return false;
+    const service = this.service("DefaultPromotionCampaignService");
+    if (
+      typeof service.get !== "function" ||
+      typeof service.update !== "function"
+    )
+      return false;
+    const campaigns = this.items(
+      await service.get({
+        tenant: request && request.tenant,
+        authData: request && request.authData,
+        query: { campaignCode: campaignCode },
+        searchOptions: { limit: 1 },
+      }),
+    );
+    const campaign = campaigns[0];
+    if (!campaign) return false;
+    const next =
+      normalizeDecimal(campaign.budgetConsumedAmount || "0") +
+      normalizeDecimal(amount || "0");
+    await service.update({
+      tenant: request && request.tenant,
+      authData: request && request.authData,
+      query: { code: campaign.code || campaign.campaignCode },
+      model: { budgetConsumedAmount: formatDecimal(next < 0n ? 0n : next) },
+    });
+    return true;
+  },
+  reservationPlans: function (request) {
+    const input = this.sourceFromInput(request || {});
+    const evidence =
+      (request && request.evaluationResult) ||
+      input.evaluationResult ||
+      (request && request.promotionEvidence) ||
+      input.promotionEvidence ||
+      {};
+    return this.items(evidence.appliedPromotions).flatMap((item) => [
+      Object.assign({ campaignCode: item.campaignCode }, item.couponPlan || {}),
+      Object.assign(
+        { campaignCode: item.campaignCode, reserveAmount: item.discountAmount },
+        item.budgetPlan || {},
+      ),
+    ]);
+  },
+  consumeReservations: async function (request) {
+    const plans = this.reservationPlans(request);
+    const consumed = [];
+    for (const plan of plans) {
+      if (plan.consumeAction === "CONSUME_ON_ORDER_PLACED") {
+        if (plan.couponCode) {
+          consumed.push({
+            type: "COUPON",
+            code: plan.couponCode,
+            mutated: await this.mutateCoupon(plan.couponCode, 1, request),
+          });
+        }
+        if (plan.reserveAmount && plan.campaignCode) {
+          consumed.push({
+            type: "BUDGET",
+            code: plan.campaignCode,
+            amount: plan.reserveAmount,
+            mutated: await this.mutateBudget(
+              plan.campaignCode,
+              plan.reserveAmount,
+              request,
+            ),
+          });
+        }
+      }
+    }
+    return { status: "CONSUMED", consumed: consumed };
+  },
+  releaseReservations: async function (request) {
+    const plans = this.reservationPlans(request);
+    const released = [];
+    for (const plan of plans) {
+      if (plan.releaseAction === "RELEASE_ON_CHECKOUT_ROLLBACK") {
+        if (plan.couponCode) {
+          released.push({
+            type: "COUPON",
+            code: plan.couponCode,
+            mutated: false,
+            reasonCode: "COUPON_HOLD_RELEASED_WITHOUT_REDEMPTION",
+          });
+        }
+        if (plan.reserveAmount && plan.campaignCode) {
+          released.push({
+            type: "BUDGET",
+            code: plan.campaignCode,
+            amount: plan.reserveAmount,
+            mutated: false,
+            reasonCode: "BUDGET_RESERVATION_RELEASED_WITHOUT_CONSUMPTION",
+          });
+        }
+      }
+    }
+    return { status: "RELEASED", released: released };
   },
   evaluateCondition: function (condition, context) {
     if (!this.isActive(condition, context.at)) {

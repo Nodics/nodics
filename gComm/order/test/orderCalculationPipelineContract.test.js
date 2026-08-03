@@ -93,6 +93,10 @@ assert.strictEqual(
   calculation.delegates.inventoryEvidence.ownerModule,
   "inventory",
 );
+assert.strictEqual(
+  calculation.delegates.orderPromotionEvidence.operations[0],
+  "reconcileOrder",
+);
 
 assert(pipelines.orderValidationPipeline);
 assert(pipelines.orderEntryCalculationPipeline);
@@ -314,6 +318,12 @@ const pipelineProcess = {
         };
       },
     },
+    DefaultPromotionEvaluationService: {
+      reconcileOrder: async (request) => ({
+        sourceCode: request.calculationInput.orderCode,
+        discountTotal: "4.00",
+      }),
+    },
   };
 
   await orderCalculationService.calculateEntries(
@@ -326,6 +336,15 @@ const pipelineProcess = {
         { entryCode: "entry-1", orderCode: "order-1" },
         { entryCode: "entry-2", orderCode: "order-1" },
       ],
+    },
+    response,
+    pipelineProcess,
+  );
+  await orderCalculationService.reconcileOrderPromotions(
+    {
+      orderCode: "order-1",
+      model: { code: "order-1" },
+      lifecycleOperation: "ADJUSTMENT",
     },
     response,
     pipelineProcess,
@@ -344,6 +363,10 @@ const pipelineProcess = {
   assert.deepStrictEqual(
     response.success.evidence.calculatedEntries.map((entry) => entry.entryCode),
     ["entry-1", "entry-2"],
+  );
+  assert.strictEqual(
+    response.success.evidence.orderPromotionEvidence.result.discountTotal,
+    "4.00",
   );
 
   await assert.rejects(

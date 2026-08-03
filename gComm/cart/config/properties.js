@@ -78,6 +78,11 @@ module.exports = {
           serviceNames: ["DefaultPromotionEvaluationService"],
           operations: ["evaluateEntry"],
         },
+        cartPromotions: {
+          ownerModule: "promotion",
+          serviceNames: ["DefaultPromotionEvaluationService"],
+          operations: ["evaluateCart"],
+        },
         entryTax: {
           ownerModule: "tax",
           serviceNames: ["DefaultTaxCalculationService"],

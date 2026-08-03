@@ -97,7 +97,16 @@ Tax, Payment, Refund, reporting, and audit can trace.
 ## Implemented evaluator behavior
 
 `DefaultPromotionEvaluationService` evaluates Promotion-owned records against an
-input snapshot supplied by Cart, Order, Quote, or Preview. It supports:
+input snapshot supplied by Cart, Order, Quote, or Preview. Cart and Order should
+call it through calculation-pipeline delegates instead of duplicating Promotion
+logic. The runtime delegate operations are:
+
+- `evaluateEntry` for cart-entry promotion evaluation;
+- `evaluateCart` for aggregate cart promotion evaluation;
+- `reconcileEntry` for order-entry promotion evidence reconciliation;
+- `reconcileOrder` for aggregate order promotion evidence reconciliation.
+
+The evaluator supports:
 
 - active/effective-date filtering;
 - `ALL` and `ANY` condition modes;
@@ -112,9 +121,12 @@ input snapshot supplied by Cart, Order, Quote, or Preview. It supports:
 - promotion budget reserve/consume/release plans;
 - rollback plans for checkout failure or workflow compensation.
 
-The evaluator returns evidence. It does not directly mutate coupon counters,
-budget counters, cart totals, order totals, tax totals, payment transactions, or
-fulfillment state.
+The evaluator returns evidence and, when configured services are available,
+persists `promotionEvaluationRun` and `appliedPromotion` records. It exposes
+`consumeReservations` and `releaseReservations` so Checkout/Workflow can perform
+irreversible coupon redemption, budget consumption, or rollback release in an
+explicit business-process step. It still does not mutate cart totals, order
+totals, tax totals, payment transactions, inventory, or fulfillment state.
 
 ## Extension rules
 
@@ -128,9 +140,10 @@ fulfillment state.
 
 ## Current limitations
 
-- The first evaluator slice is deterministic and in-process; persisted consume
-  and release operations still need Promotion-owned APIs and Workflow
-  integration.
+- Runtime delegates, evidence persistence, coupon consume/release, and budget
+  consume/release exist as service-level contracts. Public APIs and
+  Workflow-owned approval, retry, repair, and reconciliation processes remain
+  future slices.
 - Customer eligibility, audience/segment providers, product/category hierarchy
   expansion, promotion provider adapters, and high-scale search/index
   optimization remain future slices.
@@ -143,4 +156,5 @@ fulfillment state.
 ```bash
 node gComm/promotion/test/promotionFoundationContract.test.js
 node gComm/promotion/test/promotionEvaluationContract.test.js
+node gComm/promotion/test/promotionRuntimePipelineDelegateContract.test.js
 ```

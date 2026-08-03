@@ -396,9 +396,14 @@ P2/P3 — Promotions, discounts, variants, point of service, quotes, fraud:
       Added `DefaultPromotionEvaluationService` with data-only rule evaluation, date/status checks, ALL/ANY condition groups, priority/stackability arbitration, fixed/percentage discount calculation, coupon HOLD plans, budget RESERVE/REJECT plans, and rollback-plan evidence.
       Added `promotionCampaign.budgetLimitAmount` and `promotionCampaign.budgetConsumedAmount` with exact decimal-string validation.
       Validation run: `node gComm/promotion/test/promotionEvaluationContract.test.js`.
-  ☐ Integrate promotion evaluator with checkout/cart/order pipelines, persisted audit, coupon consume/release, budget consume/release, and workflow-owned approval/repair. @p2 @commerce
+  ✔ Integrate promotion evaluator with checkout/cart/order pipelines, runtime evidence persistence, coupon consume/release, and budget consume/release. @done(2026-08-03) @p2 @commerce
+    Evidence 2026-08-03:
+      Cart and Order aggregate calculation pipelines now delegate aggregate promotion evaluation/reconciliation to `DefaultPromotionEvaluationService` through configurable `cartPromotions` and `orderPromotionEvidence` delegates.
+      Promotion now exposes runtime delegate operations `evaluateEntry`, `evaluateCart`, `reconcileEntry`, and `reconcileOrder`, loads direct grouped records or generated schema services, persists `promotionEvaluationRun` and `appliedPromotion` evidence when services are available, and supports coupon/budget consume/release operations.
+      Validation run: `node gComm/promotion/test/promotionRuntimePipelineDelegateContract.test.js`, `node gComm/promotion/test/promotionEvaluationContract.test.js`, `node gComm/cart/test/cartCalculationPipelineContract.test.js`, and `node gComm/order/test/orderCalculationPipelineContract.test.js`.
+  ☐ Add workflow-owned Promotion approval, repair, retry, and reconciliation processes. @p2 @commerce @workflow
     Current evidence 2026-08-03:
-      Promotion evaluator currently returns deterministic plans/evidence only. Runtime persistence, irreversible coupon redemption, budget mutation, checkout invocation, order snapshot binding, and operational recovery workflows remain pending by design.
+      Promotion runtime can evaluate, persist evidence, consume reservations, and release rollback holds, but long-running approval, operational repair, retry, and reconciliation workflows are intentionally still pending.
   ✔ Decide whether product variant types require a dedicated schema or remain variant-axis driven. @done(2026-08-02) @p2 @commerce
     Evidence 2026-08-02:
       Product variants are implemented as reusable `productVariantAxis` and `productVariantAssignment` models, backed by Product Attribute Definitions/Values rather than a hardcoded product-variant-type catalog. Customer modules can extend allowed variant item types and bounds through configuration.

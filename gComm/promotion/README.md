@@ -153,20 +153,28 @@ later freeze the same commercial evidence during checkout placement.
 ## Runtime evaluator slice
 
 `DefaultPromotionEvaluationService.evaluate` accepts an already-authorized
-evaluation context and the Promotion-owned records to consider. It does not
-query Cart or Order directly and does not mutate coupon counters or budget
-counters by itself. That is deliberate:
+evaluation context and the Promotion-owned records to consider. It stays
+deterministic and does not query Cart or Order directly. Cart and Order use
+runtime delegate operations instead:
+
+- `evaluateEntry` evaluates a cart-entry snapshot.
+- `evaluateCart` evaluates an aggregate cart snapshot.
+- `reconcileEntry` reconciles promotion evidence for an order entry.
+- `reconcileOrder` reconciles promotion evidence for an aggregate order.
 
 1. Cart, Order, Quote, or Preview provide the source snapshot and idempotency
    key.
 2. Promotion evaluates safe metadata, calculates exact decimal-string discount
    evidence, and returns an evaluation run plus applied promotion records.
-3. Checkout or Workflow persists accepted evidence and calls later Promotion
-   operations to consume or release coupon/budget reservations.
+3. Promotion persists `promotionEvaluationRun` and `appliedPromotion` evidence
+   when generated schema services are available and
+   `promotion.runtime.persistEvaluationEvidence` is enabled.
+4. Checkout or Workflow calls Promotion-owned `consumeReservations` after order
+   placement, or `releaseReservations` during checkout rollback.
 
-This keeps promotion evaluation deterministic and testable while leaving
-long-running reservation, rollback, approval, and retry behavior to Workflow and
-owning services.
+This keeps promotion evaluation deterministic and testable while giving
+Checkout/Workflow owned, explicit hooks for irreversible redemption, rollback,
+approval, repair, and retry behavior.
 
 ## Tax and payment relationship
 
@@ -190,6 +198,7 @@ Customer modules can add:
 - stricter coupon redemption policies;
 - a custom promotion evaluator service;
 - integration with an external promotion engine.
+- alternative runtime persistence, coupon, or budget repository services.
 
 The smallest supported override is to layer `promotion.rule` configuration in a
 customer module:
@@ -242,5 +251,6 @@ contracts:
 ```bash
 node gComm/promotion/test/promotionFoundationContract.test.js
 node gComm/promotion/test/promotionEvaluationContract.test.js
+node gComm/promotion/test/promotionRuntimePipelineDelegateContract.test.js
 node gComm/test/commerceOperationsBackofficeNavigationContract.test.js
 ```

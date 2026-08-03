@@ -28,9 +28,9 @@
 | Area | Count |
 | --- | ---: |
 | Source files | 8 |
-| Test files | 10 |
+| Test files | 11 |
 | Data files | 0 |
-| All module-owned files | 18 |
+| All module-owned files | 19 |
 | Local schema definitions | 8 |
 
 ## Ownership And Dependencies
@@ -57,7 +57,7 @@
 
 | Status | Files |
 | --- | ---: |
-| Documented | 2 |
+| Documented | 3 |
 | Partially documented | 12 |
 | Undocumented | 0 |
 | Inventory only | 4 |
@@ -90,13 +90,14 @@ This inventory covers every module-owned file included in the context fingerprin
 | `gComm/promotion/src/interceptors/interceptors.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/src/schemas/schemas.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/src/service/foundation/defaultPromotionEnterpriseScopeService.js` | `src` | `partially-documented` | 0/9 | Applies authenticated enterprise scope and deterministic identity to Promotion records. | add JSDoc for 9 exported method(s) |
-| `gComm/promotion/src/service/foundation/defaultPromotionEvaluationService.js` | `src` | `partially-documented` | 0/13 | Evaluates safe declarative promotion rules into immutable discount evidence without owning Cart or Order lifecycle. | add JSDoc for 13 exported method(s) |
+| `gComm/promotion/src/service/foundation/defaultPromotionEvaluationService.js` | `src` | `partially-documented` | 0/37 | Evaluates safe declarative promotion rules into immutable discount evidence without owning Cart or Order lifecycle. | add JSDoc for 37 exported method(s) |
 | `gComm/promotion/src/service/foundation/defaultPromotionValidationService.js` | `src` | `partially-documented` | 0/20 | Validates governed Promotion campaigns, rules, coupon records, evaluation runs, and applied-discount evidence. | add JSDoc for 20 exported method(s) |
 | `gComm/promotion/src/utils/enums.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/src/utils/statusDefinitions.js` | `src` | `partially-documented` | 0/0 | Stable Promotion error-to-HTTP mappings. | add @override |
 | `gComm/promotion/src/utils/utils.js` | `src` | `partially-documented` | 0/0 | Purpose is not documented; inspect the implementation and add a platform-level `@description`. | add @override |
 | `gComm/promotion/test/promotionEvaluationContract.test.js` | `test` | `documented` | 0/0 | Protects deterministic Promotion evaluation, stacking, coupon reservation, budget reservation, and rollback evidence contracts. |  |
 | `gComm/promotion/test/promotionFoundationContract.test.js` | `test` | `documented` | 0/0 | Protects Promotion-owned campaign, rule, condition, action, coupon, evaluation, and applied-discount foundation contracts. |  |
+| `gComm/promotion/test/promotionRuntimePipelineDelegateContract.test.js` | `test` | `documented` | 0/0 | Protects Promotion runtime delegates used by Cart and Order calculation pipelines, including optional evidence persistence and coupon/budget consume/release operations. |  |
 
 ## Extension Contract
 
