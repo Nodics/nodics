@@ -3,7 +3,7 @@
 Follow the root Nodics contract: `../../../AGENTS.md`.
 Follow the commerce group contract: `../../AGENTS.md`.
 Follow the payment family contract: `../AGENTS.md`.
-Follow global AI/development guidance: `../../../gSetup/llm/README.md`.
+Follow global AI/development guidance: `../../../gSetup/llm/ai-enablement-index.md`.
 
 - Payment Core owns provider contracts, payment transactions, authorization, capture, refund, void, and safe payment evidence.
 - Cart and Order may reference payment evidence, but they must not execute gateway logic or mutate Payment transaction lifecycle directly.

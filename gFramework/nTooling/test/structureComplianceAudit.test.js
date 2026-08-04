@@ -56,7 +56,6 @@ function createModule(rootPath, relativePath, name, kind, owns, extraPackage, pr
     write(path.join(modulePath, 'nodics.js'), 'module.exports = {};\n');
     write(path.join(modulePath, 'AGENTS.md'), '# ' + name + ' Agents\n');
     write(path.join(modulePath, 'README.md'), '# ' + name + '\n');
-    write(path.join(modulePath, 'llm/README.md'), '# ' + name + ' LLM\n');
     write(path.join(modulePath, 'llm/contracts/README.md'), '# Contracts\n');
     write(path.join(modulePath, 'llm/examples/README.md'), '# Examples\n');
     write(path.join(modulePath, 'config/properties.js'), propertiesSource || 'module.exports = {};\n');

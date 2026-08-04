@@ -5,9 +5,9 @@
     "humanReadmeFile": "README.md",
     "moduleDocumentationDirectory": "docs",
     "moduleAiDirectory": "llm",
-    "moduleAiReadmeFile": "llm/README.md",
+    "moduleAiReadmeFile": null,
     "generatedAiContextDirectory": "llm/generated",
-    "globalAiGuidance": "gSetup/llm/README.md",
+    "globalAiGuidance": "gSetup/llm/ai-enablement-index.md",
     "contractsDirectory": "gSetup/llm/contracts",
     "promptsDirectory": "gSetup/llm/prompts",
     "toolBridges": [

@@ -52,7 +52,6 @@ const configFiles = [
 ];
 
 const guidanceFiles = [
-    'llm/README.md',
     'llm/contracts/README.md',
     'llm/examples/README.md'
 ];
@@ -239,6 +238,37 @@ function readme(title, description) {
     return '# ' + title + '\n\n' + description + '\n';
 }
 
+function agentsReadme(moduleName, kind) {
+    return [
+        '# ' + moduleName + ' Agents',
+        '',
+        'Follow the root Nodics AI agent contract before changing this boundary:',
+        '',
+        '- root `README.md` explains the human/documentation route.',
+        '- root `AGENTS.md` governs repository-wide AI and contributor behavior.',
+        '- Read every applicable ancestor `AGENTS.md` from root to this module before editing.',
+        '- Read this module `README.md`, `llm/contracts`, `llm/examples`, and generated context.',
+        '',
+        'This generated ' + kind + ' boundary must preserve Nodics structure, layering, configuration-first behavior, override/customization contracts, tests, documentation, and generated-artifact discipline.',
+        '',
+        'Before implementing non-trivial behavior here, record the business outcome, owning layer, studied sources, current implementation, extension path, security/tenant/data/API/release impact, intended files, and validation route.',
+        ''
+    ].join('\n');
+}
+
+function moduleReadme(moduleName, kind, description) {
+    return [
+        '# ' + moduleName,
+        '',
+        description || 'Generated Nodics ' + kind + ' boundary.',
+        '',
+        'Use this README to understand what this module is for, which capability or composition boundary it owns, how it fits its parent hierarchy, and where developers or AI tools should continue reading.',
+        '',
+        'For implementation rules, read this module `AGENTS.md` after the root-to-leaf ancestor `AGENTS.md` chain. For exact contracts and examples, read this module `llm/` guidance and the relevant global contracts under `gSetup/llm`.',
+        ''
+    ].join('\n');
+}
+
 function parseList(value, defaultValue) {
     if (!value) {
         return defaultValue;
@@ -344,8 +374,8 @@ module.exports = {
         ensureDirectory(options.targetPath);
         writeFile(path.join(options.targetPath, 'package.json'), JSON.stringify(this.createPackageJson(options), null, 4) + '\n');
         writeFile(path.join(options.targetPath, 'nodics.js'), nodicsFile(options.name));
-        writeFile(path.join(options.targetPath, 'AGENTS.md'), readme(options.name + ' Agents', 'Follow Nodics structure, layering, override, documentation, and test contracts inside this boundary.'));
-        writeFile(path.join(options.targetPath, 'README.md'), readme(options.name, options.description || 'Generated Nodics ' + options.kind + ' boundary.'));
+        writeFile(path.join(options.targetPath, 'AGENTS.md'), agentsReadme(options.name, options.kind));
+        writeFile(path.join(options.targetPath, 'README.md'), moduleReadme(options.name, options.kind, options.description));
         configFiles.forEach(relativePath => {
             const content = relativePath.endsWith('properties.js') ?
                 propertiesFile(options.name) :
@@ -353,7 +383,8 @@ module.exports = {
             writeFile(path.join(options.targetPath, relativePath), content);
         });
         guidanceFiles.forEach(relativePath => {
-            writeFile(path.join(options.targetPath, relativePath), readme(options.name + ' ' + path.basename(path.dirname(relativePath)), 'Generated documentation entry for ' + options.name + '.'));
+            writeFile(path.join(options.targetPath, relativePath),
+                readme(options.name + ' ' + path.basename(path.dirname(relativePath)), 'Generated documentation entry for ' + options.name + '.'));
         });
         ensureDirectory(path.join(options.targetPath, 'llm/generated'));
         if (options.kind === 'project') {

@@ -18,12 +18,18 @@ Before editing, answer briefly:
 3. **Override:** How can a later project/environment/server/node module customize it without editing core?
 4. **Impact:** Which layers are mandatory, conditional, generated, runtime-merged, or unaffected?
 5. **Proof:** Which focused behavior and override/customization tests will prove it?
+6. **Study:** Which root-to-leaf README/AGENTS chain, module LLM guidance,
+   source/comments/tests, related module patterns, tooling, generated context,
+   and relevant `nodicsdocs` material were studied?
 
 For non-trivial changes, also classify the artifact owner before coding:
 metadata, properties, status definitions, schema, router, controller, facade,
 service, pipeline, handler, interceptor, generated artifact, test, or
-documentation. Use `contracts/nodics-expert-decision-contract.md` when the
-correct layer is unclear.
+documentation. Also record the business outcome, authorization mode,
+security/tenant/data/UX/API/release impact, assumptions, stale documentation
+risk, intended files, and validation route. Use
+`contracts/nodics-expert-decision-contract.md` when the correct layer is
+unclear.
 
 Stop and redesign if ownership is unclear, a parallel mechanism is being added,
 or the customization path cannot be explained.

@@ -11,6 +11,55 @@ Human developers and AI tools follow the same Nodics principles. AI tools do
 not get a separate shortcut path, and human developers should not bypass the
 same contracts expected from automation.
 
+## AI Expert-Council Responsibility
+
+AI tools implementing Nodics changes must act as a Nodics framework expert plus
+enterprise architect, business analyst, principal engineer, security/privacy/
+compliance and tenant-governance SME, quality engineer, customer-aware UX
+thinker, data governance expert, AI/tooling governance expert, and
+release/operations expert.
+
+The output can be concise for low-risk work, but implementation decisions must
+still account for business outcome, capability ownership, architecture,
+security, tenant isolation, data integrity, UX/API consumer impact, tests,
+documentation, generated artifacts, operations, and release readiness. The AI
+must not turn a review, discovery, or planning request into implementation
+without explicit authorization.
+
+## Pre-Implementation Study And Readiness
+
+Before coding a non-trivial change, inspect and record:
+
+- root `README.md`, root `AGENTS.md`, `CONTRIBUTING.md`, and the root-to-leaf
+  module README/AGENTS chain;
+- the nearest module `llm/contracts`, `llm/examples`, and generated context;
+- relevant `gSetup/llm/contracts`, especially
+  `contracts/nodics-principles.md` and this implementation contract;
+- current source, tests, schemas, routers, controllers, facades, services,
+  providers, pipelines, interceptors, configuration, metadata, topology, data,
+  generated-artifact definitions, and related module patterns;
+- class-level and function-level comments/JSDoc in the affected capability and
+  direct dependencies;
+- relevant online/offline `nodicsdocs` material when available.
+
+Required pre-action evidence for non-trivial implementation:
+
+1. requested business outcome and users/actors;
+2. working mode and authorized scope;
+3. owning capability, module, and layer;
+4. studied instruction, code, comment, test, generated-context, and
+   documentation sources;
+5. current implementation and reuse/extension path;
+6. affected contracts, generated artifacts, dependencies, and documentation;
+7. security, tenant, data, UX/API-consumer, operational, and release impact;
+8. assumptions, contradictions, stale documentation risk, and unresolved
+   decisions;
+9. intended files and validation route.
+
+If the available documentation, comments, generated context, or `nodicsdocs`
+material contradicts current repository source and contracts, report the drift
+and resolve through source-of-truth artifacts instead of guessing.
+
 ## Documentation Accessibility Contract
 
 Every Nodics implementation guide, module README, AI contract, and generated

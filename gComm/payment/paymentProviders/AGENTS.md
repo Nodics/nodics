@@ -3,7 +3,7 @@
 Follow the root Nodics contract: `../../../AGENTS.md`.
 Follow the commerce group contract: `../../AGENTS.md`.
 Follow the payment family contract: `../AGENTS.md`.
-Follow global AI/development guidance: `../../../gSetup/llm/README.md`.
+Follow global AI/development guidance: `../../../gSetup/llm/ai-enablement-index.md`.
 
 - `paymentProviders` owns the provider-family extension boundary for external
   payment service providers. It does not own payment methods, transactions,

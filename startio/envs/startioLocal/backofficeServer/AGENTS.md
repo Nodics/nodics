@@ -4,7 +4,7 @@
 
 - Follow the root Nodics AI contract: `../../../../AGENTS.md`.
 - Follow the local environment contract: `../AGENTS.md`.
-- Follow global AI/development guidance: `../../../../gSetup/llm/README.md`.
+- Follow global AI/development guidance: `../../../../gSetup/llm/ai-enablement-index.md`.
 
 ## Runtime Boundary
 

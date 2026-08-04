@@ -4,7 +4,7 @@ Follow the method-family contract: `../AGENTS.md`.
 Follow the payment-family contract: `../../AGENTS.md`.
 Follow the commerce group contract: `../../../AGENTS.md`.
 Follow the root Nodics AI contract: `../../../../AGENTS.md`.
-Follow global AI-tool guidance: `../../../../gSetup/llm/README.md`.
+Follow global AI-tool guidance: `../../../../gSetup/llm/ai-enablement-index.md`.
 
 - Own only card-payment method configuration, documentation, and extension
   boundaries.

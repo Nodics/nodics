@@ -3,7 +3,7 @@
 ## Inheritance
 
 - Follow the root Nodics contract: `../AGENTS.md`.
-- Follow global guidance: `../gSetup/llm/README.md`.
+- Follow global guidance: `../gSetup/llm/ai-enablement-index.md`.
 - Follow the nearest child-module `AGENTS.md` for changes below this group.
 
 ## Group Boundary

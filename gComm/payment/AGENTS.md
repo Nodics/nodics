@@ -2,7 +2,7 @@
 
 Follow the root Nodics contract: `../../AGENTS.md`.
 Follow the commerce group contract: `../AGENTS.md`.
-Follow global AI/development guidance: `../../gSetup/llm/README.md`.
+Follow global AI/development guidance: `../../gSetup/llm/ai-enablement-index.md`.
 
 - `payment` is the Payment family group. It owns composition, documentation,
   and shared payment-family configuration only.

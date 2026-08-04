@@ -18,7 +18,7 @@
         "runtimeModule": false,
         "loadableByNodicsModuleLoader": false,
         "entrypoints": {
-            "llm": "llm/README.md"
+            "llm": "llm/ai-enablement-index.md"
         },
         "kind": "setup",
         "owns": [

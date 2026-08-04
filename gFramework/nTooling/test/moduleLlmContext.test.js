@@ -27,7 +27,7 @@ const {
 } = require('../src/service/context/defaultModuleLlmContextUtilsService');
 
 const modules = scanModules();
-const globalContextPath = path.join(__dirname, '..', '..', '..', 'gSetup', 'llm', 'README.md');
+const globalContextPath = path.join(__dirname, '..', '..', '..', 'gSetup', 'llm', 'ai-enablement-index.md');
 const globalContext = fs.readFileSync(globalContextPath, 'utf8');
 const fileInventoryRowPattern = /^\| `([^`]+)` \| `[^`]+` \| `[^`]+` \|/;
 
@@ -41,7 +41,6 @@ modules.forEach(module => {
     let llmDirectory = path.join(module.path, 'llm');
     let generatedDirectory = path.join(llmDirectory, 'generated');
     assert(fs.existsSync(llmDirectory), 'Missing llm folder for module: ' + module.relativePath);
-    assert(fs.existsSync(path.join(llmDirectory, 'README.md')), 'Missing llm README for module: ' + module.relativePath);
     if (module.relativePath === 'gSetup') {
         return;
     }

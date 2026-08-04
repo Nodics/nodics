@@ -103,6 +103,12 @@ try {
         'Capability generation must include statusDefinitions.js');
     assert(fs.existsSync(path.join(projectHome, 'acme/modules/acmeCore/src/service/defaultSampleService.js')),
         'Capability generation must include defaultSampleService.js');
+    assert(!fs.existsSync(path.join(projectHome, 'acme/modules/acmeCore/llm', 'README.md')),
+        'Capability generation must not create module-local llm README files');
+    assert(fs.existsSync(path.join(projectHome, 'acme/modules/acmeCore/llm/contracts/README.md')),
+        'Capability generation must include llm/contracts/README.md');
+    assert(fs.existsSync(path.join(projectHome, 'acme/modules/acmeCore/llm/examples/README.md')),
+        'Capability generation must include llm/examples/README.md');
     assert(!fs.existsSync(path.join(projectHome, 'acme/modules/acmeCore/src/router/router.js')),
         'Capability generation must not create retired router.js');
     assert(!fs.existsSync(path.join(projectHome, 'acme/modules/acmeCore/src/pipelines/pipelinesDefinition.js')),

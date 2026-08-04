@@ -37,7 +37,7 @@ const requiredRootFiles = [
     'CONVENTIONS.md',
     '.github/copilot-instructions.md',
     '.cursor/rules/nodics-core.mdc',
-    'gSetup/llm/README.md',
+    'gSetup/llm/ai-enablement-index.md',
     'gSetup/llm/ai-manifest.json',
     'gSetup/llm/contracts/nodics-principles.md',
     'gSetup/llm/contracts/module-structure-contract.md',
@@ -164,6 +164,10 @@ function validateRootFiles(failures) {
     let normalizedRootAgents = rootAgents.toLowerCase();
     [
         'capabilities are sacred, implementations are negotiable',
+        'required reading order',
+        'operating modes and authority',
+        'pre-implementation study gate',
+        'nodics delivery expert council',
         'documentation impact contract',
         'customer/project module',
         'standard module shape'
@@ -182,6 +186,9 @@ function validateRootFiles(failures) {
         let content = readRelative(relativePath);
         if (!content.includes('AGENTS.md')) {
             fail(failures, 'AI bridge must point to AGENTS.md: ' + relativePath);
+        }
+        if (!content.includes('root-to-leaf') && !content.includes('ancestor module `AGENTS.md`')) {
+            fail(failures, 'AI bridge must preserve root-to-leaf AGENTS.md guidance: ' + relativePath);
         }
     });
 
@@ -218,7 +225,6 @@ function validatePackageFiles(failures) {
         }
         if (directory !== rootPath) {
             [
-                'llm/README.md',
                 'llm/contracts/README.md',
                 'llm/examples/README.md'
             ].forEach(relativeFile => {
@@ -233,10 +239,6 @@ function validatePackageFiles(failures) {
                 'Package must not contain a parallel module docs directory; keep the local entry point in README.md ' +
                 'and detailed guidance in the canonical documentation content pack: ' + relativePath + '/docs'
             );
-        }
-        let llmDirectory = path.join(directory, 'llm');
-        if (fs.existsSync(llmDirectory) && !fs.existsSync(path.join(llmDirectory, 'README.md'))) {
-            fail(failures, 'Module llm directory is missing README.md: ' + relativePath + '/llm');
         }
     });
 }
@@ -261,13 +263,13 @@ function validateReadmeCasing(failures) {
  */
 function validateAgentFiles(failures) {
     let rootAgentsPath = path.join(rootPath, 'AGENTS.md');
-    let globalGuidancePath = path.join(rootPath, 'gSetup', 'llm', 'README.md');
+    let globalGuidancePath = path.join(rootPath, 'gSetup', 'llm', 'ai-enablement-index.md');
     findAgentFiles().forEach(filePath => {
         if (filePath === rootAgentsPath) return;
 
         let relativePath = toRelative(filePath);
         let content = fs.readFileSync(filePath, 'utf8');
-        let references = Array.from(content.matchAll(/`([^`]*(?:AGENTS\.md|gSetup\/llm\/README\.md|llm\/README\.md))`/g))
+        let references = Array.from(content.matchAll(/`([^`]*(?:AGENTS\.md|gSetup\/llm\/ai-enablement-index\.md|llm\/ai-enablement-index\.md))`/g))
             .map(match => match[1]);
         let resolvedReferences = references.map(reference => ({
             reference,

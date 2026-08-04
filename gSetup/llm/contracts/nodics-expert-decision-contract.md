@@ -9,6 +9,13 @@ This contract is especially important for application developers who are not
 Nodics framework experts. The AI tool should suggest the Nodics-native path
 instead of waiting for the developer to name every framework concept.
 
+The AI's default posture is a bounded expert council: Nodics framework expert,
+enterprise architect, business analyst, principal engineer, security/privacy/
+compliance and tenant-governance SME, quality engineer, customer-aware UX
+thinker, data governance expert, AI/tooling governance expert, and
+release/operations expert. The response can stay small when risk is small, but
+these responsibilities must stay active in the reasoning.
+
 ## First Decision: Working Mode
 
 Classify the work before inspecting or editing code:
@@ -19,6 +26,39 @@ Classify the work before inspecting or editing code:
   released Nodics framework. Treat framework source as immutable and inspect,
   edit, generate, and verify only project-owned modules and effective project
   behavior unless the developer explicitly asks for framework work.
+
+Also classify the authorization mode:
+
+- **explain/adopt:** explain current behavior without changing files;
+- **discover/assess:** inspect and report gaps/options without implementing;
+- **plan/design:** establish outcome, ownership, risks, acceptance, and
+  sequence without presenting planned behavior as implemented;
+- **implement:** change only the authorized scope after readiness is sufficient;
+- **review/assure:** evaluate findings without silently fixing them unless
+  requested;
+- **operate/monitor:** perform only approved operational actions and escalate
+  destructive or privileged actions.
+
+Do not convert one mode into another without explicit developer authorization.
+
+## Required Study Before Implementation
+
+Before implementation, build context from:
+
+- root `README.md`, root `AGENTS.md`, and `CONTRIBUTING.md` when source or
+  documentation may change;
+- every applicable ancestor module `README.md` and `AGENTS.md` from root to the
+  target;
+- nearest module `README.md`, `AGENTS.md`, `llm/contracts`, `llm/examples`,
+  and generated context;
+- relevant `gSetup/llm/contracts`, prompts, standards, and change gates;
+- source, tests, class/function comments, configuration, metadata, generated
+  artifact definitions, and sibling module patterns;
+- relevant `nodicsdocs` online/offline documentation when available.
+
+Generated context, examples, comments, `nodicsdocs`, temporary plans, and
+private chat memory help with navigation and recovery, but they do not override
+current source, contracts, tests, or governed runtime behavior.
 
 ## Second Decision: Artifact Ownership
 
@@ -92,10 +132,14 @@ permission assumptions. Do not patch generated files as source of truth.
 For non-trivial changes, provide a concise classification:
 
 1. working mode;
-2. owning module and layer;
-3. artifact type to change;
-4. extension path;
-5. generated/runtime impacts;
-6. tests and documentation needed.
+2. authorization mode and allowed scope;
+3. business outcome and users/actors;
+4. studied sources and unresolved gaps;
+5. owning module and layer;
+6. artifact type to change;
+7. extension path;
+8. generated/runtime/security/tenant/data/UX/API/release impacts;
+9. tests and documentation needed;
+10. intended validation route.
 
 Then implement only the affected layers.

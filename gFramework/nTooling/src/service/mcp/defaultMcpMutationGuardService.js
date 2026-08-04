@@ -33,7 +33,7 @@ const actionCatalog = {
         requiresApproval: true,
         description: 'Update module-owned README and AGENTS, canonical documentation content, contracts, or examples.',
         requiredInputs: ['targetPath', 'owningModule'],
-        sourceOfTruth: ['nearest AGENTS.md', 'owning module README.md', 'gSetup/llm/contracts/documentation-impact-contract.md'],
+        sourceOfTruth: ['root-to-leaf AGENTS.md chain', 'owning module README.md', 'gSetup/llm/contracts/documentation-impact-contract.md'],
         validation: ['npm run quality:docs', 'npm run llm:validate']
     },
     'generated-artifacts': {

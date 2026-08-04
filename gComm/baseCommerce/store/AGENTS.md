@@ -2,7 +2,7 @@
 
 Follow the root Nodics contract: `../../../AGENTS.md`.
 Follow the commerce group contract: `../AGENTS.md`.
-Follow global AI/development guidance: `../../../gSetup/llm/README.md`.
+Follow global AI/development guidance: `../../../gSetup/llm/ai-enablement-index.md`.
 
 - Store owns retail/digital Store identity, Store-to-Warehouse assignment policy, and Store-to-CMS-Site binding policy. Inventory owns Warehouses; CMS owns Sites, catalogs, pages, templates, components, and content.
 - Every record is tenant- and authenticated-enterprise scoped. Never accept enterprise ownership from an untrusted payload.

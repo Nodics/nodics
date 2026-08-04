@@ -3,7 +3,7 @@
 ## Inheritance
 
 - Follow the root Nodics AI contract: `../../../AGENTS.md`.
-- Follow global AI-tool guidance: `../../../gSetup/llm/README.md`.
+- Follow global AI-tool guidance: `../../../gSetup/llm/ai-enablement-index.md`.
 - Follow `../AGENTS.md`.
 
 ## Module Boundary

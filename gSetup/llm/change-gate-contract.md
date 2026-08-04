@@ -43,6 +43,34 @@ has not been inspected, or the proposal adds an unnecessary parallel path.
 
 Keep the result concise. A few lines are normally sufficient.
 
+## Gate 1A: Implementation Readiness
+
+Run before coding any non-trivial feature, fix, refactor, integration,
+generated-artifact change, or framework behavior change. This gate may be
+lightweight for small changes, but it must not be skipped when ownership,
+security, tenancy, data, customer/API behavior, generated artifacts, tooling,
+or release readiness is affected.
+
+Required study evidence:
+
+1. root-to-leaf README/AGENTS chain studied;
+2. relevant module `llm/contracts`, `llm/examples`, and generated context
+   studied;
+3. relevant `gSetup/llm/contracts` and available `nodicsdocs` material studied;
+4. current source, tests, class/function comments, configuration, metadata,
+   generated definitions, and sibling patterns inspected;
+5. business outcome, owning module/layer, current implementation,
+   reuse/extension path, intended files, and validation route recorded;
+6. security, tenant, data, UX/API-consumer, operational, release, generated,
+   and documentation impacts marked applicable or not applicable;
+7. contradictions, stale documentation risk, missing docs, and unresolved
+   decisions reported.
+
+Fail the gate when the proposed implementation is based only on a local file
+guess, generated summary, temporary plan, private chat memory, or unverified
+documentation. Resolve conflicts through current repository contracts, source,
+tests, and governed runtime behavior.
+
 ## Gate 2: Commit
 
 Run once against the complete staged or intended commit diff before committing.
@@ -52,7 +80,7 @@ developer's approval.
 Required review:
 
 1. Confirm the diff is one coherent change and contains no unrelated edits.
-2. Apply the Change Acceptance Contract in `nodics-principles.md`.
+2. Apply the Change Acceptance Contract in `contracts/nodics-principles.md`.
 3. Apply the change-impact matrix in `artifact-definition-and-change-guide.md`.
 4. Check for project/customer hardcoding, duplicate loaders, copied services,
    secrets, debug artifacts, and manually maintained generated output.

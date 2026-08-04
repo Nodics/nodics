@@ -1,7 +1,7 @@
 # Payment Methods Agent Contract
 
 Follow `../../../AGENTS.md`.
-Follow `../../../gSetup/llm/README.md`.
+Follow `../../../gSetup/llm/ai-enablement-index.md`.
 Follow `../AGENTS.md`.
 
 - `paymentMethods` is a group module for payment method families.

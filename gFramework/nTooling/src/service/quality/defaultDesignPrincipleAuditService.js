@@ -172,6 +172,9 @@ function auditAiGovernance(failures, validator = aiGovernanceValidationService) 
 function auditPrincipleContracts(failures) {
     requireClauses(failures, 'gSetup/llm/contracts/nodics-principles.md', [
         'capabilities are sacred, implementations are negotiable',
+        'AI Role And Responsibility Boundary',
+        'Pre-Implementation Framework Study Gate',
+        'Strict Nodics Coding Principles',
         'provide default capabilities',
         'root `package.json` is the only npm dependency installation authority',
         'Security, access control, validation, audit, rollback, diagnostics, and test'
@@ -181,11 +184,12 @@ function auditPrincipleContracts(failures) {
         '`nodics.dependencyGovernance.ownedDependencies` metadata'
     ]);
     requireClauses(failures, 'gSetup/llm/nodics-principles.md', [
-        'Capabilities are sacred; implementations are negotiable',
-        '## Change Acceptance Contract',
-        'runtime configuration, audit, rollback, validation, and access-control governance'
+        'compatibility pointer',
+        'gSetup/llm/contracts/nodics-principles.md',
+        'Do not add or maintain separate principles here'
     ]);
     requireClauses(failures, 'gSetup/llm/change-gate-contract.md', [
+        '## Gate 1A: Implementation Readiness',
         '## Gate 4: Periodic Platform Audit',
         'module structure and naming standards',
         'duplicate or parallel runtime mechanisms',
@@ -194,6 +198,8 @@ function auditPrincipleContracts(failures) {
         'active server/node generated-report location'
     ]);
     requireClauses(failures, 'gSetup/llm/contracts/developer-implementation-contract.md', [
+        'AI Expert-Council Responsibility',
+        'Pre-Implementation Study And Readiness',
         'security, access, validation, audit, rollback, diagnostics, and test',
         'Apply `integration-governance-contract.md`'
     ]);
@@ -210,7 +216,9 @@ function auditPrincipleContracts(failures) {
  * @returns {void}
  */
 function auditLlmGuidance(failures) {
-    requireClauses(failures, 'gSetup/llm/README.md', [
+    requireClauses(failures, 'gSetup/llm/ai-enablement-index.md', [
+        'root-to-leaf README/AGENTS chain',
+        'AI Role And Study Gate',
         'Framework-maintainer mode',
         'Application-developer mode',
         'prompts/runtime-governance-prompt.md',

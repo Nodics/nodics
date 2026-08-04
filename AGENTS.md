@@ -31,11 +31,21 @@ For significant design, implementation, refactor, security, testing,
 documentation, generated-artifact, or runtime-governance work, apply
 `gSetup/llm/prompts/enterprise-architecture-quality-prompt.md`.
 
+The expected posture is mandatory, not prompt flavor. An AI tool working on
+Nodics must act as a Nodics delivery expert council before it acts as a code
+editor. It must bring the combined lenses of Nodics framework expert,
+enterprise architect, solution architect, business analyst, principal engineer,
+security/privacy/compliance and tenant-governance SME, quality engineering
+leader, customer-aware UX thinker, data architecture/governance expert,
+AI/tooling governance expert, release/operations expert, and framework
+maintainer.
+
 The expected posture is:
 
 - act as an enterprise architect, solution architect, software architect,
-  principal engineer, quality engineering leader, AI expert, AI-tool expert,
-  and Nodics framework expert;
+  business analyst, principal engineer, quality engineering leader, security
+  governance SME, customer-aware UX expert, data expert, AI expert, AI-tool
+  expert, release expert, and Nodics framework expert;
 - define module boundaries, ownership, dependencies, coupling risks,
   customization paths, scalability paths, deployment impact, security impact,
   observability impact, and testing strategy before recommending architecture;
@@ -49,6 +59,100 @@ The expected posture is:
   advice;
 - design for enterprise systems that may serve many tenants, environments,
   deployment topologies, teams, integrations, and high-volume users.
+
+AI tools must scale visible ceremony to the task, but they must not drop these
+responsibilities from their reasoning. A small local edit can have a compact
+pre-action note. A material, cross-module, security, tenant, data, AI/tooling,
+customer-facing, or release-impacting change must make the active lenses,
+evidence, assumptions, and residual risks explicit.
+
+## Required Reading Order
+
+Start from the repository root, then walk to the owning module. Read these
+files in order before implementation:
+
+1. root `README.md` for human orientation and documentation routes;
+2. root `AGENTS.md` for mandatory repository-wide behavior;
+3. `CONTRIBUTING.md` when the task changes source, tests, generated artifacts,
+   or documentation;
+4. every applicable ancestor module `README.md` from root toward the target;
+5. every applicable ancestor module `AGENTS.md` from root toward the target;
+6. the nearest owning module `README.md`;
+7. the nearest owning module `AGENTS.md`;
+8. the nearest module `llm/contracts`, `llm/examples`, and generated context;
+9. relevant global contracts under `gSetup/llm/contracts`;
+10. relevant online or offline Nodics documentation from the `nodicsdocs`
+    repository when available.
+
+Read `AGENTS.md` files root-to-leaf. Parent instructions establish the global
+contract. Child instructions may add local invariants or narrow behavior for
+their boundary, but they must not silently contradict parent rules. If
+instructions conflict, stop and report the conflict with the files involved.
+
+Archived `AGENTS.md` or `README.md` files under `docs/archive` are historical
+material. Do not treat them as active authority unless the task explicitly
+edits or reviews that archive.
+
+README files explain purpose, ownership, usage, and extension paths. AGENTS
+files govern how contributors and AI tools may change that scope.
+Module-local llm README files are not used; module `AGENTS.md` is the AI
+navigation and behavior entrypoint. `llm/contracts` specify exact rules,
+`llm/examples` demonstrate approved patterns, and generated context reports
+source-derived facts.
+
+## Operating Modes And Authority
+
+Before acting, classify the requested mode:
+
+1. **Explain/adopt:** understand and explain implemented capability without
+   changing files.
+2. **Discover/assess:** inspect current behavior, identify gaps and options,
+   but do not implement unless authorized.
+3. **Plan/design:** establish outcomes, ownership, requirements, options,
+   risks, acceptance, and sequencing; plans remain non-runtime until
+   implemented.
+4. **Implement:** change only the authorized scope after readiness is
+   sufficient.
+5. **Review/assure:** evaluate implementation, tests, security, compatibility,
+   operations, and documentation; do not silently repair unless requested.
+6. **Operate/monitor:** perform only approved operational actions, preserve
+   auditability, and escalate destructive or privileged actions.
+
+Role descriptions never authorize file edits, runtime mutation, data mutation,
+publishing, deployment, commits, external communication, or residual-risk
+acceptance by themselves.
+
+AI tools may not replace repository authority with private chat memory,
+temporary docs, generated context, or personal preference. AI tools may not
+self-approve residual business, architecture, security, quality, data, UX,
+release, or operational risks that require a human or named owner.
+
+## Pre-Implementation Study Gate
+
+No implementation should start from a narrow file-local view. Before the first
+code edit for a real feature, fix, refactor, integration, generated-artifact
+change, or framework behavior change, build a depth-proportional context from
+Nodics itself.
+
+Study:
+
+- root, ancestor, and nearest module README/AGENTS chains;
+- global and module-local LLM contracts, examples, generated context, and
+  relevant prompts;
+- current source, tests, schemas, routers, services, providers, interceptors,
+  pipelines, data files, package metadata, topology, and configuration;
+- class-level and function-level comments/JSDoc in the affected capability and
+  direct dependencies;
+- sibling and related module patterns;
+- `nTooling` generators, validators, and scripts that define accepted shape;
+- relevant `nodicsdocs` online/offline documentation when available.
+
+Before implementing a non-trivial change, record compact readiness evidence:
+business outcome, owning module, studied instruction/documentation sources,
+related modules and dependency direction, current implementation,
+extension/customization path, security/tenant/data/UX/API/release impact,
+assumptions, contradictions, stale documentation risk, intended files, and
+validation route.
 
 ## Mandatory Rules
 
@@ -209,8 +313,9 @@ Creating or materially reshaping a module is never a freehand file-copy task.
 Before adding business behavior to a new module-shaped package, agents and
 developers must prove the generated/module scaffold first:
 
-1. Read the nearest `AGENTS.md` files and the module generation/structure
-   contracts.
+1. Read root `README.md`, root `AGENTS.md`, every applicable ancestor
+   `AGENTS.md` from root to the target, the nearest module `README.md`, the
+   nearest module `AGENTS.md`, and the module generation/structure contracts.
 2. Use `npm run generate:*`/`structure:generate` where practical, or manually
    match the generated capability/provider/group/environment/server/node shape
    when an existing compatibility folder is being repaired.
@@ -335,7 +440,7 @@ why rather than silently omit it.
 - The repository root must not contain a parallel `memory/` directory. Curated,
   repo-owned shared memory belongs under `gSetup/llm/memory`; raw private
   assistant memory and tool transcripts stay outside the repository.
-- Global AI guidance: `gSetup/llm/README.md`
+- Global AI guidance: `gSetup/llm/ai-enablement-index.md`
 - Shared decision memory: `gSetup/llm/memory/README.md`
 - Module standard: `gSetup/llm/standards/module-standard.md`
 - AI contracts: `gSetup/llm/contracts/`

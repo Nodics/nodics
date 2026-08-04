@@ -48,8 +48,10 @@ duplicate index and that dependency order is executable.
 Use this checklist for every new or repaired module-shaped boundary before
 implementation work continues:
 
-1. Read the nearest `AGENTS.md`, `standards/module-standard.md`, this guide,
-   and the relevant row in `standards/nodics-structure-matrix.md`.
+1. Read root `README.md`, root `AGENTS.md`, the root-to-leaf ancestor
+   `AGENTS.md` chain, the nearest module `README.md`, the nearest module
+   `AGENTS.md`, `standards/module-standard.md`, this guide, and the relevant
+   row in `standards/nodics-structure-matrix.md`.
 2. Generate with `structure:generate` where practical. If a compatibility path
    requires manual creation, compare against generated output and keep all
    mandatory config, router, pipeline, utility, LLM, README, AGENTS, and test
@@ -63,6 +65,10 @@ implementation work continues:
 6. Confirm permanent documentation describes how a beginner developer,
    partner, business user, operator, and AI tool can understand, customize, and
    extend the capability without touching framework source.
+7. Confirm generated `AGENTS.md` and `README.md` explain the
+   README/AGENTS/LLM purpose boundary and route future AI tools through the
+   pre-implementation study gate. Do not generate module-local llm README
+   files; module `AGENTS.md` owns AI navigation for the boundary.
 
 This checklist exists so Nodics helps people who do not already know the
 framework. A missing generated file, metadata rewrite surprise, or hidden

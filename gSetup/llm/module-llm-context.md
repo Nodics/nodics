@@ -50,6 +50,10 @@ When a developer adds or updates a schema, the source schema remains the system 
 
 The generated schema context should be used by LLMs for current source-derived facts, while human-authored module notes should explain business meaning, extension rules, security expectations, and customization examples.
 
+Module-local llm README files are intentionally not part of the module
+contract. The `llm` folder contains contracts, examples, and generated facts;
+the module `AGENTS.md` file is the AI navigation and behavior entrypoint.
+
 ## File Documentation Status
 
 Generated file context uses four explicit states:
@@ -65,7 +69,7 @@ These states describe documentation only; they never imply that a file, module, 
 
 ## Tool-Neutrality Contract
 
-The `llm` folder name describes the intended consumer category; it does not bind Nodics to a vendor or product. Canonical guidance must remain portable Markdown and JSON, avoid proprietary command requirements, and work for humans as well as automated assistants. Optional vendor adapters may point to root `AGENTS.md` and `gSetup/llm/README.md`, but must not duplicate or replace canonical Nodics rules.
+The `llm` folder name describes the intended consumer category; it does not bind Nodics to a vendor or product. Canonical guidance must remain portable Markdown and JSON, avoid proprietary command requirements, and work for humans as well as automated assistants. Optional vendor adapters may point to root `AGENTS.md` and `gSetup/llm/ai-enablement-index.md`, but must not duplicate or replace canonical Nodics rules.
 
 ## Override Rule
 

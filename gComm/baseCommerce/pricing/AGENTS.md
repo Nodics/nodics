@@ -2,7 +2,7 @@
 
 Follow the root Nodics contract: `../../../AGENTS.md`.
 Follow the commerce group contract: `../AGENTS.md`.
-Follow global AI/development guidance: `../../../gSetup/llm/README.md`.
+Follow global AI/development guidance: `../../../gSetup/llm/ai-enablement-index.md`.
 
 - Pricing owns Price Lists, scoped Price List assignments, Price Groups and memberships, exact Price records, and deterministic Price resolution.
 - Store, Profile, Product/item, Units, Tax, Promotion, exchange-rate, Workflow, nPublish, and cache capabilities remain authoritative for their own concerns. Reference them through configured providers; never copy their master data.

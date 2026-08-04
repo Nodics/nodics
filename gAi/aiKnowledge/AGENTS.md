@@ -4,7 +4,7 @@
 
 - Follow the root Nodics contract: `../../AGENTS.md`.
 - Follow the `gAi` contract: `../AGENTS.md`.
-- Follow global guidance: `../../gSetup/llm/README.md`.
+- Follow global guidance: `../../gSetup/llm/ai-enablement-index.md`.
 
 ## Capability Boundary
 

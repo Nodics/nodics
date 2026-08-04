@@ -34,6 +34,10 @@ function requireClauses(relativePath, clauses) {
 }
 
 requireClauses('AGENTS.md', [
+    'Required Reading Order',
+    'Operating Modes And Authority',
+    'Pre-Implementation Study Gate',
+    'Nodics delivery expert council',
     'Design every module for partial discovery',
     'nearest `AGENTS.md`, README, `llm/contracts`, `llm/examples`, generated',
     'Do not hide a mandatory rule only',
@@ -42,10 +46,15 @@ requireClauses('AGENTS.md', [
     'business evaluators, business users, administrators/operators'
 ]);
 
-requireClauses('gSetup/llm/nodics-principles.md', [
+requireClauses('gSetup/llm/contracts/nodics-principles.md', [
+    '## AI Role And Responsibility Boundary',
+    '## Pre-Implementation Framework Study Gate',
+    '## Strict Nodics Coding Principles',
     '## Change Acceptance Contract',
     'every modification and every new source file',
-    'Every new source file must include file-level documentation',
+    'Understand before editing',
+    'loader-visible',
+    'mergeable CommonJS object members',
     'tooling command declarations, discovery rules, and governance gate data in module-owned `config/properties.js`',
     'Do not introduce parallel config files such as `config/tooling.js`',
     'Keep runtime artifacts inside Nodics loader radar',
@@ -56,12 +65,21 @@ requireClauses('gSetup/llm/nodics-principles.md', [
     'customization path is absent, undocumented, or untested'
 ]);
 
+requireClauses('gSetup/llm/nodics-principles.md', [
+    'compatibility pointer',
+    'gSetup/llm/contracts/nodics-principles.md',
+    'Do not add or maintain separate principles here'
+]);
+
 requireClauses('gSetup/llm/prompts/base-nodics-assistant-prompt.md', [
+    'root README.md',
+    'ancestor module README.md and AGENTS.md',
+    'nodicsdocs documentation',
     'application-developer mode',
     'Nodics framework source as',
     'immutable and already qualified',
     'unless the developer explicitly requests it',
-    'Change Acceptance Contract',
+    'gSetup/llm/contracts/nodics-principles.md',
     'Human Maintainability Contract',
     'Nodics Expert LLM Decision Contract',
     'Every new source file must include file-level documentation',
@@ -79,6 +97,8 @@ requireClauses('gSetup/llm/contracts/human-maintainability-contract.md', [
 
 requireClauses('gSetup/llm/contracts/nodics-expert-decision-contract.md', [
     '# Nodics Expert LLM Decision Contract',
+    'bounded expert council',
+    'Required Study Before Implementation',
     'classify the change',
     'correct Nodics layer',
     'artifact should own the behavior',
@@ -88,8 +108,11 @@ requireClauses('gSetup/llm/contracts/nodics-expert-decision-contract.md', [
 ]);
 
 requireClauses('gSetup/llm/prompts/enterprise-architecture-quality-prompt.md', [
+    'bounded Nodics expert council',
+    'Pre-implementation study rule',
+    'nodicsdocs documentation',
     'Mandatory acceptance rule',
-    'Change Acceptance Contract',
+    'gSetup/llm/contracts/nodics-principles.md',
     'Every new or changed extension point requires an override/customization test',
     'Reject the change as incomplete'
 ]);
@@ -176,6 +199,8 @@ requireClauses('gSetup/llm/daily-change-checklist.md', [
     '**Override:**',
     '**Impact:**',
     '**Proof:**',
+    '**Study:**',
+    'nodicsdocs',
     'classify the artifact owner before coding',
     'understandable, diagnosable, safely changeable, and reviewable',
     'Evidence may be reused while the relevant files remain unchanged'
@@ -187,6 +212,7 @@ requireClauses('gSetup/llm/change-gate-contract.md', [
     'immutable, previously qualified dependency',
     'Never expand verification to the entire Nodics repository',
     '## Gate 1: Change Slice',
+    '## Gate 1A: Implementation Readiness',
     '## Gate 2: Commit',
     '## Gate 3: Merge Or Release',
     '## Gate 4: Periodic Platform Audit',
@@ -328,7 +354,9 @@ requireClauses('gSetup/llm/contracts/module-structure-contract.md', [
     '`config/documentation-governance.json`'
 ]);
 
-requireClauses('gSetup/llm/README.md', [
+requireClauses('gSetup/llm/ai-enablement-index.md', [
+    'Module-local llm README files are intentionally not part of the standard',
+    'module `AGENTS.md` file owns AI navigation and behavior',
     '**Framework-maintainer mode:**',
     '**Application-developer mode:**',
     'framework-wide quality gates',

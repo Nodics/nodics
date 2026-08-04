@@ -126,6 +126,37 @@ You can also use AI tools more safely because Nodics gives them explicit contrac
 
 Choose the route that best matches why you are here.
 
+### I Am Using An AI Coding Tool Or Contributing Code
+
+Start with the repository behavior contract:
+
+- [AI and contributor contract](AGENTS.md)
+- [Contributing guide](CONTRIBUTING.md)
+- [Global AI enablement pack](gSetup/llm/ai-enablement-index.md)
+
+The expected route is:
+
+```text
+root README.md
+root AGENTS.md
+CONTRIBUTING.md
+ancestor module README/AGENTS files from root to target
+nearest module README.md
+nearest module AGENTS.md
+nearest module llm/contracts, llm/examples, and llm/generated context
+relevant gSetup/llm contracts and nodicsdocs documentation
+```
+
+README files explain what a capability is, why it exists, how it is used, and
+where to learn more. AGENTS files govern how AI tools and contributors may
+change that scope. LLM contracts define exact rules, examples demonstrate
+approved patterns, and generated context reports current source-derived facts.
+
+Before implementation, an AI tool must study the applicable framework code,
+comments/JSDoc, module documentation, tests, tooling, generated context, and
+available online/offline Nodics documentation. It must act as a Nodics
+framework expert and enterprise delivery expert, not as a generic code editor.
+
 ### I Am Evaluating Nodics For A Business
 
 - [Why Businesses Choose Nodics](https://github.com/Nodics/nodicsdocs)
@@ -225,7 +256,7 @@ npm run release:check -- --execute --full
 
 - Public business, user, and developer guides: [nodicsdocs](https://github.com/Nodics/nodicsdocs)
 - Module-specific guides: [Module Documentation Index](https://github.com/Nodics/nodicsdocs) and each module `README.md`
-- AI and implementation rules: [AGENTS.md](AGENTS.md) and [gSetup/llm](gSetup/llm/README.md)
+- AI and implementation rules: [AGENTS.md](AGENTS.md) and [gSetup/llm](gSetup/llm/ai-enablement-index.md)
 - Generated API documentation: generated during build
 - Generated AI context: generated with `npm run llm:generate`
 

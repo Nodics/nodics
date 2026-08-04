@@ -142,7 +142,7 @@ module.exports = {
             byKind: byKind,
             sourceOfTruthContracts: [
                 'AGENTS.md',
-                'gSetup/llm/README.md',
+                'gSetup/llm/ai-enablement-index.md',
                 'gSetup/llm/contracts/nodics-principles.md',
                 'gSetup/llm/contracts/developer-implementation-contract.md',
                 'gSetup/llm/contracts/module-structure-contract.md',

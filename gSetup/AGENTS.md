@@ -5,7 +5,7 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
 ## Inheritance
 
 - Follow the root Nodics AI contract: `../AGENTS.md`.
-- Follow global AI/development guidance: `llm/README.md`.
+- Follow global AI/development guidance: `llm/ai-enablement-index.md`.
 - If a deeper child module has its own `AGENTS.md`, follow that file for changes inside the child module.
 
 ## Module Work Rules

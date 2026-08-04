@@ -34,7 +34,7 @@ Current contents:
 When starting any AI-assisted Nodics project, ask the LLM to read:
 
 ```text
-gSetup/llm/README.md
+gSetup/llm/ai-enablement-index.md
 ```
 
 Then ask it to follow the linked principles, modular architecture, schema/generation rules, testing playbook, and feature process before making code changes.

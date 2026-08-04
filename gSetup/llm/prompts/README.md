@@ -5,8 +5,9 @@ Use these prompts with `base-nodics-assistant-prompt.md`. Add
 security, generated-artifact, or runtime-governance work.
 
 These prompts are workflow lenses, not separate rule sources. Canonical
-contracts stay in `gSetup/llm/contracts`, `gSetup/llm/nodics-principles.md`,
-and the affected module's source-owned guidance.
+contracts stay in `gSetup/llm/contracts` and the affected module's
+source-owned guidance. `gSetup/llm/nodics-principles.md` is only a
+compatibility pointer to `gSetup/llm/contracts/nodics-principles.md`.
 
 ## Available Prompts
 

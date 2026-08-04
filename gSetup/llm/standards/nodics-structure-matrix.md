@@ -207,9 +207,11 @@ verification. Prohibited means do not generate it as an empty placeholder.
 
 Every generated boundary that includes `config/` must include
 `config/properties.js`, `config/prescripts.js`, and `config/postscripts.js`.
-Every generated boundary that includes `llm/` must include `llm/README.md`,
+Every generated boundary that includes `llm/` must include
 `llm/contracts/README.md`, `llm/examples/README.md`, and an empty or generated
 `llm/generated/` target according to the module context generation contract.
+Module-local llm README files are intentionally not generated; module `AGENTS.md`
+owns AI navigation and behavior for that boundary.
 Generated module boundaries must not include a `docs/` directory.
 
 ## Source Folder Matrix

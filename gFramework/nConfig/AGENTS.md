@@ -5,7 +5,7 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
 ## Inheritance
 
 - Follow the root Nodics AI contract: `../../AGENTS.md`.
-- Follow global AI/development guidance: `../../gSetup/llm/README.md`.
+- Follow global AI/development guidance: `../../gSetup/llm/ai-enablement-index.md`.
 - If a deeper child module has its own `AGENTS.md`, follow that file for changes inside the child module.
 
 ## Module Work Rules
@@ -22,5 +22,6 @@ This file gives AI coding agents mandatory guidance for this Nodics module or pa
 - Preserve the selected-runtime sequence as environment group -> environment/server-root -> server -> optional node. Validate parent metadata for the whole chain and concrete environment/server/node index order without assuming environment-group index order.
 - Keep local module activation separate from remote endpoint coordinates: `activeModules` loads modules into the current process, while `servers.*` only describes how to reach local or remote module endpoints.
 - Put deployment-wide defaults in environment modules, process composition in server modules, and instance-specific overrides in node modules. Validate the `nodics.kind` and parent relationship instead of relying on names.
-- Update the concise `README.md`, canonical documentation content, `llm/` guidance, generated context, and tests whenever behavior or extension contracts change.
+- Update the concise `README.md`, canonical documentation content, `llm/contracts`, `llm/examples`, generated context, and tests whenever behavior or extension contracts change.
+- Use `llm/contracts` for exact module-local AI/developer rules, `llm/examples` for approved patterns, and `llm/generated` for source-derived facts. Do not add a module-local llm README file; this `AGENTS.md` is the AI navigation and behavior entrypoint for the module.
 - Generated files must be recreated from source definitions; do not hand-maintain generated artifacts as source of truth.

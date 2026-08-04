@@ -4,7 +4,7 @@
 
 - Follow the root Nodics contract: `../../AGENTS.md`.
 - Follow the `gExp` group contract: `../AGENTS.md`.
-- Follow global guidance: `../../gSetup/llm/README.md`.
+- Follow global guidance: `../../gSetup/llm/ai-enablement-index.md`.
 - Extend BackOffice persistence access through layered
   `schemaPolicies.backoffice`; do not copy schemas or hardcode replacement
   access-group objects.

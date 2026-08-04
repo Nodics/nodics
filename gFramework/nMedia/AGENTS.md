@@ -6,7 +6,7 @@ This file gives AI coding agents mandatory guidance for the Nodics framework med
 
 - Follow the root Nodics AI contract: `../../AGENTS.md`.
 - Follow the framework contract: `../AGENTS.md`.
-- Follow global AI/development guidance: `../../gSetup/llm/README.md`.
+- Follow global AI/development guidance: `../../gSetup/llm/ai-enablement-index.md`.
 
 ## Ownership
 

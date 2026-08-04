@@ -3,7 +3,7 @@
 ## Inheritance
 
 - Follow the root Nodics AI contract: `../../../../AGENTS.md`.
-- Follow global guidance: `../../../../gSetup/llm/README.md`.
+- Follow global guidance: `../../../../gSetup/llm/ai-enablement-index.md`.
 
 ## Online Runtime Rules
 

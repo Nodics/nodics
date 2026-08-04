@@ -5,6 +5,7 @@ alwaysApply: true
 
 Follow the canonical Nodics AI agent contract in `AGENTS.md`.
 
-When editing files inside a module or submodule, also follow the nearest
-module-level `AGENTS.md`. Do not duplicate canonical rules here; this file is a
-Cursor bridge to Nodics-owned guidance.
+When editing files inside a module or submodule, also follow every applicable
+ancestor module `AGENTS.md` from root to the nearest owning module. Do not
+duplicate canonical rules here; this file is a Cursor bridge to Nodics-owned
+guidance.

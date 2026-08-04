@@ -39,7 +39,7 @@ assert.strictEqual(report.readOnly, true, 'MCP governance report must be read-on
 assert(report.forbidden.some(rule => rule.includes('Do not persist architecture or configuration inside MCP')),
     'MCP report must reject hidden architecture/configuration authority');
 assert(report.workspace.moduleCount > 0, 'Workspace summary must include discovered modules');
-assert(report.workspace.sourceOfTruthContracts.includes('gSetup/llm/README.md'),
+assert(report.workspace.sourceOfTruthContracts.includes('gSetup/llm/ai-enablement-index.md'),
     'Workspace summary must reference existing LLM source-of-truth contracts');
 assert(report.modules.some(moduleObject => moduleObject.name === 'nTooling'),
     'Module discovery must include nTooling');

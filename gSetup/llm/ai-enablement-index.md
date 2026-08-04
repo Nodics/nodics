@@ -9,7 +9,7 @@ Use this pack before making architectural recommendations, code changes, tests, 
 Start every AI-assisted Nodics session with:
 
 ```text
-Read AGENTS.md, the nearest module-level AGENTS.md, gSetup/llm/README.md, and gSetup/llm/daily-change-checklist.md first. Load linked detailed guidance only for the affected artifact or active change gate.
+Read root README.md, root AGENTS.md, CONTRIBUTING.md when source or docs may change, every applicable ancestor README.md and AGENTS.md from root to the owning module, the nearest module README.md and AGENTS.md, gSetup/llm/ai-enablement-index.md, and gSetup/llm/daily-change-checklist.md first. Load module `llm/contracts`, `llm/examples`, generated context, and linked detailed guidance only for the affected artifact or active change gate.
 ```
 
 ## Token-Efficient Reading Contract
@@ -20,11 +20,28 @@ Nodics contract.
 
 Always read:
 
-1. root `AGENTS.md`
-2. nearest module-level `AGENTS.md`
-3. `gSetup/llm/README.md`
-4. `daily-change-checklist.md`
-5. the affected module's `llm/generated/module-context.md`
+1. root `README.md`
+2. root `AGENTS.md`
+3. `CONTRIBUTING.md` when implementation, tests, generated artifacts, or
+   documentation may change
+4. every applicable ancestor module `README.md` and `AGENTS.md` from root to
+   the target
+5. nearest owning module `README.md` and `AGENTS.md`
+6. nearest module `llm/contracts` and `llm/examples` when relevant
+7. `gSetup/llm/ai-enablement-index.md`
+8. `daily-change-checklist.md`
+9. the affected module's `llm/generated/module-context.md` when available
+
+README files explain capability purpose, usage, and extension paths. AGENTS
+files govern contributor and AI-tool behavior. `llm/contracts` specify exact
+rules, `llm/examples` demonstrate approved patterns, and generated context
+reports source-derived facts. Generated context and private chat memory never
+override authored repository contracts, current source, tests, or governed
+runtime behavior.
+
+Module-local llm README files are intentionally not part of the standard
+module contract. The module `AGENTS.md` file owns AI navigation and behavior for
+that module, so the `llm/` folder does not become a second AI entrypoint.
 
 Before reading module context or running verification, identify the working
 mode:
@@ -56,7 +73,7 @@ Load detailed files only when their subject is affected:
 7. `contracts/documentation-impact-contract.md`
 8. `contracts/testing-and-release-contract.md`
 9. `contracts/customer-project-mode-contract.md`
-10. `nodics-principles.md`
+10. `nodics-principles.md` compatibility pointer
 11. `modular-architecture.md`
 12. `module-catalog.md`
 13. `artifact-definition-and-change-guide.md`
@@ -126,11 +143,42 @@ a governed release concern: during the current pre-production modernization
 phase, prefer clean best-principle implementations over compatibility shims
 unless the owner explicitly asks for a compatibility path.
 
-The `Change Acceptance Contract` in `nodics-principles.md` is mandatory for
-every modified or new source file. In particular, a new or changed extension
-point is incomplete until its later-loaded override path is documented and an
-override/customization test proves that customer code can change the behavior
-without modifying out-of-the-box Nodics code.
+The Change Acceptance Contract in `contracts/nodics-principles.md` is mandatory
+for every modified or new source file. In particular, a new or changed
+extension point is incomplete until its later-loaded override path is documented
+and an override/customization test proves that customer code can change the
+behavior without modifying out-of-the-box Nodics code.
+
+## AI Role And Study Gate
+
+AI tools must not act as generic Node.js assistants when working on Nodics.
+They must act as a Nodics framework expert plus enterprise architect, business
+analyst, principal engineer, security/privacy/compliance and tenant-governance
+SME, quality leader, customer-aware UX thinker, data governance expert,
+AI/tooling governance expert, and release/operations expert. Visible detail
+should be proportional to risk, but those responsibilities remain active in
+the reasoning.
+
+Before implementation, build context from Nodics itself:
+
+- the root-to-leaf README/AGENTS chain;
+- relevant module `llm/contracts`, `llm/examples`, and generated context;
+- source code, tests, schemas, routers, services, providers, interceptors,
+  pipelines, configuration, metadata, data files, topology, and generated
+  artifact definitions;
+- class-level and function-level comments/JSDoc in the affected capability and
+  direct dependencies;
+- sibling and related module patterns;
+- nTooling generators, validators, and command contracts;
+- online or offline Nodics documentation from the `nodicsdocs` repository when
+  available.
+
+For non-trivial implementation, record compact pre-action evidence: working
+mode, business outcome, owning module/layer, studied sources, current behavior,
+extension path, affected contracts, security/tenant/data/UX/API/release
+impact, assumptions or contradictions, intended files, and validation route.
+If `nodicsdocs` or source comments are stale or contradicted by current code,
+report the drift and resolve through repository authority instead of guessing.
 
 ## What This Pack Covers
 

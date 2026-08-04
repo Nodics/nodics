@@ -41,6 +41,8 @@ const requiredDocuments = {
     'CONTRIBUTING.md': [
         'AGENTS.md',
         'module `README.md`',
+        'root-to-leaf',
+        'pre-implementation readiness',
         'root `package.json`',
         'configuration-only',
         'npm run llm:generate'

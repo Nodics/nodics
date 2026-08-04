@@ -34,7 +34,6 @@ const requiredConfigFiles = [
 ];
 
 const requiredLlmEntries = [
-    'llm/README.md',
     'llm/contracts/README.md',
     'llm/examples/README.md'
 ];

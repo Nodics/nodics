@@ -2,7 +2,7 @@
 
 Follow the root Nodics contract: `../../AGENTS.md`.
 Follow the core group contract: `../AGENTS.md`.
-Follow global AI/development guidance: `../../gSetup/llm/README.md`.
+Follow global AI/development guidance: `../../gSetup/llm/ai-enablement-index.md`.
 
 - Units is the shared authority for dimensions, units, exact conversions, rounding, and regional conversion meaning.
 - Never use JavaScript binary floating-point for authoritative measured quantities or conversion factors.
