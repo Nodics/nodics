@@ -11,6 +11,18 @@
 
 /** @module fulfillment/interceptors/interceptors @description Fulfillment validation and lifecycle interceptors. @layer interceptor @owner fulfillment */
 module.exports = {
+    fulfillmentConsignmentCancellationPreSavePolicy: {
+        type: 'schema', item: 'fulfillmentConsignmentCancellation', trigger: 'preSave', active: 'true', index: -100,
+        handler: 'DefaultFulfillmentConsignmentCancellationOrchestrationService.authorizeInternalMutation',
+    },
+    fulfillmentConsignmentCancellationPreUpdatePolicy: {
+        type: 'schema', item: 'fulfillmentConsignmentCancellation', trigger: 'preUpdate', active: 'true', index: -100,
+        handler: 'DefaultFulfillmentConsignmentCancellationOrchestrationService.authorizeInternalMutation',
+    },
+    fulfillmentConsignmentCancellationPreRemovePolicy: {
+        type: 'schema', item: 'fulfillmentConsignmentCancellation', trigger: 'preRemove', active: 'true', index: -100,
+        handler: 'DefaultFulfillmentConsignmentCancellationOrchestrationService.rejectDelete',
+    },
     fulfillmentModePreSavePolicy: {
         type: 'schema',
         item: 'fulfillmentMode',

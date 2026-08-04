@@ -164,6 +164,118 @@ module.exports = {
       },
     },
   },
+  orderCancellationEligibilityPipeline: {
+    startNode: "validateRequest",
+    hardStop: true,
+    handleError: "handleError",
+    nodes: {
+      validateRequest: {
+        type: "function",
+        handler: "DefaultOrderCancellationEligibilityService.validateRequest",
+        success: "resolveOwnerEvidence",
+      },
+      resolveOwnerEvidence: {
+        type: "function",
+        handler:
+          "DefaultOrderCancellationEligibilityService.resolveOwnerEvidence",
+        success: "evaluateItems",
+      },
+      evaluateItems: {
+        type: "function",
+        handler: "DefaultOrderCancellationEligibilityService.evaluateItems",
+        success: "finalizeEligibility",
+      },
+      finalizeEligibility: {
+        type: "function",
+        handler:
+          "DefaultOrderCancellationEligibilityService.finalizeEligibility",
+        success: "successEnd",
+      },
+      successEnd: {
+        type: "function",
+        handler: "DefaultOrderCancellationEligibilityService.handleSucessEnd",
+      },
+      handleError: {
+        type: "function",
+        handler: "DefaultOrderCancellationEligibilityService.handleErrorEnd",
+      },
+    },
+  },
+  orderCancellationCalculationPipeline: {
+    startNode: "validateRequest",
+    hardStop: true,
+    handleError: "handleError",
+    nodes: {
+      validateRequest: {
+        type: "function",
+        handler: "DefaultOrderCancellationCalculationService.validateRequest",
+        success: "resolveOrderEvidence",
+      },
+      resolveOrderEvidence: {
+        type: "function",
+        handler: "DefaultOrderCancellationCalculationService.resolveOrderEvidence",
+        success: "calculatePaymentAmount",
+      },
+      calculatePaymentAmount: {
+        type: "function",
+        handler: "DefaultOrderCancellationCalculationService.calculatePaymentAmount",
+        success: "finalizeCalculation",
+      },
+      finalizeCalculation: {
+        type: "function",
+        handler: "DefaultOrderCancellationCalculationService.finalizeCalculation",
+        success: "successEnd",
+      },
+      successEnd: {
+        type: "function",
+        handler: "DefaultOrderCancellationCalculationService.handleSucessEnd",
+      },
+      handleError: {
+        type: "function",
+        handler: "DefaultOrderCancellationCalculationService.handleErrorEnd",
+      },
+    },
+  },
+  orderCancellationExecutionPipeline: {
+    startNode: "validateExecution",
+    hardStop: true,
+    handleError: "handleError",
+    nodes: {
+      validateExecution: { type: "function", handler: "DefaultOrderCancellationExecutionService.validateExecution", success: "cancelFulfillment" },
+      cancelFulfillment: { type: "function", handler: "DefaultOrderCancellationExecutionService.cancelFulfillment", success: "cancelProductLifecycle" },
+      cancelProductLifecycle: { type: "function", handler: "DefaultOrderCancellationExecutionService.cancelProductLifecycle", success: "cancelInventory" },
+      cancelInventory: { type: "function", handler: "DefaultOrderCancellationExecutionService.cancelInventory", success: "reversePayment" },
+      reversePayment: { type: "function", handler: "DefaultOrderCancellationExecutionService.reversePayment", success: "finalizeOrder" },
+      finalizeOrder: { type: "function", handler: "DefaultOrderCancellationExecutionService.finalizeOrder", success: "successEnd" },
+      successEnd: { type: "function", handler: "DefaultOrderCancellationExecutionService.handleSuccessEnd" },
+      handleError: { type: "function", handler: "DefaultOrderCancellationExecutionService.handleErrorEnd" },
+    },
+  },
+  returnRequestValidationPipeline: { startNode: "validateRequest", hardStop: true, handleError: "handleError", nodes: {
+    validateRequest: { type: "function", handler: "DefaultOrderReturnValidationService.validateRequest", success: "resolveOwnerEvidence" },
+    resolveOwnerEvidence: { type: "function", handler: "DefaultOrderReturnValidationService.resolveOwnerEvidence", success: "evaluateItems" },
+    evaluateItems: { type: "function", handler: "DefaultOrderReturnValidationService.evaluateItems", success: "successEnd" },
+    successEnd: { type: "function", handler: "DefaultOrderReturnValidationService.handleSuccessEnd" }, handleError: { type: "function", handler: "DefaultOrderReturnValidationService.handleErrorEnd" },
+  } },
+  returnAuthorizationPipeline: { startNode: "validateAuthorization", hardStop: true, handleError: "handleError", nodes: {
+    validateAuthorization: { type: "function", handler: "DefaultOrderReturnAuthorizationService.validateAuthorization", success: "successEnd" },
+    successEnd: { type: "function", handler: "DefaultOrderReturnAuthorizationService.handleSuccessEnd" }, handleError: { type: "function", handler: "DefaultOrderReturnAuthorizationService.handleErrorEnd" },
+  } },
+  refundCalculationPipeline: { startNode: "validateCalculation", hardStop: true, handleError: "handleError", nodes: {
+    validateCalculation: { type: "function", handler: "DefaultOrderRefundCalculationService.validateCalculation", success: "calculateRefund" },
+    calculateRefund: { type: "function", handler: "DefaultOrderRefundCalculationService.calculateRefund", success: "successEnd" },
+    successEnd: { type: "function", handler: "DefaultOrderRefundCalculationService.handleSuccessEnd" }, handleError: { type: "function", handler: "DefaultOrderRefundCalculationService.handleErrorEnd" },
+  } },
+  refundApprovalPreparationPipeline: { startNode: "prepareApproval", hardStop: true, handleError: "handleError", nodes: {
+    prepareApproval: { type: "function", handler: "DefaultOrderRefundApprovalService.prepareApproval", success: "successEnd" },
+    successEnd: { type: "function", handler: "DefaultOrderRefundApprovalService.handleSuccessEnd" }, handleError: { type: "function", handler: "DefaultOrderRefundApprovalService.handleErrorEnd" },
+  } },
+  refundExecutionPipeline: { startNode: "validateExecution", hardStop: true, handleError: "handleError", nodes: {
+    validateExecution: { type: "function", handler: "DefaultOrderRefundExecutionService.validateExecution", success: "executeProductLifecycleActions" },
+    executeProductLifecycleActions: { type: "function", handler: "DefaultOrderRefundExecutionService.executeProductLifecycleActions", success: "executePaymentRefund" },
+    executePaymentRefund: { type: "function", handler: "DefaultOrderRefundExecutionService.executePaymentRefund", success: "successEnd" },
+    successEnd: { type: "function", handler: "DefaultOrderRefundExecutionService.handleSuccessEnd" }, handleError: { type: "function", handler: "DefaultOrderRefundExecutionService.handleErrorEnd" },
+  } },
   checkoutPlacementRunPipeline: {
     startNode: "validateRequest",
     hardStop: true,

@@ -86,6 +86,22 @@ exists or whether Inventory operators must review/adjust the movement through
 Inventory-owned capabilities. The review does not mutate Stock Balance, Stock
 Allocation, or Stock Movement records.
 
+Approved Order cancellation uses
+`DefaultStockAllocationCancellationOrchestrationService` through the
+service-token-only `cancel-quantity` intent. Inventory creates a private
+`stockAllocationCancellation` checkpoint before releasing any hold, selects
+only unfulfilled assignment quantities, and calls partial Reservation release
+with a stable cancellation/Reservation identity. Reservation release updates
+`stockBalance.reservedQuantity` through its existing compare-and-set boundary
+and records remaining/released quantities so retries cannot decrement twice.
+
+Allocation projection is updated only after every Reservation checkpoint is
+safe. A full cancellation is the same operation when exact remaining quantity
+reaches zero. Serialized cancellation additionally requires each serial to
+match active assignment evidence and the exact quantity to equal the unique
+serial count. Failures after partial persistence enter
+`RECONCILIATION_REQUIRED`; callers must not fall back to whole-allocation close.
+
 Layer `inventory.identity`, `inventory.warehouse`, and `inventory.location`
 properties to customize classifications or hierarchy depth while preserving
 fail-closed scope, stable identities, hierarchy safety, and retirement history.
@@ -106,6 +122,7 @@ node gComm/baseCommerce/inventory/test/stockAvailabilityFoundation.test.js
 node gComm/baseCommerce/inventory/test/inventoryStorefrontAvailabilityContract.test.js
 node gComm/baseCommerce/inventory/test/stockReservationFoundation.test.js
 node gComm/baseCommerce/inventory/test/stockAllocationFoundation.test.js
+node gComm/baseCommerce/inventory/test/stockAllocationCancellationContract.test.js
 node gComm/baseCommerce/inventory/test/serializedStockUnitFoundation.test.js
 node gComm/baseCommerce/inventory/test/returnDispositionMovementContract.test.js
 node gComm/baseCommerce/inventory/test/inventoryPromiseFoundation.test.js

@@ -1,0 +1,32 @@
+/*
+    Nodics - Enterprice Micro-Services Management Framework
+
+    Copyright (c) 2026 Nodics All rights reserved.
+
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
+
+ */
+
+/* Nodics - governed by the root LICENSE. */
+/** @module notifyCore/service/pipeline/DefaultNotifyDeliveryPipelineService @description Executes one governed delivery while keeping plaintext content transient. @layer service @owner notifyCore */
+module.exports = {
+  init: function () { return Promise.resolve(true); }, postInit: function () { return Promise.resolve(true); },
+  input: function (request) { return request.notifyDelivery || request.body || request.model || {}; }, state: function (request) { request.notifyState = request.notifyState || {}; return request.notifyState; },
+  validateRequest: async function (request) { let state = this.state(request), input = this.input(request); state.input = input; state.policy = SERVICE.DefaultNotifyPolicyService.validate(request, input); await SERVICE.DefaultNotifyRateLimitService.assertAllowed(request, input, state.policy.scope); return { success: request }; },
+  resolveScenario: function (request) { return Promise.resolve({ success: request }); }, resolveChannel: function (request) { return Promise.resolve({ success: request }); },
+  resolveRecipientAndConsent: async function (request) { let state = this.state(request); state.consent = await SERVICE.DefaultNotifyPolicyService.consent(request, state.input, state.policy); return state.consent.allowed ? { success: request } : { suppressed: request }; },
+  resolveTemplate: async function (request) { let state = this.state(request); state.template = await SERVICE.DefaultNotifyTemplateResolutionService.resolve(request, state.input, state.policy); return { success: request }; },
+  resolveContext: async function (request) { let state = this.state(request); state.context = await SERVICE.DefaultNotifyContextResolutionService.resolve(request, state.input, state.policy, state.template); return { success: request }; },
+  renderContent: function (request) { let state = this.state(request); state.rendered = SERVICE.DefaultNotifyRenderingService.render(state.input.channelCode, state.template.version, state.context); return Promise.resolve({ success: request }); },
+  selectProvider: async function (request) { let state = this.state(request); state.selected = await SERVICE.DefaultNotifyProviderRegistryService.select(request, state.input, state.policy); return { success: request }; },
+  persistRequest: async function (request) { let state = this.state(request); state.delivery = await SERVICE.DefaultNotifyDeliveryPersistenceService.persistRequest(request, state.input, state.policy, state.template, state.context, state.rendered, state.selected); return { success: request }; },
+  sendMessage: async function (request) { let state = this.state(request), message = { requestCode: state.delivery.requestCode, channelCode: state.input.channelCode, recipientReference: state.input.recipientReference, providerAccount: state.selected.account, content: state.rendered.output, idempotencyKey: state.delivery.idempotencyKey }; state.startedAt = new Date(); try { state.providerResult = await state.selected.adapter.send(message); return { success: request }; } catch (error) { let retryPolicy = ((CONFIG.get('notify') || {}).resilience.retryPolicies || {})[state.policy.messageType.retryPolicyCode] || {}; if (error.retryable !== false && retryPolicy.fallbackAllowed === true) { try { state.fallbackFromProviderCode = state.selected.provider.providerCode; state.selected = await SERVICE.DefaultNotifyProviderRegistryService.select(request, state.input, state.policy, [state.fallbackFromProviderCode]); message.providerAccount = state.selected.account; message.idempotencyKey += ':fallback'; state.providerResult = await state.selected.adapter.send(message); state.providerResult.safeEvidence = Object.assign({}, state.providerResult.safeEvidence, { fallbackFromProviderCode: state.fallbackFromProviderCode }); return { success: request }; } catch (fallbackError) { error = fallbackError; } } state.providerError = error; return { error: request }; } },
+  normalizeResult: function (request) { let state = this.state(request), raw = state.providerResult || {}; state.normalized = { status: raw.status || 'SENT', resultCode: raw.resultCode || 'ACCEPTED', providerMessageReference: raw.providerMessageReference, retryable: false, latencyMs: Date.now() - state.startedAt.getTime(), startedAt: state.startedAt, completedAt: new Date(), safeEvidence: raw.safeEvidence || {} }; return Promise.resolve({ success: request }); },
+  normalizeFailure: function (request) { let state = this.state(request), error = state.providerError || {}; state.normalized = { status: error.retryable === false ? 'FAILED' : 'RETRY_SCHEDULED', failureCode: error.code || 'PROVIDER_ERROR', retryable: error.retryable !== false, latencyMs: Date.now() - state.startedAt.getTime(), startedAt: state.startedAt, completedAt: new Date(), safeEvidence: {} }; return Promise.resolve({ success: request }); },
+  persistAttempt: async function (request) { let state = this.state(request); state.attempt = await SERVICE.DefaultNotifyDeliveryPersistenceService.persistAttempt(request, state.delivery, state.selected, state.normalized); return { success: request }; },
+  persistSuppression: async function (request) { let state = this.state(request); state.delivery = await SERVICE.DefaultNotifyDeliveryPersistenceService.persistSuppression(request, state.input, state.policy, state.consent); state.normalized = { status: 'SUPPRESSED', resultCode: state.consent.reasonCode }; return { success: request }; },
+  publishEvent: async function (request) { let state = this.state(request); state.event = await SERVICE.DefaultNotifyEventService.publish(request, state.delivery, state.normalized); return { success: request }; },
+  handleSuccessEnd: function (request) { let state = this.state(request); return Promise.resolve({ requestCode: state.delivery.requestCode, status: state.normalized.status, resultCode: state.normalized.resultCode, failureCode: state.normalized.failureCode, idempotent: state.delivery.idempotent === true }); }, handleErrorEnd: function (request) { return Promise.reject(request.error || new Error('Notification pipeline failed')); },
+};

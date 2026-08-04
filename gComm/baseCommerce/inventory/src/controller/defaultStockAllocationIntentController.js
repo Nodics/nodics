@@ -16,6 +16,7 @@ module.exports = {
     /** Dispatches promise or callback invocation. */ dispatch: function (promise, callback) { return callback ? promise.then(value => callback(null, value)).catch(callback) : promise; },
     /** Handles allocate. */ allocate: function (request, callback) { return module.exports.dispatch(FACADE.DefaultStockAllocationIntentFacade.allocate(request), callback); },
     /** Handles cancel. */ cancel: function (request, callback) { return module.exports.dispatch(FACADE.DefaultStockAllocationIntentFacade.cancel(request), callback); },
+    /** Handles exact quantity cancellation. */ cancelQuantity: function (request, callback) { return module.exports.dispatch(FACADE.DefaultStockAllocationIntentFacade.cancelQuantity(request), callback); },
     /** Handles release. */ release: function (request, callback) { return module.exports.dispatch(FACADE.DefaultStockAllocationIntentFacade.release(request), callback); },
     /** Handles fulfill. */ fulfill: function (request, callback) { return module.exports.dispatch(FACADE.DefaultStockAllocationIntentFacade.fulfill(request), callback); }
 };

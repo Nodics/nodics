@@ -454,6 +454,12 @@ const navigationWorkbenchPresentation = {
       maxItems: 24,
       items: navigationWorkbenchQuickFilter,
     },
+    fixedFilters: {
+      type: "array",
+      uniqueItems: true,
+      maxItems: 24,
+      items: navigationWorkbenchQuickFilter,
+    },
     recoveryActions: {
       type: "array",
       uniqueItems: true,

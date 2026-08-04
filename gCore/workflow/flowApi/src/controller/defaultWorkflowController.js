@@ -128,6 +128,8 @@ module.exports = {
             return FACADE.DefaultWorkflowFacade.performAction(request);
         }
     },
+    delegateAction: function (request, callback) { request.carrierCode = request.httpRequest.params.carrierCode; request.assignment = request.httpRequest.body; let promise = FACADE.DefaultWorkflowFacade.delegateAction(request); return callback ? promise.then(value => callback(null, value)).catch(callback) : promise; },
+    takeoverAction: function (request, callback) { request.carrierCode = request.httpRequest.params.carrierCode; request.assignment = request.httpRequest.body; let promise = FACADE.DefaultWorkflowFacade.takeoverAction(request); return callback ? promise.then(value => callback(null, value)).catch(callback) : promise; },
 
     // blockCarrier: function (request, callback) {
     //     request.carrierCode = request.httpRequest.params.carrierCode;

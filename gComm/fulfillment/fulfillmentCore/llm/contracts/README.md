@@ -22,6 +22,24 @@ Fulfillment turns order delivery evidence into operational release evidence.
   through Inventory-owned intent services. Fulfillment must not update stock
   balances, reservations, movements, or allocations directly.
 
+## Consignment cancellation
+
+`DefaultFulfillmentConsignmentCancellationOrchestrationService` owns exact,
+partial, pre-shipment consignment cancellation. Its module-internal intent
+accepts the approved cancellation identity, immutable request version, and
+entry selections; it derives a deterministic allocation plan and records a
+private `fulfillmentConsignmentCancellation` checkpoint.
+
+Each consignment update is revision guarded and checkpointed. Replays of a
+completed operation return the recorded result, while ambiguous partial
+failure becomes `RECONCILIATION_REQUIRED`. Serialized selections must name
+unique, still-active serials from allocation evidence. The framework default
+rejects consignments that already have shipment evidence.
+
+This contract changes only Fulfillment-owned evidence. Inventory allocation
+release and Payment void/refund are separate owner intents invoked by the
+coordinating Workflow.
+
 ## Shipment lifecycle
 
 The default lifecycle service supports:
@@ -88,7 +106,8 @@ gateways directly, and do not store raw carrier/provider payloads or secrets in
 Return disposition is configuration-first through
 `fulfillment.fulfillmentPolicy.returnDisposition`. `DefaultReturnRequestService`
 closes returns with safe inspection/disposition evidence and can record an
-Inventory-owned disposition intent for RESTOCK, REPAIR, or SCRAP. That intent is
+Inventory-owned disposition intent for RESTOCK, REPAIR, SCRAP, or
+RETURN_TO_VENDOR. MISSING is an explicit no-stock outcome. That intent is
 not a stock mutation. Inventory movement execution must remain in an
 Inventory-owned service or Workflow action.
 

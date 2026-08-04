@@ -80,6 +80,7 @@ module.exports = {
     code: "409",
     message: "Promotion repair operation failed",
   },
+  ERR_PROMO_00008: { code: "400", message: "Promotion refund impact evidence is invalid" },
   ERR_PROMOTION_EVAL_0001: {
     code: "400",
     message: "Promotion evaluation input invalid",

@@ -78,5 +78,9 @@ module.exports = {
     ERR_INV_00052: { code: '401', message: 'Active Storefront context is required' },
     SUC_INV_00008: { code: '200', message: 'Return disposition movement operation completed' },
     ERR_INV_00053: { code: '400', message: 'Return disposition movement request is invalid' },
-    ERR_INV_00054: { code: '403', message: 'Return disposition movement requires an internal service identity' }
+    ERR_INV_00054: { code: '403', message: 'Return disposition movement requires an internal service identity' },
+    SUC_INV_00009: { code: '200', message: 'Stock allocation cancellation completed' },
+    ERR_INV_00055: { code: '400', message: 'Stock allocation cancellation request is invalid' },
+    ERR_INV_00056: { code: '409', message: 'Stock allocation cancellation quantity or version conflict' },
+    ERR_INV_00057: { code: '503', message: 'Stock allocation cancellation requires reconciliation' }
 };

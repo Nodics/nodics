@@ -43,4 +43,5 @@ module.exports = {
   },
   ERR_TAX_00026: { code: "400", message: "Tax quote request invalid" },
   ERR_TAX_00027: { code: "400", message: "Tax inclusion mode invalid" },
+  ERR_TAX_00008: { code: "400", message: "Tax refund evidence is invalid" },
 };

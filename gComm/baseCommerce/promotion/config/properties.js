@@ -482,6 +482,7 @@ module.exports = {
     },
   },
   promotion: {
+    refundImpact: { policyCode: "PRESERVE_ORIGINAL_DISCOUNT_PROPORTIONAL", currencyScale: 2, roundingMode: "HALF_EVEN", allowQualificationClawback: false },
     runtime: {
       persistEvaluationEvidence: true,
       maximumEvaluationRecords: 1000,

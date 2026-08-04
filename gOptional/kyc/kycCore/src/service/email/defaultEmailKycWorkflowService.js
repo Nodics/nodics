@@ -82,36 +82,8 @@ module.exports = {
      */
 
     initEmailOTP: function (request, response) {
-        return new Promise((resolve, reject) => {
-            let otpModel = request.workflowCarrier.items[0];
-            SERVICE.DefaultOtpService.generateOtp({
-                tenant: request.tenant,
-                authData: request.authData,
-                model: {
-                    key: otpModel.email,
-                    ops: otpModel.loginId,
-                    active: true,
-                    limit: otpModel.limit || CONFIG.get('token').OTP.attemptLimit || 5,
-                    singleUseToken: CONFIG.get('token').OTP.singleUseToken || false
-                }
-            }, response).then(success => {
-                resolve({
-                    decision: 'NOTIFY',
-                    otp: success.result,
-                    feedback: {
-                        message: 'OTP for the email been generated'
-                    }
-                });
-            }).catch(error => {
-                resolve({
-                    decision: 'ERROR',
-                    otpError: error,
-                    feedback: {
-                        message: 'Failed OTP generation for email verification'
-                    }
-                });
-            });
-        });
+        let model = request.workflowCarrier.items[0];
+        return SERVICE.DefaultNotifyVerificationService.create(request, { key: model.email, ops: model.loginId, channelCode: 'email', recipientType: 'EMAIL', recipientReference: 'kyc-email:' + model.loginId, maskedRecipient: String(model.email).replace(/^(.).*(@.*)$/, '$1***$2'), ownerModule: 'kyc', ownerReferenceType: 'EMAIL_KYC', ownerReferenceCode: model.code || model.loginId, idempotencyKey: 'kyc-email:' + (model.code || model.loginId), correlationId: model.code || model.loginId, variables: { brandName: model.brandName || 'Nodics', supportContact: model.supportContact || 'Support' } }).then(result => ({ decision: 'NOTIFY', verification: result, feedback: { message: 'Email verification challenge delivered' } })).catch(error => ({ decision: 'ERROR', verificationError: { code: error.code || 'ERR_NOTIFY_00011' }, feedback: { message: 'Failed email verification challenge delivery' } }));
     },
 
     /**
@@ -129,27 +101,7 @@ module.exports = {
      */
 
     notifyMobileOTP: function (request, response) {
-        return new Promise((resolve, reject) => {
-            SERVICE.DefaultPipelineService.start('initKycNotificationPipeline', {
-                tenant: request.tenant,
-                authData: request.authData
-            }, {}).then(success => {
-                resolve({
-                    decision: 'VALIDATEOTP',
-                    feedback: {
-                        message: 'Customer notified for generated OTP'
-                    }
-                });
-            }).catch(error => {
-                resolve({
-                    decision: 'ERROR',
-                    notifyError: error,
-                    feedback: {
-                        message: 'Failed OTP generation for mobile verification'
-                    }
-                });
-            });
-        });
+        return Promise.resolve({ decision: 'VALIDATEOTP', feedback: { message: 'Email verification challenge is ready for validation' } });
     },
 
     /**

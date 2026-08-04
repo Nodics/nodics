@@ -91,6 +91,167 @@ and a safe human-readable message. It does not replace global audit, workflow,
 payment, inventory, or fulfillment records; it provides an order-centered
 support timeline that Axis can render as a related detail panel.
 
+## Post-order lifecycle request foundation
+
+### Post-order lifecycle architecture decisions
+
+The framework uses an owner-split model. Order owns the customer/support
+business request and lifecycle projection through the generic
+`orderLifecycleRequest` aggregate. Payment owns refund/void transactions and
+provider reconciliation. Fulfillment owns return authorization logistics,
+pickup, receipt, and inspection. Inventory owns release and returned-stock
+movement/disposition. These records are linked by stable evidence codes; they
+are not copied into a new shared control-plane module.
+
+Cancellation, return, and refund therefore remain coordinated capabilities in
+their current owner modules. A separate `returns` or `orderLifecycle` business
+module is not introduced. Customer self-service intent APIs are included now,
+but generated CRUD remains private. Exchange/replacement execution is deferred;
+`requestedOutcome`, return reason, condition, disposition, and original Order
+references preserve the evidence needed to add it without migrating the core
+request aggregate.
+
+The framework ships provider-neutral safe adapters, not a privileged default
+real PSP or carrier. The first real payment and return-logistics provider is a
+project-layer selection registered behind the existing Payment/Fulfillment
+adapter contracts and secret-store references. Refunds still default to the
+persisted original payment provider. Fraud/risk remains normalized,
+permission-filtered decision evidence in the first implementation rather than
+a new first-class module. Promotion qualification clawback is deferred to a
+Promotion-owned refund-impact policy; Order preserves original discount
+evidence and must not implement that rule itself.
+
+`orderLifecycleRequest` is the Order-owned business request for cancellation,
+return, or refund. `orderLifecycleRequestItem` selects exact Order Entry
+quantities and preserves bounded immutable references to the order evidence on
+which later eligibility, approval, and execution decisions must operate.
+
+This foundation deliberately does not execute a cancellation, receive a
+return, release stock, or refund money. Workflow will own submission and
+approval; Fulfillment owns return logistics and receipt; Inventory owns stock
+release and disposition movements; Payment owns void/refund execution and
+provider reconciliation. The existing checkout reverse Workflow remains
+available while later slices are migrated to consume the Order-owned request.
+
+Both schemas have generated routers disabled. Persistence is accepted only
+with the private `_orderLifecycleMutationAuthorized` orchestration marker and
+hard deletion is rejected. `DefaultOrderLifecycleRequestPolicyService` builds
+and validates bounded drafts, configured request/reason types, authenticated
+requester evidence, safe payloads, unique serial-number selections, and exact
+positive decimal-string quantities. It never converts JavaScript numbers into
+commercial quantity evidence.
+
+Customer projects customize request types, bounds, and default reason codes by
+layering `order.orderLifecycle` configuration or replacing the policy service.
+They must preserve private persistence, immutable submitted versions, exact
+quantities, Workflow approval, and adjacent-module ownership. Public customer,
+support, or Axis intent APIs are intentionally deferred until their permission,
+scope, idempotency, and audit contracts are approved.
+
+`DefaultOrderLifecycleOrchestrationService.createDraft` persists the request
+and all selected items inside the provider-neutral Nodics database transaction
+contract. Both schemas opt into side-effect-free transaction participation. If
+the configured database cannot guarantee atomic multi-record writes, creation
+fails closed; there is no partial-write fallback. Replaying the same enterprise
+and idempotency identity returns the existing aggregate.
+
+`submit` moves a draft through `SUBMISSION_PENDING` and initializes one stable
+Workflow carrier bound to the incremented immutable request version. Successful
+handoff records `SUBMITTED`, the carrier code, and submission time without
+changing that bound version. A failed handoff records `SUBMISSION_FAILED`; a
+retry reuses the same request/version/carrier identity and asks Workflow whether
+the carrier already exists before initialization. This slice still performs no
+Payment, Fulfillment, Inventory, Tax, Promotion, or provider execution.
+
+### Cancellation eligibility
+
+`orderCancellationEligibilityPipeline` evaluates pre-fulfillment cancellation
+without mutating any owner. It validates the Order state and configured window,
+then obtains normalized per-entry evidence from configured Inventory,
+Fulfillment, Payment, and Product provider services. Missing providers, missing
+entries, duplicate entries, unsafe raw evidence, mismatched units, unsupported
+payment states, and invalid exact quantities fail closed.
+
+`DefaultOrderCancellationEligibilityService` uses the Units exact-arithmetic
+contract to calculate the minimum of remaining ordered quantity, Inventory
+releasable quantity, and Fulfillment cancellable quantity. Its result records
+eligibility reasons, safe authority references, and planned owner actions such
+as `RELEASE`, `CANCEL_RELEASE`, `VOID`, or `REFUND`. Those actions are decision
+evidence only; later Workflow-owned execution must call each owning module.
+
+Projects may layer cancellation states, windows, payment action mappings, and
+provider service names through `order.orderLifecycle.cancellationEligibility`,
+or replace a pipeline node. They must preserve exact quantities, fail-closed
+owner evidence, tenant/auth/enterprise context, and the no-side-effect boundary.
+
+`orderCancellationCalculationPipeline` consumes a successful eligibility
+decision and immutable Order Entry/payment-allocation evidence. Order preserves
+line net/gross, tax, discount, price, and Tax quote references but does not
+reinterpret their business rules. It delegates exact partial and split-payment
+amount calculation to `DefaultPaymentRefundCalculationService`, which keeps
+currency rounding and original-payment routing under Payment authority.
+
+The result states whether Payment policy includes tax, discount, or shipping
+and contains safe allocation-level calculation evidence. It is not a refund
+transaction and performs no gateway or adjacent-module action.
+
+### Cancellation approval Workflow
+
+`DefaultOrderCancellationWorkflowService.evaluate` is the Workflow action that
+connects the technical decision pipelines to the durable lifecycle request. It
+loads the exact submitted request version, invokes the configured eligibility
+pipeline, invokes calculation only when eligible, and persists their safe
+outputs with the same immutable version. A retry returns the stored approval
+route instead of recalculating or advancing state twice.
+
+The Workflow routes to `AUTO_APPROVE`, `MANUAL_REVIEW`, or `REJECT`. Automatic
+approval is disabled by default and requires configured requester type and
+maximum exact amount. Manual approval requires an authenticated human principal
+and, by default, rejects self-approval by the original requester. Approval or
+rejection records actor and decision evidence but executes no Inventory,
+Fulfillment, Payment, or provider operation.
+
+### Cancellation execution Pipeline
+
+After approval, Workflow routes to `DefaultOrderCancellationWorkflowService.execute`,
+which invokes the configured `orderCancellationExecutionPipeline`. Its named,
+replaceable nodes validate immutable approval, cancel Fulfillment evidence,
+cancel Inventory allocations, execute Payment void/refund, and finally project
+the exact cancellation onto Order Entries and the Order header. Every adjacent
+mutation is performed by its owning service; Order never updates their records.
+
+Workflow checkpoints each completed owner step on the unchanged lifecycle
+request version. Owner calls reuse stable cancellation identities, so retry can
+re-enter the Pipeline safely. An ambiguous failure records
+`RECONCILIATION_REQUIRED` instead of claiming completion. Order Entry and Order
+projection use optimistic lifecycle revisions, cumulative exact quantities,
+and idempotent history evidence. The header becomes `CANCELLED` only when all
+entry quantities are cancelled; otherwise it becomes `PARTIALLY_CANCELLED`.
+
+### Return and Refund execution
+
+Return requests use `orderReturnRequestFlow`. `returnRequestValidationPipeline` combines Fulfillment delivery and Product policy evidence, while `returnAuthorizationPipeline` prepares automatic or human authorization. After authorization, Workflow creates idempotent item-level Fulfillment RMAs. Fulfillment later runs `returnReceiptDispositionPipeline`; only Inventory applies return stock movements.
+
+Refund requests use `orderRefundRequestFlow`. `refundCalculationPipeline` adapts immutable Order selections to Payment-owned exact allocation calculation, `refundApprovalPreparationPipeline` applies configured threshold and normalized-risk routing, and `refundExecutionPipeline` delegates the approved allocation plan to Payment. Payment enforces the original captured or settled transaction, provider, method, currency, cumulative amount bound, and idempotency key.
+
+Customer and support Return/Refund intent routes reuse the private lifecycle aggregate and immutable Order-entry snapshot. Customer access is own-order only; support access is constrained by enterprise plus assigned site and channel when those scopes are present.
+
+### Customer and support cancellation intents
+
+Generated lifecycle CRUD remains disabled. Customers use the secured
+`/self/cancellations` intent and support uses the separately permissioned
+`/operations/cancellations` intent. Both paths reload the Order and its Entries
+inside Order, rebuild immutable quantity/Product/allocation snapshots, create
+the private aggregate atomically, and submit it to Workflow with the supplied
+idempotency key.
+
+Customer reads and draft cancellation are restricted to the authenticated
+Order customer. Support create-on-behalf must name the same customer recorded
+on the Order and remain inside authenticated enterprise scope. Client-supplied
+immutable evidence is ignored. Lifecycle decisions and execution checkpoints
+produce idempotent append-only `orderHistoryEntry` records for support and
+audit visibility.
+
 ## Checkout placement workflow
 
 Checkout placement is intentionally not one large imperative service. Order

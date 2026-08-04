@@ -152,6 +152,7 @@ module.exports = {
             "forbiddenFields",
             "detailSections",
             "quickFilters",
+            "fixedFilters",
             "recoveryActions",
           ].includes(key),
       )
@@ -212,20 +213,22 @@ module.exports = {
       )
         return false;
     }
-    if (presentation.quickFilters !== undefined) {
+    for (let filterGroupName of ["quickFilters", "fixedFilters"]) {
+      let filters = presentation[filterGroupName];
+      if (filters === undefined) continue;
       if (
-        !Array.isArray(presentation.quickFilters) ||
-        presentation.quickFilters.length > 24
+        !Array.isArray(filters) ||
+        filters.length > 24
       )
         return false;
-      let ids = presentation.quickFilters.map((filter) => filter && filter.id);
+      let ids = filters.map((filter) => filter && filter.id);
       if (
         ids.some((id) => !this.isString(id, 128)) ||
         new Set(ids).size !== ids.length
       )
         return false;
       if (
-        !presentation.quickFilters.every(
+        !filters.every(
           (filter) =>
             filter &&
             typeof filter === "object" &&
@@ -339,6 +342,7 @@ module.exports = {
               "ownerModule",
               "handlerAction",
               "operationRoute",
+              "inputFields",
               "order",
             ].includes(key),
         ) ||
@@ -360,6 +364,38 @@ module.exports = {
           !this.isString(action.handlerAction, 128)) ||
         (action.operationRoute !== undefined &&
           !this.isSafePath(action.operationRoute)) ||
+        (action.inputFields !== undefined &&
+          (!Array.isArray(action.inputFields) ||
+            action.inputFields.length > 16 ||
+            action.inputFields.some(
+              (field) =>
+                !field ||
+                typeof field !== "object" ||
+                Array.isArray(field) ||
+                Object.keys(field).some(
+                  (key) =>
+                    ![
+                      "name",
+                      "label",
+                      "type",
+                      "required",
+                      "options",
+                      "valueFromRecord",
+                      "defaultValue",
+                      "maximumLength",
+                    ].includes(key),
+                ) ||
+                !this.isString(field.name, 128) ||
+                !/^[A-Za-z][A-Za-z0-9._-]{0,127}$/.test(field.name) ||
+                !this.isString(field.label, 128) ||
+                !["TEXT", "MULTILINE", "SELECT", "JSON", "HIDDEN"].includes(field.type) ||
+                (field.required !== undefined && typeof field.required !== "boolean") ||
+                (field.options !== undefined && !this.isStringList(field.options, 32)) ||
+                (field.type === "SELECT" && (!field.options || field.options.length === 0)) ||
+                (field.valueFromRecord !== undefined && !this.isString(field.valueFromRecord, 128)) ||
+                (field.defaultValue !== undefined && !this.isString(field.defaultValue, 4000)) ||
+                (field.maximumLength !== undefined && (!Number.isInteger(field.maximumLength) || field.maximumLength < 1 || field.maximumLength > 4000)),
+            ))) ||
         (action.order !== undefined && !Number.isInteger(action.order))
       )
         return false;

@@ -10,8 +10,20 @@ and payment transaction lifecycle.
 - `DefaultPaymentRefundCalculationService` calculates eligible refund amounts
   from Order-provided payment allocation evidence before any provider refund is
   executed.
+- Quantity-scoped cancellation calculation must proportion original payment
+  allocations using exact integers, configured currency scale, deterministic
+  rounding, and stable remainder distribution. It must not silently discard
+  sub-minor-unit evidence or replace original payment routing.
 - `DefaultPaymentRefundService` creates idempotent `REFUND` transaction
   evidence from return or order-adjustment context.
+- `DefaultPaymentCancellationExecutionService` is the internal approved
+  cancellation execution boundary. It resolves persisted original transaction
+  evidence, preserves the original provider/method/currency, uses `VOID` for
+  authorized funds and `REFUND` for captured or settled funds, and prevents
+  cumulative reversal above the exact original amount.
+- Cancellation execution must reject alternate provider or payment-method
+  hints, unsafe provider payloads, access-token callers, stale/conflicting
+  idempotency evidence, and non-reversible original transaction states.
 - Payment refund recovery must remain Payment-owned. `retryRefund` may replay a
   recoverable `REQUESTED` or `FAILED` refund through the provider boundary using
   the same idempotency key, and must return an already `REFUNDED` transaction

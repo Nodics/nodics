@@ -163,6 +163,8 @@ module.exports = {
             }
         });
     },
+    delegateAction: function (request) { return SERVICE.DefaultWorkflowAssignmentService.delegate(request); },
+    takeoverAction: function (request) { return SERVICE.DefaultWorkflowAssignmentService.takeover(request); },
 
     /**
      * This funtion is used to assign item to next qalified action, based on evaluated channels 

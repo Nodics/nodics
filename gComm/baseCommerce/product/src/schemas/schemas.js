@@ -24,7 +24,15 @@ module.exports = { product: {
         itemCode: { type: 'string', required: true, description: 'Stable business item identity' },
         name: { type: 'string', required: true }, description: { type: 'string', required: false },
         baseUnitCode: { type: 'string', required: false, description: 'Units-owned base Unit reference' },
-        sellable: { type: 'bool', required: true, default: false }, stockManaged: { type: 'bool', required: true, default: false }
+        sellable: { type: 'bool', required: true, default: false }, stockManaged: { type: 'bool', required: true, default: false },
+        lifecycleType: { type: 'string', required: false, default: 'PHYSICAL', description: 'Product-owned lifecycle treatment such as physical, serialized, digital, perpetual/infinite inventory, service/subscription, SIM/eSIM/license, preorder/backorder, drop-ship, or made-to-order' },
+        cancellationActivationPolicy: { type: 'string', required: false, default: 'ALLOW_BEFORE_ACTIVATION', description: 'Product-owned activation rule for cancellation' },
+        cancellationProviderActionCode: { type: 'string', required: false, description: 'Configured provider-neutral deactivation, revocation, or deprovisioning action' },
+        cancellationAllowed: { type: 'bool', required: false, default: true, description: 'Whether policy permits cancellation before fulfillment' },
+        cancellationPolicyCode: { type: 'string', required: false, description: 'Safe Product policy identity used for cancellation decisions' },
+        returnAllowed: { type: 'bool', required: false, default: true, description: 'Whether Product policy permits a physical or governed return' },
+        returnWindowDays: { type: 'int', required: false, default: 30, description: 'Default Product-owned return window after delivery' },
+        returnPolicyCode: { type: 'string', required: false, description: 'Safe Product return-policy identity' }
     }), { common: { enterpriseCode: { enabled: true, name: 'enterpriseCode' }, catalogCode: { enabled: true, name: 'catalogCode' }, itemType: { enabled: true, name: 'itemType' }, itemCode: { enabled: true, name: 'itemCode' } }, individual: { itemCode: { enabled: true, name: 'itemCode' }, itemType: { enabled: true, name: 'itemType' }, catalogCode: { enabled: true, name: 'catalogCode' }, status: { enabled: true, name: 'status' } } }),
     productIdentifier: governed(Object.assign(common(), {
         identifierCode: { type: 'string', required: true, description: 'Stable identifier-record identity' },

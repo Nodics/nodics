@@ -872,6 +872,8 @@ module.exports = {
       states: [
         "PENDING",
         "ACTIVE",
+        "PARTIAL_RELEASE_PENDING",
+        "PARTIALLY_RELEASED",
         "RELEASE_PENDING",
         "CONSUMED",
         "RELEASED",
@@ -893,6 +895,7 @@ module.exports = {
         "PARTIALLY_ALLOCATED",
         "BACKORDERED",
         "PARTIALLY_FULFILLED",
+        "PARTIALLY_CANCELLED",
         "FULFILLED",
         "RELEASED",
         "CANCELLED",
@@ -901,6 +904,11 @@ module.exports = {
       maximumAssignments: 100,
       allowPartial: true,
       requireServiceToken: true,
+      cancellation: {
+        maximumAssignments: 100,
+        nonPhysicalLifecycleTypes: ["DIGITAL", "SERVICE", "SUBSCRIPTION", "LICENSE", "SIM", "ESIM", "PERPETUAL"],
+        states: ["PENDING", "RELEASING_RESERVATIONS", "RESERVATIONS_RELEASED", "COMPLETED", "RECONCILIATION_REQUIRED"],
+      },
       returnDisposition: {
         requireServiceToken: true,
         maximumDispositionAllocations: 100,
@@ -915,11 +923,13 @@ module.exports = {
           RESTOCK: "RETURN",
           REPAIR: "RETURN",
           SCRAP: "DAMAGE",
+          RETURN_TO_VENDOR: "RETURN",
         },
         conditionCodeByDisposition: {
           RESTOCK: "SELLABLE",
           REPAIR: "REPAIR",
           SCRAP: "DAMAGED",
+          RETURN_TO_VENDOR: "RETURN_TO_VENDOR",
         },
         reasonCodePrefix: "RETURN_DISPOSITION",
       },

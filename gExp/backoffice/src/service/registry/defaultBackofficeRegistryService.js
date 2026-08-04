@@ -483,14 +483,25 @@ module.exports = {
         SERVICE.DefaultBackofficeDiscoveryService.getSnapshot(moduleName);
       let authorizedMetadata = Object.assign({}, metadata);
       if (Array.isArray(metadata.navigation)) {
-        let authorizedItems = metadata.navigation.filter((item) => {
-          let required = [].concat(item.requiredPermissions || []);
-          return (
-            item.featureState !== "HIDDEN" &&
-            (permissions.includes("*") ||
-              required.every((permission) => permissions.includes(permission)))
-          );
-        });
+        let authorizedItems = metadata.navigation
+          .filter((item) => {
+            let required = [].concat(item.requiredPermissions || []);
+            return (
+              item.featureState !== "HIDDEN" &&
+              (permissions.includes("*") ||
+                required.every((permission) => permissions.includes(permission)))
+            );
+          })
+          .map((item) => {
+            if (!Array.isArray(item.lifecycleActions)) return item;
+            let lifecycleActions = item.lifecycleActions.filter(
+              (action) =>
+                action.featureState !== "HIDDEN" &&
+                (permissions.includes("*") ||
+                  (action.permission && permissions.includes(action.permission))),
+            );
+            return Object.assign({}, item, { lifecycleActions });
+          });
         let authorizedIds = new Set(authorizedItems.map((item) => item.id));
         let changed = true;
         while (changed) {

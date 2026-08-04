@@ -29,6 +29,8 @@ Follow global AI/development guidance: `../../gSetup/llm/README.md`.
 - Reservation holds are operational Online state, use Stock Balance revision compare-and-set, retain evidence, and never use cache as quantity authority. `CONSUMED` remains held until a matching Stock ISSUE commits both on-hand and reserved deltas.
 - Use the existing CronJob module to invoke bounded reservation expiry; never add an Inventory-owned scheduler.
 - Order owns demand. Inventory Allocation stores stable demand references only, assigns active Reservations across Warehouses, and derives fulfillment from applied reservation-linked ISSUE movements.
+- Approved partial cancellation must use `DefaultStockAllocationCancellationOrchestrationService`. It releases exact unfulfilled quantities through idempotent partial Reservation operations, preserves original allocation/reservation evidence, and records durable recovery checkpoints before updating Allocation projection.
+- Never implement partial cancellation by closing the whole Allocation or Reservation. Serialized cancellation must bind every requested serial to active assignment evidence; Stock Balance changes remain Reservation-owned compare-and-set operations.
 - Stock Transfer coordinates existing TRANSFER_OUT/TRANSFER_IN movements. Never edit balances directly, fabricate movements for discrepancies, or rewrite completed history for returns.
 - The internal Warehouse reference route may expose only an allow-listed projection, must require a service token, and must never become generic Warehouse CRUD.
 - Put classifications and depth limits in `properties.js`; do not hardcode project classifications in services.

@@ -242,7 +242,7 @@ async function run() {
   assert.strictEqual(service._metrics.renewals, 1);
 
   let list = await service.list({
-    authData: { permissions: ["cms.backoffice.view"] },
+    authData: { permissions: ["cms.backoffice.view", "cms.backoffice.manage"] },
   });
   assert.strictEqual(list.data.modules.cms.length, 1);
   assert.strictEqual(
@@ -250,6 +250,16 @@ async function run() {
       .intent,
     "PUBLISH",
     "BackOffice registration must preserve bounded declarative lifecycle actions for Axis rendering",
+  );
+  let readonlyCatalogue = service.buildCatalogue(
+    { cms: [{ backoffice: registration.backoffice }] },
+    1,
+    { permissions: ["cms.backoffice.view"] },
+  );
+  assert.deepStrictEqual(
+    readonlyCatalogue.cms.navigation[0].lifecycleActions,
+    [],
+    "BackOffice catalogue must omit lifecycle actions outside the caller's permissions",
   );
   assert.strictEqual(
     (await service.list({ authData: { permissions: [] } })).data.modules.cms,

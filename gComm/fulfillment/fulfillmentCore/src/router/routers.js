@@ -52,5 +52,24 @@ module.exports = {
         },
       },
     },
+    cancellationIntent: {
+      cancelQuantity: {
+        secured: true,
+        accessGroups: ["userGroup"],
+        permissionConfig: "authSecurity.internalToken.routePermission",
+        apiExposure: "moduleInternal",
+        key: "/references/consignments/cancel-quantity",
+        method: "POST",
+        controller: "DefaultFulfillmentCancellationIntentController",
+        operation: "cancel",
+        requestBody: { required: true, content: { "application/json": { schema: { type: "object" } } } },
+        responses: { 200: { description: "Idempotently cancelled exact unshipped consignment quantity" } },
+      },
+    },
+    warehouseReturnOperations: {
+      receive: { secured: true, accessGroups: ["userGroup"], permission: "fulfillment.return.warehouse.receive", authTokenTypes: ["access"], apiExposure: "shippingOperations", key: "/operations/returns/:returnCode/receive", method: "POST", controller: "DefaultWarehouseReturnOperationsController", operation: "receive", requestBody: { required: true, content: { "application/json": { schema: { type: "object" } } } }, responses: { 200: { description: "Normalized Fulfillment-owned Return receipt evidence" } } },
+      inspect: { secured: true, accessGroups: ["userGroup"], permission: "fulfillment.return.warehouse.inspect", authTokenTypes: ["access"], apiExposure: "shippingOperations", key: "/operations/returns/:returnCode/inspect", method: "POST", controller: "DefaultWarehouseReturnOperationsController", operation: "inspect", requestBody: { required: true, content: { "application/json": { schema: { type: "object" } } } }, responses: { 200: { description: "Normalized Fulfillment-owned Return inspection evidence" } } },
+      disposition: { secured: true, accessGroups: ["userGroup"], permission: "fulfillment.return.warehouse.disposition", authTokenTypes: ["access"], apiExposure: "shippingOperations", key: "/operations/returns/:returnCode/disposition", method: "POST", controller: "DefaultWarehouseReturnOperationsController", operation: "disposition", requestBody: { required: true, content: { "application/json": { schema: { type: "object" } } } }, responses: { 200: { description: "Inventory-owned stock outcome with normalized Fulfillment closure evidence" } } },
+    },
   },
 };

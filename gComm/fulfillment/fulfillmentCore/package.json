@@ -17,6 +17,7 @@
             "controller",
             "facade",
             "service",
+            "pipeline",
             "interceptor",
             "utility",
             "test",

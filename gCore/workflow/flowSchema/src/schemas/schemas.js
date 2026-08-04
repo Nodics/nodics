@@ -284,6 +284,22 @@ module.exports = {
                     required: true,
                     description: 'Optional workflow action code'
                 },
+                'activeAction.assigneePrincipalId': {
+                    type: 'string',
+                    required: false,
+                    description: 'Permissioned principal currently assigned to the active manual action'
+                },
+                'activeAction.assignmentVersion': {
+                    type: 'int',
+                    required: false,
+                    default: 0,
+                    description: 'Optimistic assignment version used by delegation and takeover operations'
+                },
+                'activeAction.assignmentHistory': {
+                    type: 'array',
+                    required: false,
+                    description: 'Append-only bounded delegation and takeover evidence for the active action'
+                },
                 'activeAction.state': {
                     enum: [ENUMS.WorkflowCarrierState.INIT.key,
                     ENUMS.WorkflowCarrierState.RELEASED.key,

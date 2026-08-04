@@ -20,15 +20,20 @@ module.exports = {
         "VOID",
         "DEFER",
         "RECONCILE",
+        "ADJUSTMENT",
       ],
       transactionStatuses: [
         "REQUESTED",
         "AUTHORIZED",
         "CAPTURED",
+        "SETTLED",
+        "PROVIDER_PENDING",
+        "PARTIALLY_REFUNDED",
         "REFUNDED",
         "VOIDED",
         "DEFERRED",
         "RECONCILED",
+        "RETRY_SCHEDULED",
         "FAILED",
       ],
       providerStatuses: ["DRAFT", "ACTIVE", "SUSPENDED", "INACTIVE", "RETIRED"],
@@ -180,6 +185,8 @@ module.exports = {
       gatewayRequiredModes: ["CARD", "WALLET", "ADVANCE"],
       refundCalculation: {
         defaultStrategy: "SUM_PAYMENT_ALLOCATIONS",
+        cancellationStrategy: "PROPORTIONAL_ORIGINAL_PAYMENT_ALLOCATIONS",
+        roundingMode: "HALF_EVEN",
         allowExplicitAmount: true,
         explicitAmountMustNotExceedEligible: true,
         includeShipping: false,
@@ -193,6 +200,18 @@ module.exports = {
         terminalSuccessStatuses: ["REFUNDED"],
         maximumRetries: 3,
         failureMessageLimit: 240,
+      },
+      refundException: {
+        alternateDestinationTypes: ["WALLET", "STORE_CREDIT", "ACCOUNT_CREDIT", "OFFLINE"],
+        providerByDestinationType: {
+          WALLET: "defaultWalletProvider",
+          STORE_CREDIT: "manualPaymentProvider",
+          ACCOUNT_CREDIT: "manualPaymentProvider",
+          OFFLINE: "manualPaymentProvider",
+        },
+        requireApprovalEvidence: true,
+        requireCustomerCommunicationEvidence: true,
+        requireOriginalTransaction: true,
       },
       defaultCurrencyScale: 2,
       moneyPattern: "^(0|[1-9][0-9]*)(\\.[0-9]+)?$",
@@ -668,6 +687,7 @@ module.exports = {
               "currencyCode",
               "recoveryStatus",
             ],
+            fixedFilters: [{ id: "refund-operations-only", label: "Refund operations only", field: "operation", values: ["REFUND", "RECONCILE", "ADJUSTMENT"], order: 0 }],
             quickFilters: [
               {
                 id: "refunds",
@@ -694,7 +714,8 @@ module.exports = {
               id: "retry-refund",
               label: "Retry refund",
               intent: "RETRY",
-              permission: "payment.backoffice.manage",
+              permission: "payment.refund.finance.retry",
+              operationRoute: "/refunds/retry",
               summary:
                 "Retry a recoverable refund through Payment-owned recovery policy.",
               targetStatuses: ["FAILED", "REQUESTED"],
@@ -704,7 +725,8 @@ module.exports = {
               id: "reconcile-provider-payment",
               label: "Reconcile provider evidence",
               intent: "RECONCILE",
-              permission: "payment.backoffice.manage",
+              permission: "payment.refund.finance.reconcile",
+              operationRoute: "/refunds/reconcile",
               summary:
                 "Compare Payment evidence with normalized provider reconciliation output.",
               targetStatuses: [

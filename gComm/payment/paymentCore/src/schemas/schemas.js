@@ -372,11 +372,40 @@ module.exports = {
             "Order code when the transaction is attached to an order",
           searchOptions: { enabled: true },
         },
+        parentTransactionCode: {
+          type: "string",
+          required: false,
+          description: "Original Payment transaction reversed by this void or refund",
+          searchOptions: { enabled: true },
+        },
+        cancellationCode: {
+          type: "string",
+          required: false,
+          description: "Approved Order cancellation identity that authorized this reversal",
+          searchOptions: { enabled: true },
+        },
+        refundCode: {
+          type: "string",
+          required: false,
+          description: "Approved Order refund request identity that authorized this transaction",
+          searchOptions: { enabled: true },
+        },
+        lifecycleRequestType: {
+          type: "string",
+          required: false,
+          description: "Order lifecycle request type authorizing the payment operation",
+          searchOptions: { enabled: true },
+        },
+        requestVersion: {
+          type: "number",
+          required: false,
+          description: "Immutable approved cancellation request version",
+        },
         operation: {
           type: "string",
           required: true,
           description:
-            "Payment operation such as AUTHORIZE, CAPTURE, REFUND, VOID, or DEFER",
+            "Payment operation such as AUTHORIZE, CAPTURE, REFUND, VOID, DEFER, RECONCILE, or governed ADJUSTMENT",
           searchOptions: { enabled: true },
         },
         amount: {
@@ -400,6 +429,17 @@ module.exports = {
           type: "string",
           required: false,
           description: "Optional stable evidence code exposed to Cart/Order",
+        },
+        exceptionPolicyCode: {
+          type: "string",
+          required: false,
+          description: "Approved Payment policy authorizing an exceptional refund destination",
+          searchOptions: { enabled: true },
+        },
+        customerCommunicationEvidenceCode: {
+          type: "string",
+          required: false,
+          description: "Stable Notification or support evidence for an exceptional refund destination",
         },
         recoveryAction: {
           type: "string",

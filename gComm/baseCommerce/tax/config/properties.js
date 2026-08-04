@@ -303,6 +303,7 @@ module.exports = {
     },
   },
   tax: {
+    refundEvidence: { policyCode: "ORIGINAL_TAX_PROPORTIONAL", currencyScale: 2, roundingMode: "HALF_EVEN" },
     enterpriseScope: { required: true },
     identity: {
       separator: "::",

@@ -110,7 +110,7 @@ module.exports = {
         if (!SERVICE.DefaultFulfillmentPolicyService || typeof SERVICE.DefaultFulfillmentPolicyService.prepareReturnRequest !== 'function') {
             throw this.error('Fulfillment policy service is unavailable');
         }
-        return this.saveReturn(request, SERVICE.DefaultFulfillmentPolicyService.prepareReturnRequest({ model: model }));
+        let saved=await this.saveReturn(request, SERVICE.DefaultFulfillmentPolicyService.prepareReturnRequest({ model: model })); if(SERVICE.DefaultFulfillmentReturnEventService) await SERVICE.DefaultFulfillmentReturnEventService.publish(request,saved,'RETURN_'+targetStatus); return saved;
     },
     /** Approves a requested return. */
     approveReturn: async function (request) {
@@ -132,6 +132,19 @@ module.exports = {
             receivedAt: request.receivedAt || new Date(),
         });
     },
+    /** Records inspection and prepares safe Inventory disposition intent without applying stock movement. */
+    inspectReturn: async function (request) {
+        let existing = await this.loadReturn(request);
+        if (!existing) throw this.error('Return request was not found');
+        let dispositionCode = request.dispositionCode || existing.dispositionCode || (this.config().returnDisposition || {}).defaultDispositionCode;
+        let inventoryDispositionIntent = SERVICE.DefaultFulfillmentPolicyService.buildReturnDispositionIntent(Object.assign({}, request, { dispositionCode: dispositionCode }), existing);
+        return this.transitionReturn(Object.assign({}, request, { returnRequest: existing }), 'INSPECTED', {
+            dispositionCode: dispositionCode,
+            inspectionResult: request.inspectionResult,
+            inspectedAt: request.inspectedAt || new Date(),
+            inventoryDispositionIntent: inventoryDispositionIntent,
+        });
+    },
     /** Closes inspected return evidence. */
     closeReturn: async function (request) {
         let existing = await this.loadReturn(request);
@@ -148,6 +161,7 @@ module.exports = {
             dispositionAt: request.dispositionAt || new Date(),
             inspectionResult: request.inspectionResult,
             inventoryDispositionIntent: inventoryDispositionIntent,
+            inventoryDispositionEvidence: request.inventoryDispositionEvidence || existing.inventoryDispositionEvidence,
         });
     },
     /** Provides safe Fulfillment-owned recovery guidance for a checkout reverse return. */

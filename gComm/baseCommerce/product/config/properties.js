@@ -718,6 +718,13 @@ module.exports = {
     },
   },
   product: {
+    lifecycleCancellation: {
+      supportedLifecycleTypes: ["PHYSICAL", "SERIALIZED_PHYSICAL", "NON_SERIALIZED_PHYSICAL", "DIGITAL", "PERPETUAL", "INFINITE_INVENTORY", "SERVICE", "SUBSCRIPTION", "LICENSE", "SIM", "ESIM", "PREORDER", "BACKORDER", "DROP_SHIP", "MADE_TO_ORDER"],
+      nonPhysicalTypes: ["DIGITAL", "SERVICE", "SUBSCRIPTION", "LICENSE", "SIM", "ESIM", "PERPETUAL", "INFINITE_INVENTORY"],
+      terminalEntitlementStates: ["EXPIRED", "REVOKED"],
+      activatedState: "ACTIVATED",
+      providerAdapters: {},
+    },
     enterpriseScope: { required: true },
     identity: {
       separator: "::",

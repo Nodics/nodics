@@ -124,6 +124,24 @@ to decide the eligible amount, currency, allocation scope, and optional explicit
 refund amount. This keeps split-payment and quantity-level refund rules in a
 Payment-owned service instead of hiding them in Order or Axis.
 
+For partial cancellation, Order supplies selected entry quantities and the
+original quantity-level payment allocations. Payment applies
+`PROPORTIONAL_ORIGINAL_PAYMENT_ALLOCATIONS`, validates exact quantities and
+currency scale, rounds the aggregate at configured minor-unit scale, and
+assigns any remainder deterministically by allocation identity. The result
+retains safe per-allocation amount evidence so later Workflow execution can
+route funds back through the original payment groups and providers. Calculation
+does not create a transaction or call a gateway.
+
+Approved Order cancellation executes through the module-internal
+`payment.cancellationIntent.execute` contract. Payment reloads each original
+transaction instead of trusting routing hints, preserves its provider, payment
+method, currency, and parent transaction identity, and chooses `VOID` for
+`AUTHORIZED` funds or `REFUND` for `CAPTURED`/`SETTLED` funds. Exact cumulative
+reversals cannot exceed the original amount. Stable cancellation identity and
+request version make completed calls replay-safe; conflicting replay evidence
+is rejected for reconciliation.
+
 Customer modules connect real PSP refund behavior by replacing the Payment
 provider gateway, refund service, or refund calculation service. They should not
 put refund logic in Order, Fulfillment, Cart, or frontend code. A full

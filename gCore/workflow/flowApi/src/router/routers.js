@@ -22,6 +22,7 @@ module.exports = {
             initCarrierItem: {
                 secured: true,
                 accessGroups: ['userGroup'],
+                permission: 'workflow.action.perform',
                 key: '/carrier/init',
                 method: 'PUT',
                 controller: 'DefaultWorkflowController',
@@ -111,7 +112,9 @@ module.exports = {
                         feedback: 'Either json object or simple message'
                     }
                 }
-            }
+            },
+            delegateAction: { secured: true, authTokenTypes: ['access'], accessGroups: ['userGroup'], permission: 'workflow.action.delegate', key: '/action/:carrierCode/delegate', method: 'POST', controller: 'DefaultWorkflowController', operation: 'delegateAction' },
+            takeoverAction: { secured: true, authTokenTypes: ['access'], accessGroups: ['userGroup'], permission: 'workflow.action.takeover', key: '/action/:carrierCode/takeover', method: 'POST', controller: 'DefaultWorkflowController', operation: 'takeoverAction' }
         },
     }
 }

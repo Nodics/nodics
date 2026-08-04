@@ -1,0 +1,13 @@
+/*
+    Nodics - Enterprice Micro-Services Management Framework
+
+    Copyright (c) 2026 Nodics All rights reserved.
+
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
+
+ */
+
+/** @module order/data/lifecycle/defaultOrderLifecycleWorkflowHeadHeader @description Imports lifecycle request Workflow heads into Workflow-owned schemas. @layer data @owner order */
+module.exports = { workflow: { defaultOrderLifecycleWorkflowHead: { options: { enabled: true, schemaName: 'workflowAction', operation: 'saveAll', dataFilePrefix: 'defaultOrderLifecycleWorkflowHeadData' }, query: { code: '$code' } } } };

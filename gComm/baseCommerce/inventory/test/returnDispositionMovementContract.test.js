@@ -117,9 +117,18 @@ allocations.push({
     scale: 3,
     assignments: [{ reservationCode: 'reservation-1', warehouseCode: 'central', stockCode, quantity: '1.000', state: 'FULFILLED' }],
 });
+allocations.push({
+    code: 'enterpriseA::allocation::order-allocation-scrap', enterpriseCode: 'enterpriseA', allocationCode: 'order-allocation-scrap', itemType: 'SKU', itemCode: 'phone', unitCode: 'EA', scale: 3,
+    assignments: [{ reservationCode: 'reservation-scrap', warehouseCode: 'central', stockCode, quantity: '1.000', state: 'FULFILLED' }],
+});
+allocations.push({
+    code: 'enterpriseA::allocation::order-allocation-rtv', enterpriseCode: 'enterpriseA', allocationCode: 'order-allocation-rtv', itemType: 'SKU', itemCode: 'phone', unitCode: 'EA', scale: 3,
+    assignments: [{ reservationCode: 'reservation-rtv', warehouseCode: 'central', stockCode, quantity: '1.000', state: 'FULFILLED' }],
+});
 
 (async () => {
     assert.strictEqual(inventory.stockAllocation.returnDisposition.conditionCodeByDisposition.RESTOCK, 'SELLABLE');
+    assert.strictEqual(inventory.stockAllocation.returnDisposition.conditionCodeByDisposition.RETURN_TO_VENDOR, 'RETURN_TO_VENDOR');
     await assert.rejects(
         () => dispositionService.execute({
             tenant: 'tenantA',
@@ -201,6 +210,22 @@ allocations.push({
         },
     });
     assert.strictEqual(inspectOnly.status, 'NO_INVENTORY_DISPOSITION_REQUIRED');
+
+    const scrapped = await dispositionService.execute({
+        tenant: 'tenantA', authData,
+        dispositionIntent: { sourceType: 'FULFILLMENT_RETURN', sourceCode: 'return-scrap', dispositionCode: 'SCRAP', inventoryAllocationCodes: ['order-allocation-scrap'] },
+    });
+    assert.strictEqual(scrapped.status, 'INVENTORY_DISPOSITION_APPLIED');
+    assert.strictEqual(scrapped.movements[0].movementType, 'DAMAGE');
+    assert(balances.some(value => value.conditionCode === 'DAMAGED' && value.quantity === '1.000'));
+
+    const returnedToVendor = await dispositionService.execute({
+        tenant: 'tenantA', authData,
+        dispositionIntent: { sourceType: 'FULFILLMENT_RETURN', sourceCode: 'return-rtv', dispositionCode: 'RETURN_TO_VENDOR', inventoryAllocationCodes: ['order-allocation-rtv'] },
+    });
+    assert.strictEqual(returnedToVendor.status, 'INVENTORY_DISPOSITION_APPLIED');
+    assert.strictEqual(returnedToVendor.movements[0].movementType, 'RETURN');
+    assert(balances.some(value => value.conditionCode === 'RETURN_TO_VENDOR' && value.quantity === '1.000'));
 
     console.log('Inventory return disposition movement contract validated');
 })().catch(error => {

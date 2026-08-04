@@ -16,6 +16,8 @@
  * @owner nOtp
  * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
  */
+const crypto = require('crypto');
+
 module.exports = {
     /**
      * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
@@ -55,8 +57,8 @@ module.exports = {
         let _self = this;
         try {
             let otpConfig = CONFIG.get('token').OTP;
-            let generatedOtp = Math.floor(otpConfig.rangeStart + (otpConfig.rangeEnd - otpConfig.rangeStart) * Math.random());
-            _self.LOG.debug('Generated Otp: ', generatedOtp);
+            let generatedOtp = crypto.randomInt(Number(otpConfig.rangeStart), Number(otpConfig.rangeEnd));
+            _self.LOG.debug('Generated OTP using cryptographically secure randomness');
             return generatedOtp;
         } catch (error) {
             throw new CLASSES.NodicsError(error, 'While generating OTP', 'ERR_OTP_00000');

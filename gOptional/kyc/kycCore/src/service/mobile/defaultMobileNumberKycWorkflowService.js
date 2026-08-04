@@ -82,37 +82,8 @@ module.exports = {
      */
 
     initMobileOTP: function (request, response) {
-        return new Promise((resolve, reject) => {
-            let otpModel = request.workflowCarrier.items[0];
-            SERVICE.DefaultOtpService.generateOtp({
-                tenant: request.tenant,
-                authData: request.authData,
-                model: {
-                    key: otpModel.mobileNumber,
-                    ops: otpModel.loginId,
-                    active: true,
-                    limit: otpModel.limit || CONFIG.get('token').OTP.attemptLimit || 5,
-                    singleUseToken: CONFIG.get('token').OTP.singleUseToken || false
-                }
-            }, response).then(success => {
-                resolve({
-                    decision: 'NOTIFY',
-                    internalResponce: success.result,
-                    customerResponse: success.result,
-                    feedback: {
-                        message: 'OTP for the mobile been generated'
-                    }
-                });
-            }).catch(error => {
-                resolve({
-                    decision: 'ERROR',
-                    otpError: error,
-                    feedback: {
-                        message: 'Failed OTP generation for mobile verification'
-                    }
-                });
-            });
-        });
+        let model = request.workflowCarrier.items[0];
+        return SERVICE.DefaultNotifyVerificationService.create(request, { key: model.mobileNumber, ops: model.loginId, channelCode: 'sms', recipientType: 'MOBILE', recipientReference: 'kyc-mobile:' + model.loginId, maskedRecipient: String(model.mobileNumber).replace(/.(?=.{4})/g, '*'), ownerModule: 'kyc', ownerReferenceType: 'MOBILE_KYC', ownerReferenceCode: model.code || model.loginId, idempotencyKey: 'kyc-mobile:' + (model.code || model.loginId), correlationId: model.code || model.loginId, variables: { brandName: model.brandName || 'Nodics', supportContact: model.supportContact || 'Support' } }).then(result => ({ decision: 'NOTIFY', verification: result, feedback: { message: 'Mobile verification challenge delivered' } })).catch(error => ({ decision: 'ERROR', verificationError: { code: error.code || 'ERR_NOTIFY_00011' }, feedback: { message: 'Failed mobile verification challenge delivery' } }));
     },
 
     /**
@@ -130,30 +101,7 @@ module.exports = {
      */
 
     notifyMobileOTP: function (request, response) {
-        return new Promise((resolve, reject) => {
-            let otpModel = request.workflowCarrier.items[0];
-            otpModel.type = ENUMS.KYCType.MOBILE.key;
-            SERVICE.DefaultPipelineService.start('initKycNotificationPipeline', {
-                tenant: request.tenant,
-                authData: request.authData,
-                model: otpModel
-            }, {}).then(success => {
-                resolve({
-                    decision: 'VALIDATEOTP',
-                    feedback: {
-                        message: 'Customer notified for generated OTP'
-                    }
-                });
-            }).catch(error => {
-                resolve({
-                    decision: 'ERROR',
-                    notifyError: error,
-                    feedback: {
-                        message: 'Failed OTP generation for mobile verification'
-                    }
-                });
-            });
-        });
+        return Promise.resolve({ decision: 'VALIDATEOTP', feedback: { message: 'Mobile verification challenge is ready for validation' } });
     },
 
     /**

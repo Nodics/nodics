@@ -57,4 +57,8 @@ module.exports = {
     code: "400",
     message: "Fulfillment lifecycle action is invalid",
   },
+  SUC_FUL_00002: { code: "200", message: "Fulfillment consignment cancellation completed" },
+  ERR_FUL_00010: { code: "400", message: "Fulfillment consignment cancellation request is invalid" },
+  ERR_FUL_00011: { code: "409", message: "Fulfillment consignment cancellation quantity or lifecycle conflict" },
+  ERR_FUL_00012: { code: "503", message: "Fulfillment consignment cancellation requires reconciliation" },
 };

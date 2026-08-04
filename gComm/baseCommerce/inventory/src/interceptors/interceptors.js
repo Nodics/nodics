@@ -17,6 +17,18 @@
  * @override Later modules may replace validators while preserving the published warehouse-foundation invariants.
  */
 module.exports = {
+  stockAllocationCancellationPreSave: {
+    type: "schema", item: "stockAllocationCancellation", trigger: "preSave", active: "true", index: -100,
+    handler: "DefaultStockAllocationCancellationOrchestrationService.authorizeInternalMutation",
+  },
+  stockAllocationCancellationPreUpdate: {
+    type: "schema", item: "stockAllocationCancellation", trigger: "preUpdate", active: "true", index: -100,
+    handler: "DefaultStockAllocationCancellationOrchestrationService.authorizeInternalMutation",
+  },
+  stockAllocationCancellationPreRemove: {
+    type: "schema", item: "stockAllocationCancellation", trigger: "preRemove", active: "true", index: -100,
+    handler: "DefaultStockAllocationCancellationOrchestrationService.rejectDelete",
+  },
   warehousePreSave: {
     type: "schema",
     item: "warehouse",

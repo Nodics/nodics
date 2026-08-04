@@ -61,4 +61,8 @@ module.exports = {
     code: "400",
     message: "Payment provider connector reference is invalid",
   },
+  ERR_PAY_00011: { code: "400", message: "Payment cancellation execution request is invalid" },
+  ERR_PAY_00012: { code: "409", message: "Payment cancellation reversal is not eligible" },
+  ERR_PAY_00013: { code: "409", message: "Payment cancellation execution requires reconciliation" },
+  ERR_PAY_00014: { code: "502", message: "Payment refund execution requires reconciliation" },
 };

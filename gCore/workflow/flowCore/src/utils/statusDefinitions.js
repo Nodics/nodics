@@ -16,6 +16,4 @@
  * @owner flowCore
  * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
  */
-module.exports = {
-
-};
+module.exports = { ERR_WF_00031: { code: '409', message: 'Workflow assignment operation failed' } };

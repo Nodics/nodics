@@ -57,6 +57,21 @@ If checkout placement fails after release, Order compensation delegates
 consignment cancellation back to `DefaultFulfillmentReleaseService`. Order does
 not directly mutate Fulfillment records or shipment lifecycle.
 
+## Order cancellation integration
+
+Approved pre-shipment order cancellation reaches Fulfillment through the
+module-internal `fulfillment.cancellationIntent.cancelQuantity` route. The
+Fulfillment-owned orchestration derives a deterministic plan from immutable
+consignment allocation evidence, applies exact partial quantities with
+revision guards, and persists a private checkpoint after each consignment.
+
+Serialized cancellation requires unique serials that remain active in the
+referenced allocation. A serial already cancelled cannot be consumed again.
+The default policy rejects any consignment with shipment evidence; carrier
+voiding is therefore not implied by this intent. Inventory allocation release
+and Payment refund or void remain separate owner actions coordinated by the
+Order cancellation Workflow.
+
 ## Shipment lifecycle
 
 Shipment lifecycle is Fulfillment-owned because it represents operational
@@ -283,7 +298,8 @@ The default lifecycle is configuration-first through
 4. `RECEIVED` — Fulfillment records received quantity and receipt time.
 5. `CLOSED` — Fulfillment closes the return after inspection/disposition and,
    when configured, records a safe Inventory movement intent such as RESTOCK,
-   REPAIR, or SCRAP.
+   REPAIR, SCRAP, MISSING (an explicit no-stock outcome), or RETURN_TO_VENDOR
+   (an Inventory-owned movement into returned-to-vendor condition).
 
 Disposition behavior is configuration-first through
 `fulfillment.fulfillmentPolicy.returnDisposition`. Customer modules can change

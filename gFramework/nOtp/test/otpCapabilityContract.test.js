@@ -118,10 +118,9 @@ function requestWithBody(body) {
     assert.strictEqual(callbackPayload.code, 'SUC_OTP_GENERATED');
     assert.strictEqual(tokenCalls[2].model.type, 'OTP');
 
-    const originalRandom = Math.random;
-    Math.random = function () { return 0.5; };
-    assert.strictEqual(handler.generateToken({}), 5000);
-    Math.random = originalRandom;
+    const generated = handler.generateToken({});
+    assert(Number.isInteger(generated));
+    assert(generated >= 1000 && generated < 9000);
 
     const before = Date.now();
     const expiry = handler.generateExpiry({});

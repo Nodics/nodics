@@ -44,6 +44,7 @@ global.CLASSES = {
 const clone = (value) => JSON.parse(JSON.stringify(value));
 let savedTransactions = [];
 let providerCalls = 0;
+let failProvider = false;
 
 global.SERVICE = {
     DefaultPaymentPolicyService: policyService,
@@ -55,6 +56,7 @@ global.SERVICE = {
     DefaultPaymentProviderGatewayService: Object.assign({}, gatewayService, {
         refund: async (gatewayRequest) => {
             providerCalls += 1;
+            if (failProvider) throw new Error('gateway secret credential must never escape');
             return gatewayService.refund(gatewayRequest);
         },
     }),
@@ -133,6 +135,24 @@ const request = {
     assert.strictEqual(reconciled.recoveryAction, 'RECONCILE_PROVIDER_REFUND');
     assert.strictEqual(reconciled.recovered, true);
     assert.strictEqual(reconciled.status, 'REFUNDED');
+
+    const providerFailureRequest = Object.assign(clone(request), { returnCode: 'return::provider-failure' });
+    failProvider = true;
+    await assert.rejects(
+        () => refundService.refund(providerFailureRequest),
+        error => error.code === 'ERR_PAY_00004' && error.message === 'Payment provider refund failed; retry or reconciliation is required' && !error.message.includes('secret')
+    );
+    const failedProviderDraft = policyService.buildRefundDraft(providerFailureRequest);
+    const failedProviderEvidence = savedTransactions.find(item => item.idempotencyKey === failedProviderDraft.idempotencyKey);
+    assert.strictEqual(failedProviderEvidence.status, 'FAILED');
+    assert.strictEqual(failedProviderEvidence.failureCode, 'PROVIDER_REFUND_FAILED');
+    assert.strictEqual(failedProviderEvidence.failureMessage, 'Payment provider refund failed');
+    failProvider = false;
+    const providerRecovered = await refundService.retryRefund(providerFailureRequest);
+    assert.strictEqual(providerRecovered.status, 'REFUNDED');
+    assert.strictEqual(providerRecovered.retryCount, 1);
+    const providerReconciled = await refundService.reconcileRefund(providerFailureRequest);
+    assert.strictEqual(providerReconciled.recovered, true);
 
     const invalidAmount = Object.assign(clone(request), {
         returnCode: 'return::checkout-2',

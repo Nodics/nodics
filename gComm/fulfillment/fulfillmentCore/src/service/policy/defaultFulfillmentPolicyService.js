@@ -366,7 +366,16 @@ module.exports = {
                 carrierCode: deliveryGroup.carrierCode,
                 warehouseCode: deliveryGroup.warehouseCode,
                 allocationCodes: (allocations || []).map((allocation) => allocation.allocationCode).filter(Boolean),
+                allocationEvidence: (allocations || []).map((allocation) => ({
+                    allocationCode: allocation.allocationCode,
+                    entryCode: allocation.entryCode,
+                    quantity: allocation.quantity,
+                    unitCode: allocation.unitCode,
+                    serialNumbers: allocation.serialNumbers || [],
+                    inventoryAllocationCode: allocation.inventoryAllocationCode,
+                })),
                 inventoryAllocationCodes: (allocations || []).map((allocation) => allocation.inventoryAllocationCode).filter(Boolean),
+                revision: 0,
                 status: this.policy().defaultConsignmentStatus || 'RELEASED',
             },
         });

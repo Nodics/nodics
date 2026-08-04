@@ -124,6 +124,16 @@ generated-layer, tenant, or runtime-governance contracts.
 
 Code review must reject a change whose customization path is absent, undocumented, or untested. Capabilities are sacred; the default implementation remains negotiable through the hierarchy.
 
+## Communication Capability Contract
+
+Communication code must separate business intent, communication governance, transport channel, and provider implementation. The business capability owns the event, context builder, and protected action; Profile or Customer owns consent/preferences; Workflow owns human approval and long-running recovery; token capabilities own secrets and challenges; a notification capability owns template resolution, safe rendering, provider-neutral delivery, suppression, retries, and immutable evidence.
+
+Use one centralized versioned template authority bound to scenario, channel, message type, locale, and effective scope. Channel rules define valid content fields and constraints. Provider adapters remain replaceable and resolve credentials from secret references. Business modules must not call vendors or create parallel email/SMS template stores.
+
+Plaintext OTPs, credentials, raw provider payloads, and unnecessary PII must remain transient. They must never be logged, returned by public APIs, previewed with real values, placed in events, or stored in delivery evidence. Persist only hashes, masks, references, lengths, normalized codes, and owner correlation. Every send, retry, resend, and callback must be scoped and idempotent; suppressed communication is auditable governed evidence.
+
+Administration clients discover schemas, workspaces, permissions, lifecycle actions, and help from backend contracts. Customer-specific channels, scenarios, templates, policies, context builders, providers, fallback, and retention belong in later-loaded configuration, services, pipelines, adapters, and init data. Tests must prove both the default behavior and the override path.
+
 ## Control Plane Direction
 
 The admin application should become the Nodics control plane for:

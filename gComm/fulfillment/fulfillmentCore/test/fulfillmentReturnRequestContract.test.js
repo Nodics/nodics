@@ -113,6 +113,13 @@ const baseRequest = {
     }));
     assert.strictEqual(closed.status, 'CLOSED');
     assert.strictEqual(closed.dispositionCode, 'RESTOCK');
+    assert(properties.fulfillment.fulfillmentPolicy.returnDisposition.supportedDispositionCodes.includes('MISSING'));
+    assert(properties.fulfillment.fulfillmentPolicy.returnDisposition.supportedDispositionCodes.includes('RETURN_TO_VENDOR'));
+    const missingIntent = SERVICE.DefaultFulfillmentPolicyService.buildReturnDispositionIntent({ dispositionCode: 'MISSING', receivedQuantity: '1' }, Object.assign({}, closed, { returnCode: 'return-missing' }));
+    assert.strictEqual(missingIntent, undefined);
+    const returnToVendorIntent = SERVICE.DefaultFulfillmentPolicyService.buildReturnDispositionIntent({ dispositionCode: 'RETURN_TO_VENDOR', receivedQuantity: '1' }, Object.assign({}, closed, { returnCode: 'return-rtv' }));
+    assert.strictEqual(returnToVendorIntent.dispositionCode, 'RETURN_TO_VENDOR');
+    assert.strictEqual(returnToVendorIntent.movementType, 'RETURN');
     assert.strictEqual(closed.inspectionResult, 'SELLABLE');
     assert.strictEqual(closed.inventoryDispositionIntent.ownerModule, 'inventory');
     assert.strictEqual(closed.inventoryDispositionIntent.movementType, 'RETURN');

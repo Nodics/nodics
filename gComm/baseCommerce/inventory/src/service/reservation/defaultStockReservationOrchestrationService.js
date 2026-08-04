@@ -35,6 +35,15 @@ module.exports = {
         let parsed = SERVICE.DefaultExactUnitsService.parse(quantity);
         return SERVICE.DefaultExactUnitsService.format(-parsed.unscaled, parsed.scale);
     },
+    /** Normalizes one exact quantity to the reservation scale. */
+    normalize: function (quantity, scale) {
+        return SERVICE.DefaultExactUnitsService.multiplyRational(quantity, '1', '1', scale, 'UNNECESSARY');
+    },
+    /** Returns exact remaining held quantity after prior partial releases. */
+    remaining: function (reservation) {
+        return reservation.remainingQuantity || SERVICE.DefaultExactUnitsService.add(reservation.quantity,
+            this.negate(reservation.releasedQuantity || this.normalize('0', reservation.scale)), reservation.scale, 'UNNECESSARY');
+    },
     /** Loads the authoritative Stock Balance. */
     balance: async function (stockCode, request) {
         let balance = await SERVICE.DefaultStockRepositoryService.getBalance(stockCode, request);
@@ -99,7 +108,7 @@ module.exports = {
         let reservation = await SERVICE.DefaultStockReservationRepositoryService.getReservation(code, request);
         if (!reservation) throw new CLASSES.NodicsError('ERR_INV_00032', 'Stock Reservation was not found');
         if (['RELEASED', 'EXPIRED', 'CANCELLED'].includes(reservation.state)) return reservation;
-        if (!['ACTIVE', 'RELEASE_PENDING'].includes(reservation.state)) throw new CLASSES.NodicsError('ERR_INV_00035', 'Only ACTIVE reservations can release stock');
+        if (!['ACTIVE', 'PARTIALLY_RELEASED', 'RELEASE_PENDING'].includes(reservation.state)) throw new CLASSES.NodicsError('ERR_INV_00035', 'Only active reservations can release stock');
         terminalState = reservation.requestedTerminalState || terminalState || 'RELEASED';
         for (let attempt = 0; attempt < Number(this.policy().maximumRetries || 3); attempt++) {
             let balance = await this.balance(reservation.stockCode, request);
@@ -113,7 +122,7 @@ module.exports = {
             reservation = await SERVICE.DefaultStockReservationRepositoryService.transition(reservation, reservation.state, 'RELEASE_PENDING',
                 { releaseExpectedRevision: Number(balance.revision), requestedTerminalState: terminalState }, request);
             if (!reservation || reservation.state !== 'RELEASE_PENDING') throw new CLASSES.NodicsError('ERR_INV_00035', 'Reservation release state conflict');
-            let resulting = SERVICE.DefaultExactUnitsService.add(balance.reservedQuantity, this.negate(reservation.quantity), balance.scale, 'UNNECESSARY');
+            let resulting = SERVICE.DefaultExactUnitsService.add(balance.reservedQuantity, this.negate(this.remaining(reservation)), balance.scale, 'UNNECESSARY');
             if (SERVICE.DefaultExactUnitsService.parse(resulting).unscaled < 0n) throw new CLASSES.NodicsError('ERR_INV_00036', 'Reserved quantity requires reconciliation');
             let updated = await SERVICE.DefaultStockReservationRepositoryService.applyReservedQuantity(balance, reservation.code, resulting, request);
             if (updated) {
@@ -126,6 +135,55 @@ module.exports = {
         throw new CLASSES.NodicsError('ERR_INV_00036', 'Reservation release retry boundary exceeded');
     },
     /** Cancels one active reservation. */ cancel: function (request) { return this.release(request, 'CANCELLED'); },
+    /** Releases an exact partial quantity idempotently while retaining original reservation evidence. */
+    releaseQuantity: async function (request) {
+        request = request || {}; request.enterpriseCode = SERVICE.DefaultInventoryEnterpriseScopeService.resolveEnterpriseCode(request);
+        let input = request.reservation || {};
+        if ((!input.code && !input.idempotencyKey) || !input.releaseKey || !input.quantity) throw new CLASSES.NodicsError('ERR_INV_00055', 'Partial reservation release identity and quantity are required');
+        let code = input.code || this.code(request.enterpriseCode, input.idempotencyKey);
+        let reservation = await SERVICE.DefaultStockReservationRepositoryService.getReservation(code, request);
+        if (!reservation) throw new CLASSES.NodicsError('ERR_INV_00055', 'Stock Reservation was not found');
+        let releaseQuantity = this.normalize(input.quantity, reservation.scale);
+        if (SERVICE.DefaultExactUnitsService.parse(releaseQuantity).unscaled <= 0n) throw new CLASSES.NodicsError('ERR_INV_00055', 'Partial reservation release quantity must be positive');
+        if (reservation.lastPartialReleaseKey === input.releaseKey) {
+            if (reservation.lastPartialReleasedQuantity !== releaseQuantity) throw new CLASSES.NodicsError('ERR_INV_00056', 'Partial reservation release idempotency conflict');
+            return Object.assign({ idempotent: true }, reservation);
+        }
+        if (reservation.partialReleaseKey && reservation.partialReleaseKey !== input.releaseKey && reservation.state === 'PARTIAL_RELEASE_PENDING') throw new CLASSES.NodicsError('ERR_INV_00057', 'Another partial reservation release requires reconciliation');
+        if (!['ACTIVE', 'PARTIALLY_RELEASED', 'PARTIAL_RELEASE_PENDING'].includes(reservation.state)) throw new CLASSES.NodicsError('ERR_INV_00056', 'Reservation state cannot release a partial quantity');
+        let remaining = this.remaining(reservation);
+        let resultingRemaining = SERVICE.DefaultExactUnitsService.add(remaining, this.negate(releaseQuantity), reservation.scale, 'UNNECESSARY');
+        if (SERVICE.DefaultExactUnitsService.parse(resultingRemaining).unscaled < 0n) throw new CLASSES.NodicsError('ERR_INV_00056', 'Partial reservation release exceeds remaining quantity');
+        for (let attempt = 0; attempt < Number(this.policy().maximumRetries || 3); attempt++) {
+            let balance = await this.balance(reservation.stockCode, request);
+            if (reservation.state === 'PARTIAL_RELEASE_PENDING' && reservation.partialReleaseKey === input.releaseKey &&
+                balance.lastReservationCode === reservation.code && Number(balance.revision) === Number(reservation.partialReleaseExpectedRevision) + 1) {
+                let released = SERVICE.DefaultExactUnitsService.add(reservation.releasedQuantity || this.normalize('0', reservation.scale), releaseQuantity, reservation.scale, 'UNNECESSARY');
+                let terminalState = SERVICE.DefaultExactUnitsService.parse(resultingRemaining).unscaled === 0n ? 'CANCELLED' : 'PARTIALLY_RELEASED';
+                let recovered = await SERVICE.DefaultStockReservationRepositoryService.transition(reservation, 'PARTIAL_RELEASE_PENDING', terminalState,
+                    { releasedQuantity: released, remainingQuantity: resultingRemaining, lastPartialReleaseKey: input.releaseKey,
+                        lastPartialReleasedQuantity: releaseQuantity, resultingRevision: balance.revision, terminalAt: terminalState === 'CANCELLED' ? new Date() : undefined }, request);
+                if (!recovered || recovered.state !== terminalState) throw new CLASSES.NodicsError('ERR_INV_00057', 'Partial reservation release requires reconciliation');
+                return recovered;
+            }
+            reservation = await SERVICE.DefaultStockReservationRepositoryService.transition(reservation, reservation.state, 'PARTIAL_RELEASE_PENDING',
+                { partialReleaseKey: input.releaseKey, partialReleaseQuantity: releaseQuantity, partialReleaseExpectedRevision: Number(balance.revision) }, request);
+            if (!reservation || reservation.state !== 'PARTIAL_RELEASE_PENDING' || reservation.partialReleaseKey !== input.releaseKey || reservation.partialReleaseQuantity !== releaseQuantity) throw new CLASSES.NodicsError('ERR_INV_00057', 'Partial reservation release state conflict');
+            let resultingReserved = SERVICE.DefaultExactUnitsService.add(balance.reservedQuantity, this.negate(releaseQuantity), balance.scale, 'UNNECESSARY');
+            if (SERVICE.DefaultExactUnitsService.parse(resultingReserved).unscaled < 0n) throw new CLASSES.NodicsError('ERR_INV_00057', 'Reserved quantity requires reconciliation');
+            let updated = await SERVICE.DefaultStockReservationRepositoryService.applyReservedQuantity(balance, reservation.code, resultingReserved, request);
+            if (updated) {
+                let released = SERVICE.DefaultExactUnitsService.add(reservation.releasedQuantity || this.normalize('0', reservation.scale), releaseQuantity, reservation.scale, 'UNNECESSARY');
+                let terminalState = SERVICE.DefaultExactUnitsService.parse(resultingRemaining).unscaled === 0n ? 'CANCELLED' : 'PARTIALLY_RELEASED';
+                let completed = await SERVICE.DefaultStockReservationRepositoryService.transition(reservation, 'PARTIAL_RELEASE_PENDING', terminalState,
+                    { releasedQuantity: released, remainingQuantity: resultingRemaining, lastPartialReleaseKey: input.releaseKey,
+                        lastPartialReleasedQuantity: releaseQuantity, resultingRevision: updated.revision, terminalAt: terminalState === 'CANCELLED' ? new Date() : undefined }, request);
+                if (!completed || completed.state !== terminalState) throw new CLASSES.NodicsError('ERR_INV_00057', 'Partial reservation release requires reconciliation');
+                return completed;
+            }
+        }
+        throw new CLASSES.NodicsError('ERR_INV_00057', 'Partial reservation release retry boundary exceeded');
+    },
     /** Marks a reservation consumed while retaining its hold until the Stock ISSUE movement commits. */
     consume: async function (request) {
         request = request || {}; request.enterpriseCode = SERVICE.DefaultInventoryEnterpriseScopeService.resolveEnterpriseCode(request);

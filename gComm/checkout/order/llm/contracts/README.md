@@ -4,6 +4,50 @@ This folder contains module-specific AI/developer contracts for `gComm/checkout/
 
 Use these files for rules that are more specific than root `AGENTS.md` and the module `AGENTS.md`, especially extension boundaries, override expectations, testing rules, security constraints, and generated-artifact responsibilities.
 
+## Cancellation eligibility contract
+
+Architecture decision: keep post-order lifecycle coordination in existing
+owner modules. Order owns business requests; Payment owns monetary execution;
+Fulfillment owns return logistics; Inventory owns stock movement. Do not add a
+parallel `returns`/`orderLifecycle` authority module. Exchange execution is
+deferred but must remain representable through requested outcome and return
+evidence. Real PSP/carrier adapters are project-layer selections, and fraud is
+normalized permission-filtered evidence until a dedicated capability is
+explicitly introduced. Promotion clawback remains Promotion-owned.
+
+Return and Refund use distinct Workflow graphs. Return nPipelines validate delivery and Product policy evidence before authorization and Fulfillment RMA creation. Refund nPipelines calculate exact Payment allocations, prepare risk-aware approval, and delegate original-rail execution to Payment. Fulfillment owns receipt and inspection, Inventory owns stock movement, and normalized events are emitted only after durable Order history.
+
+- Use `orderCancellationEligibilityPipeline` for the deterministic technical decision; do not bypass it with controller or frontend orchestration.
+- Order contributes immutable entry and already-resolved quantity evidence. Inventory, Fulfillment, Payment, and Product contribute normalized evidence through configured owner-provider services.
+- Every selected entry must have complete, unit-matched owner evidence. Missing, duplicate, unsafe, noncanonical, or unsupported evidence fails closed.
+- Quantity comparison uses `DefaultExactUnitsService`; JavaScript numbers and floating-point arithmetic are prohibited.
+- Eligibility output may describe required owner actions, but it performs no Inventory release, Fulfillment cancellation, Payment void/refund, Product mutation, Order status mutation, or provider call.
+- Projects may replace provider services or pipeline nodes through layered configuration while preserving tenant, authentication, enterprise, exactness, safety, and ownership boundaries.
+- `orderCancellationCalculationPipeline` may coordinate immutable Order pricing and allocation evidence, but proportional refund money, split-payment routing, currency rounding, and refund policy remain Payment-owned.
+- Tax and Promotion values in calculation output are references to accepted Order evidence; Order must not recompute Tax or discount policy. Shipping inclusion is an explicit Payment-policy decision.
+- Workflow evaluation must invoke both configured nPipelines through `DefaultPipelineService`, persist safe outputs against the unchanged submitted request version, and return an idempotent stored route on retry.
+- Manual approval requires authenticated human actor evidence and configured maker-checker enforcement. Auto approval is opt-in and bounded by exact amount and requester policy.
+- `APPROVED` and `REJECTED` are durable Order request decisions only; they must not trigger adjacent-owner execution inside the approval action.
+- Approved execution must run through `orderCancellationExecutionPipeline`.
+  Its technical nodes call configured Fulfillment, Inventory, and Payment owner
+  services in sequence and persist a Workflow-owned checkpoint after each
+  completed owner operation.
+- Pipeline retry must preserve request code and immutable version as owner
+  idempotency evidence. Partial or ambiguous failure becomes
+  `RECONCILIATION_REQUIRED`, never silent success.
+- Order projection occurs only after owner execution. Exact cumulative entry
+  cancellation and header status updates require optimistic revision guards
+  and one idempotent Order history event.
+- Customer/support mutation must use explicit cancellation intent routes, not
+  generated lifecycle CRUD. Customer operations reload the Order and enforce
+  its customer identity; support operations require distinct permissions and
+  must bind create-on-behalf to the persisted Order customer.
+- Intent services reconstruct immutable item snapshots from Order-owned
+  records. Never trust client quantity totals, Product identity, Inventory
+  references, or lifecycle revisions as immutable evidence.
+- Lifecycle decisions and owner checkpoints require idempotent append-only
+  Order history audit evidence.
+
 Start with the group-level
 [Commerce Checkout Foundation](../../../../llm/contracts/commerce-checkout-foundation-contract.md)
 before applying Order-specific checkout rules.
@@ -114,6 +158,23 @@ node services.
 Checkout reverse processing must use Workflow because return/refund handling is
 a business process with multiple owners, approvals, retries, and recovery
 points.
+
+Before the reverse Workflow executes owner operations, Order-owned business
+intent belongs in `orderLifecycleRequest` and `orderLifecycleRequestItem`.
+These private schemas preserve request type, reason, authenticated requester,
+version, idempotency, exact selected quantities, optional serial identities,
+and bounded immutable Order evidence. Generated routers stay disabled; only
+Order-owned orchestration may persist them. They do not replace Fulfillment
+return-logistics evidence, Inventory movement evidence, Payment refund
+transactions, or Workflow approval state.
+
+The aggregate must be created through
+`DefaultOrderLifecycleOrchestrationService.createDraft`, using
+`DefaultDatabaseTransactionService` for fail-closed atomic request/item
+persistence. `submit` binds one stable Workflow carrier to the immutable
+submitted request version. `SUBMISSION_PENDING` and `SUBMISSION_FAILED` are
+durable recovery evidence; callers must not replace them with an unsafe
+multi-request sequence or directly invoke Payment, Inventory, or Fulfillment.
 
 - `checkoutReverseRun` is Order-owned operational evidence for one reverse
   checkout attempt.

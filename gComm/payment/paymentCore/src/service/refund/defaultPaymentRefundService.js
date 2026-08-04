@@ -89,7 +89,21 @@ module.exports = {
       authData: request.authData,
       model: transaction,
     });
-    return this.items(response)[0] || response.result || transaction;
+    let saved=this.items(response)[0] || response.result || transaction; if(SERVICE.DefaultPaymentRefundEventService) await SERVICE.DefaultPaymentRefundEventService.publish(request,saved,saved.recoveryAction||('REFUND_'+saved.status)); return saved;
+  },
+  /** Persists bounded failure evidence and returns a stable client-safe error. */
+  providerFailure: async function (request, transaction, recoveryStatus) {
+    let failed = Object.assign({}, transaction, {
+      status: "FAILED",
+      recoveryStatus: recoveryStatus || "RETRY_REQUIRED",
+      failureCode: "PROVIDER_REFUND_FAILED",
+      failureMessage: "Payment provider refund failed",
+      completedAt: new Date(),
+    });
+    await this.saveTransaction(request, failed);
+    return this.error(
+      "Payment provider refund failed; retry or reconciliation is required",
+    );
   },
   /** Ensures a request may safely enter Payment recovery. */
   assertRecoveryRequest: function (request) {
@@ -153,10 +167,14 @@ module.exports = {
       draft.idempotencyKey,
     );
     if (existing) return Object.assign({ idempotent: true }, existing);
-    let providerResult =
-      await SERVICE.DefaultPaymentProviderGatewayService.refund(
+    let providerResult;
+    try {
+      providerResult = await SERVICE.DefaultPaymentProviderGatewayService.refund(
         Object.assign({}, request, { transaction: draft }),
       );
+    } catch (providerError) {
+      throw await this.providerFailure(request, draft, "RETRY_REQUIRED");
+    }
     let transaction = Object.assign({}, draft, {
       status: providerResult.status,
       providerTransactionRef: providerResult.providerTransactionRef,
@@ -210,10 +228,14 @@ module.exports = {
       recoveryAction: "RETRY_REFUND",
       recoveryStatus: "RETRYING",
     });
-    let providerResult =
-      await SERVICE.DefaultPaymentProviderGatewayService.refund(
+    let providerResult;
+    try {
+      providerResult = await SERVICE.DefaultPaymentProviderGatewayService.refund(
         Object.assign({}, request, { transaction: transaction }),
       );
+    } catch (providerError) {
+      throw await this.providerFailure(request, transaction, "RETRY_FAILED");
+    }
     let saved = await this.saveTransaction(
       request,
       Object.assign({}, transaction, {
@@ -243,7 +265,7 @@ module.exports = {
       );
     let recovery = this.config().refundRecovery || {};
     let terminalStatuses = recovery.terminalSuccessStatuses || ["REFUNDED"];
-    return {
+    let result = {
       recovered: terminalStatuses.includes(existing.status),
       recoveryAction: "RECONCILE_PROVIDER_REFUND",
       transactionCode: existing.transactionCode,
@@ -256,5 +278,7 @@ module.exports = {
       amount: existing.amount,
       currencyCode: existing.currencyCode,
     };
+    if (SERVICE.DefaultPaymentRefundEventService) await SERVICE.DefaultPaymentRefundEventService.publish(request, existing, 'REFUND_RECONCILED');
+    return result;
   },
 };

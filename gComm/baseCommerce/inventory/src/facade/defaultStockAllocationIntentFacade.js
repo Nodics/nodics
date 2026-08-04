@@ -15,6 +15,7 @@ module.exports = {
     /** Completes initialization. */ postInit: function () { return Promise.resolve(true); },
     /** Delegates allocate. */ allocate: function (request) { return SERVICE.DefaultStockAllocationIntentService.allocate(request); },
     /** Delegates cancel. */ cancel: function (request) { return SERVICE.DefaultStockAllocationIntentService.cancel(request); },
+    /** Delegates exact quantity cancellation. */ cancelQuantity: function (request) { return SERVICE.DefaultStockAllocationIntentService.cancelQuantity(request); },
     /** Delegates release. */ release: function (request) { return SERVICE.DefaultStockAllocationIntentService.release(request); },
     /** Delegates fulfill. */ fulfill: function (request) { return SERVICE.DefaultStockAllocationIntentService.fulfill(request); }
 };

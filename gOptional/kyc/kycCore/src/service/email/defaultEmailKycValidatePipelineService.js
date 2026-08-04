@@ -119,17 +119,9 @@ module.exports = {
      */
     validateMobileKyc: function (request, response, process) {
         this.LOG.debug('Initializing email KYC validation process');
-        SERVICE.DefaultOtpService.validateOtp({
-            tenant: request.tenant,
-            authData: request.authData,
-            model: {
-                key: request.otp.key,
-                ops: request.otp.ops,
-                value: request.otp.value
-            }
-        }, response).then(success => {
+        SERVICE.DefaultNotifyVerificationService.validate(request, { challengeCode: request.otp.challengeCode || request.refId, key: request.otp.key, ops: request.otp.ops, value: request.otp.value }).then(success => {
             response.otpResult = {
-                code: success.code
+                code: success.validationCode
             };
             process.nextSuccess(request, response);
         }).catch(error => {

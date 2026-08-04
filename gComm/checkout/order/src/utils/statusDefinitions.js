@@ -116,5 +116,66 @@ module.exports = {
     ERR_ORD_00043: {
         code: '502',
         message: 'Checkout reverse inventory recovery failed'
-    }
+    },
+    ERR_ORD_00044: {
+        code: '400',
+        message: 'Order lifecycle request evidence is invalid'
+    },
+    ERR_ORD_00045: {
+        code: '500',
+        message: 'Order lifecycle request orchestration failed'
+    },
+    ERR_ORD_00046: {
+        code: '409',
+        message: 'Order lifecycle request state or version conflict'
+    },
+    ERR_ORD_00047: {
+        code: '400',
+        message: 'Order cancellation eligibility evidence is invalid'
+    },
+    ERR_ORD_00048: {
+        code: '409',
+        message: 'Order cancellation is not eligible under current policy'
+    },
+    ERR_ORD_00049: {
+        code: '400',
+        message: 'Order cancellation calculation evidence is invalid'
+    },
+    ERR_ORD_00050: {
+        code: '500',
+        message: 'Order cancellation calculation failed'
+    },
+    ERR_ORD_00051: {
+        code: '500',
+        message: 'Order cancellation Workflow evaluation failed'
+    },
+    ERR_ORD_00052: {
+        code: '409',
+        message: 'Order cancellation Workflow request version or state conflict'
+    },
+    ERR_ORD_00053: {
+        code: '500',
+        message: 'Order cancellation execution Pipeline failed'
+    },
+    ERR_ORD_00054: {
+        code: '409',
+        message: 'Order cancellation execution evidence requires reconciliation'
+    },
+    ERR_ORD_00055: { code: '400', message: 'Order cancellation intent is invalid' },
+    ERR_ORD_00056: { code: '403', message: 'Order cancellation scope is forbidden' },
+    ERR_ORD_00057: { code: '409', message: 'Order cancellation intent state conflicts with the operation' },
+    ERR_ORD_00058: { code: '400', message: 'Order return validation evidence is invalid' },
+    ERR_ORD_00059: { code: '409', message: 'Order return authorization is not permitted' },
+    ERR_ORD_00060: { code: '500', message: 'Order return Workflow execution failed' },
+    ERR_ORD_00061: { code: '409', message: 'Order return requires information or reconciliation' },
+    ERR_ORD_00062: { code: '400', message: 'Order refund calculation evidence is invalid' },
+    ERR_ORD_00063: { code: '409', message: 'Order refund approval is not permitted' },
+    ERR_ORD_00064: { code: '502', message: 'Order refund execution failed' },
+    ERR_ORD_00065: { code: '409', message: 'Order refund Workflow requires reconciliation' },
+    ERR_ORD_00066: { code: '400', message: 'Order lifecycle intent is invalid' },
+    ERR_ORD_00067: { code: '429', message: 'Order lifecycle request rate or review boundary exceeded' },
+    ERR_ORD_00068: { code: '403', message: 'Order lifecycle diagnostics scope is forbidden' },
+    ERR_ORD_00069: { code: '403', message: 'Order lifecycle policy or support scope is forbidden' },
+    ERR_ORD_00070: { code: '400', message: 'Order lifecycle notification result is invalid' },
+    ERR_ORD_00071: { code: '409', message: 'Order lifecycle policy management conflicts' }
 };

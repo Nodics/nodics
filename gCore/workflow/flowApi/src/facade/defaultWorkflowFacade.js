@@ -81,6 +81,8 @@ module.exports = {
     performAction: function (request) {
         return SERVICE.DefaultWorkflowService.performAction(request);
     },
+    delegateAction: function (request) { return SERVICE.DefaultWorkflowService.delegateAction(request); },
+    takeoverAction: function (request) { return SERVICE.DefaultWorkflowService.takeoverAction(request); },
 
     // blockCarrier: function (request) {
     //     return SERVICE.DefaultWorkflowService.blockCarrier(request);
