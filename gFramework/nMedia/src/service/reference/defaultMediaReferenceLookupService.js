@@ -51,7 +51,7 @@ module.exports = {
     /** Returns a minimal projection safe for caller-module reference validation. */
     project: function (type, item) {
         if (type === 'MEDIA_SET') return { referenceType: type, code: item.code, mediaType: item.mediaType, businessPurpose: item.businessPurpose, status: item.status };
-        return { referenceType: type, code: item.code, folderCode: item.folderCode, formatCode: item.formatCode, providerCode: item.providerCode, access: item.access, mimeType: item.mimeType, extension: item.extension, status: item.status };
+        return { referenceType: type, code: item.code, folderCode: item.folderCode, formatCode: item.formatCode, providerCode: item.providerCode, access: item.access, mimeType: item.mimeType, extension: item.extension, sizeBytes: item.sizeBytes, businessPurpose: item.businessPurpose, enterpriseCode: item.enterpriseCode, ownerType: item.ownerType, ownerReference: item.ownerReference, reusable: item.reusable === true, retentionUntil: item.retentionUntil, legalHold: item.legalHold === true, status: item.status };
     },
     /** Performs local reference validation for co-hosted modules. */
     validateInternal: async function (request) {
@@ -59,6 +59,18 @@ module.exports = {
         let input = request.body || request, type = this.referenceType(input), code = input.referenceCode || input.code;
         if (!code) throw new CLASSES.NodicsError('ERR_MED_00007', 'Media reference code is required');
         return this.project(type, await this.loadReference(request, type, code));
+    },
+    /** Validates a purpose-bound media reference without exposing storage paths or delivery URLs. */
+    validatePurposeBound: async function (request) {
+        let input = request.body || request, projection = await this.validateInternal(Object.assign({}, request, { body: { referenceType: 'MEDIA', referenceCode: input.mediaCode || input.referenceCode } }));
+        if (input.requiredAccess && projection.access !== input.requiredAccess) throw new CLASSES.NodicsError('ERR_MED_00007', 'Media access does not satisfy the purpose-bound policy');
+        if (input.businessPurpose && projection.businessPurpose !== input.businessPurpose && projection.folderCode !== input.businessPurpose) throw new CLASSES.NodicsError('ERR_MED_00007', 'Media purpose does not satisfy the owner policy');
+        if (input.enterpriseCode && projection.enterpriseCode && projection.enterpriseCode !== input.enterpriseCode) throw new CLASSES.NodicsError('ERR_MED_00007', 'Media enterprise scope does not satisfy the owner policy');
+        if (input.allowedMimeTypes && !input.allowedMimeTypes.includes(projection.mimeType)) throw new CLASSES.NodicsError('ERR_MED_00007', 'Media MIME type does not satisfy the owner policy');
+        if (input.maximumSizeBytes && Number(projection.sizeBytes || 0) > Number(input.maximumSizeBytes)) throw new CLASSES.NodicsError('ERR_MED_00007', 'Media size exceeds the owner policy');
+        if (projection.retentionUntil && new Date(projection.retentionUntil).getTime() <= Date.now()) throw new CLASSES.NodicsError('ERR_MED_00008', 'Media retention period has expired');
+        if (input.ownerReference && projection.ownerReference && projection.ownerReference !== input.ownerReference && projection.reusable !== true) throw new CLASSES.NodicsError('ERR_MED_00007', 'Media reuse is not allowed for this owner');
+        return projection;
     },
     /** Validates remote service identity and returns a bounded media reference result. */
     validate: async function (request) {

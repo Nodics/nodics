@@ -35,6 +35,7 @@ global.SERVICE = {
   DefaultPaymentTransactionService: {
     get: async request => ({ result: transactions.filter(value => matches(value, request.query)) }),
     save: async request => { transactions.push(clone(request.model)); return { result: [request.model] }; },
+    update: async request => { let transaction = transactions.find(value => matches(value, request.query)); if (!transaction) return { modifiedCount: 0 }; Object.assign(transaction, clone(request.model)); return { modifiedCount: 1 }; },
   },
   DefaultPaymentProviderGatewayService: {
     void: async request => { calls.push(request.transaction); return { status: "VOIDED", providerTransactionRef: "void::" + request.transaction.transactionCode }; },

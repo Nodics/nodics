@@ -1,0 +1,15 @@
+{
+    "contractVersion": 1,
+    "module": "kycCore",
+    "dataType": "init",
+    "version": "1.2.0",
+    "description": "KYC Core init data",
+    "files": {
+        "data/mobile/mobileNumberKycWorkflowActionData.js": "8072ac9e6af0770176ed769a3aaca0db6495e39a455dadb5e657bd65568f00cf",
+        "data/mobile/mobileNumberKycWorkflowChannelData.js": "ff3e8b5f313570fada2b1b638b0e5e24e4a2d47bb92ca401643a29b8360ba2d1",
+        "data/mobile/mobileNumberKycWorkflowHeadData.js": "0c1da7a3aab34aa3844c810ed4e24da157235c910c95ca2ccc87f3f3941be8b7",
+        "headers/mobile/mobileNumberKycWorkflowActionHeader.js": "1803249d9fab79fd72cbb38a369b13315f4767be3134ffd74b7bf7b967dd9387",
+        "headers/mobile/mobileNumberKycWorkflowChannelHeader.js": "262fbcbfb1e22ace6f5a9708876a0ba43994cda7041d7dbfdf4cf3379c322ad2",
+        "headers/mobile/mobileNumberKycWorkflowHeadHeader.js": "302a3dd4e3612b1c1a48b6909043e18cd54c85faf8423f9368d0a49b03c756a3"
+    }
+}

@@ -17,31 +17,150 @@
  * @override Projects may replace allocation selection or pre-shipment provider handling while preserving exact quantities, serial binding, lifecycle guards, and idempotency.
  */
 module.exports = {
+    /**
+     * Initializes the module artifact within the fulfillmentCore-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     init: function () { return Promise.resolve(true); },
+    /**
+     * Completes initialization for the module artifact within the fulfillmentCore-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     postInit: function () { return Promise.resolve(true); },
+    /**
+     * Executes the policy operation within the fulfillmentCore-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     policy: function () { return ((((CONFIG.get('fulfillment') || {}).fulfillmentPolicy) || {}).cancellation) || {}; },
+    /**
+     * Executes the error operation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} code Value defined by the surrounding Nodics operation contract.
+     * @param {*} message Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     error: function (code, message) { return new CLASSES.NodicsError(code, message); },
+    /**
+     * Authorizes internal mutation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     authorizeInternalMutation: function (request) {
         if (!request || request._fulfillmentCancellationMutationAuthorized !== true) return Promise.reject(this.error('ERR_FUL_00010', 'Fulfillment cancellation evidence can change only through orchestration'));
         return Promise.resolve(true);
     },
+    /**
+     * Rejects delete within the fulfillmentCore-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     rejectDelete: function () { return Promise.reject(this.error('ERR_FUL_00010', 'Fulfillment cancellation evidence cannot be deleted')); },
+    /**
+     * Authorizes the module artifact within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     authorize: function (request) {
         if (this.policy().requireServiceToken !== false && (!request.authData || request.authData.tokenType !== 'service')) throw this.error('ERR_FUL_00010', 'Fulfillment cancellation requires an internal service identity');
     },
+    /**
+     * Executes the items operation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} value Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     items: function (value) { return value && Array.isArray(value.result) ? value.result : Array.isArray(value) ? value : []; },
+    /**
+     * Executes the affected operation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} value Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     affected: function (value) { value = value && value.result !== undefined ? value.result : value;
         return Number(value && (value.modifiedCount !== undefined ? value.modifiedCount : value.nModified !== undefined ? value.nModified : value.n) || 0); },
+    /**
+     * Normalizes the module artifact within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} value Value defined by the surrounding Nodics operation contract.
+     * @param {*} scale Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     normalize: function (value, scale) { return SERVICE.DefaultExactUnitsService.multiplyRational(value, '1', '1', scale, 'UNNECESSARY'); },
+    /**
+     * Executes the negate operation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} value Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     negate: function (value) { let parsed = SERVICE.DefaultExactUnitsService.parse(value); return SERVICE.DefaultExactUnitsService.format(-parsed.unscaled, parsed.scale); },
+    /**
+     * Executes the add operation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} left Value defined by the surrounding Nodics operation contract.
+     * @param {*} right Value defined by the surrounding Nodics operation contract.
+     * @param {*} scale Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     add: function (left, right, scale) { return SERVICE.DefaultExactUnitsService.add(left, right, scale, 'UNNECESSARY'); },
+    /**
+     * Executes the scale operation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} values Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     scale: function (values) { return Math.max.apply(null, values.map(value => SERVICE.DefaultExactUnitsService.parse(value).scale)); },
+    /**
+     * Loads consignments within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} input Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     loadConsignments: async function (request, input) {
         let records = this.items(await SERVICE.DefaultFulfillmentConsignmentService.get({ tenant: request.tenant, authData: request.authData,
             query: { enterpriseCode: input.enterpriseCode, orderCode: input.orderCode }, searchOptions: { limit: Number(this.policy().maximumConsignments || 100) + 1 } }));
         if (!records.length || records.length > Number(this.policy().maximumConsignments || 100)) throw this.error('ERR_FUL_00010', 'Fulfillment cancellation requires bounded consignment evidence');
         return records;
     },
+    /**
+     * Loads allocations within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} input Value defined by the surrounding Nodics operation contract.
+     * @param {*} consignments Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     loadAllocations: async function (request, input, consignments) {
         let direct = [].concat(input.deliveryAllocations || []).filter(Boolean);
         if (!direct.length && SERVICE.DefaultOrderDeliveryAllocationService && typeof SERVICE.DefaultOrderDeliveryAllocationService.get === 'function') {
@@ -61,12 +180,39 @@ module.exports = {
         if (!allocations.length || allocations.length > Number(this.policy().maximumAllocations || 1000)) throw this.error('ERR_FUL_00010', 'Fulfillment cancellation allocation evidence exceeds configured bounds');
         return allocations;
     },
+    /**
+     * Loads operation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} input Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     loadOperation: async function (request, input) {
         let records = this.items(await SERVICE.DefaultFulfillmentConsignmentCancellationService.get({ tenant: request.tenant, authData: request.authData,
             query: { enterpriseCode: input.enterpriseCode, cancellationCode: input.cancellationCode }, searchOptions: { limit: 2 } }));
         if (records.length > 1) throw this.error('ERR_FUL_00012', 'Fulfillment cancellation identity is duplicated'); return records[0];
     },
+    /**
+     * Executes the cancelled map operation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} consignment Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     cancelledMap: function (consignment) { return new Map([].concat(consignment.cancelledAllocationEvidence || []).map(value => [value.allocationCode, value])); },
+    /**
+     * Executes the plan operation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} input Value defined by the surrounding Nodics operation contract.
+     * @param {*} consignments Value defined by the surrounding Nodics operation contract.
+     * @param {*} allocations Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     plan: function (input, consignments, allocations) {
         let consignmentByCode = new Map(consignments.map(value => [value.consignmentCode, value])); let plan = [];
         let selectionCodes = new Set();
@@ -108,6 +254,17 @@ module.exports = {
         });
         return plan;
     },
+    /**
+     * Transitions the module artifact within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} operation Value defined by the surrounding Nodics operation contract.
+     * @param {*} status Value defined by the surrounding Nodics operation contract.
+     * @param {*} patch Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     transition: async function (request, operation, status, patch) {
         let response = await SERVICE.DefaultFulfillmentConsignmentCancellationService.update({ tenant: request.tenant, authData: request.authData,
             _fulfillmentCancellationMutationAuthorized: true,
@@ -116,6 +273,16 @@ module.exports = {
         if (this.affected(response) !== 1) throw this.error('ERR_FUL_00012', 'Fulfillment cancellation checkpoint revision conflict');
         return Object.assign({}, operation, patch || {}, { status: status, revision: Number(operation.revision) + 1 });
     },
+    /**
+     * Creates the module artifact within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} input Value defined by the surrounding Nodics operation contract.
+     * @param {*} plan Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     create: async function (request, input, plan) {
         let model = { active: true, enterpriseCode: input.enterpriseCode, cancellationCode: input.cancellationCode,
             orderCode: input.orderCode, requestVersion: Number(input.requestVersion), itemSelections: input.items,
@@ -123,9 +290,29 @@ module.exports = {
         await SERVICE.DefaultFulfillmentConsignmentCancellationService.save({ tenant: request.tenant, authData: request.authData,
             model: model, _fulfillmentCancellationMutationAuthorized: true }); return model;
     },
+    /**
+     * Asserts replay within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} operation Value defined by the surrounding Nodics operation contract.
+     * @param {*} input Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     assertReplay: function (operation, input) {
         if (operation.orderCode !== input.orderCode || operation.requestVersion !== Number(input.requestVersion) || JSON.stringify(operation.itemSelections) !== JSON.stringify(input.items)) throw this.error('ERR_FUL_00011', 'Fulfillment cancellation idempotency conflict');
     },
+    /**
+     * Applies consignment within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} operation Value defined by the surrounding Nodics operation contract.
+     * @param {*} consignment Value defined by the surrounding Nodics operation contract.
+     * @param {*} entries Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     applyConsignment: async function (request, operation, consignment, entries) {
         if (consignment.lastCancellationCode === operation.cancellationCode) return { consignmentCode: consignment.consignmentCode, revision: consignment.revision, status: consignment.status, recovered: true };
         let cancellation = this.cancelledMap(consignment); entries.forEach(entry => {
@@ -147,6 +334,14 @@ module.exports = {
         if (this.affected(response) !== 1) throw this.error('ERR_FUL_00012', 'Fulfillment consignment revision changed during cancellation');
         return { consignmentCode: consignment.consignmentCode, revision: Number(consignment.revision) + 1, status: status };
     },
+    /**
+     * Cancels the module artifact within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     cancel: async function (request) {
         this.authorize(request); let input = request.body || request.cancellation || {};
         ['enterpriseCode', 'cancellationCode', 'orderCode', 'requestVersion'].forEach(field => { if (input[field] === undefined || input[field] === null || input[field] === '') throw this.error('ERR_FUL_00010', 'Fulfillment cancellation ' + field + ' is required'); });

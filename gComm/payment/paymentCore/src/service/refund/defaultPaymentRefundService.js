@@ -136,6 +136,7 @@ module.exports = {
   },
   /** Creates refund transaction evidence idempotently. */
   refund: async function (request) {
+    if (SERVICE.DefaultKycDecisionEnforcementService) request.kycDecision = await SERVICE.DefaultKycDecisionEnforcementService.enforce(request, "REFUND", { enterpriseCode: request.entCode, subjectType: "CUSTOMER", subjectCode: request.customerCode, refundMinorUnits: request.amountMinorUnits || request.refundMinorUnits, currency: request.currencyCode, paymentMethodCode: request.paymentMethodCode });
     if (
       !request ||
       !request.tenant ||

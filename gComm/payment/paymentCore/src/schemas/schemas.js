@@ -425,6 +425,18 @@ module.exports = {
           description:
             "Safe provider transaction reference, not raw provider payload",
         },
+        providerEventCode: {
+          type: "string",
+          required: false,
+          description: "Unique verified provider callback event identity used for replay defense",
+          searchOptions: { enabled: true },
+        },
+        revision: {
+          type: "int",
+          required: true,
+          default: 0,
+          description: "Optimistic Payment transaction lifecycle revision",
+        },
         paymentEvidenceCode: {
           type: "string",
           required: false,
@@ -497,6 +509,7 @@ module.exports = {
           status: { enabled: true, name: "status" },
           recoveryAction: { enabled: true, name: "recoveryAction" },
           recoveryStatus: { enabled: true, name: "recoveryStatus" },
+          providerEventCode: { enabled: true, name: "providerEventCode", options: { unique: true, sparse: true } },
         },
       },
     ),

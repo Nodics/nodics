@@ -23,8 +23,8 @@ generation:
 
 ```text
 npm run generate:app -- --name=<projectName> --path=<projectPath> --groupName=<companyGroup>
-npm run generate:group -- --name=<groupName> --path=<groupPath>
-npm run generate:module -- --name=<moduleName> --path=<modulePath>
+npm run generate:group -- --name=<groupName> --path=<groupPath> --index=<uniqueGroupIndex>
+npm run generate:module -- --name=<moduleName> --path=<modulePath> --index=<uniqueModuleIndex>
 npm run generate:env -- --name=<environmentName> --path=<environmentPath>
 npm run generate:server -- --name=<serverName> --path=<serverPath>
 npm run generate:node -- --name=<nodeName> --path=<nodePath>
@@ -36,6 +36,12 @@ configuration, docs, LLM entries, source registries, service scaffolds, and
 topology folders according to `standards/nodics-structure-matrix.md`. After
 generation, run `npm run structure:audit -- --fail` before adding business
 behavior.
+
+Every generated runtime boundary requires an explicit repository-unique index.
+Choose and approve the ordered family range before generation; never rely on a
+shared placeholder for a group and its children. Structure audit proves file
+shape, while a runtime topology test proves that the effective loader has no
+duplicate index and that dependency order is executable.
 
 ## New Module Acceptance Checklist
 

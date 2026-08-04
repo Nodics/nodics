@@ -128,7 +128,25 @@ module.exports = {
             return FACADE.DefaultWorkflowFacade.performAction(request);
         }
     },
+    /**
+     * Executes the delegate action operation within the flowApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} callback Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     delegateAction: function (request, callback) { request.carrierCode = request.httpRequest.params.carrierCode; request.assignment = request.httpRequest.body; let promise = FACADE.DefaultWorkflowFacade.delegateAction(request); return callback ? promise.then(value => callback(null, value)).catch(callback) : promise; },
+    /**
+     * Executes the takeover action operation within the flowApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} callback Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     takeoverAction: function (request, callback) { request.carrierCode = request.httpRequest.params.carrierCode; request.assignment = request.httpRequest.body; let promise = FACADE.DefaultWorkflowFacade.takeoverAction(request); return callback ? promise.then(value => callback(null, value)).catch(callback) : promise; },
 
     // blockCarrier: function (request, callback) {

@@ -11,4 +11,170 @@
 
 /* Nodics - governed by the root LICENSE. */
 /** @module notifyApi/controller/DefaultNotifyController @description Adapts secured HTTP requests to the notification facade. @layer controller @owner notifyApi */
-module.exports = { invoke: function (operation, request, callback) { let promise = FACADE.DefaultNotifyFacade[operation](request); if (callback) promise.then(value => callback(null, value)).catch(callback); else return promise; }, send: function (request, callback) { return this.invoke('send', request, callback); }, testSend: function (request, callback) { return this.invoke('testSend', request, callback); }, manageProviderAccount: function (request, callback) { return this.invoke('manageProviderAccount', request, callback); }, diagnostics: function (request, callback) { return this.invoke('diagnostics', request, callback); }, retry: function (request, callback) { return this.invoke('retry', request, callback); }, preview: function (request, callback) { return this.invoke('preview', request, callback); }, publish: function (request, callback) { return this.invoke('publish', request, callback); }, retire: function (request, callback) { return this.invoke('retire', request, callback); }, rollback: function (request, callback) { return this.invoke('rollback', request, callback); }, inbox: function (request, callback) { return this.invoke('inbox', request, callback); }, acknowledge: function (request, callback) { return this.invoke('acknowledge', request, callback); }, createVerification: function (request, callback) { return this.invoke('createVerification', request, callback); }, validateVerification: function (request, callback) { return this.invoke('validateVerification', request, callback); } };
+
+const respond = function (result, callback) {
+    const promise = Promise.resolve(result);
+    if (!callback) {
+        return promise;
+    }
+    promise.then(value => callback(null, value)).catch(callback);
+};
+
+module.exports = {
+    /**
+     * Sends the module artifact within the notifyApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} callback Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
+    send: function (request, callback) {
+        return respond(FACADE.DefaultNotifyFacade.send(request), callback);
+    },
+    /**
+     * Executes the test send operation within the notifyApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} callback Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
+    testSend: function (request, callback) {
+        return respond(FACADE.DefaultNotifyFacade.testSend(request), callback);
+    },
+    /**
+     * Executes the manage provider account operation within the notifyApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} callback Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
+    manageProviderAccount: function (request, callback) {
+        return respond(FACADE.DefaultNotifyFacade.manageProviderAccount(request), callback);
+    },
+    /**
+     * Executes the diagnostics operation within the notifyApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} callback Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
+    diagnostics: function (request, callback) {
+        return respond(FACADE.DefaultNotifyFacade.diagnostics(request), callback);
+    },
+    /**
+     * Retries the module artifact within the notifyApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} callback Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
+    retry: function (request, callback) {
+        return respond(FACADE.DefaultNotifyFacade.retry(request), callback);
+    },
+    /**
+     * Executes the preview operation within the notifyApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} callback Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
+    preview: function (request, callback) {
+        return respond(FACADE.DefaultNotifyFacade.preview(request), callback);
+    },
+    /**
+     * Publishes the module artifact within the notifyApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} callback Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
+    publish: function (request, callback) {
+        return respond(FACADE.DefaultNotifyFacade.publish(request), callback);
+    },
+    /**
+     * Executes the retire operation within the notifyApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} callback Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
+    retire: function (request, callback) {
+        return respond(FACADE.DefaultNotifyFacade.retire(request), callback);
+    },
+    /**
+     * Executes the rollback operation within the notifyApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} callback Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
+    rollback: function (request, callback) {
+        return respond(FACADE.DefaultNotifyFacade.rollback(request), callback);
+    },
+    /**
+     * Executes the inbox operation within the notifyApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} callback Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
+    inbox: function (request, callback) {
+        return respond(FACADE.DefaultNotifyFacade.inbox(request), callback);
+    },
+    /**
+     * Executes the acknowledge operation within the notifyApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} callback Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
+    acknowledge: function (request, callback) {
+        return respond(FACADE.DefaultNotifyFacade.acknowledge(request), callback);
+    },
+    /**
+     * Creates verification within the notifyApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} callback Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
+    createVerification: function (request, callback) {
+        return respond(FACADE.DefaultNotifyFacade.createVerification(request), callback);
+    },
+    /**
+     * Validates verification within the notifyApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} callback Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
+    validateVerification: function (request, callback) {
+        return respond(FACADE.DefaultNotifyFacade.validateVerification(request), callback);
+    }
+};

@@ -28,6 +28,9 @@
             "publish": false,
             "web": false
         },
+        "schemaWorkbench": {
+            "schemaModule": "fulfillment"
+        },
         "displayName": "Fulfillment Core"
     },
     "scripts": {}

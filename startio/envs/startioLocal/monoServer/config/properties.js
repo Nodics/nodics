@@ -24,12 +24,16 @@ module.exports = {
     webEnabled: false,
 
     activeModules: {
-        groups: ['gCore', 'gComm', 'gContent', 'gDeap', 'gExp', 'gMrkty', 'modules'], // Group 'framework' will be included automatically
+        groups: ['gCore', 'gComm', 'gCompliance', 'gContent', 'gDeap', 'gExp', 'gMrkty', 'gNotify', 'modules'], // Group 'framework' will be included automatically
         modules: [
             'profile',
             'nems',
             'cronjob',
             'workflow',
+            // Compose the governed Compliance and Notification capabilities for
+            // the consolidated Axis-to-backend local runtime.
+            'gCompliance',
+            'gNotify',
             // Activate the provider-neutral AI group module. Its required modules
             // are loaded without implicitly activating every vendor adapter.
             'gAi',

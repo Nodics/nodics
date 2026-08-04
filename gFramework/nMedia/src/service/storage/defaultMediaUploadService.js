@@ -81,6 +81,13 @@ module.exports = {
             checksum: checksum,
             checksumAlgorithm: checksumAlgorithm,
             access: storage.access,
+            businessPurpose: request.businessPurpose,
+            ownerType: request.ownerType,
+            enterpriseCode: request.enterpriseCode,
+            ownerReference: request.ownerReference,
+            reusable: request.reusable === true,
+            retentionUntil: request.retentionUntil,
+            legalHold: request.legalHold === true,
             status: 'READY'
         };
         let service = SERVICE.DefaultMediaService;

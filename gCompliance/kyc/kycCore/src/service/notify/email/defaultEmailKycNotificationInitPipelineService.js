@@ -1,0 +1,61 @@
+/*
+    Nodics - Enterprice Micro-Services Management Framework
+
+    Copyright (c) 2026 Nodics All rights reserved.
+
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
+
+ */
+
+/**
+ * @module gCompliance/kyc/kycCore/src/service/notify/email/defaultEmailKycNotificationInitPipelineService
+ * @description Implements kyc default email kyc notification init pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner kyc
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
+module.exports = {
+
+    /**
+     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
+    /**
+     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
+    postInit: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+    /**
+     * Validates request rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
+    validateRequest: function (request, response, process) {
+        this.LOG.debug('Validating request to init email kyc notification');
+        if (!request.tenant || !request.authData) {
+            process.error(request, response, new CLASSES.WorkflowError('ERR_WF_00003', 'Invalid request, tenant can not be null or empty'));
+        } else {
+            response.success = {
+                code: 'SUC_KYC_00003'
+            }
+            process.nextSuccess(request, response);
+        }
+    }
+};

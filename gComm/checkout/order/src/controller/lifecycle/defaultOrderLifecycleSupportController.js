@@ -10,4 +10,11 @@
  */
 
 /* Nodics - governed by the root LICENSE. */
+/**
+ * @module gComm/checkout/order/src/controller/lifecycle/defaultOrderLifecycleSupportController
+ * @description Defines the default order lifecycle support controller contract owned by order within the Nodics layered runtime.
+ * @layer controller
+ * @owner order
+ * @override Later project or customer modules may replace or extend this artifact while preserving its published contract.
+ */
 module.exports={init:function(){return Promise.resolve(true);},postInit:function(){return Promise.resolve(true);},call:function(name,request,callback){let promise=FACADE.DefaultOrderLifecycleSupportFacade[name](request);return callback?promise.then(value=>callback(null,value)).catch(callback):promise;},recommend:function(request,callback){return this.call('recommend',request,callback);},message:function(request,callback){return this.call('message',request,callback);}};

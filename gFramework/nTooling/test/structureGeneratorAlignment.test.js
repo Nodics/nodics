@@ -36,6 +36,11 @@ function generate(rootPath, args) {
 
 const projectHome = fs.mkdtempSync(path.join(os.tmpdir(), 'nodics-structure-generate-'));
 try {
+    assert.throws(() => generate(projectHome, [
+        '--kind=group',
+        '--name=missingIndex',
+        '--path=missingIndex'
+    ]), /unique ordered --index/, 'Generation must fail closed without an explicit module index');
     generate(projectHome, [
         '--kind=project',
         '--name=acme',

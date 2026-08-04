@@ -10,9 +10,47 @@
  */
 /** @module order/service/lifecycle/DefaultOrderLifecycleReviewWorkflowService @description Handles Workflow-authorized information requests and escalation without bypassing human tasks. @layer service @owner order */
 module.exports = {
+    /**
+     * Initializes the module artifact within the order-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     init: function () { return Promise.resolve(true); }, postInit: function () { return Promise.resolve(true); }, error: function (message) { let error = new Error(message); error.code = 'ERR_ORD_00067'; return error; },
+    /**
+     * Executes the context operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     context: async function (request) { let carrier = request.workflowCarrier || {}, source = carrier.sourceDetail || {}; if (!carrier.code || source.processType !== 'orderLifecycleRequest' || !['CANCELLATION', 'RETURN', 'REFUND'].includes(source.requestType)) throw this.error('Lifecycle review Workflow source is incomplete'); let current = await SERVICE.DefaultOrderLifecycleOrchestrationService.loadRequest(request, { requestCode: source.requestCode, entCode: source.entCode }); if (!current || Number(current.version) !== Number(source.requestVersion)) throw this.error('Lifecycle review request version is stale'); return { carrier: carrier, source: source, current: current }; },
+    /**
+     * Executes the actor operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     actor: function (request) { let auth = request.authData || {}, code = auth.principalId || auth.code; if (auth.tokenType !== 'access' || !code) throw this.error('Lifecycle review requires an authenticated human actor'); return code; },
+    /**
+     * Executes the request information operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     requestInformation: async function (request) { let context = await this.context(request), actor = this.actor(request), input = request.workflowDecision || request.body || {}; if (!['APPROVAL_PENDING', 'AUTHORIZATION_PENDING'].includes(context.current.state)) throw this.error('Lifecycle request is not awaiting review'); let message = String(input.message || input.reason || '').trim(); if (!message || message.length > 2000) throw this.error('Information request message is required and bounded'); let updated = await SERVICE.DefaultOrderLifecycleOrchestrationService.updateState(request, context.current, [context.current.state], { state: 'INFORMATION_REQUESTED', evidence: Object.assign({}, context.current.evidence || {}, { informationRequest: { message: message, requestedBy: actor, requestedAt: new Date() } }) }); await SERVICE.DefaultOrderLifecycleAuditService.record(request, updated, context.source.requestType + '_INFORMATION_REQUESTED', updated.version, 'Reviewer requested more information'); return { decision: 'SUCCESS', type: 'SUCCESS', feedback: { requestCode: updated.requestCode, state: updated.state } }; },
+    /**
+     * Executes the escalate operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     escalate: async function (request) { let context = await this.context(request), actor = this.actor(request), input = request.workflowDecision || request.body || {}; if (!['APPROVAL_PENDING', 'AUTHORIZATION_PENDING'].includes(context.current.state)) throw this.error('Lifecycle request is not awaiting review'); let updated = await SERVICE.DefaultOrderLifecycleOrchestrationService.updateState(request, context.current, [context.current.state], { state: 'ESCALATED', evidence: Object.assign({}, context.current.evidence || {}, { escalation: { reason: String(input.reason || 'REVIEW_ESCALATION').slice(0, 500), escalatedBy: actor, escalatedAt: new Date() } }) }, false); await SERVICE.DefaultOrderLifecycleAuditService.record(request, updated, context.source.requestType + '_ESCALATED', updated.version, 'Reviewer escalated lifecycle request'); return { decision: 'SUCCESS', type: 'SUCCESS', feedback: { requestCode: updated.requestCode, state: updated.state } }; },
 };

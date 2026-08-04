@@ -1,0 +1,234 @@
+/*
+    Nodics - Enterprice Micro-Services Management Framework
+
+    Copyright (c) 2026 Nodics All rights reserved.
+
+    This software is governed by the Nodics Source-Available Commercial License.
+    You may use, copy, modify, deploy, or distribute it only as permitted by the
+    root LICENSE file or a separate written agreement with Nodics.
+
+ */
+
+const _ = require('lodash');
+/**
+ * @module gCompliance/kyc/kycCore/src/service/mobile/defaultMobileKycValidatePipelineService
+ * @description Implements kyc default mobile kyc validate pipeline service business behavior and extension logic.
+ * @layer service
+ * @owner kyc
+ * @override Project modules may override this behavior through later active modules while preserving the published capability contract.
+ */
+module.exports = {
+    /**
+     * This function is used to initiate entity loader process. If there is any functionalities, required to be executed on entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
+    init: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+
+    /**
+     * This function is used to finalize entity loader process. If there is any functionalities, required to be executed after entity loading. 
+     * defined it that with Promise way
+     * @param {*} options 
+     */
+    postInit: function (options) {
+        return new Promise((resolve, reject) => {
+            resolve(true);
+        });
+    },
+    /**
+     * Validates request rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
+    validateRequest: function (request, response, process) {
+        this.LOG.debug('Validating mobile KYC validation request');
+        if (!request.refId || !request.opsType || !request.otp || !request.otp.key || !request.otp.ops || !request.otp.value) {
+            process.error(request, response, new CLASSES.NodicsError('ERR_PRFL_00003', 'Invalid request to validate otp'));
+        } else {
+            process.nextSuccess(request, response);
+        }
+    },
+    /**
+     * Builds kyc query data.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
+    buildKycQuery: function (request, response, process) {
+        this.LOG.debug('Building mobile KYC model retrive query');
+        request.kycInput = {
+            searchOptions: {
+                pageSize: 1,
+                sort: {
+                    updated: -1
+                }
+            },
+            query: {
+                refId: request.refId,
+                type: ENUMS.KYCType.MOBILE.key,
+                opsType: request.opsType,
+                active: true,
+                'item.loginId': request.otp.ops,
+                'item.mobileNumber': request.otp.key
+            }
+        }
+        process.nextSuccess(request, response);
+    },
+    /**
+     * Retrieves kyc mode information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
+    loadKycMode: function (request, response, process) {
+        this.LOG.debug('Loading mobile KYC model');
+        request.kycService.get({
+            tenant: request.tenant,
+            authData: request.authData,
+            searchOptions: request.kycInput.searchOptions,
+            query: request.kycInput.query
+        }, {}).then(success => {
+            if (success.result || success.result.length === 1) {
+                response.kycModel = success.result[0];
+                process.nextSuccess(request, response);
+            } else {
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_KYC_00001'));
+            }
+        }).catch(error => {
+            process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_KYC_00000'));
+        });
+    },
+    /**
+     * Validates mobile kyc rules.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
+    validateMobileKyc: function (request, response, process) {
+        this.LOG.debug('Initializing mobile KYC validation process');
+        SERVICE.DefaultNotifyVerificationService.validate(request, { challengeCode: request.otp.challengeCode || request.refId, key: request.otp.key, ops: request.otp.ops, value: request.otp.value }).then(success => {
+            response.otpResult = {
+                code: success.validationCode
+            };
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            let errorCode = error.code;
+            if (errorCode) {
+                response.otpResult = {
+                    code: errorCode
+                };
+            } else {
+                process.error(request, response, new CLASSES.NodicsError(error, null, 'ERR_KYC_00000'));
+            }
+            process.nextSuccess(request, response);
+        });
+    },
+    /**
+     * Updates mobile kyc workflow information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
+    updateMobileKycWorkflow: function (request, response, process) {
+        this.LOG.debug('Updating mobile KYC workflow about validation');
+        let responseMapping = CONFIG.get('kyc').responseMapping[response.otpResult.code];
+        if (!responseMapping) {
+            responseMapping = CONFIG.get('kyc').responseMapping.default;
+        }
+        request.actionResponse = {
+            decision: responseMapping.decision,
+            feedback: {
+                code: response.otpResult.code,
+                message: responseMapping.message
+            }
+        };
+        if (NODICS.isModuleActive('workflow')) {
+            SERVICE.DefaultWorkflowService.performAction({
+                tenant: request.tenant,
+                authData: request.authData,
+                carrierCode: response.kycModel.workflow.carrierCode,
+                actionResponse: request.actionResponse
+            }, response).then(success => {
+                response.success = success
+                process.nextSuccess(request, response);
+            }).catch(error => {
+                response.success = error
+                process.nextSuccess(request, response);
+            });
+        } else {
+            process.error(request, response, new CLASSES.NodicsError('ERR_PRFL_00003', 'Workflow module is not active in current micro-service'));
+            // SERVICE.DefaultModuleService.fetch(this.prepareURL({
+            //     tenant: tenant,
+            //     requestBody: itemDetails
+            // })).then(success => {
+            //     response.workflowResult = {
+            //         success: success
+            //     }
+            //     process.nextSuccess(request, response);
+            // }).catch(error => {
+            //     response.workflowResult = {
+            //         error: error
+            //     }
+            //     process.nextSuccess(request, response);
+            // });
+        }
+    },
+    /**
+     * Builds mobile kyc model data.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
+    buildMobileKycModel: function (request, response, process) {
+        this.LOG.debug('Constructing Kyc model after operations');
+        let kycModel = response.kycModel;
+        if (!kycModel.states) kycModel.states = [];
+        kycModel.states.push({
+            otp: request.actionResponse,
+            workflow: {
+                code: response.success.code
+            }
+        });
+        process.nextSuccess(request, response);
+    },
+    /**
+     * Updates mobile kyc model information.
+     *
+     * @param {*} request Method input.
+     * @param {*} response Method input.
+     * @param {*} process Method input.
+     * @returns {*} Method result.
+     */
+    updateMobileKycModel: function (request, response, process) {
+        this.LOG.debug('Updating mobile KYC model after validation attempt');
+        request.kycService.save({
+            tenant: request.tenant,
+            authData: request.authData,
+            model: response.kycModel,
+            query: {
+                _id: response.kycModel._id
+            }
+        }, {}).then(success => {
+            process.nextSuccess(request, response);
+        }).catch(error => {
+            process.error(request, response, new CLASSES.NodicsError(error));
+        })
+    }
+};

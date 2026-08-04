@@ -78,6 +78,16 @@ module.exports = {
         });
         return this.items(response)[0] || response.result || returnRequest;
     },
+    /** Applies one optimistic lifecycle mutation without allowing concurrent evidence overwrite. */
+    updateReturn: async function (request, current, model) {
+        let service = SERVICE.DefaultFulfillmentReturnRequestService;
+        if (!service || typeof service.update !== 'function') throw this.error('Fulfillment return request update service is unavailable');
+        let next = Object.assign({}, model, { revision: Number(current.revision || 0) + 1 });
+        let response = await service.update({ tenant: request.tenant, authData: request.authData, query: { returnCode: current.returnCode, status: current.status, revision: Number(current.revision || 0) }, model: next });
+        let affected = Number(response && (response.modifiedCount !== undefined ? response.modifiedCount : response.result && response.result.modifiedCount) || 0);
+        if (affected !== 1) throw this.error('Return lifecycle revision conflict');
+        return Object.assign({}, current, next);
+    },
     /** Validates common request authority and safety. */
     validateRequest: function (request) {
         if (!request || !request.tenant || !request.authData) throw this.error('Return request requires tenant and auth');
@@ -110,7 +120,7 @@ module.exports = {
         if (!SERVICE.DefaultFulfillmentPolicyService || typeof SERVICE.DefaultFulfillmentPolicyService.prepareReturnRequest !== 'function') {
             throw this.error('Fulfillment policy service is unavailable');
         }
-        let saved=await this.saveReturn(request, SERVICE.DefaultFulfillmentPolicyService.prepareReturnRequest({ model: model })); if(SERVICE.DefaultFulfillmentReturnEventService) await SERVICE.DefaultFulfillmentReturnEventService.publish(request,saved,'RETURN_'+targetStatus); return saved;
+        let saved=await this.updateReturn(request, returnRequest, SERVICE.DefaultFulfillmentPolicyService.prepareReturnRequest({ model: model })); if(SERVICE.DefaultFulfillmentReturnEventService) await SERVICE.DefaultFulfillmentReturnEventService.publish(request,saved,'RETURN_'+targetStatus); return saved;
     },
     /** Approves a requested return. */
     approveReturn: async function (request) {

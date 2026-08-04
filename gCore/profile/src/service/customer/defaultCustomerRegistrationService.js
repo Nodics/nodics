@@ -128,7 +128,8 @@ module.exports = {
      * @returns {*} Method result.
      */
     createCustomer: function (request, response, process) {
-        request.defaultCustomerService.save(request).then(success => {
+        const gate = SERVICE.DefaultKycDecisionEnforcementService ? SERVICE.DefaultKycDecisionEnforcementService.enforce(request, 'ONBOARDING', { subjectType: 'CUSTOMER', subjectCode: request.model.loginId, enterpriseCode: request.model.entCode || request.authData && (request.authData.enterpriseCode || request.authData.entCode) }) : Promise.resolve({ eligible: true });
+        gate.then(kycDecision => { request.kycDecisionReference = kycDecision.decisionId; return request.defaultCustomerService.save(request); }).then(success => {
             response.success = success;
             process.nextSuccess(request, response);
         }).catch(error => {

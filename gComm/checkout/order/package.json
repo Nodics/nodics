@@ -28,6 +28,7 @@
             "controller",
             "facade",
             "service",
+            "event",
             "pipeline",
             "interceptor",
             "utility",

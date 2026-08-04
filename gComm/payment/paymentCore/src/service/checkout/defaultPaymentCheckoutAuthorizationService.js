@@ -145,6 +145,7 @@ module.exports = {
   },
   /** Authorizes all payment groups for an order while preserving distributed payment split evidence. */
   authorize: async function (request) {
+    if (SERVICE.DefaultKycDecisionEnforcementService) request.kycDecision = await SERVICE.DefaultKycDecisionEnforcementService.enforce(request, "PAYMENT", { enterpriseCode: request.entCode, subjectType: "CUSTOMER", subjectCode: request.customerCode, orderMinorUnits: request.orderMinorUnits, currency: request.currencyCode, paymentMethodCode: request.paymentMethodCode });
     if (
       !request ||
       !request.tenant ||

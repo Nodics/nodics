@@ -54,6 +54,12 @@ global.SERVICE = {
             else savedReturns.push(model);
             return { result: [request.model] };
         },
+        update: async (request) => {
+            let index = savedReturns.findIndex((item) => item.returnCode === request.query.returnCode && item.status === request.query.status && Number(item.revision || 0) === Number(request.query.revision));
+            if (index < 0) return { modifiedCount: 0 };
+            savedReturns[index] = Object.assign({}, savedReturns[index], clone(request.model));
+            return { modifiedCount: 1 };
+        },
     },
 };
 

@@ -10,12 +10,82 @@
  */
 /** @module order/service/lifecycle/DefaultOrderRefundExecutionService @description Delegates an approved exact Refund plan to Payment owner without executing provider logic in Order. @layer service @owner order */
 module.exports = {
+    /**
+     * Initializes the module artifact within the order-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     init: function () { return Promise.resolve(true); }, postInit: function () { return Promise.resolve(true); }, config: function () { return (((CONFIG.get('order') || {}).orderLifecycle || {}).refundExecution) || {}; },
+    /**
+     * Executes the error operation within the order-owned layered contract.
+     *
+     * @param {*} message Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     error: function (message) { let error = new Error(message); error.code = 'ERR_ORD_00064'; return error; },
+    /**
+     * Executes the input operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     input: function (request) { return request.refundExecution || request.body || {}; },
+    /**
+     * Validates the module artifact within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     validate: function (request) { let input = this.input(request); let evidence = (input.request || {}).evidence || {}; if (!request.tenant || !request.authData || request.authData.tokenType !== 'service' || !input.request || input.request.requestType !== 'REFUND' || input.request.state !== 'APPROVED' || !evidence.calculation || !Array.isArray(evidence.calculation.paymentCalculation.allocationEvidence)) throw this.error('Refund execution requires internally approved immutable allocation evidence'); return input; },
+    /**
+     * Validates execution within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} response Value defined by the surrounding Nodics operation contract.
+     * @param {*} process Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     validateExecution: function (request, response, process) { try { response.refundExecutionInput = this.validate(request); process.nextSuccess(request, response); } catch (error) { process.error(request, response, error); } },
+    /**
+     * Executes product lifecycle actions within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} response Value defined by the surrounding Nodics operation contract.
+     * @param {*} process Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     executeProductLifecycleActions: async function (request, response, process) { try { let input = response.refundExecutionInput, items = [].concat(input.items || []), evidenceService = SERVICE[this.config().productEvidenceService], lifecycleService = SERVICE[this.config().productLifecycleService]; if (!evidenceService || typeof evidenceService.resolve !== 'function' || !lifecycleService || typeof lifecycleService.execute !== 'function') throw this.error('Refund Product lifecycle owner services are unavailable'); let evidence = await evidenceService.resolve({ tenant: request.tenant, authData: request.authData, entCode: input.request.entCode, orderCode: input.request.orderCode, items: items }); let byEntry = new Map([].concat(evidence.items || []).map(item => [item.orderEntryCode, item])), results = []; for (let item of items) { let owner = byEntry.get(item.orderEntryCode); if (!owner) throw this.error('Refund Product lifecycle evidence is incomplete'); results.push(await lifecycleService.execute({ tenant: request.tenant, authData: request.authData, productLifecycleCancellation: { lifecycleRequestCode: input.request.requestCode, requestVersion: input.request.version, orderCode: input.request.orderCode, orderEntryCode: item.orderEntryCode, lifecycleType: owner.lifecycleType, entitlementReference: owner.entitlementReference, entitlementState: owner.entitlementState, providerActionRequired: owner.providerActionRequired === true, providerActionCode: owner.providerActionCode } })); } response.productLifecycleExecution = results; process.nextSuccess(request, response); } catch (error) { process.error(request, response, error); } },
+    /**
+     * Executes payment refund within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} response Value defined by the surrounding Nodics operation contract.
+     * @param {*} process Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     executePaymentRefund: async function (request, response, process) { try { let input = response.refundExecutionInput; let calculation = input.request.evidence.calculation; let service = SERVICE[this.config().paymentExecutionService]; if (!service || typeof service.execute !== 'function') throw this.error('Payment refund execution owner is unavailable'); response.paymentRefundExecution = await service.execute({ tenant: request.tenant, authData: request.authData, refundExecution: { enterpriseCode: input.request.entCode, refundCode: input.request.requestCode, orderCode: input.request.orderCode, requestVersion: input.request.version, allocations: calculation.paymentCalculation.allocationEvidence } }); response.refundExecution = { productLifecycle: response.productLifecycleExecution, payment: response.paymentRefundExecution }; process.nextSuccess(request, response); } catch (error) { process.error(request, response, error); } },
+    /**
+     * Handles success end within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} response Value defined by the surrounding Nodics operation contract.
+     * @param {*} process Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     handleSuccessEnd: function (request, response, process) { process.resolve(response.refundExecution); }, handleErrorEnd: function (request, response, process) { process.reject(response.error || this.error('Refund execution Pipeline failed')); },
 };

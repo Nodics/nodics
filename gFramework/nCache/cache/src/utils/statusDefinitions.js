@@ -75,6 +75,14 @@ module.exports = {
         code: '400',
         message: 'Cache invalidation event must include tenant, target module, and channel scope'
     },
+    ERR_CACHE_00011: {
+        code: '429',
+        message: 'The configured operation rate limit has been exceeded'
+    },
+    ERR_CACHE_00012: {
+        code: '503',
+        message: 'A distributed rate-limit authority is required but unavailable'
+    },
 
     RSN_CACHE_00000: {
         code: '200',

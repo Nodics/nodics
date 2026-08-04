@@ -248,6 +248,10 @@ assert.strictEqual(
   true,
 );
 assert.strictEqual(
+  require("../package.json").nodics.schemaWorkbench.schemaModule,
+  "fulfillment",
+);
+assert.strictEqual(
   properties.backofficeCapabilities.fulfillment.navigation
     .find((item) => item.id === "fulfillment-carrier-providers")
     .lifecycleActions.some((action) => action.id === "test-carrier-provider"),

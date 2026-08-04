@@ -17,35 +17,147 @@
  * @override Projects may replace assignment selection while preserving exact quantities, serial binding, durable checkpoints, and optimistic allocation revision guards.
  */
 module.exports = {
+    /**
+     * Initializes the module artifact within the inventory-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     init: function () { return Promise.resolve(true); },
+    /**
+     * Completes initialization for the module artifact within the inventory-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     postInit: function () { return Promise.resolve(true); },
+    /**
+     * Executes the policy operation within the inventory-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     policy: function () { return ((((CONFIG.get('inventory') || {}).stockAllocation) || {}).cancellation) || {}; },
+    /**
+     * Authorizes internal mutation within the inventory-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     authorizeInternalMutation: function (request) {
         if (!request || request._stockAllocationCancellationMutationAuthorized !== true) return Promise.reject(new CLASSES.NodicsError('ERR_INV_00055', 'Allocation cancellation evidence can change only through orchestration'));
         return Promise.resolve(true);
     },
+    /**
+     * Rejects delete within the inventory-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     rejectDelete: function () { return Promise.reject(new CLASSES.NodicsError('ERR_INV_00055', 'Allocation cancellation evidence cannot be deleted')); },
+    /**
+     * Authorizes the module artifact within the inventory-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     authorize: function (request) {
         if (!request || !request.authData || request.authData.tokenType !== 'service') throw new CLASSES.NodicsError('ERR_INV_00042', 'Stock allocation cancellation requires an internal service identity');
     },
+    /**
+     * Executes the items operation within the inventory-owned layered contract.
+     *
+     * @param {*} response Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     items: function (response) { return response && Array.isArray(response.result) ? response.result : Array.isArray(response) ? response : []; },
+    /**
+     * Executes the affected operation within the inventory-owned layered contract.
+     *
+     * @param {*} response Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     affected: function (response) { let value = response && response.result !== undefined ? response.result : response;
         return Number(value && (value.modifiedCount !== undefined ? value.modifiedCount : value.nModified !== undefined ? value.nModified : value.n) || 0); },
+    /**
+     * Normalizes the module artifact within the inventory-owned layered contract.
+     *
+     * @param {*} quantity Value defined by the surrounding Nodics operation contract.
+     * @param {*} scale Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     normalize: function (quantity, scale) { return SERVICE.DefaultExactUnitsService.multiplyRational(quantity, '1', '1', scale, 'UNNECESSARY'); },
+    /**
+     * Executes the negate operation within the inventory-owned layered contract.
+     *
+     * @param {*} quantity Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     negate: function (quantity) { let parsed = SERVICE.DefaultExactUnitsService.parse(quantity); return SERVICE.DefaultExactUnitsService.format(-parsed.unscaled, parsed.scale); },
+    /**
+     * Executes the add operation within the inventory-owned layered contract.
+     *
+     * @param {*} left Value defined by the surrounding Nodics operation contract.
+     * @param {*} right Value defined by the surrounding Nodics operation contract.
+     * @param {*} scale Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     add: function (left, right, scale) { return SERVICE.DefaultExactUnitsService.add(left, right, scale, 'UNNECESSARY'); },
+    /**
+     * Loads allocation within the inventory-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} input Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     loadAllocation: async function (request, input) {
         let response = await SERVICE.DefaultStockAllocationService.get({ tenant: request.tenant, authData: request.authData,
             query: { enterpriseCode: request.enterpriseCode, code: input.allocationCode }, searchOptions: { limit: 2 } });
         let records = this.items(response); if (records.length !== 1) throw new CLASSES.NodicsError('ERR_INV_00055', 'Stock Allocation was not found or duplicated');
         return records[0];
     },
+    /**
+     * Loads operation within the inventory-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} cancellationCode Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     loadOperation: async function (request, cancellationCode) {
         let response = await SERVICE.DefaultStockAllocationCancellationService.get({ tenant: request.tenant, authData: request.authData,
             query: { enterpriseCode: request.enterpriseCode, cancellationCode: cancellationCode }, searchOptions: { limit: 2 } });
         let records = this.items(response); if (records.length > 1) throw new CLASSES.NodicsError('ERR_INV_00057', 'Allocation cancellation identity is duplicated');
         return records[0];
     },
+    /**
+     * Transitions the module artifact within the inventory-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} operation Value defined by the surrounding Nodics operation contract.
+     * @param {*} state Value defined by the surrounding Nodics operation contract.
+     * @param {*} patch Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     transition: async function (request, operation, state, patch) {
         let response = await SERVICE.DefaultStockAllocationCancellationService.update({ tenant: request.tenant, authData: request.authData,
             _stockAllocationCancellationMutationAuthorized: true,
@@ -54,6 +166,15 @@ module.exports = {
         if (this.affected(response) !== 1) throw new CLASSES.NodicsError('ERR_INV_00057', 'Allocation cancellation checkpoint revision conflict');
         return Object.assign({}, operation, patch || {}, { state: state, revision: Number(operation.revision) + 1 });
     },
+    /**
+     * Executes the plan operation within the inventory-owned layered contract.
+     *
+     * @param {*} allocation Value defined by the surrounding Nodics operation contract.
+     * @param {*} input Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     plan: function (allocation, input) {
         let scale = Number(allocation.scale); let requested = this.normalize(input.quantity, scale);
         if (input.unitCode !== allocation.unitCode || SERVICE.DefaultExactUnitsService.parse(requested).unscaled <= 0n) throw new CLASSES.NodicsError('ERR_INV_00055', 'Cancellation quantity or Unit is invalid');
@@ -87,6 +208,17 @@ module.exports = {
         if (!plan.length || plan.length > Number(this.policy().maximumAssignments || 100)) throw new CLASSES.NodicsError('ERR_INV_00055', 'Cancellation assignment plan is invalid');
         return { requested: requested, assignments: plan, zero: zero };
     },
+    /**
+     * Creates operation within the inventory-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} allocation Value defined by the surrounding Nodics operation contract.
+     * @param {*} input Value defined by the surrounding Nodics operation contract.
+     * @param {*} plan Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     createOperation: async function (request, allocation, input, plan) {
         let model = { active: true, enterpriseCode: request.enterpriseCode, cancellationCode: input.cancellationCode,
             allocationCode: allocation.code, demandCode: allocation.demandCode, demandLineCode: allocation.demandLineCode,
@@ -97,11 +229,32 @@ module.exports = {
             model: model, _stockAllocationCancellationMutationAuthorized: true });
         return model;
     },
+    /**
+     * Asserts replay within the inventory-owned layered contract.
+     *
+     * @param {*} operation Value defined by the surrounding Nodics operation contract.
+     * @param {*} allocation Value defined by the surrounding Nodics operation contract.
+     * @param {*} input Value defined by the surrounding Nodics operation contract.
+     * @param {*} requested Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     assertReplay: function (operation, allocation, input, requested) {
         if (operation.allocationCode !== allocation.code || operation.requestVersion !== Number(input.requestVersion) || operation.requestedQuantity !== requested || operation.unitCode !== input.unitCode || JSON.stringify(operation.serialNumbers || []) !== JSON.stringify(input.serialNumbers || [])) {
             throw new CLASSES.NodicsError('ERR_INV_00056', 'Allocation cancellation idempotency conflict');
         }
     },
+    /**
+     * Applies allocation within the inventory-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} allocation Value defined by the surrounding Nodics operation contract.
+     * @param {*} operation Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     applyAllocation: async function (request, allocation, operation) {
         let scale = Number(allocation.scale); let releaseByReservation = new Map(operation.assignmentPlan.map(value => [value.reservationCode, value.quantity]));
         let assignments = (allocation.assignments || []).map(value => {
@@ -124,6 +277,14 @@ module.exports = {
         if (this.affected(response) !== 1) throw new CLASSES.NodicsError('ERR_INV_00057', 'Stock Allocation revision changed during cancellation');
         return { state: state, cancelledQuantity: cancelledQuantity, remainingAllocatedQuantity: remainingAllocated, assignments: assignments };
     },
+    /**
+     * Cancels the module artifact within the inventory-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     cancel: async function (request) {
         this.authorize(request); let input = request.body || request.cancellation || {};
         request.enterpriseCode = SERVICE.DefaultInventoryEnterpriseScopeService.resolveEnterpriseCode(request);

@@ -81,7 +81,23 @@ module.exports = {
     performAction: function (request) {
         return SERVICE.DefaultWorkflowService.performAction(request);
     },
+    /**
+     * Executes the delegate action operation within the flowApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     delegateAction: function (request) { return SERVICE.DefaultWorkflowService.delegateAction(request); },
+    /**
+     * Executes the takeover action operation within the flowApi-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     takeoverAction: function (request) { return SERVICE.DefaultWorkflowService.takeoverAction(request); },
 
     // blockCarrier: function (request) {

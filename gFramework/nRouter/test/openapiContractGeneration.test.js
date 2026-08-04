@@ -149,6 +149,16 @@ const defaultRoutes = {
                 controller: 'DefaultContractController',
                 operation: 'inactive'
             }
+        },
+        secondaryContracts: {
+            contract: {
+                secured: true,
+                accessGroups: ['userGroup'],
+                key: '/secondary-contract',
+                method: 'POST',
+                controller: 'DefaultContractController',
+                operation: 'createSecondaryContract'
+            }
         }
     }
 };
@@ -172,6 +182,9 @@ assert.strictEqual(document.paths['/nodics/sample/v0/item'].put.requestBody.cont
 assert.strictEqual(document.paths['/nodics/sample/v0/item/all'].put.requestBody.content['application/json'].schema.type, 'array');
 
 const configured = document.paths['/nodics/sample/v0/contract'].post;
+assert.strictEqual(configured.operationId, 'sample_contracts_contract');
+assert.strictEqual(document.paths['/nodics/sample/v0/secondary-contract'].post.operationId,
+    'sample_secondarycontracts_contract');
 assert(configured.parameters.some(parameter => parameter.name === 'dryRun' && parameter.in === 'query'));
 assert.strictEqual(configured['x-nodics'].permission, 'sample.contract.view');
 assert.strictEqual(configured['x-nodics'].permissionConfig, 'sample.contract.routePermission');

@@ -1,6 +1,9 @@
 {
     "name": "localNotifyProvider",
     "index": "50.5",
+    "requiredModules": [
+        "notifyCore"
+    ],
     "description": "Deterministic local notification provider for tests and development",
     "main": "nodics.js",
     "version": "0.0.1",

@@ -10,8 +10,30 @@
  */
 /** @module fulfillment/service/release/DefaultOrderCancellationFulfillmentEvidenceProviderService @description Projects exact unshipped consignment evidence for Order cancellation eligibility. @layer service @owner fulfillment */
 module.exports = {
+    /**
+     * Initializes the module artifact within the fulfillmentCore-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     init: function () { return Promise.resolve(true); }, postInit: function () { return Promise.resolve(true); },
+    /**
+     * Executes the items operation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} value Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     items: function (value) { return value && Array.isArray(value.result) ? value.result : Array.isArray(value) ? value : []; },
+    /**
+     * Resolves the module artifact within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     resolve: async function (request) {
         if (!request || !request.tenant || !request.authData || request.authData.tokenType !== 'service' || !request.entCode || !request.orderCode || !Array.isArray(request.items)) throw new CLASSES.NodicsError('ERR_FUL_00010', 'Fulfillment cancellation evidence requires internal Order context');
         let response = await SERVICE.DefaultFulfillmentConsignmentService.get({ tenant: request.tenant, authData: request.authData, query: { enterpriseCode: request.entCode, orderCode: request.orderCode }, searchOptions: { limit: 101 } }); let consignments = this.items(response); if (consignments.length > 100) throw new CLASSES.NodicsError('ERR_FUL_00010', 'Fulfillment cancellation evidence exceeds consignment bounds');

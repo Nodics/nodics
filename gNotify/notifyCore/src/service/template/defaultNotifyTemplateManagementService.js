@@ -12,10 +12,61 @@
 /* Nodics - governed by the root LICENSE. */
 /** @module notifyCore/service/template/DefaultNotifyTemplateManagementService @description Governs optimistic maker-checker template publication, preview, retirement, and rollback. @layer service @owner notifyCore */
 module.exports = {
+  /**
+   * Initializes the module artifact within the notifyCore-owned layered contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   init: function () { return Promise.resolve(true); }, postInit: function () { return Promise.resolve(true); }, flag: function (request) { request._notifyMutationAuthorized = true; return request; }, principal: request => request.authData && (request.authData.principalId || request.authData.code),
+  /**
+   * Validates the module artifact within the notifyCore-owned layered contract.
+   *
+   * @param {*} template Value defined by the surrounding Nodics operation contract.
+   * @param {*} version Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   validate: function (template, version) { let config = CONFIG.get('notify') || {}, scenario = config.scenarios[template.scenarioCode], channel = config.channels[template.channelCode]; if (!scenario || !channel || !scenario.allowedChannels.includes(template.channelCode) || !scenario.allowedMessageTypes.includes(template.messageTypeCode)) throw Object.assign(new Error('Template relationship is invalid'), { code: 'ERR_NOTIFY_00005' }); SERVICE.DefaultNotifyRenderingService.validateFields(template.channelCode, version.content); return true; },
+  /**
+   * Executes the preview operation within the notifyCore-owned layered contract.
+   *
+   * @param {*} request Value defined by the surrounding Nodics operation contract.
+   * @param {*} input Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   preview: async function (request, input) { let scope = { tenantCode: request.tenant, enterpriseCode: request.authData.enterpriseCode || request.authData.entCode }, resolved = await SERVICE.DefaultNotifyTemplateResolutionService.resolve(request, Object.assign({}, input, { allowDraft: true }), { scope }), found = await SERVICE.DefaultNotifyVariableDefinitionService.get({ tenant: request.tenant, authData: request.authData, query: { tenantCode: scope.tenantCode, enterpriseCode: scope.enterpriseCode, scenarioCode: input.scenarioCode, status: 'ACTIVE' }, searchOptions: { limit: 101 } }), definitions = found && Array.isArray(found.result) ? found.result : []; return SERVICE.DefaultNotifyRenderingService.preview(input.channelCode, resolved.version, definitions, input.sampleValues); },
+  /**
+   * Publishes the module artifact within the notifyCore-owned layered contract.
+   *
+   * @param {*} request Value defined by the surrounding Nodics operation contract.
+   * @param {*} input Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   publish: async function (request, input) { let template = input.template, version = input.version, actor = this.principal(request); this.validate(template, version); if (Number(template.version) !== Number(input.expectedVersion)) throw Object.assign(new Error('Template version conflict'), { code: 'ERR_NOTIFY_00012' }); let approvalRequired = ((CONFIG.get('notify') || {}).messageTypes[template.messageTypeCode] || {}).approvalRequired === true; if (approvalRequired && (!input.approvalEvidence || input.approvalEvidence.approvedByPrincipalId === actor)) throw Object.assign(new Error('Independent approval evidence required'), { code: 'ERR_NOTIFY_00012' }); await SERVICE.DefaultNotifyTemplateVersionService.save(this.flag({ tenant: request.tenant, authData: request.authData, model: Object.assign({}, version, { status: 'ACTIVE', approvalState: approvalRequired ? 'APPROVED' : 'NOT_REQUIRED', publishEvidence: { publishedByPrincipalId: actor, publishedAt: new Date(), workflowCarrierCode: input.approvalEvidence && input.approvalEvidence.workflowCarrierCode } }) })); let result = await SERVICE.DefaultNotifyTemplateService.update(this.flag({ tenant: request.tenant, authData: request.authData, query: { templateCode: template.templateCode, version: input.expectedVersion }, model: { activeVersionCode: version.templateVersionCode, status: 'ACTIVE', version: Number(input.expectedVersion) + 1, updatedByPrincipalId: actor, approvalEvidence: input.approvalEvidence } })); return result.result || result; },
+  /**
+   * Executes the retire operation within the notifyCore-owned layered contract.
+   *
+   * @param {*} request Value defined by the surrounding Nodics operation contract.
+   * @param {*} input Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   retire: function (request, input) { return SERVICE.DefaultNotifyTemplateService.update(this.flag({ tenant: request.tenant, authData: request.authData, query: { templateCode: input.templateCode, version: input.expectedVersion }, model: { status: 'RETIRED', version: Number(input.expectedVersion) + 1, updatedByPrincipalId: this.principal(request) } })); },
+  /**
+   * Executes the rollback operation within the notifyCore-owned layered contract.
+   *
+   * @param {*} request Value defined by the surrounding Nodics operation contract.
+   * @param {*} input Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   rollback: function (request, input) { if (!input.targetTemplateVersionCode || !input.reason) return Promise.reject(Object.assign(new Error('Rollback target and reason are required'), { code: 'ERR_NOTIFY_00012' })); return SERVICE.DefaultNotifyTemplateService.update(this.flag({ tenant: request.tenant, authData: request.authData, query: { templateCode: input.templateCode, version: input.expectedVersion }, model: { activeVersionCode: input.targetTemplateVersionCode, status: 'ACTIVE', version: Number(input.expectedVersion) + 1, updatedByPrincipalId: this.principal(request), rollbackEvidence: { reason: input.reason, rolledBackAt: new Date(), rolledBackByPrincipalId: this.principal(request) } } })); },
 };

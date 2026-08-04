@@ -160,5 +160,9 @@ module.exports = {
     ERR_MED_00018: {
         code: '409',
         message: 'Media set entry already exists'
+    },
+    ERR_MED_00019: {
+        code: '409',
+        message: 'Media deletion is blocked by retention or legal hold policy'
     }
 };

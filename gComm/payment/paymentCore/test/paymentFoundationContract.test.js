@@ -301,6 +301,10 @@ assert.strictEqual(
   ).workbenchTarget.schemaName,
   "paymentTransaction",
 );
+assert.strictEqual(
+  require("../package.json").nodics.schemaWorkbench.schemaModule,
+  "payment",
+);
 assert.strictEqual(routers.payment.providerLifecycle.execute.secured, true);
 assert.strictEqual(
   routers.payment.providerLifecycle.execute.permission,

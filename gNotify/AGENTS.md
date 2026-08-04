@@ -1,6 +1,6 @@
 # gNotify AI and Developer Contract
 
-Inherit the root `AGENTS.md` and `gSetup/llm/README.md`.
+Inherit the root `../AGENTS.md` and global guidance in `../gSetup/llm/README.md`.
 
 - Keep `gNotify` composition-only. Put schemas in `notifySchema`, provider-neutral orchestration in `notifyCore`, verification composition in `notifyVerification`, transport in `notifyApi`, and vendor behavior in provider modules.
 - Use configuration -> schema -> router/facade -> service -> Pipeline -> persistence/event boundaries. Customer modules customize with higher-layer configuration, services, pipelines, adapters, and init data; never customer conditionals in framework code.

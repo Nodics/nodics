@@ -17,13 +17,48 @@
  * @override Project modules may replace repository or workflow selection while preserving atomic persistence, optimistic versions, and adjacent-owner boundaries.
  */
 module.exports = {
+    /**
+     * Initializes the module artifact within the order-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     init: function () { return Promise.resolve(true); },
+    /**
+     * Completes initialization for the module artifact within the order-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     postInit: function () { return Promise.resolve(true); },
+    /**
+     * Executes the config operation within the order-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     config: function () { return ((CONFIG.get('order') || {}).orderLifecycle) || {}; },
+    /**
+     * Executes the error operation within the order-owned layered contract.
+     *
+     * @param {*} message Value defined by the surrounding Nodics operation contract.
+     * @param {*} code Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     error: function (message, code) {
         if (typeof CLASSES !== 'undefined' && CLASSES.NodicsError) return new CLASSES.NodicsError(message, null, code || 'ERR_ORD_00045');
         let error = new Error(message); error.code = code || 'ERR_ORD_00045'; return error;
     },
+    /**
+     * Executes the items operation within the order-owned layered contract.
+     *
+     * @param {*} value Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     items: function (value) {
         if (!value) return [];
         if (Array.isArray(value)) return value;
@@ -31,16 +66,40 @@ module.exports = {
         if (Array.isArray(value.items)) return value.items;
         return [value];
     },
+    /**
+     * Executes the affected operation within the order-owned layered contract.
+     *
+     * @param {*} value Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     affected: function (value) {
         if (typeof value === 'number') return value;
         return Number(value && (value.modifiedCount !== undefined ? value.modifiedCount : value.nModified !== undefined ? value.nModified : value.count !== undefined ? value.count : value.result && value.result.modifiedCount) || 0);
     },
+    /**
+     * Executes the require services operation within the order-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     requireServices: function () {
         if (!SERVICE.DefaultOrderLifecycleRequestPolicyService || !SERVICE.DefaultOrderLifecycleRequestService ||
             !SERVICE.DefaultOrderLifecycleRequestItemService || !SERVICE.DefaultDatabaseTransactionService) {
             throw this.error('Order lifecycle persistence services are unavailable');
         }
     },
+    /**
+     * Loads request within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} query Value defined by the surrounding Nodics operation contract.
+     * @param {*} transactionContext Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     loadRequest: async function (request, query, transactionContext) {
         let response = await SERVICE.DefaultOrderLifecycleRequestService.get({
             tenant: request.tenant, authData: request.authData, query: query,
@@ -50,17 +109,47 @@ module.exports = {
         if (records.length > 1) throw this.error('Order lifecycle request resolved duplicate records');
         return records[0];
     },
+    /**
+     * Loads items within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} requestCode Value defined by the surrounding Nodics operation contract.
+     * @param {*} transactionContext Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     loadItems: async function (request, requestCode, transactionContext) {
         return this.items(await SERVICE.DefaultOrderLifecycleRequestItemService.get({
             tenant: request.tenant, authData: request.authData, query: { requestCode: requestCode },
             searchOptions: { limit: Number(this.config().maximumItemsPerRequest || 100) + 1 }, transactionContext: transactionContext
         }));
     },
+    /**
+     * Executes the aggregate operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} requestModel Value defined by the surrounding Nodics operation contract.
+     * @param {*} idempotent Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     aggregate: async function (request, requestModel, idempotent) {
         return { request: requestModel, items: await this.loadItems(request, requestModel.requestCode), idempotent: idempotent === true };
     },
+    /**
+     * Creates draft within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     createDraft: async function (request) {
         this.requireServices();
+        let lifecycleInput = request.orderLifecycle || request.body || {};
+        if (SERVICE.DefaultKycDecisionEnforcementService) request.kycDecision = await SERVICE.DefaultKycDecisionEnforcementService.enforce(request, lifecycleInput.requestType === 'REFUND' ? 'REFUND' : 'ORDER', { enterpriseCode: lifecycleInput.entCode || request.entCode, subjectType: 'CUSTOMER', subjectCode: lifecycleInput.customerCode || request.customerCode, refundMinorUnits: lifecycleInput.refundMinorUnits, orderMinorUnits: lifecycleInput.orderMinorUnits, currency: lifecycleInput.currencyCode });
         let draft = SERVICE.DefaultOrderLifecycleRequestPolicyService.buildDraft(request);
         let existing = await this.loadRequest(request, { entCode: draft.request.entCode, idempotencyKey: draft.request.idempotencyKey });
         if (existing) return this.aggregate(request, existing, true);
@@ -83,6 +172,18 @@ module.exports = {
             return { request: draft.request, items: draft.items, idempotent: false };
         });
     },
+    /**
+     * Updates state within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} current Value defined by the surrounding Nodics operation contract.
+     * @param {*} expectedStates Value defined by the surrounding Nodics operation contract.
+     * @param {*} patch Value defined by the surrounding Nodics operation contract.
+     * @param {*} incrementVersion Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     updateState: async function (request, current, expectedStates, patch, incrementVersion) {
         if (!expectedStates.includes(current.state)) throw this.error('Order lifecycle request state does not allow this operation', 'ERR_ORD_00046');
         let next = Object.assign({}, patch, {
@@ -96,6 +197,18 @@ module.exports = {
         if (this.affected(result) !== 1) throw this.error('Order lifecycle request version conflict', 'ERR_ORD_00046');
         return Object.assign({}, current, next);
     },
+    /**
+     * Updates decision aggregate within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} current Value defined by the surrounding Nodics operation contract.
+     * @param {*} expectedStates Value defined by the surrounding Nodics operation contract.
+     * @param {*} itemDecisions Value defined by the surrounding Nodics operation contract.
+     * @param {*} patch Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     updateDecisionAggregate: async function (request, current, expectedStates, itemDecisions, patch) {
         this.requireServices();
         if (!expectedStates.includes(current.state)) throw this.error('Order lifecycle request state does not allow aggregate decision', 'ERR_ORD_00046');
@@ -110,6 +223,14 @@ module.exports = {
             return Object.assign({}, current, patch);
         });
     },
+    /**
+     * Executes the submit operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     submit: async function (request) {
         this.requireServices();
         let input = request.orderLifecycle || request.body || {};

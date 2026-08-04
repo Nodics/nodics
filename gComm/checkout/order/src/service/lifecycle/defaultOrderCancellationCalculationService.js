@@ -17,18 +17,61 @@
  * @override Projects may replace evidence loading or pipeline nodes while preserving Payment calculation authority and immutable Tax/Promotion references.
  */
 module.exports = {
+    /**
+     * Initializes the module artifact within the order-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     init: function () { return Promise.resolve(true); },
+    /**
+     * Completes initialization for the module artifact within the order-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     postInit: function () { return Promise.resolve(true); },
+    /**
+     * Executes the config operation within the order-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     config: function () { return ((((CONFIG.get('order') || {}).orderLifecycle) || {}).cancellationCalculation) || {}; },
+    /**
+     * Executes the error operation within the order-owned layered contract.
+     *
+     * @param {*} message Value defined by the surrounding Nodics operation contract.
+     * @param {*} code Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     error: function (message, code) {
         if (typeof CLASSES !== 'undefined' && CLASSES.NodicsError) return new CLASSES.NodicsError(message, null, code || 'ERR_ORD_00049');
         let error = new Error(message); error.code = code || 'ERR_ORD_00049'; return error;
     },
+    /**
+     * Asserts safe within the order-owned layered contract.
+     *
+     * @param {*} value Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     assertSafe: function (value) {
         if (JSON.stringify(value || {}).match(/cvv|cardNumber|pan|secret|password|rawGateway|gatewayPayload|providerPayload|rawTaxPayload|rawPromotionPayload/i)) {
             throw this.error('Cancellation calculation contains prohibited raw or secret evidence');
         }
     },
+    /**
+     * Executes the items operation within the order-owned layered contract.
+     *
+     * @param {*} value Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     items: function (value) {
         if (!value) return [];
         if (Array.isArray(value)) return value;
@@ -36,7 +79,23 @@ module.exports = {
         if (Array.isArray(value.items)) return value.items;
         return [value];
     },
+    /**
+     * Executes the input operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     input: function (request) { return request && (request.cancellationCalculation || request.body) || {}; },
+    /**
+     * Validates the module artifact within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     validate: function (request) {
         let input = this.input(request); this.assertSafe(input);
         if (this.config().enabled === false || !request || !request.tenant || !request.authData || !input.entCode || !input.orderCode || !input.eligibility || input.eligibility.eligible !== true) {
@@ -48,6 +107,18 @@ module.exports = {
         }
         return input;
     },
+    /**
+     * Loads the module artifact within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} input Value defined by the surrounding Nodics operation contract.
+     * @param {*} directKey Value defined by the surrounding Nodics operation contract.
+     * @param {*} serviceKey Value defined by the surrounding Nodics operation contract.
+     * @param {*} query Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     load: async function (request, input, directKey, serviceKey, query) {
         let direct = this.items(input[directKey] || request[directKey]);
         let limit = Number(this.config().maximumAggregateRecords || 1000);
@@ -62,12 +133,30 @@ module.exports = {
         if (records.length > limit) throw this.error('Cancellation calculation evidence exceeds configured bounds');
         return records;
     },
+    /**
+     * Resolves evidence within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} input Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     resolveEvidence: async function (request, input) {
         let orderEntries = await this.load(request, input, 'orderEntries', 'orderEntrySourceService', { orderCode: input.orderCode });
         let paymentAllocations = await this.load(request, input, 'paymentAllocations', 'paymentAllocationSourceService', { orderCode: input.orderCode });
         this.assertSafe({ orderEntries: orderEntries, paymentAllocations: paymentAllocations });
         return { orderEntries: orderEntries, paymentAllocations: paymentAllocations };
     },
+    /**
+     * Executes the pricing evidence operation within the order-owned layered contract.
+     *
+     * @param {*} selection Value defined by the surrounding Nodics operation contract.
+     * @param {*} entry Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     pricingEvidence: function (selection, entry) {
         if (!entry || entry.entryCode !== selection.orderEntryCode || !entry.currencyCode) throw this.error('Cancellation calculation Order Entry evidence is incomplete');
         return {
@@ -87,7 +176,26 @@ module.exports = {
             taxJurisdictionCode: entry.taxJurisdictionCode,
         };
     },
+    /**
+     * Executes the owner evidence operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} input Value defined by the surrounding Nodics operation contract.
+     * @param {*} pricingEvidence Value defined by the surrounding Nodics operation contract.
+     * @param {*} currencyCode Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     ownerEvidence: async function (request, input, pricingEvidence, currencyCode) { let tax = SERVICE[this.config().taxRefundEvidenceService], promotion = SERVICE[this.config().promotionRefundImpactService], shipping = SERVICE[this.config().shippingRefundPolicyService]; if (!tax || typeof tax.calculate !== 'function') throw this.error('Tax Refund evidence authority is unavailable'); if (!promotion || typeof promotion.calculate !== 'function') throw this.error('Promotion Refund impact authority is unavailable'); if (!shipping || typeof shipping.calculate !== 'function') throw this.error('Fulfillment shipping Refund policy authority is unavailable'); let context = { entCode: input.entCode, orderCode: input.orderCode, currencyCode: currencyCode, items: pricingEvidence }; let taxEvidence = await tax.calculate({ tenant: request.tenant, authData: request.authData, taxRefundEvidence: context }); let promotionEvidence = await promotion.calculate({ tenant: request.tenant, authData: request.authData, promotionRefundImpact: context }); let shippingEvidence = await shipping.calculate({ tenant: request.tenant, authData: request.authData, shippingRefundEvidence: Object.assign({ currencyCode: currencyCode }, input.shippingRefundEvidence || {}) }); this.assertSafe({ taxEvidence: taxEvidence, promotionEvidence: promotionEvidence, shippingEvidence: shippingEvidence }); return { taxEvidence: taxEvidence, promotionEvidence: promotionEvidence, shippingEvidence: shippingEvidence }; },
+    /**
+     * Calculates the module artifact within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     calculate: async function (request) {
         let input = this.validate(request); let evidence = await this.resolveEvidence(request, input);
         let entries = new Map();
@@ -128,19 +236,79 @@ module.exports = {
             discount: { included: paymentCalculation.evidence.includeDiscount === true, authority: 'promotion', evidence: commercialEvidence.promotionEvidence },
         };
     },
+    /**
+     * Validates request within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} response Value defined by the surrounding Nodics operation contract.
+     * @param {*} process Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     validateRequest: function (request, response, process) {
         try { response.cancellationCalculationInput = this.validate(request); process.nextSuccess(request, response); } catch (error) { process.error(request, response, error); }
     },
+    /**
+     * Resolves order evidence within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} response Value defined by the surrounding Nodics operation contract.
+     * @param {*} process Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     resolveOrderEvidence: async function (request, response, process) {
         try { response.cancellationCalculationEvidence = await this.resolveEvidence(request, response.cancellationCalculationInput || this.input(request)); process.nextSuccess(request, response); } catch (error) { process.error(request, response, error); }
     },
+    /**
+     * Calculates payment amount within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} response Value defined by the surrounding Nodics operation contract.
+     * @param {*} process Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     calculatePaymentAmount: async function (request, response, process) {
         try {
             let input = Object.assign({}, response.cancellationCalculationInput || this.input(request), response.cancellationCalculationEvidence || {});
             response.cancellationCalculation = await this.calculate(Object.assign({}, request, { cancellationCalculation: input })); process.nextSuccess(request, response);
         } catch (error) { process.error(request, response, error); }
     },
+    /**
+     * Executes the finalize calculation operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} response Value defined by the surrounding Nodics operation contract.
+     * @param {*} process Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     finalizeCalculation: function (request, response, process) { process.nextSuccess(request, response); },
+    /**
+     * Handles sucess end within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} response Value defined by the surrounding Nodics operation contract.
+     * @param {*} process Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     handleSucessEnd: function (request, response, process) { process.resolve(response.cancellationCalculation); },
+    /**
+     * Handles error end within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} response Value defined by the surrounding Nodics operation contract.
+     * @param {*} process Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     handleErrorEnd: function (request, response, process) { process.reject(response.error || this.error('Cancellation calculation pipeline failed', 'ERR_ORD_00050')); },
 };

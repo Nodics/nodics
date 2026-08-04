@@ -10,7 +10,21 @@
  */
 /** @module product/service/reference/DefaultOrderCancellationProductEvidenceProviderService @description Projects Product-owned cancellation policy evidence for selected Order Entries. @layer service @owner product */
 module.exports = {
+    /**
+     * Executes the init operation within the product-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     init: function () { return Promise.resolve(true); }, postInit: function () { return Promise.resolve(true); },
+    /**
+     * Executes the resolve operation within the product-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     resolve: async function (request) {
         if (!request || !request.tenant || !request.authData || request.authData.tokenType !== 'service' || !request.entCode || !Array.isArray(request.items)) throw SERVICE.DefaultProductEnterpriseScopeService.error('ERR_PRODUCT_00031', 'Product cancellation evidence requires internal Order context');
         let output = [];

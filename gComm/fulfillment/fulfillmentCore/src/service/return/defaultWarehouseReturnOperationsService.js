@@ -12,12 +12,74 @@
 /* Nodics - governed by the root LICENSE. */
 /** @module fulfillment/service/return/DefaultWarehouseReturnOperationsService @description Authorizes warehouse users and delegates Return receipt, inspection, and disposition through Fulfillment-owned contracts. @layer service @owner fulfillment */
 module.exports = {
+    /**
+     * Initializes the module artifact within the fulfillmentCore-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     init: function () { return Promise.resolve(true); }, postInit: function () { return Promise.resolve(true); },
+    /**
+     * Executes the error operation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} message Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     error: function (message) { let error = new Error(message); error.code = 'ERR_FUL_00009'; return error; },
+    /**
+     * Executes the input operation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     input: function (request) { return Object.assign({}, request.body || {}, request.params || {}, { tenant: request.tenant, authData: request.authData }); },
+    /**
+     * Asserts access within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     assertAccess: function (request) { if (!request.tenant || !request.authData || request.authData.tokenType !== 'access') throw this.error('Warehouse Return operation requires authenticated employee access'); },
+    /**
+     * Executes the scope operation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     scope: async function (request) { this.assertAccess(request); let input = this.input(request); if (!input.returnCode) throw this.error('Warehouse Return operation requires returnCode'); let record = await SERVICE.DefaultReturnRequestService.loadReturn(input); if (!record) throw this.error('Warehouse Return request was not found'); let entCode = record.entCode || record.enterpriseCode; let auth = request.authData || {}, scoped = auth.entCode || auth.enterpriseCode, allowed = [].concat(auth.enterpriseCodes || []).filter(Boolean); if (scoped && entCode !== scoped || allowed.length && !allowed.includes(entCode)) throw this.error('Warehouse Return is outside assigned enterprise scope'); let siteCodes = [].concat(auth.siteCodes || []).filter(Boolean); if (siteCodes.length && record.siteCode && !siteCodes.includes(record.siteCode)) throw this.error('Warehouse Return is outside assigned site scope'); return { input: input, record: record, internal: Object.assign({}, input, { tenant: request.tenant, authData: { tokenType: 'service', principalId: 'fulfillment-warehouse-operations', delegatedPrincipalId: auth.principalId || auth.userCode, entCode: entCode }, returnRequest: record }) }; },
+    /**
+     * Executes the receive operation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     receive: async function (request) { let context = await this.scope(request), input = context.input; if (!input.receivedQuantity || !/^(?!0(?:\.0+)?$)(0|[1-9][0-9]*)(\.[0-9]+)?$/.test(input.receivedQuantity)) throw this.error('Warehouse receipt requires exact positive receivedQuantity'); let result = context.record.status === 'RECEIVED' || context.record.status === 'INSPECTED' || context.record.status === 'CLOSED' ? Object.assign({ idempotent: true }, context.record) : await SERVICE.DefaultReturnRequestService.receiveReturn(context.internal); return { returnCode: result.returnCode, status: result.status, receivedQuantity: result.receivedQuantity, receivedAt: result.receivedAt, idempotent: result.idempotent === true }; },
+    /**
+     * Executes the inspect operation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     inspect: async function (request) { let context = await this.scope(request), input = context.input; if (!input.inspectionResult || !input.dispositionCode) throw this.error('Warehouse inspection requires inspectionResult and dispositionCode'); if (!['RECEIVED', 'INSPECTED'].includes(context.record.status)) throw this.error('Warehouse inspection requires received Return evidence'); let result = context.record.status === 'INSPECTED' ? Object.assign({ idempotent: true }, context.record) : await SERVICE.DefaultReturnRequestService.inspectReturn(context.internal); return { returnCode: result.returnCode, status: result.status, inspectionResult: result.inspectionResult, dispositionCode: result.dispositionCode, inspectedAt: result.inspectedAt, idempotent: result.idempotent === true }; },
+    /**
+     * Executes the disposition operation within the fulfillmentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     disposition: async function (request) { let context = await this.scope(request), input = context.input; if (context.record.status === 'CLOSED') return { returnRequest: Object.assign({ idempotent: true }, context.record), inventoryDisposition: context.record.inventoryDispositionEvidence }; if (context.record.status !== 'INSPECTED') throw this.error('Warehouse disposition requires inspected Return evidence'); if (!input.receivedQuantity || !input.inspectionResult || !input.dispositionCode) throw this.error('Warehouse disposition requires bounded receipt and inspection evidence'); return SERVICE.DefaultPipelineService.start((((CONFIG.get('fulfillment') || {}).fulfillmentPolicy || {}).returnReceiptDisposition || {}).pipelineName || 'returnReceiptDispositionPipeline', Object.assign({}, context.internal, { returnReceiptDisposition: input }), {}); },
 };

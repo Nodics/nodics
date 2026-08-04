@@ -7,6 +7,51 @@ Nodics is an enterprise application platform and application factory. It is not
 a lightweight API folder, a one-off service scaffold, or a place where each
 feature invents its own architecture.
 
+Module identity and load order are runtime contracts. Every generated module
+or group must receive an explicitly approved, repository-unique ordered index;
+generators must fail closed when it is omitted. File-structure validation does
+not replace a runtime topology test, because only effective startup proves that
+indexes, required modules, and composition order can execute together.
+
+## Regulated compliance capability principle
+
+Regulated verification is an independent backend capability, not a flag owned
+by Profile, Payment, Checkout, Order, or a frontend. Profile owns identity,
+nMedia owns private files, Workflow owns long-running review, Pipeline owns
+deterministic steps, the compliance capability owns policy, cases, checks, and
+decisions, and provider modules translate protocols only. Cross-capability
+callers consume a scoped eligibility decision and retain their own lifecycle
+authority.
+
+Compliance evidence is reference-first, least-privilege, tenant/enterprise
+scoped, and append-only when it records consent, checks, final decisions, or
+audit. Raw documents, filesystem paths, provider payloads, OCR, biometrics,
+credentials, and unnecessary PII must not cross module or browser boundaries.
+External callbacks require signature verification, provider/tenant mapping,
+idempotency, replay protection, timestamp tolerance, redaction, rate limiting,
+and Workflow continuation.
+
+Every regulated capability ships configuration-first policy, explicit intent
+routes instead of casual generated mutation, maker-checker extension, private
+media and retention/legal-hold contracts, safe errors, observable recovery,
+deterministic provider mocks, live-provider readiness evidence, backend-driven
+operational metadata, a smallest later-layer customization example, and focused
+positive, negative, boundary, and security tests. Never create a parallel
+registry, state machine, provider caller, document store, or browser authority
+to simplify one integration.
+
+Mock-provider acceptance and production-provider qualification are separate
+claims. A development or automated-test acceptance scope may be completed with
+an explicitly selected deterministic mock when it exercises the same
+provider-neutral contract, idempotency, normalization, safe evidence, failure,
+retry, and recovery boundaries. The mock must remain visibly non-production
+(`productionReady=false` where that metadata exists), credential-free, and
+replaceable through normal module/configuration layering. Never describe mock
+acceptance as live-provider certification. A deployment that selects a live
+provider must separately prove deployment-owned secrets, accounts, readiness,
+timeouts, retries, callbacks, observability, reconciliation, and operational
+recovery before production release.
+
 The core rule is:
 
 ```text

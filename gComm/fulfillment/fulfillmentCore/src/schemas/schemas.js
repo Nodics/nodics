@@ -265,6 +265,7 @@ module.exports = {
             returnCode: { type: 'string', required: true, description: 'Stable return request identity', searchOptions: { enabled: true } },
             idempotencyKey: { type: 'string', required: true, description: 'Idempotency key preventing duplicate return requests', searchOptions: { enabled: true } },
             orderCode: { type: 'string', required: true, description: 'Order associated with this return request', searchOptions: { enabled: true } },
+            orderLifecycleRequestCode: { type: 'string', required: false, description: 'Order-owned Return intent reference used for correlation and refund eligibility', searchOptions: { enabled: true } },
             consignmentCode: { type: 'string', required: false, description: 'Fulfillment consignment being returned when known', searchOptions: { enabled: true } },
             shipmentCode: { type: 'string', required: false, description: 'Original outbound shipment being returned when known', searchOptions: { enabled: true } },
             returnShipmentCode: { type: 'string', required: false, description: 'Return pickup or return shipment evidence code when created', searchOptions: { enabled: true } },
@@ -279,6 +280,7 @@ module.exports = {
             allocationCodes: { type: 'array', required: false, description: 'Order delivery allocation codes being returned' },
             inventoryAllocationCodes: { type: 'array', required: false, description: 'Inventory allocation evidence references connected to returned goods' },
             itemCodes: { type: 'array', required: false, description: 'Safe item codes included in this return request' },
+            serializedItems: { type: 'array', required: false, description: 'Bounded item and serial references authorized by Order; raw product or provider payloads are prohibited' },
             requestedQuantity: { type: 'string', required: false, description: 'Exact decimal-string quantity requested for return when a single aggregate quantity is useful' },
             receivedQuantity: { type: 'string', required: false, description: 'Exact decimal-string quantity received by fulfillment inspection' },
             requestedAt: { type: 'date', required: false },
@@ -286,6 +288,7 @@ module.exports = {
             inspectedAt: { type: 'date', required: false },
             failureCode: { type: 'string', required: false, description: 'Safe return failure code' },
             failureMessage: { type: 'string', required: false, description: 'Safe return failure message without customer secrets, labels, or raw provider payloads' },
+            revision: { type: 'int', required: true, default: 0, description: 'Optimistic lifecycle revision preventing concurrent warehouse actions from overwriting evidence' },
         }), {
             common: {
                 enterpriseCode: { enabled: true, name: 'enterpriseCode' },
@@ -294,6 +297,7 @@ module.exports = {
                 shipmentCode: { enabled: true, name: 'shipmentCode' },
                 returnType: { enabled: true, name: 'returnType' },
                 status: { enabled: true, name: 'status' },
+                revision: { enabled: true, name: 'revision' },
             },
             individual: {
                 returnCode: { enabled: true, name: 'returnCode', options: { unique: true } },

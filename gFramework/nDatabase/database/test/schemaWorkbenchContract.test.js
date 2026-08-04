@@ -163,11 +163,23 @@ const flowApiModule = {
     },
 };
 
+const paymentCoreModule = {
+    metaData: {
+        name: 'paymentCore',
+        nodics: {
+            schemaWorkbench: {
+                schemaModule: 'workflow',
+            },
+        },
+    },
+};
+
 global.NODICS = {
     getModule: (name) => {
         if (name === 'profile') return profileModule;
         if (name === 'workflow') return workflowModule;
         if (name === 'flowApi') return flowApiModule;
+        if (name === 'paymentCore') return paymentCoreModule;
         return undefined;
     },
 };
@@ -374,6 +386,16 @@ const service = require('../src/service/schema/defaultSchemaWorkbenchService');
         workflowActionThroughApiModule.moduleName,
         'workflow',
         'Workbench descriptors must keep workflow as the schema-owning module when reached through flowApi',
+    );
+    let workflowListedThroughExplicitAlias = await service.list({
+        moduleName: 'paymentCore',
+        authData: { userGroups: ['adminGroup'] },
+        httpRequest: {},
+    });
+    assert.strictEqual(
+        workflowListedThroughExplicitAlias.data.moduleName,
+        'workflow',
+        'Workbench must support explicit schemaModule aliases without reusing router URL prefixes',
     );
     await assert.rejects(
         service.get(

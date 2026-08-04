@@ -28,6 +28,9 @@
             "publish": false,
             "web": false
         },
+        "schemaWorkbench": {
+            "schemaModule": "payment"
+        },
         "displayName": "Payment Core"
     },
     "scripts": {}

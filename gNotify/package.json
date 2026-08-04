@@ -1,6 +1,13 @@
 {
     "name": "gNotify",
-    "index": "50.0",
+    "index": "50.8",
+    "requiredModules": [
+        "notifySchema",
+        "notifyCore",
+        "notifyVerification",
+        "notifyApi",
+        "localNotifyProvider"
+    ],
     "description": "Notifications and Messaging composition group",
     "main": "nodics.js",
     "version": "0.0.1",

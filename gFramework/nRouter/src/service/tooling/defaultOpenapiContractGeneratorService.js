@@ -415,7 +415,13 @@ function prepareConfiguredRoute(options) {
     definition.active = definition.active === undefined ? true : definition.active;
     definition.moduleName = options.moduleName;
     definition.prefix = options.routerName;
-    definition.routerName = (options.moduleName + '_' + options.routerName).toLowerCase();
+    // A configured router name is only unique inside its route group. Include
+    // the group identity so sibling business journeys may consistently expose
+    // operations such as `create`, `status`, or `cancelDraft` without producing
+    // an invalid OpenAPI document.
+    definition.routerName = (
+        options.moduleName + '_' + options.groupName + '_' + options.routerName
+    ).toLowerCase();
     definition['x-nodics'] = {
         source: options.source,
         moduleName: options.moduleName,

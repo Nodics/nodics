@@ -156,6 +156,20 @@ function findTenant(payload) {
     return findTenant(payload.result) || findTenant(payload.data);
 }
 
+function collectNavigationRoutes(payload, routes = []) {
+    if (!payload || typeof payload !== 'object') return routes;
+    if (typeof payload.route === 'string') routes.push(payload.route);
+    Object.values(payload).forEach(value => collectNavigationRoutes(value, routes));
+    return routes;
+}
+
+function assertSafeOperationsProjection(response, label) {
+    let text = JSON.stringify(parseJsonResponse(response, label)).toLowerCase();
+    ['secretreference', 'credential', 'rawproviderpayload', 'providerpayload'].forEach(forbidden => {
+        assert(!text.includes(forbidden), label + ' must not expose ' + forbidden);
+    });
+}
+
 async function runBackofficeHumanAuthenticationSmoke(profileServer = CONSOLIDATED_SERVER,
     backofficeServer = CONSOLIDATED_SERVER) {
     let headers = { 'content-type': 'application/json', 'x-enterprise-code': 'default' };
@@ -217,12 +231,41 @@ async function runBackofficeHumanAuthenticationSmoke(profileServer = CONSOLIDATE
         path: '/v0/bootstrap',
         headers: bearerHeaders
     });
+    let bootstrapPayload = parseJsonResponse(bootstrap, 'BackOffice authenticated bootstrap');
+    let navigationRoutes = collectNavigationRoutes(bootstrapPayload);
     let administrativeInventory = await requestModuleEndpoint({
         server: backofficeServer,
         moduleName: 'backoffice',
         path: '/v0/registry/admin/modules',
         headers: bearerHeaders
     });
+    assert(navigationRoutes.some(route => route.startsWith('/commerce/') && /cancel|return|refund|lifecycle/.test(route)),
+        'Authenticated bootstrap must publish a permissioned Order lifecycle workspace');
+    assert(navigationRoutes.some(route => route.startsWith('/notifications/')),
+        'Authenticated bootstrap must publish a permissioned Notification workspace; published routes: ' + JSON.stringify(navigationRoutes));
+    assert(navigationRoutes.some(route => route.startsWith('/compliance-management')),
+        'Authenticated bootstrap must publish permissioned Compliance Management navigation; published routes: ' + JSON.stringify(navigationRoutes));
+    let orderDiagnostics = await requestModuleEndpoint({
+        server: backofficeServer,
+        moduleName: 'order',
+        path: '/v0/operations/lifecycle/diagnostics',
+        headers: bearerHeaders
+    });
+    let notificationDiagnostics = await requestModuleEndpoint({
+        server: backofficeServer,
+        moduleName: 'notifyApi',
+        path: '/v0/operations/diagnostics',
+        headers: bearerHeaders
+    });
+    let complianceDashboard = await requestModuleEndpoint({
+        server: backofficeServer,
+        moduleName: 'kyc',
+        path: '/v0/management/dashboard',
+        headers: bearerHeaders
+    });
+    assertSafeOperationsProjection(orderDiagnostics, 'Order lifecycle diagnostics');
+    assertSafeOperationsProjection(notificationDiagnostics, 'Notification diagnostics');
+    assertSafeOperationsProjection(complianceDashboard, 'Compliance Management dashboard');
     let serviceTokenResponse = await requestModuleEndpoint({
         server: profileServer,
         moduleName: 'profile',
@@ -250,6 +293,12 @@ async function runBackofficeHumanAuthenticationSmoke(profileServer = CONSOLIDATE
         missingToken: missingToken.statusCode,
         authorizedRegistry: registry.statusCode,
         authorizedBootstrap: bootstrap.statusCode,
+        orderLifecycleWorkspacePublished: true,
+        notificationWorkspacePublished: true,
+        complianceWorkspacePublished: true,
+        orderDiagnostics: orderDiagnostics.statusCode,
+        notificationDiagnostics: notificationDiagnostics.statusCode,
+        complianceDashboard: complianceDashboard.statusCode,
         tenantPreserved: true,
         administrativeInventory: administrativeInventory.statusCode,
         serviceTokenRejected: serviceTokenRejected.statusCode

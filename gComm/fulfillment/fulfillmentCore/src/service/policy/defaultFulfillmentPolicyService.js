@@ -171,6 +171,7 @@ module.exports = {
         }
         this.assertSafe(model);
         model.status = model.status || 'REQUESTED';
+        model.revision = Number(model.revision || 0);
         model.requestedAt = model.requestedAt || new Date();
         request.model = model;
         return model;
@@ -333,6 +334,7 @@ module.exports = {
                 returnCode: request.returnCode || 'return::' + idempotencyKey,
                 idempotencyKey: idempotencyKey,
                 orderCode: request.orderCode,
+                orderLifecycleRequestCode: request.orderLifecycleRequestCode,
                 consignmentCode: request.consignmentCode,
                 shipmentCode: request.shipmentCode,
                 returnReasonCode: request.returnReasonCode,
@@ -343,6 +345,7 @@ module.exports = {
                 inventoryAllocationCodes: request.inventoryAllocationCodes,
                 itemCodes: request.itemCodes,
                 requestedQuantity: request.requestedQuantity,
+                serializedItems: request.serializedItems,
                 status: 'REQUESTED',
             },
         });

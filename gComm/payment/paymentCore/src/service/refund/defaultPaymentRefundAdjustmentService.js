@@ -12,13 +12,85 @@
 /* Nodics - governed by the root LICENSE. */
 /** @module payment/service/refund/DefaultPaymentRefundAdjustmentService @description Creates append-only governed finance adjustment and exception-closure evidence without editing Order facts. @layer service @owner payment */
 module.exports = {
+    /**
+     * Initializes the module artifact within the paymentCore-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     init: function () { return Promise.resolve(true); }, postInit: function () { return Promise.resolve(true); },
+    /**
+     * Executes the error operation within the paymentCore-owned layered contract.
+     *
+     * @param {*} message Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     error: function (message) { let error = new Error(message); error.code = 'ERR_PAY_00006'; return error; },
+    /**
+     * Executes the input operation within the paymentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     input: function (request) { return Object.assign({}, request.body || {}, request.params || {}, { tenant: request.tenant, authData: request.authData }); },
+    /**
+     * Executes the items operation within the paymentCore-owned layered contract.
+     *
+     * @param {*} value Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     items: function (value) { return value && Array.isArray(value.result) ? value.result : Array.isArray(value) ? value : value ? [value] : []; },
+    /**
+     * Authorizes the module artifact within the paymentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     authorize: function (request) { let input = this.input(request), auth = request.authData || {}; if (!request.tenant || auth.tokenType !== 'access' || !input.entCode || !input.orderCode || !input.refundCode) throw this.error('Finance Refund adjustment requires authenticated enterprise, Order, and Refund identity'); let scoped = auth.entCode || auth.enterpriseCode, allowed = [].concat(auth.enterpriseCodes || []).filter(Boolean); if (scoped && scoped !== input.entCode || allowed.length && !allowed.includes(input.entCode)) throw this.error('Finance Refund adjustment is outside assigned enterprise scope'); if (input.requesterCode && (auth.principalId || auth.userCode) === input.requesterCode) throw this.error('Refund requester cannot approve a manual finance adjustment'); if (JSON.stringify(input).match(/cvv|cardNumber|pan|secret|password|rawGateway|gatewayPayload|providerPayload/i)) throw this.error('Finance adjustment must not contain secrets or raw provider evidence'); return input; },
+    /**
+     * Loads the module artifact within the paymentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} query Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     load: async function (request, query) { let records = this.items(await SERVICE.DefaultPaymentTransactionService.get({ tenant: request.tenant, authData: request.authData, query: query, searchOptions: { limit: 2 } })); if (records.length > 1) throw this.error('Finance adjustment resolved duplicate transaction evidence'); return records[0]; },
+    /**
+     * Persists the module artifact within the paymentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} model Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     save: async function (request, model) { let result = await SERVICE.DefaultPaymentTransactionService.save({ tenant: request.tenant, authData: request.authData, model: model }), saved=this.items(result)[0] || model; if(SERVICE.DefaultPaymentRefundEventService) await SERVICE.DefaultPaymentRefundEventService.publish(request,saved,saved.recoveryAction||saved.operation); return saved; },
+    /**
+     * Executes the adjust operation within the paymentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     adjust: async function (request) { let input = this.authorize(request); if (!input.idempotencyKey || !input.reasonCode || !input.approvalEvidenceCode || !['CREDIT', 'DEBIT'].includes(input.adjustmentType) || !SERVICE.DefaultPaymentPolicyService.validateMoney(input.amount) || /^0(?:\.0+)?$/.test(input.amount) || !input.currencyCode) throw this.error('Manual finance adjustment requires idempotency, reason, approval, type, exact positive amount, and currency'); let existing = await this.load(input, { idempotencyKey: input.idempotencyKey }); if (existing) return Object.assign({ idempotent: true }, existing); let exceptionPolicy = ((((CONFIG.get('payment') || {}).paymentPolicy || {}).refundException) || {}), destinationType = input.alternateDestinationType; if (destinationType && (!(exceptionPolicy.alternateDestinationTypes || []).includes(destinationType) || !input.exceptionPolicyCode || exceptionPolicy.requireCustomerCommunicationEvidence !== false && !input.customerCommunicationEvidenceCode || exceptionPolicy.requireOriginalTransaction !== false && !input.originalTransactionCode)) throw this.error('Alternate Refund destination requires supported destination, policy, original transaction, approval, and customer communication evidence'); let source; if (input.originalTransactionCode) { source = await this.load(input, { transactionCode: input.originalTransactionCode }); if (!source || source.enterpriseCode !== input.entCode || source.orderCode !== input.orderCode || source.refundCode !== input.refundCode || source.currencyCode !== input.currencyCode) throw this.error('Manual finance adjustment source evidence is invalid'); } let providerCode = destinationType ? (exceptionPolicy.providerByDestinationType || {})[destinationType] : 'manualPaymentProvider'; if (destinationType && !providerCode) throw this.error('Alternate Refund destination provider policy is unavailable'); return this.save(input, { active: true, enterpriseCode: input.entCode, transactionCode: input.transactionCode || ['adjustment', input.refundCode, input.idempotencyKey].join('::'), idempotencyKey: input.idempotencyKey, providerCode: providerCode, paymentModeCode: destinationType || 'OFFLINE', paymentGroupCode: input.paymentGroupCode || 'manual-adjustment', orderCode: input.orderCode, parentTransactionCode: input.originalTransactionCode, refundCode: input.refundCode, lifecycleRequestType: 'REFUND', requestVersion: input.requestVersion, operation: 'ADJUSTMENT', amount: input.amount, currencyCode: input.currencyCode, status: 'RECONCILED', recoveryAction: destinationType ? 'ALTERNATE_REFUND_DESTINATION' : input.adjustmentType + '_MANUAL_ADJUSTMENT', recoveryStatus: 'MANUAL_ADJUSTMENT_RECORDED', paymentEvidenceCode: input.approvalEvidenceCode, exceptionPolicyCode: input.exceptionPolicyCode, customerCommunicationEvidenceCode: input.customerCommunicationEvidenceCode, failureCode: input.reasonCode, requestedAt: new Date(), completedAt: new Date() }); },
+    /**
+     * Executes the close exception operation within the paymentCore-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     closeException: async function (request) { let input = this.authorize(request); if (!input.idempotencyKey || !input.exceptionTransactionCode || !input.reasonCode || !input.approvalEvidenceCode) throw this.error('Refund exception closure requires idempotency, exception transaction, reason, and approval evidence'); let existing = await this.load(input, { idempotencyKey: input.idempotencyKey }); if (existing) return Object.assign({ idempotent: true }, existing); let exception = await this.load(input, { transactionCode: input.exceptionTransactionCode }); if (!exception || exception.enterpriseCode !== input.entCode || exception.orderCode !== input.orderCode || exception.refundCode !== input.refundCode) throw this.error('Refund exception closure source evidence is unavailable'); if (input.adjustmentTransactionCode) { let adjustment = await this.load(input, { transactionCode: input.adjustmentTransactionCode }); if (!adjustment || adjustment.enterpriseCode !== input.entCode || adjustment.operation !== 'ADJUSTMENT' || adjustment.refundCode !== input.refundCode) throw this.error('Refund exception closure adjustment evidence is invalid'); } return this.save(input, { active: true, enterpriseCode: input.entCode, transactionCode: input.transactionCode || ['exception-closure', input.refundCode, input.idempotencyKey].join('::'), idempotencyKey: input.idempotencyKey, providerCode: exception.providerCode, paymentModeCode: exception.paymentModeCode, paymentGroupCode: exception.paymentGroupCode, orderCode: input.orderCode, parentTransactionCode: exception.transactionCode, refundCode: input.refundCode, lifecycleRequestType: 'REFUND', operation: 'RECONCILE', amount: '0', currencyCode: exception.currencyCode, status: 'RECONCILED', recoveryAction: 'CLOSE_REFUND_EXCEPTION', recoveryStatus: 'EXCEPTION_CLOSED', paymentEvidenceCode: input.approvalEvidenceCode, failureCode: input.reasonCode, requestedAt: new Date(), completedAt: new Date() }); },
 };

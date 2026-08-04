@@ -17,6 +17,18 @@
  * @override Project modules may replace adapter contract services while preserving Payment-owned lifecycle authority.
  */
 module.exports = {
+    /**
+     * Executes the init operation within the paymentProviderCore-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     init: function () { return Promise.resolve(true); },
+    /**
+     * Executes the post init operation within the paymentProviderCore-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     postInit: function () { return Promise.resolve(true); },
 };

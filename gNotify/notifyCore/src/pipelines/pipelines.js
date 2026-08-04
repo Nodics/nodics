@@ -12,7 +12,7 @@
 /** @module notifyCore/src/pipelines/pipelines @description Replaceable technical notification delivery and retry Pipelines; Workflow owns long-running approvals and human review. @layer pipeline @owner notifyCore */
 module.exports = { notifyCore: {
   notifyMessageDeliveryPipeline: { startNode: 'validateRequest', hardStop: true, nodes: {
-    validateRequest: { handler: 'DefaultNotifyDeliveryPipelineService.validateRequest', success: 'resolveScenario' },
+    validateRequest: { handler: 'DefaultNotifyDeliveryPipelineService.validateRequest', success: 'resolveScenario', idempotent: 'handleIdempotentEnd' },
     resolveScenario: { handler: 'DefaultNotifyDeliveryPipelineService.resolveScenario', success: 'resolveChannel' },
     resolveChannel: { handler: 'DefaultNotifyDeliveryPipelineService.resolveChannel', success: 'resolveRecipientAndConsent' },
     resolveRecipientAndConsent: { handler: 'DefaultNotifyDeliveryPipelineService.resolveRecipientAndConsent', success: 'resolveTemplate', suppressed: 'persistSuppression' },
@@ -28,6 +28,7 @@ module.exports = { notifyCore: {
     persistSuppression: { handler: 'DefaultNotifyDeliveryPipelineService.persistSuppression', success: 'publishEvent' },
     publishEvent: { handler: 'DefaultNotifyDeliveryPipelineService.publishEvent', success: 'handleSuccessEnd' },
     handleSuccessEnd: { handler: 'DefaultNotifyDeliveryPipelineService.handleSuccessEnd' },
+    handleIdempotentEnd: { handler: 'DefaultNotifyDeliveryPipelineService.handleIdempotentEnd' },
     handleErrorEnd: { handler: 'DefaultNotifyDeliveryPipelineService.handleErrorEnd' },
   } },
   notifyRetryDeliveryPipeline: { startNode: 'loadRetry', hardStop: true, nodes: {

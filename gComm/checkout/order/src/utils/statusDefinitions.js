@@ -177,5 +177,6 @@ module.exports = {
     ERR_ORD_00068: { code: '403', message: 'Order lifecycle diagnostics scope is forbidden' },
     ERR_ORD_00069: { code: '403', message: 'Order lifecycle policy or support scope is forbidden' },
     ERR_ORD_00070: { code: '400', message: 'Order lifecycle notification result is invalid' },
-    ERR_ORD_00071: { code: '409', message: 'Order lifecycle policy management conflicts' }
+    ERR_ORD_00071: { code: '409', message: 'Order lifecycle policy management conflicts' },
+    ERR_ORD_00072: { code: '409', message: 'Order Return outcome evidence is incomplete or conflicts with lifecycle state' }
 };

@@ -12,10 +12,47 @@
 /* Nodics - governed by the root LICENSE. */
 /** @module order/service/lifecycle/DefaultOrderLifecycleRateLimitService @description Enforces configured customer lifecycle request limits from shared Order persistence while allowing idempotent replay. @layer service @owner order */
 module.exports = {
+    /**
+     * Initializes the module artifact within the order-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     init: function () { return Promise.resolve(true); }, postInit: function () { return Promise.resolve(true); },
+    /**
+     * Executes the config operation within the order-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     config: function () { return (((CONFIG.get('order') || {}).orderLifecycle || {}).intents || {}).rateLimit || {}; },
+    /**
+     * Executes the error operation within the order-owned layered contract.
+     *
+     * @param {*} message Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     error: function (message) { let error = new Error(message); error.code = 'ERR_ORD_00067'; return error; },
+    /**
+     * Executes the items operation within the order-owned layered contract.
+     *
+     * @param {*} value Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     items: function (value) { if (!value) return []; if (Array.isArray(value)) return value; if (Array.isArray(value.result)) return value.result; return [value]; },
+    /**
+     * Asserts allowed within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} input Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     assertAllowed: async function (request, input) {
         let policy = this.config(); if (policy.enabled === false) return { allowed: true, enabled: false };
         if (!request || !request.tenant || !request.authData || !input || !input.entCode || !input.orderCode || !input.idempotencyKey) throw this.error('Lifecycle rate limit requires trusted request and idempotency context');

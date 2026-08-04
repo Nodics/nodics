@@ -77,6 +77,11 @@ module.exports = {
                     enabled: true,
                     fallback: true,
                     engine: 'local'
+                },
+                rateLimit: {
+                    enabled: true,
+                    fallback: true,
+                    engine: 'local'
                 }
             },
             engines: {

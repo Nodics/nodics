@@ -1,6 +1,9 @@
 {
     "name": "notifyCore",
     "index": "50.2",
+    "requiredModules": [
+        "notifySchema"
+    ],
     "description": "Provider-neutral notification orchestration, rendering, policy, audit, and delivery pipelines",
     "main": "nodics.js",
     "version": "0.0.1",

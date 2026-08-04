@@ -9,4 +9,11 @@
 
  */
 
+/**
+ * @module gComm/payment/paymentProviders/config/postscripts
+ * @description Defines the postscripts contract owned by paymentProviders within the Nodics layered runtime.
+ * @layer config
+ * @owner paymentProviders
+ * @override Later project or customer modules may replace or extend this artifact while preserving its published contract.
+ */
 module.exports = {};

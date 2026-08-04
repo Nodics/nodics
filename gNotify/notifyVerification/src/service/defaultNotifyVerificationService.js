@@ -13,8 +13,40 @@
 /** @module notifyVerification/service/DefaultNotifyVerificationService @description Composes nOtp challenge mechanics with gNotify delivery without returning or persisting raw OTP values. @layer service @owner notifyVerification */
 const crypto = require('crypto');
 module.exports = {
+  /**
+   * Initializes the module artifact within the notifyVerification-owned layered contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   init: function () { return Promise.resolve(true); }, postInit: function () { return Promise.resolve(true); }, config: function () { return CONFIG.get('notifyVerification') || {}; },
+  /**
+   * Executes the code operation within the notifyVerification-owned layered contract.
+   *
+   * @param {*} value Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   code: function (value) { return 'verification-' + crypto.createHash('sha256').update(String(value)).digest('hex').slice(0, 24); }, flag: function (request) { request._notifyMutationAuthorized = true; return request; },
+  /**
+   * Creates the module artifact within the notifyVerification-owned layered contract.
+   *
+   * @param {*} request Value defined by the surrounding Nodics operation contract.
+   * @param {*} input Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   create: async function (request, input) { input = input || request.body || request.model || {}; let mode = input.mode || this.config().defaultMode; if (mode === 'PROVIDER_MANAGED' && !this.config().providerManagedEnabled) throw Object.assign(new Error('Provider-managed verification is disabled'), { code: 'ERR_NOTIFY_00011' }); if (mode !== 'NODICS_OTP') throw Object.assign(new Error('Verification mode unsupported'), { code: 'ERR_NOTIFY_00011' }); if (!input.key || !input.ops || !input.channelCode || !input.recipientReference || !input.ownerModule || !input.idempotencyKey) throw Object.assign(new Error('Verification request is incomplete'), { code: 'ERR_NOTIFY_00011' }); let generated = await SERVICE.DefaultOtpService.generateOtp({ tenant: request.tenant, authData: request.authData, model: { key: input.key, ops: input.ops, active: true, limit: input.attemptLimit || this.config().attemptLimit, singleUseToken: true } }), token = generated.result || generated, otpCode = token.value || token.token || token.code || token; let challengeCode = this.code(request.tenant + ':' + input.idempotencyKey), expiresAt = new Date(Date.now() + Number(this.config().expirySeconds || 300) * 1000), correlationId = input.correlationId || challengeCode, model = { active: true, tenantCode: request.tenant, enterpriseCode: request.authData.enterpriseCode || request.authData.entCode, siteCode: input.siteCode || request.authData.siteCode, challengeCode, challengeType: input.challengeType || 'OTP', mode, scenarioCode: input.scenarioCode || 'otpVerification', channelCode: input.channelCode, subjectType: input.subjectType || input.recipientType, subjectReference: input.subjectReference || input.ownerReferenceCode || input.ops, recipientReference: input.recipientReference, maskedRecipient: input.maskedRecipient, otpKeyReference: this.code(input.key), correlationId, status: 'ISSUED', attemptCount: 0, resendCount: 0, createdAt: new Date(), expiresAt }; await SERVICE.DefaultNotifyVerificationChallengeService.save(this.flag({ tenant: request.tenant, authData: request.authData, model })); let result = await SERVICE.DefaultNotifyDeliveryService.send(request, { idempotencyKey: input.idempotencyKey, scenarioCode: input.scenarioCode || 'otpVerification', channelCode: input.channelCode, messageTypeCode: 'verification', recipientType: input.recipientType, recipientReference: input.recipientReference, maskedRecipient: input.maskedRecipient, ownerModule: input.ownerModule, ownerReferenceType: input.ownerReferenceType || 'VERIFICATION', ownerReferenceCode: input.ownerReferenceCode || challengeCode, correlationId, locale: input.locale, variables: Object.assign({}, input.variables, { otpCode, expiryMinutes: Math.ceil(Number(this.config().expirySeconds || 300) / 60) }), expiresAt }); await SERVICE.DefaultNotifyVerificationChallengeService.update(this.flag({ tenant: request.tenant, authData: request.authData, query: { challengeCode, status: 'ISSUED' }, model: { status: result.status === 'SUPPRESSED' ? 'DELIVERY_SUPPRESSED' : 'DELIVERED', deliveryRequestCode: result.requestCode } })); return { challengeCode, status: result.status, expiresAt, deliveryRequestCode: result.requestCode }; },
+  /**
+   * Validates the module artifact within the notifyVerification-owned layered contract.
+   *
+   * @param {*} request Value defined by the surrounding Nodics operation contract.
+   * @param {*} input Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   validate: async function (request, input) { input = input || request.body || request.model || {}; let result = await SERVICE.DefaultOtpService.validateOtp({ tenant: request.tenant, authData: request.authData, model: { key: input.key, ops: input.ops, value: input.value, type: 'OTP' } }), valid = Boolean(result), status = valid ? 'VERIFIED' : 'REJECTED'; if (input.challengeCode) await SERVICE.DefaultNotifyVerificationChallengeService.update(this.flag({ tenant: request.tenant, authData: request.authData, query: { challengeCode: input.challengeCode, status: { $in: ['DELIVERED', 'ISSUED'] } }, model: { status, verifiedAt: valid ? new Date() : undefined, failureCode: valid ? undefined : result.code || 'INVALID_OTP' } })); return { challengeCode: input.challengeCode, valid, status, validationCode: result && result.code || status }; },
 };

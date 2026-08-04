@@ -237,10 +237,23 @@ module.exports = {
       )
     ) {
       this._metrics.rejected++;
+      let invalidModules = registrations
+        .filter(
+          (registration) =>
+            !SERVICE.DefaultBackofficeContractService.validateRegistration(
+              registration,
+            ),
+        )
+        .map((registration) => registration && registration.moduleName)
+        .filter(Boolean)
+        .slice(0, 20);
       return Promise.reject(
         new CLASSES.NodicsError(
           "ERR_BOF_00000",
-          "Invalid module registration batch",
+          "Invalid module registration batch" +
+            (invalidModules.length
+              ? ": " + invalidModules.join(", ")
+              : ""),
         ),
       );
     }

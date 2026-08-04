@@ -24,6 +24,7 @@ global.SERVICE = {
     DefaultPaymentTransactionService: {
         get: async request => ({ result: records.filter(value => Object.entries(request.query).every(([key, item]) => value[key] === item)) }),
         save: async request => { records.push(request.model); return { result: [request.model] }; },
+        update: async request => { let record = records.find(value => Object.entries(request.query).every(([key, item]) => value[key] === item)); if (!record) return { modifiedCount: 0 }; Object.assign(record, request.model); return { modifiedCount: 1 }; },
     },
 };
 const request = { tenant: 'default', authData: { tokenType: 'service' }, refundExecution: { enterpriseCode: 'ent-1', refundCode: 'refund-1', orderCode: 'order-1', requestVersion: 1, allocations: [{ paymentGroupCode: 'card-1', originalTransactionCode: 'capture-1', providerCode: 'stripe', paymentModeCode: 'CARD', amount: '4.00', currencyCode: 'USD' }] } };

@@ -116,12 +116,14 @@ module.exports = {
                 moduleObject: moduleObject,
             };
         }
-        let prefixedModuleName = moduleObject && moduleObject.metaData ? moduleObject.metaData.prefix : undefined;
-        if (prefixedModuleName && prefixedModuleName !== moduleName) {
-            let prefixedModule = NODICS.getModule(prefixedModuleName);
+        let metadata = moduleObject && moduleObject.metaData ? moduleObject.metaData : {};
+        let workbenchConfig = metadata.nodics && metadata.nodics.schemaWorkbench || {};
+        let aliasedModuleName = workbenchConfig.schemaModule || metadata.schemaModule || metadata.prefix;
+        if (aliasedModuleName && aliasedModuleName !== moduleName) {
+            let prefixedModule = NODICS.getModule(aliasedModuleName);
             if (prefixedModule && prefixedModule.rawSchema) {
                 return {
-                    moduleName: prefixedModuleName,
+                    moduleName: aliasedModuleName,
                     moduleObject: prefixedModule,
                 };
             }

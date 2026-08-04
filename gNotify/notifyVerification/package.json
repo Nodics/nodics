@@ -1,6 +1,9 @@
 {
     "name": "notifyVerification",
     "index": "50.3",
+    "requiredModules": [
+        "notifyCore"
+    ],
     "description": "Business verification journeys delegating OTP and token mechanics",
     "main": "nodics.js",
     "version": "0.0.1",

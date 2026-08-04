@@ -10,10 +10,49 @@
  */
 /** @module inventory/service/allocation/DefaultOrderCancellationInventoryEvidenceProviderService @description Projects exact releasable allocation evidence for Order cancellation eligibility. @layer service @owner inventory */
 module.exports = {
+    /**
+     * Initializes the module artifact within the inventory-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     init: function () { return Promise.resolve(true); }, postInit: function () { return Promise.resolve(true); },
+    /**
+     * Executes the items operation within the inventory-owned layered contract.
+     *
+     * @param {*} value Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     items: function (value) { return value && Array.isArray(value.result) ? value.result : Array.isArray(value) ? value : []; },
+    /**
+     * Normalizes the module artifact within the inventory-owned layered contract.
+     *
+     * @param {*} value Value defined by the surrounding Nodics operation contract.
+     * @param {*} scale Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     normalize: function (value, scale) { return SERVICE.DefaultExactUnitsService.multiplyRational(value, '1', '1', scale, 'UNNECESSARY'); },
+    /**
+     * Executes the negate operation within the inventory-owned layered contract.
+     *
+     * @param {*} value Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     negate: function (value) { let parsed = SERVICE.DefaultExactUnitsService.parse(value); return SERVICE.DefaultExactUnitsService.format(-parsed.unscaled, parsed.scale); },
+    /**
+     * Resolves the module artifact within the inventory-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     resolve: async function (request) {
         if (!request || !request.tenant || !request.authData || request.authData.tokenType !== 'service' || !request.entCode || !request.orderCode || !Array.isArray(request.items)) throw new CLASSES.NodicsError('ERR_INV_00055', 'Inventory cancellation evidence requires internal Order context');
         let output = [];

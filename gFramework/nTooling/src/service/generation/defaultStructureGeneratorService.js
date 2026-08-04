@@ -260,7 +260,7 @@ module.exports = {
             kind: kind,
             name: name,
             targetPath: targetPath ? path.resolve(process.cwd(), targetPath) : '',
-            index: readOption(args, '--index', '9000.0'),
+            index: readOption(args, '--index', ''),
             groupName: readOption(args, '--groupName', ''),
             description: readOption(args, '--description', ''),
             owns: parseList(readOption(args, '--owns', ''), defaultOwnsByKind[kind] || defaultOwnsByKind.capability),
@@ -284,6 +284,9 @@ module.exports = {
         }
         if (!options.targetPath) {
             throw new Error('A target --path=<directory> is required.');
+        }
+        if (!/^\d+(?:\.\d+)+$/.test(options.index || '')) {
+            throw new Error('A unique ordered --index=<number.number> is required.');
         }
         if (fs.existsSync(path.join(options.targetPath, 'package.json')) ||
             fs.existsSync(path.join(options.targetPath, 'nodics.js'))) {

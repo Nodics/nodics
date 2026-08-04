@@ -151,10 +151,13 @@ module.exports = {
         this.validateModels(aggregate, errors);
         this.validateRelations(aggregate, errors);
         if (errors.length) throw this.error(errors.join('; '));
+        const cart = aggregate.cart || {};
+        if (SERVICE.DefaultKycDecisionEnforcementService) request.kycDecision = await SERVICE.DefaultKycDecisionEnforcementService.enforce(request, 'CHECKOUT', { enterpriseCode: request.entCode, subjectType: 'CUSTOMER', subjectCode: request.customerCode || cart.customerCode || cart.ownerId, orderMinorUnits: cart.totalPriceMinorUnits || cart.totalMinorUnits, currency: cart.currencyCode });
         return {
             valid: true,
             cartCode: request.cartCode,
             entCode: request.entCode,
+            kycDecisionId: request.kycDecision && request.kycDecision.decisionId,
             counts: {
                 entries: aggregate.entries.length,
                 deliveryGroups: aggregate.deliveryGroups.length,

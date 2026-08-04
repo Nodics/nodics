@@ -16,15 +16,16 @@
  * @owner generated
  * @override Later active modules may extend or replace this registry through Nodics layering.
  */
-const immutable = {
-  save: { before: [{ service: "DefaultNotifyDeliveryPersistenceService.authorizeMutation" }] },
-  update: { before: [{ service: "DefaultNotifyDeliveryPersistenceService.authorizeMutation" }] },
-  remove: { before: [{ service: "DefaultNotifyDeliveryPersistenceService.rejectDelete" }] },
-};
-module.exports = { notifySchema: {
-  notifyDeliveryRequest: immutable,
-  notifyMessageContext: immutable,
-  notifyDeliveryAttempt: immutable,
-  notifyDeliverySuppression: immutable,
-  notifyVerificationChallenge: immutable,
-} };
+const definitions = {};
+[
+  "notifyDeliveryRequest",
+  "notifyMessageContext",
+  "notifyDeliveryAttempt",
+  "notifyDeliverySuppression",
+  "notifyVerificationChallenge",
+].forEach((item) => {
+  definitions[`${item}PreSavePolicy`] = { type: "schema", item, trigger: "preSave", active: "true", index: -100, handler: "DefaultNotifyDeliveryPersistenceService.authorizeMutation" };
+  definitions[`${item}PreUpdatePolicy`] = { type: "schema", item, trigger: "preUpdate", active: "true", index: -100, handler: "DefaultNotifyDeliveryPersistenceService.authorizeMutation" };
+  definitions[`${item}PreRemovePolicy`] = { type: "schema", item, trigger: "preRemove", active: "true", index: -100, handler: "DefaultNotifyDeliveryPersistenceService.rejectDelete" };
+});
+module.exports = definitions;

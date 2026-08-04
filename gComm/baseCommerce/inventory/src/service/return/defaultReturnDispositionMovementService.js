@@ -130,7 +130,8 @@ module.exports = {
         if (!intent.sourceCode || !dispositionCode || !movementType) {
             throw this.error('Return disposition movement requires sourceCode, dispositionCode, and movementType');
         }
-        let allocationCodes = intent.inventoryAllocationCodes || intent.allocationCodes || [];
+        let inventoryAllocationCodes = Array.isArray(intent.inventoryAllocationCodes) ? intent.inventoryAllocationCodes.filter(Boolean) : [];
+        let allocationCodes = inventoryAllocationCodes.length ? inventoryAllocationCodes : intent.allocationCodes || [];
         if (!Array.isArray(allocationCodes) || !allocationCodes.length) {
             return {
                 status: 'NO_INVENTORY_DISPOSITION_REQUIRED',
@@ -192,7 +193,8 @@ module.exports = {
         if (!intent.sourceCode || !dispositionCode || !movementType) {
             throw this.error('Return disposition recovery requires sourceCode, dispositionCode, and movementType');
         }
-        let allocationCodes = intent.inventoryAllocationCodes || intent.allocationCodes || [];
+        let inventoryAllocationCodes = Array.isArray(intent.inventoryAllocationCodes) ? intent.inventoryAllocationCodes.filter(Boolean) : [];
+        let allocationCodes = inventoryAllocationCodes.length ? inventoryAllocationCodes : intent.allocationCodes || [];
         let movements = [];
         if (Array.isArray(allocationCodes)) {
             for (let allocationCode of allocationCodes) {

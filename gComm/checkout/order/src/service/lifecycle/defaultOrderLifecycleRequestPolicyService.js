@@ -17,15 +17,42 @@
  * @override Project modules may replace reason, quantity, and draft policy while preserving exact evidence, private persistence, and owner boundaries.
  */
 module.exports = {
+  /**
+   * Initializes the module artifact within the order-owned layered contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   init: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Completes initialization for the module artifact within the order-owned layered contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   postInit: function () {
     return Promise.resolve(true);
   },
+  /**
+   * Executes the config operation within the order-owned layered contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   config: function () {
     return (CONFIG.get("order") || {}).orderLifecycle || {};
   },
+  /**
+   * Executes the error operation within the order-owned layered contract.
+   *
+   * @param {*} message Value defined by the surrounding Nodics operation contract.
+   * @param {*} code Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   error: function (message, code) {
     if (typeof CLASSES !== "undefined" && CLASSES.NodicsError)
       return new CLASSES.NodicsError(message, null, code || "ERR_ORD_00044");
@@ -33,6 +60,14 @@ module.exports = {
     error.code = code || "ERR_ORD_00044";
     return error;
   },
+  /**
+   * Authorizes mutation within the order-owned layered contract.
+   *
+   * @param {*} request Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   authorizeMutation: function (request) {
     if (!request || request._orderLifecycleMutationAuthorized !== true) {
       return Promise.reject(
@@ -43,6 +78,12 @@ module.exports = {
     }
     return Promise.resolve(true);
   },
+  /**
+   * Rejects hard delete within the order-owned layered contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   rejectHardDelete: function () {
     return Promise.reject(
       this.error(
@@ -50,6 +91,14 @@ module.exports = {
       ),
     );
   },
+  /**
+   * Asserts safe within the order-owned layered contract.
+   *
+   * @param {*} value Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   assertSafe: function (value) {
     if (
       JSON.stringify(value || {}).match(
@@ -61,6 +110,14 @@ module.exports = {
       );
     }
   },
+  /**
+   * Executes the exact positive quantity operation within the order-owned layered contract.
+   *
+   * @param {*} value Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   exactPositiveQuantity: function (value) {
     if (typeof value !== "string")
       throw this.error(
@@ -77,6 +134,14 @@ module.exports = {
     }
     return quantity;
   },
+  /**
+   * Executes the identity part operation within the order-owned layered contract.
+   *
+   * @param {*} value Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   identityPart: function (value) {
     let part = String(value || "")
       .replace(/[^A-Za-z0-9._-]+/g, "-")
@@ -85,6 +150,14 @@ module.exports = {
       throw this.error("Order lifecycle identity component is invalid");
     return part;
   },
+  /**
+   * Prepares request within the order-owned layered contract.
+   *
+   * @param {*} request Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   prepareRequest: function (request) {
     let model = (request && request.model) || {};
     this.assertSafe(model);
@@ -119,6 +192,14 @@ module.exports = {
       throw this.error("Order lifecycle reason note exceeds configured bounds");
     return Promise.resolve(true);
   },
+  /**
+   * Prepares item within the order-owned layered contract.
+   *
+   * @param {*} request Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   prepareItem: function (request) {
     let model = (request && request.model) || {};
     this.assertSafe(model);
@@ -159,6 +240,14 @@ module.exports = {
       );
     return Promise.resolve(true);
   },
+  /**
+   * Builds draft within the order-owned layered contract.
+   *
+   * @param {*} request Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   buildDraft: function (request) {
     let input = (request && (request.orderLifecycle || request.body)) || {};
     let config = this.config();

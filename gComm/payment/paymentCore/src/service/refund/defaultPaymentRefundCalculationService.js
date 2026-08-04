@@ -245,6 +245,15 @@ module.exports = {
     });
     return scoped;
   },
+  /**
+   * Applies shipping refund within the paymentCore-owned layered contract.
+   *
+   * @param {*} request Value defined by the surrounding Nodics operation contract.
+   * @param {*} allocations Value defined by the surrounding Nodics operation contract.
+   * @returns {*} The synchronous value or Promise produced by the implementation.
+   * @throws Propagates validation, authorization, persistence, or delegated service failures.
+   * @override Later project or customer modules may override this exported extension point.
+   */
   applyShippingRefund: function (request, allocations) { let shipping=request.shippingRefundEvidence||{}, amount=shipping.shippingRefundAmount; if(!amount||/^0(?:\.0+)?$/.test(amount)) return allocations; if(shipping.shippingAmountIncludedInAllocation!==false||!shipping.paymentAllocationCode||shipping.currencyCode!==allocations[0].currencyCode) throw this.error('Shipping Refund requires separate original Payment allocation evidence'); let matches=allocations.filter(value=>value.allocationCode===shipping.paymentAllocationCode||value.sourceAllocationCode===shipping.paymentAllocationCode); if(matches.length!==1) throw this.error('Shipping Refund original Payment allocation is unavailable'); return allocations.map(value=>value!==matches[0]?value:Object.assign({},value,{amount:this.fromScaled(this.toScaled(value.amount)+this.toScaled(amount)),sourceAmount:value.sourceAmount||value.amount,shippingRefundAmount:amount,deliveryChargeEvidenceCode:shipping.deliveryChargeEvidenceCode})); },
   /** Calculates a safe refundable amount from allocations and optional explicit override. */
   calculate: function (request) {

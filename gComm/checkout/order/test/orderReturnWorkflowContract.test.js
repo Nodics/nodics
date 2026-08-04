@@ -39,7 +39,7 @@ const carrier = authData => ({ tenant: 'default', authData: authData || { tokenT
     assert.strictEqual(authorized.decision, 'SUCCESS'); assert.strictEqual(record.state, 'AUTHORIZED');
     assert.strictEqual(record.evidence.authorizationDecision, 'PARTIALLY_AUTHORIZED'); assert.strictEqual(items[0].state, 'PARTIALLY_AUTHORIZED');
     const completed = await workflow.createRma(carrier());
-    assert.strictEqual(completed.decision, 'SUCCESS'); assert.strictEqual(record.state, 'COMPLETED');
+    assert.strictEqual(completed.decision, 'SUCCESS'); assert.strictEqual(record.state, 'PARTIALLY_COMPLETED');
     const ownerCall = calls.find(value => value && value.idempotencyKey);
     assert.strictEqual(ownerCall.idempotencyKey, 'return-1::2::item-1'); assert.strictEqual(ownerCall.requestedQuantity, '0.5');
     const replay = await workflow.createRma(carrier()); assert.strictEqual(replay.feedback.idempotent, true);

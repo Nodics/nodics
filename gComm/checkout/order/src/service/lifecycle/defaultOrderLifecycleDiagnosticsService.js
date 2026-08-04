@@ -12,11 +12,56 @@
 /* Nodics - governed by the root LICENSE. */
 /** @module order/service/lifecycle/DefaultOrderLifecycleDiagnosticsService @description Produces bounded lifecycle metrics and combines safe diagnostics from owning modules. @layer service @owner order */
 module.exports = {
+    /**
+     * Initializes the module artifact within the order-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     init: function () { return Promise.resolve(true); }, postInit: function () { return Promise.resolve(true); },
+    /**
+     * Executes the config operation within the order-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     config: function () { return (((CONFIG.get('order') || {}).orderLifecycle || {}).operations) || {}; },
+    /**
+     * Executes the error operation within the order-owned layered contract.
+     *
+     * @param {*} message Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     error: function (message) { let error = new Error(message); error.code = 'ERR_ORD_00068'; return error; },
+    /**
+     * Executes the items operation within the order-owned layered contract.
+     *
+     * @param {*} value Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     items: function (value) { return value && Array.isArray(value.result) ? value.result : Array.isArray(value) ? value : []; },
+    /**
+     * Authorizes the module artifact within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     authorize: function (request) { let auth = request.authData || {}; if (!request.tenant || !['access', 'service'].includes(auth.tokenType)) throw this.error('Lifecycle diagnostics requires authenticated operations identity'); let enterpriseCode = request.enterpriseCode || request.entCode || auth.entCode || auth.enterpriseCode; if (!enterpriseCode) throw this.error('Lifecycle diagnostics requires enterprise scope'); return enterpriseCode; },
+    /**
+     * Executes the owner diagnostics operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} enterpriseCode Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     ownerDiagnostics: async function (request, enterpriseCode) {
         let output = { metrics: {}, findings: [], correlations: {} };
         for (let descriptor of [].concat(this.config().ownerContributors || [])) {
@@ -27,8 +72,17 @@ module.exports = {
         }
         return output;
     },
+    /**
+     * Executes the scan operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     scan: async function (request) {
         let entCode = this.authorize(request), config = this.config(), limit = Number(config.maximumScanRecords || 500);
+        if (!SERVICE.DefaultOrderLifecycleRequestService || typeof SERVICE.DefaultOrderLifecycleRequestService.get !== 'function') throw this.error('Lifecycle request persistence authority is unavailable');
         let response = await SERVICE.DefaultOrderLifecycleRequestService.get({ tenant: request.tenant, authData: request.authData, query: { entCode }, searchOptions: { limit: limit + 1, sort: { updatedAt: -1 } } });
         let records = this.items(response); if (records.length > limit) throw this.error('Lifecycle diagnostics exceeds configured scan bounds');
         let now = request.now ? new Date(request.now) : new Date(), sla = config.slaMinutesByState || {}, findings = [];
@@ -37,5 +91,13 @@ module.exports = {
         let owner = await this.ownerDiagnostics(request, entCode); findings.push(...owner.findings);
         return { enterpriseCode: entCode, observedAt: now, metrics: { requestVolumeByType: byType, workloadByState: byState, reasonVolume: reasons, reconciliationCount: findings.filter(value => value.findingCode === 'OWNER_RECONCILIATION_REQUIRED').length, slaBreachCount: findings.filter(value => value.findingCode === 'LIFECYCLE_SLA_EXCEEDED').length, owner: owner.metrics }, correlations: owner.correlations, findings };
     },
+    /**
+     * Executes the run operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     run: async function (request) { request = request || {}; if (!request.authData) request.authData = { tokenType: 'service', principalId: 'order-lifecycle-reconciliation' }; if (!request.tenant) request.tenant = request.body && request.body.tenant || 'default'; request.enterpriseCode = request.enterpriseCode || request.body && request.body.enterpriseCode; return this.scan(request); },
 };

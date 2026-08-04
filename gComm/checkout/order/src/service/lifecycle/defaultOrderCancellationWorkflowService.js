@@ -17,13 +17,48 @@
  * @override Projects may replace approval policy or Workflow actions while preserving pipeline use, version binding, maker-checker routing, and no execution side effects.
  */
 module.exports = {
+    /**
+     * Initializes the module artifact within the order-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     init: function () { return Promise.resolve(true); },
+    /**
+     * Completes initialization for the module artifact within the order-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     postInit: function () { return Promise.resolve(true); },
+    /**
+     * Executes the config operation within the order-owned layered contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     config: function () { return ((CONFIG.get('order') || {}).orderLifecycle) || {}; },
+    /**
+     * Executes the error operation within the order-owned layered contract.
+     *
+     * @param {*} message Value defined by the surrounding Nodics operation contract.
+     * @param {*} code Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     error: function (message, code) {
         if (typeof CLASSES !== 'undefined' && CLASSES.NodicsError) return new CLASSES.NodicsError(message, null, code || 'ERR_ORD_00051');
         let error = new Error(message); error.code = code || 'ERR_ORD_00051'; return error;
     },
+    /**
+     * Asserts safe within the order-owned layered contract.
+     *
+     * @param {*} value Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     assertSafe: function (value) {
         let serialized = JSON.stringify(value || {});
         if (serialized.match(/cvv|cardNumber|pan|secret|password|rawGateway|gatewayPayload|providerPayload|rawCarrier|carrierPayload|rawTaxPayload|rawPromotionPayload/i)) {
@@ -32,6 +67,14 @@ module.exports = {
         let maximum = Number(((((this.config().workflow || {}).approval) || {}).maximumDecisionEvidenceBytes) || 262144);
         if (typeof Buffer !== 'undefined' && Buffer.byteLength(serialized, 'utf8') > maximum) throw this.error('Cancellation Workflow evidence exceeds configured size bounds');
     },
+    /**
+     * Executes the source operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     source: function (request) {
         let carrier = request.workflowCarrier || {}; let source = carrier.sourceDetail || {};
         if (!carrier.code || source.processType !== 'orderLifecycleRequest' || source.requestType !== 'CANCELLATION' || !source.requestCode || !source.entCode || !source.orderCode || !Number.isInteger(Number(source.requestVersion))) {
@@ -39,9 +82,28 @@ module.exports = {
         }
         this.assertSafe(source); return { carrier: carrier, source: source };
     },
+    /**
+     * Executes the success operation within the order-owned layered contract.
+     *
+     * @param {*} decision Value defined by the surrounding Nodics operation contract.
+     * @param {*} action Value defined by the surrounding Nodics operation contract.
+     * @param {*} feedback Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     success: function (decision, action, feedback) {
         return { decision: decision, type: decision === 'REJECT' ? 'REJECTED' : 'SUCCESS', feedback: Object.assign({ action: action }, feedback || {}) };
     },
+    /**
+     * Executes the aggregate operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} source Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     aggregate: async function (request, source) {
         let orchestration = SERVICE.DefaultOrderLifecycleOrchestrationService;
         if (!orchestration || typeof orchestration.loadRequest !== 'function' || typeof orchestration.loadItems !== 'function') throw this.error('Order lifecycle orchestration is unavailable');
@@ -49,6 +111,15 @@ module.exports = {
         if (!current || current.orderCode !== source.orderCode || current.requestType !== 'CANCELLATION' || Number(current.version) !== Number(source.requestVersion)) throw this.error('Cancellation Workflow request version is stale', 'ERR_ORD_00052');
         return { request: current, items: await orchestration.loadItems(request, current.requestCode) };
     },
+    /**
+     * Executes the order operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} source Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     order: async function (request, source) {
         if (request.order && request.order.code === source.orderCode) return request.order;
         if (!SERVICE.DefaultOrderService || typeof SERVICE.DefaultOrderService.get !== 'function') throw this.error('Cancellation Workflow Order evidence service is unavailable');
@@ -57,6 +128,15 @@ module.exports = {
         if (records.length !== 1) throw this.error('Cancellation Workflow requires one Order evidence record');
         return records[0];
     },
+    /**
+     * Executes the compare money operation within the order-owned layered contract.
+     *
+     * @param {*} left Value defined by the surrounding Nodics operation contract.
+     * @param {*} right Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     compareMoney: function (left, right) {
         let parse = value => {
             if (typeof value !== 'string' || !/^(0|[1-9]\d*)(\.\d+)?$/.test(value)) throw this.error('Approval amount must be an exact non-negative decimal string');
@@ -65,11 +145,29 @@ module.exports = {
         let a = parse(left); let b = parse(right); let scale = Math.max(a.scale, b.scale);
         return a.value * 10n ** BigInt(scale - a.scale) <= b.value * 10n ** BigInt(scale - b.scale);
     },
+    /**
+     * Executes the route operation within the order-owned layered contract.
+     *
+     * @param {*} requestModel Value defined by the surrounding Nodics operation contract.
+     * @param {*} calculation Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     route: function (requestModel, calculation) {
         let policy = ((this.config().workflow || {}).approval) || {};
         if (policy.autoApprovalEnabled === true && (policy.autoApprovalRequesterTypes || []).includes(requestModel.requesterType) && this.compareMoney(calculation.amount, policy.autoApprovalMaximumAmount || '0')) return 'AUTO_APPROVE';
         return policy.defaultRoute || 'MANUAL_REVIEW';
     },
+    /**
+     * Executes the approval actor operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} requestModel Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     approvalActor: function (request, requestModel) {
         let policy = ((this.config().workflow || {}).approval) || {}; let auth = request.authData || {};
         let actorCode = auth.principalId || auth.code || auth.username;
@@ -78,9 +176,28 @@ module.exports = {
         if (policy.makerCheckerRequired !== false && actorCode === requestModel.requesterCode) throw this.error('Cancellation requester cannot approve the same request', 'ERR_ORD_00052');
         return { actorCode: actorCode, actorType: 'EMPLOYEE', tokenType: auth.tokenType };
     },
+    /**
+     * Updates the module artifact within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @param {*} current Value defined by the surrounding Nodics operation contract.
+     * @param {*} expectedStates Value defined by the surrounding Nodics operation contract.
+     * @param {*} patch Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     update: async function (request, current, expectedStates, patch) {
         return SERVICE.DefaultOrderLifecycleOrchestrationService.updateState(request, current, expectedStates, patch, false);
     },
+    /**
+     * Evaluates the module artifact within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     evaluate: async function (request) {
         let context = this.source(request); let aggregate = await this.aggregate(request, context.source);
         if (aggregate.request.state === 'APPROVAL_PENDING' && aggregate.request.evidence && aggregate.request.evidence.approvalRoute) {
@@ -121,6 +238,14 @@ module.exports = {
         await SERVICE.DefaultOrderLifecycleAuditService.record(request, Object.assign({}, aggregate.request, { state: 'APPROVAL_PENDING', evidence: evidence }), 'CANCELLATION_EVALUATED', approvalRoute, 'Cancellation evaluated for ' + approvalRoute);
         return this.success(approvalRoute, 'evaluate', { requestCode: aggregate.request.requestCode, requestVersion: aggregate.request.version, eligibility: eligibility, calculation: calculation, approvalRoute: approvalRoute });
     },
+    /**
+     * Executes the approve operation within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     approve: async function (request) {
         let context = this.source(request); let aggregate = await this.aggregate(request, context.source);
         if (aggregate.request.state === 'APPROVED') return this.success('SUCCESS', 'approve', { requestCode: aggregate.request.requestCode, requestVersion: aggregate.request.version, idempotent: true });
@@ -130,6 +255,14 @@ module.exports = {
         await SERVICE.DefaultOrderLifecycleAuditService.record(request, approved, 'CANCELLATION_APPROVED', approved.version, 'Cancellation approved');
         return this.success('SUCCESS', 'approve', { requestCode: approved.requestCode, requestVersion: approved.version, state: approved.state });
     },
+    /**
+     * Executes the module artifact within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     execute: async function (request) {
         let context = this.source(request); let aggregate = await this.aggregate(request, context.source);
         if (aggregate.request.state === 'COMPLETED') return this.success('SUCCESS', 'execute', { requestCode: aggregate.request.requestCode, requestVersion: aggregate.request.version, idempotent: true });
@@ -148,6 +281,14 @@ module.exports = {
             throw error;
         }
     },
+    /**
+     * Rejects the module artifact within the order-owned layered contract.
+     *
+     * @param {*} request Value defined by the surrounding Nodics operation contract.
+     * @returns {*} The synchronous value or Promise produced by the implementation.
+     * @throws Propagates validation, authorization, persistence, or delegated service failures.
+     * @override Later project or customer modules may override this exported extension point.
+     */
     reject: async function (request) {
         let context = this.source(request); let aggregate = await this.aggregate(request, context.source);
         if (aggregate.request.state === 'REJECTED') return this.success('REJECT', 'reject', { requestCode: aggregate.request.requestCode, requestVersion: aggregate.request.version, idempotent: true });

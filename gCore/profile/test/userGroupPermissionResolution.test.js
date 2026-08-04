@@ -139,6 +139,21 @@ assert(
   platformAdminGroup.permissions.includes("backoffice.registry.refresh"),
   "Default platform administrators should be allowed to request a bounded module-health refresh",
 );
+[
+  "order.backoffice.read",
+  "order.cancellation.support.read",
+  "order.return.support.read",
+  "order.refund.support.read",
+  "order.lifecycle.approval.read",
+  "order.lifecycle.operations.diagnostics",
+  "order.lifecycle.policy.read",
+  "order.lifecycle.reason.read",
+].forEach((permission) =>
+  assert(
+    platformAdminGroup.permissions.includes(permission),
+    "Default platform administrators should be allowed to validate Order lifecycle Axis workspaces: " + permission,
+  ),
+);
 assert(runtimeViewerGroup.permissions.includes("system.contract.openapi.view"));
 assert(
   runtimeAdminGroup.permissions.includes("runtime.config.cleanup.execute"),
